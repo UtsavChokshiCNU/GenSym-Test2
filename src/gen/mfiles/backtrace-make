@@ -1,0 +1,28 @@
+# Makefile for the backtrac.o file
+#
+# backtrac.o file is stored in platform specific subdirectories of the specific module
+# backtrac.c file is stored in ext/c with all other custom C files
+#
+# The reason for this is that backtrac.o must always be compiled with gcc in order to
+# be useful, while gcc is not our default compiler on some platforms. 
+#
+# Currently there are only targets for those platforms for which gcc is currently installed.
+#
+# example uses:
+#	/bt/ajs> make -f gen/mfiles/backtrace-make  alphaosf/backtrac.o
+#	D:\bt\ajs> nmake -f gen\mfiles\backtrace-make intelnt\backtrac.obj
+#
+# Note: this makefile requires the SRCBOX environment variable to be bound.
+
+UNIX  =   alphaosf/backtrac.o mips/backtrac.o rs6000/backtrac.o sun4/backtrac.o sparcsol/backtrac.o \
+          hp9000s700/backtrac.o 
+
+WIN32 =   intelnt\backtrac.obj
+
+
+$(WIN32) :: $(SRCBOX)\ext\c\backtrac.c
+	gcc -c -o $(SRCBOX)\specific\$@ $(SRCBOX)\ext\c\backtrac.c  
+
+$(UNIX) :: $(SRCBOX)/ext/c/backtrac.c
+	gcc -c -o $(SRCBOX)/specific/$@ $(SRCBOX)/ext/c/backtrac.c  
+
