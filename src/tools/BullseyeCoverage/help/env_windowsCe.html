@@ -1,0 +1,152 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_platform.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+Windows CE
+</h1>
+<h2>Background</h2>
+<p>
+BullseyeCoverage can measure coverage of application level code on Windows CE.
+Device drivers and OS components are not supported.
+<p>
+BullseyeCoverage supports building with Visual Studio 2005 and 2008, the command line, and Microsoft eMbedded Visual C++.
+The BullseyeCoverage setup program inserts a command into the eMbedded
+Visual C++ menu <code>Tools</code> to enable and disable Coverage Build.
+With Coverage Build enabled, build your project using the command
+<code>Build Rebuild All</code>.
+
+<h2>Environment Variables</h2>
+<p>
+Windows CE does not support environment variables so the
+BullseyeCoverage run-time reads environment variables from the file
+<code>\BullseyeCoverageEnv.txt</code> (in the root directory).
+This ASCII text file has the format below:
+<pre>
+<i>name1</i>=<i>value1</i>
+<i>name2</i>=<i>value2</i>
+<i>...</i>
+</pre>
+<p>
+The default value for the <code>COVFILE</code> environment variable is <code>\test.cov</code>.
+<p>
+Version 7.5 and earlier used a different mechanism for environment variables.
+Make sure to use the proper version of this documentation.
+
+<h2>Locating the Coverage File</h2>
+<p>
+You have two choices in locating the coverage file at run-time.
+You can either copy the coverage file to the Windows CE device,
+or use a shared folder.
+<h3>On Device</h3>
+<p>
+Copy the coverage file to the Windows CE file system before testing, then copy
+the file back to your host computer afterward.
+If you copy the coverage file to <code>\test.cov</code>
+then you need not set the <code>COVFILE</code> environment variable.
+<p>
+If you are using the Visual Studio 2005 or 2008 emulator or a physical device,
+use ActiveSync to copy files to and from the device.
+Specific instructions for copying files to and from the emulator file systems
+are given later in this document.
+<h3>Shared Folder</h3>
+<p>
+<img alt="" style="background-color:#fff;float:right;padding-left:1em" src=env_windowsCe-sharedFolder.png>
+To access the coverage file via a shared folder,
+select the emulator menu command <code>File Configure</code> and enter the path
+where the coverage file is located in the <code>Shared folder</code> setting.
+The shared folder appears in the Windows CE file system as <code>\Storage&nbsp;Card</code>.
+Set <code>COVFILE</code> as described above.
+For example:
+<pre>
+COVFILE=\Storage Card\test.cov
+</pre>
+<h3>File Locking</h3>
+<p>
+File locking is supported with Windows CE 5 and later when the coverage file is
+located in the root file system.
+Otherwise, use caution not to modify
+the coverage file while running an instrumented Windows CE test program.
+Example actions that modify the coverage file are:
+<ul>
+<li>running multiple instrumented programs or DLLs
+<li>compiling with Coverage Build enabled
+<li>the Coverage Browser menu commands <code>File Clear</code>, <code>File Compact</code>, <code>File Insert</code>
+<li>the <code>covclear</code> command
+</ul>
+
+<h2>Visual Studio 2005 and 2008</h2>
+<p>
+<img alt="" style="float:right;padding-left:1em" src=env_windowsCe-emulatorManager.png>
+Use the steps below to access the emulator file system with ActiveSync.
+<ol>
+<li>
+Use the Visual Studio menu command <code>Tools Device Emulator Manager</code>.
+<li>
+Select the emulator.
+<li>
+Use the menu command <code>Actions Connect</code>.
+<li>
+Use the menu command <code>Actions Cradle</code>.
+<li>
+Run ActiveSync.
+<li>
+Establish a partnership if needed.
+<li>
+Use the ActiveSync menu command <code>File Explore</code> or <code>Tools Explore</code>
+<li>
+Open the device folder, for example <code>My Pocket PC</code> or <code>My Smartphone</code>.
+</ol>
+<p style=clear:both>
+If when you run your program you see a dialog titled <code>Find Executable</code> looking for a file named
+<code>BullseyeCoverage-*.dll</code>,
+press the <code>Cancel</code> button. 
+
+<h2>Windows CE Versions 3 and 4</h2>
+<p>
+To access the emulator file system,
+run the Windows CE Remote File Viewer <code>cefilevw.exe</code>.
+Use the menu command <code>Connection Add Connection</code>, select
+the emulator, and click <code>OK</code>.
+Use menu commands <code>File Export</code> and <code>File Import</code> to copy
+files to and from the emulator file system, respectively.
+<p>
+<img alt="" style="float:right;padding-left:1em" src=env_windowsCe-findLocalModule.png>
+If when you run your program you see the dialog <code>Find Local
+Module</code> shown below,
+press the <code>Cancel</code> button.
+<p style=clear:both>
+<p style="font-size:xx-small">
+Last reviewed: 9 Apr 2009
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
