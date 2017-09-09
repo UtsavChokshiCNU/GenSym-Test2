@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="01/11/02 11:08:18">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Customizing Resource Animation</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="customih.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="customd3.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/ReThink/custom-manual/stylesets/Customizing%20ReThink/Output/html/customih.htm">  
+        Customizing Resources and Work Objects  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Customizing Resource Animation
+</h2>
+<p>You can change the colors, appearance, and behavior of resources when the model allocates and deallocates them by customizing resource animation. To do this, you can either:<a name="14516"></a></p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Animate the <code>flashing</code> region of the icon.<a name="14517"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Add new regions to the icon and edit the animation procedure to animate the new icon regions.<a name="14518"></a></td>  </tr></table><h6><b>Note: </b>ReThink generates an error when you run the model if the resource you are 
+customizing does not have an icon region named flashing.
+<a name="16613"></a></h6><p>You use the same techniques to customize the animation of work objects and surrogates.<a name="14519"></a></p>
+<p>For example, you might want to move truck resources around a map when the model allocates them, or you might want to animate a person resource or a machine resource when it is active. <a name="14520"></a></p>
+<p>To animate a custom icon region of a resource:<a name="14521"></a></p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Define appropriate icon regions.<a name="14522"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Copy <code>bpr-animate-object</code>, the default procedure that controls resource animation.<a name="14523"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Edit the procedure to change the region colors as desired. <a name="14524"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Specify the custom animation procedure in the resource's animation subtable.<a name="14525"></a></td>  </tr></table><p>For additional information, see the references in this table:<a name="29667"></a></p>
+<p >
+  <a name="29835"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="29817"><div >For information on...</a></div></th>
+    <th><a name="29819"><div >See...</a></div></th>
+  </tr>
+  <tr>
+    <td><p>How to edit the default animation procedure of a resource<a name="29821"></a></p>
+</td>
+    <td><p><a href="how-to33.htm#16105">Displaying Default Subobject Procedures</a>.<a name="29825"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>How to edit the default colors of a resource<a name="29828"></a></p>
+</td>
+    <td><p><a href="how-to34.htm#121981">Editing Color Attributes of Animation Subobjects</a>.<a name="29830"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>How to add new color attributes to the animation subtable of a resource<a name="29832"></a></p>
+</td>
+    <td><p><a href="how-to35.htm#16323">Creating New Attributes for Subobjects</a><a name="29834"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Customizing the animation of work objects<a name="29896"></a></p>
+</td>
+    <td><p><a href="how-to36.htm#123043">Customizing Subobjects of Work Objects</a><a name="29898"></a></p>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<p>For example, suppose you have a worker resource whose icon is a face. The face has a <code>smile </code>region and a <code>frown</code> region. The worker is happy when it is working and unhappy when it is idle. Therefore, you want the <code>smile</code> region to become visible when the resource is allocated, and you want the <code>frown</code><code> </code>region to become visible when the resource is deallocated. <a name="37120"></a></p>
+<h4 >	 To animate a resource when it is allocated:<a name="14543"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>1	</b></td>    <td valign="top" width="580">Define a subclass of <code>bpr-resource</code> named <code>worker</code> with class-specific attributes, as follows:<a name="14544"></a></td>  </tr></table><blockquote><blockquote><code>mouth-color initially is black<a name="14545"> </a></code></blockquote></blockquote><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>2	</b></td>    <td valign="top" width="580">Edit the icon to create the following icon regions:<a name="14546"></a></td>  </tr></table><blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>a	</b></td>    <td valign="top" width="560">A region named<code> smile</code> that contains a representation of a smile. <a name="14547"></a></td>  </tr></table></blockquote>
+<blockquote><blockquote>  <a name="14548">Its color should be the <code>inactive-color</code> of your resource, for example, <code>gold</code>.</a></blockquote></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>b	</b></td>    <td valign="top" width="560">A region named<code> </code><code>frown</code> that contains a representation of a frown. <a name="14549"></a></td>  </tr></table></blockquote>
+<blockquote><blockquote>  <a name="14550">Its color should be any color, such as black, that is visible when the region sits on top of a region that contains the <code>active-color </code>of the resource.</a></blockquote></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>c	</b></td>    <td valign="top" width="560">A region named<code> flashing</code> that contains a solid, round face.<a name="14551"></a></td>  </tr></table></blockquote>
+<blockquote><blockquote>  <a name="14552">Its color should be the <code>inactive-color</code> of your resource.</a></blockquote></blockquote>
+<blockquote>  <a name="48251">For details, see the <i>ReThink User's Guide</i>.</a></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>3	</b></td>    <td valign="top" width="580">Copy the <code>bpr-animate-object</code> procedure from the Object Animation Subtable workspace, which is the default<code> procedure-name</code> of the <code>bpr-object-animation-subtable</code>.<a name="14553"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>4	</b></td>    <td valign="top" width="580">Edit the name of the procedure to be <code>animate-worker</code>.<a name="14554"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>5	</b></td>    <td valign="top" width="580">Edit the procedure to animate the<code> frown </code>and<code> smile </code>regions, using the appropriate colors.<a name="14555"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>6	</b></td>    <td valign="top" width="580">Edit the <code>procedure-name</code> in the <code>animation-subtable</code> of the <code>worker</code> resource to refer to the custom animation procedure, <code>animate-worker</code>.<a name="28171"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>7	</b></td>    <td valign="top" width="580">Edit the <code>active-color</code> and <code>inactive-color</code> in the <code>animation-subtable</code> of the <code>worker</code> resource to be the default color of the <code>smile</code> icon region, for example, <code>gold</code>.<a name="28172"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>8	</b></td>    <td valign="top" width="580">Edit the <code>label</code> attribute of the resource to be <code>worker</code>.<a name="14558"></a></td>  </tr></table><p>Here is a simple model that shows how the worker resource looks when it is idle and when it is allocated:<a name="14559"></a></p>
+<p >
+  <a name="47817"> </a>
+<p><div align="left"><img src="images/customd2.gif" border="0" hspace="0" vspace="0">
+</div><a name="47816"></a></p>
+
+
+
+</p>
+<p>Here is the class definition and icon of the <code>worker</code> resource:<a name="14570"></a></p>
+<p >
+  <a name="47829"> </a>
+<div style="color: #000000;  font-size: 4pt; font-style: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: justify; text-decoration: none; text-indent: 0pt; text-transform: none; vertical-align: baseline">
+<a name="47828"> </a><div align="left"><img src="images/custome3.gif" border="0" hspace="0" vspace="0">
+</div><br>
+</div>
+
+
+
+</p>
+<p>Here is the <code>animate-worker</code> procedure:<a name="14579"></a></p>
+<p >
+  <a name="14586"> </a>
+<div style="color: #000000;  font-size: 4pt; font-style: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: justify; text-decoration: none; text-indent: 0pt; text-transform: none; vertical-align: baseline">
+<a name="14585"> </a><div align="left"><img src="images/customii.gif" border="0" hspace="0" vspace="0">
+</div><br>
+</div>
+
+
+
+</p>
+<p>Here is the Animation tab of the properties dialog of the <code>worker</code> resource:<a name="14587"></a></p>
+<p >
+  <a name="47840"> </a>
+<div style="color: #000000;  font-size: 4pt; font-style: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: justify; text-decoration: none; text-indent: 0pt; text-transform: none; vertical-align: baseline">
+<a name="47839"> </a><div align="left"><img src="images/customij.gif" border="0" hspace="0" vspace="0">
+</div><br>
+</div>
+
+
+
+</p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="customih.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="customd3.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
