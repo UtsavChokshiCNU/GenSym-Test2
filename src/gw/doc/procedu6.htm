@@ -1,0 +1,286 @@
+<html><head><title>Remote Procedures</title></head>
+<body bgcolor="#ffffff">
+<a href="procedu5.htm"><h5>| Prev </a> <a href="procedu7.htm">| Next </a> <a href="procedur.htm">| Start of Chapter </a> <a href="proced11.htm">| End of Chapter </a> <a href="booktoc.htm">| Contents </a> <a href="bookix.htm">| Index |</a> (7 out of 12)</h5> <br>
+
+
+<a name="2969">
+<h1> gw-get-attribute-of-request
+</h1>
+</a><a name="2970">
+Called by a response procedure in G2 to obtain information about a request to 
+which it is responding. 
+<p>
+</a><a name="2971">
+<h2> Synopsis </h2>
+</a><ul><a name="2972">
+<pre><code>gw-get-attribute-of-request (</code><em>fetch-id</em><code>:integer, </code><em>attribute-name</em><code>:text) = (text) 
+</code></pre>
+</a><a name="2987">
+<table border=4>
+<tr><th align="left" valign="middle"><a name="2975">
+<strong>Argument 
+</strong>
+</a><th align="left" valign="middle"><a name="2977">
+<strong>Description 
+</strong>
+</a>
+<tr><td valign="middle"><a name="2979">
+<em>fetch-id 
+</em><p>
+</a><br><td valign="middle"><a name="2981">
+Should match the number provided when 
+G2 WebLink invoked the routine specified 
+with the URL pattern in the call to <a href="proced11.htm#3253">gw-
+tender-resources()</a>. 
+<p>
+</a><br>
+<tr><td valign="middle"><a name="2984">
+<em>attribute-name
+</em><p>
+</a><br><td valign="middle"><a name="2986">
+The name of the attribute whose value is to 
+be returned by this call to <code>gw-get-attribute-
+of-request()</code>. For information about how to 
+specify attribute names, see Description 
+below.
+<p>
+</a><br>
+
+</table>
+
+<p></a></ul><a name="2988">
+<h2> Description </h2>
+</a><a name="2989">
+<code>gw-get-attribute-of-request</code>() gets an attribute from an HTTP request. A response 
+procedure can call <code>gw-get-attribute-of-request</code>() to obtain more information about 
+a request to which it is responding. 
+<p>
+</a><a name="2990">
+Information about a request can also be passed to a response procedure through 
+the response procedure's arguments, as specified in a call to <code>gw-tender-
+resources()</code>. The <em>attribute-name</em> arguments described below can all be passed as 
+arguments to a response procedure. 
+<p>
+</a><a name="2991">
+You can call <code>gw-get-attribute-of-request()</code> during the interval between the invocation of the response procedure and the call terminating the response. A response 
+is terminated by a call either to <a href="procedu4.htm#2774">gw-decline-to-serve-url()</a> or to <a href="procedu5.htm#2911">gw-finish-url-
+reply()</a>. 
+<p>
+</a><a name="2994">
+For the <em>attribute-name</em> argument in a call to <code>gw-get-attribute-of-request()</code>, you can 
+specify: 
+<p>
+</a><ul><a name="2995">
+<li>The name of a MIME header 
+<p></a><a name="2996">
+<li>The name of a CGI argument 
+<p></a><a name="2997">
+<li>Other pre-defined argument names, which are listed below
+<p></a></ul><a name="2998">
+The following paragraphs describe how to specify <em>attribute-name</em> in these ways.
+<p>
+</a><a name="2999">
+MIME headers: To get an individual MIME headers from the HTTP request, 
+specify an attribute name beginning with the prefix HTTP-, followed by the rest 
+of the name of the MIME header. For example, the attribute name 
+<p>
+</a><ul><a name=3000">
+<pre>"HTTP-User-Agent" 
+</pre>
+</a></ul><a name="3001">
+returns the header named "HTTP-User-Agent", which is a description of the 
+client's Web browser, if the browser provides one. An example of such as header 
+is "<code>Mozilla/2.0(X11;I;SunOS 4.1.4 Sun4m)</code>". 
+<p>
+</a><a name="3002">
+<hr><strong>Note:</strong> The text of MIME headers is case-sensitive. 
+<hr>
+</a><a name="3003">
+CGI arguments: Arguments in a URL formatted in conformance with the 
+Common Gateway Interface (CGI) standard can be specified by name. For 
+example, in the following URL 
+<p>
+</a><ul><a name=3004">
+<pre>"http://www.grsmithinc.com/query?id=123&amp;filter=data"
+</pre>
+</a></ul><a name="3005">
+the attribute value "data" is returned if the attribute name "filter" is specified 
+as <em>argument-name</em> in the call to <code>gw-get-attribute-of-request()</code>. 
+<p>
+</a><a name="3006">
+Other argument names: You can also specify the following names for <em>argument-
+type</em> in a call to <code>gw-get-attribute-of-request()</code>. 
+<p>
+</a><a name="3007">
+"<code>auth-type</code>"<br>
+The name of the authorization scheme used in this request. For example: "BASIC". 
+This is an empty string if no authorization is included with the request. See the 
+Internet standard "Hypertext Transfer Protocol -- HTTP/1.0" for additional details 
+about terms used in this definition. 
+<p>
+</a><a name="3008">
+"<code>content-length</code>"<br>
+Returns the number of bytes in the content. This is the value provided in the 
+headers passed with the request. Remember that the client is not required to 
+provide an accurate value. For example: "1037". 
+<p>
+</a><a name="3009">
+<hr><strong>Note:</strong> When the content length is used as an argument to a response procedure, 
+the data type passed is an integer. The value -1 is passed if the length is not 
+specified in the request's header.
+<hr>
+</a><a name="3010">
+"<code>content-type</code>"<br>
+Returns the empty string in most cases. If the request is using the request-method 
+"PUT" and a MIMI header that explicitly states a content type, then this string will 
+provide that type. For example: "IMAGE/GIF". 
+<p>
+</a><a name="3011">
+"<code>fetch-id</code>"<br>
+Returns the fetch id for the current request. 
+<p>
+</a><a name="3012">
+<hr><strong>Note:</strong> When the fetch id is used as an argument to a response procedure, the data 
+type passed is an integer.
+<hr>
+</a><a name="3013">
+"<code>gateway-interface</code>"<br>
+This is always the empty string. The Internet Draft Standard for CGI/1.1 defines a 
+number of environment variables that do not have a useful implementation in the 
+bridge at this time. These return the empty string ("").
+<p>
+</a><a name="3014">
+"<code>path-info</code>"<br>
+The name of the resource requested by the client. For example, in the URL 
+"<code>http://www.grsmithinc.com:8080/pages/index.html</code>", the <code>path-info</code> is 
+the string "<code>pages/index.html</code>". In the URL 
+"<code>http://www.grsmithinc.com:8080/</code>", the <code>path-info</code> is "". 
+<p>
+</a><a name="3015">
+<hr><strong>Note:</strong> <code>path-info </code>is the <code>hpath</code> token defined in RFC 1738 and the <code>Path-info</code> 
+described in the CGI/1.1 spec.
+<hr>
+</a><a name="3016">
+"<code>path-translated</code>"<br>
+This is always an empty string. The Internet Draft Standard for CGI/1.1 defines a 
+number of environment variables that do not have a useful implementation in the 
+bridge at this time. These are included in the list above and return the empty 
+string ("").
+<p>
+</a><a name="3017">
+"<code>query-string</code>"<br>
+This is the text following the "?" in CGI queries. For example, in the URL 
+"<code>http://www.casper.com/query?id=123&amp;filter=data</code>" the query string 
+is "<code>id=123&amp;filter=data</code>" Generally, it is not necessary to obtain this, because 
+the query string is automatically parsed and bound to arguments when the 
+response procedure is invoked through the <code>call cgi</code> syntax. 
+<p>
+</a><a name="3018">
+<hr><strong>Note:</strong> In RFC 1738, <code>query-string </code>is referred to as the "&lt;searchpart&gt;" and as the 
+"query string".
+<hr>
+</a><a name="3019">
+"<code>remote-addr</code>"<br>
+This string reports the numeric address of the client's machine. Note this might 
+not be the machine the user is on, because the user's request may have been 
+forwarded through a proxy server. If the address cannot be obtained &#175; a rare 
+event &#175; an empty string is returned.
+<p>
+</a><a name="3020">
+"<code>remote-host</code>"<br>
+This string reports the name of the client's machine. Note this might not be the 
+machine the user is on, because the user's request may have been forwarded 
+through a proxy server. If the address cannot be obtained &#175; a rare event &#175; an 
+empty string is returned.
+<p>
+</a><a name="3021">
+"<code>remote-ident</code>"<br>
+This is always an empty string. The Internet Draft Standard for CGI/1.1 defines a 
+number of environment variables that do not have a useful implementation in the 
+bridge at this time. These are included in the list above and return the empty 
+string (i.e. "").
+<p>
+</a><a name="3022">
+"<code>remote-user</code>"<br>
+If the request includes authorization information, and the <code>auth-type</code> is one of 
+those supported by the bridge, this string identifies the user.
+<p>
+</a><a name="3023">
+"<code>request-method</code>"<br>
+This is one of three values: "GET", "PUT", or "HEAD". See the Internet standard 
+"Hypertext Transfer Protocol -- HTTP/1.0" for additional details about terms used 
+in this definition.
+<p>
+</a><a name="3024">
+"<code>request-mimi-headers</code>"<br>
+This is the text of MIME headers included with the request. This is exactly as 
+provided by the client software. This can return the empty string. For example, 
+the MIME header returned can be: 
+<p>
+</a><ul><a name=3025">
+<pre>"Connection: Keep-Alive<br>
+User-Agent: Mozilla/2.0 (X11; I; SunOS 4.1.4 sun4m)<br>
+Pragma: no-cache<br>
+Host: tha:8080<br>
+Accept: image/gif, image/x-xbitmap, image/jpeg, 
+image/pjpeg, */*<br>
+"
+</pre>
+</a></ul><a name="3026">
+"<code>script-name</code>" <br>
+This is name of the response procedure invoked to handle this request.
+<p>
+</a><a name="3027">
+"<code>server-name</code>"<br>
+This is the TCP/IP port upon which the server received this request. For example: 
+"<code>www.grsmithinc.com:8080</code>".
+<p>
+</a><a name="3028">
+"<code>server-port</code>"<br>
+This is the port number upon which the server is listening for incoming requests. 
+For example: "<code>8080</code>".
+<p>
+</a><a name="3029">
+"<code>server-protocol</code>"<br>
+This is the machine name upon which the server is listening for incoming 
+requests. For example: "<code>www.grsmithinc.com</code>".
+<p>
+</a><a name="3030">
+"<code>server-software</code>"<br>
+This returns the name of the the bridge software, including the version number. 
+For example: "<code>G2 WebLink v1.0 - c23</code>"
+<p>
+</a><a name="3031">
+"<code>url-details</code>"<br>
+This the same as "<code>path-info"</code>. 
+<p>
+</a><a name="3032">
+<h2> Return Values </h2>
+</a><a name="3042">
+<table border=4>
+<tr><th align="left" valign="middle"><a name="3035">
+<strong>Value 
+</strong>
+</a><th align="left" valign="middle"><a name="3037">
+<strong>Description 
+</strong>
+</a>
+<tr><td valign="middle"><a name="3039">
+<code>text
+</code><p>
+</a><br><td valign="middle"><a name="3041">
+The value of the attribute specified by 
+<em>attribute-name</em>. G2 WebLink can pass this 
+attribute to the G2 procedure that it 
+invokes to generate the resource requested 
+by the HTTP request. 
+<p>
+</a><br>
+
+</table>
+
+<p></a>
+
+<a href="procedu5.htm"><h5>| Prev </a> <a href="procedu7.htm">| Next </a> <a href="procedur.htm">| Start of Chapter </a> <a href="proced11.htm">| End of Chapter </a> <a href="booktoc.htm">| Contents </a> <a href="bookix.htm">| Index |</a> (7 out of 12)</h5> <br>
+<A HREF="titlepa1.htm"><h6>Copyright &#169; 1996, Gensym Corporation, Inc.</h6></A>
+</body></html>
