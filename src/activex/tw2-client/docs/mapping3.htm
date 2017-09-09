@@ -1,0 +1,108 @@
+<html><head><title>Handling Data </title></head>
+<body bgcolor="#ffffff">
+<h5><a href="mapping2.htm">| Prev </a> 
+  | Next
+  <a href="mapping.htm">| Start of Chapter </a>
+ <a href="g2twconn.htm">| Next Chapter </a> <a href="booktoc.htm">| Contents </a> <a href="glossary.htm">| Glossary </a> <a href="bookix.htm">| Index </a>  <a href="mailto:docs@gensym.com">| Comments | </a> (4 out of 4) </h5> <br>
+
+<a name="35262">
+<h1> Passing a G2 Structure</h1>
+</a><a name="34031">
+The <code>G2Structure()</code> class enables you to pass G2 structures as arguments in methods in Visual Basic. The properties enable you to read a list of all the members of a G2 structure.<p>
+</a><a name="34032">
+<h2> Properties</h2>
+</a><a name="35461">
+<table border="3">
+<caption></caption>
+<tr><th align="left" valign="middle"><a name="35454">
+<strong><strong>Properties </strong></strong>
+</a><th align="left" valign="middle"><a name="35456">
+<strong>Description</strong>
+</a>
+<tr><td valign="middle"><a name="35766">
+<code>Member(<code><em>MemberName</code></em> As String)</code>
+</a><br><td valign="middle"><a name="35768">
+Enables you to access the value of the named member. You can use the Member property at runtime, <em>not</em> design time. Once a connection to G2 is established, you can programmatically access the value of this property.
+</a><br>
+<tr><td valign="middle"><a name="35467">
+<code><code>MemberNames As Variant</code></code>
+</a><br><td valign="middle"><a name="35479">
+A read-only list of member names.
+</a><br>
+
+</table>
+
+<table>
+<tr><td>
+</table>
+<p>
+</a><a name="36150">
+<h3> Example</h3>
+</a><a name="36151">
+At runtime, the following code fragment sets the value of a G2 structure member, which you can pass to the G2 server.<p>
+</a><ul><a name=36152">
+<pre>Private Sub Command1_Click()<br>&#32;&#32;&#32;Dim Temperature As G2Structure</pre>
+</a><a name=36153">
+<pre>&#32;&#32;&#32;Set Temperature = New G2Structure<br>&#32;&#32;&#32;Temperature.Member("Cooling") = 40</pre>
+</a></ul><a name="36157">
+To create G2 structures inline, see <a href="g2twcon3.htm#997079">Structure()</a>.<p>
+</a><a name="34055">
+<h2> Methods</h2>
+</a><a name="34522">
+<h3> ClearMember()</h3>
+</a><a name="34056">
+The <code>ClearMember()</code> method enables you to erase the value of all the members of a structure or remove the value of a specified member. To erase the values of all structure members, invoke the <code>ClearMember()</code> method without an argument. <p>
+</a><ul><a name=34057">
+<pre><code>ClearMember(</code><code><em>MemberName </code></em><code>As String) </code></pre>
+</a><a name="34067">
+<table border="3">
+<caption></caption>
+<tr><th align="left" valign="middle"><a name="34060">
+<strong>Argument </strong>
+</a><th align="left" valign="middle"><a name="34062">
+<strong>Description </strong>
+</a>
+<tr><td valign="middle"><a name="34064">
+<code><code><em>MemberName</code></em><code><em> </code></em><code>As String</code></code>
+</a><br><td valign="middle"><a name="34066">
+The name of the structure member to remove.
+</a><br>
+
+</table>
+
+<table>
+<tr><td>
+</table>
+<p>
+</a></ul><a name="36214">
+<h3> Example</h3>
+</a><a name="36215">
+At runtime, the following code fragment clears the value of a G2 structure member, which you can pass to the G2 server.<p>
+</a><ul><a name=36216">
+<pre>Private Sub Command1_Click()<br>&#32;&#32;&#32;Dim Temperature As G2Structure</pre>
+</a><a name=36217">
+<pre>&#32;&#32;&#32;Set Temperature = New G2Structure<br>&#32;&#32;&#32;Temperature.ClearMember("MaxHeating") </pre>
+</a></ul><a name="35527">
+<h3> String()</h3>
+</a><a name="35639">
+The <code>String()</code> method enables you to display the text of the G2 structure in your application. <p>
+</a><a name="35543">
+<h3> Syntax</h3>
+</a><a name="35524">
+<pre>String() As String</pre>
+</a><a name="36227">
+<h3> Example</h3>
+</a><a name="36228">
+The following code fragment displays the value of a G2 structure in a form's caption.<p>
+</a><ul><a name=36229">
+<pre>Private Sub Command1_Click()<br>&#32;&#32;&#32;Dim Temperature As G2Structure</pre>
+</a><a name=36230">
+<pre>&#32;&#32;&#32;Set Temperature = New G2Structure<br>&#32;&#32;&#32;Temperature.Member("Cooling") = 40<br>&#32;&#32;&#32;Caption = Temperature.String</pre>
+</a></ul>
+
+<h5><a href="mapping2.htm">| Prev </a> 
+  | Next
+  <a href="mapping.htm">| Start of Chapter </a>
+ <a href="g2twconn.htm">| Next Chapter </a> <a href="booktoc.htm">| Contents </a> <a href="glossary.htm">| Glossary </a> <a href="bookix.htm">| Index </a>  <a href="mailto:docs@gensym.com">| Comments | </a> (4 out of 4) </h5> <br>
+<A HREF="http://www.gensym.com"><IMG ALIGN = BOTTOM SRC = "logo.gif" height=51 width=162><A HREF="http://www.gensym.com"><h6>Gensym Corporation, Inc.</h6></A>
+<A HREF="titlepa1.htm"><h6>Copyright &#169; 1998 Gensym Corporation, Inc.</h6></A>
