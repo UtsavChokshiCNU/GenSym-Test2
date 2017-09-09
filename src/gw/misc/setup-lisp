@@ -1,0 +1,86 @@
+#!/bin/csh -f
+
+### Emit doc, if invoked with no args.
+
+if ( $1 != -please || $#argv != 1 ) then
+cat <<EOF
+$0 -please
+This sets up the /bt/<whatever>lisp so it can
+do translates for gw.  This is a tangled process.
+
+First we checkout all the 4.0 rev 1 files that are
+  included in our bridge.  We take them by label, we
+  don't want to take updates.
+
+Second we copy all the lisp files from gw/lisp into 
+  lisp.  That will override the some modules from Rev1,
+  i.e. those we have forked.
+
+The resulting lisp directory is GSI 4.0 rev 1 with our
+  additions and forking.
+
+EOF
+exit -1
+endif
+
+### Case 1 are files in perfect synch with GSI 4.0 Rev 1.
+alias gsi40r1 'cvs co -r1.1 lisp/\!:1.lisp'
+
+### Case 1 are files in perfect synch with G2 4.0 Rev 1, but added to GSI.
+alias g240r1 'cvs co -r1.1 lisp/\!:1.lisp'
+
+### Case 2: fork are files forked from GSI 4.0 Rev 1.
+alias fork 'cp $SRCBOX/gw/lisp/\!:1.lisp lisp'
+
+### Case 3 are added on top of GSI 4.0 Rev 1.
+alias gwadd 'cp $SRCBOX/gw/lisp/\!:1.lisp lisp'
+
+cd $SRCBOX
+
+gsi40r1 123
+fork load
+fork bootstrap
+fork systems
+gsi40r1 delta
+fork gsi-patches
+gsi40r1 loop
+gsi40r1 lisp-fixes
+fork glbasics
+gsi40r1 gldebug
+gsi40r1 os-foreign
+gsi40r1 basics
+gsi40r1 os-time
+gsi40r1 os-settings
+gsi40r1 os-memory
+gsi40r1 primitives
+gsi40r1 characters
+gsi40r1 utilities0
+fork utilities1
+gsi40r1 utilities2
+fork utilities3
+gsi40r1 os-error
+gsi40r1 launch
+gsi40r1 networks
+gsi40r1 int1
+gsi40r1 int2
+gsi40r1 int3
+gsi40r1 int4
+gsi40r1 gsi-common
+gsi40r1 rpc-common1
+gsi40r1 rpc-common2
+gsi40r1 gsi
+gsi40r1 gsi-rpc1
+gsi40r1 gsi-rpc2
+g240r1 pathnames
+g240r1 file-parse
+fork streams
+gwadd gwutil-1
+gwadd buffer
+gwadd thread
+gwadd htmlgen
+gwadd bridge
+gwadd web
+gwadd server
+gwadd web-gsi
+gsi40r1 translate
+
