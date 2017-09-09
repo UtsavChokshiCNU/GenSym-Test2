@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_platform.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+Borland C++Builder
+</h1>
+<p>
+This information applies to Borland C++Builder version 3 through 6.
+For CodeGear C++Builder, see <a href=tool-codegear.html>CodeGear C++Builder</a>.
+<p>
+The Borland C++Builder integrated development environment cannot be configured
+to build using BullseyeCoverage due to limitations of Borland C++.
+However, you can build from the command prompt using a makefile as described
+below.
+<a name=5></a>
+<h2>
+Borland C++Builder 5 and 6
+</h2>
+<p>
+Make a backup of <code>default.bmk</code> located in the C++Builder
+<code>bin</code> directory.
+<pre>
+cd %ProgramFiles%\Borland\CBuilder*\Bin
+copy default.bmk default.bmk-
+</pre>
+<p>
+Using a text editor, modify <code>default.bmk</code> to
+remove every occurrence of <code>$(BCB)\BIN\</code>.
+For example, change
+<pre>
+.cpp.obj:
+	$(BCB)\BIN\$(BCC32) $(CFLAG1) ... {$< }
+</pre>
+<p>
+to
+<pre>
+.cpp.obj:
+	$(BCC32) $(CFLAG1) ... {$< }
+</pre>
+<p>
+Convert your <code>.pbr</code> file to a makefile with <code>bpr2mak</code>.
+<pre>
+bpr2mak project.bpr
+</pre>
+<p>
+Rebuild the project using the makefile with BullseyeCoverage as shown below.
+<pre>
+erase *.obj
+cov01 -1
+make -f project.mak
+</pre>
+
+<h2>
+<a name=4></a>
+Borland C++Builder 3 and 4
+</h2>
+<p>
+Make a copy of the C++Builder project file (the <code>.bpr</code> file).
+Using a text editor, modify this copy to make the following changes.
+<ul>
+<li>
+Remove every occurrence of <code>$(BCB)\BIN\</code>.
+<li>
+Change <code>$*</code> to <code>$&lt;</code> in the <code>.cpp.obj</code> rule.
+</ul>
+<p>
+For example, change
+<pre>
+.cpp.obj:
+    $(BCB)\BIN\bcc32 $(CFLAG1) $(CFLAG2) -o$* $*
+</pre>
+<p>
+to
+<pre>
+.cpp.obj:
+    bcc32 $(CFLAG1) $(CFLAG2) -o$* $<
+</pre>
+<p>
+Rebuild the project using the modified project file with BullseyeCoverage as shown below.
+<pre>
+erase *.obj
+cov01 -1
+make -f copy-of-project.bpr
+</pre>
+
+<p style="font-size:xx-small">
+Last reviewed: 17 Apr 2008
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
