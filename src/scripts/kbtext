@@ -1,0 +1,87 @@
+#!/bin/sh
+
+# kbtext -- Dump definitions from KB as text
+# -fmw, 12/6/05
+
+g2="/gensym/st/ab/eship/dep/sparcsol/g2-82r0/test/g2"
+utils="/gensym/st/ab/eship/indep/kbs-82r0/test/utils"
+kbtext="$SRCBOX/scripts/kbtext.kb"
+
+usage () {
+  echo "Usage: kbtext [-m module] [-ws workspace] [-debug] kbfile"
+  echo " Write the text of procedures, functions, and rules of module"
+  echo " of given KB to standard output. They are written in some"
+  echo " undefined but stable order (actually, sorted by UUID)."
+  echo "  -m module   Name of module to dump. Default is top-level module."
+  echo "  -ws ws      Name of workspace to dump (overrides -m)"
+  echo "  -g2 path    Pathname of G2 to use, or \"sandbox\". Default: $g2"
+  echo "  -debug      Debug. Leave G2 window visible."
+  exit
+}
+
+log() {
+  if [ -n "$debug" ]; then
+    echo $@ 1>&2
+  fi
+}
+
+module="(if the top-level-module of module-information exists then the top-level-module of module-information else the symbol NONE)"
+workspace="the symbol NONE"
+g2opts="-nowindow"
+shutdown="true"
+debug=""
+
+while test -n "$1"; do
+  case "$1" in
+    -m) shift; module="the symbol $1" ;;
+    -ws) shift ; workspace="the symbol $1" ;;
+    -g2) shift ; if [ "$1" = "sandbox" ]; then g2="$SRCBOX/g2/opt/g2"; else g2="$1"; fi ;;
+    -debug) debug=1; g2opts=""; shutdown="false" ;;
+    -help) usage ;;
+    -*) echo "Invalid option $1"; usage ;;
+    *) break ;;
+  esac
+  shift
+done
+
+if [ -z "$1" ]; then
+  usage
+fi
+
+kb="$1"
+case "$kb" in
+  /*) ;;
+  *) kb="`pwd`/$kb"
+esac
+
+if [ ! -f "$kb" ]; then
+  echo kbtext: file $kb not found! >&2
+  exit
+fi
+
+if [ ! -f "$kbtext" ]; then
+  echo Helper KB $kbtext not found! >&2
+fi
+
+initFile=/tmp/kbtext$$.ini
+outFile=/tmp/kbtext$$.tmp
+
+trap 'rm -f $initFile $outFile; exit' 0 1 15
+
+cat <<EOF >$initFile
+load KB "$kb", not starting afterwards
+merge KB "$kbtext"
+start G2
+EOF
+
+# The string is evaluated as G2 procedure return values.
+initString="\"$outFile\", $module, $workspace, $shutdown"
+
+log Starting $g2 -module-search-path "$utils" -init "$initFile" -init-string "$initString" -no-log $g2opts
+
+# FIXME: If KB is in /tmp, need to add back its original directory to the module search path.
+
+$g2 -module-search-path "$utils" -init "$initFile" -init-string "$initString" -no-log $g2opts >/dev/null
+
+cat $outFile
+rm -f $initFile $outFile
