@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://www.escor.com/webservices" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" targetNamespace="http://www.escor.com/webservices" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://www.escor.com/webservices">
+      <s:element name="StartG2">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strUserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strPassword" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="portNo" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="StartG2Response">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="StartG2Result" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="StartG2Admin">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strUserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strPassword" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="portNo" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="companyId" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="StartG2AdminResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="StartG2AdminResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="StopG2">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strUserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strPassword" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="portNo" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="StopG2Response">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="StopG2Result" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="IsG2Running">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strUserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strPassword" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="portNo" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="IsG2RunningResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="IsG2RunningResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetG2CompanyId">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strUserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strPassword" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="portNo" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetG2CompanyIdResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetG2CompanyIdResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="StopAll">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strUserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strPassword" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="StopAllResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="StopAllResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="StartG2SoapIn">
+    <wsdl:part name="parameters" element="tns:StartG2" />
+  </wsdl:message>
+  <wsdl:message name="StartG2SoapOut">
+    <wsdl:part name="parameters" element="tns:StartG2Response" />
+  </wsdl:message>
+  <wsdl:message name="StartG2AdminSoapIn">
+    <wsdl:part name="parameters" element="tns:StartG2Admin" />
+  </wsdl:message>
+  <wsdl:message name="StartG2AdminSoapOut">
+    <wsdl:part name="parameters" element="tns:StartG2AdminResponse" />
+  </wsdl:message>
+  <wsdl:message name="StopG2SoapIn">
+    <wsdl:part name="parameters" element="tns:StopG2" />
+  </wsdl:message>
+  <wsdl:message name="StopG2SoapOut">
+    <wsdl:part name="parameters" element="tns:StopG2Response" />
+  </wsdl:message>
+  <wsdl:message name="IsG2RunningSoapIn">
+    <wsdl:part name="parameters" element="tns:IsG2Running" />
+  </wsdl:message>
+  <wsdl:message name="IsG2RunningSoapOut">
+    <wsdl:part name="parameters" element="tns:IsG2RunningResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetG2CompanyIdSoapIn">
+    <wsdl:part name="parameters" element="tns:GetG2CompanyId" />
+  </wsdl:message>
+  <wsdl:message name="GetG2CompanyIdSoapOut">
+    <wsdl:part name="parameters" element="tns:GetG2CompanyIdResponse" />
+  </wsdl:message>
+  <wsdl:message name="StopAllSoapIn">
+    <wsdl:part name="parameters" element="tns:StopAll" />
+  </wsdl:message>
+  <wsdl:message name="StopAllSoapOut">
+    <wsdl:part name="parameters" element="tns:StopAllResponse" />
+  </wsdl:message>
+  <wsdl:portType name="G2_x0020_ManagerSoap">
+    <wsdl:operation name="StartG2">
+      <documentation xmlns="http://schemas.xmlsoap.org/wsdl/">Starts G2 on specified port using ok file, log file, and data directory of supplied user.</documentation>
+      <wsdl:input message="tns:StartG2SoapIn" />
+      <wsdl:output message="tns:StartG2SoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="StartG2">
+      <documentation xmlns="http://schemas.xmlsoap.org/wsdl/">Starts G2 on specified port using ok file, log file, and data directory of supplied user.</documentation>
+      <wsdl:input name="StartG2Admin" message="tns:StartG2AdminSoapIn" />
+      <wsdl:output name="StartG2Admin" message="tns:StartG2AdminSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="StopG2">
+      <documentation xmlns="http://schemas.xmlsoap.org/wsdl/">Stops G2 process running on specified port.</documentation>
+      <wsdl:input message="tns:StopG2SoapIn" />
+      <wsdl:output message="tns:StopG2SoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="IsG2Running">
+      <documentation xmlns="http://schemas.xmlsoap.org/wsdl/">Determines whether G2 process is running on specified port.</documentation>
+      <wsdl:input message="tns:IsG2RunningSoapIn" />
+      <wsdl:output message="tns:IsG2RunningSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetG2CompanyId">
+      <documentation xmlns="http://schemas.xmlsoap.org/wsdl/">Returns attributes of G2 process running on specified port.</documentation>
+      <wsdl:input message="tns:GetG2CompanyIdSoapIn" />
+      <wsdl:output message="tns:GetG2CompanyIdSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="StopAll">
+      <documentation xmlns="http://schemas.xmlsoap.org/wsdl/">Stops all running G2 processes.</documentation>
+      <wsdl:input message="tns:StopAllSoapIn" />
+      <wsdl:output message="tns:StopAllSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="G2_x0020_ManagerSoap" type="tns:G2_x0020_ManagerSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document" />
+    <wsdl:operation name="StartG2">
+      <soap:operation soapAction="http://www.escor.com/webservices/StartG2" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="StartG2">
+      <soap:operation soapAction="http://www.escor.com/webservices/StartG2Admin" style="document" />
+      <wsdl:input name="StartG2Admin">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="StartG2Admin">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="StopG2">
+      <soap:operation soapAction="http://www.escor.com/webservices/StopG2" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="IsG2Running">
+      <soap:operation soapAction="http://www.escor.com/webservices/IsG2Running" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetG2CompanyId">
+      <soap:operation soapAction="http://www.escor.com/webservices/GetG2CompanyId" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="StopAll">
+      <soap:operation soapAction="http://www.escor.com/webservices/StopAll" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="G2_x0020_Manager">
+    <documentation xmlns="http://schemas.xmlsoap.org/wsdl/">G2 Manager Web Service</documentation>
+    <wsdl:port name="G2_x0020_ManagerSoap" binding="tns:G2_x0020_ManagerSoap">
+      <soap:address location="http://localhost/G2MgrWebSvc/G2Mgr.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
