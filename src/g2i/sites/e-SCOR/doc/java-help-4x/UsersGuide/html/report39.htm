@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="02/06/02 18:48:16">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Logging Transactions that Occur Between Roles</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="report38.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="using-da.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+      <div align="center"><b>e-SCOR User's Guide</b></div>
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/e-SCOR/OnlineHelpFiles/UsersGuide/html/reports.htm">  
+        Using Reports  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Logging Transactions that Occur Between Roles
+</h2>
+<p>You can use the logging facility to record and analyze transactions that occur between roles. These transactions include:<a name="1140682"></a></p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Buyers sending customer orders to suppliers.<a name="1140683"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Suppliers sending product shipments to buyers.<a name="1140684"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Suppliers sending invoices to buyers.<a name="1140685"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Buyers sending payments to suppliers.<a name="1140686"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Buyers sending purchase requests to suppliers.<a name="1140687"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Suppliers sending purchase responses to buyers.<a name="1140688"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Buyers sending purchase awards to suppliers.<a name="1140689"></a></td>  </tr></table><p>You can enable logging for:<a name="1140690"></a></p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">CSV (comma separated values) files.<a name="1140691"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Databases.<a name="1140692"></a></td>  </tr></table><p>Each transaction is on its own line or in its own record, where each line or record includes:<a name="1140693"></a></p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">The time at which the transaction occurred, in seconds, measured from the beginning of the simulation. <a name="1140694"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">The model version, simulation version, and simulation run.<a name="1140695"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">The object that the role sent.<a name="1140696"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">The parameter values for the object at the time of the transaction. <a name="1140697"></a></td>  </tr></table><p>e-SCOR uses logging to record these transactions, because the objects the model creates and sends between roles are transient; the model deletes them as part of processing and when you reset the model. <a name="1140698"></a></p>
+<p>Logging is useful for analyzing the model, based on transactions that occur in the model. Whereas output reports generate data at particular times during the simulation, logging generate data when a model transaction occurs. For example, a report that updates once a week might show no change in the inventory level, whereas a log file shows orders going out and product shipments coming in at particular times during the simulation.<a name="1140699"></a></p>
+<p>You configure logging to occur for individual roles. The log file or database log includes transactions that occur between the role and its upstream and downstream roles.<a name="1140700"></a></p>
+<p>Each time you enable logging, e-SCOR appends the new log data to the existing file or database.<a name="1140701"></a></p>
+<h4 >	 To log transactions that occur between roles:<a name="1140702"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>1	</b></td>    <td valign="top" width="580">Display the properties dialog for each role for which you want to log transactions and click the Logging tab.<a name="1140703"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>2	</b></td>    <td valign="top" width="580">Enable the Enable CSV Logging File or Enable Database Logging option, depending on how you want to log the data.<a name="1140707"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>3	</b></td>    <td valign="top" width="580">Do one of the following, depending on the type of logging you enabled:<a name="1140708"></a></td>  </tr></table><blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td valign="top" width="20"><img src="images/arrow1.gif"></td>
+    <td valign="top" width="560">Configure the Excel CSV File Name parameter to be any file name with a <br><code>.csv</code> extension.<a name="1140778"></a></td>
+  </tr>
+</table></blockquote><blockquote><blockquote>  <a name="1140780">The default file name is <code>e-SCOR-log-file.csv</code>, located in the <code>kbs</code> directory of your e-SCOR product directory.</a></blockquote></blockquote>
+<blockquote><blockquote><blockquote>  <a name="1140781">or</a></blockquote></blockquote></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td valign="top" width="20"><img src="images/arrow1.gif"></td>
+    <td valign="top" width="560">Configure the Database Interface Name and Database Table Name parameters to be the name of an existing database interface object and the database table in which to write the data.<a name="1140784"></a></td>
+  </tr>
+</table></blockquote><blockquote><blockquote>  <a name="1140785">For information about configuring the database interface object and database table, see <a href="using-d2.htm#1004439">Configuring e-SCOR for Database Access</a>.</a></blockquote></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>4	</b></td>    <td valign="top" width="580">Enable the desired Output Filtering options, as follows:<a name="1140789"></a></td>  </tr></table><p >
+  <a name="1140815"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="1140792"><div >Logging Specification</a></div></th>
+    <th><a name="1140794"><div >Description</a></div></th>
+  </tr>
+  <tr>
+    <td><p>Log Financial Transactions<a name="1140797"></a></p>
+</td>
+    <td><p>Logs invoices that suppliers send to buyers and payments that buyers send to suppliers.<a name="1140799"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Log Product Transactions<a name="1140802"></a></p>
+</td>
+    <td><p>Logs product shipments that suppliers send to buyers.<a name="1140804"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Log Purchase Transactions<a name="1140807"></a></p>
+</td>
+    <td><p>Logs purchase requests that buyers send to suppliers, purchase responses that suppliers send to buyers, and purchase awards that buyers send to suppliers.<a name="1140809"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Log Order Transactions<a name="1140812"></a></p>
+</td>
+    <td><p>Logs orders that buyers send to suppliers.<a name="1140814"></a></p>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>5	</b></td>    <td valign="top" width="580">Run the simulation.<a name="1140816"></a></td>  </tr></table><p>This figure shows how to configure the role dialog for logging all transactions to a CSV file:<a name="1140817"></a></p>
+<p >
+  <a name="1140827"> </a>
+<p><div align="left"><img src="images/role-l54.gif" border="0" hspace="0" vspace="0">
+</div><a name="1140826"></a></p>
+
+
+
+</p>
+<p>Each role that has logging enabled generates a text file that looks similar to the following, when viewed in Excel. The left-hand column shows each type of object for which e-SCOR logs transactions. The example also shows the timestamp at which the transaction occurred and the order type. The log file contains additional data for each parameter the object defines. You can sort the columns and perform computations on the data by viewing the log file into Excel.<a name="1140828"></a></p>
+<p >
+  <a name="1140835"> </a>
+<p><div align="left"><img src="images/report57.gif" border="0" hspace="0" vspace="0">
+</div><a name="1140834"></a></p>
+
+
+
+</p>
+<p><a name="30034"></a></p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="report38.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="using-da.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
