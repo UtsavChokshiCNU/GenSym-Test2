@@ -1,0 +1,25 @@
+#!/bin/sh
+#   This script takes one argument, which is a path to delta.lisp.  It just
+# echoes its results to standard output, which will be the build ID, such as
+# 51r5-CC02.  Because the build ID gets spliced into filenames and so forth, the
+# error messages don't contain spaces.  Hopefully anyone looking at the results
+# of such filenames would immediately discover the problem when their filename
+# had the error message instead.
+#   The sed line below was lifted directly from supervisor and works.  If
+# you have to figure out exactly what it does, please document it here.
+
+if [ $# -lt 1 ]
+then
+  echo "get-build-id-ERROR-missing-argument"
+  exit 1
+fi
+
+delta=$1/delta.lisp
+
+if [ ! -f $delta ]
+then
+  echo "get-build-id-ERROR-missing-delta.lisp"
+  exit 1
+fi
+
+echo `sed -n 's/;.*G2.*TW.*GSI.*Version.*V\([0-9]*\.[0-9]*.[0-9]*\).*/\1/p' $delta | sed 's/\.//'`-`sed -n 's/^(def.*build-identification-string.*\([A-L][A-L][0-9][0-9]\).*)/\1/p' $delta`
