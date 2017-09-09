@@ -1,0 +1,35 @@
+<?xml version="1.0" standalone="yes" ?>
+<xs:schema id="DSLCompany" targetNamespace="http://www.tempuri.org/DSLCompany.xsd" xmlns:mstns="http://www.tempuri.org/DSLCompany.xsd"
+	xmlns="http://www.tempuri.org/DSLCompany.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" attributeFormDefault="qualified" elementFormDefault="qualified">
+	<xs:element name="DSLCompany" msdata:IsDataSet="true">
+		<xs:complexType>
+			<xs:choice maxOccurs="unbounded">
+				<xs:element name="TCompanies">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="coId" msdata:ReadOnly="true" msdata:AutoIncrement="true" type="xs:int" />
+							<xs:element name="coName" type="xs:string" />
+							<xs:element name="coStreet" type="xs:string" minOccurs="0" />
+							<xs:element name="coStreet2" type="xs:string" minOccurs="0" />
+							<xs:element name="coCity" type="xs:string" minOccurs="0" />
+							<xs:element name="coState" type="xs:string" minOccurs="0" />
+							<xs:element name="coZip" type="xs:string" minOccurs="0" />
+							<xs:element name="numLicenses" type="xs:short" />
+							<xs:element name="numConcurrentSessions" type="xs:short" />
+							<xs:element name="numCollaborators" type="xs:short" />
+							<xs:element name="inactive" type="xs:boolean" />
+							<xs:element name="rootDirName" type="xs:string" />
+							<xs:element name="logFileName" type="xs:string" />
+							<xs:element name="okFileName" type="xs:string" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:choice>
+		</xs:complexType>
+		<xs:unique name="Constraint1" msdata:PrimaryKey="true">
+			<xs:selector xpath=".//mstns:TCompanies" />
+			<xs:field xpath="mstns:coId" />
+		</xs:unique>
+	</xs:element>
+</xs:schema>
