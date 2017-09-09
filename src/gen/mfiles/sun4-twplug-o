@@ -1,0 +1,22 @@
+SHELL = /bin/sh
+PRODUCT = twplug
+ODIR = o
+PLATFORM = sun4
+AUTODIR = $(DSTBOX)/auto
+CDIR = $(SRCBOX)/$(PRODUCT)/c
+HELPERDIR = /home/development/helpers
+MFDIR = $(DSTBOX)/$(PRODUCT)/$(ODIR)
+NPDIR = $(SRCBOX)/specific/$(PLATFORM)
+SCRIPTSDIR = /home/development/scripts
+CC_FLAGS = 
+
+all : _mfenter  _mfexit
+
+_mfenter : 
+	@- $(SCRIPTSDIR)/errsweep -init
+
+_mfexit : 
+	@- $(SCRIPTSDIR)/errsweep -finish
+
+clean : 
+	- rm -f *.[oa]
