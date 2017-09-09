@@ -1,0 +1,200 @@
+SHELL = /bin/sh
+PRODUCT = libpng
+PLATFORM = linux
+CDIR = $(SRCBOX)/$(PRODUCT)/c
+C2DIR = $(SRCBOX)/$(PRODUCT)/zlib
+MFDIR = $(DSTBOX)/$(PRODUCT)/$(ODIR)
+SCRIPTSDIR = $(SRCBOX)/scripts
+CC_FLAGS = -g -Wimplicit -I$(SRCBOX)/common/c/include -fPIC
+PNGHFILES = $(CDIR)/pngconf.h $(CDIR)/png.h 
+ZLIB_HFILES = $(C2DIR)/crc32.h $(C2DIR)/inffast.h $(C2DIR)/inflate.h \
+	$(C2DIR)/inffixed.h $(C2DIR)/zconf.h $(C2DIR)/zutil.h \
+	$(C2DIR)/deflate.h $(C2DIR)/inftrees.h $(C2DIR)/trees.h $(C2DIR)/zlib.h
+
+all : _mfenter libpng.a _mfexit
+
+_mfenter :
+	@- $(SCRIPTSDIR)/errsweep -init
+
+_mfexit :
+	@- $(SCRIPTSDIR)/errsweep -finish
+
+libpng.a : adler32.o gzio.o pngmem.o pngrio.o pngset.o pngwrite.o uncompr.o zutil.o \
+	compress.o deflate.o infback.o inftrees.o png.o pngerror.o pngpread.o pngrtran.o \
+	pngtrans.o pngwtran.o trees.o crc32.o inffast.o inflate.o pngget.o pngread.o \
+	pngrutil.o pngwio.o pngwutil.o 
+	
+	@- if [ -f libpng.a ] ; then rm -f libpng.a ; fi
+	@- $(SCRIPTSDIR)/errsweep libpng.a
+	
+	ar qc libpng.a  adler32.o gzio.o pngmem.o pngrio.o pngset.o pngwrite.o uncompr.o zutil.o \
+	compress.o deflate.o infback.o inftrees.o png.o pngerror.o pngpread.o pngrtran.o \
+	pngtrans.o pngwtran.o trees.o crc32.o inffast.o inflate.o pngget.o pngread.o \
+	pngrutil.o pngwio.o pngwutil.o
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+adler32.o : $(C2DIR)/adler32.c $(ZLIB_HFILES)
+	@- if [ -f adler32.o ] ; then rm -f adler32.o ; fi
+	@- $(SCRIPTSDIR)/errsweep adler32.o
+	$(CC) -c $(CC_FLAGS)  $(C2DIR)/adler32.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+gzio.o : $(C2DIR)/gzio.c $(ZLIB_HFILES)
+	@- if [ -f gzio.o ] ; then rm -f gzio.o ; fi
+	@- $(SCRIPTSDIR)/errsweep gzio.o
+	$(CC) -c $(CC_FLAGS)  $(C2DIR)/gzio.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+pngmem.o : $(CDIR)/pngmem.c $(PNGHFILES)
+	@- if [ -f pngmem.o ] ; then rm -f pngmem.o ; fi
+	@- $(SCRIPTSDIR)/errsweep pngmem.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/pngmem.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+pngrio.o : $(CDIR)/pngrio.c $(PNGHFILES)
+	@- if [ -f pngrio.o ] ; then rm -f pngrio.o ; fi
+	@- $(SCRIPTSDIR)/errsweep pngrio.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/pngrio.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+pngset.o : $(CDIR)/pngset.c $(PNGHFILES)
+	@- if [ -f pngset.o ] ; then rm -f pngset.o ; fi
+	@- $(SCRIPTSDIR)/errsweep pngset.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/pngset.c
+	@- if [ -f current.log ]; then rm -f current.log; fi 
+
+pngwrite.o : $(CDIR)/pngwrite.c $(PNGHFILES)
+	@- if [ -f pngwrite.o ] ; then rm -f pngwrite.o ; fi
+	@- $(SCRIPTSDIR)/errsweep pngwrite.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/pngwrite.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+uncompr.o : $(C2DIR)/uncompr.c $(ZLIB_HFILES)
+	@- if [ -f uncompr.o ] ; then rm -f uncompr.o ; fi
+	@- $(SCRIPTSDIR)/errsweep uncompr.o
+	$(CC) -c $(CC_FLAGS)  $(C2DIR)/uncompr.c
+	@- if [ -f current.log ]; then rm -f current.log; fi 
+
+zutil.o : $(C2DIR)/zutil.c $(ZLIB_HFILES)
+	@- if [ -f zutil.o ] ; then rm -f zutil.o ; fi
+	@- $(SCRIPTSDIR)/errsweep zutil.o
+	$(CC) -c $(CC_FLAGS)  $(C2DIR)/zutil.c
+	@- if [ -f current.log ]; then rm -f current.log; fi     
+
+compress.o : $(C2DIR)/compress.c $(ZLIB_HFILES)
+	@- if [ -f compress.o ] ; then rm -f compress.o ; fi
+	@- $(SCRIPTSDIR)/errsweep compress.o
+	$(CC) -c $(CC_FLAGS)  $(C2DIR)/compress.c
+	@- if [ -f current.log ]; then rm -f current.log; fi 
+
+deflate.o : $(C2DIR)/deflate.c $(ZLIB_HFILES)
+	@- if [ -f deflate.o ] ; then rm -f deflate.o ; fi
+	@- $(SCRIPTSDIR)/errsweep deflate.o
+	$(CC) -c $(CC_FLAGS)  $(C2DIR)/deflate.c
+	@- if [ -f current.log ]; then rm -f current.log; fi 
+
+infback.o : $(C2DIR)/infback.c $(ZLIB_HFILES)
+	@- if [ -f infback.o ] ; then rm -f infback.o ; fi
+	@- $(SCRIPTSDIR)/errsweep infback.o
+	$(CC) -c $(CC_FLAGS)  $(C2DIR)/infback.c
+	@- if [ -f current.log ]; then rm -f current.log; fi 
+
+inftrees.o : $(C2DIR)/inftrees.c $(ZLIB_HFILES)
+	@- if [ -f inftrees.o ] ; then rm -f inftrees.o ; fi
+	@- $(SCRIPTSDIR)/errsweep inftrees.o
+	$(CC) -c $(CC_FLAGS)  $(C2DIR)/inftrees.c
+	@- if [ -f current.log ]; then rm -f current.log; fi 
+
+png.o : $(CDIR)/png.c $(PNGHFILES)
+	@- if [ -f png.o ] ; then rm -f png.o ; fi
+	@- $(SCRIPTSDIR)/errsweep png.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/png.c
+	@- if [ -f current.log ]; then rm -f current.log; fi 
+
+pngerror.o : $(CDIR)/pngerror.c $(PNGHFILES)
+	@- if [ -f pngerror.o ] ; then rm -f pngerror.o ; fi
+	@- $(SCRIPTSDIR)/errsweep pngerror.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/pngerror.c
+	@- if [ -f current.log ]; then rm -f current.log; fi 
+
+pngpread.o : $(CDIR)/pngpread.c $(PNGHFILES)
+	@- if [ -f pngpread.o ] ; then rm -f pngpread.o ; fi
+	@- $(SCRIPTSDIR)/errsweep pngpread.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/pngpread.c
+	@- if [ -f current.log ]; then rm -f current.log; fi 
+
+pngrtran.o : $(CDIR)/pngrtran.c $(PNGHFILES)
+	@- if [ -f pngrtran.o ] ; then rm -f pngrtran.o ; fi
+	@- $(SCRIPTSDIR)/errsweep pngrtran.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/pngrtran.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+pngtrans.o : $(CDIR)/pngtrans.c $(PNGHFILES)
+	@- if [ -f pngtrans.o ] ; then rm -f pngtrans.o ; fi
+	@- $(SCRIPTSDIR)/errsweep pngtrans.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/pngtrans.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+pngwtran.o : $(CDIR)/pngwtran.c $(PNGHFILES)
+	@- if [ -f pngwtran.o ] ; then rm -f pngwtran.o ; fi
+	@- $(SCRIPTSDIR)/errsweep pngwtran.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/pngwtran.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+trees.o : $(C2DIR)/trees.c $(ZLIB_HFILES)
+	@- if [ -f trees.o ] ; then rm -f trees.o ; fi
+	@- $(SCRIPTSDIR)/errsweep trees.o
+	$(CC) -c $(CC_FLAGS)  $(C2DIR)/trees.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+crc32.o : $(C2DIR)/crc32.c $(ZLIB_HFILES)
+	@- if [ -f crc32.o ] ; then rm -f crc32.o ; fi
+	@- $(SCRIPTSDIR)/errsweep crc32.o
+	$(CC) -c $(CC_FLAGS)  $(C2DIR)/crc32.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+inffast.o : $(C2DIR)/inffast.c $(ZLIB_HFILES)
+	@- if [ -f inffast.o ] ; then rm -f inffast.o ; fi
+	@- $(SCRIPTSDIR)/errsweep inffast.o
+	$(CC) -c $(CC_FLAGS)  $(C2DIR)/inffast.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+inflate.o : $(C2DIR)/inflate.c $(ZLIB_HFILES)
+	@- if [ -f inflate.o ] ; then rm -f inflate.o ; fi
+	@- $(SCRIPTSDIR)/errsweep inflate.o
+	$(CC) -c $(CC_FLAGS)  $(C2DIR)/inflate.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+pngget.o : $(CDIR)/pngget.c $(PNGHFILES)
+	@- if [ -f pngget.o ] ; then rm -f pngget.o ; fi
+	@- $(SCRIPTSDIR)/errsweep pngget.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/pngget.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+pngread.o : $(CDIR)/pngread.c $(PNGHFILES)
+	@- if [ -f pngread.o ] ; then rm -f pngread.o ; fi
+	@- $(SCRIPTSDIR)/errsweep pngread.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/pngread.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+pngrutil.o : $(CDIR)/pngrutil.c $(PNGHFILES)
+	@- if [ -f pngrutil.o ] ; then rm -f pngrutil.o ; fi
+	@- $(SCRIPTSDIR)/errsweep pngrutil.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/pngrutil.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+pngwio.o : $(CDIR)/pngwio.c $(PNGHFILES)
+	@- if [ -f pngwio.o ] ; then rm -f pngwio.o ; fi
+	@- $(SCRIPTSDIR)/errsweep pngwio.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/pngwio.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+pngwutil.o : $(CDIR)/pngwutil.c $(PNGHFILES)
+	@- if [ -f pngwutil.o ] ; then rm -f pngwutil.o ; fi
+	@- $(SCRIPTSDIR)/errsweep pngwutil.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/pngwutil.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+clean :
+	- rm -f *.[oa]
+
