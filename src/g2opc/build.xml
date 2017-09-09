@@ -1,0 +1,28 @@
+<project name="g2opc" default="build_32_std">
+    <property name="module.name" value="g2opc"/>
+    <property name="${module.name}.basedir" value=".."/> 
+    <property file="${g2opc.basedir}/ant/build.properties"/>
+
+    <target name="clean">
+        <delete dir="${g2opc.basedir}/../dst/${module.name}"/>
+    </target>
+
+    <target name="build_32_std" depends="clean">
+        <ant dir="${g2opc.basedir}/ant" target="vstudio" inheritAll="false">
+            <property name="type" value="Release|Win32"/>
+            <property name="module" value="g2opc"/>
+            <property name="solution" value="g2opc"/>
+        </ant>
+    </target>
+
+    <target name="build_64_ent" depends="build_32_std, build_64_ent_wout_32" />
+
+    <target name="build_64_ent_wout_32">
+        <ant dir="${g2opc.basedir}/ant" target="vstudio" inheritAll="false">
+            <property name="type" value="Release - Enterprise|x64"/>
+            <property name="module" value="g2opc"/>
+            <property name="solution" value="g2opc"/>
+        </ant>
+    </target>
+
+</project>
