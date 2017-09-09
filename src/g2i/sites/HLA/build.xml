@@ -1,0 +1,48 @@
+<project name="HLA">
+	<property name="module.name" value="hla"/>
+	<property name="${module.name}.basedir" value="../../.."/> 
+	<property file="${hla.basedir}/ant/build.properties"/>
+
+	<!-- Build section -->
+	<target name="clean-build">
+		<delete dir="${hla.basedir}/../dst/${module.name}"/>    
+	</target>
+
+	<target name="clean-results">
+		<delete dir="${result.dir}/${module.name}"/>    
+	</target>
+
+	<target name="build_32_std" depends="clean-build">
+		<antcall target="g2_hla" />
+		<antcall target="g2_demo_fed" />
+		<antcall target="g2_helloworld_fed" />
+	</target>
+
+	<target name="build_64_ent" depends="build_32_std, build_64_ent_wout_32" />
+	<target name="build_64_ent_wout_32" />
+
+	<target name="g2_hla">
+		<echo>Building G2-HLA Bridge (32-bit)</echo>
+		<ant dir="${hla.basedir}/ant" target="vstudio" inheritAll="false">
+			<property name="type" value="Release|Win32"/>
+			<property name="module" value="hla"/>
+			<property name="solution" value="G2_hla"/>
+		</ant>
+	</target>
+	<target name="g2_demo_fed">
+		<echo>Building G2Demo Federate (32-bit)</echo>
+		<ant dir="${hla.basedir}/ant" target="vstudio" inheritAll="false">
+			<property name="type" value="Release|Win32"/>
+			<property name="module" value="hla"/>
+			<property name="solution" value="G2Demo"/>
+		</ant>
+	</target>
+	<target name="g2_helloworld_fed">
+		<echo>Building G2HelloWorld Federate (32-bit)</echo>
+		<ant dir="${hla.basedir}/ant" target="vstudio" inheritAll="false">
+			<property name="type" value="Release|Win32"/>
+			<property name="module" value="hla"/>
+			<property name="solution" value="G2HelloWorld"/>
+		</ant>
+	</target>
+</project>
