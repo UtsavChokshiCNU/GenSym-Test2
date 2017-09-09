@@ -1,0 +1,245 @@
+#!/bin/csh -f
+
+# Write-manifest
+
+# Jim Allard
+
+# The write-manifest C shell script is a tool for describing the contents of
+# multi-product distributions.  It uses the same files as write-tape uses to
+# produce its output.
+
+set fail=0
+goto main
+
+usage:
+echo "Usage: write-manifest PRODUCT RELEASE PART-NUMBER"
+exit 1
+
+main:
+
+set data_home = "/gensym/tools/datafiles"
+
+if ( $#argv == 0 ) then
+  echo "Available Products:"
+  foreach line_raw ( " `cat write-tape.dat` " )
+    set line = ( $line_raw )
+    if ($#line >= 2) then
+      if ("$line[1]" != "#") then
+        # Fix this awk line later.  -jra 12/2/92
+        # echo "$line[2] $line[1]" | awk '{printf "%-20 %-20s\n", $1, $2}'
+        echo "  $line[2]		$line[1]"
+      endif
+    endif
+  end
+  echo ""
+  echo "Available Part Numbers:"
+  foreach line_raw ( " `cat part_number.dat` " )
+    set line = ( $line_raw )
+    if ($#line >= 6) then
+      if ("$line[1]" != "#") then
+        # Fix this awk line later.  -jra 12/2/92
+        # echo "$line[1] $line[2] $line[6]" | awk '{printf "%-5 %-20s %-20s\n", $1, $2}'
+        echo "  $line[1]		$line[2] $line[6]"
+      endif
+    endif
+  end
+  goto usage
+endif
+
+if ( $#argv != 3 ) then
+  set fail=1
+  goto usage
+endif
+
+set product = $1
+set release = $2
+set part_number = $3
+
+set product_info = `grep "^$product-$release " write-tape.dat`
+set part_info = `grep "^$part_number " part_number.dat`
+
+if ( $#product_info < 2 ) then
+   echo "ERROR: Unknown product release, i.e. $product $release"
+   set fail = 1
+   goto usage
+endif
+
+if ( $#part_info < 3 ) then
+   echo "ERROR: Unknown part number, i.e. $part_number"
+   set fail=1
+   goto usage
+endif
+
+shift product_info
+shift part_info
+set product_name = $product_info[1]
+set part_name = $part_info[1]
+echo "Parts Manifest for:  $product_name"
+shift product_info
+shift part_info
+
+# Print out a descriptive header.
+
+echo ""
+
+echo "This manifest lists the products, version numbers, and machine types for the"
+echo "tar-files contained within a multi-product distribution."
+echo ""
+
+echo "To install a particular product from this tape, you should use the instructions"
+echo "for Telewindows from the Installation Guide for G2 and Telewindows for Version"
+echo "3.0 Rev. 1 and later, with some modifications."
+echo ""
+
+echo "For experts, this tape is a multi-archive tar tape.  You will be using the mt"
+echo "program with the fsf command to skip over archives to position the tape at the"
+echo "product you want.  You then use tar to extract the product you want from the"
+echo "tape.  The table below lists the product archives on the tape in order."
+echo ""
+
+echo "You can follow the instructions below if the description above contained too"
+echo "much jargon to be understood.  Use the table below to determine the number for"
+echo "the product you want from this tape."
+echo ""
+
+echo "Using a directory appropriate to the product you are installing, follow the"
+echo "instructions for Telewindows up to the point where it tells you to run the mt"
+echo "command (or tctl on the RS6000), giving it fsf as the last argument.  Run this"
+echo "command, but after the fsf, enter a space and the number you found in the table"
+echo "below.  (Note that if the number you found below is zero, then you can skip"
+echo "running the mt fsf command altogether.)  After this command has completed, then"
+echo "continue to follow the Telewindows directions."
+echo ""
+
+echo "Some machine names below may be different from what you might expect."
+echo "  sun4       = All Sun4 and Sparc machines"
+echo "  mips       = All Decstation machines"
+echo "  hp9000s300 = All HP9000/300 and HP9000/400 machines"
+echo "  hp9000s800 = All HP9000/700 and HP9000/800 machines"
+echo ""
+
+echo "Num.  Product                             Machine"
+echo "----  ----------------------------------- -------"
+
+# Iterate over the product info, printing out the human readable format.
+
+# Defaults for optional and listed arguments
+
+set products = ""
+set release_ids = ""
+set platforms = ""
+
+while ($#product_info > 0)
+  switch ($product_info[1])
+      case "-p" : 
+          set products = ($products "$product_info[2]")
+          shift product_info
+          breaksw
+      case "-r" :
+          set release_ids = ($release_ids "$product_info[2]")
+          shift product_info
+          breaksw
+      case "-c" :
+          set platforms = ($platforms "$product_info[2]")
+          shift product_info
+          breaksw
+      default :
+	  echo ""
+          echo "Invalid switch: $1"
+	  echo ""
+          goto usage
+  endsw
+  shift product_info
+end  # while ($#product_info > 0)
+
+set product_count = 0
+
+while ($#products > 0)
+  set product = $products[1]
+  shift products
+  set release_id = $release_ids[1]
+  shift release_ids
+  # If only one platform is given it is used for all products, else it is
+  # shifted with the other arguments.
+  if ($#platforms > 0) then
+    set platform = $platforms[1]
+    shift platforms
+  else
+    set platform = generic
+  endif
+
+  #echo "LOG: Validating Product."
+  set product_info=`grep  "product $product " $data_home/products.dat`
+  if( $#product_info < 4 ) then
+    echo "Unknown kind of product ($product), must be one of:"
+    sed -e 's/product \([^ ]*\).*$/   \1/' $data_home/products.dat
+    goto usage
+  else
+    set indep_info=$product_info[3]
+    set shipping_info=$product_info[4]
+    switch ( $shipping_info )
+    case "shipping" :
+       breaksw
+    case "not-shipping" :
+       echo "Warning $product, is not a shipping product."
+       breaksw
+    default :
+       echo "ERROR: malformed product information entry, shipping? was $shipping_info"
+       breaksw
+    endsw
+    switch ($indep_info)
+    case "indep" :
+      set indep=1
+      set dep_kind = 'indep'
+      breaksw
+    case "dep" :
+      set indep=0
+      set dep_kind = 'dep'
+      breaksw
+    default :
+      echo "ERROR: malformed product information entry, indep? was $indep_info"
+      goto usage
+      breaksw
+    endsw
+  endif
+
+  set more_info = `grep "^$product-$release_id " $data_home/write-tape.dat`
+
+  if ($#more_info  < 2) then
+    echo "ERROR: Unknown product release, i.e. $product $release"
+    set pretty_name = "($product-$release)"
+  else
+    set pretty_name = $more_info[2]
+  endif
+
+  #echo "LOG: Validating Platform."
+
+  if ($indep == 0) then
+    set platform_name = `grep "^$platform" $data_home/platforms.dat`
+    if ("$platform_name" != "$platform") then
+      echo "Unknown kind of platform ($platform), must be one of:"
+      cat $data_home/platforms.dat
+      goto usage
+    endif
+  endif
+
+  # Summarize this product.
+
+  if ($indep == 1) then
+    echo "$product_count $pretty_name" | awk '{printf "%3d.  %s\n", $1, $2}'
+  else
+    echo "$product_count $pretty_name $platform" | \
+      awk '{printf "%3d.  %-35s %s\n", $1, $2, $3}'
+  endif
+
+  @ product_count = $product_count + 1
+
+end
+
+exit:
+
+if ( $fail ) then
+  echo "ERROR: write-manifest failed."
+endif
+
+exit $fail
