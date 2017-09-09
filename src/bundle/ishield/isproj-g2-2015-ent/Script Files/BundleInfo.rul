@@ -1,0 +1,44 @@
+
+function init_bundle_installer_version()
+begin
+  BUNDLE_INSTALLER_VERSION = "1.2 Rev. 0";
+  BUNDLE_FAMILY_ID = 220;
+  BUNDLE_SYSTEM_ID = 8;
+  BUNDLE_OBFUSCATION_SEED_STRING = PRODUCT_GUID;
+end;
+
+function SetBundleDirAndVersion(BundleID)
+begin
+  switch(BundleID)
+   case 1:
+    if (!MAINTENANCE) then TARGETDIR = PROGRAMFILES^"Gensym"^"g2-2015e"; endif;
+    BUNDLEVERSION = "2015";
+    BUNDLENAME = "G2 Deployment Enterprise";
+    BUNDLE_TYPICAL_ONLY = FALSE;
+   case 2:
+    if (!MAINTENANCE) then TARGETDIR = PROGRAMFILES^"Gensym"^"g2-2015e"; endif;
+    BUNDLEVERSION = "2015";
+    BUNDLENAME = "G2 Development Enterprise";
+    BUNDLE_TYPICAL_ONLY = FALSE;
+   case 3:
+    if (!MAINTENANCE) then TARGETDIR = PROGRAMFILES^"Gensym"^"g2-2015e"; endif;
+    BUNDLEVERSION = "2015";
+    BUNDLENAME = "Telewindows Client";
+    BUNDLE_TYPICAL_ONLY = FALSE;
+   default: TARGETDIR = PROGRAMFILES^"Gensym"^"g2-2015e";
+    BUNDLEVERSION = "1.0";
+    BUNDLENAME = "default";
+    BUNDLE_TYPICAL_ONLY = FALSE;
+  endswitch;
+end;
+
+
+function generated_check_for_previous_installations ()
+begin
+  disallow_previous_install("69999187-41FE-4390-B149-33765323882F", "*", @PRODUCT_NAME, "7.0b0");
+  disallow_previous_install("243D4BC0-9EE7-11D4-8111-00A02431D004", "*", @PRODUCT_NAME, "5.2r1");
+  disallow_previous_install("243D4BBC-9EE7-11D4-8111-00A02431D004", "*", @PRODUCT_NAME, "5.2r0");
+  disallow_previous_install("243D4BB9-9EE7-11D4-8111-00A02431D004", "*", @PRODUCT_NAME, "5.2b1");
+  disallow_previous_install("243D4BB1-9EE7-11D4-8111-00A02431D004", "*", @PRODUCT_NAME, "5.1r7");
+  disallow_previous_install("243D4BAA-9EE7-11D4-8111-00A02431D004", "*", @PRODUCT_NAME, "5.1r6a");
+end;
