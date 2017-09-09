@@ -1,0 +1,32 @@
+#!/bin/sh
+
+# For Mr. AB Only !!!!
+
+# Make an ID database of files in the current sandbox,
+# and copy that database to /home/ab.
+
+# Go to the current sandbox.
+if [ -z "$LISP_DIR" ]
+then
+  echo "You must first set LISP_DIR (presumably with 'sandbox')"
+  exit 1
+fi
+
+cd $LISP_DIR
+if [ -f files-in-order.dat ]
+then
+  Files=`cat files-in-order.dat`
+else
+  echo "Warning: no files-in-order.dat file found."
+  Files=*.lisp
+fi
+
+/gensym/bin/mkid -v $Files
+
+if [ "`whoami`" = "ab" ]
+then
+  # Move the database file to ab.
+  /bin/rm -f /home/ab/g2/ID.bak
+  /bin/mv /home/ab/g2/ID /home/ab/g2/ID.bak
+  /bin/mv ID /home/ab/g2/ID
+fi
