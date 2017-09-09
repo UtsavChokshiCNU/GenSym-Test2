@@ -1,0 +1,36 @@
+<HTML>
+<HEAD>
+<META NAME="GENERATOR" Content="Microsoft Visual Studio 6.0">
+<TITLE></TITLE>
+</HEAD>
+
+
+<SCRIPT LANGUAGE=vbscript>
+
+Sub window_onLoad()
+
+myNumber = 100
+msg = "Enter the G2 host:port:"
+initialTxt = G2Gateway4.G2Location
+G2Gateway4.G2Location = window.prompt(msg, initialTxt)
+G2Gateway4.RemoteInitializationString = window.navigator.appName
+//  Make connection -- connect happens upon first method call.
+lResult = G2Gateway4.Connect(TRUE)
+end sub
+Sub G2Gateway4_G2Connected()
+msg = "Connected to G2 at " + G2Gateway4.G2Location
+
+msgText.innerText = msg
+call G2Gateway4.PostMessage("Hello from Internet Explorer")
+end sub
+
+</SCRIPT>
+
+<H3>Test Case 22:  Connecting with G2 on Startup (Using G2 ActiveXLink with Microsoft Internet Explorer)</H3>
+
+<BODY>
+<OBJECT id=G2Gateway4 style="LEFT: 0px; TOP: 0px" data=data:application/x-oleobject;base64,0IVMrGyx0RGnGABgCMX5MwADAAArBQAAKwUAAAgAHgAAAGwAbwBjAGEAbABoAG8AcwB0ADoAMQAxADEAMQAAAAgAIAAAAEcAMgBDAE8ATQAtAEkATgBUAEUAUgBGAEEAQwBFAAAACAAAAAAAAwAeAAAACwAAAAsAAAA= 
+	classid=clsid:AC4C85D0-B16C-11D1-A718-006008C5F933></OBJECT>
+<div id="msgText">Wait Connection.... </div>
+</BODY>
+</HTML>
