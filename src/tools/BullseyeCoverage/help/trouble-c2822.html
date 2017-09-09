@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_trouble_build.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+Microsoft C++ error C2822
+</h1>
+<h2>SYMPTOMS</h2>
+<pre>
+error C2822: local unwind is not supported on this platform
+</pre>
+<h2>CAUSE</h2>
+<p>
+On some platforms, Microsoft C++ does not allow
+<code>break</code>, <code>continue</code>, <code>goto</code>, and <code>return</code>
+inside the try-finally statement.
+With BullseyeCoverage, this restriction also applies to the try-expect statement because
+BullseyeCoverage uses the try-finally statement to instrument the try-expect statement.
+<h2>RESOLUTION</h2>
+<p>
+Use one of the following alternatives.
+<ul>
+<li>
+Use C++ exceptions (try-catch) rather than structured exception handling.
+<li>
+Rewrite your code to avoid this compiler limitation.
+For example, change this:
+<pre>
+__try {
+	...
+	return 1;
+	...
+	return 2;
+	...
+	return 3;
+	...
+}
+__except (EXCEPTION_EXECUTE_HANDLER) {
+	return 4;
+}
+</pre>
+<p>
+to this:
+<pre>
+int error = 0;
+__try {
+	...
+	error = 1;
+	__leave;
+	...
+	error = 2;
+	__leave;
+	...
+	error = 3;
+	__leave;
+	...
+}
+__except (EXCEPTION_EXECUTE_HANDLER) {
+	error = 4;
+}
+if (error != 0)
+	return error;
+</pre>
+<li>
+Exclude the code from measurement.
+For example:
+<pre>
+#if _BullseyeCoverage
+	#pragma BullseyeCoverage save off
+#endif
+__try {
+	...
+}
+__except (...) {
+	...
+}
+#if _BullseyeCoverage
+	#pragma BullseyeCoverage restore
+#endif
+</pre>
+</ul>
+
+<h2>MORE INFORMATION</h2>
+<p>
+<a href="http://msdn.microsoft.com/en-us/library/ms254006.aspx">Compiler Error C2822</a>
+
+<p style="font-size:xx-small">
+Last reviewed: 16 Jul 2008
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
