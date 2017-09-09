@@ -1,0 +1,59 @@
+<project name="twng" default="build_32_std">
+	<property name="module.name" value="twng"/>
+	<property name="${module.name}.basedir" value=".."/> 
+	<property file="${twng.basedir}/ant/build.properties"/>
+ 
+  <!-- Build section -->
+	<target name="clean-build">
+		<delete dir="${twng.basedir}/../dst/${module.name}"/>
+	</target>
+
+	<target name="clean-results">
+		<delete dir="${result.dir}/${module.name}"/>
+	</target>
+
+	<target name="build_32_std">
+		<ant dir="${twng.basedir}/ant" target="vstudio" inheritAll="false">
+			<property name="type" value="Release|Win32"/>
+			<property name="module" value="twng"/>
+		</ant>
+	</target>
+	
+	<target name="build_64_ent">
+		<ant dir="${twng.basedir}/ant" target="vstudio" inheritAll="false">
+			<property name="type" value="Release|Win32"/>
+			<property name="module" value="twng"/>
+		</ant>
+	</target>
+
+	<target name="build_64_ent_wout_32" depends="build_64_ent" />
+	<!-- End of Build section -->
+
+	<!-- Tests section -->
+	<target name="api-tests">
+		<ant dir="${twng.basedir}/ant" target="run-api-tests" inheritAll="false">
+			<property name="module" value="${module.name}"/>
+			<property name="project" value="twng_test"/>
+		</ant>
+	</target>
+	<!-- End of Tests section -->
+	
+	<!-- Checks section -->
+	<target name="check-coverage">
+		<ant dir="${twng.basedir}/ant" target="check-c-coverage"/>
+	</target>
+  
+	<target name="check-static-metrics" depends="check-findbugs, check-cpd"/>
+ 
+	<target name="check-findbugs">
+    <property name="c.findbugs.srcfolder" value="${twng.basedir}/${module.name}/c"/>
+    <ant dir="${twng.basedir}/ant" target="check-c-findbugs"/>
+	</target>
+  
+  <target name="check-cpd">
+    <property name="c.cpd.srcfolder" value="${twng.basedir}/${module.name}/c"/>
+    <ant dir="${twng.basedir}/ant" target="check-c-cpd"/>
+  </target>
+	<!-- End of Checks section -->
+  
+</project>
