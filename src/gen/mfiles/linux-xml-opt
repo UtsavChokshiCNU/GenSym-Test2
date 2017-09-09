@@ -1,0 +1,66 @@
+SHELL = /bin/sh
+PRODUCT = xml
+ODIR = opt
+PLATFORM = linux
+CDIR = $(SRCBOX)/$(PRODUCT)/c
+EXTCDIR = $(SRCBOX)/ext/c
+LIBXMLHDIR = /usr/include/libxml2
+MFDIR = $(DSTBOX)/$(PRODUCT)/$(ODIR)
+SCRIPTSDIR = $(SRCBOX)/scripts
+SPFCDIR = $(SRCBOX)/specific/$(PLATFORM)
+LIBXMLLOC = $(LIBXMLHDIR)/libxml
+CC_FLAGS = -g -Wimplicit -fPIC -I$(SRCBOX)/common/c/include
+XMLHFILES = $(CDIR)/xml_support.h $(LIBXMLLOC)/DOCBparser.h \
+  $(LIBXMLLOC)/HTMLparser.h $(LIBXMLLOC)/HTMLtree.h $(LIBXMLLOC)/SAX.h \
+  $(LIBXMLLOC)/SAX2.h $(LIBXMLLOC)/c14n.h $(LIBXMLLOC)/catalog.h \
+  $(LIBXMLLOC)/chvalid.h $(LIBXMLLOC)/debugXML.h $(LIBXMLLOC)/dict.h \
+  $(LIBXMLLOC)/encoding.h $(LIBXMLLOC)/entities.h $(LIBXMLLOC)/globals.h \
+  $(LIBXMLLOC)/hash.h $(LIBXMLLOC)/list.h $(LIBXMLLOC)/nanoftp.h \
+  $(LIBXMLLOC)/nanohttp.h $(LIBXMLLOC)/parser.h \
+  $(LIBXMLLOC)/parserInternals.h $(LIBXMLLOC)/pattern.h \
+  $(LIBXMLLOC)/relaxng.h $(LIBXMLLOC)/schemasInternals.h \
+  $(LIBXMLLOC)/threads.h $(LIBXMLLOC)/tree.h $(LIBXMLLOC)/uri.h \
+  $(LIBXMLLOC)/valid.h $(LIBXMLLOC)/xinclude.h $(LIBXMLLOC)/xlink.h \
+  $(LIBXMLLOC)/xmlIO.h $(LIBXMLLOC)/xmlautomata.h $(LIBXMLLOC)/xmlerror.h \
+  $(LIBXMLLOC)/xmlexports.h $(LIBXMLLOC)/xmlmemory.h $(LIBXMLLOC)/xmlmodule.h \
+  $(LIBXMLLOC)/xmlreader.h $(LIBXMLLOC)/xmlregexp.h $(LIBXMLLOC)/xmlsave.h \
+  $(LIBXMLLOC)/xmlschemas.h $(LIBXMLLOC)/xmlschemastypes.h \
+  $(LIBXMLLOC)/xmlstring.h $(LIBXMLLOC)/xmlunicode.h \
+  $(LIBXMLLOC)/xmlversion.h $(LIBXMLLOC)/xmlwriter.h $(LIBXMLLOC)/xpath.h \
+  $(LIBXMLLOC)/xpathInternals.h $(LIBXMLLOC)/xpointer.h
+
+all : _mfenter liblsxml.a testxml _mfexit
+
+_mfenter : 
+	@- $(SCRIPTSDIR)/errsweep -init
+
+_mfexit : 
+	@- $(SCRIPTSDIR)/errsweep -finish
+
+liblsxml.a : lispxml.o
+	@- if [ -f liblsxml.a ] ; then rm -f liblsxml.a ; fi
+	@- $(SCRIPTSDIR)/errsweep liblsxml.a
+	ar qc liblsxml.a  lispxml.o
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+testxml : main_test.o liblsxml.a
+	@- if [ -f testxml ] ; then rm -f testxml ; fi
+	@- $(SCRIPTSDIR)/errsweep testxml
+	gcc -o testxml -rdynamic main_test.o liblsxml.a -lxml2 -lm -ldl -lz
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+lispxml.o : $(CDIR)/lispxml.c $(XMLHFILES) $(EXTCDIR)/cprim.h
+	@- if [ -f lispxml.o ] ; then rm -f lispxml.o ; fi
+	@- $(SCRIPTSDIR)/errsweep lispxml.o
+	$(CC) -c -O $(CC_FLAGS) -I$(LIBXMLHDIR) -I$(EXTCDIR) $(CDIR)/lispxml.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+main_test.o : $(CDIR)/main_test.c $(XMLHFILES) $(EXTCDIR)/cprim.h
+	@- if [ -f main_test.o ] ; then rm -f main_test.o ; fi
+	@- $(SCRIPTSDIR)/errsweep main_test.o
+	$(CC) -c -O $(CC_FLAGS) -I$(LIBXMLHDIR) -I$(EXTCDIR) $(CDIR)/main_test.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+clean : 
+	- rm -f *.[oa]
+	- rm -f testxml
