@@ -1,0 +1,338 @@
+#!/bin/sh
+#-----------------------------------------------------------------
+# remove-product
+#
+# Copyright (c) 1996
+#          Gensym Corporation.
+#          125 CambridgePark Drive, Cambridge MA 02140
+#          All Rights Reserved.
+#
+# Dependencies:
+#     products.dat:               The products database
+#     make-directores-writable:   Script to chmod product dirs.
+#
+# Modifications:
+#     7/25/96, mpc: File creation
+#-----------------------------------------------------------------
+
+# Note: script user id check is not needed any more. --binghe, 2011/9/14
+#
+# builduser="ab"
+# 
+# if [ `whoami` != $builduser ]
+# then
+#   echo "ERROR: Only $builduser can run this script."
+#   exit 2
+# fi
+
+if [ ! -d /g2 ]
+then
+  echo "ERROR: This must be done on a machine with a spin tree."
+  echo " "
+  exit 3
+fi
+
+
+if [ $# -lt 3 ]; then
+    echo " "
+    echo "NAME"
+    echo "   remove-product - Removes product directories and links."
+    echo " "
+    echo "SYNOPSIS"
+    echo "   remove-product {-i|-e} <product> <release-id> [<platform>...]"
+    echo " "
+    echo "DESCRIPTION"
+    echo "   This script is used to remove products from the promotion"
+    echo "   directories.  It is to be used by product managers to delete"
+    echo "   internal shipments, and by product distribution when they"
+    echo "   decide that particular products are no longer needed online,"
+    echo "   have been archived, and should be deleted."
+    echo " "
+    echo "OPTIONS"
+    echo "   -i             Iship flag. Specifies that this product is to be"
+    echo "                  removed from the iship area, /st/ab/iship, as"
+    echo "                  well as from the iship user links directory,"
+    echo "                  /st/ab/skeletons/mt-skel/iut-skel-"
+    echo "   -e             Eship flag. Specifies that this product is to be"
+    echo "                  removed from the eship area, /st/ab/eship, as"
+    echo "                  well as from the eship user links directory,"
+    echo "                  /st/ab/skeletons/mt-skel/eut-skel-"
+    echo "   <product>      Product name. Must be registered in product"
+    echo "                  database (maintained by Product Distribution)"
+    echo "   <release id>   Product release id. These take the form of a"
+    echo "                  major number, a minor number, a release code letter"
+    echo "                  (p for Pre, a for Alpha, b for Beta, or r for"
+    echo "                  Release), rev number, and for iship promotions a"
+    echo "                  date identifier. E.G. 50r2-g16 or 50r2"
+    echo "   <platform>     Platform Name. This specifies the platform(s) for"
+    echo "                  which to remove the given product. If no platform"
+    echo "                  is given the product is removed for ALL platforms."
+    echo "                  This is not required for indep products."
+    echo "EXAMPLES:"
+    echo "   To remove a platform independent product from iship, use a command"
+    echo "   similar to the following:"
+    echo " "
+    echo "       remove-product -i gda 42b3-g02"
+    echo " "
+    echo "   To remove a platform dependent product from iship for a single"
+    echo "   platform, use a command similar to the following:"
+    echo " "
+    echo "       remove-product -i gm 20r0-F22 sun4"
+    echo " "
+    echo "   To remove a platform dependent product from eship for multiple"
+    echo "   platforms, use a command similar to the following:"
+    echo " "
+    echo "       remove-product -e g2 40b0 aviion hp9000s300 nec sun3"
+    echo " "
+    echo "   To remove a platform dependent product from eship for all"
+    echo "   platforms, use a command similar to the following:"
+    echo " "
+    echo "       remove-product -e tw 40r1"
+    echo " "
+    echo "KNOWN LIMITATIONS:"
+    echo "   If the directory to be removed is the current target of the"
+    echo "   <product>-latest or other special links to the dev directory,"
+    echo "   those links are not changed; i.e., they then point to nothing."
+    echo " "
+    exit 1
+fi
+
+#-----------------------------------------------------------------
+# Directories Needed
+#-----------------------------------------------------------------
+tools_home="$SRCBOX/tools"
+data_home="$tools_home/datafiles"
+dep_iship_dir="/g2/stage/iship/dep"
+dep_eship_dir="/g2/stage/eship/dep"
+indep_iship_dir="/g2/stage/iship/indep"
+indep_eship_dir="/g2/stage/eship/indep"
+iship_link_root="/g2/stage/skeletons/mt-skel/iut-skel-"
+eship_link_root="/g2/stage/skeletons/mt-skel/eut-skel-"
+
+#-----------------------------------------------------------------
+# Debugging substitutions.
+#     When working on this script, swap the above locations for
+#     some test dirs of your own. Uncomment these lines and
+#     comment the counterparts above. DO NOT check in until
+#     switching them back!
+#     Remember to similarly switch the user tree links below.
+#-----------------------------------------------------------------
+# dep_iship_dir="/bt/mpc/util/test/iship"
+# dep_eship_dir="/bt/mpc/util/test/eship"
+# indep_iship_dir="/bt/mpc/util/test/iship/indep"
+# indep_eship_dir="/bt/mpc/util/test/eship/indep"
+# iship_link_root="/gensym/bt/mpc/util/test/links/iship/"
+# eship_link_root="/gensym/bt/mpc/util/test/links/eship/"
+
+noconfirm=0
+promote=""
+
+#-----------------------------------------------------------------
+# Process the command line and set appropriate variables
+#-----------------------------------------------------------------
+
+while [ TRUE ]; do               # loop exits when case does not match option
+  case "$1" in
+      -noconfirm) noconfirm=1; shift
+             ;;
+      -i) promote="iship"
+          shift
+             ;;
+      -e) promote="eship"
+          shift
+             ;;
+      *)  break                  # must be product name so leave loop
+             ;;
+  esac
+done
+
+
+#-----------------------------------------------------------------
+# Parse product and release args, then validate product argument.
+#-----------------------------------------------------------------
+product=$1
+release_id=$2
+product_id=${product}-$release_id
+shift
+
+product_info=`grep "product $product " $data_home/products.dat`
+
+if [ "$product_info" = "" ]; then
+    #-----------------------------------------------------------------
+    # If product database contains no entry for given product, display
+    # error and list of valid products.
+    #-----------------------------------------------------------------
+    echo "ERROR: Unknown kind of product ($product).  Products can be added by"
+    echo "       the Product Distribution Manager.  The current authorized"
+    echo "       products are:"
+    sed -e 's/product \([^ ]*\).*$/   \1/' $data_home/products.dat
+    exit 1
+else
+    #-----------------------------------------------------------------
+    # Found a record for the given product of the format:
+    #     product <product name>  [dep | indep] [shipping | not-shipping]
+    # Bourne shell doesn't provide a simple way to pull apart lists
+    # (such as csh's list[n] referencing) so here's where we do a little
+    # magic. In order to get the record elements we need:
+    #     1. Save positional parameters
+    #     2. Set positional params to value to our record
+    #     3. Pull out the positional params we're interested in
+    #     4. Restore positional parameters.
+    #-----------------------------------------------------------------
+    oldparams=$*
+    set $product_info
+    indep_info=$3
+    set $oldparams
+
+    case "$indep_info" in
+        indep)
+	    prodtype="indep"
+            ;;
+        dep)
+            prodtype="dep"
+            ;;
+        *)
+            echo "ERROR: malformed product information entry, $indep_info"
+            exit 1
+            ;;
+    esac
+fi
+
+
+if [ "$promote" = "iship" ]; then
+    ship_name="Internal"
+    user_dir="/gensym/ut/dev/$product_id"
+    link_root=$iship_link_root
+
+    if [ "$prodtype" = "indep" ]; then
+        ship_dir=$indep_iship_dir
+    else
+        ship_dir=$dep_iship_dir
+    fi
+elif [ "$promote" = "eship" ]; then
+    ship_name="External"
+    user_dir="/gensym/ut/$product_id"
+    link_root=$eship_link_root
+
+    if [ "$prodtype" = "indep" ]; then
+        ship_dir=$indep_eship_dir
+    else
+        ship_dir=$dep_eship_dir
+    fi
+else
+  echo "ERROR:  Must specify product promotion type -i or -e."
+  echo "Type remove-product for proper syntax."
+  exit 1
+fi
+
+
+#-----------------------------------------------------------------
+# Remaining arg(s), if any, will be platform name(s)
+#-----------------------------------------------------------------
+shift
+
+if [ $prodtype = "indep" ]; then
+    #-----------------------------------------------------------------
+    # For indep products, we remove product files from indep location
+    # and remove links for ALL platforms.
+    #-----------------------------------------------------------------
+    product_platforms="indep"
+    link_platforms=`ls -d ${link_root}*`
+else
+    #-----------------------------------------------------------------
+    # For dep products, we remove product files from platforms listed
+    # on command line, or ALL platforms if none specified. Links
+    # are removed for the same platforms.
+    #-----------------------------------------------------------------
+    if [ $# -eq 0 ]; then
+        product_platforms=`ls $ship_dir`
+    else
+        product_platforms=$*
+    fi
+    link_platforms=$product_platforms
+fi
+
+#-----------------------------------------------------------------
+# Check that we are running in the spin tree.
+#-----------------------------------------------------------------
+if [ ! -d /g2/stage ]; then
+    echo "ERROR:  /g2/stage (/st/ab) does not exist.  This script must be run on a machine with that directory."
+    exit 1
+fi
+
+#-----------------------------------------------------------------
+# Check that the user really wants to do it.
+#-----------------------------------------------------------------
+
+echo ""
+echo "LOG: Removing Product from $ship_name Ship Directory"
+echo "  Product:           $product"
+echo "  Release Id:        $release_id"
+echo "  Product Directory: $user_dir"
+echo "  Platforms:         $product_platforms"
+
+if [ "$noconfirm" = "0" ]; then
+    while [ TRUE ]; do
+        echo ""
+        echo -n '  Are you sure you want to remove this product? (yes or no): '
+        read answer
+        if [ "$answer" = "yes" ]; then
+            echo "LOG: Removing ${release_id}..."
+            break
+        elif [ "$answer" = "no" ]; then
+            echo "Leaving ${product_id} intact and exiting."
+            exit 1
+        else
+            echo "Please answer yes or no."
+        fi
+    done
+fi
+
+#-----------------------------------------------------------------
+# Remove product files.
+#-----------------------------------------------------------------
+for product_platform in $product_platforms
+do
+    echo -n "LOG: Platform $product_platform"
+
+    if [ "$prodtype" = "indep" ]; then
+        product_dir="${ship_dir}/$product_id"
+    else
+        product_dir="${ship_dir}/${product_platform}/$product_id"
+    fi
+
+    if [ -d $product_dir ]; then
+        echo -n ", making writable"
+        $tools_home/auxtools/make-directories-writable $product_dir >/dev/null 2>&1
+        # check
+        echo ", deleting product."
+        rm -rf $product_dir
+        # check
+    else
+        echo ", no $product_id found."
+    fi
+done
+
+#-----------------------------------------------------------------
+# Remove user tree links.
+#-----------------------------------------------------------------
+echo "LOG: Removing user tree links."
+
+for link_platform in $link_platforms
+do
+    if [ $prodtype = "indep" ]; then
+        link="${link_platform}/$product_id"
+    else
+        link="${link_root}${link_platform}/$product_id"
+    fi
+  
+    if [ ! -h $link ]; then
+        echo "LOG: $link not found."
+    else
+        rm -f $link
+        # check
+    fi
+done
+
+echo "LOG: Done removing $product_id."
+exit 0
