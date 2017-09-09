@@ -1,0 +1,102 @@
+#!/bin/csh
+
+#create an escrow directory for G2 version
+#creates the directory in the /gensym/spare/escrow hierarchy
+
+goto main
+
+usage:
+echo "usage:     make-escrow version tag"
+echo "where version is something like 51r4, and tag is something like G251R4"
+exit 1
+
+main:
+
+if !(-d /mnt/eng/projects/bin) then
+  echo This script must be run on sdev4 -- it references /mnt/eng/projects directly.
+  goto usage
+endif
+
+
+if ($#argv != 2) then
+  echo "Error: Wrong number of arguments, $#argv supplied, 2 required."
+  goto usage
+endif
+
+set version = $1
+set tag = $2
+
+# this test to see if the first character of the version is 5, where we didn't have the new modules
+if ($version =~ 5*) then
+  set modules="g2 gsi jpeg rtl fnt ext tw"
+else if ($version =~ 6*) then
+  set modules="g2 gsi jpeg rtl fnt ext tw ctrl gservice twplug"
+else if ($version =~ 7*) then
+  set modules="g2 gsi jpeg rtl fnt ext tw activex gservice twplug xml g2db g2pi"
+else 
+  set modules="g2 gsi jpeg rtl fnt ext tw activex gservice twplug xml g2db g2pi twng gw xtp scintilla widgets g2opc corba"
+endif
+
+# now checkout a lot of things.
+cd /gensym/spare/escrow
+mkdir $version
+cd $version
+cvs checkout -r $tag lisp $modules kbs tests promote specific gen util build tools vstudio
+cvs checkout super scripts trail config emacs openssl libxml2
+
+# copy important files
+cp -p /home/lucid/liquid50/lisp-clos-50 .
+cp -p /home/development/chestnut/trans-32b3c .
+cp $SRCBOX/build/escrow-readme.txt README
+cp -p /home/emacs/compressed/tar-files/xemacs-19.13.tar .
+
+# make a DSTBOX==SRCBOX set up.  Not sure if this is needed.
+foreach directory ($modules)
+  mkdir $directory/opt
+end
+mkdir lisp/dev
+mkdir lisp/macro
+
+# prepare the directory for building and shipping with logs and stage
+mkdir logs
+mkdir stage
+
+# make a fully populated DSTBOX setup.
+setenv SANDBOX /gensym/spare/escrow/$version
+make-dstbox -g2
+make-dstbox g2oracle
+make-dstbox g2sybase
+make-dstbox g2odbc
+make-dstbox g2pi
+
+# update makefiles so they don't refer to /home/development.
+cd gen/mfiles
+foreach file (sparcsol-*)
+  mv $file input
+  sed -e s+/home/development+\$\(SRCBOX\)+g input > $file
+end
+rm input
+cd ../..
+
+# Add the contents of /gensym/bin for all platforms
+mkdir bin
+foreach platform (sparcsol alphaosf rs6000 linux hp9000s700)
+  cp -pr /mnt/eng/projects/bin/$platform bin/$platform
+end
+cp -pr /mnt/eng/projects/intelnt-mount/gensym/bin bin/intelnt
+
+# Create stub files for the helper system
+mkdir helpers
+echo \#\!/bin/csh > helpers/help-please
+echo shift >> helpers/help-please
+echo \$\* >> helpers/help-please
+echo \#\!/bin/csh > helpers/wait-for-helpers
+echo exit 0 >> helpers/wait-for-helpers
+chmod +x helpers/*
+
+# finally, get rid of the CVS directories, which will be in the way if an escrow
+# recipient wishes to import our files into their own cvs repository
+find . -name CVS -type d -exec rm -rf {} \;
+
+echo escrow complete for tag $version.  
+echo To escrow additional modules with another tag, use more-escrow
