@@ -1,0 +1,54 @@
+#!/bin/csh
+echo G2-JMS Bridge
+
+#
+#	This batch file launches the JMSlink Bridge for JBoss
+#	You may supply up to one argument
+#	   - the port number the bridge is listening for G2 connections
+#
+
+
+setenv HM %ROOTDIR%
+if ( $?JAVA_HOME ) then
+  setenv JVM $JAVA_HOME
+else
+  setenv JVM ${HM}/jre
+endif
+
+if ( ! $?JBOSS_HOME ) then
+  echo Fatal error: JBOSS_HOME variable not defined.
+  exit 1
+endif
+
+setenv JBOSSPATH ${JBOSS_HOME}/client:${JBOSS_HOME}/client/jbossall-client.jar:${JBOSS_HOME}/client/client\jbossmq-client.jar:${JBOSS_HOME}/client/jnet.jar:${JBOSS_HOME}/client/jnp-client.jar:${JBOSS_HOME}/client/log4j.jar
+
+
+setenv PATH ${JVM}/bin:${HM}/javalink/bin:${HM}/tw2/bin:${HM}/gsi:${PATH}
+
+if ( $?SHLIB_PATH ) then
+  setenv SHLIB_PATH ${HM}/javalink/bin:${SHLIB_PATH}
+else
+  setenv SHLIB_PATH ${HM}/javalink/bin
+endif
+
+if ($?LD_LIBRARY_PATH ) then
+  setenv LD_LIBRARY_PATH ${HM}/javalink/bin:${LD_LIBRARY_PATH}
+else
+  setenv LD_LIBRARY_PATH ${HM}/javalink/bin
+endif
+
+setenv CLASSPATH ${HM}/jms/classes/G2Jms.jar:${JBOSSPATH}:${HM}/javalink/classes/core.jar:${HM}/javalink/classes/classtools.jar:${HM}/javalink/classes/javalink.jar
+
+if ($#argv < 1) then
+  setenv port 22070
+else
+  setenv port $1
+  shift
+endif
+
+
+
+echo Starting G2-JMS Bridge for JBoss at Port $port ......
+${JVM}/bin/java -cp ${CLASSPATH} com.gensym.jms.G2Jms -port $port $*
+
+
