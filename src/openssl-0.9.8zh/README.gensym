@@ -1,0 +1,34 @@
+To build under LSB, we had to do some patches on the original OpenSSL source code.
+The diffs are in `patch.gensym`, documented if the need arises to do them again.
+
+After applying the patches, build is more-or-less usual, with following remarks:
+
+- We built 64-bit version after configuring it like this:
+
+    CC=/opt/lsb/bin/lsbcc ./config no-asm zlib no-ssl2 -DOPENSSL_NO_DGRAM
+
+- We built 32-bit version after `chroot`-ing to a 32-build environment and then 
+  configuring like this:
+
+    CC=/opt/lsb/bin/lsbcc ./Configure no-asm zlib linux-generic32 no-ssl2 -DOPENSSL_NO_DGRAM
+
+We had to use the `./Configure`, because `./config` recognizes a 64-bit environment
+even in 32-bit chroot.
+
+We used `no-ssl2` because SSLv2 has known serious vulnerabilities (i.e. "it is completely
+broken"), so nobody in their right mind would use it any more.
+
+ZLib is assumed to be static lib, to be defined when linking the final executable.
+
+Also, after you do one build (say, 64-bit) and then configure for the other, please do:
+
+    make clean
+    make depend
+    make
+
+and not just `make`, to build the other (say, 32-bit).
+
+`make` will build `libcrypto.a` and `libssl.a` in this directory, which one should then
+copy to the `specific/linux` (32-bit build) or `specific/linux64` (64-bit build) 
+directory (or, in the future, to any other `specific` sub-directory that we build 
+OpenSSL for).
