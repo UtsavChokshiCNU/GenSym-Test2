@@ -1,0 +1,98 @@
+#!/bin/sh
+
+# kbdiff -- Diff text of definitions in KB files.
+# -fmw, 12/6/05
+
+usage () {
+  echo "Usage: kbdiff [-m module] [-ws workspace]"
+  echo "              [[-r rev1 | -D date1] [-r rev2 | -D date2]]"
+  echo "              [diff options: -b -i -t -w -u -c -C num]"
+  echo "              [-g2 g2-pathname | sandbox] Default: $g2"
+  echo "              [-debug]"
+  echo "              kbfile1 [kbfile2]"
+  echo " Diff the text of procedures, functions, and rules of two KB revisions or files."
+  echo " Optionally limit it to one module or workspace tree."
+  exit 1
+}
+
+options=""
+diffopts=""
+diffprog="/usr/local/bin/diff"
+g2="/gensym/st/ab/eship/dep/sparcsol/g2-82r0/test/g2"
+
+# use getopts !!
+while test -n "$1"; do
+  case "$1" in
+    -r|-D) if [ -z "$rev1" ]; then rev1="$1 $2"; else rev2="$1 $2"; fi; shift ;;
+    -m|-ws|-g2) options="$options $1 $2"; shift ;;
+    -debug) options="$options $1" ;;
+    -help) usage ;;
+    -[bitwcu]) diffopts="$diffopts $1" ;;
+    -[bitwcu][bitwcu]) diffopts="$diffopts $1" ;;
+    -[bitwcu][bitwcu][bitwcu]) diffopts="$diffopts $1" ;;
+    -[bitwcu][bitwcu][bitwcu][bitwcu]) diffopts="$diffopts $1" ;;
+    -[bitwcu][bitwcu][bitwcu][bitwcu][bitwcu]) diffopts="$diffopts $1" ;;
+    -[bitwcu][bitwcu][bitwcu][bitwcu][bitwcu][bitwcu]) diffopts="$diffopts $1" ;;
+    -C) diffopts="$diffopts $1 $2"; shift ;;
+    -*) echo "Unknown option: $1" ; usage ;;
+    *) break ;;
+  esac
+  shift
+done
+
+test -n "$1" || usage
+
+fromKB=$1
+toKB=$2
+
+# FIXME: default rev should be sticky tag of file.
+sticky="HEAD"
+if [ -z "$toKB" -a -z "$rev1" ]; then
+  sticky=`cvs status $fromKB | perl -ne 'print $1 if /Sticky Tag:\W*(\w+)/'`
+  if [ "$sticky" = "none" ]; then
+    sticky="HEAD"
+  fi
+fi
+fromRev=${rev1-"-r $sticky"}
+toRev=$rev2
+
+prefix="kbdiff$$"
+file=`basename $fromKB`
+
+fromTmpKB="/tmp/$prefix-from.kb"
+toTmpKB="/tmp/$prefix-to.kb"
+
+fromText="/tmp/$prefix-from-${file}txt"
+toText="/tmp/$prefix-to-${file}txt"
+
+trap 'rm -f $fromText $toText $fromTmpKB $toTmpKB; exit' 0 1 15
+
+if [ -z "$toKB" ]; then
+  if [ -n "$fromRev" ]; then	# Always true
+#    echo cvs -f update -p $fromRev $fromKB
+    cvs -f update -p $fromRev $fromKB > $fromTmpKB 2>/dev/null
+    toKB=$fromKB
+    fromKB=$fromTmpKB
+  fi
+
+  if [ -n "$toRev" ]; then
+#    echo cvs -f update -p $toRev $toKB
+    cvs -f update -p $toRev $toKB > $toTmpKB 2>/dev/null
+    toKB=$toTmpKB
+  fi
+fi
+
+# TODO: Memoize kbtext
+
+# echo kbtext $options $fromKB INTO $fromText
+# echo kbtext $options $toKB   INTO $toText
+# ls -l $fromTmpKB $toTmpKB
+# rm -f $fromTmpKB $toTmpKB
+# exit
+
+kbtext $options $fromKB > $fromText
+kbtext $options $toKB   > $toText
+
+$diffprog $diffopts $fromText $toText
+
+rm -f $fromText $toText $fromTmpKB $toTmpKB
