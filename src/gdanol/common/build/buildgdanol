@@ -1,0 +1,765 @@
+#!/bin/csh -f
+#---------------------------------------Width of edit screen----------------------------------------------------------
+#Version template 404x
+
+set APPLCN="apps";
+set VERTEMP="41a";	# Set the version
+set revnum = 2		# Set the revision
+set DAYEND = "-CJ02";	# Set the date suffix
+
+set UTIL="utilities";
+set G2DIR1="/gensym/ut/kbs-shipping/utils";
+#set G2DIR2="/gensym/ut/kbs-test/utils";
+# KBS test is not kept up to date.  It was necessary to provide a substitute
+set G2DIR2="/home/msn/kbs-build";
+set TEMPNAME="g2-60a3";		# Set the G2 version to use
+
+set APPSFILES="gdaapps.kb nolapps.kb";
+set DEMOFILES="gdacerel.kb gdatank.kb gdareact.kb noldemo.kb"
+
+set ARGS=($*)
+set numargs=$#ARGS
+set INIT="build.ini"
+
+    #THIS FILE AUTOMATICALLY BUILDS GDA/NOL BY LAUNCHING A G2
+    #First the sandbox must be verified and a a G2 launched pointed to that sandbox
+        # Initial versions of the build script may assume the existence of a correct
+	# module map.  Later version can build that module map.
+	
+    # NOTE:  
+    # If there is more than one GDA developer then we probably
+    # want to remove the comments on the CVS admin locks
+
+set SANDBX="/home/msn/sb/gdanol";
+set MMFILE="build.mm";
+set BINFO="buildinfo.txt";
+set GDA="gda/kbs";
+set NOL="nol/kbs";
+set COMMON="common/kbs";
+set BUILD="common/build";
+set CVSDIR="common gda nol"
+
+
+set APPFILE="appl_files.dat"
+set HELPFILE="help_files.dat"
+set ADDLFILES="kitinstal.com README";
+   ### ADDLFILES do not belong in the appl_file.dat.  README, is, however, ###
+   ### an additional file that does belong in appl_file.dat and requires   ###
+   ### special formatting.						   ###
+
+
+set ALLKB="gdabasic goldui gold gdabsdlg gdl gdluisup gms gcc sys-mod gfr gqmv gqm gqsviews gqsui gxl gqs grl gens glf uil uildefs uilroot uillib uilsa uilslide uilcombo uiltdlg g2-event-support javalink-internal"
+
+set NOLKB="nol nolapps noldemo nolui g2uifile"
+set GDAKB="gda gdaapps gdacore2 gdadlg gdareact gdatank gdacerel"
+
+set GDADOCDIR="/home/gda/kits/30r0/distribution/gdadoc"
+set NOLDOCDIR="/home/neuron/kits/30r0/distribution/noldoc"
+
+if !(-d $SANDBX) then
+  echo "Sandbox, $SANDBX, does not exist.  Aborting build.";
+  exit(1);
+endif
+
+
+    #Create version information
+if ($numargs == 0) then
+  set KITSDIR="/home/${APPLCN}/kits/";
+else
+  if (-d $1) then
+    set KITSDIR=$1;
+  else
+    echo "Usage: buildgdanol [directory (eg /home/apps/kits/)]";
+    exit(1)
+  endif
+endif  
+
+#echo "Searching for directory `pwd`/${VERTEMP}x...";
+
+#set revnumold = 0
+
+#if (`/bin/ls -F | /bin/grep -c /`) then
+#   foreach dirnm (`/bin/ls -F | /bin/grep /`)
+#     if(`echo $dirnm | /bin/grep -c $VERTEMP`) then
+#       set dirpret = (`echo $dirnm | /usr/bin/tr -d /`)
+#       set revnum = (`echo $dirpret |sed -e 's/^[0-9]*[abr]\([0-9]*\)/\1/'`)
+#       echo "Now I'm here.  $revnum and $dirpret";
+#       if ($revnum == "") then
+#         echo "Couldnt read $dirpret... assuming ${VERTEMP}0";
+#	 set revnum = 0;
+#       endif
+#       if ($revnum > $revnumold) then
+#         set revnumold = $revnum
+#       endif
+#     endif 
+#   end;
+#else
+#  echo "No existing subdirectories in `pwd`"
+#endif
+
+# set DAYEND = "-CI08";
+#  set revnum = `expr $revnumold + 1`;
+set newdir = "${KITSDIR}${VERTEMP}${revnum}${DAYEND}";
+
+echo "Please verify the following information about this build:"  #Note, any script changes to this information
+echo "  G2 version for build - $TEMPNAME."                        #must be reflected in the section below where
+echo "  Version for GDA/NOL - 4.1 Alpha $revnum"                   #it is stored in a file.
+echo "  GFR number for build - 40"
+echo "  Build date - September 8th"
+echo -n "Accept this information ([y]/n)?"; 
+set response=($<)
+if ( $response == "n" || $response == "N") then
+  echo "There's no way at this time to change build information, save editing the"; 
+  echo "scripts.";
+  exit(1);
+endif
+
+set GDADIR="/home/gda/kits/${VERTEMP}${revnum}${DAYEND}"
+set NOLDIR="/home/neuron/kits/${VERTEMP}${revnum}${DAYEND}"
+
+    #Next verify the existance of the G2.
+
+if (-f /tmp/$TEMPNAME) then
+  set G2EXEC="/tmp/${TEMPNAME}"             #Is there a local g2?
+else
+  set G2EXEC='/gensym/ut/g2-shipping/g2'     #Run shipping g2
+endif
+
+    #Third, check if update of KB Utils are required?
+
+set fullpath = "${SANDBX}/${COMMON}/${UTIL}";
+echo "From what directory to copy the $UTIL files?"
+echo "  (1)  $fullpath"
+echo "  (2)  $G2DIR1"
+echo "  (3)  $G2DIR2"
+echo -n "      Enter number[1]:"
+set response=($<)
+if ($response == 1 || $response == "") then
+  set utilflag = 0;
+else if ($response == 2) then
+  set utilflag = 1;
+  set backdir = $fullpath;
+  set fullpath = $G2DIR1;
+else if ($response == 3) then
+  set utilflag = 1;
+  set backdir =  $fullpath;
+  set fullpath = $G2DIR2;
+else
+  echo -n "Enter full path of $UTIL directory:"
+  set response=($<)
+  if (-d $response) then 
+    set utilflag = 1;
+    set backdir = $G2DIR1;
+    set fullpath = $response;
+  else
+    echo " ";
+    echo "Directory $response doesnt exist.  Using $fullpath";
+  endif
+endif
+
+if ($utilflag == 1) then
+  echo "You have just requested that files be copied and recommitted";
+  echo -n "to the CVS repository.  Are you sure you want to procede ([y]/n)?"; 
+  set response=($<)
+  if ( $response == "y" || $response == "Y" || $response == "") then
+   pushd $SANDBX/$COMMON/$UTIL;
+   foreach filenm (`/bin/ls *.kb`)
+     if(-f $fullpath/$filenm) then
+      echo "cp $fullpath/$filenm .";
+      cp $fullpath/$filenm .;
+     else 
+        echo "$filenm is not a standard utility.  This file will not be updated.";
+     endif
+   end
+   cvs commit -m "Utilities files updated to new version ($fullpath) before the 4.1 Alpha $revnum build.  Commit log generated automatically" *.kb;
+   ## cvs admin -l *.kb;
+  else if ( $response == "n" || $response == "N") then
+    echo "No files have been copied"
+  endif
+endif
+
+    #Make sure that cvs is up-to-date
+pushd SANDBX
+pwd
+
+echo cvs up
+cvs up
+
+set INITSTRING="Auto";
+
+#Check for files necessary to launch G2
+
+if !(-f $SANDBX/$MMFILE) then
+  echo "There must be a module map file, $MMFILE, found in your sandbox"; 
+  echo "directory, $SANDBX, specific to your sandbox.";
+  exit(1);
+endif
+if !(-f $SANDBX/$BUILD/$INIT) then
+  echo " ";
+  echo "There must be a init file, $INIT, found in your sandbox directory,"
+  echo "$SANDBX/$BUILD, specific to your sandbox. It should contain";
+  echo "a load command for the file top.kb (in your sandbox), as well as";
+  echo "the start afterwards and the automatically resolving conflicts."
+  echo " ";
+  echo "The use of this file is a placeholder until 6.0, which automatically";
+  echo "resolves conflicts by default.  At that time this script will be";
+  echo "changed to use the -kb command to load top.kb from the correct place.";
+  echo " ";
+  exit(1)
+endif
+if (-f $SANDBX/$BINFO) then
+  rm $SANDBX/$BINFO;
+endif
+echo "  G2 version for build - $TEMPNAME. Version for GDA/NOL - 4.1 Alpha $revnum  GFR number for build - 40 Build date - September 8th" >  $SANDBX/$BINFO;  # These are the lines from the build info verification, above.
+
+    #Now a Staging/Source/Distribution setup is required.  Copy files as per old promote
+#Create directories to deposit build results.
+
+#cd $KITSDIR;
+
+echo -n "Creating new kits directory, $newdir.  Procede? ([y]/n):";
+
+set response=($<)
+if !( $response == "y" || $response == "Y" || $response == "") then
+  echo "Aborting script";  
+  exit(1)
+endif
+
+mkdir $newdir
+mkdir ${newdir}/source
+mkdir ${newdir}/distribution
+
+cd ${newdir}/source
+
+#Copy apps files, and then write protect
+
+cp $SANDBX/$GDA/gdaapps.kb ${newdir}/source
+cp $SANDBX/$GDA/gdaapps.kb ${newdir}/distribution
+cp $SANDBX/$NOL/nolapps.kb ${newdir}/source
+cp $SANDBX/$NOL/nolapps.kb ${newdir}/distribution
+chmod 444 $SANDBX/$GDA/gdaapps.kb  #Change to 444 so save to staging doesn't rewrite
+chmod 444 $SANDBX/$NOL/nolapps.kb
+
+#write protect UTIL modules, and then copy
+
+cd $SANDBX/$COMMON/$UTIL
+chmod 444 *.kb #chmod before copying, primarily because this is what we've done in the past
+cp *.kb ${newdir}/source
+cp *.kb ${newdir}/distribution 
+
+#When G2 is finished, success can be determined by whether or not the files have been written
+#to distribution.  In order for this to be a valid test, we had better make sure our file is
+#not there to begin with.
+
+set success = ${newdir}/distribution/gdl.kb;
+if (-f $success) then
+  echo "The distribution directory is already populated.  Would it be";
+  echo "OK to delete a file, $success, now - before";
+  echo -n "the new one is generated? ([y]/n):";
+  set response=($<)
+  if !( $response == "y" || $response == "Y" || $response == "") then
+    echo "Aborting script";  
+    exit(1)
+  else
+    rm $success;
+  endif
+endif
+
+    #Run G2
+
+
+#echo ${G2EXEC} $* -name AutoBuild -module-map $SANDBX/$MMFILE -kb $SANDBX/$COMMON/$LOADKB -init-string $INITSTRING
+#${G2EXEC} $* -name AutoBuild -module-map $SANDBX/$MMFILE -kb $SANDBX/$COMMON/$LOADKB -init-string $INITSTRING
+#At this time, it is necessary to use an init file because KBs don't automatically resolve conflicts
+#by default.  In 6.0, this will change and the init file will no longer be necessary.
+
+echo ${G2EXEC} $* -name AutoBuild -module-map $SANDBX/$MMFILE -init $SANDBX/$BUILD/$INIT -init-string $INITSTRING
+${G2EXEC} $* -name AutoBuild -module-map $SANDBX/$MMFILE -init $SANDBX/$BUILD/$INIT -init-string $INITSTRING
+
+#Return repository to the normal permissions.
+
+chmod 664 $SANDBX/$GDA/gdaapps.kb  #Change to 444 to prevent overwrite, change to 664 before 
+chmod 664 $SANDBX/$NOL/nolapps.kb  #recommitting
+cd $SANDBX/$COMMON/$UTIL
+chmod 664 *.kb 
+
+    #On exit from G2, check for a file indicating the build was succesful.  Don't procede
+        #if it was not
+
+if !(-f $SANDBX/$MMFILE) then
+  #G2 renamed the build.mm file, it's time to name it back.
+  if(-f $SANDBX/build.moo) then #if it can be found that is
+    mv $SANDBX/build.moo $SANDBX/$MMFILE
+  endif
+endif
+
+if !(-f $success) then
+  echo -n "The autmatic build has failed.  Do you wish to delete $newdir ([y]/n)?:";
+  set response=($<)
+  if ( $response == "y" || $response == "Y" || $response == "") then
+    #Change read only files to 666
+    cd ${newdir}/source
+    chmod 666 *.kb
+    cd ${newdir}/distribution
+    chmod 666 *.kb
+    cd
+    echo "rm -r $newdir";
+    rm -r $newdir;
+    echo "GoodBye\!";
+    exit(1);
+  endif
+endif
+
+
+    #Recommit the files into the repository.  There are a number of optional steps at this point
+        #The recommit may be considered optional.  Once we go to G2 6.0, the interface to CVS changes
+        #Sources could be tagged here, or we may wish to wait for an overall successful build.
+        #Remember to lock the sources after the commit.  That also requires confirming with the
+        #builder that they are responsible for source code control on this build.
+
+echo "G2 has saved the files, non-destructive changes, to your sandbox.";
+echo -n "Do you want to commit them to the CVS repository.  ([y]/n)?"; 
+set response=($<)
+if ( $response == "y" || $response == "Y" || $response == "") then
+  foreach branch (${CVSDIR})
+    cd $SANDBX/$branch/kbs;
+    cvs commit -m "This is the recommit after the build for  4.1 Alpha Rev. $revnum.  Files generated automatically" *.kb;
+    ## cvs admin -l *.kb;
+  end
+  echo "You have just recommitted and locked the sources.  That means that you are now";
+  echo "responsible for source code control over these sources.  The files should remain";
+  echo "locked until either the sources are tagged or forked.";
+  echo " ";
+  echo " ";
+endif
+
+#Now continue to move the files which aren't part of the build process.
+
+echo -n "Move forward old NOL RPCs to distribution now? ([y]/n):";
+set response=($<)
+if ( $response == "y" || $response == "Y" || $response == "") then
+  cd ..
+  cd ${newdir}/distribution
+  set rpcdir = "${SANDBX}/nol/bin";
+  echo -n "From $rpcdir? ([y]/n):";
+  set response=($<)
+  if !( $response == "y" || $response == "Y" || $response == "") then
+    echo -n "From where? (include <distribution> if required):% "
+    set response=($<)
+    if (-d $response) then
+      set rpcdir = $response
+    else
+      echo " ";
+      echo "$response is not a directory.  Using $rpcdir";
+    endif
+  endif      
+  if (`/bin/ls $rpcdir| /bin/grep -c exe`) then
+    foreach filenm (`/bin/ls $rpcdir/*.exe`)
+      echo "Copying $filenm"
+      cp $filenm .  
+    end;
+  else
+    echo "No EXE files found in $rpcdir.  Exiting script."
+    exit(1)
+  endif  
+  if (`/bin/ls -F $rpcdir/*nol| /bin/grep -c "*"`) then
+    foreach filenm (`/bin/ls $rpcdir/*nol`)
+      echo "Copying $filenm"
+      cp $filenm .
+    end;
+  else
+    echo "Could not grab the non-NT RPCs.  Please move manually."
+  endif
+
+echo " ";
+endif
+echo "Moving demos now to `pwd`."
+foreach filenm (${DEMOFILES})
+  set fullpath = "${SANDBX}/common/demos/kbs/${filenm}"
+  if(-f $fullpath) then
+    cp ${fullpath} .
+  else
+    echo "$fullpath does not exist.";
+    echo "You must transfer $filenm by hand.";
+  endif
+end;
+
+    #Automatic promotion to the /home/gda and /home/neuron directories can now procede.
+    #At this point, manual testing of the kbs is needed before the promote to iship can take place
+
+set SRCDIR=${newdir};
+
+
+###   GDA ###
+
+echo " ";
+echo "Promoting GDA...";
+echo " ";
+
+set ALLMODLIST = "${ALLKB} ${GDAKB}";
+
+set distdir = "${GDADIR}/distribution";
+
+if !(-d $distdir) then
+  echo -n "No directory $distdir exists.  Create one ([y]/n)?% ";
+  set response=($<)
+  if ( $response == "y" || $response == "Y" || $response == "") then
+    if !(-d $GDADIR) mkdir $GDADIR
+    mkdir $distdir
+  else
+    echo "The destination directory must exist before promoting.  Aborting script."
+    exit(1)
+  endif
+endif
+
+if (-f ${distdir}/$APPFILE) then
+  echo "$APPFILE already exists, do you wish to overwrite with";
+  echo -n " a new version? ([y]/n)% ";
+  set response=($<)
+  if ( $response == "y" || $response == "Y" || $response == "") then
+    set applflag = 1
+  else
+    set applflag = 0
+  endif
+else
+  set applflag = 1
+endif
+
+set APPLTEXT = 
+
+foreach addfile ($ADDLFILES)
+  if (-f $SANDBX/$BUILD/gda-$addfile) then
+#Previous section should have validated content as up-to-date
+    echo "Copying gda-$addfile from Sandbox.";
+    cp $SANDBX/$BUILD/gda-$addfile ${GDADIR}/distribution/$addfile;
+  else if (-f $SANDBX/$BUILD/$addfile) then
+    echo "Copying $addfile from Sandbox.";
+    cp $SANDBX/$BUILD/$addfile ${GDADIR}/distribution;
+  else if !(-f ${distdir}/$addfile) then
+    echo "$addfile does not exist.  Do you wish to move it from";
+    echo -n "another location? ([y]/n)% ";
+    set response=($<)
+    if ( $response == "y" || $response == "Y" || $response == "") then
+      echo -n "Enter directory of file:% "
+      set response=($<)
+      if (-d $response) then
+        set addsrcdir = $response;
+        echo "Copying ${addsrcdir}/$addfile to ${GDADIR}/distribution"
+        cp ${addsrcdir}/$addfile ${GDADIR}/distribution
+      else
+        echo "File ${response}/$addfile not found.  $addfile must be";
+        echo "copied by hand.";
+        echo " ";
+      endif      
+      if ($applflag) then
+        if ($addfile == "README") then
+          set APPLTEXT = "${APPLTEXT}_${addfile:r}^${addfile}.^appl@dir:\";
+        endif
+      endif
+    else
+      echo "File $addfile not found.";
+      echo " ";
+    endif
+  else
+    # Note:  ADDFILES do not go in appl_file.dat
+    if ($applflag) then
+      if ($addfile == "README") then
+        set APPLTEXT = "${APPLTEXT}_${addfile:r}^${addfile}.^appl@dir:\";
+      endif
+    endif
+  endif
+end
+
+foreach allmodule ($ALLMODLIST)
+  set filenm = "${allmodule}.kb"
+  set filepath = "${SRCDIR}/distribution/$filenm";
+  if (-f $filepath) then
+    echo "Copying $filepath to $GDADIR"
+    cp $filepath $distdir
+    if ($applflag) then
+      set APPLTEXT = "${APPLTEXT}_${allmodule}^${filenm}^appl@dir:\";
+    endif
+  else 
+    echo "The file $filenm is not in ${SRCDIR}/distribution.  Promote Aborted."
+    exit(1)
+  endif
+end
+
+  # Check for existing doc directory #
+
+if !(-d ${distdir}/gdadoc) then
+  echo " ";
+  echo "No <gdadoc> directory exists.  Creating...";
+  mkdir ${distdir}/gdadoc
+endif
+
+
+if ($applflag) then
+  echo $APPLTEXT|/usr/bin/tr "\\" "\012" |/usr/bin/tr "^" "\011" |/usr/bin/tr "@" "\044" >! ${distdir}/appl_files.dat
+  chmod 666 ${distdir}/appl_files.dat
+endif
+
+  # Copy all *.htm, *.gif, and *.dat files from doc directory #
+
+set APPLTEXT = 
+if (-e ${distdir}/$HELPFILE) then
+  echo " ";
+  echo -n "Helpfile exists in directory.  Remove? ([y]/n):% "
+  set response=($<)
+  if ( $response == "y" || $response == "Y" || $response == "") then
+    rm ${distdir}/$HELPFILE
+  else
+    echo "Do something with it then.";
+    echo " ";
+    echo "Aborting script."
+    exit(1)
+  endif
+endif
+
+echo " ";
+
+if (`/bin/ls $GDADOCDIR | /bin/grep -c htm`) then
+  echo -n "Copying all *.htm files from $GDADOCDIR...";
+  cd $GDADOCDIR 
+  ls -1 *.htm | awk '{printf ("%s\t%s\t gdahelp$dir:\n", $1, $1)}' | sed -e 's/^\([a-zA-Z0-9_]*\).htm/_\1/' >>! ${distdir}/$HELPFILE
+  cp *.htm ${distdir}/gdadoc
+  echo " Done"
+else 
+  echo "No HTML files found in $GDADOCDIR.";
+endif
+
+echo " ";
+
+if (`/bin/ls $GDADOCDIR | /bin/grep -c gif`) then
+  echo -n "Copying all *.gif files from $GDADOCDIR...";
+  cd $GDADOCDIR
+  ls -1 *.gif | awk '{printf ("%s\t%s\t gdahelp$dir:\n", $1, $1)}' | sed -e 's/^\([a-zA-Z0-9_]*\).gif/_\1/' >>! ${distdir}/$HELPFILE
+  cp *.gif ${distdir}/gdadoc
+  echo " Done"
+else 
+  echo "No GIF files found in $GDADOCDIR.";
+endif
+
+echo " ";
+
+if (`/bin/ls $GDADOCDIR | /bin/grep -c dat`) then
+  echo -n "Copying all *.dat files from $GDADOCDIR...";
+  cd $GDADOCDIR
+  ls -1 *.dat | awk '{printf ("%s\t%s\t gdahelp$dir:\n", $1, $1)}' | sed -e 's/^\([a-zA-Z0-9_]*\).dat/_\1/' >>! ${distdir}/$HELPFILE
+  cp *.dat ${distdir}/gdadoc
+  echo " Done"
+ else 
+  echo "No DAT files found in $GDADOCDIR.";
+endif
+
+echo " ";
+
+   ##############################################################
+
+###   NOL ###
+
+
+echo " ";
+echo "Promoting NOL...";
+echo " ";
+
+
+   ### NOL also has the nolstart.com file ###
+
+set ADDLFILES = "${ADDLFILES} nolstart.com";
+
+set ALLMODLIST = "${ALLKB} ${NOLKB}";
+
+set distdir = "${NOLDIR}/distribution";
+
+foreach addfile ($ADDLFILES)
+  if (-f $SANDBX/$BUILD/nol-$addfile)
+#Previous section should have validated content as up-to-date
+    echo "Copying nol-$addfile from Sandbox.";
+    cp $SANDBX/$BUILD/nol-$addfile ${GDADIR}/distribution/$addfile;
+  else if (-f $SANDBX/$BUILD/$addfile)
+    echo "Copying $addfile from Sandbox.";
+    cp $SANDBX/$BUILD/$addfile ${GDADIR}/distribution;
+  else if (-f ${distdir}/$APPFILE) then
+  echo "$APPFILE already exists, do you wish to overwrite with";
+  echo -n " a new version? ([y]/n)% ";
+  set response=($<)
+  if ( $response == "y" || $response == "Y" || $response == "") then
+    set applflag = 1
+  else
+    set applflag = 0
+  endif
+else
+  set applflag = 1
+endif
+
+if !(-d $distdir) then
+  echo -n "No directory $distdir exists.  Create one ([y]/n)?% "
+  set response=($<)
+  if ( $response == "y" || $response == "Y" || $response == "") then
+    if !(-d $NOLDIR) mkdir $NOLDIR
+    mkdir $distdir
+  else
+    echo "The destination directory must exist before promoting.  Aborting script."
+    exit(1)
+  endif
+endif
+
+set APPLTEXT = 
+
+foreach addfile ($ADDLFILES)
+  if !(-f ${distdir}/$addfile) then
+    echo "$addfile does not exist.  Do you wish to move it from";
+    echo -n "another location? ([y]/n)% ";
+    set response=($<)
+    if ( $response == "y" || $response == "Y" || $response == "") then
+      echo -n "Enter directory of file:% "
+      set response=($<)
+      if (-d $response) then
+        set addsrcdir = $response;
+        echo "Copying ${addsrcdir}/$addfile to ${NOLDIR}/distribution"
+        cp ${addsrcdir}/$addfile ${NOLDIR}/distribution
+      else
+        echo "File ${response}/$addfile not found.  $addfile must be";
+        echo "copied by hand.";
+        echo " ";
+      endif
+      if ($applflag) then
+        if ($addfile == "README") then
+          #set APPLTEXT = "${APPLTEXT}_${addfile:r}^${addfile}.^appl@dir:\"; Don't add readme to Applfile
+        endif
+      endif
+    else
+      echo "File $addfile not found.";
+      echo " ";
+    endif
+  else
+    if ($applflag) then
+      if ($addfile == "README") then
+        set APPLTEXT = "${APPLTEXT}_${addfile:r}^${addfile}.^appl@dir:\";
+      endif
+    endif
+  endif
+end
+
+foreach allmodule ($ALLMODLIST)
+  set filenm = "${allmodule}.kb"
+  set filepath = "${SRCDIR}/distribution/$filenm";
+  if (-f $filepath) then
+    echo "Copying $filepath to $NOLDIR"
+    cp $filepath $distdir
+    if ($applflag) then
+      set APPLTEXT = "${APPLTEXT}_${allmodule}^${filenm}^appl@dir:\";
+    endif
+  else 
+    echo "The file $filenm is not in ${SRCDIR}/distribution.  Promote Aborted."
+    exit(1)
+  endif
+end
+
+  # Check for existing doc directory #
+
+if !(-d ${distdir}/noldoc) then
+  echo " ";
+  echo "No <noldoc> directory exists.  Creating...";
+  mkdir ${distdir}/noldoc
+endif
+
+if ($applflag) then
+  echo -n $APPLTEXT|/usr/bin/tr "\\" "\012" |/usr/bin/tr "^" "\011" |/usr/bin/tr "@" "\044" >! ${distdir}/appl_files.dat
+  chmod 666 ${distdir}/appl_files.dat
+endif
+
+set APPLTEXT = 
+
+if (`/bin/ls $distdir| /bin/grep -c exe`) then
+  cd $distdir
+  if ($applflag) then
+    ls -1 *.exe | awk '{printf ("%s\t%s.\t appl$dir:\n", $1, $1)}' | sed -e 's/^\([a-zA-Z0-9-]*\).exe/_\1/' >>! ${distdir}/$APPFILE 
+  endif
+else
+  set rpcdir = "${SRCDIR}/distribution";
+  echo "Copying all *.exe files from $rpcdir";
+  cd $rpcdir
+  if ($applflag) then
+    ls -1 *.exe | awk '{printf ("%s\t%s\t appl$dir:\n", $1, $1)}' | sed -e 's/^\([a-zA-Z0-9-]*\).exe/_\1/' >>! ${distdir}/$APPFILE
+  endif
+  cp *.exe ${distdir}
+endif  
+
+echo -n "Checking for existing non-NT executables... ";
+
+if (`/bin/ls -F $distdir/*nol| /bin/grep -c "*"`) then
+  echo "Match."
+  cd $distdir
+  if ($applflag) then
+    ls -1 *nol | awk '{printf ("_%s\t%s.\t appl$dir:\n", $1, $1)}' >>! ${distdir}/$APPFILE
+  endif
+else
+  set rpcdir = "${SRCDIR}/distribution";
+  echo "Copying all *nol files from $rpcdir"
+  if ($applflag) then
+    ls -1 *nol | awk '{printf ("_%s\t%s.\t appl$dir:\n", $1, $1)}' >>! ${distdir}/$APPFILE
+  endif
+  cp *nol ${distdir}
+endif
+
+  # Copy all *.htm, *.gif, and *.dat files from doc directory #
+
+if (-e ${distdir}/$HELPFILE) then
+  echo " ";
+  echo -n "Helpfile exists in directory.  Remove? ([y]/n):% "
+  set response=($<)
+  if ( $response == "y" || $response == "Y" || $response == "") then
+    rm ${distdir}/$HELPFILE
+  else
+    echo "Do something with it then.";
+    echo " ";
+    echo "Aborting script."
+    exit(1)
+  endif
+endif
+
+echo " ";
+
+if (`/bin/ls $NOLDOCDIR | /bin/grep -c htm`) then
+  echo -n "Copying all *.htm files from $NOLDOCDIR...";
+  cd $NOLDOCDIR 
+  ls -1 *.htm | awk '{printf ("%s\t%s\t nolhelp$dir:\n", $1, $1)}' | sed -e 's/^\([a-zA-Z0-9_]*\).htm/_\1/' >>! ${distdir}/$HELPFILE
+  cp *.htm ${distdir}/noldoc
+  echo " Done"
+else 
+  echo "No HTML files found in $NOLDOCDIR.";
+endif
+
+echo " ";
+
+if (`/bin/ls $NOLDOCDIR | /bin/grep -c gif`) then
+  echo -n "Copying all *.gif files from $NOLDOCDIR...";
+  cd $NOLDOCDIR
+  ls -1 *.gif | awk '{printf ("%s\t%s\t nolhelp$dir:\n", $1, $1)}' | sed -e 's/^\([a-zA-Z0-9_]*\).gif/_\1/' >>! ${distdir}/$HELPFILE
+  cp *.gif ${distdir}/noldoc
+  echo " Done"
+else 
+  echo "No GIF files found in $NOLDOCDIR.";
+endif
+
+echo " ";
+
+if (`/bin/ls $NOLDOCDIR | /bin/grep -c dat`) then
+  echo -n "Copying all *.dat files from $NOLDOCDIR...";
+  cd $NOLDOCDIR
+  ls -1 *.dat | awk '{printf ("%s\t%s\t nolhelp$dir:\n", $1, $1)}' | sed -e 's/^\([a-zA-Z0-9_]*\).dat/_\1/' >>! ${distdir}/$HELPFILE
+  cp *.dat ${distdir}/noldoc
+  echo " Done"
+ else 
+  echo "No DAT files found in $NOLDOCDIR.";
+endif
+
+echo " ";
+
+   ##############################################################
+
+echo "Done."
+
+exit(1)
