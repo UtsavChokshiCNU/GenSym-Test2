@@ -1,0 +1,273 @@
+#!/bin/sh
+# pm-gsi-promote -- poor man's G2 promote
+
+G2BOX=${DSTBOX}/g2/tape
+SYMBOL_BOX=${DSTBOX}/symbols
+G2DOC_BOX=${SRCBOX}/documentation
+DEMOS_BOX=${DSTBOX}/demos/tape
+ODIR=opt
+
+mkdir -p ${G2BOX}
+mkdir -p ${SYMBOL_BOX}
+mkdir -p ${DEMOS_BOX}
+
+# g2
+cp -p ${DSTBOX}/g2/${ODIR}/g2 \
+      ${SRCBOX}/promote/startserver ${G2BOX}
+
+cp -p ${SRCBOX}/promote/startserver ${DEMOS_BOX}/
+
+# sample ok
+cp -p ${SRCBOX}/promote/g2.ok ${G2BOX}
+
+# utilities (g2passwd, ...)
+cp -p ${DSTBOX}/ext/${ODIR}/g2passwd ${G2BOX}/
+cp -p ${DSTBOX}/ext/${ODIR}/hostlookup ${G2BOX}/
+cp -p ${DSTBOX}/ext/${ODIR}/machine-id ${G2BOX}/
+
+# blank ok
+touch ${G2BOX}/g2.ok
+
+# .dic
+cp -p ${SRCBOX}/promote/index.dic \
+      ${SRCBOX}/promote/kojin.dic \
+      ${SRCBOX}/promote/main.dic ${G2BOX}/
+
+# ext
+mkdir -p ${G2BOX}/ext
+cp -p ${SRCBOX}/ext/c/fgntest.[ch] \
+      ${SRCBOX}/ext/c/foreign.h \
+      ${SRCBOX}/ext/c/icp.h \
+      ${DSTBOX}/ext/opt/libforgn.a \
+      ${DSTBOX}/ext/opt/overlay \
+      ${DSTBOX}/ext/opt/machine-id \
+    ${G2BOX}/ext
+
+### kbs-2011
+### Warning: source KBs are packaged into bundle, fix this by making "ant build_kbs" work
+
+KBSBOX=${DSTBOX}/kbs/tape
+
+mkdir -p ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/sys-mod.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/gxldemo.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/gmsdemo.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/gxl.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/gms.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/gfr.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/g2web-demo.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/g2web.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/guidemo.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/gdddemo.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/guide.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/guicolor.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/guidata.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/guigfr.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/guidelib.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/guimove.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/guidesa.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/guislide.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/guitools.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/uil.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/uilcombo.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/uildefs.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/uillib.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/uilroot.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/uilsa.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/uilslide.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/uiltdlg.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/g2cuidev.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/g2uifile.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/g2uimenu.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/g2uiprnt.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/g2uitree.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/gddlib.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/gdddev.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/gddroot.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/goldui.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/gold.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/starter.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/protools.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/ptroot.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/g2evliss.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/g2com.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/profiler.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/profroot.kb ${KBSBOX}/utils
+cp -p ${SRCBOX}/kbs/gensym-raised-button.kb ${KBSBOX}/utils
+
+# Temporary KB copy before related bridges being included
+cp -p ${SRCBOX}/g2opc/kbs/Launch.kb ${KBSBOX}/utils/launch.kb
+cp -p ${SRCBOX}/g2pi/kbs/g2-pi.kb ${KBSBOX}/utils/g2-pi.kb
+
+mkdir -p ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/gfr.kb ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/uillib.kb ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/blower.gif ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/agitatr2.gif ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/mixer.gif ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/uiltdlg.kb ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/mill.kb ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/kiln1.gif ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/uilcombo.kb ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/guidelib.kb ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/publish-subscribe-doc-ex.kb ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/filter1.gif ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/kbtools.kb ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/nmsdemo.kb ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/car.gif ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/turbine.gif ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/vessel3.gif ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/disttwr.gif ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/attank.gif ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/hopper1.gif ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/sys-mod.kb ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/g2-80r0-doc-examples-remote.kb ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/agitatr1.gif ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/furn1.gif ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/gashldr.gif ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/gddroot.kb ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/gms-native-popup-demo.kb ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/g2-80r0-doc-examples.kb ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/vlvmansm.gif ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/reactor.gif ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/filter2.gif ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/exchgr.gif ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/gms-native-large-menu-demo.kb ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/vessel1.gif ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/bin.gif ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/vessel2.gif ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/g2gl-credit-rating-example.kb ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/vlvmanlg.gif ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/uilslide.kb ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/gms-native-language-demo.kb ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/business.kb ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/world.gif ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/explnfac.kb ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/uil.kb ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/comprssr.gif ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/uilsa.kb ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/gms.kb ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/axldemo.kb ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/furn2.gif ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/vlvcklg.gif ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/publish-subscribe-remote-doc-ex.kb ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/vlvcksm.gif ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/space.kb ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/g2uiprnt.kb ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/gms-native-multiple-menubar-demo.kb ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/vessel4.gif ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/guislide.kb ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/uildefs.kb ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/uilroot.kb ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/pump.gif ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/tankroof.gif ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/dialogs-demo.kb ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/g2web-demo.kb ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/vlv3way.gif ${KBSBOX}/demos
+cp -p ${SRCBOX}/kbs/g2uifile.kb ${KBSBOX}/demos
+
+mkdir -p ${KBSBOX}/tutors
+cp -p ${SRCBOX}/kbs/ch4.kb ${KBSBOX}/tutors
+cp -p ${SRCBOX}/kbs/ch3soln.kb ${KBSBOX}/tutors
+cp -p ${SRCBOX}/kbs/ch5.kb ${KBSBOX}/tutors
+cp -p ${SRCBOX}/kbs/solution.kb ${KBSBOX}/tutors
+cp -p ${SRCBOX}/kbs/ch2.kb ${KBSBOX}/tutors
+cp -p ${SRCBOX}/kbs/ch2soln.kb ${KBSBOX}/tutors
+cp -p ${SRCBOX}/kbs/ch3.kb ${KBSBOX}/tutors
+cp -p ${SRCBOX}/kbs/ch4soln.kb ${KBSBOX}/tutors
+
+mkdir -p ${KBSBOX}/samples
+cp -p ${SRCBOX}/kbs/gfr.kb ${KBSBOX}/samples
+cp -p ${SRCBOX}/kbs/uillib.kb ${KBSBOX}/samples
+cp -p ${SRCBOX}/kbs/uiltdlg.kb ${KBSBOX}/samples
+cp -p ${SRCBOX}/kbs/g2tog2.kb ${KBSBOX}/samples
+cp -p ${SRCBOX}/kbs/uilcombo.kb ${KBSBOX}/samples
+cp -p ${SRCBOX}/kbs/charts.kb ${KBSBOX}/samples
+cp -p ${SRCBOX}/kbs/car.gif ${KBSBOX}/samples
+cp -p ${SRCBOX}/kbs/gsi_exam.kb ${KBSBOX}/samples
+cp -p ${SRCBOX}/kbs/chaos.kb ${KBSBOX}/samples
+cp -p ${SRCBOX}/kbs/sys-mod.kb ${KBSBOX}/samples
+cp -p ${SRCBOX}/kbs/statfns.kb ${KBSBOX}/samples
+cp -p ${SRCBOX}/kbs/language.kb ${KBSBOX}/samples
+cp -p ${SRCBOX}/kbs/sptools.kb ${KBSBOX}/samples
+cp -p ${SRCBOX}/kbs/twtour.kb ${KBSBOX}/samples
+cp -p ${SRCBOX}/kbs/itempass.kb ${KBSBOX}/samples
+cp -p ${SRCBOX}/kbs/xml.kb ${KBSBOX}/samples
+cp -p ${SRCBOX}/kbs/objpass.kb ${KBSBOX}/samples
+cp -p ${SRCBOX}/kbs/profile-demo.kb ${KBSBOX}/samples
+cp -p ${SRCBOX}/kbs/uilslide.kb ${KBSBOX}/samples
+cp -p ${SRCBOX}/kbs/world.gif ${KBSBOX}/samples
+cp -p ${SRCBOX}/kbs/uil.kb ${KBSBOX}/samples
+cp -p ${SRCBOX}/kbs/uilsa.kb ${KBSBOX}/samples
+cp -p ${SRCBOX}/kbs/gms.kb ${KBSBOX}/samples
+cp -p ${SRCBOX}/kbs/image.kb ${KBSBOX}/samples
+cp -p ${SRCBOX}/kbs/twgame.kb ${KBSBOX}/samples
+cp -p ${SRCBOX}/kbs/uildefs.kb ${KBSBOX}/samples
+cp -p ${SRCBOX}/kbs/uilroot.kb ${KBSBOX}/samples
+cp -p ${SRCBOX}/kbs/fgntest.kb ${KBSBOX}/samples
+cp -p ${SRCBOX}/kbs/japanese.kb ${KBSBOX}/samples
+
+### fonts-2011
+
+FONTSBOX=${DSTBOX}/fonts/tape
+mkdir -p ${FONTSBOX}
+cp -p ${SRCBOX}/promote/fonts/* ${FONTSBOX}/
+
+### G2 package readme
+
+README_BOX=${DSTBOX}/readme
+mkdir -p ${README_BOX}
+cp -p ${SRCBOX}/bundle/stage/intelnt-g2-84r3/readme-g2.html ${README_BOX}
+cp -p ${SRCBOX}/bundle/stage/intelnt-g2-84r3/doc/escor/readme-escor.html ${README_BOX}
+cp -p ${SRCBOX}/bundle/stage/intelnt-g2-84r3/doc/integrity/readme-integrity.html ${README_BOX}
+cp -p ${SRCBOX}/java/products/javalink/common/readme-javalink.html ${README_BOX}
+cp -p ${SRCBOX}/nolstudio/readme-nol-bundle.* ${README_BOX}
+cp -p ${SRCBOX}/bundle/stage/intelnt-g2-84r3/doc/nol/readme-nol.html ${README_BOX}
+cp -p ${SRCBOX}/bundle/stage/intelnt-g2-84r3/doc/optegrity/readme-optegrity.html ${README_BOX}
+cp -p ${SRCBOX}/bundle/stage/intelnt-g2-84r3/doc/rethink/readme-rethink.html ${README_BOX}
+cp -p ${SRCBOX}/bundle/stage/intelnt-g2-84r3/doc/symcure/readme-symcure.html ${README_BOX}
+cp -p ${SRCBOX}/java/products/sequoia/common/readme-tw2.html ${README_BOX}
+
+# debug symbols
+cp -p ${DSTBOX}/g2/${ODIR}/g2.dbg ${SYMBOL_BOX}/
+cp -p ${DSTBOX}/tw/${ODIR}/tw.dbg ${SYMBOL_BOX}/
+cp -p ${DSTBOX}/gw/${ODIR}/gw.dbg ${SYMBOL_BOX}/
+
+### promote scripts
+
+BUILDID=`$SRCBOX/build/build-date`
+
+$SRCBOX/tools/remove-product -noconfirm -i g2 ${G2_VERSION}-$BUILDID $MACHINE
+$SRCBOX/tools/promote-product -noconfirm -i g2 $MACHINE $G2BOX ${G2_VERSION}-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e g2 ${G2_VERSION} $MACHINE
+$SRCBOX/tools/promote-product -noconfirm -e g2 $MACHINE ${G2_VERSION}-$BUILDID ${G2_VERSION}
+
+$SRCBOX/tools/remove-product -noconfirm -i symbols ${G2_VERSION}-$BUILDID $MACHINE
+$SRCBOX/tools/promote-product -noconfirm -i symbols $MACHINE $SYMBOL_BOX ${G2_VERSION}-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e symbols ${G2_VERSION} $MACHINE
+$SRCBOX/tools/promote-product -noconfirm -e symbols $MACHINE ${G2_VERSION}-$BUILDID ${G2_VERSION}
+
+$SRCBOX/tools/remove-product -noconfirm -i g2doc ${G2_VERSION}-$BUILDID $MACHINE
+$SRCBOX/tools/promote-product -noconfirm -i g2doc $G2DOC_BOX ${G2_VERSION}-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e g2doc ${G2_VERSION}
+$SRCBOX/tools/promote-product -noconfirm -e g2doc ${G2_VERSION}-$BUILDID ${G2_VERSION}
+
+$SRCBOX/tools/remove-product -noconfirm -i g2pkgreadme ${G2_VERSION}-$BUILDID $MACHINE
+$SRCBOX/tools/promote-product -noconfirm -i g2pkgreadme $README_BOX ${G2_VERSION}-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e g2pkgreadme ${G2_VERSION}
+$SRCBOX/tools/promote-product -noconfirm -e g2pkgreadme ${G2_VERSION}-$BUILDID ${G2_VERSION}
+
+$SRCBOX/tools/remove-product -noconfirm -i kbs ${G2_VERSION}-$BUILDID
+$SRCBOX/tools/promote-product -noconfirm -i kbs $KBSBOX ${G2_VERSION}-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e kbs ${G2_VERSION}
+$SRCBOX/tools/promote-product -noconfirm -e kbs ${G2_VERSION}-$BUILDID ${G2_VERSION}
+
+$SRCBOX/tools/remove-product -noconfirm -i fonts ${G2_VERSION}-$BUILDID
+$SRCBOX/tools/promote-product -noconfirm -i fonts $FONTSBOX ${G2_VERSION}-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e fonts ${G2_VERSION}
+$SRCBOX/tools/promote-product -noconfirm -e fonts ${G2_VERSION}-$BUILDID ${G2_VERSION}
+
+$SRCBOX/tools/remove-product -noconfirm -i demos ${G2_VERSION}-$BUILDID
+$SRCBOX/tools/promote-product -noconfirm -i demos $DEMOS_BOX ${G2_VERSION}-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e demos ${G2_VERSION}
+$SRCBOX/tools/promote-product -noconfirm -e demos ${G2_VERSION}-$BUILDID ${G2_VERSION}
