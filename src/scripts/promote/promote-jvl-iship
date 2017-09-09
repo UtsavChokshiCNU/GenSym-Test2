@@ -1,0 +1,41 @@
+#!/bin/csh
+
+# Promote to iship just javalink for UNIX and NT platforms.
+# You must be AB to run this script
+# Platforms are alphant hp9000s700 intelnt sparcsol rs6000 linux alphaosf hpia64
+
+# Variable declarations
+set thisfile=$0
+if ( ${thisfile:h} == ${thisfile} ) then
+  set script_home=.
+else
+  set script_home=${thisfile:h}
+endif
+
+
+if ($#argv != 1) then
+  echo "Error: Wrong number of arguments, $#argv supplied, 1 required (buildid)."
+  exit 1
+endif
+
+sandbox t2
+
+setenv SOURCE ${SRCBOX}/cross-platform
+
+setenv VER $1
+
+
+${script_home}/make-cross-platform-promote javalink
+
+/gensym/tools/promote-product -noconfirm -i jvlx ${SOURCE}/javalink $VER
+foreach platform (intelnt sparcsol linux  hp9000s700 rs6000  alphaosf hpia64)
+  /gensym/tools/promote-product -noconfirm -i jvl $platform ${SRCBOX}/staging/javalink/$platform $VER
+end
+
+/gensym/tools/promote-product -noconfirm -i jvl-javadoc ${SRCBOX}/docs/javalink $VER
+
+
+unsetenv VER
+unsetenv SOURCE
+unsetenv script_home
+
