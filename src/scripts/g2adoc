@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Usage: g2adoc.bat <path-to-xml-kb>
+# Will print AsciiDoc to stdout.
+# Requires QuickLisp.
+# Prior to use, copy g2adoc folder from src/tools/lisp to ~/quicklisp/local-projects
+
+if [ "$#" -ne 1 ]; then
+    echo Usage: g2adoc path-to-xml-kb
+    exit
+fi
+
+sbcl --noinform --non-interactive --eval "(ql:quickload \"g2adoc\" :silent t)" --eval "(g2adoc:document-kb \"$1\")" --quit
+
