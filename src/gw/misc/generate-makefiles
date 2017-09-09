@@ -1,0 +1,28 @@
+#!/bin/csh -f
+onintr cleanup
+if ($1 != -please) then
+  echo "$0 -please"
+  echo "  Generate the makefiles for gsi-web in"
+  echo "  the gw/{o,opt,o-pg} of the current"
+  echo "  sandbox, i.e. ($SPIN_ID)."
+  exit 1
+endif
+
+echo Generating new makefiles
+set template = /bt/$SPIN_ID/gw/misc/makefile.m4
+# This M4 is less buggy than most.
+set m4 = /usr/5bin/m4
+
+foreach flavor ( o opt o-pg )
+  $m4 -Dflavor=$flavor $template > /tmp/$$
+  cmp -s /tmp/$$ /bt/$SPIN_ID/gw/$flavor/makefile
+  if ( $status ) then
+    echo " UPDATING: $flavor/makefile"
+    cp /tmp/$$ /bt/$SPIN_ID/gw/$flavor/makefile
+  else
+    echo "unchanged: $flavor/makefile"
+  endif
+end
+
+cleanup:
+  rm /tmp/$$
