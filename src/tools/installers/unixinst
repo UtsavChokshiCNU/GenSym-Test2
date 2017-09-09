@@ -1,0 +1,1036 @@
+#!/bin/sh
+
+#-----------------------------------------------------------------
+# unixinst
+#
+# Copyright (c) 1997
+#          Gensym Corporation.
+#          125 CambridgePark Drive, Cambridge MA 02140
+#          All Rights Reserved.
+#
+# Description: This shell script installs Gensym products from
+#     CD-ROM and tar tapes or tar archives to Unix platforms, additionally 
+#     handling name conversion on systems which do not yet support the ISO9660
+#     Rock Ridge extensions.
+#-----------------------------------------------------------------
+
+#-----------------------------------------------------------------
+# The following are variable declarations.
+# During tapemaking, contentlist is reassigned as described below.
+#-----------------------------------------------------------------
+defaultroot="/usr"
+interactive=TRUE
+contentlist="CONTENT-LIST"
+CDROM=TRUE
+device=""
+defaultdev=""
+
+#-----------------------------------------------------------------
+# Usage section
+#-----------------------------------------------------------------
+if [ $# -ne 0 -a $# -ne 4 ]; then
+    echo " "
+    echo "NAME"
+    echo "   unixinst - Performs installation for Gensym products"
+    echo " "
+    echo "SYNOPSIS"
+    echo "   unixinst"
+    echo "   unixinst  <product> <platform> <device> <destination>"
+    echo " "
+    echo "DESCRIPTION"
+    echo "   In the first form, this script performs a user-interactive,"
+    echo "   menu-driven installation."
+    echo " "
+    echo "   In the second form, this script performs an installation using"
+    echo "   information provided on the command line."
+    echo " "
+    echo "OPTIONS"
+    echo "   -h[elp]        Prints this help section."
+    echo "   <product>      Name of product to install from archive"
+    echo "   <platform>     Platform name for architecture-specific products."
+    echo "                  For platform-independent (KB based) products,"
+    echo "                  specify 'indep'."
+    echo "   <device>       Name of CD or tape device or full path to tar file"
+    echo "   <destination>  Target location for desired product"
+    echo " "
+    echo "EXAMPLES:"
+    echo "   To install G2 for the SunOS 4.x architecture, use a command"
+    echo "   similar to the following:"
+    echo " "
+    echo "       unixinst g2 sun4 /dev/cdrom /usr/gensym/g2"
+    echo "       unixinst g2 sun4 /dev/rmt8 /usr/gensym/g2"
+    echo " "
+    exit 1
+fi
+
+#----------------------------------------------------------------------
+# This is a generic script for installing Gensym products
+# from CD-ROM as well as tapes. The contentlist variable defined
+# above is used to differentiate between the two kinds of media. For
+# tapes, this variable is replaced by the list of platform and product
+# pairs whereas for CD-ROMs this variable contains the value that it is
+# initialized to at the top.
+#----------------------------------------------------------------------
+
+if [ "$contentlist" != "CONTENT-LIST" ]; then
+    CDROM=FALSE
+
+    #-----------------------------------------------------------------
+    # Not all versions of tar use the TAPE environment variable,
+    # but for those that do we'll check it and offer as default.
+    #-----------------------------------------------------------------
+    if [ "$TAPE" != "" ]; then
+        defaultdev=$TAPE
+    fi
+else
+    defaultdev="/cdrom"
+fi
+
+#-----------------------------------------------------------------
+# Process the command line arguments, if specified
+#-----------------------------------------------------------------
+if [ $# -eq 4 ]; then
+    product=$1
+    target=$2
+    device=$3
+    destination=$4
+    interactive=FALSE
+fi
+
+if [ "$device" = "" ]; then
+    device=$defaultdev
+fi
+
+#-----------------------------------------------------------------
+# Query location and existence of tar archive or cd mount. 
+# Once found get a list of platform directories on the media.
+#-----------------------------------------------------------------
+while [ TRUE ]; do
+    #------------------------------------------------------------
+    # Pipe all queries thru tr to strip newlines because echo -n
+    # does not work on all systems.
+    #------------------------------------------------------------
+    if [ "$interactive" = TRUE ]; then
+        echo ""
+        if [ "$CDROM" = TRUE ]; then
+            (echo "Enter cd mount directory (q to quit) [$device] :" | tr "\012" " ")
+        else
+            (echo "Enter tape device or full path to tar file (q to quit) [$device] : " | tr "\012" " ")
+        fi
+        read reply
+ 
+        if [ "$reply" = "q" -o "$reply" = "Q" ]; then
+            exit 0
+        fi
+ 
+        if [ "$reply" != "" ]; then
+            device=$reply
+        fi
+    fi
+  
+    #-----------------------------------------------------------------------
+    # Check for valid "device". For CD-ROM installations the specified
+    # device should be a directory and for tape or tar archive installations
+    # it should be a regular file or a character special file.
+    #-----------------------------------------------------------------------
+
+    devicenotfound=FALSE
+    if [ "$CDROM" = TRUE ]; then
+        if [ ! -d "$device" ]; then
+            echo "Could not find directory $device."
+            devicenotfound=TRUE
+        fi
+    else
+        if [ ! -f "$device" ]; then
+            if [ ! -c "$device" ]; then
+                echo "Could not find tape device or tar file $device."
+                devicenotfound=TRUE
+            fi
+        fi
+    fi
+
+    if [ "$devicenotfound" = TRUE ]; then    # Invalid dir
+        device=$defaultdev
+        if [ "$interactive" = TRUE ]; then
+            continue
+        else
+            exit 1
+        fi
+    fi
+
+    #----------------------------------------------------------------
+    # Build list of platforms available on the media. This is needed
+    # only for CD-ROM when a list of platforms for a specific product
+    # is to be made. For installations from tape or tar archives the
+    # contentlist is used.
+    #----------------------------------------------------------------
+
+    if [ "$CDROM" = TRUE ]; then 
+        platformlist=`ls $device | while read name
+                         do
+                             if [ -d $device/$name ]; then
+                                 (echo "$name " | tr "\012" " ")
+                             fi
+                         done`
+        if [ "$platformlist" = "" ]; then
+            echo "Could not find any product directories in [$device]."
+            echo "Please ensure that the specified path is correct."
+            device=$defaultdev
+            if [ "$interactive" = TRUE ]; then
+                continue                # Invalid dir, request another.
+            else
+                exit 1
+            fi
+        fi
+    fi
+
+    break
+done
+
+#-----------------------------------------------------------------
+# Build a product list as follows:
+#  For CDROM:
+#     In each platform directory, look for product directories.
+#     For each product not yet in the product list, add it.
+#  For tape or tar archive:
+#     Traverse the tape content list. For each product not yet in
+#     the product list, add it.
+#-----------------------------------------------------------------
+
+productlist=""
+
+if [ "$CDROM" = TRUE ]; then        # for CD-ROM installations
+    for cdplatform in $platformlist
+    do
+        platprods=`ls $device/$cdplatform | while read name
+                       do
+		         if [ -d $device/$cdplatform/$name ]; then
+		           (echo "$name " | tr "\012" " ")
+		         fi
+                       done`
+        for platprod in $platprods
+        do
+            addtolist=TRUE
+	    for prod in $productlist
+	    do
+	      if [ "$platprod" = "$prod" ]; then
+                addtolist=FALSE
+	      fi
+	    done
+	    if [ "$addtolist" = TRUE ]; then
+	        productlist="$productlist $platprod"
+	    fi
+        done
+    done
+else                                # for tape or tar archive installations
+    set $contentlist
+    while [ $# -gt 0 ]; do
+        addtolist=TRUE
+        for prod in $productlist
+        do
+            if [ "$2" = "$prod" ]; then
+                addtolist=FALSE
+            fi
+        done
+        if [ "$addtolist" = TRUE ]; then
+            productlist="$productlist $2"
+        fi
+        shift         
+        shift
+    done
+fi
+
+#-----------------------------------------------------------------
+# Install products until user chooses to quit
+#-----------------------------------------------------------------
+while [ TRUE ]; do
+
+    #------------------------------------------------
+    # Determine and verify product selection
+    #------------------------------------------------
+    if [ "$interactive" = FALSE ]; then
+        #----------------------------------------------------------
+        # In order to verify command line args, we must convert to
+        # a common (lower) case
+        #----------------------------------------------------------
+        lwrcse_product=`echo $product |
+	       sed 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`
+	for prod in $productlist
+	do
+	  lwrcse_prod=`echo $prod |
+	        sed 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`
+	  if [ "$lwrcse_product" = "$lwrcse_prod" ]; then
+	      #-----------------------------------------------------
+	      # When differences in case exist, use case from media
+	      #-----------------------------------------------------
+	      if [ "$product" != "$prod" ]; then
+		  product=$prod
+	      fi
+	      validproduct=TRUE
+	      break
+	  fi
+	done
+	
+	if [ "$validproduct" != TRUE ]; then
+	    echo "ERROR: Product $product not found in archive."
+	    exit 1
+	fi
+    else
+
+        #-------------------------------------------------------------
+        # Display menu of products found on media. Query for selection.
+        # Repeat until a valid selection in made.
+        #-------------------------------------------------------------
+        while [ TRUE ]; do
+            productcount=0
+            echo ""
+            echo "Select a product to install:"
+            for prod in $productlist
+            do
+                productcount=`expr $productcount + 1`
+                case "$prod" in
+                    axl|AXL)
+                        echo "     $productcount.  G2 ActiveXLink"
+                        ;;
+                    g2|G2)
+                        echo "     $productcount.  G2"
+                        ;;
+                    tw|TW)
+                        echo "     $productcount.  Telewindows"
+                        ;;
+                    gsi32|GSI32)
+                        echo "     $productcount.  GSI 3.2"
+                        ;;
+                    gsi40|GSI40)
+                        echo "     $productcount.  GSI 4.0"
+                        ;;
+                    gsi41|GSI41)
+                        echo "     $productcount.  GSI 4.1"
+                        ;;
+                    gsi|GSI)
+                        echo "     $productcount.  GSI"
+                        ;;
+                    gspc|GSPC)
+                        echo "     $productcount.  GSPC"
+                        ;;
+                    guide|GUIDE)
+                        echo "     $productcount.  GUIDE"
+                        ;;
+                    gm|GM)
+                        echo "     $productcount.  G2 WebMiner"
+                        ;;
+                    gw|GW)
+                        echo "     $productcount.  G2 WebLink"
+                        ;;
+                    g2corba|G2CORBA)
+                        echo "     $productcount.  G2 CORBALink"
+                        ;;
+                    g2doc|G2DOC)
+                        echo "     $productcount.  G2 Core Technology Online Documentation"
+                        ;;
+                    g2ps|G2PS)
+                        echo "     $productcount.  G2 Core Technology Postscript Files"
+                        ;;
+                    g2tut|G2TUT)
+                        echo "     $productcount.  G2 Tutorials"
+                        ;;
+                    g2stkdoc|G2STKDOC)
+                        echo "     $productcount.  G2 Starter Kit Online Documentation"
+                        ;;
+                    g2stkps|G2STKPS)
+                        echo "     $productcount.  G2 Starter Kit Postscript Files"
+                        ;;
+                    g2utldoc|G2UTLDOC)
+                        echo "     $productcount.  G2 Utilities Online Documentation"
+                        ;;
+                    g2utlps|G2UTLPS)
+                        echo "     $productcount.  G2 Utilities Postscript Files"
+                        ;;
+                    gda|GDA)
+                        echo "     $productcount.  GDA"
+                        ;;
+                    fe|FE|opex|OPEX)
+                        echo "     $productcount.  OpEx Core Services and OPAC"
+                        ;;
+                    nol|NOL)
+                        echo "     $productcount.  NeurOn-Line"
+                        ;;
+                    opexdoc|OPEXDOC)
+                        echo "     $productcount.  OpEx and G2-SNMP Documentation"
+                        ;;
+                    oxs|OXS)
+                        echo "     $productcount.  Operations Expert SNMP"
+                        ;;
+                    g2snmpgn|G2SNMPGN)
+                        echo "     $productcount.  G2-SNMP generic bridge"
+                        ;;
+                    g2snmpov|G2SNMPOV)
+                        echo "     $productcount.  G2-SNMP bridge for HP Network Node Manager"
+                        ;;
+                    g2snmpnv|G2SNMPNV)
+                        echo "     $productcount.  G2-SNMP bridge for NetView"
+                        ;;
+                    sentinel|SENTINEL)
+                        echo "     $productcount.  Sentinel Driver Files for NT"
+                        ;;
+                    rethink|RETHINK)
+                        echo "     $productcount.  ReThink"
+                        ;;
+                    fonts|FONTS)
+                        echo "     $productcount.  Non-Latin Fonts for G2/Telewindows"
+                        ;;
+		    kbs|KBS)
+                        echo "     $productcount.  Samples, Demos, and Utilities for G2"
+                        ;;
+		    winio|WINIO)
+                        echo "     $productcount.  Windows 3.1 I/O extensions"
+                        ;;
+		    win32s|WIN32S)
+                        echo "     $productcount.  Win32s extensions to MS Windows 3.1"
+                        ;;
+		    symcure|SYMCURE)
+			echo "     $productcount.  SymCure"
+                        ;;
+                    g2player|G2PLAYER)
+                        echo "     $productcount.  G2Player"
+                        ;;
+                    ovmap|OVMAP)
+                        echo "     $productcount.  OpenView Map Importer"
+			;;
+                    ipra|IPRA)
+                        echo "     $productcount.  IP Reachability Analyzer"
+                        ;;
+                    *)
+                        echo "     $productcount.  Unregistered Product : $prod"
+                        ;;
+                esac
+	    done
+	    if [ $productcount -eq 1 ]; then
+                selectstr="1"
+            else
+                selectstr="1-$productcount"
+            fi
+            echo ""
+            (echo "Enter Selection ($selectstr or q to quit):" | tr "\012" " ")
+            read reply
+
+            case "$reply" in
+                [0-9]|[0-9][0-9])
+                    if [ $reply -gt 0 -a $reply -le $productcount ]; then
+                        #------------------------------------------------
+                        # A valid selection was made. To get selection that 
+                        # corresponds to numbered reply, proceed forward thru 
+                        # list # times by decrementing reply until 0.
+                        #------------------------------------------------
+                        for product in $productlist
+                        do
+	                    reply=`expr $reply - 1`
+	                    if [ $reply -eq 0 ]; then
+			      break # Got list member #n, break out of loop
+                            fi
+                        done
+                        break            # out of loop and continue processing
+                    else
+		        #------------------------------------------------
+		        # A number was entered, out of range of selections
+                        #------------------------------------------------
+                        echo ""
+                        echo "  ** Invalid Selection **"
+                        continue           # back to product selection menu
+                    fi
+                    ;;
+	        q|Q)
+                    exit 0;
+                    ;;
+                *)
+                    #------------------------------------------------
+                    # Something invalid was entered
+                    #------------------------------------------------
+                    echo ""
+                    echo "  ** Invalid Selection **"
+                    continue                 # back to product selection menu
+		    ;;
+            esac
+	done
+    fi
+
+    #-----------------------------------------------------------------
+    # Do any necessary preprocessing for a given product.
+    #-----------------------------------------------------------------
+
+    # Because fonts and kbs are installed with g2 and/or TW, verify that
+    # the user wishes to install them before proceeding.
+
+    if [ "$interactive" = TRUE ]; then
+        case "$product" in
+          kbs|KBS)
+              echo ""
+              echo "   * You have chosen to install G2 Samples, Demos, and Utilities."
+              echo "   * These files are normally installed during installation of G2."
+              echo "   * Please confirm that you want to install the files separately."
+              echo ""
+          (echo "Enter y to continue their installation or return for main menu []:" | tr "\012" " ")
+              read reply
+              if [ "$reply" != y -a "$reply" != Y ]; then
+                  continue  # at product menu loop
+              fi
+          ;;
+          fonts|FONTS)
+              echo ""
+              echo "   * You have chosen to install non-Latin fonts.  The fonts"
+              echo "   * are normally installed during installation of G2 or Telewindows."
+              echo "   * Please confirm that you want to install the fonts separately."
+              echo ""
+          (echo "Enter y to continue fonts installation or return for main menu []:" | tr "\012" " ")
+              read reply
+              if [ "$reply" != y -a "$reply" != Y ]; then
+                  continue  # at product menu loop
+              fi
+          ;;
+        esac
+    fi  # if interactive
+
+    #-----------------------------------------------------------------
+    # Build list of platforms for which selected product is available.
+    # List is not needed when the product is platform-independent.
+    # CD-ROM installations: Check for the existence of "product" 
+    #   directory under each of the platform directories on the CD-ROM.
+    # Tape or tar archive installations: Traverse through the contents
+    #   list and make a list of all platforms for which the selected 
+    #   "product" is available.
+    #-----------------------------------------------------------------
+    platforms=""
+
+    if [ "$CDROM" = TRUE ]; then
+        for plat in $platformlist
+        do
+            addtolist=TRUE
+	    if [ -d $device/$plat/$product ]; then
+	        if [ "$plat" = "indep" -o "$plat" = "INDEP" ]; then
+	          target=$plat
+	          break
+	        fi
+	    else
+	        addtolist=FALSE
+	    fi
+	
+            if [ "$addtolist" = TRUE ]; then
+	        platforms="$platforms $plat"
+	    fi
+        done
+    else
+        set $contentlist
+        while [ $# -gt 0 ]; do
+            addtolist=TRUE
+            if [ "$2" = "$product" ]; then
+                if [ "$1" = "indep" ]; then
+                    target="indep"
+                    break
+                fi
+            else
+                addtolist=FALSE
+            fi
+
+            if [ "$addtolist" = TRUE ]; then
+                platforms="$platforms $1"
+            fi
+            shift
+            shift
+        done
+    fi
+
+    #------------------------------------------------
+    # Determine and verify target platform
+    #------------------------------------------------
+    if [ "$interactive" = FALSE ]; then
+
+        if [ "$target" = "indep" -o "$target" = "INDEP" ]; then
+	    validtarget=TRUE
+	else
+	    #----------------------------------------------------------
+	    # In order to verify command line args, we must convert to
+	    # a common (lower) case
+	    #----------------------------------------------------------
+	    lwrcse_target=`echo $target |
+	          sed 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`
+	    for platform in $platforms
+	    do
+	        lwrcse_platform=`echo $platform |
+	          sed 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`
+	        if [ "$lwrcse_platform" = "$lwrcse_target" ]; then
+		    #-----------------------------------------------------
+		    # When differences in case exist, use case from media
+		    #-----------------------------------------------------
+		    if [ "$target" != "$platform" ]; then
+		      target=$platform
+		    fi
+		    validtarget=TRUE
+		    break
+		fi
+	    done
+	fi
+      
+	if [ "$validtarget" != TRUE ]; then
+	  echo "ERROR: Target platform, $target, not found in archive"
+	  exit 1
+	fi
+
+    elif [ "$target" != "indep" -a "$target" != "INDEP" ]; then
+      
+        #-----------------------------------------------------------------
+        # Display Menu of Platforms found on CD. Query for selection.
+        # Repeat until a valid selection in made.
+        #-----------------------------------------------------------------
+        while [ TRUE ]; do
+	    platformcount=0
+            echo ""
+            echo "Select target platform:"
+	    for platform in $platforms
+	    do
+	      platformcount=`expr $platformcount + 1`
+	      case "$platform" in
+                alphant|ALPHANT)
+                    echo "     $platformcount.  MS Windows NT on DEC Alpha AXP"
+                    ;;
+	        alphaosf|ALPHAOSF)
+	            echo "     $platformcount.  DEC Unix on DEC Alpha AXP"
+                    ;;
+                aviion|AVIION)
+                    echo "     $platformcount.  Data General AViioN DG/UX"
+                    ;;
+                hp9000s3|HP9000S3|hp9000s300|HP9000S300)
+                    echo "     $platformcount.  HP-UX on HP 9000 Series 300"
+                    ;;
+                hp9000s7|HP9000S7|hp9000s700|HP9000S700)
+                    echo "     $platformcount.  HP-UX on HP 9000 Series 700"
+                    ;;
+                hp9000s8|HP9000S8|hp9000s800|HP9000S800)
+                    echo "     $platformcount.  HP-UX on HP 9000 Series 800"
+                    ;;
+                intelnt|INTELNT)
+                    echo "     $platformcount.  MS Windows NT on Intel-based PCs"
+                    ;;
+                mips|MIPS)
+                    echo "     $platformcount.  DEC Ultrix"
+                    ;;
+                motorola|MOTOROLA)
+                    echo "     $platformcount.  Motorola UNIX System V"
+                    ;;
+                mswin31|MSWIN31)
+                    echo "     $platformcount.  MS Windows 3.x"
+                    ;;
+                nec|NEC)
+                    echo "     $platformcount.  NEC UNIX System V"
+                    ;;
+                ncr|NCR)
+                    echo "     $platformcount.  NCR UNIX System V"
+                    ;;
+                rs6000|RS6000)
+                    echo "     $platformcount.  IBM RS/6000 AIX"
+                    ;;
+                sgi|SGI)
+                    echo "     $platformcount.  SGI IRIX"
+                    ;;
+                sparcsol|SPARCSOL)
+                    echo "     $platformcount.  Sun Solaris"
+                    ;;
+                sun4|SUN4)
+                    echo "     $platformcount.  SunOS 4.x"
+                    ;;
+                *)
+                    echo "     $platformcount.  Unregistered Platform : $platform"
+                    ;;
+	      esac
+	    done	    
+	    if [ $platformcount -eq 1 ]; then
+	        selectstr="1,"
+	    else
+	        selectstr="1-$platformcount,"
+	    fi
+            echo ""
+	    (echo "Enter Selection ($selectstr r to return to main menu, or q to quit):" | tr "\012" " ")
+	    read reply
+
+	    case "$reply" in
+	      [0-9]|[0-9][0-9])
+                if [ $reply -gt 0 -a $reply -le $platformcount ]; then
+                    #------------------------------------------------
+                    # A valid selection was made. To get selection that 
+                    # corresponds to numbered reply, proceed forward thru
+                    # list # times by decrementing reply until 0.
+                    #------------------------------------------------
+                    for platform in $platforms
+                    do
+        	        reply=`expr $reply - 1`
+                        if [ $reply -eq 0 ]; then
+			  break      # Got list member #n, break out of for loop
+                        fi
+                    done
+                    target=$platform
+                else
+                    #------------------------------------------------
+                    # A number was entered, out of range of selections
+                    #------------------------------------------------
+                    echo ""
+                    echo "  ** Invalid Selection **"
+                    continue                 # back to platform selection menu
+                fi
+                ;;
+            q|Q)
+                exit 0;
+                ;;
+	    r|R)
+		#------------------------------------------------
+		# Return to the top of the outermost while loop
+		#------------------------------------------------
+		continue 2;
+		;;
+            *)
+                #------------------------------------------------
+                # Something invalid was entered
+                #------------------------------------------------
+                echo ""
+                echo "  ** Invalid Selection **"
+                continue                 # back to platform selection menu
+		;;
+	    esac
+	    break
+	done
+    fi
+
+
+    #-----------------------------------------------------------------
+    # Query destination directory. Repeat until a valid dir is given.
+    # Valid Dirs:
+    #    When installing a single product, a valid destination is
+    #    of the form /path/product, where path exists and is writable
+    #    and product does not preexist.
+    #
+    #-----------------------------------------------------------------
+    defaultbase=`echo $product |
+    sed 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`
+
+    while [ TRUE ]; do
+       if [ "$interactive" = TRUE ]; then
+	   newroot=$defaultroot
+	   newbase=$defaultbase
+
+	   echo ""
+	   (echo "Enter destination directory (q to quit) [$newroot/$newbase] :" | tr "\012" " ")
+	   read reply
+
+	   if [ "$reply" = "q" -o "$reply" = "Q" ]; then
+	     exit 0
+	   fi
+       else
+	   reply=$destination
+       fi
+
+       if [ "$reply" != "" ]; then
+	   newroot=`dirname $reply`
+	   newbase=`basename $reply`
+       fi
+       
+       #------------------------------------------
+       # Verify root exists and is writable
+       #------------------------------------------
+       if [ "$newroot" = "" -o ! -d "$newroot" ]; then
+	 echo "Destination directory $newroot could not be found!"
+	 if [ "$interactive" = TRUE ]; then
+	     continue               # Query for a valid dest
+	 else
+	     exit 1
+	 fi
+       fi
+
+       if [ ! -w "$newroot" ]; then
+	 echo "You do not have write permission in $newroot!"
+	 if [ "$interactive" = TRUE ]; then
+	     continue               # Query for a valid dest
+	 else
+	     exit 1
+	 fi
+       fi
+
+       #-----------------------------------------------------------------
+       # For single product installs, verify and explicitly create
+       # target directory
+       #-----------------------------------------------------------------
+       if [ "$newbase" = "" ]; then
+	   #----------------------------------------------------
+	   # If basedir is null, the path given had a trailing slash
+	   # or is some other way invalid. This is bad.
+	   #----------------------------------------------------
+	   echo "Destination $newroot/$newbase has invalid format!"
+	   if [ "$interactive" = TRUE ]; then
+	     continue               # Query for a valid dest
+	   else
+	     exit 1
+	   fi
+       fi
+
+       if [ -d $newroot/$newbase ]; then
+	   echo "Destination directory $newroot/$newbase already exists!"
+	   echo "Please rename or backup and remove."
+	   if [ "$interactive" = TRUE ]; then
+	     continue               # Query for a valid dest
+	   else
+	     exit 1
+	   fi
+       fi
+
+       mkdir $newroot/$newbase
+       if [ ! -d $newroot/$newbase ]; then
+	   echo "Error creating target directory $newroot/$newbase!"
+	   if [ "$interactive" = TRUE ]; then
+	     continue               # Query for a valid dest
+	   else
+	     exit 1
+	   fi
+       fi
+       
+       break                      # Dirs valid, proceed with copy
+    done
+
+    defaultroot=$newroot
+    defaultbase=$newbase
+
+    if [ "$CDROM" = TRUE ]; then          # installation from CD-ROM
+        srclev0=$device/$target/$product
+        destlev0=$newroot/$newbase
+
+        echo ""
+        echo "Installing from $srclev0 to $destlev0..."
+
+        #--------------------------------------------------------------------
+        # Test for ISO9660 Rock Ridge extensions support on installation
+        # platform. If Rock Ridge is supported this script will exist
+        # simply as "unixinst".
+        # If Rock Ridge is supported then we use tar to copy files from the CD
+        # to the target directory. If it is not supported, tar and "cp -rp"
+        # do not perform properly so we must perform a manual recursive copy 
+        # and repair the filenames.
+        #---------------------------------------------------------------------
+        if [ -f $device/unixinst -a ! -f $device/unixinst. ]; then
+            (tar cf - -C $srclev0 . | (cd $destlev0; tar xfp -)) > /dev/null 2>&1
+        else
+            #----------------------------------------------------------------
+            # The following set of nested loops copies all files and subdirs 
+            # from the source media to the destination directory. Where ISO 
+            # 9660 Rock Ridge extensions are not supported it renames all 
+            # files to lowercase and drops any trailing ";1", "-1", or a "." 
+            # alone or that precedes them.  The loops traverse up to three 
+            # levels of directories. 
+            #----------------------------------------------------------------
+
+            for name0 in `ls $srclev0`; do
+                lowername0=`echo $name0 |
+                    sed 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/
+                        s/\(.*\)[-;]1$/\1/
+                        s/\(.*\)\.$/\1/'`
+
+                if [ -d $srclev0/$name0 ]; then
+                    srclev1=$srclev0/$name0
+                    destlev1=$destlev0/$lowername0
+                    mkdir $destlev1
+                    if [ ! -d $destlev1 ]; then
+                        echo "Error creating target directory $destlev1!"
+                        continue   # copy as much as possible
+                    fi
+
+                    for name1 in `ls $srclev1`; do
+                        lowername1=`echo $name1 |
+                            sed 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/
+                                s/\(.*\)[-;]1$/\1/
+                                s/\(.*\)\.$/\1/'`
+
+                        if [ -d $srclev1/$name1 ]; then
+                            srclev2=$srclev1/$name1
+                            destlev2=$destlev1/$lowername1
+                            mkdir $destlev2
+                            if [ ! -d $destlev2 ]; then
+                                echo "Error creating target directory $destlev2!"
+                                continue   # copy as much as possible
+                            fi
+
+                            for name2 in `ls $srclev2`; do
+                                lowername2=`echo $name2 |
+                                    sed 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/
+                                       s/\(.*\)[-;]1$/\1/
+                                       s/\(.*\)\.$/\1/'`
+                                cp -p $srclev2/$name2 $destlev2/$lowername2
+                            done
+                        else
+                            cp -p $srclev1/$name1 $destlev1/$lowername1
+                        fi
+                    done
+                else
+                    cp -p $srclev0/$name0 $destlev0/$lowername0
+                fi
+            done
+        fi
+
+        #-----------------------------------------------------
+        # Remove contents.txt and prodver.txt files.  prodver.txt
+        # contains version info for NT registry registration and
+        # is created during CD production.
+        #-----------------------------------------------------
+        if [ -f $destlev0/contents.txt ]; then
+            rm -f $destlev0/contents.txt
+        fi
+        if [ -f $destlev0/prodver.txt ]; then
+            rm -f $destlev0/prodver.txt
+        fi
+
+    else           # installation from tape or tar archive
+
+        destdir=$newroot/$newbase
+        deliverable=$target/$product
+
+        echo ""
+        echo "Installing to $destdir..."
+
+        #---------------------------------------------------------------
+        # Rewind tape to beginning before each install.
+        #
+        # Most Unix platforms support the first form of mt below.
+        # A few require the second form.  There's no other alternative
+        # but to try both, sending any failure notifications into
+        # /dev/null.
+        #---------------------------------------------------------------
+        mt -f $device rewind > /dev/null 2>&1
+        mt -t $device rew > /dev/null 2>&1 
+       
+        #-----------------------------------------------------
+        # Install desired product and remove contents.txt file
+        #-----------------------------------------------------
+
+        (cd $destdir ; tar xf $device $deliverable) > /dev/null 2>&1
+    
+        if [ -d $destdir/$target/$product ]; then
+            (cd $destdir ; mv $deliverable/* . ; rm -rf $target) > /dev/null 2>&1
+        else
+            echo ""
+            echo "ERROR:  Error while installing $product from $device."
+            echo "  Verify that the tape contains the product by using the"
+            echo "  command tar tvf $device and looking for $deliverable"
+            echo "  If not found, make sure you are using the unixinst script"
+            echo "  from this tape."
+            exit 1
+        fi
+ 
+        if [ -f $destdir/contents.txt ]; then
+            rm -f $destdir/contents.txt
+        fi
+    fi            # file transfer complete
+
+    echo "File transfer complete."
+
+    #----------------------------------------------
+    # Perform any additional product-specific tasks
+    #----------------------------------------------
+    case "$product" in
+        tw|TW|g2|G2)
+            # Ask the user to install fonts and kbs (for g2 only) by default.
+            # If the user agrees, call the script recursively.
+            # Skip subproducts for non-interactive installation.
+ 
+            for subproduct in kbs fonts; do
+                complete=FALSE
+                while [ $complete != TRUE -a $interactive = TRUE ]; do
+    
+                    complete=TRUE
+                    # Don't install kbs for tw
+                    if [ $subproduct = kbs ]; then
+                        if [ "$product" = tw -o "$product" = TW ]; then
+                            break
+                        fi
+                    fi
+
+                    # Don't try to install subproduct if a subdirectory
+                    # already exists for it.  This can occur for pre-50
+                    # product shipments in which fonts and kbs were included.
+
+                    if [ -d $newroot/$newbase/$subproduct ]; then
+                            break;
+                    fi
+    
+                    echo ""
+                    if [ $subproduct = kbs ]; then
+                        echo "   * G2 Samples, Demos, and Utilities will now be installed."
+                        echo "   * Gensym recommends that you install these files."
+                    else
+                        echo "   * Gensym's non-Latin fonts will now be installed."
+                        echo "   * Gensym recommends that you install the fonts."
+                    fi
+                    echo "   * However, if you are sure that you do not want"
+                    echo "   * to install them, then type skip."
+                    echo ""
+                    (echo "Enter destination directory or type skip (q to quit) [$newroot/$newbase/$subproduct] :" | tr "\012" " ")
+                    read reply
+    
+                    if [ "$reply" = "skip" -o "$reply" = "SKIP" ]; then
+                        continue
+                    fi
+    
+                    if [ "$reply" = "q" -o "$reply" = "Q" ]; then
+                        exit 0
+                    fi
+    
+                    if [ "$reply" = "" -o "$reply" = "" ]; then
+                        reply=$newroot/$newbase/$subproduct
+                    fi
+    
+                    # Try to install subproduct by invoking this script 
+                    # recursively. Let the script take care of finding errors.
+
+                    $0 $subproduct indep "$device" "$reply"
+                    status="$?"
+    
+                    # If an error occurred, try again
+                    if [ "$status" != 0 ]; then
+                        complete=FALSE
+                    fi
+                done  # with subproduct installation
+            done  # with loop over subproducts
+
+            # For pre-50 shipments, rename sys_mod.kb for g2
+            if [ -f $newroot/$newbase/kbs/sys_mod.kb ]; then
+                (cd $newroot/$newbase; mv kbs/sys_mod.kb kbs/sys-mod.kb)
+            fi
+            ;;
+        fe|FE)
+            if [ -f $newroot/$newbase/kbs/sys_mod.kb ]; then
+                (cd $newroot/$newbase; mv kbs/sys_mod.kb kbs/sys-mod.kb)
+            fi
+            ;;
+        kbs|KBS)
+            # Rename sys_mod.kb in all possible kbs subdirectories
+            for kbsubdir in demos samples tutors utils; do
+                if [ -f $newroot/$newbase/$kbsubdir/sys_mod.kb ]; then
+                    (cd $newroot/$newbase/$kbsubdir; mv sys_mod.kb sys-mod.kb)
+                fi
+            done
+            ;;
+        *)
+            # Since sys-mod.kb ships with many products, fix it if found
+            if [ -f $newroot/$newbase/sys_mod.kb ]; then
+                (cd $newroot/$newbase; mv sys_mod.kb sys-mod.kb)
+            fi
+            ;;
+    esac
+    case "$product" in
+        g2|G2)
+    esac
+
+    #---------------------
+    # Post-install reset
+    #---------------------
+	
+    if [ "$interactive" = FALSE ]; then
+      exit 0
+    fi
+    
+    target=""
+    
+done
