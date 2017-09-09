@@ -1,0 +1,84 @@
+#!/bin/sh
+#  The environment variable $SRCBOX is passed as a "parameter" by use
+#  of defvar.
+# usage: generate-makefiles [<product> <compile-type> <platform> ...]
+#    where <product> is ext, fnt, g2, gsi, rtl, or tw  
+#    where <compile-type> is optimize, mt-optimize, debug, mt-debug, or profile
+#    and where <platform> is any active platform
+# Multiple entries for each category may be given, and order is unimportant.
+#  This script starts lucid-lisp, compiles and loads files needed for
+# makefile generation, then generates makefiles for all given products,
+# compile-types, and platforms.  If any category of argument is not present,
+# then all default members of the category are used; e.g., if neither
+# optimize, debug, nor profile is present, makefiles are generated for all.
+# Default platforms and products are determined by relations in
+# groups-and-organization.rel.  If no arguments are given, then makefiles
+# are generated for all available products, compile types, and platforms.
+#   Examples:
+#     % generate-makefiles
+#           -> all platforms, products, and compile-types
+#     % generate-makefiles optimize debug rtl 
+#           -> rtl optimized and debuggable for all platforms
+#     % generate-makefiles linux intelnt
+#           -> all products and compile-types for intelnt and linux
+#     % generate-makefiles ext linux intelnt
+#           -> ext for all compile-types for intelnt and linux
+
+solaris="/home/lucid/liquid50/lisp-clos-50"
+sbcl="/usr/local/bin/sbcl"
+oldsol="/home/lucid/lucid42/lisp-clos-patched"
+noinit="-no-init-file"
+  
+if [ -z "$SRCBOX" ]
+then
+  echo "You must first set SRCBOX (presumably with 'sandbox')"
+  exit 1
+fi
+if [ ! -d ${SRCBOX}/gen/mfgen ]
+then
+  echo "Error: SRCBOX directory ${SRCBOX}/gen/mfgen does not exist"
+  exit 2
+fi
+
+lisp=$solaris
+if [ "$MACHINE" = "sparcsol" ]
+then
+  if [ "$SPARC_TYPE" = "sparc" ]
+  then
+    lisp=$oldsol
+  fi
+else
+  if [ "$MACHINE" = "linux" ]
+  then
+    lisp=$sbcl
+  else
+    echo "Warning: unknown architecture: $MACHINE"
+    echo "Trying $lisp."
+  fi
+fi
+
+cd ${SRCBOX}/gen/mfgen
+
+# A subdirectory "sbin" is needed to hold the binaries, so first create one if
+# it doesn't exist
+if [ ! -d "sbin" ]; then mkdir sbin; fi
+
+$lisp $noinit <<+
+(defvar SRCBOX "$SRCBOX")
+(load "compile-and-load-mfg.lisp")
+(compile-and-load-mfg)
+(mfg-generate-makefiles-for-build '($*))
+;'
+(quit)
++
+
+# Need another newline for shell formatting
+echo " "
+
+# We recompile every time; there's no reason to keep the binaries around.
+rm -rf sbin
+
+# Kluge: edit the Intel compiler makefiles to compensate for inadequacies in
+# makefile generator.  yduJ 6/7/04; moved here from build-prep, -jv, 1/29/05
+cd ${SRCBOX}/gen/mfiles
+perl -i -ne 'print unless /^(cc|link) *=/; print "cc = icl\nlink = xilink\n" if /^!include <ntwin32.mak>/;' *-opt-intc
