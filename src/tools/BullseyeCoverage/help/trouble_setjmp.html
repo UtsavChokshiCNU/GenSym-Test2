@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_trouble_report.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+No Measurement of setjmp
+</h1>
+<h2>SYMPTOM</h2>
+<p>
+BullseyeCoverage does not measure coverage of control structures containing
+<CODE>setjmp</CODE> in the controlling expression.
+<h2>CAUSE</h2>
+<p>
+The behavior is by design and required due to the limitations on
+<CODE>setjmp</CODE> described in the C standard.
+<h2>RESOLUTION</h2>
+<p>
+Transfer the
+return value from <CODE>setjmp</CODE> to a variable, then test
+the variable. For example, BullseyeCoverage cannot measure the decision
+tested in the following code fragment.
+<PRE>
+if (setjmp(env) != 0) {
+    /* handle call from longjmp */
+}
+</PRE>
+<P>
+BullseyeCoverage can measure the equivalent decision tested in the code
+fragment below.
+<PRE>
+int sj;
+if (setjmp(env) == 0)
+    sj = 0;
+else
+    sj = 1;
+if (sj != 0) {
+    /* handle call from longjmp */
+}
+</PRE>
+<p style="font-size:xx-small">
+Last reviewed: 3 Nov 2004
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
