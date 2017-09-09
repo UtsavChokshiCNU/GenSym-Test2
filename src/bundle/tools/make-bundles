@@ -1,0 +1,246 @@
+#!/bin/csh
+# make-bundles script -- Mark David, 4/21/01
+# usage: make-bundles [-v] [-b <base directory>] [-P] <family name> <version tag> [platform,platform,...]
+#  -v -- verbose mode (makes some things talk a lot more)
+#  -b <Base directory>  --  defaults to /gensym/bundles.
+#  -P  --  if the -P option is specified,
+# then if there are no platforms at the end of the command, this does not build any
+# platforms. If the -P option is not specified, and there are no platforms at the end,
+# then this does all platforms.  If there are platforms at the end of the command, then
+# this does just those platforms (no matter whether there is a -P option). Note that
+# the platforms list must be comma separated with no spaces.
+# 
+#
+#
+# Before all of this, make sure the base directory exists:
+#   /gensym/bundles
+#
+# Under this base directory this will create fresh directories
+# for this family/version combination as needed:
+#
+#   $family_name/$version_tag
+#
+# There are then four major subdirectories created under the
+# $version_tag directory:
+#
+#   tree -- $platform-$family_name for each platform
+#      (NOTE: This is all that's done for IntelNT; the rest is for unix.)
+#
+#   tar -- $platform.tar for each unix platform; $platform.zip for Windows
+#
+#   cd -- $platform subdirectory with geninst and 
+#     gensym.gsm for each unix platform (use for promotion/testing)
+#
+#   image -- CD images in ISO file system format, as $platform.iso,
+#     for each unix platform
+
+set sandbox_base = $SRCBOX
+set bundles_base = /g2/bundles
+set platforms_absolute = 0
+set talkalot = 0
+
+if ($#argv > 0) then
+ if ($1 == "-v") then
+  set talkalot = 1
+  shift
+ endif
+ if (($#argv > 0) && ($1 == "-b")) then
+  shift
+  set bundles_base = $1
+  shift
+  if !(-d $bundles_base) then
+    echo "Directory $bundles_base does not exist! Exiting."
+    exit 1
+  endif
+ endif
+ if ($1 == "-P") then
+  shift
+  set platforms_absolute = 1
+ endif
+endif
+
+echo Using $bundles_base as the bundles base directory
+echo Using $sandbox_base as the sandbox
+
+if ($#argv < 2) then
+  echo "usage: $0 [-v] [-b <base directory>] [-P] <family name> <version tag> [<platform> ...]"
+  echo "example usage: $0 g2 52b1"
+  exit 0
+endif
+
+if ($platforms_absolute) then
+  set all_platforms = ()
+else
+  # I hope one day these platforms are supported again. --binghe
+  # set all_platforms = (intelnt sparcsol hp9000s700 linux alphaosf rs6000 hpia64)
+  set all_platforms = (linux64)
+endif
+
+set family_name = $1
+shift
+set version_tag = $1
+shift
+
+# if additional args, <platform> is specified, check the arg, and shift 
+# the args over.
+
+if ($#argv != 0) then
+  # The ugly next three lines read a comma-separated list of platforms, turning it
+  # into a normal "list" of platforms (i.e.,. separated by spaces). We suspend
+  # normal indenting for the next three lines.
+  set all_platforms=`echo $argv | tr ',' ' '`
+  echo Platforms are $all_platforms
+endif
+
+
+
+set family = $family_name-$version_tag
+
+set families_base = $sandbox_base/tools/datafiles/families
+set tools_base = $sandbox_base/bundle/tools
+set bin_base = $sandbox_base/bundle/c
+# where is `machine`?
+set this_platform = $MACHINE
+
+set output_base = $bundles_base/$family_name/$version_tag
+set tree = $output_base/tree
+set tar = $output_base/tar
+set cd = $output_base/cd
+set image = $output_base/image
+
+
+
+if !(-d $bundles_base/$family_name) mkdir -p $bundles_base/$family_name
+if !(-d $bundles_base/$family_name/$version_tag) mkdir -p $bundles_base/$family_name/$version_tag
+foreach subdir ($tree $tar $cd $image)
+  if !(-d $subdir) mkdir -p $subdir
+end
+
+
+
+# Generate script and family files:
+set scriptname = $families_base/$family.sh
+set famfilename = $families_base/$family.fam
+cd $tools_base
+echo Generating script and family files . . .
+echo   ./generate-family-files $scriptname $tree $famfilename $family
+./generate-family-files $scriptname $tree $famfilename $family
+./generate-extra-files $family
+
+if ($status != 0) then
+    echo "Failed generating family files for family $family"
+    exit 1
+endif
+
+
+foreach platform ( $all_platforms )
+
+ echo ----- $family $platform -----
+
+ # tree:
+ #   Note: the file name used for platform_tree corresponds with 
+ #   naming done in the script generated from code in bundle.lisp.
+ set platform_tree = $tree/$platform-$family_name
+ echo Running script to build tree . . .
+ echo checking $platform_tree . . .
+ if (-d $platform_tree) sudo rm -rf $platform_tree
+ if ($talkalot) then
+   echo $scriptname -v $platform
+   $scriptname -v $platform
+ else
+   echo $scriptname $platform
+   $scriptname $platform
+ endif
+
+
+ # tar:  (actually "zip" in the case of Windows)
+ echo Creating tar . . .
+ cd $platform_tree
+ if ($platform != intelnt) then
+   # change ownership of all of the files in the tree to be owner and group root
+   # (rather than the former ab, which on somebody else's computer would
+   # be completely random).  note that run-as-root was created specially and is 
+   # suid root, and was placed into the bin directory of the sandbox
+   echo sudo chown -R root:root $platform_tree/*
+   sudo chown -R root:root $platform_tree/*
+
+   # also remove group write permission
+   echo sudo chmod -R g-w $platform_tree/*
+   sudo chmod -R g-w $platform_tree/*
+
+   set platform_tar = $tar/$platform.tar
+   # Note: per css, it may be crucial, on Solaris especially,
+   # to use /usr/bin/tar.  Not even /usr/sbin/tar, which
+   # generally is linked to /usr/bin/tar, should be used.
+   # Note: /usr/sbin/tar was used for the
+   # G2 Classic 5.2r0 bundle.  This change relates to issue
+   # HQ-4081295 "Installation error:  Error while processing .gsm file, error code 0X00701"
+   if ($platform == linux || $platform == linux64) then
+     set tar_cmd = /bin/tar
+   else
+   set tar_cmd = /usr/bin/tar
+   endif
+   echo $tar_cmd cf $platform_tar *
+   $tar_cmd cf $platform_tar *
+ else
+   set platform_tar = $tar/$platform.zip
+   echo rm -f $platform_tar
+   rm -f $platform_tar
+   echo /usr/local/bin/zip -r $platform_tar *
+   /usr/local/bin/zip -r $platform_tar *
+ endif
+
+ if ($platform != intelnt) then
+
+   # cd:
+   echo Creating unix bundle . . .
+   set platform_cd = $cd/$platform
+   echo checking $platform_cd . . .
+   if (-d $platform_cd) rm -rf $platform_cd
+
+   mkdir -p $platform_cd
+   cd $platform_cd
+
+   set system_name = $platform
+   if ($platform == hp9000s700) set system_name = hpux
+
+   echo Checking for readme first file /g2/src/bundle/doc/$family_name-readme-first-$version_tag.txt . . .
+   if (-f /g2/src/bundle/doc/$family_name-readme-first-$version_tag.txt) then
+     echo OK -- copying to $platform_cd/ReadMeFirst.txt
+     cp -p /g2/src/bundle/doc/$family_name-readme-first-$version_tag.txt $platform_cd/ReadMeFirst.txt
+   else
+     echo No such file
+   endif
+
+   echo copying generated contents file: cp $tools_base/$family-contents-$platform $platform_cd/contents.txt
+   cp $tools_base/$family-contents-$platform $platform_cd/contents.txt
+
+
+   echo $bin_base/$this_platform/createbundle $famfilename $platform_tar $system_name
+   $bin_base/$this_platform/createbundle $famfilename $platform_tar $system_name
+   # createbundle
+   #   Usage: bundle <family_file> <tar_file> <system_name>
+   #   A file called gensym.gsm is created as output
+
+   cp -pr $bin_base/$platform/geninst .
+   #   Platform-specific geninst copied here
+
+   # image:
+   echo Creating unix CD image . . .
+   cd $output_base
+   set platform_image = $image/$platform.iso
+
+   if ($platform == linux || $platform == linux64) then
+     set mkiso = "/usr/bin/genisoimage -input-charset utf-8"
+   else
+   set mkiso = /bin/mkisofs
+   endif
+
+   set volid = "GENSYM_SOFTWARE_DISK_1_OF_1"
+   set publisher = "GENSYM CORPORATION"
+   set app_id =  "Gensym Product Disk"
+   echo $mkiso -o "$platform_image" -R -V "$volid" -publisher "$publisher" -A "$app_id" "$platform_cd"
+   $mkiso -o "$platform_image" -R -V "$volid" -publisher "$publisher" -A "$app_id" "$platform_cd"
+
+ endif
+end
