@@ -1,0 +1,84 @@
+== Procedures
+
+== Classes
+
+=== MQTT-BROKER
+
+==== Direct Superior Classes
+
+OBJECT
+
+|===
+|Attribute|Type|Initial Value|Initial Value Type|Description
+
+|`_HOST_`|TEXT|||Server host
+|`_PORT_`|INTEGER|1883||Server port
+|`_CLIENT-ID_`|TEXT|MQTT-client-1||MQTT Client id
+|`_CLEAN-SESSION_`|TRUTH-VALUE|false||Is session persistent?
+|`_USERNAME_`|TEXT|username||User name
+|`_PASSWORD_`|TEXT|password||Password
+|`_LAST-WILL-FLAG_`|TRUTH-VALUE|true||Will to be stored?
+|`_LAST-WILL-TOPIC_`|TEXT|||Will topic
+|`_LAST-WILL-QOS_`|INTEGER|2||QoS of Will
+|`_LAST-WILL-MESSAGE_`|TEXT|||Will message
+|`_LAST-WILL-RETAIN_`|TRUTH-VALUE|false||Retain Will?
+|`_KEEP-ALIVE_`|QUANTITY|60|SECONDS|The Keep Alive is the maximum time interval that is permitted to elapse between the point at which the Client finishes transmitting one Control Packet and the point it starts sending the next. A Keep Alive value of zero (0) has the effect of turning off the keep alive mechanism.
+|`_LOG-TOPIC-DATA_`|TRUTH-VALUE|true||Log topic data?
+|`_LOG-PACKET-DATA_`|TRUTH-VALUE|true||Log packet data?
+|===
+
+==== Description
+
+This class holds configuration parameters and state for a MQTT server connection.
+
+
+== Methods
+
+=== SET-TOPIC-DATA-LOG-FLAG
+
+==== Synopsis
+
+`SET-TOPIC-DATA-LOG-FLAG`(`_B_`: CLASS MQTT-BROKER, `_FLAG_`: TRUTH-VALUE) -> `_RET0_`: TRUTH-VALUE
+
+|===
+|Argument|Description
+
+|`_B_`|broker properties
+|`_FLAG_`|log topic data?
+|===
+
+|===
+|Return Value|Description
+
+|`_RET0_`|previous value of log-topic-data
+|===
+
+==== Description
+
+Sets log-topic-data flag.
+
+
+=== SET-PACKET-DATA-LOG-FLAG
+
+==== Synopsis
+
+`SET-PACKET-DATA-LOG-FLAG`(`_B_`: CLASS MQTT-BROKER, `_FLAG_`: TRUTH-VALUE) -> `_RET0_`: TRUTH-VALUE
+
+|===
+|Argument|Description
+
+|`_B_`|broker properties
+|`_FLAG_`|log packet data?
+|===
+
+|===
+|Return Value|Description
+
+|`_RET0_`|previous value of log-packet-data
+|===
+
+==== Description
+
+Sets log-packet-data flag.
+
+
