@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_introduction.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+Introduction
+</h1>
+<h2>
+<a name=1></a>
+What is BullseyeCoverage</h2>
+<P>
+BullseyeCoverage is a code coverage analyzer for programs written in the
+C and C++ languages. With BullseyeCoverage, you can:
+<UL>
+<LI>identify code which was not fully exercised during testing
+<LI>obtain summary measurements of testing completeness to help
+you decide when you have tested enough
+</UL>
+<P>
+The steps involved in using BullseyeCoverage are:
+<OL>
+<LI>Enable <a href=build_coverageBuild.html>Coverage Build</a>
+and build your program
+<LI>Run your program one or more times
+<LI>Generate and view <a href=report.html>coverage reports</a>
+<LI>Repeat from step 2 until you are satisfied with testing
+</OL>
+<p>
+<h2><a name=5></a>How it Works</h2>
+<p>
+When you compile code with BullseyeCoverage enabled, information about the code is written to a <i>coverage file</i>.
+The BullseyeCoverage run-time library collects coverage measurements in memory and
+periodically writes this data to the same coverage file.
+Environment variable <code>COVFILE</code> names the coverage file.
+You can view the coverage file using the
+<a href=coverageBrowser.html>Coverage Browser</a>
+or the
+<a href=report.html>command line report programs</a>.
+<h2>
+<a name=2></a>
+Measurement Technique</h2>
+<P>
+BullseyeCoverage is an intrusive coverage analyzer; it adds probes to C and C++ source
+code.
+There is no measurement of assembly code.
+BullseyeCoverage measures condition/decision coverage and function
+coverage. A short description of these measures is given below.
+A detailed description of these measures, and others, is included
+in
+<a href="http://www.bullseye.com/coverage.html">http://www.bullseye.com/coverage.html</a>.
+<P>
+BullseyeCoverage measures condition/decision coverage by default. This
+measure reports the following information.
+<OL>
+<li>whether each controlling expression in <code>if</code>,
+<CODE>if</CODE>-<CODE>else</CODE>, <CODE>while</CODE>, <CODE>do</CODE>-<CODE>while</CODE>,
+and <code>for</code> statements evaluates to both true and false
+<li>whether each sub-expression separated by logical-and (<code>&&</code>)
+and logical-or (<CODE>||</CODE>), evaluates to both true and false.
+<li>whether the controlling expression in each conditional-expression (<code>?:</code>) that does not occur inside another controlling expression evaluates to both true and false,
+<LI>whether each <CODE>switch</CODE> label is selected
+<LI>whether each function is invoked
+<LI>whether each C++ <CODE>catch</CODE> clause is entered
+<li>whether control reached the end of each C++ try-block
+</OL>
+<h2>
+<a name=3></a>
+Performance</h2>
+<p>
+Instrumenting with BullseyeCoverage typically increases
+execution time to 1.2x,
+code size to 1.4x and
+compile time to 1.7x with most Microsoft C++ projects, 3-8x with other compilers. 
+Your results may vary.
+Compiler optimization settings greatly affect performance of instrumented code.
+<h2>
+<a name=4></a>
+Typographical Conventions</h2>
+<P>
+Text in <CODE>code font</CODE> indicates text literally as it
+appears in a program or in a command. Text in <i>italic font</i>
+indicates a place holder for text that varies or that you supply.
+Text that appears within square brackets [ ] is optional.
+<P>
+The word <i>BullseyeCoverage</i> (italic) refers to the directory
+where you install BullseyeCoverage.
+<P>
+For Windows, we sometimes show
+the directory separator character as a forward slash <CODE>/</CODE>
+instead of the more conventional backslash <CODE>\</CODE>. This
+is for simplicity since BullseyeCoverage accepts the forward slash <CODE>/</CODE>
+as the directory separator on all operating systems.
+
+<!-- For indexing and searching -->
+<p style="visibility:hidden;font-size:1px;margin:0;padding:0">
+object code
+
+<p style="font-size:xx-small">
+Last reviewed: 7 Oct 2009
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
