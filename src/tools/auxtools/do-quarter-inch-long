@@ -1,0 +1,25 @@
+#!/bin/csh
+# See the following file for documentation.
+source auxtools/wtape-init.csh
+
+#### Where is the quarter-inch tape drive?
+set drive_host = pl
+set drive_name = /dev/rst2
+
+echo "Creating release directory in ${drive_host}:${drive_name}"
+cd $release_directory
+tar -chlfb - 20 * | rsh $drive_host dd of=$drive_name  obs=20b
+set result = $status
+
+# Insert verification code here!
+
+if ($result) then
+ echo "Failed to write the tape."
+else
+ echo "Tar file written to ${drive_host}:${drive_name}"
+endif
+
+exit $result
+
+#eof
+
