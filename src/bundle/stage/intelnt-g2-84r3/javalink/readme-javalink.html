@@ -1,0 +1,912 @@
+<p><a name="247274">
+<h1><center>G2 JavaLink  <br>Version 8.3 Rev. 1 <br>Readme</center></h1>
+<hr></p>
+</a><a name="247283">
+<h2><center> (August 2007)</center></h2>
+</a><a name="247285">
+<h2> Contents</h2>
+</a><ul><p><a name="247288"></a>
+<li><a href="readme-javalink.html#247415">What is G2 JavaLink?</a>
+</p><p><a name="247292"></a>
+<li><a href="readme-javalink.html#247434">Software Requirements</a>
+</p><p><a name="247296"></a>
+<li><a href="readme-javalink.html#247505">System Requirements</a>
+</p><p><a name="247300"></a>
+<li><a href="readme-javalink.html#247534">What's in this Release?</a>
+</p><p><a name="247304"></a>
+<li><a href="readme-javalink.html#247678">Online Documentation</a>
+</p><p><a name="247308"></a>
+<li><a href="readme-javalink.html#247798">Setup Instructions</a>
+</p><ul><p><a name="247312"></a>
+<li><a href="readme-javalink.html#247801">Installing G2 JavaLink</a>
+</p><p><a name="247316"></a>
+<li><a href="readme-javalink.html#247849">Setting Environment Variables</a>
+</p><p><a name="247320"></a>
+<li><a href="readme-javalink.html#247920">Setting the Properties File</a>
+</p></ul><p><a name="247324"></a>
+<li><a href="readme-javalink.html#247932">Examples</a>
+</p><p><a name="247328"></a>
+<li><a href="readme-javalink.html#248052">Problem Solving</a>
+</p><ul><p><a name="247332"></a>
+<li><a href="readme-javalink.html#248061">Problems using Just-In-Time Compilers (JIT) Supplied with JDK (UNIX Platforms Only)</a>
+</p><p><a name="247336"></a>
+<li><a href="readme-javalink.html#248064">Problems Downloading Interfaces from G2 Classes</a>
+</p><p><a name="247340"></a>
+<li><a href="readme-javalink.html#248089">Problems Generating Java Beans Created with the G2 Bean Builder</a>
+</p><p><a name="247344"></a>
+<li><a href="readme-javalink.html#248108">Problems using G2 JavaLink with Sun's Java Plug-In</a>
+</p></ul><p><a name="247348"></a>
+<li><a href="readme-javalink.html#248119">Gensym Customer Support</a>
+</p></ul><a name="247415">
+<h2> What is G2 JavaLink?</h2>
+</a><p><a name="247416"></a>
+G2 JavaLink defines the language mapping from Java types to G2 types and vice versa. It hides the finer details of G2 communication and, thus, provides a multi-threaded OO link between G2 and Java. G2 JavaLink provides: 
+</p>
+<ul><p><a name="247417"></a>
+<li>Mapping between G2 and Java types. 
+</p><p><a name="247418"></a>
+<li>Support for object passing by handle or by copy. 
+</p><p><a name="247419"></a>
+<li>Java classes to handle a connection to G2. 
+</p><p><a name="247420"></a>
+<li>G2 DownloadInterfaces to export Java classes for any user-defined G2 class. 
+</p><p><a name="247421"></a>
+<li>Support for adding and exporting the Java Bean Event model for G2 classes. 
+</p><p><a name="247422"></a>
+<li>Support for synchronous RPC/method calling (G2-Java, Java-G2). 
+</p><p><a name="247423"></a>
+<li>Thread-safe access to G2. 
+</p><p><a name="247424"></a>
+<li>Unicode support. 
+</p><p><a name="247425"></a>
+<li>Error handling from Java to G2 and vice versa. 
+</p><p><a name="247426"></a>
+<li>Multi-connection support (many G2s to one Gateway). 
+</p><p><a name="247427"></a>
+<li>Control of unsolicited connections from G2 to Java. 
+</p><p><a name="247428"></a>
+<li>Enable the Java Gateway to initiate connections with G2 servers. 
+</p><p><a name="247429"></a>
+<li>History passing. 
+</p><p><a name="247430"></a>
+<li>Data services. 
+</p><p><a name="247431"></a>
+<li>RMI-wrapper classes for JavaLink G2 connection classes. 
+</p><p><a name="247432"></a>
+<li>G2 Bean Builder to facilitate the creation of Java Beans and ActiveX controls from G2 classes. 
+</p></ul><a name="247434">
+<h2> Software Requirements</h2>
+</a><p><a name="247435"></a>
+You need the following software correctly installed on your machine to use G2 JavaLink: 
+</p>
+<ul><p><a name="247436"></a>
+<li>Java 2 (JDK Java Development Kit): 
+</p><ul><p><a name="247439"></a>
+<li><strong>Windows, Solaris, Linux</strong>: Sun's Java 2 (<a href="http://java.sun.com/j2se/">JDK 1.4 Java Development Kit)</a>. 
+</p><p><a name="247442"></a>
+<li><strong>HP-UX</strong>: HP's Java 2 (<a href="http://www.hp.com/go/java">JDK 1.4 Java Development Kit</a>). 
+</p><p><a name="247444"></a>
+<li><strong>AIX</strong>: IBM's Java 1.4.1 <a href="http://www-106.ibm.com/developerworks/java/jdk/aix/index.html?dwzone=java">(IBM Developer Kit for AIX, Java Technology Edition</a>). 
+</p><p><a name="247448"></a>
+<li><strong>HP Tru64 UNIX</strong>: HP's Java 1.4 (<a href="http://www.compaq.com/java/alpha/index.html">HP Java 2 SDK (J2SDK)</a>. 
+</p></ul><p><a name="247458"></a>
+<li>G2 Version 8.3 Rev. 1, which is available from your G2 Bundle, is recommended. 
+</p></ul><ul><p><a name="247463"></a>
+Note that with old versions of G2, you may experience difficulty in downloading classes that have changed in later G2 versions, such as <code>g2-window</code>.
+</p></ul><ul><p><a name="247466"></a>
+<li>Optionally, to test G2 Bean Builder beans, Sun's <a href="http://java.sun.com/beans/software/bdk_download.html">Bean Development Kit</a>. 
+</p></ul><p><a name="247472"></a>
+These software requirements are correct as of August 2007. For updates on compatibility with newer releases of the supporting software, please use Helplink to query for the following Resolutions or contact Gensym Customer Support: 
+</p>
+<p><a name="247503"></a>
+</p><p>
+<div> 
+<table border="2">
+<caption></caption>
+<tr><th align="left" valign="middle"><a name="247476"></a>
+<strong>Platform</strong>
+<th align="left" valign="middle"><a name="247478"></a>
+<strong>HelpLink Resolution</strong>
+<tr><td valign="middle"><a name="247480"></a>
+<pre>Windows</pre>
+<td valign="middle"><p><a name="247482"></a>
+HQ-4852471
+</p>
+
+<tr><td valign="middle"><a name="247484"></a>
+<pre>Solaris</pre>
+<td valign="middle"><p><a name="247486"></a>
+HQ-4852472
+</p>
+
+<tr><td valign="middle"><a name="247488"></a>
+<pre>HP-UX</pre>
+<td valign="middle"><p><a name="247490"></a>
+HQ-4852473
+</p>
+
+<tr><td valign="middle"><a name="247492"></a>
+<pre>AIX</pre>
+<td valign="middle"><p><a name="247494"></a>
+HQ-4852474
+</p>
+
+<tr><td valign="middle"><a name="247496"></a>
+<pre>Linux</pre>
+<td valign="middle"><p><a name="247498"></a>
+HQ-4852475
+</p>
+
+<tr><td valign="middle"><a name="247500"></a>
+<pre>HP Tru64 UNIX</pre>
+<td valign="middle"><p><a name="247502"></a>
+HQ-4852476
+</p>
+
+
+</table>
+
+<table>
+<tr><td>
+</table>
+</div>
+</p>
+<a name="247505">
+<h2> System Requirements</h2>
+</a><p><a name="247506"></a>
+<hr><strong>Note:</strong> The operating system requirements on some UNIX platforms have changed for starting with G2 &#32;Version 8.0 Rev. 0. Please review the minimum requirements carefully. <hr>
+</p><p><a name="247507"></a>
+To use G2 JavaLink, you need: 
+</p>
+<ul><p><a name="247508"></a>
+<li>Operating system (minimum version): 
+</p><ul><p><a name="247509"></a>
+<li><strong>Windows XP, Windows 2003, </strong>or <strong>Windows 2000</strong> running on a Pentium 4 computer. 
+</p><p><a name="247510"></a>
+<li><strong>Solaris</strong> 2.6 running on a Sun Sparc computer. 
+</p><p><a name="247511"></a>
+<li><strong>HP-UX</strong> 11.0 running on an HP9000 computer with the PA 2.0 architecture.
+</p><p><a name="247512"></a>
+<li><strong>AIX</strong> 5.1* running on an IBM RS/6000 computer.
+</p><p><a name="247513"></a>
+<li><strong>Red Hat Linux or Red Hat Enterprise Linux</strong> running Linux kernel 2.4.26 or greater 
+</p><p><a name="247514"></a>
+<li><strong>HP Tru64 UNIX</strong> 5.1A running on a HP Alpha computer. 
+</p></ul><p><a name="247515"></a>
+<li>Minimum of 64 MB of RAM. 
+</p><p><a name="247516"></a>
+<li>Approximately 100 MB of disk space to install the software and documentation. 
+</p></ul><p><a name="247517"></a>
+* G2 JavaLink requires AIX 5.1; G2 only requires AIX 4.3.3.
+</p>
+<a name="247534">
+<h2> What's in this Release?</h2>
+</a><p><a name="247535"></a>
+When G2 JavaLink is installed, it contains the following directories and files in the <code>javalink</code> subdirectory of your G2 Bundle installation directory. 
+</p>
+<p>
+</p><p>
+<div> 
+<table border="2">
+<caption></caption>
+<tr><td valign="middle"><a name="247538"></a>
+<strong>File</strong>
+<td valign="middle"><a name="247540"></a>
+<strong>Description</strong>
+
+<tr><td valign="middle"><a name="247542"></a>
+<pre>ExamplesReadme.html</pre>
+<td valign="middle"><p><a name="247544"></a>
+Instructions on how to run the G2 JavaLink demos
+</p>
+
+<tr><td valign="middle"><a name="247546"></a>
+<pre>readme-javalink.html</pre>
+<td valign="middle"><p><a name="247548"></a>
+This readme file.
+</p>
+
+<tr><td valign="middle"><p><a name="247550"></a>
+<code><strong>bin</code></strong>
+</p>
+<td valign="middle">
+<a name="wp247552"> </a><div>
+&#160;
+</div>
+
+<tr><td valign="middle"><p><a name="247554"></a>
+<code>Windows: envvars.bat <br>UNIX: set-envvars</code>
+</p>
+<td valign="middle"><p><a name="247556"></a>
+Sets appropriate environment variables for running G2 JavaLink
+</p>
+
+<tr><td valign="middle"><p><a name="247558"></a>
+<code>Windows: DownloadInterfaces.bat <br>UNIX: g2downloadinterfaces</code>
+</p>
+<td valign="middle"><p><a name="247560"></a>
+Runs the G2 DownloadInterfaces utility
+</p>
+
+<tr><td valign="middle"><p><a name="247562"></a>
+<code>Windows: G2BeanBuilder.bat <br>UNIX: g2beanbuilder</code>
+</p>
+<td valign="middle"><p><a name="247564"></a>
+Runs the G2 Bean Builder utility
+</p>
+
+<tr><td valign="middle"><p><a name="247566"></a>
+<code>Windows: InstallProperties.bat <br>UNIX: installproperties</code>
+</p>
+<td valign="middle"><p><a name="247568"></a>
+Installs a Java properties file required to run G2 JavaLink utilities
+</p>
+
+<tr><td valign="middle"><p><a name="247570"></a>
+Windows: JgiInterface.dll <br>Solaris: libJgiInterface.so <br>HP-UX: libJgiInterface.so <br>Tru64: libJgiInterface.so<br>AIX: libJgiInterface.a<br>LINUX: libJgiInterface.so 
+</p>
+<td valign="middle"><p><a name="247572"></a>
+Native network interface to G2
+</p>
+
+<tr><td valign="middle"><p><a name="247574"></a>
+<code><strong>classes</code></strong>
+</p>
+<td valign="middle">
+<a name="wp247576"> </a><div>
+&#160;
+</div>
+
+<tr><td valign="middle"><p><a name="247578"></a>
+<code>javalink.jar</code>
+</p>
+<td valign="middle"><p><a name="247580"></a>
+G2 JavaLink Java classes 
+</p>
+
+<tr><td valign="middle"><p><a name="247582"></a>
+<code>classtools.jar</code>
+</p>
+<td valign="middle"><p><a name="247584"></a>
+G2 JavaLink Java classes
+</p>
+
+<tr><td valign="middle"><p><a name="247586"></a>
+<code>core.jar</code>
+</p>
+<td valign="middle"><p><a name="247588"></a>
+G2 JavaLink Java classes
+</p>
+
+<tr><td valign="middle"><p><a name="247590"></a>
+<code>beanbuilder.jar</code>
+</p>
+<td valign="middle"><p><a name="247592"></a>
+Java classes required to run G2 JavaLink utilities
+</p>
+
+<tr><td valign="middle"><a name="247594"></a>
+<pre>classes/com/gensym/classes/modules</pre>
+<td valign="middle"><p><a name="247596"></a>
+Default directory for classes downloaded from G2
+</p>
+
+<tr><td valign="middle"><a name="247598"></a>
+<pre>classes/com/gensym/demos/jgi</pre>
+<td valign="middle"><p><a name="247600"></a>
+Demos.
+</p>
+
+<tr><td valign="middle"><p><a name="247602"></a>
+<code><strong>kbs</code></strong>
+</p>
+<td valign="middle"><p><a name="247604"></a>
+KBs for functionality support and demos.
+</p>
+
+<tr><td valign="middle"><p><a name="247606"></a>
+<code>g2evliss.kb</code>
+</p>
+<td valign="middle"><p><a name="247608"></a>
+Optional G2 event support module that enables Java Bean events to be added to G2 classes
+</p>
+
+<tr><td valign="middle"><p><a name="247610"></a>
+<code>javalink.kb</code>
+</p>
+<td valign="middle"><p><a name="247612"></a>
+Optional G2 support module for G2 JavaLink
+</p>
+
+<tr><td valign="middle"><p><a name="247614"></a>
+<code>jgidemo.kb </code>
+</p>
+<td valign="middle"><p><a name="247616"></a>
+KB for use with demos*
+</p>
+
+
+</table>
+
+<table>
+<tr><td>
+</table>
+</div>
+</p>
+<p><a name="247618"></a>
+On Windows platforms, you can run G2 JavaLink and access the API documentation from the Start menu, as follows:
+</p>
+<ul><p><a name="247621"></a>
+Start &gt; Programs &gt; Gensym G2 8.3r1 &gt; G2 JavaLink
+</p></ul><p><a name="247623"></a>
+The options on this menu are:
+</p>
+<ul><p><a name="247624"></a>
+API Documentation<br>Download Interfaces<br>Examples Readme<br>G2 Bean Builder<br>Install Properties<br>Readme for G2 JavaLink
+</p></ul><p><a name="247675"></a>
+For information on where JRE is installed and when it is used, see <a href="readme-javalink.html#247801">Installing G2 JavaLink</a>.
+</p>
+<a name="247678">
+<h2> Online Documentation</h2>
+</a><p><a name="247679"></a>
+The G2 JavaLink documentation is included as part of the installer documentation component and includes online user manuals as PDF files, HTML files, and Javadoc.
+</p>
+<p><a name="247680"></a>
+<hr><strong>Note:</strong> Due to a display bug in earlier versions of Adobe Reader, we recommend that you use Adobe Acrobat Reader Version 5.05 or later.<hr>
+</p><p><a name="247683"></a>
+The <a href="../doc/javalink/docs/api/index.html">Javadoc</a> includes relevant API documentation for public Java classes supplied with G2 JavaLink. Reading this documentation and looking at the example classes in the <code>com.gensym.demos.jgi</code> package should provide a good foundation for understanding how to use G2 JavaLink to write effective G2 connectivity solutions, using Java. 
+</p>
+<p><a name="247684"></a>
+Additionally, you can browse G2 JavaLink online documentation in PDF or HTML format:
+</p>
+<p>
+</p><p>
+<div> 
+<table border="2">
+<caption></caption>
+<tr><th align="left" valign="middle"><a name="247687"></a>
+<strong>PDF</strong>
+<th align="left" valign="middle"><a name="247689"></a>
+<strong>HTML (Title Page)</strong>
+<tr><td valign="middle"><p><a name="247693"></a>
+<em><a href="../doc/javalink/docs/guides/g2javalink/g2javalink.pdf">G2 JavaLink User's Guide</a> </em>
+</p>
+<td valign="middle"><p><a name="247697"></a>
+<em><a href="../doc/javalink/docs/guides/g2javalink/html/titlepag.htm">G2 JavaLink User's Guide</a> </em>
+</p>
+
+<tr><td valign="middle"><p><a name="247701"></a>
+<em><a href="../doc/javalink/docs/guides/g2beanbuilder/g2beanbuilder.pdf">G2 Bean Builder User's Guide</a> </em>
+</p>
+<td valign="middle"><p><a name="247705"></a>
+<em><a href="../doc/javalink/docs/guides/g2beanbuilder/html/titlepag.htm">G2 Bean Builder User's Guide</a> </em>
+</p>
+
+<tr><td valign="middle"><p><a name="247709"></a>
+<em><a href="../doc/javalink/docs/guides/g2downloadinterfaces/g2downloadinterfaces.pdf">G2 DownloadInterfaces User's Guide</a> </em>
+</p>
+<td valign="middle"><p><a name="247713"></a>
+<em><a href="../doc/javalink/docs/guides/g2downloadinterfaces/html/titlepag.htm">G2 DownloadInterfaces User's Guide</a> </em>
+</p>
+
+
+</table>
+
+<table>
+<tr><td>
+</table>
+</div>
+</p>
+<p><a name="247796"></a>
+For information about Java Beans, see <a href="http://www.javasoft.com/beans/docs/spec.html">Java Beans Tutorials and Specifications</a>. 
+</p>
+<a name="247798">
+<h2> Setup Instructions</h2>
+</a><p><a name="247799"></a>
+G2 JavaLink is available as part of the G2 Bundle.
+</p>
+<a name="247801">
+<h3> Installing G2 JavaLink</h3>
+</a><p><a name="247802"></a>
+If you are running G2 JavaLink in a development environment, you must perform steps 1 through 5. If you are running JavaLink in a deployment environment, you do not need to perform step 1, which is installing the JDK. Instead, you can use the version of JRE that ships with the G2 bundle, located in the <code>jre</code> directory of your G2 Bundle directory. 
+</p>
+<p><a name="247803"></a>
+G2 JavaLink Version 8.3 Rev. 0 runs with JRE 1.4.2 on all platforms. It may also run with JRE 1.3.  However, we recommend that you run with JRE 1.4. On Solaris and Linux platforms, however, you must use JRE 1.4; G2 JavaLink will not work with JRE 1.3. 
+</p>
+<p><a name="247804"></a>
+<hr><strong>Note:</strong> On AIX, any program files or modules in your application must be labeled as follows: "CONTAINS IBM(R) 32-bit Runtime Environment for AIX(TM), Java(TM) 2 Technology Edition, Version 1.4 Modules (c) Copyright IBM Corporation 1999, 2002 All Rights Reserved".<hr>
+</p><p><a name="247805"></a>
+You only need to perform step 6 if you want to test G2 beans created using the G2 Bean Builder within Sun's Bean Box, which is part of the Java Bean Development Kit or BDK. 
+</p>
+<ol><a name="247806"></a>
+<li value="1	">For development environments, install the correct version of Java 2 (JDK 1.4 or 1.3 Java Development Kit) for your platform. <p>
+</ol><ul><p><a name="247807"></a>
+<hr><strong>Note:</strong> <strong>This release will not work with versions of JDK earlier than 1.3. </strong>We recommend that you run with JDK 1.4 on all platforms. On Solaris and Linux platforms, however, you must use JDK 1.4; G2 JavaLink will not work with JDK 1.3. <hr>
+</p></ul><ul><p><a name="247811"></a>
+For details, see <a href="readme-javalink.html#247434">Software Requirements</a>.
+</p><p><a name="247813"></a>
+The default install directory depends on your platform. 
+</p></ul><ol><a name="247816"></a>
+<li value="2	">Install G2 Version 8.3 Rev. 1 from the G2 Version 8.3 Rev. 1 Bundle. A minimum of G2 Version 5.1 Rev. 4 is required. <p>
+<a name="247827"></a>
+<li value="3	">Ensure that G2 is authorized to connect to G2 JavaLink. Your G2 is authorized to use G2 JavaLink when it has the code <code>"jl"</code> listed in the <code>"authorized-products"</code> attribute of its <code>.ok</code> product authorization file. Please contact <a href="readme-javalink.html#248119">Gensym Customer Support</a> if you encounter any authorization problems. <p>
+<a name="247831"></a>
+<li value="4	">Install G2 JavaLink from the G2 Bundle according to the installation instructions. <p>
+<a name="247832"></a>
+<li value="5	">Ensure that the following environment variables are set properly to reflect this installation: <p>
+</ol><ul><p><a name="247833"></a>
+All platforms: <strong>JAVA_HOME</strong>, <strong>G2V8_OK</strong>, <strong>PATH</strong>, and <strong>CLASSPATH</strong> <br>Solaris, HP-UX, Tru64, and LINUX: <strong>LD_LIBRARY_PATH</strong> <br>AIX: <strong>LIBPATH</strong> 
+</p><p><a name="247836"></a>
+For details, see <a href="readme-javalink.html#247849">Setting Environment Variables</a>.
+</p></ul><ol><a name="247838"></a>
+<li value="6	">(Optional) Ensure that the <code>.com.gensym.properties</code> file is installed properly, if needed. <p>
+</ol><ul><p><a name="247841"></a>
+For details, see <a href="readme-javalink.html#247920">Setting the Properties File</a>.
+</p></ul><ol><a name="247845"></a>
+<li value="7	">(Optional) Ensure that Sun's <a href="http://java.sun.com/beans/software/bdk_download.html">Bean Development Kit</a> V1.1 (April '99) or later is installed. <p>
+</ol><ul><p><a name="247846"></a>
+The default install directory for the BDK is: 
+</p><ul><p><a name=247847"></a>
+Windows: <code><strong>c:\Bdk1.1</code></strong> <br>UNIX: <code><strong>/usr/Bdk</code></strong>
+</p>
+</ul></ul><a name="247849">
+<h3> Setting Environment Variables</h3>
+</a><p><a name="247850"></a>
+To run G2 JavaLink, you must explicitly set the following environment variables:
+</p>
+<ul><p><a name="247851"></a>
+<li><strong>JAVA_HOME</strong> must point to the JDK directory. If you are running in a deployment environment, <code>JAVA_HOME</code> must point to the <code>jre</code> directory, which is installed as part of the G2 bundle.
+</p><p><a name="247852"></a>
+<li><strong>G2V8_OK</strong> must point to the location of the <code>g2.ok</code> file. 
+</p><p><a name="247853"></a>
+<li><strong>PATH</strong>, as well as platform-specific library path variables, must point to the Java and G2 JavaLink bin directory. 
+</p><p><a name="247854"></a>
+<li><strong>CLASSPATH</strong> must include the necessary Java and G2 JavaLink class files. 
+</p></ul><p><a name="247855"></a>
+To create and modify these environment variables, you can run a batch file or shell script, depending on your platform, as follows:
+</p>
+<p>
+</p><p>
+<div> 
+<table border="2">
+<caption></caption>
+<tr><th align="left" valign="middle"><a name="247858"></a>
+<strong>Platform</strong>
+<th align="left" valign="middle"><a name="247860"></a>
+<strong>Command</strong>
+<tr><td valign="middle"><p><a name="247862"></a>
+Windows:
+</p>
+<td valign="middle"><a name="247864"></a>
+<pre><code>\javalink\bin\envvars.bat</code></pre>
+
+<tr><td valign="middle"><p><a name="247866"></a>
+UNIX:
+</p>
+<td valign="middle"><a name="247868"></a>
+<pre>/<code>javalink</code>/bin/set-envvars</pre>
+
+
+</table>
+
+<table>
+<tr><td>
+</table>
+</div>
+</p>
+<p><a name="247870"></a>
+<em>Running this batch file or shell script sets the environment variables for a single command-prompt session; it does not set them permanently</em>. We recommend that you copy and modify the batch file or shell script to include your own environment variables, then call this file each time you start your application, for example, from a shortcut. For convenience, the <code>envvars</code> file also sets the <code>JAVALINK_HOME</code> environment variable for a single session to point to the <code>javalink</code> directory.  
+</p>
+<p><a name="247871"></a>
+To run the demos, you must run the batch file or shell script in the same command window or shell from which you run the demo. On Windows platforms, choosing one of the demos from the Start menu automatically runs the batch file. For more information, see <a href="readme-javalink.html#247932">Examples</a>. 
+</p>
+<p><a name="247878"></a>
+You can also explicitly set these variables. On Windows platforms, you set the environment variables on the Advanced tab of the System Properties dialog, which you access Programs &gt; Settings &gt; Control Panel &gt; System. On UNIX platforms, you set the environment variables in a csh shell by entering <code>setenv &#32;</code><em>VARIABLE value</em>. 
+</p>
+<p><a name="247879"></a>
+This table summarizes the environment variables that need to be set and their values, where <em>install-dir</em> is your G2 installation directory:
+</p>
+<p><a name="247918"></a>
+</p><p>
+<div> 
+<table border="2">
+<caption></caption>
+<tr><td valign="middle"><a name="247882"></a>
+<strong>Variable</strong>
+<td valign="middle"><a name="247884"></a>
+<strong>Value </strong>
+
+<tr><td valign="middle"><p><a name="247886"></a>
+<code>JAVA_HOME</code>
+</p>
+<td valign="middle"><p><a name="247888"></a>
+In a development environment, location of JDK, e.g., <br>Windows: <code>C:\Program Files\jdk1.4 <br></code>UNIX: <code>usr/jdk1.4</code> 
+</p>
+<p><a name="247889"></a>
+In a deployment environment, location of the JRE, e.g.,<br>Windows: <em>install-dir</em><code>\jre<br></code>UNIX: <em>install-dir</em><code>/jre</code>
+</p>
+
+<tr><td valign="middle"><p><a name="247891"></a>
+<code>G2V8_OK</code>
+</p>
+<td valign="middle"><p><a name="247893"></a>
+Location of the G2 authorization file, e.g., <br>Windows: <em>install-dir</em><code>\g2\g2.ok</code> <br>UNIX: <em>install-dir</em><code>/g2/g2.ok</code>
+</p>
+
+<tr><td valign="middle"><p><a name="247895"></a>
+<code>PATH</code>
+</p>
+<td valign="middle"><p><a name="247897"></a>
+Must include: <br>Windows: <em>install-dir</em><code>\javalink\bin;%JAVA_HOME%\bin <br></code>UNIX:<code> $JAVA_HOME/bin </code>
+</p>
+
+<tr><td valign="middle"><p><a name="247899"></a>
+<code>LD_LIBRARY_PATH</code>
+</p>
+<td valign="middle"><p><a name="247901"></a>
+Must include: <br>Solaris: <em>install-dir</em><code>/javalink/bin <br></code>LINUX: <em>install-dir</em><code>/javalink/bin<br></code>Tru64: <em>install-dir</em><code>/javalink/bin</code>
+</p>
+
+<tr><td valign="middle"><p><a name="247903"></a>
+<code>SHLIB_PATH</code>
+</p>
+<td valign="middle"><p><a name="247905"></a>
+Must include: <br>HP-UX: <em>install-dir</em><code>/javalink/bin</code>
+</p>
+
+<tr><td valign="middle"><p><a name="247907"></a>
+<code>LIBPATH</code>
+</p>
+<td valign="middle"><p><a name="247909"></a>
+Must include: <br>AIX: <em>install-dir</em><code>/javalink/bin </code>
+</p>
+
+<tr><td valign="middle"><p><a name="247911"></a>
+<code>CLASSPATH</code>
+</p>
+<td valign="middle"><p><a name="247915"></a>
+Must include: <br>Windows: <br><code>%JAVA_HOME%\lib\tools.jar;<br></code><em>install-dir</em><code>\javalink\classes; <br></code><em>install-dir</em><code>\javalink\classes\core.jar;<br></code><em>install-dir</em><code>\javalink\classes\classtools.jar; <br></code><em>install-dir</em><code>\javalink\classes\javalink.jar;<br></code><em>install-dir</em><code>\javalink\classes\beanbuilder.jar <br></code>UNIX: <br><code>$JAVA_HOME/lib/tools.jar:<br></code><em>install-dir</em><code>/javalink/classes: <br></code><em>install-dir</em><code>/javalink/classes/core.jar:<br></code><em>install-dir</em><code>/javalink/classes/classtools.jar: <br></code><em>install-dir</em><code>/javalink/classes/javalink.jar:<br></code><em>install-dir</em><code>/javalink/classes/beanbuilder.jar <br></code>(Optional) If you are using Sun's BDK Bean Box to test Java Beans, you must include: <br>Windows: <br><code>c:\Bdk1.1\beanbox </code>
+</p>
+<p><a name="247916"></a>
+UNIX: <br><code>/usr/Bdk </code>
+</p>
+<p><a name="247917"></a>
+(Optional) If you plan to create ActiveX controls using G2 Bean Builder, you must include: <br>Windows: <br><code>%JAVA_HOME%\jre\lib\jaws.jar </code>
+</p>
+
+
+</table>
+
+<table>
+<tr><td>
+</table>
+</div>
+</p>
+<a name="247920">
+<h3> Setting the Properties File</h3>
+</a><p><a name="247921"></a>
+The file <code>.com.gensym.properties</code> contains references to directory locations that the G2 JavaLink utilities, G2 Download Interfaces and G2 Bean Builder, need for downloading interfaces and creating Java Beans from G2 classes. This file is not required at runtime, unless user classes and packages have been downloaded to specific packages, other than the default. 
+</p>
+<p><a name="247922"></a>
+On Windows platforms, the G2 JavaLink installation process automatically creates the properties file and sets the properties to point to the <code>javalink </code>subdirectory of the default G2 installation directory. It does this by running the following batch file, which you can run, if needed, to install the default properties file: 
+</p>
+<ul><a name=247923"></a>
+<pre>\javalink\bin\InstallProperties.bat</pre>
+</ul><p><a name="247924"></a>
+On UNIX platforms, you must explicitly install the default properties file by running this shell script: 
+</p>
+<ul><a name=247925"></a>
+<pre>/javalink/bin/installproperties</pre>
+</ul><p><a name="247926"></a>
+On UNIX, this batch file copies the default properties file, which is located in the <code>bin</code> directory of your <code>javalink</code> directory, to your home directory and sets the properties to point to the <code>javalink</code> subdirectory of the default G2 installation directory. 
+</p>
+<p><a name="247927"></a>
+The <code>.com.gensym.properties</code> file should not need to be changed. On Windows, the properties file is located in the Windows user profile directory, which is specified in the environment variable <code>USERPROFILE</code>, e.g., <code>c:\winnt\Profiles\davis</code>. On UNIX, the properties file is located in your home directory, e.g., <code>/usr/joe</code>. 
+</p>
+<p><a name="247930"></a>
+For an explanation of the properties in this file, see the <em><a href="../doc/javalink/docs/guides/g2javalink/g2javalink.pdf">G2 JavaLink User's Guide</a> </em>. 
+</p>
+<a name="247932">
+<h2> Examples</h2>
+</a><p><a name="247933"></a>
+<hr><strong>Note:</strong> Before you can run the demos or create your own application, ensure that environment variables are set up correctly, as described in <a href="readme-javalink.html#247849">Setting Environment Variables</a>.<hr>
+</p><p><a name="247937"></a>
+This release comes with an example KB and Java source code files that demonstrate how to use various features of G2 JavaLink. The example KB is located in the following directories of your G2 installation directory:
+</p>
+<ul><p><a name="247938"></a>
+Windows: <code>\javalink\kbs\jgidemo.kb</code> 
+</p><p><a name="247939"></a>
+UNIX: <code>/javalink/kbs/jgidemo.kb</code> 
+</p></ul><p><a name="247940"></a>
+This KB demonstrates Java-G2 data conversion, RPC-calling, multi-threaded access, Java downloading from G2, and much more. 
+</p>
+<p><a name="247941"></a>
+<hr><strong>Note:</strong> The <code>jgidemo.kb</code> requires certain utility KBs, located in the <code>\g2\kbs\utils\</code> directory (on Windows) and the <code>/g2/kbs/utils/</code> directory (on UNIX). We recommend that you start G2 with the <code>\g2\StartServer.bat</code> file (Windows) and <code>/g2/startserver</code> (UNIX) to use the default module search path.<hr>
+</p><p><a name="247942"></a>
+<strong>To start the main G2 JavaLink example client: 
+</strong></dt></p><ol><a name="247943"></a>
+<li value="1	">From G2, load and start <code>jgidemo.kb</code>. <p>
+<a name="247946"></a>
+<li value="2	">Ensure that environment variables are set up correctly, as described in <a href="readme-javalink.html#247849">Setting Environment Variables</a>.<p>
+<a name="247948"></a>
+<li value="3	">Start the G2 JavaLink example by entering the following at a DOS prompt or in a UNIX shell: <p>
+<ul><p><a name=247949"></a>
+<code>java com.gensym.demos.jgi.ExampleG2Gateway</code>
+</p>
+</ul><a name="247950"></a>
+<li value="4	">Follow the instructions in <code>jgidemo.kb</code>.<p>
+</ol><p><a name="247951"></a>
+You can also use this KB with the other examples found in <code>com.gensym.demos.jgi</code>, as follows: 
+</p>
+<p>
+</p><p>
+<div> 
+<table border="2">
+<caption></caption>
+<tr><td valign="middle"><a name="247954"></a>
+<strong>Example File</strong>
+<td valign="middle"><a name="247956"></a>
+<strong>Description </strong>
+
+<tr><td valign="middle"><p><a name="247958"></a>
+<code>ConnectionEventListener.java</code>
+</p>
+<td valign="middle"><p><a name="247960"></a>
+An example Java client listening for G2 connection events. (See Note 1.) 
+</p>
+
+<tr><td valign="middle"><p><a name="247962"></a>
+<code>ExampleDataService.java</code>
+</p>
+<td valign="middle"><p><a name="247964"></a>
+An example of using G2 JavaLink to write a DataService for GSI variables. (See Note 2.) 
+</p>
+
+<tr><td valign="middle"><p><a name="247966"></a>
+<code>ExampleG2Gateway.java</code>
+</p>
+<td valign="middle"><p><a name="247968"></a>
+Large Java class, containing many JavaLink tests (See Note 1.) 
+</p>
+
+<tr><td valign="middle"><p><a name="247970"></a>
+<code>G2CallingJavaMethod.java</code>
+</p>
+<td valign="middle"><p><a name="247972"></a>
+An example of G2 calling Java. (See Note 2.) 
+</p>
+
+<tr><td valign="middle"><p><a name="247974"></a>
+<code>JavaCallingG2Methods.java</code>
+</p>
+<td valign="middle"><p><a name="247976"></a>
+An example of Java calling a G2 method of a previously downloaded class. (See Note 1.) 
+</p>
+
+<tr><td valign="middle"><p><a name="247978"></a>
+<code>JavaCallingG2Procedure.java</code>
+</p>
+<td valign="middle"><p><a name="247980"></a>
+An example of Java calling a G2 procedure. (See Note 1.) 
+</p>
+
+<tr><td valign="middle"><p><a name="247982"></a>
+<code>JavaG2EventListener.java</code>
+</p>
+<td valign="middle"><p><a name="247984"></a>
+An example of a Java client listening for events generated by a G2 event source. (See Note 1.) 
+</p>
+
+<tr><td valign="middle"><p><a name="247986"></a>
+<code>JavaThreadsCallingG2.java</code>
+</p>
+<td valign="middle"><p><a name="247988"></a>
+An example of many Java threads calling G2. (See Note 1.)
+</p>
+
+<tr><td valign="middle"><p><a name="247990"></a>
+<code>SendG2Message.java</code>
+</p>
+<td valign="middle"><p><a name="247992"></a>
+An example of sending a message from Java to the G2 Message Board. (See Note 1.) 
+</p>
+
+<tr><td valign="middle"><p><a name="247994"></a>
+<code>SimpleSubscription.java</code>
+</p>
+<td valign="middle"><p><a name="247996"></a>
+An example of a Java client receiving notifications from G2 that an Item has changed. (See Note 1.) 
+</p>
+
+<tr><td valign="middle"><p><a name="247998"></a>
+<code>SimpleVariableSubscription.java</code>
+</p>
+<td valign="middle"><p><a name="248000"></a>
+An example of a Java client receiving notifications from G2 that a Variable has changed. (See Note 1.) 
+</p>
+
+<tr><td valign="middle"><p><a name="248002"></a>
+<code>UnsolicitedConnection.java</code>
+</p>
+<td valign="middle"><p><a name="248004"></a>
+An example of how to set up a Java client to accept an unsolicited connection. (See Note 2.)
+</p>
+
+
+</table>
+
+<table>
+<tr><td>
+</table>
+</div>
+</p>
+<p><a name="248008"></a>
+(For more information, see <code><a href="ExamplesReadme.html">ExamplesReadme.html</a></code>) 
+</p>
+<p><a name="248009"></a>
+Notes: 
+</p>
+<ol><a name="248010"></a>
+<li value="1	"><code>java com.gensym.demos.jgi.&lt;exampleclassname&gt; -g2host hostname [-g2port port], e.g., java com.gensym.demos.jgi.ExampleG2Gateway -g2host localhost</code> <p>
+<a name="248011"></a>
+<li value="2	"><code>java com.gensym.demos.jgi.&lt;exampleclassname&gt; e.g., java com.gensym.demos.jgi.UnsolicitedConnection </code><p>
+</ol><p><a name="248014"></a>
+For more information about these examples, see the <em><a href="../doc/javalink/docs/guides/g2javalink/g2javalink.pdf">G2 JavaLink User's Guide</a></em>. 
+</p>
+<p><a name="248021"></a>
+
+</p>
+<a name="248052">
+<h2> Problem Solving</h2>
+</a><a name="248053">
+<h3> General</h3>
+</a><a name="248054">
+<h4> Memory Heap Size</h4>
+</a><p><a name="248055"></a>
+The Java interpreter uses a memory heap for all object references and values. When the heap becomes full, the interpreter will not try to allocate any more memory. Instead, it throws an <code>OutOfMemoryException</code>. If Java throws an <code>OutOfMemoryException</code> while running a Java application or applet, then try the Java interpreter's -Xms option. e.g., <code>java -Xms20m classname</code> increases the Java heap size from its default (currently 16meg) to 20meg. 
+</p>
+<a name="248056">
+<h4> Java Thread Memory Usage</h4>
+</a><p><a name="248057"></a>
+On the Windows platform, Java creates a native Windows thread for each <code>java.lang.Thread</code> that is started. We have found that a significant amount of memory is allocated for each thread that is created. Additionally, thread memory is not allocated from the Java heap, but rather from the overall process memory. 
+</p>
+<a name="248058">
+<h4> Stack Size</h4>
+</a><p><a name="248059"></a>
+If the G2 JavaLink process raises a <code>java.lang.StackOverflowError</code> during communication with G2, try the interpreter's -Xss command line option e.g., <code>java -Xss2m classname</code>, which increases the native thread stack size to 2MB. 
+</p>
+<a name="248061">
+<h3> Problems using Just-In-Time Compilers (JIT) Supplied with JDK (UNIX Platforms Only)</h3>
+</a><p><a name="248062"></a>
+If you experience any instability, we recommend that you run the JDK VM with the JIT turned off by using <code>java -nojit &lt;classname&gt;</code>, then retest. 
+</p>
+<a name="248064">
+<h3> Problems Downloading Interfaces from G2 Classes</h3>
+</a><p><a name="248065"></a>
+To ensure that G2 JavaLink can successfully download Java stub classes for G2 classes: 
+</p>
+<ul><p><a name="248066"></a>
+<li>G2 JavaLink must be correctly installed, and the G2 JavaLink class library and directory must be added to the system's <code>CLASSPATH</code>. For more information, see <a href="readme-javalink.html#247849">Setting Environment Variables</a>. 
+</p><p><a name="248070"></a>
+<li>The <code>.com.gensym.properties</code> file supplied with G2 JavaLink must be placed in the system's current <code>%HOMEPATH%</code>. e.g., <code>c:\user\default</code>. For more information, see <a href="readme-javalink.html#247920">Setting the Properties File</a>. 
+</p><p><a name="248074"></a>
+<li>The <code>com.gensym.class.user.repository</code> property must point to the root of where G2 JavaLink will find existing downloaded classes and where G2 JavaLink will download classes to, e.g., <code>c:\Program Files\Gensym\<br>g2-8.3r1\javalink\classes</code>. For more information on G2 JavaLink properties, see the <em><a href="../doc/javalink/docs/guides/g2javalink/g2javalink.pdf">G2 JavaLink User's Guide</a> </em>. 
+</p><p><a name="248080"></a>
+<li>When G2 JavaLink creates a <code>G2Connection</code> to a G2 server, by default, the connection is "permanent," which means it is maintained even if G2 is reset. However, if the <code>G2Connection</code> has not been made permanent by using an appropriately configured <code>com.gensym.jgi.G2ConnectionInfo</code> as a parameter to <code>G2Gateway.getOrMakeConnection()</code>, then you must explicitly start G2 for class downloading to function correctly. 
+</p><p><a name="248081"></a>
+<li>Class definitions exported to Java and those held in G2 can become out of synch if the original G2 class or any of its superiors are altered in the following ways: 
+</p><ul><p><a name="248082"></a>
+<li>Attribute changes: new attributes are added, attributes are removed, or attribute types are changed. 
+</p><p><a name="248083"></a>
+<li>Method changes: new methods are added, methods are removed, or method signatures are changed. 
+</p><p><a name="248084"></a>
+<li>Hierarchy changes: the class has a new superior or any mixin classes were added or removed. 
+</p></ul></ul><ul><p><a name="248085"></a>
+Therefore, we recommend that you download Java classes to G2 JavaLink when G2 classes and their inheritance path are stable. When a G2 class that will be used by a G2 JavaLink client has been changed, make sure that you use the -force command-line option when downloading interfaces. For example: 
+</p><ul><p><a name=248086"></a>
+<code>java com.gensym.jgi.download.DownloadInterfaces -force -stubs -class G2-CLASS-NAME1 </code>
+</p>
+</ul></ul><ul><p><a name="248087"></a>
+<li>When the Java class loader attempts to load an exported Java class that represents a G2 class, it must first attempt to load every class that is required by the exported Java class. This includes all Java interfaces that defined its inheritance path, and classes and interfaces required for attributes and method signatures. If during this loading process Java reports a <code>NoClassDefFoundError</code>, the Java class loader cannot find the required class or it found an invalid class. This can happen if superior or required classes were exported from G2, but the lower class was not, or for some reason a required class was deleted or could not be found on Java's <code>CLASSPATH</code>. 
+</p></ul><a name="248089">
+<h3> Problems Generating Java Beans Created with the G2 Bean Builder</h3>
+</a><p><a name="248090"></a>
+You can test Java Beans created from the G2 Bean Builder by using Sun's Beans Development Kit V1.1, which you can download at <a href="http://java.sun.com/beans/software/bdk_download.html">Bean Development Kit</a>. 
+</p>
+<p><a name="248093"></a>
+To run the BDK, use this batch file: 
+</p>
+<ul><p><a name="248094"></a>
+<code>c:\Bdk\beanbox\run.bat</code>
+</p></ul><p><a name="248095"></a>
+In the version 1.1 release, the contents of this batch file are: 
+</p>
+<ul><p><a name="248096"></a>
+<code>if "%OS%" == "Windows_NT" setlocal <br>set CLASSPATH=classes (There may be additional BeanBox classes here depending on the BDK version) <br>java sun.beanbox.BeanBoxFrame</code>
+</p></ul><p><a name="248097"></a>
+Unfortunately, the batch file overrides the <code>CLASSPATH</code> so that G2 JavaLink classes are not visible to the Bean Box application. Assuming you attempt to load <code>ATestClassBean</code> from <code>C:\bt\mg\java\jars\ATestClassBean.jar</code>, the Bean Box generates the following exception message: 
+</p>
+<ul><p><a name="248098"></a>
+<code>WARNING: Could not instantiate bean "com.gensym.classes.modules.jgidemo.ATestClassBean" from JAR "C:\bt\mg\java\jars\ATestClassBean.jar" BeanBox caught exception java.lang.SecurityException: No access through getResource() to .class in 1.1 while processing: LoadJar msg: No access through getResource() to .class in 1.1</code>
+</p></ul><p><a name="248099"></a>
+You can resolve this problem by editing the <code>run.bat</code> file to ensure that all required G2 JavaLink classes are on the Bean Box's <code>CLASSPATH</code>. Because the G2 JavaLink installation ensures that the default <code>CLASSPATH</code> points to the correct G2 JavaLink classes, the following change to line 2 normally solves the problem: 
+</p>
+<p><a name="248100"></a>
+Windows: 
+</p>
+<ul><p><a name="248101"></a>
+<code>if "%OS%" == "Windows_NT" setlocal <br>set CLASSPATH=%CLASSPATH%;classes;..\lib\methodtracer.jar; <br>..\infobus.jar <br>java sun.beanbox.BeanBoxFrame </code>
+</p></ul><p><a name="248102"></a>
+UNIX: 
+</p>
+<ul><p><a name="248103"></a>
+<code>#!/bin/sh <br>export CLASSPATH <br>CLASSPATH=$CLASSPATH:classes <br>java sun.beanbox.BeanBoxFrame</code>
+</p></ul><p><a name="248104"></a>
+For more information on testing Java Beans created with the G2 Bean Builder, see the <em><a href="../doc/javalink/docs/guides/g2beanbuilder/g2beanbuilder.pdf">G2 Bean Builder User's Guide</a></em>.
+</p>
+<a name="248108">
+<h3> Problems using G2 JavaLink with Sun's Java Plug-In</h3>
+</a><p><a name="248109"></a>
+Due to security reasons, the Java Plug-in sometimes fails to find the <code>.com.gensym.properties</code> file required for the G2 Bean Builder to generate beans correctly. You can solve this problem by putting a copy of the <code>.com.gensym.properties</code> file into the JDK or JRE home directory. 
+</p>
+<p><a name="248111"></a>
+For more information, see the installation chapter in the <em><a href="../doc/javalink/docs/guides/g2beanbuilder/g2beanbuilder.pdf">G2 Bean Builder User's Guide</a></em>.
+</p>
+<a name="248119">
+<h2> Gensym Customer Support</h2>
+</a><p><a name="248122"></a>
+If you need help with the installation, use <a href="http://www.gensym-support.com">Helplink</a> or contact Gensym Customer Support: 
+</p>
+<p>
+</p><p>
+<div> 
+<table border="2">
+<caption></caption>
+<tr><td valign="middle">
+<a name="wp248125"> </a><div>
+&#160;
+</div>
+<td valign="middle"><a name="248127"></a>
+<strong>Americas</strong>
+<td valign="middle"><a name="248129"></a>
+<strong>Europe, Middle-East, Africa (EMEA) </strong>
+
+<tr><td valign="middle"><p><a name="248131"></a>
+Phone
+</p>
+<td valign="middle"><p><a name="248133"></a>
+781-265-7301
+</p>
+<td valign="middle"><p><a name="248135"></a>
++31-71-5682622 
+</p>
+
+<tr><td valign="middle"><p><a name="248137"></a>
+Email
+</p>
+<td valign="middle"><p><a name="248139"></a>
+<code>javalink-service@gensym.com <br></code>or <br><code>service@gensym.com</code>
+</p>
+<p><a name="248140"></a>
+
+</p>
+<td valign="middle"><p><a name="248142"></a>
+<code>service-ema@gensym.com</code>
+</p>
+
+
+</table>
+
+<table>
+<tr><td>
+</table>
+</div>
+</p>
+<p><a name="248144"></a>
+
+</p>
+<p><a name="96956"></a>
+ &#32; &#32; &#32;
+</p>
+
+<p><hr>
