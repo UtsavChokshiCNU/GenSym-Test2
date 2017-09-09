@@ -1,0 +1,25 @@
+supervisor should remove log files before a "clean" build
+key bindings -- control-z should be disabled for developer mode 
+
+Kill dead platforms on 6build: mips, vax, sun4, alphant, and sgi
+
+unmuddy toolsdir situation
+logs should be TOOLSDIR/logs, not SRCBOX/logs
+        (But not really -- toolsdir situation is muddy.)
+
+We also really want to switch the translation machine over to burlington, but
+can't because of the "Lisp can't load 2.8 static archives" problems.  There are
+a number of ways around this.  Supervisor could build the archives on bluto
+ahead of time.  Or, run-translator could be smart enough to do a uname and rsh
+the library builds first.  Or we could try to figure out the problem and then
+build everything on burlington.  [Is this still a problem?]
+
+Send mail to people after builds are complete.
+
+Might like to redo the kbs build thing so that the pieces that know about
+specific files aren't so far apart (e.g. cvs-changes.txt, the log file).
+Perhaps redo using a separate workspace entirely, maybe with module search path
+passed in as env var with the new #### for spaces thing.
+
+Change name of intelnt machine in supagent to match NEW machine.
+Remove diff tasks from ab, et.
