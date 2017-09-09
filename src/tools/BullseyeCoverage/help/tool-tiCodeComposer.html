@@ -1,0 +1,261 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_platform.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>Texas Instruments Code Composer Studio</h1>
+<p>
+BullseyeCoverage does not support the 16-bit compilers.
+These are
+<code>cl2000</code>,
+<code>cl430</code>,
+<code>cl500</code>,
+<code>cl55</code>,
+<code>dspcl</code>.
+
+<h2>Code Composer Studio Version 4</h2>
+
+<h3>Build Run-Time Library</h3>
+<p>
+Use the commands below to build the BullseyeCoverage run-time library.
+Modify the compile command to use the same compile options as your project.
+<pre>
+cd %ProgramFiles%\BullseyeCoverage\run
+
+<i>(TMS320C6x)</i>
+set PATH=%ProgramFiles%/Texas Instruments/ccsv4/tools/compiler/c6000/bin;%PATH%
+cl6x -I"%ProgramFiles%/Texas Instruments/ccsv4/tools/compiler/c6000/include" -g -O -ms libcov-ti.c
+ar6x -r ../lib/libcov-ti-6x.lib libcov-ti.obj
+
+<i>(TMS470R1x)</i>
+set PATH=%ProgramFiles%/Texas Instruments/ccsv4/tools/compiler/tms470/bin;%PATH%
+cl470 -I"%ProgramFiles%/Texas Instruments/ccsv4/tools/compiler/tms470/include" -g -O -ms libcov-ti.c
+ar470 -r ../lib/libcov-ti-470.lib libcov-ti.obj
+</pre>
+
+<h3>Configure Project</h3>
+<p>
+<img alt="Project Properties" src=tool-tiCodeComposer4tool.png style="float:right;margin-left:1em">
+Follow these steps to configure your project.
+<ol>
+<li>
+Use the IDE menu command <code>Project Properties</code>.
+<li>
+Select <code>C/C++ Build</code>.
+<li>
+In the <code>Tool Settings</code> tab, select <code>C6000 Compiler</code> or <code>TMS470 Compiler</code>.
+<li>
+Modify the <code>Command:</code> setting to remove the directory component of the path.
+<ul>
+<li>Change <code>"${C6000_CG_ROOT}/bin/cl6x"</code> to <code>cl6x</code>, or
+<li>change <code>"${TMS470_CG_ROOT}/bin/cl470"</code> to <code>cl470</code>.
+</ul>
+<li>
+Select <code>C6000 Linker</code> or <code>TMS470 Linker</code>.
+<li>
+Modify the <code>Command:</code> setting to remove the directory component of the path.
+<ul>
+<li>Change <code>"${C6000_CG_ROOT}/bin/cl6x" -z</code> to <code>cl6x -z</code>, or
+<li>change <code>"${TMS470_CG_ROOT}/bin/cl470" -z</code> to <code>cl470 -z</code>.
+</ul>
+<li>
+<img alt="Environment" src=tool-tiCodeComposer4env.png style="clear:both;float:right;margin-left:1em;margin-top:1em">
+In the <code>Environment</code> tab, press the <code>New</code> button.
+Enter the settings below.
+<p>
+<table border=1>
+<tr><td>Name<td><code>PATH</code>
+<tr><td>Delimiter<td><code>;</code>
+<tr><td>Operation<td><code>Prepend</code>
+<tr><td>Prepended Value<br>(all one line)<td><code>${ProgramFiles}/BullseyeCoverage/bin;<br>
+&nbsp;${ProgramFiles}/Texas Instruments/ccsv4/tools/compiler/c6000/bin;<br>
+&nbsp;${ProgramFiles}/Texas Instruments/ccsv4/tools/compiler/tms470/bin</code>
+</table>
+</ol>
+
+<h3>Build Project</h3>
+<p>
+Enable <a href=build_coverageBuild.html>coverage build</a>
+and then rebuild your project using the IDE menu command <code>Project Rebuild Active Project</code>.
+
+<h2>Code Composer Studio Version 3.3</h2>
+<p>
+The Code Composer Studio IDE cannot be configured to build with BullseyeCoverage.
+However, you can build from the command prompt using a makefile as described below.
+
+<h3>Build Run-Time Library</h3>
+<p>
+Use the commands below to build the BullseyeCoverage run-time library.
+Modify the compile command to use the same compile options as your project.
+<pre>
+c:\CCStudio_v3.3\DosRun
+cd %ProgramFiles%\BullseyeCoverage\run
+
+<i>(TMS320C6x)</i>
+cl6x -I/CCStudio_v3.3/c6000/cgtools/include -g -O -ms libcov-ti.c
+ar6x -r ../lib/libcov-ti-6x.lib libcov-ti.obj
+
+<i>(TMS470R1x)</i>
+cl470 -I/CCStudio_v3.3/tms470/cgtools/include -g -O -ms libcov-ti.c
+ar470 -r ../lib/libcov-ti-470.lib libcov-ti.obj
+</pre>
+
+<h3>Build Project with a Makefile</h3>
+<ol>
+<li>
+Use the menu command <code>Project Export to Makefile</code>.
+Load the resulting makefile into a text editor.
+<p>
+<li>
+Change all invocations of the compiler from absolute to relative.
+For example, remove the lined-through text below.
+<pre>
+"<span style=text-decoration:line-through>$(DIR_4)/</span>cl6x" -g -q -fr"./Debug" -i"../../include" -d"_DEBUG" -mv6200 "support.c"
+</pre>
+<p>
+<li>
+Follow the instructions in the makefile to perform a clean build.
+Add <i>BullseyeCoverage</i><code>/bin</code> to the front of the <code>PATH</code> environment variable and enable coverage build before building.
+For example:
+<pre>
+c:\CCStudio_v3.3\DosRun
+set PATH=%ProgramFiles%\BullseyeCoverage\bin;%PATH%
+cov01 -1
+gmake -f <i>project</i>.mak rebuild
+</pre>
+</ol>
+<p>
+A make program that works well is available at
+<a href="http://www.bullseye.com/pub/">www.bullseye.com/pub/</a>.
+
+<h2>Code Composer Studio Version 1.0</h2>
+<p>
+This section applies to Code Composer Studio 'C3x for the TMS320C3x/TMS320C4x.
+<p>
+The Code Composer Studio IDE cannot be configured to build with BullseyeCoverage.
+However, you can build from the command prompt using a batch script file as described below.
+<h3>Build Run-Time Library</h3>
+<p>
+Use the commands below to build the BullseyeCoverage run-time library.
+Modify the compile command to use the same compile options as your project.
+<pre>
+set PATH=%PATH%;c:/tieval3x/cc/bin;c:/tieval3x/c3x4x/cgtools/bin
+cd %ProgramFiles%\BullseyeCoverage\run
+
+cl30 -I/tieval3x/c3x4x/cgtools/include -g -O libcov-ti.c
+ar30 -r ../lib/libcov-ti-30.lib libcov-ti.obj
+</pre>
+<h3>Convert Project to a Script</h3>
+<p>
+These steps show how to convert an IDE project to a script.
+To make sure the conversion is correct, do not enable BullseyeCoverage until you have the script working. 
+<ol>
+<li>Copy the Code Composer log file <code>cc_build.log</code> to <code>build.bat</code>
+<pre>
+copy cc_build.log build.bat
+</pre>
+<li>
+Using an editor, modify <code>build.bat</code> to remove all text except the compile and link commands.
+For example, remove the lined-through text below. 
+<pre>
+cl30 -g -v30 -mcm -as -frC:\tieval3x\myprojects -ic:\TIEVAL3X\C3x4x\cgtools\include\ pi_calc.c
+<span style=text-decoration:line-through>[pi_calc.c]
+TMS320C3x/4x ANSI C Compiler            Version 5.11
+Copyright (c) 1987-1999 Texas Instruments Incorporated
+   "pi_calc.c"   ==> main
+TMS320C3x/4x ANSI C Code Generator      Version 5.11
+Copyright (c) 1987-1999 Texas Instruments Incorporated
+   "pi_calc.c"   ==> main
+TMS320C3x/4x COFF Assembler             Version 5.11
+Copyright (c) 1987-1999 Texas Instruments Incorporated
+ PASS 1
+ PASS 2
+
+ No Errors,  No Warnings
+</span>
+lnk30  pi_calc.mak
+<span style=text-decoration:line-through>TMS320C3x/4x COFF Linker                Version 5.11
+Copyright (c) 1987-1999 Texas Instruments Incorporated
+Build Complete,
+  0 Errors, 0 Warnings.</span>
+</pre>
+<li>
+Invoke <code>build.bat</code> to verify you can build your project.
+<pre>
+.\build.bat
+</pre>
+<li>
+Using an editor, modify <code>build.bat</code> to add the BullseyeCoverage run-time library to the link command.
+For example, add the underlined text below. 
+<pre>
+lnk30 pi_calc.mak <span style=text-decoration:underline>"%ProgramFiles%\BullseyeCoverage\lib\libcov-ti-30.lib"</span>
+</pre>
+</ol>
+<h3>Build Project</h3>
+<p>
+Make sure the <i>BullseyeCoverage</i><code>/bin</code> is first in the PATH environment variable.
+Enable coverage and run the script.
+<pre>
+set PATH=%ProgramFiles%\BullseyeCoverage\bin;c:/tieval3x/cc/bin;;c:/tieval3x/c3x4x/cgtools/bin%PATH%
+cov01 -1
+.\build.bat
+</pre>
+
+<h2>Saving Coverage</h2>
+<p>
+If your application never exits,
+add a call to <a href=ref_cov_write.html>cov_write</a> to your source code, at a
+point you know to be executed after the code you want to measure.
+<pre>
+#if _BullseyeCoverage
+	cov_write();
+#endif
+</pre>
+
+<h2>Run under Debugger</h2>
+<p>
+The BullseyeCoverage run-time source file for TI Code Composer,
+<i>BullseyeCoverage</i><code>/run/libcov-ti.c</code>,
+calls the low level POSIX-style functions provided in the TI Code Composer run-time.
+When running under the debugger, these operations are performed according to the host's operating system.
+<p>
+BullseyeCoverage run-time error messages are written to standard error.
+With Code Composer Studio 4,
+after starting the debugger, use the command <code>View Console</code> so
+that you can see any error messages that might occur.
+With Code Composer Studio 3.3,
+use the command <code>View Output Window</code>.
+
+<p style="font-size:xx-small">
+Last reviewed: 9 Sep 2009
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
