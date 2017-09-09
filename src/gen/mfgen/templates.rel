@@ -1,0 +1,493 @@
+;;; -*- Mode: LISP; Syntax: Common-Lisp; Base: 10; Package: USER -*-
+(in-package "USER")
+
+;;;; Makefile generator relational database: templates.rel
+
+;;;; Copyright (c) 1986-2017 Gensym Corporation.
+;;;  All Rights Reserved.
+
+;;;; Author: Mark E. Staknis
+
+;;;; Description:
+;;;      This file contains the relation that defines templates for
+;;;    makefile generation.  A template is selected by category and highest
+;;;    priority platform and product groups.  For selection, the
+;;;    platform-group is primary and the product-group is secondary.  A
+;;;    template is processed from left to right.  Strings and characters are
+;;;    printed literally.  For each symbol <sym>, a function mfgtf-<sym> is
+;;;    dispatched, where mfgtf stands for "makefile generator template
+;;;    function".  An environment (a structure) is used to pass data from
+;;;    one stage of template processing to the next.  See mfgtf.lisp for
+;;;    descriptions of the template functions and mfg.lisp for a description
+;;;    of the environment.
+
+;;;; Notes
+
+;;;; Modifications
+;;;      5/19/95 mes: Removed from the overall makefile structure the major
+;;;    sections "nonlocal-library-dummy-target" and "nonlocal-library-targets".
+;;;    These were used to invoke "make" recursively in directories for
+;;;    nonlocal libraries.  Their template functions and associated templates
+;;;    have been retained so that they can be easily restored if necessary.
+;;;      6/19/96, jv: Added shared-object-targets to the template for both
+;;;    standard-makefile and standard-install-makefile.
+
+
+(setq template-relation
+'(( category            platform-group         product-group
+;;  --------            --------------         -------------
+    template )
+;;  --------
+  ((standard-makefile    _all                  _all
+    (comments-prologue
+     variable-targets  #\newline 
+     dummy-targets
+     enter-exit-targets
+     library-targets
+     dll-library-targets
+     shared-object-targets
+     dll-executable-targets
+     executable-targets
+     object-default-target
+     resource-targets
+     object-targets
+     clean-target))
+
+   (standard-install-makefile    _all         _all
+    (comments-prologue
+     variable-targets  #\newline
+     dummy-targets
+     enter-exit-targets
+     library-targets
+     dll-library-targets
+     shared-object-targets
+     dll-executable-targets
+     executable-targets
+     object-default-target
+     resource-targets
+     object-targets
+     clean-target #\newline
+     install-target))
+
+   (install-only-makefile    _all         _all
+    (#\newline
+     install-target))
+
+  (resource-file     _all                  _all
+   (target-with-suffix " : " rc-source-for-target #\newline
+    remove-target-line
+    log-start-line
+    #\tab resource-command #\space
+    resource-options #\space
+    rc-source-for-target #\newline
+    log-finish-line))
+
+  (compile             _all                   _all
+   (compile-target-line
+    compile-body))
+
+  (compile-body        _all                   _all
+   (remove-target-line
+    log-start-line
+    #\tab   compile-command #\space cc-odp-options #\space cc-options
+         #\space include-paths #\space c-source-for-target #\newline
+    log-finish-line))
+
+  (compile-body        sparcsol              _all
+   (remove-target-line
+    #\tab "@ "  compile-command #\space cc-odp-options #\space cc-options
+         #\space include-paths #\space c-source-for-target #\newline ))
+
+  (compile-target-line _all                  _all
+   (target-with-suffix " : " c-source-for-target #\space dependencies
+         #\newline))
+   
+  (compile-target-line _all                  g2tw
+   (target-with-suffix " : " c-source-for-target #\space h-file-for-target
+	 #\space dependencies #\newline))
+
+  (remove-target-line _all                   _all
+   (#\tab "@- if [ -f " target-with-suffix " ] ; then rm -f "
+         target-with-suffix " ; fi" #\newline))
+
+  (remove-target-line intelnt               _all
+   (#\tab "- " remove-command #\space target-with-suffix   #\newline))
+
+  (log-start-line    _all                   _all
+   (#\tab "@- " errlog-command #\space target-with-suffix #\newline))
+
+  (log-start-line    intelnt                _all
+   (#\tab "@- " errlog-command #\space target-with-suffix #\newline))
+
+  (log-finish-line   _all                   _all
+   (#\tab "@- if [ -f current.log ]; then rm -f current.log; fi" #\newline))
+
+  (log-finish-line   intelnt                _all
+   (#\tab "@- " remove-command #\space "current.bat" #\newline))
+
+  (link              _all                   _all
+   (target-with-suffix " : " dependencies-with-continuation-lines #\newline
+    remove-target-line
+    log-start-line
+    link-line
+    log-finish-line))
+
+  (link-optimized    _all                   _all
+   (target-with-suffix " : " dependencies-with-continuation-lines #\newline
+    remove-target-line
+    log-start-line
+    link-line
+    log-finish-line))
+
+  (link              sparcsol               _all
+   (target-with-suffix " : " dependencies-with-continuation-lines #\newline
+    #\tab "@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)" #\newline
+    remove-target-line
+    link-line))
+
+  (link-optimized    sparcsol               _all
+   (target-with-suffix " : " dependencies-with-continuation-lines #\newline
+    #\tab "@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)" #\newline
+    remove-target-line
+    link-line))
+
+  (dll-link          intelnt                gsi
+   (target-with-suffix " : " dependencies-with-continuation-lines #\newline
+    remove-target-line
+    log-start-line
+    dll-link-line
+    log-finish-line))
+
+  (link-line         _all                   _all
+   (#\tab link-command #\space target-with-suffix #\space link-options #\space
+      lib-paths #\space objects-and-libs-with-continuation-lines #\space
+      libs #\newline ))
+
+  (link-line         intelnt                _all
+   (#\tab link-command #\space "-out:" target-with-suffix #\space
+         link-options
+         #\space lib-paths #\space objects-and-libs #\space libs #\newline))
+
+  (link-line         intelnt                g2tw
+   (#\tab link-command #\space "@<<" #\newline
+      "  -out:" target-with-suffix #\space link-options
+         #\space lib-paths #\space objects-and-libs #\space libs #\newline
+    "<<" #\newline))
+
+  (dll-link-line     intelnt                gsi
+   (#\tab link-command #\space "-out:" target-with-suffix #\space
+         link-options
+         #\space lib-paths #\space objects-and-libs #\space libs #\newline))
+
+  (variable-targets  _all                   _all
+   (target-as-variable " = " dependencies-with-continuation-lines))
+   
+  (archive           _all                  _all
+   (target-with-suffix " : " dependencies-with-continuation-lines #\newline
+    remove-target-line
+    log-start-line
+    archive-line
+    log-finish-line))
+
+  (archive           sparcsol               _all
+   (target-with-suffix " : " dependencies-with-continuation-lines #\newline
+    #\tab "@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)" #\newline
+    remove-target-line
+    archive-line))
+
+  (dll-archive       intelnt                _all
+   (target-with-suffix " : " dependencies-with-continuation-lines #\newline
+    remove-target-line
+    log-start-line
+    dll-archive-line
+    log-finish-line))
+
+  (shared-object     _all                  _all
+   (target-with-suffix " : " dependencies-with-continuation-lines #\newline
+    remove-target-line
+    log-start-line
+    shared-object-line
+    log-finish-line))
+
+  (archive-line      _all                   _all
+   (#\tab archive-command #\space archive-options #\space
+         target-with-suffix #\space archive-obj-options #\space
+         objects-and-libs-with-continuation-lines #\newline ))
+
+  (archive-line      has-ranlib             _all
+   (#\tab archive-command #\space archive-options #\space
+         target-with-suffix #\space archive-obj-options #\space
+         objects-and-libs-with-continuation-lines #\newline
+    #\tab ranlib-command #\space target-with-suffix #\newline ))
+
+  (archive-line      intelnt                _all
+   (#\tab archive-command target-with-suffix #\space archive-options #\space
+         archive-obj-options #\space objects-and-libs #\newline ))
+
+  (dll-archive-line  intelnt                _all
+   (#\tab dll-archive-command target-with-dll-suffix #\space archive-options
+         #\space archive-obj-options #\space objects-and-libs #\space libs
+         #\newline ))
+
+  (archive-line      intelnt                rtl
+   (#\tab "$(implib)" #\space "@<<" #\newline
+      "  /out:" target-with-suffix #\space archive-options #\space
+         archive-obj-options #\space objects-and-libs #\newline
+    "<<" #\newline))
+
+  (shared-object-line      _all                   _all
+   (#\tab shared-object-command #\space
+	  target-with-suffix  #\space
+	  archive-options #\space
+	  ;; piggybacking on archive to avoid more senseless code duplication
+	  lib-paths #\space
+	  libs #\space
+	  archive-obj-options #\space
+	  objects-and-libs-with-continuation-lines #\newline))
+
+  (archive-create-line _all                _all
+   (#\tab archive-command #\space archive-options #\space target-with-suffix
+	#\space archive-obj-options #\space strings-with-continuation-lines
+        #\newline ))
+
+  (archive-insert-line _all                _all
+   (#\tab archive-command #\space archive-insert-options #\space
+	target-with-suffix #\space strings-with-continuation-lines #\newline ))
+
+  (nonlocal-archive    _all                _all
+   (target " : " #\newline
+    #\tab runmake-command #\space runmake-product-kludge #\space odir #\space
+        target-with-suffix
+        #\newline ))
+   
+  (nonlocal-archive    intelnt           _all
+   (target " : " #\newline
+    #\tab runmake-command #\space runmake-product-kludge #\space odir #\space
+       target-with-suffix #\newline
+    #\tab cd-command #\space current-dir
+         #\newline))
+   
+  (nonlocal-library-dummy _all              _all
+   ("all : " nonlocal-library-dummy-dependencies #\newline ))
+
+  (dummy               _all                 _all
+   (target " : " dependencies-with-augmented-all #\newline ))
+
+  (enter-exit          _all                 _all
+   ("_mfenter : " #\newline
+     #\tab "@- " errlog-command #\space "-init" #\newline
+     #\newline
+    "_mfexit : " #\newline
+     #\tab "@- " errlog-command #\space "-finish" #\newline
+     #\newline))
+
+  (enter-exit          sparcsol             g2
+   ("_mfenter : " #\newline
+     #\tab "@- " errlog-command #\space "-init" #\newline
+     #\tab "@- if $(SCRIPTSDIR)/runmake ext $(ODIR) -q libcprim.a > /dev/null 2>&1; then junk=junk; else echo \"WARNING: ext libs are out of date\"; fi" #\newline
+     #\tab "@- if $(SCRIPTSDIR)/runmake fnt $(ODIR) -q libfnt.a > /dev/null 2>&1; then junk=junk; else echo \"WARNING: libfnt is out of date\"; fi" #\newline
+     #\tab "@- if $(SCRIPTSDIR)/runmake jpeg $(ODIR) -q libjpeg.a > /dev/null 2>&1; then junk=junk; else echo \"WARNING: libjpeg is out of date\"; fi" #\newline
+     #\tab "@- if $(SCRIPTSDIR)/runmake xml $(ODIR) -q liblsxml.a > /dev/null 2>&1; then junk=junk; else echo \"WARNING: liblsxml is out of date\"; fi" #\newline
+     #\tab "@- if $(SCRIPTSDIR)/runmake rtl $(ODIR) -q librtl.a > /dev/null 2>&1; then junk=junk; else echo \"WARNING: librtl is out of date\"; fi" #\newline
+     #\newline
+    "_mfexit : " #\newline
+     #\tab "@- " errlog-command #\space "-finish" #\newline
+     #\newline))
+
+  (enter-exit          sparcsol             tw
+   ("_mfenter : " #\newline
+     #\tab "@- " errlog-command #\space "-init" #\newline
+     #\tab "@- if $(SCRIPTSDIR)/runmake ext $(ODIR) -q libcprim.a > /dev/null 2>&1; then junk=junk; else echo \"WARNING: ext libs are out of date\"; fi" #\newline
+     #\tab "@- if $(SCRIPTSDIR)/runmake fnt $(ODIR) -q libfnt.a > /dev/null 2>&1; then junk=junk; else echo \"WARNING: libfnt is out of date\"; fi" #\newline
+     #\tab "@- if $(SCRIPTSDIR)/runmake jpeg $(ODIR) -q libjpeg.a > /dev/null 2>&1; then junk=junk; else echo \"WARNING: libjpeg is out of date\"; fi" #\newline
+     #\tab "@- if $(SCRIPTSDIR)/runmake rtl $(ODIR) -q librtl.a > /dev/null 2>&1; then junk=junk; else echo \"WARNING: librtl is out of date\"; fi" #\newline
+     #\newline
+    "_mfexit : " #\newline
+     #\tab "@- " errlog-command #\space "-finish" #\newline
+     #\newline))
+
+  (enter-exit          sparcsol             gsi
+   ("_mfenter : " #\newline
+     #\tab "@- " errlog-command #\space "-init" #\newline
+     #\tab "@- if $(SCRIPTSDIR)/runmake ext $(ODIR) -q libcprim.a libtcp.a > /dev/null 2>&1; then junk=junk; else echo \"WARNING: ext libs are out of date\"; fi" #\newline
+     #\tab "@- if $(SCRIPTSDIR)/runmake rtl $(ODIR) -q librtl.a > /dev/null 2>&1; then junk=junk; else echo \"WARNING: librtl is out of date\"; fi" #\newline
+     #\newline
+    "_mfexit : " #\newline
+     #\tab "@- " errlog-command #\space "-finish" #\newline
+     #\newline))
+
+  (clean               _all                 _all
+   ("clean : " #\newline
+    #\tab "- " remove-command #\space "*.[oa]"   #\newline
+    remove-exes-lines))
+
+  (remove-line         _all                 _all
+   (#\tab "- " remove-command #\space filename   #\newline))
+
+  (clean               intelnt              _all
+   ("clean : " #\newline
+    #\tab "- " remove-command #\space "*.obj"  #\newline
+    #\tab "- " remove-command #\space "*.lib"  #\newline
+    #\tab "- " remove-command #\space "*.exe"  #\newline))
+
+  (clean               intelnt              twplug
+   ("clean : " #\newline
+    #\tab "- " remove-command #\space "*.obj"  #\newline
+    #\tab "- " remove-command #\space "*.lib"  #\newline
+    #\tab "- " remove-command #\space "*.exp"  #\newline
+    #\tab "- " remove-command #\space "*.dll"  #\newline))
+
+  (install             _all                 _all
+   ("install : " #\newline
+    #\tab "- rm -rf $(TAPEDST)/*" #\newline
+    #\tab "- rm -rf $(TESTDST)/*" #\newline
+    install-lines
+    #\tab "cp -rp $(TAPEDST)/* $(TESTDST)" #\newline))
+
+  (install             intelnt              _all
+   ("install : " #\newline
+    #\tab "- echo y | rmdir /s $(TAPEDST)" #\newline
+    #\tab "mkdir $(TAPEDST)"               #\newline
+    #\tab "- echo y | rmdir /s $(TESTDST)" #\newline
+    #\tab "mkdir $(TESTDST)"               #\newline
+    install-lines
+    #\tab "xcopy /s /e /i $(TAPEDST) $(TESTDST)"  #\newline))
+
+  (install             _all                 fonts    
+   ("install : " #\newline
+    #\tab "- rm -rf $(TAPEDST)" #\newline
+    #\tab "mkdir $(TAPEDST)" #\newline
+    install-lines))
+
+  (install             intelnt              fonts    
+   ("install : " #\newline
+    #\tab "- echo y | rmdir /s $(TAPEDST)" #\newline
+    #\tab "mkdir $(TAPEDST)"               #\newline
+    install-lines))
+
+  (install             _all                 g2
+   ("install : " #\newline
+    #\tab "- rm -rf $(TAPEDST)/*" #\newline
+    #\tab "- rm -rf $(TESTDST)/*" #\newline
+    #\tab "mkdir $(EXTDST)" #\newline
+    #\tab "chmod ug+r+w $(EXTDST)" #\newline
+    install-lines
+    #\tab "cp -rp $(TAPEDST)/* $(TESTDST)" #\newline
+    #\tab "rm -f $(TESTDST)/g2.ok" #\newline))
+
+  (install             intelnt              g2
+   ("install : " #\newline
+    #\tab "- echo y | rmdir /s $(TAPEDST)" #\newline
+    #\tab "mkdir $(TAPEDST)"               #\newline
+    #\tab "- echo y | rmdir /s $(TESTDST)" #\newline
+    #\tab "mkdir $(TESTDST)"               #\newline
+    #\tab "mkdir $(EXTDST)"                #\newline
+    install-lines
+    #\tab "xcopy /s /e /i $(TAPEDST) $(TESTDST)"  #\newline
+    #\tab "del $(TESTDST)\\g2.ok"  #\newline))
+
+  (install             _all                 kbs
+   ("install : " #\newline
+    #\tab "- rm -rf $(TAPEDST)" #\newline
+    #\tab "mkdir $(TAPEDST)" #\newline
+    #\tab "mkdir $(DKBDST)" #\newline
+    #\tab "chmod ug+r+w $(DKBDST)" #\newline
+    #\tab "mkdir $(SKBDST)" #\newline
+    #\tab "chmod ug+r+w $(SKBDST)" #\newline
+    #\tab "mkdir $(TKBDST)" #\newline
+    #\tab "chmod ug+r+w $(TKBDST)" #\newline
+    #\tab "mkdir $(KBDST)" #\newline
+    #\tab "chmod ug+r+w $(KBDST)" #\newline
+    install-lines))
+
+  (install             intelnt              kbs
+   ("install : " #\newline
+    #\tab "- echo y | rmdir /s $(TAPEDST)" #\newline
+    #\tab "mkdir $(TAPEDST)"               #\newline
+    #\tab "mkdir $(DKBDST)"                #\newline
+    #\tab "mkdir $(SKBDST)"                #\newline
+    #\tab "mkdir $(TKBDST)"                #\newline
+    #\tab "mkdir $(KBDST)"                 #\newline
+    install-lines))
+
+  (install             _all                 gw
+   ("install : " #\newline
+    #\tab "- rm -rf $(TAPEDST)" #\newline
+    #\tab "mkdir $(TAPEDST)" #\newline
+    #\tab "mkdir $(WWWDST)" #\newline
+    #\tab "chmod ug+r+w $(WWWDST)" #\newline
+    #\tab "mkdir $(KBDST)" #\newline    
+    #\tab "chmod ug+r+w $(KBDST)" #\newline
+    install-lines))
+
+  (install             intelnt              gw
+   ("install : " #\newline
+    #\tab "- echo y | rmdir /s $(TAPEDST)" #\newline
+    #\tab "mkdir $(TAPEDST)"               #\newline
+    #\tab "mkdir $(WWWDST)"                #\newline
+    #\tab "mkdir $(KBDST)"                #\newline
+    install-lines))
+
+  (install             _all                 tw
+   ("install : " #\newline
+    #\tab "- rm -rf $(TAPEDST)/*" #\newline
+    #\tab "- rm -rf $(TESTDST)/*" #\newline
+    install-lines
+    #\tab "cp -rp $(TAPEDST)/* $(TESTDST)" #\newline
+    #\tab "rm -f $(TESTDST)/tw.ok" #\newline))
+
+  (install             intelnt              tw
+   ("install : " #\newline
+    #\tab "- echo y | rmdir /s $(TAPEDST)" #\newline
+    #\tab "mkdir $(TAPEDST)"               #\newline
+    #\tab "- echo y | rmdir /s $(TESTDST)" #\newline
+    #\tab "mkdir $(TESTDST)"               #\newline
+    #\tab "mkdir $(W2KDST)"                #\newline
+    install-lines
+    #\tab "xcopy /s /e /i $(TAPEDST) $(TESTDST)"  #\newline
+    #\tab "del $(TESTDST)\\tw.ok"  #\newline))
+
+  (install-lines       _all                 _all
+   (#\tab "echo \"" install-parts-subdir install-filename-and-suffix
+       #\space #\space #\space #\` "sum" #\space install-full-source #\`
+       #\space "\" >> $(CONTENTS)" #\newline
+    #\tab install-command #\space install-options #\space install-full-source
+       #\space install-full-destination #\newline
+    #\tab chmod-command #\space chmod-options
+       #\space install-full-destination #\newline))
+
+  (install-lines       intelnt               _all
+   (#\tab "echo " install-parts-subdir install-filename-and-suffix
+       " >> $(CONTENTS)" #\newline
+    #\tab install-command #\space install-options #\space install-full-source
+       #\space install-full-destination #\newline))
+
+  (comments-prologue      intelnt              _all
+   (#\newline
+    "# The include file ntwin32.mak defines macros to provide independence"
+                                                                      #\newline
+    "# macro      Intel NT             Alpha NT      Definition"      #\newline
+    "# =====      ========             ========      ==========="     #\newline
+    "# $(cc)      cl                   claxp         compiler"        #\newline
+    "# $(ccommon) -c -W3               same          standard compiler flags"
+                                                                      #\newline
+    "# $(cdebug)  -Od -Zi              -Od -Zi -Zh   standard debug flags*"
+                                                                      #\newline
+    "# $(cflags)  $(ccommon) -D_X86_=1 -c -DALPHA=1  to identify platform"
+                                                                      #\newline
+    "# $(cvarsdll) -DWIN32 $(noansi)    same          to identify o.s."
+                                                                      #\newline
+    "# $(link)    link32               same          linker"          #\newline
+    "# $(ldebug)  -debug:full          same          linker debug flags*"
+                                                                      #\newline
+    "#            -debugtype:cv              "                        #\newline
+    "# $(guilflags) -subsystem:windows same          GUI link flags"  #\newline
+    "#             -entry:WinMainCRTStartup  "                        #\newline
+    "#"                                                               #\newline
+    "# (*) A NODEBUG option or macro turns off debugging and specifies"
+                                                                      #\newline
+    "#    full optimization."                                         #\newline
+    #\newline
+    "!include <ntwin32.mak>"   #\newline
+    #\newline ))
+ )))
