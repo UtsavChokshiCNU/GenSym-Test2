@@ -1,0 +1,204 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_trouble_run.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+Run-Time Errors
+</h1>
+<P>
+A BullseyeCoverage probe or function <a href=ref_cov_write.html>cov_write</a>
+may report one of the following error codes to the user or to
+the file named by environment variable
+<a href="ref_environment.html#COVERR">COVERR</a>,
+if set.
+<p>
+<table summary="Run-time error codes and descriptions">
+<tr><th>Code<th>Description
+
+<tr><td>0<td>
+Success.
+<tr><td>1<td>
+Memory corrupted in the instrumentation area.
+Add calls to <a href=ref_cov_check.html>cov_check</a> to your program to determine where the memory error first occurs.
+<tr><td>2<td>
+Wrong coverage file.
+The instrumented code contains information far different than the coverage file.
+Use the same coverage file at run-time as was last updated by building the instrumented code.
+Check the <code>COVFILE</code> and <code>COVFILELIST</code> environment variables.
+Under Windows, after changing environment variables, restart all command prompts and IDEs.
+If you copy the test program from a different computer, also copy the coverage file at the same time.
+<tr><td>3<td>
+File lock error.
+See <a href="trouble_fileLock.html">File Lock Error</a>.
+<tr><td>4<td>
+Object missing.
+The instrumented code contains information about a version of an object file that is not present in this coverage file.
+Possibly, the object file was overwritten during the build.
+Enable <a href=ref_covc.html>covc</a> option <code>--retain</code> and rebuild.
+To do this in the <a href=coverageBrowser.html>Coverage Browser</a>,
+use menu command <code>Tools Options</code> and enable <code>Retain previous measurements when possible</code>.
+If <code>--retain</code> does resolve this error,
+delete all copies of the object file named in the error message,
+all libraries which might contain the object file,
+and delete the executable file named in the error message, if any.
+If this error persists, see the suggestions for error #2.
+<tr><td>5<td>
+A low-level i/o operation failed, such as <code>read</code>,
+<code>write</code>, <code>lseek</code>, or <code>close</code>.
+Check hardware or network connection.
+
+<tr><td>6<td>The coverage file is corrupted.
+Rebuild the test program with <a href=build_coverageBuild.html>Coverage
+Build</a> enabled.
+
+<tr><td>7<td>
+The test program does not match the coverage file.
+Rebuild the test program with <a href=build_coverageBuild.html>Coverage
+Build</a> enabled.
+Set environment variable <code>COVFILE</code> to the full path of the
+coverage file to make certain you have only one coverage file.
+Unset environment variable <code>COVFILELIST</code> if it exists.
+
+<tr><td>8<td>
+Function atexit failed.
+On Windows, make sure the <code>TMP</code> environment variable specifies a valid, writable directory.
+Remove the files <code>BullseyeCoverage*.dll</code>, from this directory.
+
+<tr><td>12<td>
+Entry missing in coverage file.
+Set environment variable <code>COVFILE</code> to the full path of the
+coverage file to make certain you have only one coverage file.
+Enable <code><a href=ref_covc.html>covc</a></code> option <code>--retain</code>.
+To do this in <a href=coverageBrowser.html>Coverage Browser</a>, do
+<code>Tools Options Build</code> and select <code>Retain previous
+measurements when possible</code>.
+Under Windows, set <code>COVFILE</code> in the
+Control Panel then restart all command prompts.
+Verify
+the coverage file is the same one created when building.  If you copy
+the test program from a different computer, also copy the coverage file.
+Unset environment variable <code>COVFILELIST</code> if it exists.
+If the suggestions above do not help to resolve this error, delete all
+copies of the object file named in the error message, all libraries
+which might contain the object file, and delete the executable file
+named in the error message, if any.
+After version 7.8.24, this error was split into #2 and #4.
+
+<tr><td>13<td>
+The auto-save feature is not supported under this operating system.
+Disable auto-save by setting environment variable
+<a href=ref_environment.html>COVAUTOSAVE</a>
+to <code>0</code>.
+
+<tr><td>14<td>
+No new probes have been encountered since the last call to cov_write.
+Removed in version 7.12.3.
+
+<tr><td>15<td>
+Cannot find coverage file.
+<code>COVFILE</code> is not set.
+Set environment variable <code>COVFILE</code> to the full path of the
+coverage file.
+
+<tr><td>16<td>
+Cannot open coverage file.
+<code>COVFILE</code> is probably set to an incorrect path.
+Set environment variable <code>COVFILE</code> to the full path of the
+coverage file that you used when building.
+
+<tr><td>17<td>
+Coverage file is empty; it contains no coverage measurement information.
+This file was probably created or emptied with the <code>covmgr</code> command.
+Set <code>COVFILE</code> to the full path of this coverage file, enable
+Coverage Build and rebuild all.
+Unset environment variable <code>COVFILELIST</code> if it exists.
+
+<tr><td>18<td>
+Not a BullseyeCoverage file or wrong version.
+The <code>COVFILE</code> environment variable specifies a file which is
+either not a file created by BullseyeCoverage, or was written by an incompatible
+version of BullseyeCoverage.
+Check that <code>COVFILE</code> specifies the full path of the coverage
+file most recently created by BullseyeCoverage when you built the test program
+with Coverage Build enabled.
+
+<tr><td>19<td>
+Passive mode run-time.
+Function <code>cov_write</code> returns this error code when using a passive
+kernel mode version of the BullseyeCoverage run-time library.
+You must use <a href=ref_covgetkernel.html>covgetkernel</a> to save
+measurements.
+
+<tr><td>20<td>
+No probes have been encountered. There is no data to save.
+
+<tr><td>21<td>
+Environment variable <a href=ref_environment.html>COVNOSAVE</a> is set.  No coverage was saved.
+
+<tr><td>22<td>
+Function <code>cov_write</code> is busy.
+Function <code>cov_write</code> returned immediately because a previous caller
+in another thread was busy in <code>cov_write</code>
+and it was not possible to wait for the previous caller to finish.
+
+</TABLE>
+
+<!-- For indexing and searching -->
+<p style="visibility:hidden;font-size:1px;margin:0;padding:0">
+error 1
+error 2
+error 3
+error 4
+error 5
+error 6
+error 7
+error 8
+error 9
+error 10
+error 11
+error 12
+error 13
+error 14
+error 15
+error 16
+error 17
+error 18
+error 19
+error 20
+error 21
+error 22
+
+<p style="font-size:xx-small">
+Last reviewed: 26 Jun 2009
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
