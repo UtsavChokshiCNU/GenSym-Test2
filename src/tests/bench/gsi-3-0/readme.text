@@ -1,0 +1,45 @@
+GSI BENCHMARKS - VERSION 3.X
+----------------------------
+Note that there are two versions of the GSI 3.X benchmark:
+1. gsi_bench.c     - 3.2 version (new GSI API)
+2. gsi_benchmark.c - 3.0 version
+
+Note that both of these files are already in the ext/c directory.
+Both depend on gsi_regress_for_benchmark.c.
+
+By default, The GSI 3.2 benchmark, gsi_bench.c, is compiled as part of builds.
+Therefore, gsi_bench should be compiled during builds and placed in ext/opt.
+
+Refer to the gsi/c directory and tests/bench/gsi-4-0 for the GSI 4.0 version
+of the benchmark.
+
+- cpm, 10/27/95
+----------------------------
+This directory contains the source files for the GSI benchmarks and the
+necessary benchmark and GSI include (.h) files.
+
+UNIX: There is a make file, makegsibench.make, for compiling on unix platforms.
+
+VMS: There is a command file, compilebench.com, and options file, bench.opt, for
+compiling with VAX VMS.  When running under VMS, first execute the second
+command file, bench_symbol.com, that defines "gsibench" to start the GSI
+extension and to pass any command line arguments.
+
+NOTE: The GSI-BENCHMARKS-3-0-VAX.KB is used on slower platforms, such as some of
+the VAXes, in place of the gsi-benchmarks-3-0.kb.  This is necessary because
+some of the Get-Value and Set-Value Througput tests do not complete otherwise.
+
+Directories:
+  VAX files on UNIX vmsdisc:
+    /vmsdisc/public/benchmarks/bench-3-0/gsi-bench/
+  VAX files on VMS machine (same directory as above)
+    vmsdisc:[public.benchmarks.bench-3-0.gsi-bench]
+
+  On SPITFR, a Vax 4100/60, not currently on the cluster:
+    g230$dir:[.benchmarks]
+    Copy from the VMSDISC to this directory as necessary using, for example:
+       $ COPY bolton""::vmsdisc:[public.benchmarks.bench-3-0.gsi-bench]bench.exe []
+  KBS are on the cluster in the following directory.  Copy from "tests/bench>"
+  as needed.
+    acton$dua0:[ab.benchmarks]
+----------------------------
