@@ -1,0 +1,45 @@
+#!/bin/csh
+
+
+onintr cleanup
+
+
+### Emit doc, if invoked with bad args.
+
+if ( $1 != -please || $#argv != 1 ) then
+cat <<EOF
+$0 -please
+Move the manual the Documenation has build over so it can
+be promoted to shipping.
+EOF
+exit -1
+endif
+
+
+### The sources.
+set src = /home/docs/bridges/gsi-web/html
+set dst = $SRCBOX/gw/doc
+
+cd $src
+set files = ( {logo,arrwrite,checkmark,diamond,titlepaa}.gif )
+set files = ( $files book{ix,toc}.htm )
+set files = ( $files configu[123r].htm )
+set files = ( $files example[12s].htm )
+set files = ( $files glossary.htm )
+set files = ( $files install[123456i].htm )
+set files = ( $files introdu[1234567c].htm )
+set files = ( $files proced1[01234].htm )
+set files = ( $files procedu[0123456789r].htm )
+set files = ( $files titlepa[1g].htm )
+set files = ( $files usinght[12m].htm )
+
+# Get dem htm files
+foreach file ( $files )
+  echo $file
+  cp -p $src/$file $dst
+end
+
+cleanup:
+unset verbose
+
+
