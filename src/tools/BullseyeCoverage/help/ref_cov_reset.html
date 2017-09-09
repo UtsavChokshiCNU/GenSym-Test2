@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_reference.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+cov_reset - Reset Measurements in Memory
+</h1>
+<PRE>
+#include &lt;BullseyeCoverage.h&gt;
+int cov_reset(void);
+</PRE>
+<H2>DESCRIPTION</H2>
+<P>
+Function <CODE>cov_reset</CODE> resets measurements to zero in
+memory for the current process. The coverage file is unaffected.
+All pointers in the run-time data structures are reset to allow
+subsequently unloading some object files from memory.
+This function does not clear the run-time error status.
+<P>
+This function is automatically declared in source files compiled
+by <a href=ref_covc.html>covc</a>. In other
+source files, declare it by including <code>&lt;BullseyeCoverage.h&gt;</code>.
+<h2>RETURN VALUE</h2>
+<p>
+If successful, <code>cov_reset</code> returns the negative number of
+object files cleared.
+Otherwise, it returns one of the error codes listed in <a
+href=error_runTime.html>Run-Time Errors</a>.
+<H2>EXAMPLES</H2>
+<PRE>
+#if _BullseyeCoverage
+    cov_reset();
+#endif
+</PRE>
+<H2>NOTES</H2>
+<P>
+Each dynamic link library (DLL) is considered a separate process.
+Calling this function from inside a DLL only affects the coverage
+data in that DLL and does not affect coverage data in programs
+which call the DLL or other DLLs.
+<p style="font-size:xx-small">
+Last reviewed: 10 Aug 2006
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
