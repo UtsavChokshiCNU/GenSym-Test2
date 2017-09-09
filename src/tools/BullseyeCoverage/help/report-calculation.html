@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_report.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>Coverage Calculation</h1>
+<p>
+The <i>function coverage</i> of a region is the ratio of the number of
+functions invoked to the total number of functions in the region.
+<p>
+The <i>condition/decision coverage</i> of a region is the ratio of the
+items listed below to the total possible within the region.
+<ul>
+<li>the number of decisions and conditions which evaluated true
+<li>the number of decisions and conditions which evaluated false
+<li>the number of <code>case</code> and <code>default</code> labels encountered
+<li>the number of C++ <code>catch</code> clauses encountered
+</ul>
+<p>
+The decision coverage of a region is the same as the condition/decision, except that condition outcomes are not counted.
+<p>
+A <i>decision</i> is the entire expression tested by a control structure. It may include logical operators.
+A <i>condition</i> is an expression separated by logical operators.
+In example below, there are two conditions, <code>A and B</code>, and one decision <code>A || B</code>.
+<pre>
+if (A || B) ...
+</pre>
+<p>
+BullseyeCoverage truncates fractional percentage numbers to the next lower percentage.
+For example, 999/1000 is shown as 99% rather than 100%.
+This way, "100%" only appears for fully covered regions.
+<p>
+The <i>uncovered functions</i> and <i>uncovered conditions/decisions</i>
+are simply the difference between the total number of items and
+the number invoked.
+
+<p style=font-size:xx-small>
+Last reviewed: 10 Mar 2008
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
