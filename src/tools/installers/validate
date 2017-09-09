@@ -1,0 +1,94 @@
+#!/bin/sh
+#-----------------------------------------------------------------
+# validate
+#
+# Copyright (c) 1996
+#          Gensym Corporation.
+#          125 CambridgePark Drive, Cambridge MA 02140
+#          All Rights Reserved.
+#
+#-----------------------------------------------------------------
+
+if [ "$1" = "-h"  -o "$1" = "-help" ]; then
+    echo " "
+    echo "NAME"
+    echo "   validate - Performs validation for installed Gensym products."
+    echo " "
+    echo "SYNOPSIS"
+    echo "   validate [-help]"
+    echo "   validate [<product dir>]"
+    echo " "
+    echo "DESCRIPTION"
+    echo "   Validates an installed Gensym product by generating content and"
+    echo "   checksum information then comparing to the products contents.txt"
+    echo "   file."
+    echo " "
+    echo "   Any errors encountered will appear in diff output format. Note"
+    echo "   that when an installation is valid, diff will produce no output."
+    echo " "
+    echo "OPTIONS"
+    echo "   -help          Optional. Print this man page."
+    echo "   <product dir>  Optional. Path name of installed product to"
+    echo "                  validate. If none specified validation is"
+    echo "                  attempted in current directory."
+    echo " "
+    echo "EXAMPLES:"
+    echo "   To validate a product which is installed in the current working"
+    echo "   directory, use this command as follows:"
+    echo " "
+    echo "       validate"
+    echo " "
+    echo "   To validate a product which is installed in another directory, use"
+    echo "   a command similar to the following:"
+    echo " "
+    echo "       validate /usr/gensym/g2"
+    echo " "
+    exit 1
+fi
+
+#-----------------------------------------------------------------
+# Local variables
+#-----------------------------------------------------------------
+checkfile="/tmp/contents.$$"
+
+#-----------------------------------------------------------------
+# Go to pathname specified on command line, if any.
+#-----------------------------------------------------------------
+if [ $# -eq 1 ]; then
+  if [ -d $1 ]; then
+    cd $1
+  else
+    echo "ERROR: Cannot locate product directory $1."
+    echo "Use -help option for correct usage."
+      exit 1
+  fi
+fi
+
+#-----------------------------------------------------------------
+# Check for contents file
+#-----------------------------------------------------------------
+if [ ! -f contents.txt ]; then
+    echo "ERROR: Cannot locate contents.txt file to verify installation!"
+    exit 1
+fi
+
+#-----------------------------------------------------------------
+# Generate product info for local installation
+#-----------------------------------------------------------------
+for file in `find * -type f ! -name contents.txt -print`
+do
+    echo $file `sum $file` >>$checkfile
+done
+
+#-----------------------------------------------------------------
+# Diff the local information with the stored information.
+#-----------------------------------------------------------------
+if [ ! -f $checkfile ]; then
+    echo "ERROR: Could not create local inventory file."
+    exit 1
+else
+    echo "diff contents.txt $checkfile"
+    diff contents.txt $checkfile
+    rm $checkfile
+fi
+
