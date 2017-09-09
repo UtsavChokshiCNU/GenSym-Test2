@@ -1,0 +1,22 @@
+HKCR
+{
+	GatewayProp.GatewayProp.2 = s 'GatewayProp Class'
+	{
+		CLSID = s '{8AEF2DA3-471A-11D1-8AB5-00609703E60F}'
+	}
+	GatewayProp.GatewayProp = s 'GatewayProp Class'
+	{
+		CurVer = s 'GatewayProp.GatewayProp.2'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {8AEF2DA3-471A-11D1-8AB5-00609703E60F} = s 'GatewayProp Class'
+		{
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+		}
+	}
+}
