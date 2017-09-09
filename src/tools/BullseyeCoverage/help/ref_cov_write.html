@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_reference.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+cov_write - Save New Measurements
+</h1>
+<PRE>
+#include &lt;BullseyeCoverage.h&gt;
+int cov_write(void);
+</PRE>
+<H2>DESCRIPTION</H2>
+<P>
+Function <CODE>cov_write</CODE> writes measurements collected
+in memory for the current process to file, merging with the
+information already in the file.
+<CODE>cov_write</CODE>
+only writes measurements which have changed since the previous
+call to <CODE>cov_write</CODE>. (No file i/o occurs if there is
+no new coverage.) <CODE>cov_write</CODE> is automatically called
+when the test program terminates. Call <CODE>cov_write</CODE>
+directly when you want to obtain the BullseyeCoverage error status or to
+manually save coverage data.
+<P>
+Function <CODE>cov_write</CODE> looks for coverage files using the following rules.
+<ol>
+<li>
+If environment variable
+<a href=ref_environment.html#COVFILELIST>COVFILELIST</a>
+is set, it specifies a
+comma separated list of coverage file paths.
+For each file in the list, <code>cov_write</code> writes any remaining
+unwritten coverage data which corresponds to that file.
+This allows collecting coverage for different sub-projects at the same
+time without merging the coverage files into a single coverage file.
+<li>
+Otherwise, if environment variable
+<a href=ref_environment.html#COVFILE>COVFILE</a> is set, it specifies a
+single coverage file.
+<li>
+Otherwise,
+<code>cov_write</code> looks for a file named <code>test.cov</code>
+in the current directory.
+</ol>
+<P>
+If an error occurs, <CODE>cov_write</CODE> displays an error message
+to the screen, or if environment variable <CODE>COVERR</CODE>
+is set, appends a message to the file named.
+<P>
+This function is automatically declared in source files compiled
+by <a href=ref_covc.html>covc</a>. In other
+source files, declare it by including <code>&lt;BullseyeCoverage.h&gt;</code>.
+<P>
+If a BullseyeCoverage run-time error occurred prior to calling this function,
+the function returns without performing any action.
+<h2>RETURN VALUE</h2>
+<P>
+If successful, <CODE>cov_write</CODE> returns 0, otherwise it
+returns one of the error codes listed in <a href=error_runTime.html>Run-Time Errors</a>.
+<H2>EXAMPLES</H2>
+<PRE>
+#if _BullseyeCoverage
+    cov_write();
+#endif
+#if _BullseyeCoverage
+    printf(&quot;cov_write %d\n&quot;, cov_write());
+#endif
+</PRE>
+<H2>NOTES</H2>
+<P>
+Each dynamic link library (DLL) is considered a separate process.
+Calling this function from inside a DLL only affects the coverage
+data in that DLL and does not affect coverage data in programs
+which call the DLL or other DLLs.
+<P>
+The coverage file does not grow in size when it is updated. To
+determine whether the coverage file has been updated, view a coverage
+report.
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
