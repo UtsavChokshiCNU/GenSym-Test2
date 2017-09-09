@@ -1,0 +1,800 @@
+PRODUCT = gsi
+ODIR = o
+PLATFORM = intelnt
+CDIR = $(SRCBOX)\$(PRODUCT)\c
+EXTCDIR = $(SRCBOX)\ext\c
+EXTDIR = $(DSTBOX)\ext\$(ODIR)
+MFDIR = $(DSTBOX)\$(PRODUCT)\$(ODIR)
+RTHDIR = $(SRCBOX)\rtl\c
+RTLDIR = $(DSTBOX)\rtl\$(ODIR)
+SCRIPTSDIR = $(SCRIPTSBOX)\scripts\nt
+SPFCDIR = $(SRCBOX)\specific\$(PLATFORM)
+CC_FLAGS = $(cflags) $(cvarsmt) -DGSI_TRANS -D_CTYPE_DISABLE_MACROS -DDEBUG_CONSING
+
+# The include file ntwin32.mak defines macros to provide independence
+# macro      Intel NT             Alpha NT      Definition
+# =====      ========             ========      ===========
+# $(cc)      cl                   claxp         compiler
+# $(ccommon) -c -W3               same          standard compiler flags
+# $(cdebug)  -Od -Zi              -Od -Zi -Zh   standard debug flags*
+# $(cflags)  $(ccommon) -D_X86_=1 -c -DALPHA=1  to identify platform
+# $(cvarsdll) -DWIN32 $(noansi)    same          to identify o.s.
+# $(link)    link32               same          linker
+# $(ldebug)  -debug:full          same          linker debug flags*
+#            -debugtype:cv              
+# $(guilflags) -subsystem:windows same          GUI link flags
+#             -entry:WinMainCRTStartup  
+#
+# (*) A NODEBUG option or macro turns off debugging and specifies
+#    full optimization.
+
+!include <ntwin32.mak>
+
+RTHFILES = $(RTHDIR)\c-ifuns.h $(RTHDIR)\c-sdefs.h \
+  $(RTHDIR)\config.h $(RTHDIR)\core.h $(RTHDIR)\ffi.h $(RTHDIR)\gensym.h \
+  $(RTHDIR)\initvars.h $(RTHDIR)\inline.h $(RTHDIR)\instance.h \
+  $(RTHDIR)\kernel.h $(RTHDIR)\librtl.h $(RTHDIR)\lisplib.h \
+  $(RTHDIR)\longname.h $(RTHDIR)\object.h $(RTHDIR)\smcompat.h \
+  $(RTHDIR)\specific.h $(RTHDIR)\svarargs.h $(RTHDIR)\uconfig.h \
+  $(RTHDIR)\values.h
+
+all : _mfenter gsiapps gsitests libgsi.lib gsi.lib gsi_ssl.lib _mfexit
+
+gsiapps : alarmer.exe buildsh.exe filetest.exe itemtest.exe mapchar.exe matrix.exe pingpong.exe pub_subscribe.exe reposit.exe skeleton.exe skeleton_ssl.exe sysattrs.exe typetest.exe dll_skel.exe
+
+gsitests : context_1.exe float_1.exe float_2.exe gsi_bench.exe gsi_client.exe integer_1.exe item_1.exe rpc_1.exe toolkit_1.exe watchdog_1.exe
+
+_mfenter : 
+	@- $(SCRIPTSDIR)\errsweep.bat -init
+
+_mfexit : 
+	@- $(SCRIPTSDIR)\errsweep.bat -finish
+
+libgsi.lib : basics.obj btstrp.obj chars.obj chars2.obj clocks.obj \
+  delta.obj gbmap.obj gbmapr.obj glbscs.obj gscmn.obj gsi.obj gsi_w32init.obj \
+  gsiannex.obj gspts.obj gsrpc1.obj gsrpc2.obj int1.obj int2.obj int3a.obj \
+  int3b.obj int4.obj long_support.obj is2022.obj is8859.obj jismap.obj ksmap2.obj launch.obj \
+  load.obj loop.obj lttrs.obj names.obj ntrrr.obj ntvnt.obj ntwrks.obj \
+  os-mem.obj os-set.obj osfrgn.obj osrrr.obj ostme.obj prmtvs.obj pthnms.obj \
+  rpcmn1.obj rpcmn2.obj rpcmn3.obj schdle.obj stdcbs.obj symtab.obj systm.obj \
+  times.obj tran.obj trnscd.obj uncde.obj userfuns.obj userinit.obj \
+  usersyms.obj utlts0.obj utlts1.obj utlts2.obj utlts3.obj $(EXTDIR)\packaging.obj
+	- del libgsi.lib
+	@- $(SCRIPTSDIR)\errsweep.bat libgsi.lib
+	$(implib) /out:libgsi.lib  $(EXTDIR)\packaging.obj gsi_w32init.obj gsiannex.obj stdcbs.obj symtab.obj userfuns.obj userinit.obj usersyms.obj names.obj load.obj btstrp.obj systm.obj delta.obj gspts.obj loop.obj glbscs.obj osfrgn.obj basics.obj ostme.obj os-set.obj os-mem.obj prmtvs.obj chars.obj jismap.obj ksmap2.obj gbmap.obj gbmapr.obj chars2.obj utlts0.obj utlts1.obj utlts2.obj lttrs.obj uncde.obj is2022.obj trnscd.obj is8859.obj utlts3.obj times.obj osrrr.obj launch.obj pthnms.obj schdle.obj clocks.obj ntwrks.obj int1.obj ntrrr.obj ntvnt.obj int2.obj int3a.obj int3b.obj int4.obj gscmn.obj rpcmn1.obj rpcmn2.obj rpcmn3.obj gsi.obj gsrpc1.obj gsrpc2.obj tran.obj
+	@- del current.bat
+
+gsi.lib : $(EXTDIR)\libnogsec.lib $(RTLDIR)\librtl.lib \
+  $(EXTDIR)\libtcp.lib basics.obj btstrp.obj chars.obj chars2.obj clocks.obj \
+  delta.obj dllcbs.obj gbmap.obj gbmapr.obj glbscs.obj gscmn.obj gsi.obj \
+  gsi_w32init.obj gsiannex.obj gspts.obj gsrpc1.obj gsrpc2.obj int1.obj \
+  int2.obj int3a.obj int3b.obj int4.obj long_support.obj is2022.obj is8859.obj jismap.obj \
+  ksmap2.obj launch.obj load.obj loop.obj lttrs.obj names.obj ntrrr.obj \
+  ntvnt.obj ntwrks.obj os-mem.obj os-set.obj osfrgn.obj osrrr.obj ostme.obj \
+  prmtvs.obj pthnms.obj rpcmn1.obj rpcmn2.obj rpcmn3.obj schdle.obj \
+  symtab.obj systm.obj times.obj tran.obj trnscd.obj uncde.obj userfuns.obj \
+  userinit.obj usersyms.obj utlts0.obj utlts1.obj utlts2.obj utlts3.obj \
+  gsi.res
+	- del gsi.lib
+	@- $(SCRIPTSDIR)\errsweep.bat gsi.lib
+	$(link) /out:gsi.dll $(ldebug) $(dlllflags)  gsi_w32init.obj gsiannex.obj dllcbs.obj symtab.obj userfuns.obj userinit.obj usersyms.obj names.obj load.obj btstrp.obj systm.obj delta.obj gspts.obj loop.obj glbscs.obj osfrgn.obj basics.obj ostme.obj os-set.obj os-mem.obj prmtvs.obj chars.obj jismap.obj ksmap2.obj gbmap.obj gbmapr.obj chars2.obj utlts0.obj utlts1.obj utlts2.obj lttrs.obj uncde.obj is2022.obj trnscd.obj is8859.obj utlts3.obj times.obj osrrr.obj launch.obj pthnms.obj schdle.obj clocks.obj ntwrks.obj int1.obj ntrrr.obj ntvnt.obj int2.obj int3a.obj int3b.obj int4.obj gscmn.obj rpcmn1.obj rpcmn2.obj rpcmn3.obj gsi.obj gsrpc1.obj gsrpc2.obj tran.obj gsi.res $(EXTDIR)\libtcp.lib $(RTLDIR)\librtl.lib $(EXTDIR)\libnogsec.lib $(guilibsmt) ws2_32.lib Activeds.lib ADSIid.Lib version.lib
+	@- del current.bat
+
+gsi_ssl.lib : $(EXTDIR)\libgsec.lib $(RTLDIR)\librtl.lib \
+  $(EXTDIR)\libtcp.lib basics.obj btstrp.obj chars.obj chars2.obj clocks.obj \
+  delta.obj dllcbs.obj gbmap.obj gbmapr.obj glbscs.obj gscmn.obj gsi.obj \
+  gsi_w32init.obj gsiannex.obj gspts.obj gsrpc1.obj gsrpc2.obj int1.obj \
+  int2.obj int3a.obj int3b.obj int4.obj long_support.obj is2022.obj is8859.obj jismap.obj \
+  ksmap2.obj launch.obj load.obj loop.obj lttrs.obj names.obj ntrrr.obj \
+  ntvnt.obj ntwrks.obj os-mem.obj os-set.obj osfrgn.obj osrrr.obj ostme.obj \
+  prmtvs.obj pthnms.obj rpcmn1.obj rpcmn2.obj rpcmn3.obj schdle.obj \
+  symtab.obj systm.obj times.obj tran.obj trnscd.obj uncde.obj userfuns.obj \
+  userinit.obj usersyms.obj utlts0.obj utlts1.obj utlts2.obj utlts3.obj \
+  gsi.res
+	- del gsi_ssl.lib
+	@- $(SCRIPTSDIR)\errsweep.bat gsi_ssl.lib
+	$(link) /out:gsi_ssl.dll $(ldebug) $(dlllflags)  gsi_w32init.obj gsiannex.obj dllcbs.obj symtab.obj userfuns.obj userinit.obj usersyms.obj names.obj load.obj btstrp.obj systm.obj delta.obj gspts.obj loop.obj glbscs.obj osfrgn.obj basics.obj ostme.obj os-set.obj os-mem.obj prmtvs.obj chars.obj jismap.obj ksmap2.obj gbmap.obj gbmapr.obj chars2.obj utlts0.obj utlts1.obj utlts2.obj lttrs.obj uncde.obj is2022.obj trnscd.obj is8859.obj utlts3.obj times.obj osrrr.obj launch.obj pthnms.obj schdle.obj clocks.obj ntwrks.obj int1.obj ntrrr.obj ntvnt.obj int2.obj int3a.obj int3b.obj int4.obj gscmn.obj rpcmn1.obj rpcmn2.obj rpcmn3.obj gsi.obj gsrpc1.obj gsrpc2.obj tran.obj gsi.res $(EXTDIR)\libtcp.lib $(RTLDIR)\librtl.lib $(EXTDIR)\libgsec.lib $(guilibsmt) crypt32.lib ws2_32.lib Activeds.lib ADSIid.Lib version.lib
+	@- del current.bat
+
+dll_skel.exe : dll_main.obj gsimmain.obj skeleton.obj gsi.lib
+	- del dll_skel.exe
+	@- $(SCRIPTSDIR)\errsweep.bat dll_skel.exe
+	$(link) -out:dll_skel.exe $(ldebug) $(guilflags)  skeleton.obj dll_main.obj gsimmain.obj gsi.lib $(guilibsmt)
+	@- del current.bat
+
+alarmer.exe : $(EXTDIR)\libnogsec.lib $(RTLDIR)\librtl.lib \
+  $(EXTDIR)\libtcp.lib alarmer.obj gsi_main.obj gsimmain.obj libgsi.lib
+	- del alarmer.exe
+	@- $(SCRIPTSDIR)\errsweep.bat alarmer.exe
+	$(link) -out:alarmer.exe $(ldebug) $(guilflags) /nodefaultlib:libcmt.lib /PDB:NONE  alarmer.obj gsi_main.obj gsimmain.obj libgsi.lib $(EXTDIR)\libtcp.lib $(RTLDIR)\librtl.lib $(EXTDIR)\libnogsec.lib $(guilibsmt) ws2_32.lib Activeds.lib ADSIid.Lib version.lib
+	@- del current.bat
+
+buildsh.exe : $(EXTDIR)\libcprim.lib $(EXTDIR)\libnogsec.lib \
+  $(RTLDIR)\librtl.lib $(EXTDIR)\libtcp.lib buildsh.obj gsi_main.obj \
+  gsimmain.obj libgsi.lib
+	- del buildsh.exe
+	@- $(SCRIPTSDIR)\errsweep.bat buildsh.exe
+	$(link) -out:buildsh.exe $(ldebug) $(guilflags) /nodefaultlib:libcmt.lib /PDB:NONE   buildsh.obj gsi_main.obj gsimmain.obj libgsi.lib $(EXTDIR)\libtcp.lib $(RTLDIR)\librtl.lib $(EXTDIR)\libnogsec.lib $(EXTDIR)\libcprim.lib $(guilibsmt) ws2_32.lib Activeds.lib ADSIid.Lib version.lib
+	@- del current.bat
+
+context_1.exe : $(EXTDIR)\libnogsec.lib $(RTLDIR)\librtl.lib \
+  $(EXTDIR)\libtcp.lib context_1.obj gsimmain.obj libgsi.lib
+	- del context_1.exe
+	@- $(SCRIPTSDIR)\errsweep.bat context_1.exe
+	$(link) -out:context_1.exe $(ldebug) $(guilflags) /nodefaultlib:libcmt.lib /PDB:NONE  context_1.obj gsimmain.obj libgsi.lib $(EXTDIR)\libtcp.lib $(RTLDIR)\librtl.lib $(EXTDIR)\libnogsec.lib $(guilibsmt) ws2_32.lib Activeds.lib ADSIid.Lib version.lib
+	@- del current.bat
+
+filetest.exe : $(EXTDIR)\libnogsec.lib $(RTLDIR)\librtl.lib \
+  $(EXTDIR)\libtcp.lib filetest.obj gsimmain.obj rpcfuncs.obj libgsi.lib
+	- del filetest.exe
+	@- $(SCRIPTSDIR)\errsweep.bat filetest.exe
+	$(link) -out:filetest.exe $(ldebug) $(guilflags) /nodefaultlib:libcmt.lib /PDB:NONE  filetest.obj rpcfuncs.obj gsimmain.obj libgsi.lib $(EXTDIR)\libtcp.lib $(RTLDIR)\librtl.lib $(EXTDIR)\libnogsec.lib $(guilibsmt) ws2_32.lib Activeds.lib ADSIid.Lib version.lib
+	@- del current.bat
+
+float_1.exe : $(EXTDIR)\libnogsec.lib $(RTLDIR)\librtl.lib \
+  $(EXTDIR)\libtcp.lib float_1.obj gsimmain.obj libgsi.lib
+	- del float_1.exe
+	@- $(SCRIPTSDIR)\errsweep.bat float_1.exe
+	$(link) -out:float_1.exe $(ldebug) $(guilflags) /nodefaultlib:libcmt.lib /PDB:NONE  float_1.obj gsimmain.obj libgsi.lib $(EXTDIR)\libtcp.lib $(RTLDIR)\librtl.lib $(EXTDIR)\libnogsec.lib $(guilibsmt) ws2_32.lib Activeds.lib ADSIid.Lib version.lib
+	@- del current.bat
+
+float_2.exe : $(EXTDIR)\libnogsec.lib $(RTLDIR)\librtl.lib \
+  $(EXTDIR)\libtcp.lib float_2.obj gsimmain.obj libgsi.lib
+	- del float_2.exe
+	@- $(SCRIPTSDIR)\errsweep.bat float_2.exe
+	$(link) -out:float_2.exe $(ldebug) $(guilflags) /nodefaultlib:libcmt.lib /PDB:NONE  float_2.obj gsimmain.obj libgsi.lib $(EXTDIR)\libtcp.lib $(RTLDIR)\librtl.lib $(EXTDIR)\libnogsec.lib $(guilibsmt) ws2_32.lib Activeds.lib ADSIid.Lib version.lib
+	@- del current.bat
+
+gsi_bench.exe : $(EXTDIR)\libnogsec.lib $(RTLDIR)\librtl.lib \
+  $(EXTDIR)\libtcp.lib gsi_bench.obj gsimmain.obj libgsi.lib
+	- del gsi_bench.exe
+	@- $(SCRIPTSDIR)\errsweep.bat gsi_bench.exe
+	$(link) -out:gsi_bench.exe $(ldebug) $(guilflags) /nodefaultlib:libcmt.lib /PDB:NONE  gsi_bench.obj gsimmain.obj libgsi.lib $(EXTDIR)\libtcp.lib $(RTLDIR)\librtl.lib $(EXTDIR)\libnogsec.lib $(guilibsmt) ws2_32.lib Activeds.lib ADSIid.Lib version.lib
+	@- del current.bat
+
+gsi_client.exe : $(EXTDIR)\libnogsec.lib $(RTLDIR)\librtl.lib \
+  $(EXTDIR)\libtcp.lib gsi_client.obj gsi_misc.obj gsimmain.obj libgsi.lib
+	- del gsi_client.exe
+	@- $(SCRIPTSDIR)\errsweep.bat gsi_client.exe
+	$(link) -out:gsi_client.exe $(ldebug) $(guilflags) /nodefaultlib:libcmt.lib /PDB:NONE  gsi_client.obj gsimmain.obj gsi_misc.obj libgsi.lib $(EXTDIR)\libtcp.lib $(RTLDIR)\librtl.lib $(EXTDIR)\libnogsec.lib $(guilibsmt) ws2_32.lib Activeds.lib ADSIid.Lib version.lib
+	@- del current.bat
+
+integer_1.exe : $(EXTDIR)\libnogsec.lib $(RTLDIR)\librtl.lib \
+  $(EXTDIR)\libtcp.lib gsimmain.obj integer_1.obj libgsi.lib
+	- del integer_1.exe
+	@- $(SCRIPTSDIR)\errsweep.bat integer_1.exe
+	$(link) -out:integer_1.exe $(ldebug) $(guilflags) /nodefaultlib:libcmt.lib /PDB:NONE integer_1.obj gsimmain.obj libgsi.lib $(EXTDIR)\libtcp.lib $(RTLDIR)\librtl.lib $(EXTDIR)\libnogsec.lib $(guilibsmt) ws2_32.lib Activeds.lib ADSIid.Lib version.lib
+	@- del current.bat
+
+item_1.exe : $(EXTDIR)\libnogsec.lib $(RTLDIR)\librtl.lib \
+  $(EXTDIR)\libtcp.lib gsi_misc.obj gsimmain.obj item_1.obj libgsi.lib
+	- del item_1.exe
+	@- $(SCRIPTSDIR)\errsweep.bat item_1.exe
+	$(link) -out:item_1.exe $(ldebug) $(guilflags) /nodefaultlib:libcmt.lib /PDB:NONE  item_1.obj gsimmain.obj gsi_misc.obj libgsi.lib $(EXTDIR)\libtcp.lib $(RTLDIR)\librtl.lib $(EXTDIR)\libnogsec.lib $(guilibsmt) ws2_32.lib Activeds.lib ADSIid.Lib version.lib
+	@- del current.bat
+
+itemtest.exe : $(EXTDIR)\libnogsec.lib $(RTLDIR)\librtl.lib \
+  $(EXTDIR)\libtcp.lib gsi_misc.obj gsimmain.obj itemtest.obj libgsi.lib
+	- del itemtest.exe
+	@- $(SCRIPTSDIR)\errsweep.bat itemtest.exe
+	$(link) -out:itemtest.exe $(ldebug) $(guilflags) /nodefaultlib:libcmt.lib /PDB:NONE itemtest.obj gsi_misc.obj gsimmain.obj libgsi.lib $(EXTDIR)\libtcp.lib $(RTLDIR)\librtl.lib $(EXTDIR)\libnogsec.lib $(guilibsmt) ws2_32.lib Activeds.lib ADSIid.Lib version.lib
+	@- del current.bat
+
+mapchar.exe : $(EXTDIR)\libnogsec.lib $(RTLDIR)\librtl.lib \
+  $(EXTDIR)\libtcp.lib gsi_main.obj gsimmain.obj mapchar.obj libgsi.lib
+	- del mapchar.exe
+	@- $(SCRIPTSDIR)\errsweep.bat mapchar.exe
+	$(link) -out:mapchar.exe $(ldebug) $(guilflags) /nodefaultlib:libcmt.lib /PDB:NONE  mapchar.obj gsi_main.obj gsimmain.obj libgsi.lib $(EXTDIR)\libtcp.lib $(RTLDIR)\librtl.lib $(EXTDIR)\libnogsec.lib $(guilibsmt) ws2_32.lib Activeds.lib ADSIid.Lib version.lib
+	@- del current.bat
+
+matrix.exe : $(EXTDIR)\libnogsec.lib $(RTLDIR)\librtl.lib \
+  $(EXTDIR)\libtcp.lib gsi_main.obj gsimmain.obj matrix.obj libgsi.lib
+	- del matrix.exe
+	@- $(SCRIPTSDIR)\errsweep.bat matrix.exe
+	$(link) -out:matrix.exe $(ldebug) $(guilflags) /nodefaultlib:libcmt.lib /PDB:NONE  matrix.obj gsi_main.obj gsimmain.obj libgsi.lib $(EXTDIR)\libtcp.lib $(RTLDIR)\librtl.lib $(EXTDIR)\libnogsec.lib $(guilibsmt) ws2_32.lib Activeds.lib ADSIid.Lib version.lib
+	@- del current.bat
+
+pingpong.exe : $(EXTDIR)\libnogsec.lib $(RTLDIR)\librtl.lib \
+  $(EXTDIR)\libtcp.lib gsimmain.obj pingpong.obj libgsi.lib
+	- del pingpong.exe
+	@- $(SCRIPTSDIR)\errsweep.bat pingpong.exe
+	$(link) -out:pingpong.exe $(ldebug) $(guilflags) /nodefaultlib:libcmt.lib /PDB:NONE  pingpong.obj gsimmain.obj libgsi.lib $(EXTDIR)\libtcp.lib $(RTLDIR)\librtl.lib $(EXTDIR)\libnogsec.lib $(guilibsmt) ws2_32.lib Activeds.lib ADSIid.Lib version.lib
+	@- del current.bat
+
+pub_subscribe.exe : $(EXTDIR)\libnogsec.lib $(RTLDIR)\librtl.lib \
+  $(EXTDIR)\libtcp.lib gsi_main.obj gsi_misc.obj gsimmain.obj \
+  pub_subscribe.obj libgsi.lib
+	- del pub_subscribe.exe
+	@- $(SCRIPTSDIR)\errsweep.bat pub_subscribe.exe
+	$(link) -out:pub_subscribe.exe $(ldebug) $(guilflags) /nodefaultlib:libcmt.lib /PDB:NONE  pub_subscribe.obj gsi_main.obj gsimmain.obj gsi_misc.obj libgsi.lib $(EXTDIR)\libtcp.lib $(RTLDIR)\librtl.lib $(EXTDIR)\libnogsec.lib $(guilibsmt) ws2_32.lib Activeds.lib ADSIid.Lib Activeds.lib ADSIid.Lib version.lib
+	@- del current.bat
+
+reposit.exe : $(EXTDIR)\libnogsec.lib $(RTLDIR)\librtl.lib \
+  $(EXTDIR)\libtcp.lib gsi_main.obj gsi_misc.obj gsimmain.obj reposit.obj \
+  libgsi.lib
+	- del reposit.exe
+	@- $(SCRIPTSDIR)\errsweep.bat reposit.exe
+	$(link) -out:reposit.exe $(ldebug) $(guilflags) /nodefaultlib:libcmt.lib /PDB:NONE  reposit.obj gsi_main.obj gsimmain.obj gsi_misc.obj libgsi.lib $(EXTDIR)\libtcp.lib $(RTLDIR)\librtl.lib $(EXTDIR)\libnogsec.lib $(guilibsmt) ws2_32.lib Activeds.lib ADSIid.Lib version.lib
+	@- del current.bat
+
+rpc_1.exe : $(EXTDIR)\libnogsec.lib $(RTLDIR)\librtl.lib \
+  $(EXTDIR)\libtcp.lib gsi_misc.obj gsimmain.obj rpc_1.obj libgsi.lib
+	- del rpc_1.exe
+	@- $(SCRIPTSDIR)\errsweep.bat rpc_1.exe
+	$(link) -out:rpc_1.exe $(ldebug) $(guilflags) /nodefaultlib:libcmt.lib /PDB:NONE  rpc_1.obj gsimmain.obj gsi_misc.obj libgsi.lib $(EXTDIR)\libtcp.lib $(RTLDIR)\librtl.lib $(EXTDIR)\libnogsec.lib $(guilibsmt) ws2_32.lib Activeds.lib ADSIid.Lib version.lib
+	@- del current.bat
+
+skeleton.exe : $(EXTDIR)\libnogsec.lib $(RTLDIR)\librtl.lib \
+  $(EXTDIR)\libtcp.lib gsi_main.obj gsimmain.obj skeleton.obj libgsi.lib
+	- del skeleton.exe
+	@- $(SCRIPTSDIR)\errsweep.bat skeleton.exe
+	$(link) -out:skeleton.exe $(ldebug) $(guilflags) /nodefaultlib:libcmt.lib /PDB:NONE  skeleton.obj gsi_main.obj gsimmain.obj libgsi.lib $(EXTDIR)\libtcp.lib $(RTLDIR)\librtl.lib $(EXTDIR)\libnogsec.lib $(guilibsmt) ws2_32.lib Activeds.lib ADSIid.Lib version.lib
+	@- del current.bat
+
+skeleton_ssl.exe : $(EXTDIR)\libgsec.lib $(RTLDIR)\librtl.lib \
+  $(EXTDIR)\libtcp.lib gsi_main.obj gsimmain.obj skeleton.obj libgsi.lib
+	- del skeleton_ssl.exe
+	@- $(SCRIPTSDIR)\errsweep.bat skeleton_ssl.exe
+	$(link) -out:skeleton_ssl.exe $(ldebug) $(guilflags) /nodefaultlib:libcmt.lib /PDB:NONE  skeleton.obj gsi_main.obj gsimmain.obj libgsi.lib $(EXTDIR)\libtcp.lib $(RTLDIR)\librtl.lib $(EXTDIR)\libgsec.lib $(guilibsmt) crypt32.lib ws2_32.lib Activeds.lib ADSIid.Lib version.lib
+	@- del current.bat
+
+sysattrs.exe : $(EXTDIR)\libnogsec.lib $(RTLDIR)\librtl.lib \
+  $(EXTDIR)\libtcp.lib gsi_misc.obj gsimmain.obj sysattrs.obj libgsi.lib
+	- del sysattrs.exe
+	@- $(SCRIPTSDIR)\errsweep.bat sysattrs.exe
+	$(link) -out:sysattrs.exe $(ldebug) $(guilflags) /nodefaultlib:libcmt.lib /PDB:NONE  sysattrs.obj gsimmain.obj gsi_misc.obj libgsi.lib $(EXTDIR)\libtcp.lib $(RTLDIR)\librtl.lib $(EXTDIR)\libnogsec.lib $(guilibsmt) ws2_32.lib Activeds.lib ADSIid.Lib Activeds.lib ADSIid.Lib version.lib
+	@- del current.bat
+
+toolkit_1.exe : $(EXTDIR)\libnogsec.lib $(RTLDIR)\librtl.lib \
+  $(EXTDIR)\libtcp.lib gsimmain.obj toolkit_1.obj libgsi.lib
+	- del toolkit_1.exe
+	@- $(SCRIPTSDIR)\errsweep.bat toolkit_1.exe
+	$(link) -out:toolkit_1.exe $(ldebug) $(guilflags) /nodefaultlib:libcmt.lib /PDB:NONE  toolkit_1.obj gsimmain.obj libgsi.lib $(EXTDIR)\libtcp.lib $(RTLDIR)\librtl.lib $(EXTDIR)\libnogsec.lib $(guilibsmt) ws2_32.lib Activeds.lib ADSIid.Lib version.lib
+	@- del current.bat
+
+typetest.exe : $(EXTDIR)\libnogsec.lib $(RTLDIR)\librtl.lib \
+  $(EXTDIR)\libtcp.lib gsi_main.obj gsimmain.obj typetest.obj libgsi.lib
+	- del typetest.exe
+	@- $(SCRIPTSDIR)\errsweep.bat typetest.exe
+	$(link) -out:typetest.exe $(ldebug) $(guilflags) /nodefaultlib:libcmt.lib /PDB:NONE  typetest.obj gsi_main.obj gsimmain.obj libgsi.lib $(EXTDIR)\libtcp.lib $(RTLDIR)\librtl.lib $(EXTDIR)\libnogsec.lib $(guilibsmt) ws2_32.lib Activeds.lib ADSIid.Lib version.lib
+	@- del current.bat
+
+watchdog_1.exe : $(EXTDIR)\libnogsec.lib $(RTLDIR)\librtl.lib \
+  $(EXTDIR)\libtcp.lib gsimmain.obj watchdog_1.obj libgsi.lib
+	- del watchdog_1.exe
+	@- $(SCRIPTSDIR)\errsweep.bat watchdog_1.exe
+	$(link) -out:watchdog_1.exe $(ldebug) $(guilflags) /nodefaultlib:libcmt.lib /PDB:NONE   watchdog_1.obj gsimmain.obj libgsi.lib $(EXTDIR)\libtcp.lib $(RTLDIR)\librtl.lib $(EXTDIR)\libnogsec.lib $(guilibsmt) ws2_32.lib Activeds.lib ADSIid.Lib version.lib
+	@- del current.bat
+
+gsi.res : $(CDIR)\gsi.rc
+	- del gsi.res
+	@- $(SCRIPTSDIR)\errsweep.bat gsi.res
+	rc.exe /fo"$(MFDIR)\gsi.res" $(CDIR)\gsi.rc
+	@- del current.bat
+
+alarmer.obj : $(CDIR)\alarmer.c $(CDIR)\gsi_main.h
+	- del alarmer.obj
+	@- $(SCRIPTSDIR)\errsweep.bat alarmer.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\alarmer.c
+	@- del current.bat
+
+basics.obj : $(CDIR)\basics.c $(RTHFILES) $(CDIR)\basics.h
+	- del basics.obj
+	@- $(SCRIPTSDIR)\errsweep.bat basics.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\basics.c
+	@- del current.bat
+
+btstrp.obj : $(CDIR)\btstrp.c $(RTHFILES) $(CDIR)\btstrp.h
+	- del btstrp.obj
+	@- $(SCRIPTSDIR)\errsweep.bat btstrp.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\btstrp.c
+	@- del current.bat
+
+buildsh.obj : $(CDIR)\buildsh.c $(CDIR)\gsi_main.h
+	- del buildsh.obj
+	@- $(SCRIPTSDIR)\errsweep.bat buildsh.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\buildsh.c
+	@- del current.bat
+
+chars.obj : $(CDIR)\chars.c $(RTHFILES) $(CDIR)\chars.h
+	- del chars.obj
+	@- $(SCRIPTSDIR)\errsweep.bat chars.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\chars.c
+	@- del current.bat
+
+chars2.obj : $(CDIR)\chars2.c $(RTHFILES) $(CDIR)\chars2.h
+	- del chars2.obj
+	@- $(SCRIPTSDIR)\errsweep.bat chars2.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\chars2.c
+	@- del current.bat
+
+clocks.obj : $(CDIR)\clocks.c $(RTHFILES) $(CDIR)\clocks.h
+	- del clocks.obj
+	@- $(SCRIPTSDIR)\errsweep.bat clocks.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\clocks.c
+	@- del current.bat
+
+context_1.obj : $(CDIR)\context_1.c $(CDIR)\gsi_main.h
+	- del context_1.obj
+	@- $(SCRIPTSDIR)\errsweep.bat context_1.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\context_1.c
+	@- del current.bat
+
+delta.obj : $(CDIR)\delta.c $(RTHFILES) $(CDIR)\delta.h
+	- del delta.obj
+	@- $(SCRIPTSDIR)\errsweep.bat delta.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\delta.c
+	@- del current.bat
+
+dll_main.obj : $(CDIR)\dll_main.c $(CDIR)\gsi_main.c $(CDIR)\gsi_main.h
+	- del dll_main.obj
+	@- $(SCRIPTSDIR)\errsweep.bat dll_main.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\dll_main.c
+	@- del current.bat
+
+dllcbs.obj : $(CDIR)\dllcbs.c $(CDIR)\gsi_main.h
+	- del dllcbs.obj
+	@- $(SCRIPTSDIR)\errsweep.bat dllcbs.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\dllcbs.c
+	@- del current.bat
+
+filetest.obj : $(CDIR)\filetest.c $(CDIR)\gsi_main.h
+	- del filetest.obj
+	@- $(SCRIPTSDIR)\errsweep.bat filetest.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\filetest.c
+	@- del current.bat
+
+float_1.obj : $(CDIR)\float_1.c $(CDIR)\gsi_main.h
+	- del float_1.obj
+	@- $(SCRIPTSDIR)\errsweep.bat float_1.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\float_1.c
+	@- del current.bat
+
+float_2.obj : $(CDIR)\float_2.c $(CDIR)\gsi_main.h
+	- del float_2.obj
+	@- $(SCRIPTSDIR)\errsweep.bat float_2.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\float_2.c
+	@- del current.bat
+
+gbmap.obj : $(CDIR)\gbmap.c $(RTHFILES) $(CDIR)\gbmap.h
+	- del gbmap.obj
+	@- $(SCRIPTSDIR)\errsweep.bat gbmap.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\gbmap.c
+	@- del current.bat
+
+gbmapr.obj : $(CDIR)\gbmapr.c $(RTHFILES) $(CDIR)\gbmapr.h
+	- del gbmapr.obj
+	@- $(SCRIPTSDIR)\errsweep.bat gbmapr.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\gbmapr.c
+	@- del current.bat
+
+glbscs.obj : $(CDIR)\glbscs.c $(RTHFILES) $(CDIR)\glbscs.h
+	- del glbscs.obj
+	@- $(SCRIPTSDIR)\errsweep.bat glbscs.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\glbscs.c
+	@- del current.bat
+
+gscmn.obj : $(CDIR)\gscmn.c $(RTHFILES) $(CDIR)\gscmn.h
+	- del gscmn.obj
+	@- $(SCRIPTSDIR)\errsweep.bat gscmn.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\gscmn.c
+	@- del current.bat
+
+gsi.obj : $(CDIR)\gsi.c $(RTHFILES) $(CDIR)\gsi.h
+	- del gsi.obj
+	@- $(SCRIPTSDIR)\errsweep.bat gsi.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\gsi.c
+	@- del current.bat
+
+gsi_bench.obj : $(CDIR)\gsi_bench.c $(CDIR)\gsi_main.h
+	- del gsi_bench.obj
+	@- $(SCRIPTSDIR)\errsweep.bat gsi_bench.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\gsi_bench.c
+	@- del current.bat
+
+gsi_client.obj : $(CDIR)\gsi_client.c $(CDIR)\gsi_main.h $(CDIR)\gsi_misc.h
+	- del gsi_client.obj
+	@- $(SCRIPTSDIR)\errsweep.bat gsi_client.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\gsi_client.c
+	@- del current.bat
+
+gsi_main.obj : $(CDIR)\gsi_main.c $(CDIR)\gsi_main.h
+	- del gsi_main.obj
+	@- $(SCRIPTSDIR)\errsweep.bat gsi_main.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\gsi_main.c
+	@- del current.bat
+
+gsi_misc.obj : $(CDIR)\gsi_misc.c $(CDIR)\gsi_main.h $(CDIR)\gsi_misc.h
+	- del gsi_misc.obj
+	@- $(SCRIPTSDIR)\errsweep.bat gsi_misc.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\gsi_misc.c
+	@- del current.bat
+
+gsi_w32init.obj : $(CDIR)\gsi_w32init.c 
+	- del gsi_w32init.obj
+	@- $(SCRIPTSDIR)\errsweep.bat gsi_w32init.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\gsi_w32init.c
+	@- del current.bat
+
+gsiannex.obj : $(CDIR)\gsiannex.c $(CDIR)\gsi_main.h $(CDIR)\gsiannex.h $(EXTCDIR)\gensym-features.h
+	- del gsiannex.obj
+	@- $(SCRIPTSDIR)\errsweep.bat gsiannex.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\gsiannex.c
+	@- del current.bat
+
+gsimmain.obj : $(CDIR)\gsimmain.c 
+	- del gsimmain.obj
+	@- $(SCRIPTSDIR)\errsweep.bat gsimmain.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\gsimmain.c
+	@- del current.bat
+
+gspts.obj : $(CDIR)\gspts.c $(RTHFILES) $(CDIR)\gspts.h
+	- del gspts.obj
+	@- $(SCRIPTSDIR)\errsweep.bat gspts.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\gspts.c
+	@- del current.bat
+
+gsrpc1.obj : $(CDIR)\gsrpc1.c $(RTHFILES) $(CDIR)\gsrpc1.h
+	- del gsrpc1.obj
+	@- $(SCRIPTSDIR)\errsweep.bat gsrpc1.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\gsrpc1.c
+	@- del current.bat
+
+gsrpc2.obj : $(CDIR)\gsrpc2.c $(RTHFILES) $(CDIR)\gsrpc2.h
+	- del gsrpc2.obj
+	@- $(SCRIPTSDIR)\errsweep.bat gsrpc2.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\gsrpc2.c
+	@- del current.bat
+
+int1.obj : $(CDIR)\int1.c $(RTHFILES) $(CDIR)\int1.h
+	- del int1.obj
+	@- $(SCRIPTSDIR)\errsweep.bat int1.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\int1.c
+	@- del current.bat
+
+int2.obj : $(CDIR)\int2.c $(RTHFILES) $(CDIR)\int2.h
+	- del int2.obj
+	@- $(SCRIPTSDIR)\errsweep.bat int2.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\int2.c
+	@- del current.bat
+
+int3a.obj : $(CDIR)\int3a.c $(RTHFILES) $(CDIR)\int3a.h
+	- del int3a.obj
+	@- $(SCRIPTSDIR)\errsweep.bat int3a.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\int3a.c
+	@- del current.bat
+
+int3b.obj : $(CDIR)\int3b.c $(RTHFILES) $(CDIR)\int3b.h
+	- del int3b.obj
+	@- $(SCRIPTSDIR)\errsweep.bat int3b.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\int3b.c
+	@- del current.bat
+
+int4.obj : $(CDIR)\int4.c $(RTHFILES) $(CDIR)\int4.h
+	- del int4.obj
+	@- $(SCRIPTSDIR)\errsweep.bat int4.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\int4.c
+	@- del current.bat
+	
+long_support.obj : $(CDIR)\long_support.c $(RTHFILES) $(CDIR)\long_support.h
+	- del long_support.obj
+	@- $(SCRIPTSDIR)\errsweep.bat long_support.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\long_support.c
+	@- del current.bat	
+
+integer_1.obj : $(CDIR)\integer_1.c $(CDIR)\gsi_main.h
+	- del integer_1.obj
+	@- $(SCRIPTSDIR)\errsweep.bat integer_1.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\integer_1.c
+	@- del current.bat
+
+is2022.obj : $(CDIR)\is2022.c $(RTHFILES) $(CDIR)\is2022.h
+	- del is2022.obj
+	@- $(SCRIPTSDIR)\errsweep.bat is2022.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\is2022.c
+	@- del current.bat
+
+is8859.obj : $(CDIR)\is8859.c $(RTHFILES) $(CDIR)\is8859.h
+	- del is8859.obj
+	@- $(SCRIPTSDIR)\errsweep.bat is8859.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\is8859.c
+	@- del current.bat
+
+item_1.obj : $(CDIR)\item_1.c $(CDIR)\gsi_main.h $(CDIR)\gsi_misc.h
+	- del item_1.obj
+	@- $(SCRIPTSDIR)\errsweep.bat item_1.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\item_1.c
+	@- del current.bat
+
+itemtest.obj : $(CDIR)\itemtest.c $(CDIR)\gsi_main.h $(CDIR)\gsi_misc.h
+	- del itemtest.obj
+	@- $(SCRIPTSDIR)\errsweep.bat itemtest.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\itemtest.c
+	@- del current.bat
+
+jismap.obj : $(CDIR)\jismap.c $(RTHFILES) $(CDIR)\jismap.h
+	- del jismap.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jismap.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\jismap.c
+	@- del current.bat
+
+ksmap2.obj : $(CDIR)\ksmap2.c $(RTHFILES) $(CDIR)\ksmap2.h
+	- del ksmap2.obj
+	@- $(SCRIPTSDIR)\errsweep.bat ksmap2.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\ksmap2.c
+	@- del current.bat
+
+launch.obj : $(CDIR)\launch.c $(RTHFILES) $(CDIR)\launch.h
+	- del launch.obj
+	@- $(SCRIPTSDIR)\errsweep.bat launch.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\launch.c
+	@- del current.bat
+
+load.obj : $(CDIR)\load.c $(RTHFILES) $(CDIR)\load.h
+	- del load.obj
+	@- $(SCRIPTSDIR)\errsweep.bat load.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\load.c
+	@- del current.bat
+
+loop.obj : $(CDIR)\loop.c $(RTHFILES) $(CDIR)\loop.h
+	- del loop.obj
+	@- $(SCRIPTSDIR)\errsweep.bat loop.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\loop.c
+	@- del current.bat
+
+lttrs.obj : $(CDIR)\lttrs.c $(RTHFILES) $(CDIR)\lttrs.h
+	- del lttrs.obj
+	@- $(SCRIPTSDIR)\errsweep.bat lttrs.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\lttrs.c
+	@- del current.bat
+
+mapchar.obj : $(CDIR)\mapchar.c $(CDIR)\gsi_main.h
+	- del mapchar.obj
+	@- $(SCRIPTSDIR)\errsweep.bat mapchar.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\mapchar.c
+	@- del current.bat
+
+matrix.obj : $(CDIR)\matrix.c $(CDIR)\gsi_main.h
+	- del matrix.obj
+	@- $(SCRIPTSDIR)\errsweep.bat matrix.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\matrix.c
+	@- del current.bat
+
+names.obj : $(CDIR)\names.c $(RTHFILES) $(CDIR)\names.h
+	- del names.obj
+	@- $(SCRIPTSDIR)\errsweep.bat names.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\names.c
+	@- del current.bat
+
+ntrrr.obj : $(CDIR)\ntrrr.c $(RTHFILES) $(CDIR)\ntrrr.h
+	- del ntrrr.obj
+	@- $(SCRIPTSDIR)\errsweep.bat ntrrr.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\ntrrr.c
+	@- del current.bat
+
+ntvnt.obj : $(CDIR)\ntvnt.c $(RTHFILES) $(CDIR)\ntvnt.h
+	- del ntvnt.obj
+	@- $(SCRIPTSDIR)\errsweep.bat ntvnt.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\ntvnt.c
+	@- del current.bat
+
+ntwrks.obj : $(CDIR)\ntwrks.c $(RTHFILES) $(CDIR)\ntwrks.h
+	- del ntwrks.obj
+	@- $(SCRIPTSDIR)\errsweep.bat ntwrks.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\ntwrks.c
+	@- del current.bat
+
+os-mem.obj : $(CDIR)\os-mem.c $(RTHFILES) $(CDIR)\os-mem.h
+	- del os-mem.obj
+	@- $(SCRIPTSDIR)\errsweep.bat os-mem.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\os-mem.c
+	@- del current.bat
+
+os-set.obj : $(CDIR)\os-set.c $(RTHFILES) $(CDIR)\os-set.h
+	- del os-set.obj
+	@- $(SCRIPTSDIR)\errsweep.bat os-set.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\os-set.c
+	@- del current.bat
+
+osfrgn.obj : $(CDIR)\osfrgn.c $(RTHFILES) $(CDIR)\osfrgn.h
+	- del osfrgn.obj
+	@- $(SCRIPTSDIR)\errsweep.bat osfrgn.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\osfrgn.c
+	@- del current.bat
+
+osrrr.obj : $(CDIR)\osrrr.c $(RTHFILES) $(CDIR)\osrrr.h
+	- del osrrr.obj
+	@- $(SCRIPTSDIR)\errsweep.bat osrrr.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\osrrr.c
+	@- del current.bat
+
+ostme.obj : $(CDIR)\ostme.c $(RTHFILES) $(CDIR)\ostme.h
+	- del ostme.obj
+	@- $(SCRIPTSDIR)\errsweep.bat ostme.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\ostme.c
+	@- del current.bat
+
+pingpong.obj : $(CDIR)\pingpong.c $(CDIR)\gsi_main.h
+	- del pingpong.obj
+	@- $(SCRIPTSDIR)\errsweep.bat pingpong.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\pingpong.c
+	@- del current.bat
+
+prmtvs.obj : $(CDIR)\prmtvs.c $(RTHFILES) $(CDIR)\prmtvs.h
+	- del prmtvs.obj
+	@- $(SCRIPTSDIR)\errsweep.bat prmtvs.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\prmtvs.c
+	@- del current.bat
+
+pthnms.obj : $(CDIR)\pthnms.c $(RTHFILES) $(CDIR)\pthnms.h
+	- del pthnms.obj
+	@- $(SCRIPTSDIR)\errsweep.bat pthnms.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\pthnms.c
+	@- del current.bat
+
+pub_subscribe.obj : $(CDIR)\pub_subscribe.c $(CDIR)\gsi_main.h
+	- del pub_subscribe.obj
+	@- $(SCRIPTSDIR)\errsweep.bat pub_subscribe.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\pub_subscribe.c
+	@- del current.bat
+
+reposit.obj : $(CDIR)\reposit.c $(CDIR)\gsi_main.h
+	- del reposit.obj
+	@- $(SCRIPTSDIR)\errsweep.bat reposit.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\reposit.c
+	@- del current.bat
+
+rpc_1.obj : $(CDIR)\rpc_1.c $(CDIR)\gsi_main.h $(CDIR)\gsi_misc.h
+	- del rpc_1.obj
+	@- $(SCRIPTSDIR)\errsweep.bat rpc_1.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\rpc_1.c
+	@- del current.bat
+
+rpcfuncs.obj : $(CDIR)\rpcfuncs.c $(CDIR)\gsi_main.h
+	- del rpcfuncs.obj
+	@- $(SCRIPTSDIR)\errsweep.bat rpcfuncs.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\rpcfuncs.c
+	@- del current.bat
+
+rpcmn1.obj : $(CDIR)\rpcmn1.c $(RTHFILES) $(CDIR)\rpcmn1.h
+	- del rpcmn1.obj
+	@- $(SCRIPTSDIR)\errsweep.bat rpcmn1.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\rpcmn1.c
+	@- del current.bat
+
+rpcmn2.obj : $(CDIR)\rpcmn2.c $(RTHFILES) $(CDIR)\rpcmn2.h
+	- del rpcmn2.obj
+	@- $(SCRIPTSDIR)\errsweep.bat rpcmn2.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\rpcmn2.c
+	@- del current.bat
+
+rpcmn3.obj : $(CDIR)\rpcmn3.c $(RTHFILES) $(CDIR)\rpcmn3.h
+	- del rpcmn3.obj
+	@- $(SCRIPTSDIR)\errsweep.bat rpcmn3.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\rpcmn3.c
+	@- del current.bat
+
+schdle.obj : $(CDIR)\schdle.c $(RTHFILES) $(CDIR)\schdle.h
+	- del schdle.obj
+	@- $(SCRIPTSDIR)\errsweep.bat schdle.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\schdle.c
+	@- del current.bat
+
+skeleton.obj : $(CDIR)\skeleton.c $(CDIR)\gsi_main.h
+	- del skeleton.obj
+	@- $(SCRIPTSDIR)\errsweep.bat skeleton.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\skeleton.c
+	@- del current.bat
+
+stdcbs.obj : $(CDIR)\stdcbs.c $(CDIR)\gsi_main.h
+	- del stdcbs.obj
+	@- $(SCRIPTSDIR)\errsweep.bat stdcbs.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\stdcbs.c
+	@- del current.bat
+
+symtab.obj : $(CDIR)\symtab.c $(RTHFILES)
+	- del symtab.obj
+	@- $(SCRIPTSDIR)\errsweep.bat symtab.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\symtab.c
+	@- del current.bat
+
+sysattrs.obj : $(CDIR)\sysattrs.c $(CDIR)\gsi_main.h
+	- del sysattrs.obj
+	@- $(SCRIPTSDIR)\errsweep.bat sysattrs.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\sysattrs.c
+	@- del current.bat
+
+systm.obj : $(CDIR)\systm.c $(RTHFILES) $(CDIR)\systm.h
+	- del systm.obj
+	@- $(SCRIPTSDIR)\errsweep.bat systm.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\systm.c
+	@- del current.bat
+
+times.obj : $(CDIR)\times.c $(RTHFILES) $(CDIR)\times.h
+	- del times.obj
+	@- $(SCRIPTSDIR)\errsweep.bat times.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\times.c
+	@- del current.bat
+
+toolkit_1.obj : $(CDIR)\toolkit_1.c $(CDIR)\gsi_main.h
+	- del toolkit_1.obj
+	@- $(SCRIPTSDIR)\errsweep.bat toolkit_1.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\toolkit_1.c
+	@- del current.bat
+
+tran.obj : $(CDIR)\tran.c $(RTHFILES) $(CDIR)\tran.h
+	- del tran.obj
+	@- $(SCRIPTSDIR)\errsweep.bat tran.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\tran.c
+	@- del current.bat
+
+trnscd.obj : $(CDIR)\trnscd.c $(RTHFILES) $(CDIR)\trnscd.h
+	- del trnscd.obj
+	@- $(SCRIPTSDIR)\errsweep.bat trnscd.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\trnscd.c
+	@- del current.bat
+
+typetest.obj : $(CDIR)\typetest.c $(CDIR)\gsi_main.h
+	- del typetest.obj
+	@- $(SCRIPTSDIR)\errsweep.bat typetest.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\typetest.c
+	@- del current.bat
+
+uncde.obj : $(CDIR)\uncde.c $(RTHFILES) $(CDIR)\uncde.h
+	- del uncde.obj
+	@- $(SCRIPTSDIR)\errsweep.bat uncde.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\uncde.c
+	@- del current.bat
+
+userfuns.obj : $(CDIR)\userfuns.c $(RTHFILES) $(CDIR)\userfuns.h
+	- del userfuns.obj
+	@- $(SCRIPTSDIR)\errsweep.bat userfuns.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\userfuns.c
+	@- del current.bat
+
+userinit.obj : $(CDIR)\userinit.c $(RTHFILES)
+	- del userinit.obj
+	@- $(SCRIPTSDIR)\errsweep.bat userinit.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\userinit.c
+	@- del current.bat
+
+usersyms.obj : $(CDIR)\usersyms.c $(RTHFILES)
+	- del usersyms.obj
+	@- $(SCRIPTSDIR)\errsweep.bat usersyms.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\usersyms.c
+	@- del current.bat
+
+utlts0.obj : $(CDIR)\utlts0.c $(RTHFILES) $(CDIR)\utlts0.h
+	- del utlts0.obj
+	@- $(SCRIPTSDIR)\errsweep.bat utlts0.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\utlts0.c
+	@- del current.bat
+
+utlts1.obj : $(CDIR)\utlts1.c $(RTHFILES) $(CDIR)\utlts1.h
+	- del utlts1.obj
+	@- $(SCRIPTSDIR)\errsweep.bat utlts1.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\utlts1.c
+	@- del current.bat
+
+utlts2.obj : $(CDIR)\utlts2.c $(RTHFILES) $(CDIR)\utlts2.h
+	- del utlts2.obj
+	@- $(SCRIPTSDIR)\errsweep.bat utlts2.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\utlts2.c
+	@- del current.bat
+
+utlts3.obj : $(CDIR)\utlts3.c $(RTHFILES) $(CDIR)\utlts3.h
+	- del utlts3.obj
+	@- $(SCRIPTSDIR)\errsweep.bat utlts3.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\utlts3.c
+	@- del current.bat
+
+watchdog_1.obj : $(CDIR)\watchdog_1.c $(CDIR)\gsi_main.h
+	- del watchdog_1.obj
+	@- $(SCRIPTSDIR)\errsweep.bat watchdog_1.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)\watchdog_1.c
+	@- del current.bat
+
+clean : 
+	- del *.obj
+	- del *.lib
+	- del *.exe
