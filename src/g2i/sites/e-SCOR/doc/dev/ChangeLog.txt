@@ -1,0 +1,2033 @@
+
+                     e-SCOR KBS Change Log
+                     =====================
+
+  --------------------------------------------------------------------
+
+  Fixed bug HQ-3481444 -- Model and Organizer Tools have no subworkspace on e-SCOR 
+    Tools palette.
+
+  --------------------------------------------------------------------
+
+  Fixed received avg fulfillment time bug. The Sc block was correct, the S1, S2, S3 
+    blocks were not. - blp 5/17/00
+
+  --------------------------------------------------------------------
+
+  Fixed bug HQ-3456922 -- replicated fix for incoming amount and other levels across 
+    MTO, ETO. blp 5/17/00
+
+  --------------------------------------------------------------------
+
+  --------------------------------------------------------------------
+  	SCOR 3.1 upgrade changes: (done the week of May 15, 2000)
+  --------------------------------------------------------------------
+
+  Changed the following (level 2/3) block names to comply with SCOR 3.1:
+   (these changes were made to the block labels, the dialogs (where appropriate), and
+    the client help tips (where appropriate)
+
+    * S0 changed to ES
+    * S0.2 changed to ES.7
+    * Sc.5 changed to ES.6 (category router block)
+    * S0.7 changed to ES.9
+    * S1.3 changed to S1.4
+    * S2.3 changed to S2.4
+    * S3.5 changed to S3.6
+    * D0 changed to ED
+    * D0.3 changed to ED.1
+    * D0.7 changed to ED.2
+    * D0.9 changed to ED.3
+
+  --------------------------------------------------------------------
+
+  Made the following metric changes to comply with SCOR 3.1: 
+
+    * Changed name of Material Acquisition Costs to Product Acquisition Costs.
+    * Changed Product organizer to Product Structure .
+    * Added Production Material Cycle Time and Production Material Handling Cost.
+    * Changed the Product name label (on product composite and product specification 
+      dialogs) to Product Name/SKU.
+
+  --------------------------------------------------------------------
+
+  Made the following modeling changes to comply with SCOR 3.1: 
+
+    * S0.8 detail was moved to S1.5/S2.5/S3.7/and Sc.5.
+    * S0 detail now includes a new ES.6 block.
+    * M1.6 detail was split and put into both M1.5 and M1.6.
+    * M2.6 detail was split and put into both M2.5 and M2.6.
+    * D0.8 detail was moved to D1/2/3.
+
+  --------------------------------------------------------------------
+
+  Pprintz: 6/9/2000
+
+  Revisited the module hierarchy:
+	- escor-dialogs.kb and escor-bom.kb are not required anymore
+	- a dummy / empty escor-bom.kb is still available to be able to load
+	  existing modules
+	- escor-customiz.kb contains all object definitions and code including the
+	  new blocks is wrote
+	- escor-definitions.kb contains the template and palettes
+	- escor-menus.kb contains G2 menu extensions for ReThink
+  Added a gfr-startup procedure that could be used to perform initialization at
+  startup.
+
+  --------------------------------------------------------------------
+
+  Pprintz: 6/11/2000
+
+  Fixed icons for escor-export-tool and escor-metrics-probe. Removed images and
+  created icons.
+
+  --------------------------------------------------------------------
+
+  Pprintz: 6/12/2000
+
+  Removed checking at run time of symbol lists in ds_copy_attributes()
+  Removed checking at run time of symbol lists in ds_operate_on_attributes()
+  Added ds_order_or_product class as superior of ds_order and ds_product
+
+
+  Moved bpr.kb, bprui.kb, methods.kb from ReThink into escor/kbs to update for
+  ReThink V4.0 with improvements that may change specs of ReThink for older
+  models.
+
+
+  ReThink internal changes:
+	- Disabled the subworkspace of the "Dialog Update Rules" in bprui.kb
+	  (Wks is marked in yellow). It contains all rules that fire to update
+	  potential dialogs as attributes change. Counts for 7-10% of simulation
+	  time even if no dialog is open. Since Guide is not used in e-scor
+	  disabled it.
+	- Changes in bpr.kb:
+		- bpr-animate-path always assumes TW2 clients. Also updated
+		  other related code that was setting up truth-value used
+		  to determine if TW2 clients were connected.
+		- bpr-block: added _instrument-count and _resource-manager-count
+		  attributes
+		- bpr-block-evalator
+		- bpr-update-block-for-activity
+		- bpr-start-activity, bpr-stop-activity deprecated
+		- bpr-post-path removed runtime type checking to improve
+		  performance.
+		- bpr-start-event class + bpr-event-method: New based on procedures
+		- bpr-stop-event class + bpr-event-method: New based on procedures
+		- bpr-activity using classes above
+		- bpr-engine-jump: new used for jump mode
+		- bpr-reset: logic of scenario reset review, call appropriate eng.
+		- bpr-reset-block: reset internal flags to determine if instrument
+		  or resource manager is connected
+		- Added bpr-work-object-duration() to get the duration from an
+		  attribute named by the above attribute from the work object.
+		  Added duration-attribute-name-of-bpr-object attribute to
+		  bpr-default-block-duration-subtable
+	- In ReThink 4.0, start-procedure-name and stop-procedure-names on blocks
+	  and instruments do not exist anymore. Only using methods as it was already
+	  the case for ReThink 3.1r0
+
+   New common reusable blocks, instruments & durations (in escor-methods.kb):
+	- New instruments to perform a list of operations between a source and destination
+	  item. The item may be in the superior hierarchy of the instrument, i.e. the level
+	  2 block or the role.
+	- New escor blocks with improved performance to interact with BOM within a role
+	- New escor blocks with improved performance to insert or retrieve objects from
+	  pools
+	- New escor base block to build customized level 4 blocks which embed business logic
+	- New logging block based on above technique.
+
+   In template changed:
+	- All logging is using the new escor-log-transaction block
+	- Use collapsed blocks (merge of several blocks and instruments) in
+		- ES.7, ES.9, ES.6
+		- ED.3
+		- Sc.1 (2 blocks), Sc.2
+		- Using bpr-work-object-duration instead of 2 instruments in many
+		  places in the template (attempt to replace all of them!)
+		- Using new escor-store-pool to save responses in ES.7 into
+		  pool. If working should replace other bpr-store with this new
+		  one.
+   - Label count for details of bpr-models know starts counting at 1 instead of 0 to
+     less confuse users in relation to SCOR levels.
+
+  --------------------------------------------------------------------
+
+  Pprintz: 6/13/2000
+
+  Changed shell scripts/batch files that start the client and server to take external
+  arguments to specify the host/port or the module to load. These arguments can be
+  specified in the properties of the NT shortcut for example.
+	- server batch file: 1st argument specifies the kb to load. The kb has to be
+	  localted in %ESCOR_HOME%\kbs and the user must specify the complete filename
+	  with the .kb extension.
+		Example: "e-SCOR Server.bat" escor-demos.kb
+	- client batch file: 1st argument specifies the host where the G2 server is
+	  running and the 2nd argument specifies the port used by the G2 server
+		Example: "e-SCOR Client" pprintz400 1112
+
+  --------------------------------------------------------------------
+
+  LNey: 6/14/00
+
+  Fixed bug HQ-3509021 (escor-export-tool on palette does not display the label attribute)
+
+  --------------------------------------------------------------------
+
+  LNey: 
+
+  Replaced several of the Parameter Probes/Feeds with new bpr-copy-attribute-probe/feed 
+  instruments.  The ones replaced were for the metrics roll-ups (for the most part) and 
+  were located in the S1, S2, S3, and Sc block details.  A couple were also located in 
+  the M1.3, M2.3, & M3.4 block details
+
+  --------------------------------------------------------------------
+  
+  LNEY: 
+
+  Modified several of the e-SCOR dialogs, to go along with all of the SCOR 3.1 upgrade
+  changes.  New e-SCOR dialog design document was sent out with those changes.
+
+  --------------------------------------------------------------------
+
+  Pprintz: 6/20/2000
+
+  Revised procedures to delete items fro TW2. Customized ItemImpl.java to call our
+  bprnui-delete-item methods instead of the G2 system procedures. Also enhanced the
+  bprnui-delete-item methods to take the arguments usually sent to g2-delete-item.
+  As a consequence the standard Edit->Delete and Delete popup menus in TW2 can be
+  used. Also updated class definitions and kb configuration to enable standard
+  delete menu choice.
+
+  --------------------------------------------------------------------
+
+  Pprintz: 6/20/2000
+
+ Smaller revisions on server, and only in bpr.kb at this point: added API to get all
+ items of a scenario given a class filter name. Used in the dashboard of the client
+ to find out all rows (Products, roles, etc) to display.
+
+ Many changes in client with many contributions from Shuqing. Added status bar
+ to view the current server connection and status, a general message and the
+ status of the current scenario (state, activity and time) as well as a toolbar for
+ the layout commands. Also added a web browser document and a toolbar to
+navigate between pages, and refresh the comple client user interface. 
+
+Also started to implement user properties and configurations for the client, i.e.
+keeping track of enabled/disabled toolbars/status bars, size and position of main
+window and modeling browser. Settings restored each time at startup.
+
+Not viisble yet, but Linda is collapsing many areas in template to custom blocks.
+
+
+  --------------------------------------------------------------------
+
+  Pprintz: 8/2/2000
+
+Revisions / modifications in implementation and features of all summary reports.
+Removed the GXL support, better support for Excel and started to support databases.
+Excel is now considered to be a 'full' client, i.e. the server never launches Excel. The
+user on any machine can start Excel and load the reports. The VB code will then
+automatically connect to the server even if located on a different machine. It is using
+either the ESCOR-SERVER environment variable on the client where Excel is running
+to locate the server or opening a dialog box asking the user to indicate the host/port
+of the ESCOR server. The format of the environment variable is
+	e-scor_server_g2hostname:e-scor_server_g2port
+
+When creating (rebuilding/refreshing) or updating reports on the server (automatically
+via auto refresh or via menus) all Excel reports connected to the server are updated
+as well as the database if applicable. The refresh of the reports also seems to be faster.
+
+One new feature of the reports is to report as time series. Instead of displaying a
+snapshot of the last values, the simulation time is added to each row as the first column.
+In addition for each update of the report, new rows are appended instead of refreshing
+the rows (to build a history of values based on the update time).
+
+To enable the reporting to databases, the usert needs to be enabled it, select the database
+interface to use (to enable working with many databases either in parrallel for performance
+or use different ones) and indicate the database table to use. At reset time all entries
+in the database are deleted! If the database table does not exist, it is automatically created.
+At this point the database bridge(s) need to be started manually, i.e. they are not launched
+by the server (so the can easily reside on a different machine).
+
+Moved bpr-make-db-compatible() and bpr-replace-text() from methods.kb to bpr.kb since
+used by internal APIs to send reports to databases.
+
+  --------------------------------------------------------------------
+
+  LNey: 8/8/2000
+
+Committed latest template and associated new blocks
+
+  --------------------------------------------------------------------
+
+  Pprintz: 8/8/2000
+
+Resolved conflicts in escor-customiz.kb duw to report class definition changes. Also 
+committing code to support new reports that also store the data. Can be used to build
+lookup tables or in the current case a list of attribute update events to schedule during
+a run. Implemented the setup via Excel, creation + scehduling of the events and exec
+of the event stop method to do the attribute change. Now any attribute can be changed
+during the simulation run and at any time. Done by scheduling new event types/classes
+with the corresponding stop method to implement the behavior. See bpr-table-report and
+subclasses.
+
+Also changed the rethink engine and bpr-event class to remove the procedure attribute
+name and add a integer priority to events. Events within the engine are sorted by time
+and now also by priority (small numbers scheduled first). The default priority is 100,
+which is the value used to schedule any normal work object activity.
+
+The priority for the bpr-set-attribute-event is 10, which means that they are scheduled way
+before the regular work object events. Tthe next step is to schedule the events related to 
+bpr-update-trigger at a priority way above 100 to ensure reports are updated after any
+simulation activity in the model.
+
+Extracted code to change an attribute value from the the Excel apply function and
+created a new API to set any named attribute value of a block. It checks for data
+conversion and traps errors if applicable. The API is called bpr-set-attribute-value().
+
+Also defined an API called bpr-define-duration-attributes to define a new attribute as
+been a duration. Used currently when setting values via the api above to determine
+if the target attribute requires duration or not.
+
+Updgraded ad committed e-scor-benchmarks.kb to use the new template and with
+the resloved bpr changes. The other demo kbs still need to be loaded with auto
+resolution of conflicts.
+
+  --------------------------------------------------------------------
+
+  Pprintz: 8/17/2000
+
+Additional changes for report to support reports to setup or lookup duration and
+a list of input attributes..
+
+Revisions in logging done by MR. MR also started to add new duration info on Role
+and L2 blocks to support other functions.
+
+  --------------------------------------------------------------------
+
+  Pprintz: 8/25/2000
+
+Added bpr-modify-duration methods for bpr-block and calling it from bpr-modify-duration method
+of duration subtables. Used to modify the duration in some escor blocks to apply a multiplier
+factor retrieved from the product composite. Support for:
+	- receive and putaway duration
+	- order release to build time 
+	- production material cycle time
+	- move to delivery time
+	- engineering time
+	- order receipt toentry time
+	- pick material time
+	- packing time
+
+  --------------------------------------------------------------------
+
+  Pprintz: 9/5/2000
+
+- Revisited report dialogs to enable editing of attribute selection in tables instead of separate objects
+- fixed e-SCOR palette bugs
+- moved batch sizeattribute  to product composite
+- added carrier parameter on Dx blocks and implemented D1.7/D2.7/D3.6 SCOR blocks to supprot carrier selection (user selectable).
+	Using it when looking up logistics report to find durations and costs.
+- added logistics import report and support in code/model: Key search criteria in report are supplier  (role label), customer (role label) and carrier.
+	Leaving a cell empty in the Dx logistics report or entering NONE means that don't take that value from the report.
+- added Sc  import report and support in code/model. Leaving a cell empty in the Sc import report or entering NONE means that don't take tha
+	 value from the report, i.e. therefore not overwriting the value that was calculated using the mathematical operation (exponential,
+	triangular, etc..)
+- Added product selection or all products on Sx and Dx blocks. Not working in model yet.
+- Started to work on bom tree in a tab on role dialogs with product composite selection from tree
+- Started batch simulation. It will be a command type script, with one command per line. The commands that will be initailly supported are:
+	START-SIMULATION, <scenario>, <duration>
+	WAIT-SIMULATION, <scenario>
+	SET-FILE-REPORTING, <report-title>, <excel-enabled>, <file-name>
+	UPDATE-REPORT, <report-title>
+	SAVE-REPORT, <report-title>
+	SET-ROLE-ATTRIBUTE, <scenario label>, <role label>, <attribute>, <subtable>, <new value>, <time>
+	SET-LEVEL2-ATTRIBUTE, <scenario label>, <level 2 label>, <attribute>, <subtable>, <new value>, <time>
+	SET-PC-ATTRIBUTE, <scenario label>, <PC label>, <attribute>, <subtable>, <new value>, <time>
+
+  --------------------------------------------------------------------
+
+  Pprintz: 9/9/2000
+
+- Revised icon used in status bar to show progress/activity (used to be old Gensym logo)
+- Revised export tool dialog to support new cvs logging feature and display better layout
+- Rrevised scenario dialog to have a better layout on general panel
+- Revisions on server and RPCs to client to support three e-SCOR packages + ReThink. Server passes type of server information to clients
+  ipon connect
+- Project command is watching variable set by server to indicate it is ready (after a load of KBs)
+- Restoring visibility of metrics panel upon startup. Attempted to restore height, but still unknown problems, i..e it does not take the set height
+- Fixed bug in Dx and Sx panels in product selection u.i.. Forgot to add the "all-products" attribute to the proxy.
+- Enabled attribute selection for ReThink attribute input and lookup reports 
+- Revised Excel panel of report property dialogs to make it easier to understand
+- Changed font of tabs on metrics tabbed panel
+
+  --------------------------------------------------------------------
+
+  Pprintz: 9/19/2000
+
+- Starting 2.0 Alpha 1.
+- QUANTITY_ORDERS_RECEIVED: renaming label to Qth ordered on delivery tab. the value is not linked to the # of orders but the sum of products
+  ordered by other roles
+- reordering and using shorter labels for metrics table headers.
+- adding first draft of tutorial with shortcuts to access it.
+- Qty of Orders received in deliver tab of PC changed to Qty To Deliver Since we really count nb of products
+
+  --------------------------------------------------------------------
+
+  Pprintz: 9/29/2000: Starting Alpha 1 fixes
+
+- Benchmark simulation test ACME model 52 weeks:
+	- Alpha 2.0: Nb of events = 10265, 1.1r1, Nb of events = 53770
+- ED2.1: added reset procedure to clear counters and copy result of counter to product_shipments instead of using the number of stops. Number of
+  stops also included any other work object going through block (not products). Also added 2nd true criteria counter for perfect order fullfilment
+  calculation, since the value was also used to calculate the delivery performance.
+- D1.10 : last ds_bom_store store the push amount as the last value insteadof incrementing them. Correct?
+
+  --------------------------------------------------------------------
+
+  Pprintz: 11/13/2000: Starting Beta 1 fixes
+
+- Changed references to 2.0 Beta 1
+- Changed bpr-handle-event-error from a procedure to a method. Requisit for the ASN project to be able to implement custom error handler.
+- Added error checking in bpr-animate-object to detect if superior item exists or not. Ran into problems in ASN project where aimation was
+  scheduled but object somehow was deleted in the meantime
+- changed ds_create_product_surrogates() so that it does not automatically add components for distributors. Should only do it for manufacturers.
+  4th line from the end, change
+	"if Block is not a ds_base_manufacturer and Block is not a ds_consumer then
+    		call ds_create_product_input_surrogates(ProductSurrogate,Block, UIClientItem);"
+   to
+	"if Block is a ds_manufacturer then
+    		call ds_create_product_input_surrogates(ProductSurrogate, Block, UIClientItem);"
+- Fixed for  bpr-n-dim-summary-report:
+	- bpr-initialize-summary-report: do add duplicate target objects to list of objects to update
+	- bpr-update-summary-report:changed code to uopdate last attribute column
+	       if Report is a bpr-n-dim-summary-report then begin 
+           		 I = the number-of-columns of report - 1;
+  	  to
+	       if Report is a bpr-n-dim-summary-report then begin 
+           		 I = the number-of-columns of report;
+- Changed level-1 update procedure calculating metrics - improves performance and fixes error when having multiple Dx/Sx level 2 blocks.
+  Original procedure did not correctly sum up metrics.
+ Original procedure:
+
+escor-level-1-sum-attribute-update(b: class ds_level_1_element, end-of-financial-period: truth-value)
+    w: class kb-workspace;
+    WS: class kb-workspace;
+    s: item-or-value;
+    sb: class ds_source_non_infrastructure;
+    db: class ds_scor_deliver_d0;
+    mb: class ds_scor_make_mb;
+    bi: class bpr-block {ds_scor_level_2_element };
+    activity: class bpr-activity;
+    a-struct: structure;
+    attr-src: symbol;
+    attr-dst, attribute-name: symbol;
+    q, q-avg, c: quantity;
+    attribute-list: sequence;
+begin
+{
+Call Original update procedure.
+}
+    call bpr-update-block (b);
+
+    attribute-list = the attribute-update-list of b; 
+
+{
+Only look at level 2 blocks upon the subworkspace
+}
+    if the subworkspace of b does not exist then
+        return;
+
+    w = the subworkspace of b;
+
+    s = call bpr-get-bpr-scenario-for-item (b);
+    if s is not a bpr-scenario then 
+    begin
+        {call bpr-indicate(b, "No scenario exists for this block", gfr-default-window);}
+        return;
+    end;
+
+{
+Loop through all source attributes to sum the values and store the result in the destination attribute. Only works of course for quantity attributes.
+}
+    for a-struct = each structure in attribute-list do
+
+        attr-src = the source-attribute of a-struct;
+        attr-dst = the destination-attribute of a-struct;
+
+        q = 0;
+
+        if there exists a symbol attribute-name that is a user-defined attribute name of b such that (attribute-name = attr-dst) and the item-or-value attribute-value that is an attribute of b named by attr-dst exists and attribute-value is a quantity then 
+        begin
+            for bi = each ds_deliver_non_infrastructure upon w 
+            do
+                if there exists a symbol attribute-name that is a user-defined attribute name of bi such that (attribute-name = attr-src) and the item-or-value attribute-value that is an attribute of bi named by attr-src exists and attribute-value is a quantitative-parameter then 
+                    q = q + attribute-value;
+            end; 
+
+            for SB = each ds_source_non_infrastructure upon w 
+            do
+                if there exists a symbol attribute-name that is a user-defined attribute name of SB such that (attribute-name = attr-src) and the item-or-value attribute-value that is an attribute of SB named by attr-src exists and attribute-value is a quantitative-parameter then 
+                    q = attribute-value;
+            end; 
+
+            for mb = each ds_scor_make_mb upon w 
+            do
+                if there exists a symbol attribute-name that is a user-defined attribute name of mb such that (attribute-name = attr-src) and the item-or-value attribute-value that is an attribute of mb named by attr-src exists and attribute-value is a quantitative-parameter then 
+                    q = attribute-value;
+            end; 
+ 
+            for DB = each ds_scor_deliver_d0 upon w 
+            do
+                if there exists a symbol attribute-name that is a user-defined attribute name of DB such that (attribute-name = attr-src) and the item-or-value attribute-value that is an attribute of DB named by attr-src exists and attribute-value is a integer-parameter then 
+                    q = attribute-value;
+            end; 
+
+            conclude that the item-or-value that is an attribute of b named by attr-dst = q; 
+        end;
+    end;
+
+    if not (end-of-financial-period) then begin
+ 
+{
+Calculate Order Management Costs.
+}
+        call escor_calculate_order_management_cost (b);
+
+    end else begin
+
+{
+Calculate Financial Days of Supply.
+}
+        call escor_calculate_financial_dos (b, s);
+
+{
+Calculate Financial Assets
+}
+        call escor_calculate_financial_assets (b);
+    end;
+
+- Changed end_products_number on roles from integer-parameter to integer. Not required to be a parameter anymore since we do not use
+  and parameter instrument to set it but do it during the reset of the role.
+end
+
+
+and new procedure:
+
+
+escor-level-1-sum-attribute-update(b: class ds_level_1_element, end-of-financial-period: truth-value)
+
+w: class kb-workspace;
+s: item-or-value;
+SX: class ds_source_non_infrastructure;
+MB: class ds_scor_make_mb;
+DX: class ds_deliver_non_infrastructure;
+bookings,
+outstanding, 
+obligations, 
+collections_period, 
+collections_total, 
+payments_period,
+payments_total:quantity;
+
+
+begin
+    { Call Original update procedure.}
+    call bpr-update-block (b);
+
+    { Only look at level 2 blocks upon the subworkspace }
+    if the subworkspace of b does not exist then
+        return;
+
+    w = the subworkspace of b;
+
+    s = call bpr-get-bpr-scenario-for-item (b);
+    if s is not a bpr-scenario then 
+        return;
+
+{
+Loop through all source attributes to sum the values and store the result in the destination attribute. Only works of course for quantity attributes.
+}
+
+    bookings = 0;
+    outstanding = 0;
+    obligations = 0;
+    collections_period = 0;
+    collections_total = 0;
+    payments_period = 0;
+    payments_total = 0;
+    
+    if B is not a ds_consumer then begin
+        for DX = each ds_deliver_non_infrastructure upon W do
+            bookings = bookings + the financial_bookings of DX;
+            outstanding = outstanding + the financial_outstanding of DX;
+            collections_period = collections_period + the financial_collections_period of DX;
+            collections_total = collections_total + the financial_collections_total of DX;
+        end;
+        conclude that the number_of_financial_periods of B = the number_of_financial_periods of the ds_scor_deliver_d0 upon W; 
+    end;
+
+    for SX = each ds_source_non_infrastructure upon W do
+        obligations = obligations + the financial_obligations of SX;
+        payments_period = payments_period + the financial_payments_period of SX;
+        payments_total = payments_total + the financial_payments_total of SX;
+    end;
+
+    if B is a ds_base_manufacturer then begin
+        for MB = each ds_scor_make_mb upon W do
+            payments_period = payments_period + the financial_payments_period of MB;
+            payments_total = payments_total + the financial_payments_total of MB;
+        end;
+    end;
+
+    conclude that the financial_bookings of B = bookings;
+    conclude that the financial_outstanding of B = outstanding;
+    conclude that the financial_obligations of B = obligations;
+    conclude that the financial_collections_period of B = collections_period;
+    conclude that the financial_collections_total of B = collections_total;
+    conclude that the financial_payments_period of B = payments_period;
+    conclude that the financial_payments_total of B = payments_total;
+
+    if not (end-of-financial-period) then begin
+
+        { Calculate Order Management Costs }
+        call escor_calculate_order_management_cost (b);
+
+    end else begin
+
+        { Calculate Financial Days of Supply }
+        call escor_calculate_financial_dos (b, s);
+
+        { Calculate Financial Assets }
+        call escor_calculate_financial_assets (b);
+    end;
+end
+
+  --------------------------------------------------------------------
+
+  Pprintz: 12/18/2000: Starting Beta 2 fixes
+
+- Combined d_financial_period and s_financial_period on L2 blocks to one attribute name called financial_period
+- Combined d_financial_period_terms and s_financial_period_terms on L2 blocks to one attribute name called financial_period_terms
+- Removed role_x_position and role_y_position attributes on roles
+- Removed the update attribute list on roles
+- Added conenctions on ds_plant objects to build a material flow diagram (no functionality)
+- Fixed logistics lookup of parameters
+- APIs to build a structure of all available images (to be used in combobox in client)
+
+  --------------------------------------------------------------------
+
+  LNey: 1/22/01: Fixed the following bugs in ETO/MTO model
+
+- In D3.8 detail, added a bpr-parameter-probe to "ship" block to calculate transportation_costs_
+  incurred.
+- In S2.2 and S3.2 detail, changed the apply-to-class-name attribute on first sample-probe to ds_bom_store.
+  It was bpr-task before, so would never get executed.
+- Modified the bpr-stop-method of S1.1-3 (and Sx.1-3) block to set cost and price of OBJECT to 0.  Before,
+  it was set to setting them to 0 on the invoice.
+
+  --------------------------------------------------------------------
+
+  LNey: 2/7/01
+
+- Made a change to escor_find_connected_output_path procedure to set branch-value of output 
+  path to the symbol OTHERWISE if block connected at end of output path is another ds_router.
+
+  --------------------------------------------------------------------
+
+  Pprintz: 2/21/2001: Starting 2.1 distributed setup
+
+- changed development and release batch files launching client to rely on the ESCOR_SERVER environment variable to pass the
+  default server to the java code as a property (eSCOR.server). ESCOR_SERVER is the environment variable used by the Excel
+  reports to connect to the server. This makes it easier to setup the connection for both. Creates incompatibilities with existing
+ custom shortcuts that users may have created.
+- changed wait time after launch to 30 seconds instead of 60 seocnds
+- changed LocationComboBox.java to detect failed connection linked to depletion of licenses on server. Posting a dialog box
+  asking the user if he wants to exit or not. Also made sure that the user mode in the login dialog is not editable.
+- added connectToServer(String url) to LocationComboBox.java and changed existing connectToServer(...) so that both
+  return the new connection or null
+- changed eSCOR.java to use the eSCOR.server system property (= ESCOR_SERVER)  to connect to a server at startup
+
+  --------------------------------------------------------------------
+
+  LNey: 2/23/01
+
+- Fixed bug HQ-3843675 (D1.10 packing issue. Needs to pack based on internal order # and 
+  shipment #).  Found problem to be in ds_create_kit rather than dx-pack-time, so made 
+  changes to ds_create_kit stop-method.
+- Made changes to escor-definitions, in templates, to collapse both MTO and ETO. 
+- Changed the names of several S1 and D1 block definitions to Sx/Dx.  Kept copies of all S1
+  and D1 blocks and methods.
+- Added a couple of D2 and D3 block definitions and bpr-stop-methods for collapse.  
+- Fixed bug HQ-3829089 (Push planning - 'not found' output path is not specified).
+
+  --------------------------------------------------------------------
+
+  Pprintz: 3/03/2001
+
+- Added procedures and rules to bpr.kb to detect connection and disconnection of TW2, TW and G2Com connections.
+  The status, times and durations are logged to a log file C:\escor.log. Once the file exceeds around 200Kb, the file
+  is renamed escor_backup.log and a new blank escor.log is created.
+- Defined property_quantity to be viewed as an integer property while keeping the internal attribute as quantity to
+  maintian compatibility. Setting this attribute on product structures as a floating point will break the simulation.
+- Changes in java client file locationComboBox.java to launch the client using the same batch file used to launch the
+  server from start->programs->escor. It uses the batch file located in %ESCOR_HOME_V2%\bin\e-scor-server.bat.
+  The java code passes the latest kb to load and dsired exact tcp/ip port to the batch file. To launch the batch file, the
+  java code uses the "cmd /c ..." which is not supported on Windows 98 (which we don't support officially). In addition
+  the java code will dump the command line and any output of the batch file to the error output path of Java. Using java
+ instead of javaw, will therefore show the lines whihc could be usefull for support issues.
+- in locationComboBox.java changed counting when launching and pinging server to count down instead of countng up.
+
+  --------------------------------------------------------------------
+
+  Pprintz: 3/03/2001
+
+All changes in Java code:
+- P2 & P3 dialogs. Disabling event based parameter/checkbox if replenishment planning is not selected
+- All output reports. Disabling access to update period parameter if manual update mode is selected.
+All changes in bpr.kb:
+- Added gfr resource lookup definition to lookup column header names for reports.
+- Still need to provide lookup names. Started to create list of names to lookup (generated from internal code
+  while opening reports -> adding missing keywords to resource and saving it to a file to edit).
+
+  --------------------------------------------------------------------
+
+  Pprintz: 3/04/2001
+
+Changes for all reports: ensuring that using the create menu choice does not destroy any collected data. To do this I added a
+new procedurecalled bpr-update-data-point-to-summary-report ()  that focuses on data collection and modified slightly existing
+procedures to group them as involved in data collection or client data update.
+Procedures / methods related to clients (Excel, database, csv file):
+  - bpr-create-summary-report: (create-report menu choice) recreates a template and fills it out with existing data
+  - bpr-update-summary-report: (update-report menu choice) sends updated data to all connected clients
+  - bpr-delete-summary-report: (delete-report menu choice) deletes the excel sheet and database tables 
+  - bpr-show-summary-report: (show-reprot menu choice) show the sheet related to this reprot in Excel
+Procedures / methods related to data collection:
+  - bpr-initialize-summary-report: deletes any collected data points and initializes for a new data collection. Called upon simulation
+    reset for all reports
+  - bpr-clear-summary-report: clears the items to collect data from
+  - bpr-reset-summary-report: initializes the data collection and starts an automatic period data collection is applicable.
+  - bpr-simulation-reset: called for each report when the simulation resets
+If the report is set to periodically collect data either based on simulation time or wall clock time, the create and update menu 
+choices will not refresh the current simulation clock of the report and the report values. On the other hand if the report udpate
+mode is set to manual, the create-report and update-report menu choices will not only refresh the views but also refresh the
+reported values by collecting new ones (independent of history enabled of not).
+
+  --------------------------------------------------------------------
+
+  Pprintz: 3/05/2001
+
+- Patched ItemImpl.java in TW2 sources to fix issue where workspace label cannot be deleted / hidden. If a workspace label
+  is deleted, it calls the system procedure G2-DELETE-ITEM otherwise it calls the bprnui-delete-item method so that we can
+  implement our custom delete behavior.
+
+  --------------------------------------------------------------------
+
+  Pprintz: 3/09/2001
+
+- Added a new attribute to bpr-scenario called simulation-counter (integer). A menu choice lets users reset it to zero and it is incremented by 1 during each reset. Therefore users can add it to reports to keep track of the simulation number. The start
+of a batch run should also reset it to 0. Added the counter as read only to the scenrio dialog.
+- Enhanced the reports so that for each report a user can select if the previously recorded data should be removed during the
+reset of the simulation. If so it behaves like e-SCOR 2.0r0. If set to false, the data will be kept accross runs and if the keep
+history (time-series parameter) is set as well, the data is appended to the end of results from the previous run.
+- Added check box for above selection to clear data during reset to all report general panels (one java file change)
+- Graying out Date/Time as Duration & Clear Data During Reset checkboxes if keep history is not selected. 
+- Fixed alignment of checkboxes in Mode group in General panel of report dialogs
+
+  --------------------------------------------------------------------
+
+  Pprintz: 3/14/2001
+
+- Added simulation counter attribute (int) and multi/batch simulation mode flag on scenario. If single simulation mode is selected,
+  the simulation counter is reset to 1 during the reset of the scenario. Otherwise it is incremented for each reset. Used by the batch
+  simulation to start severel runs of the same scenario. The reports may then use this setting to report in one sheet or csv file the
+  results across multiple simulation runs
+- Added flag (in server and client) on all reports to select if results across multiple simulation runs are desired (via batch script).
+  Can only be selected in dialog if kepp history is selected as well and will only report results across multiple runs if several runs
+  are started from batch simulation.
+
+  --------------------------------------------------------------------
+
+  Pprintz: 3/15/2001
+
+- Fixed a couple of smaller issues for database reporting (not available to customers at this point). Tested with MS Access db: created
+  dropped, inserted and updated values using simulation with different reporting capabilities (no history, history, batch simulation).
+
+  --------------------------------------------------------------------
+
+  mramakrishnan: 3/21/2001
+
+- Modified DS_STORE_INVENTORY, DS_CREATE_KIT::BPR-STOP-METHOD,
+  MX.1-WIP-BREAKOUT::BPR-STOP-METHOD to take into account newly added
+  P1 attributes (plan_inventory_level, desired_plan_inventory_level,
+  and plan_on_order on DS_PRODUCT_SURROGATE)
+  in the DS_CREATE_KIT and Mx.1-WIP-BREAKOUT stop methods, we decrement the
+  plan_inventory_level and desired_plan_inventory_level right before goods
+  are delivered or manufactured.  
+  in DS_STORE_INVENTORY, increase the plan_inventory_level and desired_plan_inventory_level
+  if the product received was ordered via the P1
+  shouldn't change normal e-SCOR operation at all as long as desired_plan_inventory_level
+  = 0, and it will only become nonzero if there's a P1 block
+
+  --------------------------------------------------------------------
+
+  Pprintz: 3/23/2001
+
+- Changed Mb MTS/MTO/ETO build process models to correctly sue capacity resources. Previously the delivery lead time was not
+   constant as the batch size/capacity numbers changed while the ratio was constant.
+- Added escor-bom-value-retrieve-all-or-named class and stop method. It is the same as  escor-bom-value-retrieve with the exception
+ of one difference when retrieving-all is set to true. If the input work object has a valid product name then only the PC for that product is 
+ retrieved otherwise all are retrieved based on the retrieve-attribute and retrieve-attribute-value definitions on the block. It is used on the 
+ details of P2.1 and P3.1 to schedule planning either for all products or a specific product. For regular period updates, the product
+ name is "" therefore a planning phase for all products will be executed. For event based planning  comming from Mx or Dx blocks
+ the replenishment order specifies a specifc product name and we only want to replan for that specific product.
+- Added escor-check-inventory-threshold blocks after order selection in D1.9 and M1.1 (instead of pool where chit came out) to check
+ every product composite (selective input and/or output) to see if the inventory level is below a threshold. If so we send out a 
+ replenishment order for the specifc product to optionally - if enabled - trigger a planning cycle in P2 and P3. This is necessary
+ now (kind of worked I guess before) since we will hold the orders in the pool and not send them through if no capacity is available.
+ If only event based planning was enabled, never any product was built or raw material was ordered.
+
+  --------------------------------------------------------------------
+  
+  LNey: 3/26/01 (done prior to this but can't remember exact dates)
+
+- Moved P2 and P3 blocks to above the S1 and M1 respectively.  Also removed the product path
+from the P2 and P3 blocks.  Put the custom block from detail of P2, product side (P2.2-1) in 
+to the detail of S1.4, and put the custom block from detail of P3, product side (P3.3-1) in 
+M1.6.  Also added the same custom blocks to MTO and ETO.
+- Added an attribute to ds_scor_plan_P3 definition called use-yield-in-planning.  This is a 
+flag the user can set (true/false) to determine if the yield is considered in planning.  If
+true, the order_size will be divided by the yield to get a new order_size.  Also added this
+attribute to the P3 dialog.
+- Added a custom block to detail of Mx.3 (manufacturer), right after the yield block to update
+the on_order of the product_composite and change the order_size of the output object to 0 if
+the use-yield-in-planning on level 2 block is true.  Otherwise the output object is sent out 
+with the same order_size.
+- Changed the reject-always-flag on the yield block to true, so an object will always go down
+this path.
+- Added an attribute to the product_composite called minimum-batch-size.  Also added this
+attribute to the product_composite dialog (manufacture tab)
+- Modified the ds_lookup_order_by_sort method to look to make sure the order it picks is 
+greater or equal to the minimum-batch-size of the product_composite.
+- Added an attribute to the product_composite called build-time-dependent-on-order-size.  
+Also added this attribute to the product_composite dialog (manufacture tab).
+- Added a new custom block called escor-mfg to the detail of Mx.3.  Then replaced this block 
+with the ds_dat_task block that was being used as the manufacture block.  Also added a 
+duration method to take in account the order_size in the build-time if the build-time-dependent-
+on-order-size flag is true on the product-composite.
+- Added the following keywords to the escor-manager: SET-COMPENSATE-FOR-YIELD-PARAMETER, SET-
+MINIMUM-BATCH-SIZE-PARAMETER, SET-BUILD-TIME-DEPENDENT-ON-ORDER-SIZE-PARAMETER. 
+- Replaced category-copy-router block with a category-branch-router in template before Dx 
+blocks.
+
+  --------------------------------------------------------------------
+
+  Pprintz: 8/28/2001 to 9/26/2001
+
+Started to work on e-SCOR 2.1r2 (or 2.2r0) and ReThink 4.0r1, i.e. the re-birth of ReThink. The
+goal is to re-introduce ReThink to the market place under the ReThink name and in two version:
+one bundle as a BPR modeling and simulation tool and another bundle that will in addition include
+online/operational capabilities (such as workflow and transactional capabilities). We will still
+keep e-SCOR available, but maybe revisit the packaging options. Eventually we will need to revisit
+the packaging issues and related problems such as product icons, spalsh screen, number of concurrent
+clients, etc... but this is a packaging issue we will adress later.
+
+From a product development perspective we will keep the development of both e-SCOR and ReThink products
+and all versions in a single development tree and hierarchical module structure. Therefore it becomes
+a packaging issue and enabling/disabling of functionality based on license keys.
+
+All bundles and versions will rely on the same Java client that will need to auto configure itself,
+i.e. enable/disable functioanlity based on the server it is connected to. This is a key issue since
+many users, especially e-SCOR customers may work and build models at both levels. The Java client
+will also need to support ReThink customizations: customizing the behavior of items (subclassing blocks,
+editing of procedures and rules), customize work objects to include custom model specific atttributes
+(example: document-number, order-size, etc attributes) and have them displayed in the dialogs on the
+client without requiring any Java knowledge and Java development environment.
+
+See project plan and word documents to review details of strategies and planned changes. Here is a
+list of implementation changes:
+
+
+
+General Changes & Notes:
+
+- changing e-SCOR version to 2.1r2 and rethink version to 4.0r1 (for now at least). Added ReThink
+  name and version to Splash screen.
+
+- Created escor-dev-all-examples.kb and rethink-dev-all-examples.kb. They merge into all rethink or
+  escor kbs respectively to make it easier to upgrade and resolve conflicts for all shippable modules.
+  Before we had to load/resolve conflicts/upgrade each one individually (with pain). Added top level
+  workspace to set version/revision numbers and save all kbs.
+
+
+
+Server changes:
+
+- New "bpr-handle-event-error" method for scenarios to customize the error handling of ReThink models. Should be
+  described in ReThink customization manual under the scenario section. In case user wants to have his own event
+  handler he can subclass the scenario and create his own. Called whenever a block or instruments generates an
+  error - yellow blocks. Sets the error message on the object and stops te simulation which may not be desired
+  for online activities.
+
+- Removed START-PROCEDURE and STOP-PROCEDURE from blocks. Was mentioned in ReThink 3.1 that they would be
+  removed at some point and only left for compatiblity reasons. Not used anymore to improve performance,
+  i.e. only relying on start/stop methods. Need to pdate customization documentation.
+
+- Procedure-name on start + stop event (attributes of activity) do not exist anymore. Update documentation accordingly.
+  Using new start and stop event classes with method to implement behavior. As a side effect we create other events
+  besides the block start and stop events that are schedule to appear at a certain simulation time. Examples of such
+  events are update of reports at regular simulation times, changing attribute values at a specified simulation time.
+
+- Added event priority to scheduled events. Describe them in the documentation and list priorities used as
+  start/stop evetns for blocks, reports updates, etc... -> bpr-event now includes a prioriry and events are sorted
+  by time and then event priority (secondary key). Currently the following event priority numbers are defined
+  (low numbers processed first within a second)
+
+	Priority	Description
+	-----------------------------------------------------------------------------
+	5		escor metrics update -> product composite stats. Period defined on role
+	5		end-of-statistic-period for bpr-statistic-probe
+	10		attribute changes scheduled from definitions in a bpr-event-report
+	10		attribute changes scheduled from a scenario script
+	100		event triggering start phase of blocks
+	100		event triggering stop phase of blocks
+	500		update events associated with bpr-update-trigger objects to update elements
+	9999		update events to auto update reports based on simulation time
+
+- updated behavior of bpr-change-feed in random mode to correctly behave if
+	- minRandomValue = maxRandomValue
+	- minRandomValue > maxRandomValue
+	- previously only considered case where minRandomValue < maxRandomValue
+	  without specific check
+
+- Added operation mode to bpr-attribute-feed (default to have same behavior as before): +, -, *, / and ^.
+	also added precision field to round values to a certain precision if value is > 0
+
+- bpr-delta-time-probe: added a scaling time-unit attribute. If > 1 used to divide the resulting delta time.
+	Used for example to convert delta time to hours or days. time-unit is the division factor that will
+	be applied.
+
+- added precision attribute to avg probe, moving avg probe, increment probe, attribute feed, delta time probe
+	to round values to a given precision
+
+- added distribution change mode to bpr-change-feed
+
+- Added update-procedure-name to work objects. Called when updating reports to update metrics
+
+- Added scenario manager to rethink palette. Disabling escor keywords if scenario is not controlling an
+  escor model. Only scenario control, report control keywords and simulation/model versions are
+  available plus on new one. Added new keyword to set any attribute:
+
+	set-attribute-value(object-label, subtable-name, attribute-name, value, simulation-time)
+
+- Added block label argument to lookup in report distribution. This enables to search the row for the distribution
+  based on work-object-attribute/report-column-name pairs + block-label/report-label-column pair. Therefore the
+  same report can be used  to include different settings for specific blocks but with the same search keys.
+
+- Added fixed distribution, i.e. no random number generation. Several new users got confused and asked where is
+  the fixed  distribution. They did not release (!) that by setting all arguments to the same value will eliminate
+  any randomness. So to make it explicit I added such a distribution using the mean value as the distribution.
+
+- Starting to rely more formally on gfr versioning numbers and upgrade procedures. Format for version number is a 4
+  digit  number representing the number with last digit being a patch number (0 for the formal release, 1 for the
+  first patch, etc...).
+	Examples: 4.1r3  --> gfr version number = 4130
+
+- Added and set version numbers for all rethink and escor shipping kbs including all examples.
+
+
+
+U.I. changes:
+
+- added menu choices to the tools menu to select user mode: modeler, developer or administrator.
+  Ensured that these user menu choices menus will only be enabled if the server has a'developer'
+  license enabled. Final packaging will determine wich bundle will have access or not to developer
+  activities.
+
+- added new palette to the view->toolbar to clone basic g2 items (procedures, variablesm, etc...). Menu
+  choice also available from the workspace popup menu choice. Menu choice only available if in developer
+  or administrator mode.
+
+- small modification to the way rethink and escor palettes are populated. The goal is to support custom
+  palettes, i.e. new ones that the users can add. Tested adding custom palettes. Procedure to create a
+  custom palette:
+	- create a bpr-palette-worskspace object and its subworkspace. It may reside in any g2 module and
+	  will appear either in the rethink or escor palette as a new tab (see below)
+	- set the names and palette order attributes of this new bpr-palette-workspace. The palette order
+	  should be positive and > 10 to appear on the rethink palette,and negative and < -12 to appear on
+	  the escor palette. The maximum palette order number should be +/-19. MUltiple palette tabs can be
+	  be added.
+	- add a BPR-WORKSPACE-LABEL instance to the subworkspace of the new bpr-palette-workspace. Set the
+	  label to the name of the desired tab as it should appear in the tab on the client
+	- Add items to the tab that you want to be able to clone from the palette in the client. Add any
+	  desired number of items and for each of them add the gfr palette behavior.
+	  To add the gfr palette behavior to an item on the subworkspace of a bpr-palette-worskspace, get the
+	  gfr-top-level workspace, enable the palette behavior, and select the 'add palette behavior' menu
+	  choice of each object on the subworkspace of your new bpr-palette-worskspace.
+	- When the palette is rebuilt on the client (upon connection or after a refresh -> F5) the new items
+	  should appear in a new tab.
+
+- Added a readout table and a a display table to the "Display" tab of the rethink palette
+
+- Reduced the number of gray space around the edge of dialogs. Made them very big with a lot of lost space.
+
+- added new menu choices for workspaces (functionality should be explicit):
+	- indicate-busiest-path
+	- indicate-longest-wait-time-path
+	- indicate-most-used-path
+
+- Updated dialogs for source block, branch block, store block and retrieve block to support customization
+  attributes and enabled/disable of input controls as operation modes change. As a side effect collapsed
+  some tab panels to make the enabling / disabling easier and remove "gray lost space".
+
+- Added "Error" field to all general rethink objects (blocks, work objects, where appropriate and error
+  attribute exists in G2). Could not see error message in dialogs previously.
+
+- Added "Comment" field to all general rethink objects (blocks, work objects, where appropriate and comment
+  attribute exists in G2). Could not see/edit comment message in dialogs previously.
+
+- Added a new "format" tab to image dialogs to display the image width, height and depth
+
+- Added customize tab to task block dialog. Only appears if in developer mode and will show the gfr-uuid, notes
+  and other item specific fields that can be customized (such as procedure names, etc...)
+
+- Revised dialog for work object. Added animation tab + customization fields
+
+- Customization fields for work objects, resources, resource manager, & scenario
+
+- Revised duration specification arguments in dialogs to add missing ones for index and lookup in tables 
+  + attribute of work object. Added spreadsheet to edit search keys for lookup in table. Affects all 
+  dialogs using durations (duration of blocks, bpr-change-feed instrument). Some arguments are not visible
+  in e-SCOR dialogs since the arguments are preset.
+
+- Added rounding to 2 digits after decimal point for numbers metrics status bar and also right aligned numbers
+  in columns.  Makes table look much cleaner and easier to read and compare numbers.
+
+- Added rounding to a max of 6 digits for all metrics displayed in dialog boxes to avoid numbers as long strings
+  with lots of precision. G2 could optional still round numbers if desired.
+
+- Added support for custom tabs in dialogs. To define custom tabs for custom classes (subclassed from ReThink
+  core objects), users create at least one method called bpr-get-dialog-info() for that class that will return
+  a sequence of structure. Each structure corresponds to one tab and the content of the structure lists the G2
+  attributes to be displayed on that tab. Example:
+
+	bpr-get-dialog-info (object: class my-task, uiClient: class ui-client-item) = (structure)
+
+	    return-example: structure;
+	    title: text;
+	begin
+	    title = "[the class of object]";
+	    title = find-and-replace-pattern("-", " ", title, 1, length-of-text(title));
+	    title = capitalize-words (title);
+
+	    return-example = structure (
+        	DIALOG-TITLE: title,
+	        DIALOG-TABS: sequence ( 
+        	    structure (
+                	TAB-LABEL: "My Tab 1",
+	                TAB-ATTRIBUTES: sequence(
+                            the symbol CUSTOM-ATTRIBUTE-1,
+                            the symbol CUSTOM-ATTRIBUTE-2,
+                            the symbol custom-int,
+                            the symbol custom-float,
+                            the symbol custom-boolean,
+			    the symbol sum-val)
+	            )
+        	)
+    	    );
+	    return return-example;
+	end 
+
+
+  To build the fields to add to the dialog, the java code will rely on properties it can get for each attributes.
+  These properties are used as well when sending or receiving values to/from Excel or a database. The properties
+  include specifications such as the display label to use, the minimum/maximum/stepping values for numeric values
+  and a procedure to call to get a list of discrete value that are applicable to that attribute (can choose one
+  value from a list). The default implementation can determine default properties for attributes, but users can
+  specify specifc properties for attributes by implementing a method for there class. The method should return a
+  structure containing the properties of the attribute. Here is an example:
+
+	bpr-get-attribute-properties (Object: class my-task , Subtable: symbol, Attribute: symbol, UiClientItem: class 	ui-client-item) = (structure)
+
+	    struct: structure;
+	 begin
+	    	if Attribute = the symbol custom-attribute-2 then begin 
+
+	        struct = structure(
+        	    attribute: attribute,
+	            label: "My Attribute Decription:",                     
+        	    type: the symbol symbol,                
+	            read-only: false,
+        	    development-only: false,                
+	            min: 0,                           
+        	    max: 64, 
+	            precision: 0,
+	            units: "",
+        	    choices: the symbol bprnui-get-a-list);
+
+	    end else if Attribute = the symbol sum-val then begin
+
+	        struct = structure(
+         	   attribute: attribute,
+	            label: "Sum:",                     
+        	    type: the symbol quantity,                
+	            read-only: true,
+        	    development-only: false,                
+	            min: 0,                           
+        	    max: 64, 
+	            precision: 0,
+	            units: "",
+        	    choices: the symbol bprnui-get-a-list);
+
+	    end else begin 
+
+	        struct = call next method;
+
+	    end;
+
+	    return struct;
+	end
+
+	Notice that choices for the attribute custom-attribute-2 defines a procedure to call to get a list
+ 	of discrete values that can be set for this attribute. An example of this method and the required
+	signature:
+
+	bprnui-get-a-list (Itm: class object) = (sequence) 
+	begin
+	    return sequence ( the symbol choice-1, the symbol choice-2, the symbol choice-3 );
+	end
+
+
+	The exact datatype defined as a G2 attribute must be valid for the type defined in the properties,
+	but they don't need to be linked one to one, i.e. the attribute in G2 could be defined without
+	specific datatype (such as a duation) while the type property can be set to the value duration.
+	As a consequence the native ui will know to display it as component to enter durations.
+
+
+	Below are more details of the property strucuture and describes the minimum set of attributes to
+	set:
+
+        returned struct = structure(
+            attribute: the symbol FIXED-COST,        // attribute name as a symbol
+            label: "Fixed Costs:",                   // label to use in dialogs / report / ui
+            type: the symbol private,                // see below for valid list of choices
+            read-only: true,                         // true if it is a metrics, i.e. a read only attribute
+            development-only: false,                 // true if the attribute should only be visible in dev./admin. mode
+            min: 0,                                  // minimum value for quantity values 
+            max: 64,                                 // maximum value for quantity values
+            precision: 0,                            // desired decimal point rounding
+            units: "",				     // units specifications
+            choices: the symbol none                 // procedure name to call to get list of choices. The signature
+                                                       of this procedure should be as follow and return a list of valid
+                                                                    values
+                                                    PROC-NAME (ITM: class your-class) = (sequence) 
+
+
+    	valid values for type field :      PRIVATE, FLOAT, INTEGER, QUANTITY, TEXT, SYMBOL,
+                                    	   TRUTH-VALUE, DURATION, COLOR, FILE, NONE
+
+
+
+
+
+Notes about documentation:
+
+- Need to describe new error handler method for bpr-scenario
+
+- In ReThink Customization Manual describe APIs:
+	- bpr-set-attribute-value()
+	- bpr-update-attributes()
+	- bpr-updated-attributes()
+	- bpr-get-attribute-properties()
+	- bpr-get-subtables()
+	- bpr-get-attributes()
+	- bpr-get-dialog-tabs()
+
+	- bpr-make-db-compatible()
+	- bpr-get-item-for-label()
+	- bpr-get-item-for-label-class-scenario()
+	- bpr-take-cr-out-of-label()
+
+	- bpr-copy-list-of-attributes()
+
+- Describe implementing custom tabs and property API in ReThink customization manual. See above for details.
+
+  --------------------------------------------------------------------
+
+  Pprintz: 10/1/2001 - 10/31/2001
+
+- Modified the batch file to start the server to get around a problem when specifying a kb to load
+  that includes a space.
+
+- In rethink customization documentation describe G2 API to post a message to users
+  (besides sending it to the log book)
+	bpr-message-to-all-users(msg: text, type: text { "WARNING", "ERROR"})
+
+- Enabling KB Change logging for bpr.kb, methods.kb, methods-online.kb, and escor-customiz.kb
+
+- Total work time of async blocks is not accurate.
+
+- Added units information to attribute property API - bpr-get-attribute-properties(). Added a default units
+  field called units to the structure that is empty by default. Updated above notes and examples.
+
+- Added simulation speed attribute to scenario to be able to slow down simulation and give more CPU cycles
+  to other applications. Added it to dialog and simulation (only used in jump mode). In the process, revised
+  the layout of the scenario dialog to be take less space and organize it better.
+
+- Added online mode to scenario and support in engine (based on older uncommented real mode. Renamed and
+  added support in menus and dialogs. Will run a model in wall clock time for workflow applications. In this
+  mode, several cosiderations need to be taken into account:
+	- Except for source block and new delay block all block durations are discarded (procedure not even
+	  called) and work-time and elapse-time of activity is set to 0.
+	- For source blocks and delay blocks the duration specified on the block are used to schedule events
+	  and include delays but in wall clock time if the model is running in online mode.
+	- In jump mode, the blocks and durations work as before, including the delay block where the delay is
+	  in simulation time and not in wall clock time.
+
+- Added new online transactional blocks
+
+- Updated module hierarchy of option modules so that merging menus.kb will load bprui.kb and build
+  the original rethink menus in G2. The old module hierarchy was changed from  
+	  rethink -> customiz -> menus -> methods -> bpr + bprui      to
+	  rethink -> (customiz -> bpr -> etc) + (menus -> bprui -> methods + gms + gxl + goldui + g2uifile + uil) 
+
+- Updated menus.kb and bprui.kb to be compatible with new rethink and G2. By default not loaded into module
+  hierarchy. Option for users to merge them in ; they only need to merge in, menus.kb to get the old menus and
+  dialogs. Provided for compatibility / transition reasons and not supporing all new functionality.
+
+- Reporting in gxl not supported in old ReThink Guide ui. Only via Excel, databases and csv files
+
+- Icon tool feature only supported via old ReThink menus at this point, at least to load images and create the
+  palette. Need to transition it to new ui but will take some time (next release?)
+
+- Added support for browser user mode to browse through models without enabling any changes (menus & dialogs).
+  Models and dialogs can only be reviewed.
+
+- Added support to use external product splash screen and product icon. The installer will extract the correct
+  ones and install them into installdir/bin as splash.jpg and logo.gif. Defaults are in the jar files to ensure
+  we can always start. Defaults do not say anything specific about escor or rethink.
+
+- Create default splash screen for installation that does not say anything about e-SCOR or ReThink. It only tasks
+  about Gensym Business Solutions.
+
+- Online help now within client as an MDI child window. On purpose left capability to open multiple views of
+  same book as a feature to have several pages available simultaneously. 
+
+- Added print support from main menu for online help and workspace views. Also added page setup menu with dialog.
+
+- Added work object tracking feature. Enabled from scnario + selection of animation repeat count + animation color.
+  When enabled and during simulation, the history of blocks that the work object enters/exists is kept on the
+  the work object along with the entry / exit simulation times. A new user menu choice on work objects called
+  "show flow history" will highlight the history of blocks the work object went through. The color of the blocks
+  is toggled every .5 seconds betwwen the flow tracking animation color specified the scenario and the default
+  color of the block. It is repeated the number of times that specified on the scenario (see scenario dialog).
+  It does not show hidden worspaces containing blocks where the work object passed, in order to not clutter the
+  users desktop. Since we have the timing issue we could easily build gant charts/project representations as
+  done in MS Project (and interface with it?).
+
+- Fixed enable/disable of alignment command. They should only be available if more then 2 items are selected and
+  3 for vertical and horizontal menu distribution
+
+- shift+mouse click should not be used in kb configuration on server since the client should use it to perform
+  multiple selections. Attempt to correct kb configurations at startup.
+
+- Added report display in MDI client windows in client. Added menus to client to create views and manage reports
+  (create, delete, update, apply). Create/Delete are named that way for historical reasons. Create inits and
+  builds the tab in Excel + adds data, while delete removes the tab/content in Excel without any effect in Java
+  client. Creating a new view in java implies calling the update action to get an initial set of datapoints.
+
+- Added feature to summary reports to assign any workspace as the root one to report from, instead of starting
+  to report objects from the workspace of the report. This will help in organizing information and storing reports
+  in organizers instead of having them on the workspaces of the model. Menu choices are "Choose Root Workspace" and
+  "Show Root Workspace". Uses the standard choose/select mechanism of ReThink.
+
+- Fixed bug on reports to use the workspaces of bpr-model and bpr-organizers that have been assigned via the
+  relation (choose detail menu choice) instead of only relying on the detail organization (i.e. subworkspace).
+
+- Change of behavior in client. It used to automatically display the metrics toolbar when a simulation started
+  but users requested that they explicitly show it (via menu/toolbar). So removed this automatic behavior to
+  show the metrics when the simulation starts.
+
+- Added best practice URL field to bpr-block. Used in client to display url in web browser when a block with a
+  valid url is selected. It may contain any text relevant to best practice information for the selected block.
+  The url may either use the http or file protocol. The file content can either be html or rtf. If no http:\\
+  or file:\\ protocol is specified but the url is not blanck, it is prepended with "file:\\<installDir>\" so
+  that relative url can be specified. You can also access best practice information via the web. Valid format
+  examples:
+		http://www.gensym.com/myModel/BestPractices/Block52.html	(Web page)
+		file://C:\MyModel\BestPractices\Block52.rtf			(absolute RTF file)
+		file://C:\MyModel\BestPractices\Block52.html			(absolute HTML file)
+		BestPractices\Block52.rtf					(relatif to installation directory)
+
+	Note that the control used to display the content only supports HTML 3.2 and basic RTF functionality.
+	It is recommended that you keep the formatting of the content of the file simple (but may include images)
+
+- Added "Best Practice URL" input field to all ReThink block dialogs. Used to enter best practice url to display in
+  the browser when the block is clicked. For url format see examples above.
+
+- Added sorting capabilities to report display MDI client windows in Java client.
+
+- set version of e-SCOR and ReThink to 4.0r1 to be the same since they will be managed together and be on the same
+  CD
+
+- Updated family files and build scripts to build e-SCOR / ReThink bundle to install both e-SCOR and ReThink
+
+- When doing a build to be promoted to iship, set all file attributes to be readonly. Doing the same when creating
+  the installshield just to make sure
+
+- Checked fonts of items cloned on palette and ensured all use the small font for attribute displays
+
+- Removed ActiveX control instance limit check since it created problems on controls that are not closed properly.
+  Technically raised limit to 8 so code is still active. Relying on trust me license.
+
+- Change "As" to "as" in menu choices (Export, save, etc...)
+
+- Removed Input graph from Java client palette
+
+- Not showing the custom duration procedure in dialogs anymore if user mode is not in developer/admin mode.
+
+- Checked charts for instruments with automatic update and not -> defined on scenario. Worked fine. Update menu choice on
+	chart does not do anything. Update menu choice on remote works.
+
+- Updating and customizing module commands:
+	- new module reimplemented: removed "required modules" argument since behavior was actually not implement in TW2
+		code. Using rethink apis instead of G2 apis to add module -> will be added as dependent of top level module.
+	- delete module: using rethink apis instead of tw2 apis -> module hierarchy will always be updated to reflect change
+		as done in rethink 3.1
+	- rename module: using rethink api instead of tw2 api -> reassigns workspaces and updates module hierarchy as done
+		in rethink 3.1. 
+	- merge module: no changes compared to tw2 implementation
+	- rename, delete, save module: changed module names and font in list + tree to lower case and same font to
+		same used in browser.
+
+
+- Module browser changes:
+	- New module uses same logic then File->Module->New module but will assign the new module as required by the
+		selected module in the tree
+	- Removed delete popup menu choice
+
+- All browers and tables
+	- added hacks in order to not show properties and go to for propriatary items. Disabling the menus would be better
+	  or not even showing the items but this is a much larger project and need application kb level apis instead of
+	  the system procedures.
+	- got a little smarter hand found way to disable popup menus for propriatary items
+
+- Fixed font used in popup on model, workspace, module and class browsers. Using same font as menus.
+
+- Changed old Gensym logo icon in browsers to new one (using kb text as logo)
+
+- Changed old Gensym logo icon in inspect with new one. Using inspect command icon with different sizes instead.
+
+- ReThink reports attribute definition: showing attribute names in report instead of mapped one to nice text to make it 
+  consistent with what users edit in editable part of combobox and via drop down list of combobox.
+
+- Added best practice url to bpr-model and bpr-scenario as done for blocks above.
+
+- Added new feature to task block to copy attributes from the input object to the attributes of newly created output
+  objects. This occurs especially when you have a task that transforms an input object to an output object and you
+  need to maintain a set of attributes in the output object. Before you needed to customize, use the copy attribute
+  block or instruments to do it, which cluttered the model (added blocks for simulation purpose and not relevant to
+  to process model). By default none is copied to maintain compatibility and users can select to copy all or perform
+  specific attributes between the input and output object (=, +, -, /, avg) - operations is identical to the ones
+  offered in bpr-copy-attribute-probe/feed. Updated dialogs for new fields.
+
+  --------------------------------------------------------------------
+
+  Pprintz: 11/12/2001 - 11/21/2001
+
+- Changed spin stepping factor to 5 for animation speed in scenario option tab in protperty dialog
+- Added Empty breakpoint to remove block. Only visible in developer mode
+- Fixed reports generating output for path. Problem was getting the properties of the attributes
+- Fixed display of duration intervals that are less then 1 second in dialogs. Came up when displaying the rule wait
+  interval on branch block
+- Adding total inc/dec values to statistics dialog + renamed some prompt labels in dialog of statistic instrument.
+
+
+e-SCOR Specific changes:
+- Logging of transactions: changed date/time format to use Excel notation instead of G2 notation to make it easier to
+  export and import (per request from customers)
+- added model version, simulation version and simulation run counter to logging files
+
+- new script commands to change resource capacity and efficiency:
+	SET-RESOURCE-CAPACITY(<role-label>, <plant-label>, <capacity>, <time>)
+	SET-RESOURCE-EFFICIENCY(<role-label>, <plant-label>, <efficiency>, <time>)
+
+- Using ESCOR_RETHINK_HOME instead of specific ones for e-SCOR and ReThink. ESCOR_SERVER and RETHINK_SERVER are the
+  same for now but considering merging them as well.
+
+  --------------------------------------------------------------------
+
+  Pprintz: 11/23/2001
+
+- Fixed Ctrl + S and Save meu choices. It was saving all required kbs, which was the internal default setting. So had to
+  overwrite this default setting for this command.
+- Using the time units of reports for the bpr-report-indexed-lookup-duration.
+- change in bpr-report-key-lookup-get-row() if the carrier attribute does not exits in report => code should not abort.
+- made report root workspace relation permanent
+- fixed dialog title of of custom classes when no label exist. It was not displaying the class name, while it should
+  (after replacing - with spaces and using upper case for 1st letter of each word)
+- fixed problem in custom classes where carrier is a symbol instead of a text
+- message probe: added option to indicate the message or not. If it is not indicated, then it goes to the log file and
+  the simulation does not stop. Also added option to refer to object that trigger probe via the Item keyword and
+  the object connected to the input (block, instrument) via the ConnectedItem keyword.
+- converting attributes and subtable in n-dim probe to upper case references to ensure we will fetch it.
+- Note: event report uses time-unit of report to schedule time of event but not using time-unit when setting the attribute,
+  since we don't know its type.
+- fixed bug when using a relation to specify root workspace to report from and updating the report based on simulation time.
+  the list of objects to report from was not correctly evaluated because the wrong workspace was selected.
+
+  --------------------------------------------------------------------
+
+  Pprintz: 11/26/2001
+
+- Checked that pausing and resuming does not loose mode (jump, online, sync)
+- Fixed cloning of items on the online palette (delay, database function, database update, database insert)
+- Added Load-Report-From-Database keyword to scenario manager to load reports from databases. Same syntax then
+  Load-Report keyword. Available in e-SCOR and ReThink.
+- changed font of menu to switch server connections to same as font for other menus
+- forxing a repaint of the workspace when opened - especially when automatically opened automatically at connect time
+- update Server.bat and ReThink.bat to load rethink-online.kb if it exists by default instead of rethink.kb for rethink
+  installations
+- fixed shortcut to rethink summary report in Gensym ReThink program group
+- Renamed "Database Interface Pool:" label in online blocks property dialogs "IO Interface Pool:" to be consistent with
+  other online blocks
+- For online db fucntion, insert, update and query blocks added field to dialog when in developer mode to edit the keyword
+  used in the sql statement to refer to the input object (InputObject by default) as done for the store and retrieve blocks.
+- Fixed problem where the label of bpr-network-interface pool objects did not appear in the model browser.
+- For e-SCOR only, deleting orders in S1-1 detail (done in SX1,1 block) when the order size is not greater than 0. May occur
+  orders are split accross several suppliers
+- Added ReThink users manual to build and added shortcut
+- Revising Start->Program Files->Gensym e-SCOR & ReThink shortcuts
+- Update Start->Programs shortcuts based on feedback. Merged "Gensym ReThink", "Gensym e-SCOR" and "Gensym G2 Classic"
+  all created by ReThink/e-SCOR installation into one group with sub-groups (also avoids the "Gensym G2 Classic" to
+  conflict with a G2 Classic installation (some environment variables still do). Also always either using e-SCOR icon or 
+  ReThink icons and spalsh screens based on installation (i.e. ReThink icon is not used when installing e-SCOR). Changed
+  shortcuts to:
+	- "Start->Programs->Gensym e-SCOR & ReThink"
+		Documentation
+			ReThink
+				(shorcuts to rethink doc)
+			e-SCOR
+				(shorcuts to e-SCOR doc)
+			Bridges
+				(shorcuts to bridges doc)
+			G2
+				(shorcuts to G2 doc)
+			G2 Javalink
+				(shorcuts to javalink doc)
+			Telewindows2 Toolkit
+				(shorcuts to tw2 doc)
+			Utilities
+				(shorcuts to utilities doc)
+		Tutorial Solutions
+			ReThink
+				(Shortcuts to all rethink server kbs and excel files)
+			e-SCOR
+				(Shortcuts to all e-scor server kbs and excel files)
+
+		Client 		(Shortcut to Client batch file)
+		Server 		(Shortcut to Server batch file)
+		ODBC Bridge  	(Shortcut to odbc batch file - Online versions only)
+		TW		(Shortcut to Telewindows - Online versions only)
+
+		ReThink Default Summary Report
+		e-SCOR Default Summary Report
+
+		Readme for e-SCOR
+		Readme for ReThink
+		Readme for G2 Classic (Online versions only)
+
+  --------------------------------------------------------------------
+
+  Pprintz: 11/27/2001
+
+- changed default installation directory to escor_rethink instead of rethink_escor to be consistent
+  with escor/rethink orering in labels, text, etc..
+- ODBC Shortcut fix in family file
+- removed odbc runtime component since we have the full blown one with doc now in family file
+- removed telewindows shortcut in family file to not confuse beginners
+- fixed bug in bpr-replace-text when replacing ' with '' and last character of input string is '
+- fixed duration and object file edit fields in java dialog for store block
+  (empty ==> none/null in G2 and do not show quotes around text)
+- fixed bug in change feed when editing non quantitative value in java property dialogs.
+  no value means null/none in G2
+
+- fixed online block dialogs. For symbol input fields enabling that empty means none in G2. Also for remote
+  sync the auto commit attribute was used for block check boxes instead of one for the aut commit and the
+  other for using the object passing feature.
+- fixed bpr-remote-remote-process source to fire multiple times in batch mode
+
+  --------------------------------------------------------------------
+
+  Pprintz: 11/29/2001
+
+- Fixed issues in online block dialogs. Several fields had to be set so that when its is empty, it should set
+  the value to NONE in G2 (such as for user arguments, or procedure names)
+- Fixed bug in serialization of objects. Instead of serializing all attributes, which included internal system
+  defined structures, it now only contains non rethink user defined attributes.
+- note: spawning of bridges from G2 may contain the whole G2 image as part of the bridge image, therefore increasing
+  its memory requirements. Best is to spawn a bathc file that then spawns the bridges.
+- Problem with bpr-Remote-process-task-block when passing objects by reference
+- e-SCOR: fixed P2 planning bug: awaiting order total was not correctly decremented when not in kitting. Changed
+  logic in D1.10 detail / block decrementing awaiting order total for finished goods delivered to customers and
+  in the P2.2-1 block of S1.4 detail where it is decremented as well but for the parts part of a kit). There still
+  remains a problem when kitting products, especially when when a replenishment level for finished goods has been
+  specified
+- D1.10 retrieve block used to extract order and products to be packages extracts it based on the shipping number
+  only and does not filter based on the product as well (if D1 is for a specific product). Best solution is to
+  have unique shipping numbers for all deliver blocks.
+
+- Added "show detail" user menu choice to bpr-network-connection-pool
+- Added color changes / flashing on bpr-network-connection-pool to indicate busy/done when init, cleanup,
+  add interface and delete an interface. Color of circle with io text is red when busy and sky blue otherwise
+- added flag to bpr-network-connection-pool to enable/diable auto init at reset time of model
+- reformatted/renamed help commands and added reference to rethink help
+- added async db block to access sotred procedures
+- renamed insert block, SQL DML block since it can be used for sql insert, update, delete, etc statements
+- renamed async insert block async sql dml block
+
+
+  --------------------------------------------------------------------
+
+  Pprintz: 12/10/2001 - 12/??/2001
+
+- fixed tooltips for database sql dml and stored procedure block (in Java)
+- changed software version (and gfr-version objects) for all modules and demos to be set for 4.0r1
+  Therefore updated many kbs. Version change in client and server.
+- checked custom palette issue. Still problem to setup in client since should be in administrator
+  mode.
+- added reference to protools dir. in batch file starting server (G2 search path)
+- escor: checked P2/p3 planning for mfg and distributors. Had to restrict no kitted product
+  inventory (min reorder = 0 and replenishment level = 0). Posting message at reset time. Issue
+  is that processes to do kitting are in distributor after order selection so cannot have kitted
+  products in stock
+- for some relevant RPCs from Java to G2 checking if G2 is running or not. If not running posting
+  message and not calling G2, in order to not block client.
+- fixed ReThinkTextFields in java dialogs to set attribute to none for symbol atttributes if text
+  is empty. Previously had to be set to NONE explicitly.
+
+- in server, during gfr startup in bpr module, calling the deactivate API for all scenarios
+- renamed dialog labels for attributes database-input-object-name, database-quote-strin and 
+  database-quote-in-text-string to reflect exact attribute names
+- fixed animation tab on resources. Removed reset procedure name that does not exist for 
+  resources.
+- changed dialog labels for message probe to reflect exact g2 attribute names
+- fixed problem in resource utilization dialog. idle time and not available time were not refering
+  to the correct attributes.
+
+- fixed bold + larger attribute displays of some items when cloned from the palette: update 
+  trigger, rule, yield block, copy attribute probe and copy attribute feed.
+- when creating detail of a block, ensuring that the gfr-uuid of the detail block is different. The
+  gfr APIs were not called before to ensure that the gfr-uui is not a duplicate.
+- setting upgrade flag of all escor roles to true by default
+
+- for escor in bpr-get-product-tree API, always re-evaluating the scenario for the role. The problem
+  is that on some occasions, the scenario passed to the client via this API is not the one of the role,
+  but the current one.
+- in installer family file shortcuts, renamed "Tutorial Solutions" -> "Examples" since some of them
+  are not tutorials but examples, especially for ReThink
+- in installer family file added shortcut to chapter 3 example: "Examples->ReThink->Chapter3 Model"
+- in installer family file: shortcut to odbc bridge will start it at port 22042 instead of the default
+  of 22041 to avoid a conflict with Javalink.
+- added new rethink customization example kb. Will be part of build
+
+  --------------------------------------------------------------------
+
+  Pprintz: 1/4/2002
+
+- fixed unique shipping number in role if multiple category blocks are used. They were not unique since
+  they were set in each D1-3 category based on the unique ID of an instrument. This created a problem if
+  multiple categories are used since the shipping numbers could be identical and all orders for all
+  categories were stored in the same pool. Then when retrieving them in the D1.10, etc from the pool, the
+  wrong items could be retrieved for orders that were split but shipped when complete. Changed the procedure
+  name of the feed to a custom procedure that get the shipping numbers counter from the role instead of the
+  unique id on the feed.
+ - changed default zooming specification on server in bpr-wksp-location-subtable to 0.5. Also updated client
+  so that when displaying a workspace that was already displayed once, the view is shrink wrapped with the
+  default zooming factor defined in the server subtable.
+- ensuring that build does not include uilroot.kb and sys-mod.kb in protools directory.
+- fixed issue with initial value in statistical probe. At reset time, the code was not correctly referring to
+  the probe to conclude the value.
+
+  --------------------------------------------------------------------
+
+  Pprintz: 2/24/2002
+
+- e-SCOR transaction logging. Replaced Role_name with label attribute. Label is the one changed by users.
+- ReThink batch block in interval mode: fixed dialog when changing the days the interval mode is valid. Also
+  added two rules in G2 to change the duration procedure of the block when the mode changes. For interval mode
+  need to use the bpr-batch-interval-duration procedure instead. From issue HQ-4199385 -> bug HQ-4214269.
+- TW2 Shrink wrapping maximized workspace view disables moving and resizing it. See HQ-4214265. Added patch
+  for e-SCOR in client.
+
+  --------------------------------------------------------------------
+
+  Pprintz: 3/8/2002
+
+- e-SCOR and ReThink Release 4.0r1. Tagged and branched CVS
+
+  --------------------------------------------------------------------
+
+  Pprintz: 3/9/2002 and beyond -> collecting issues/bugs
+
+- For debugging purposes enhanced logging to include the label of logging block. Updated the template
+  to specify meaningfull labels on the logging blocks. Added logging blocks in M1 to log when a
+  manufacturing batch starts and ends. Done as a research prototype, but needs to be added to product.
+  Finally decided to add it as a feature for next release since it helps a lot to understand/debug mfg
+  roles. Suggestion HQ-4275553. Tested by looking at log files adn trying to understand models that
+  mw developed. Changes to e-SCOR template in M1.1 and M1.3 and requires users to upgrade model to get
+  fix.
+
+
+- Started to look at HQ-4233884:
+	- escor-calculate-financial-assets() -> calculation of payment period divides
+	  the financial payment period by 86400 which is not correct since it is 
+	  already in united of days and not seconds?
+	- Checked cash flow calculation and results and seem fine to me.
+	- still need to spent more time
+
+  --------------------------------------------------------------------
+
+  Pprintz: 4/30/2002 Bug fixes
+
+- Removed all references to evaluations, i.e. that would limit functional limitation. This should
+  have not been enabled since ReThink/e-SCOR 4.0r1 anyway since the G2 ok files did not contain the
+  key to switch the application to evaluation mode. Done this since we decided to not limit the
+  functionality anymore (Only G2 license expires at a certain date) and therefore do not need to
+  take up extra cycles to test for limited functionality. Time limited functioanlity used for rental
+  versions as well. Tested that code did not break by running e-SCOR and ReThink models.
+- Changed the priority of the the rule "whenever any bpr-quantitative-parameter receives p receives
+  a value then start bpr-send-to-remote(p)" to 2 instead of 6. The problem was that ReTink may have
+  lost data if very busy, i.e. the rule and procedure were at the same priority and the procedures
+  (rethink engined) generated more data points than the rule could transfer to the bpr-remote.
+  To fix bug HQ-4277291.
+- Immediate payment not working fix. For attribute tables of ES block (In template), the financial
+  payment terms and the financial payment period were not correctly copied from the role to the level
+  2 ES block. The dialog attribute structure, the target subtable and attribute names structures needed
+  entries on the templated needed to copy these two values upon change. Changes to e-SCOR template and
+  requires users to upgrade model to get fix. HQ-4277298. Tested with model setup as immediate payment
+  and ensured that invoice is sent at same time as order in Sc block
+
+  --------------------------------------------------------------------
+
+  Pprintz: 5/16/2002 Bug + enhancements fixes
+
+- Fixed instrument connection deletion when deleting connections from TW2. Problem was in bprnui-delete-item.
+  The problem was that for bpr-instruments it used the G2 syntax to delete an item and remove the connection
+  stubs. HQ-4288690. Tested in Java client after disconnecting instruments to ensure stub stays.
+
+- Added menu choice for instruments (one for feeds and one for probes) to create instrument connections if
+  none exists. HQ-4288685. Tested by deleting stubs on instruments, ensuring menu choice appears and used it
+  to make sure the stub is created.
+
+- Bug HQ-4303257: Product names not correctly set on all category blocks. The problem was really that after 
+  the java code updated the list of choices (product names), it selected the current one within the list in
+  the ui control but the proxy had the first one in the list selected instead of the last one selected in the
+  server. If the user interacted with the control the proxy was set correctly, but if the user only opened
+  the dialog and then pressed apply or ok without changes, the first one in the list was set by the proxy
+  while visually the user expected the last selected to be selected.
+
+  --------------------------------------------------------------------
+
+  Pprintz: 5/28/2002 Support for change orders for Intel project.
+
+- Added change order size and change order period on Sc block. Added source block in Sc.1 detail to generate 
+  ds_customer_change_order objects. Same and // to normal order creation
+- ds_customer_change_order is a subclass of ds_customer_order. Added order-tag attribute to ds_customer_order
+  as a reference of an order that can be imported from an external file. Updated escor-sc-demand-reprot to 
+  include that extra attribute. Done in _escor-init-sc-demand-report used to initialize the attributes.
+  Added _initial-order-size attribute to ds_customer_change_order keep track of original order size before
+  applying the change order. Also added _order-size-change to track delta change only.
+- Sc.1-1 should copy the order-tag attribute to the order from the demand report, otherwise it is left to ""
+- Sc.1-1.1 is new but based on Sc.1-1. Needs to calculate the original order size based on existing orders
+  and determine the order change and set the work object.
+- Sc also has a place holder for the last order tag set on orders (uuid by default but can be overwritten from
+  report). Last order tag used when generating a change order to apply the change to the last order.
+- Sc.1-3, Sc1.1-5 updated to manage metrics based on change orders
+- ES.9-1 manages new change_order_sent metrics on ES block to count the number of change orders sent
+- ED.1-1 manages new change_order_received metrics on ED blocks to count the number of change orders received
+- Dx.2-1 manages new change_order_received metrics on D1 blocks to count the number of changes orders received
+- Dx.1.3-1 updates contract usages (total-amount) based on change orders, updates quantity to deliver on product
+  composite based on change order
+- DX.1.3-2 updates orders in pool with same order-tag, deletes orders if order size is 0 and also updates the 
+  order lead time based on content of the change order.
+
+  --------------------------------------------------------------------
+
+  Pprintz: 5/28/2002 Bug fixes
+
+- path connected between 2 junction blocks or between a bpr-connector and a junction block did not reset. The
+  problem was that reset procedure in the engine only called the reset procedures of the path connected to
+  blocks and not any other. Added code to call the reset procedure of path that are connected to the input
+  of junction-blocks-for-bpr-path. Need to open a bug and include work around via a custom procedure. Bug
+  HQ-4302657. Tested with original model supplied with bug: running model, looking at metrics of path between
+  junction boxes, reseting model and checking metrics again to ensure it has been reset to zero. Bug must have
+  been in ReThink for quite some time.
+
+- fixed bug hq-4277265 -> wrong gfr version reported by gfr api. Switch to custom implementation by scanning
+  over all gfr version objects to extract the information (in wrapper api that returned module information, so
+  pretty transparent). Also sorted sequence of structure of module information based on module names to make it
+  easier to read in the about dialog (where used). Tested by looking at the configuration in the Abou dialog
+  in the Java client and ensured it is showing the correct version instead of 4.0r1 Alpha versions which was
+  the case before. Changed manually the version on random gfr-version-information objects and redisplayed the
+  About dialog in the client to make sure the change is reflected.
+
+- changed version of escor and rethink modules to V4.0r2 alpha
+
+  --------------------------------------------------------------------
+
+  Pprintz: 6/16/2002 Support for change orders
+
+- Cloning of roles and category blocks. Tested for category blocks not for roles yet. Issue was that relations,
+  ids to pools and copy of attributes had to work and clone it from the original source instead of the template.
+  Code was not triggering any change anyway since the gfr-copy for ds_element only fired if the source object
+  was on a palette (gfr-window near it). So this was the start of the change. Had to change several procedures
+  to pass the source object to clone from instead of searching the palette object in the template at a later
+  stage in the code.
+
+- Bug HQ-4302709: ensured arrival graph objects can be cloned again from palette (adding gfr palette behavior
+  object to arrival graph that was on palette). This will ensure that they can be cloned in the server and
+  visible + clonable in client. The only issue and was the reason that it was not made visible and clonable
+  before is that moving the points of the curves in the client is not very easy. MOuse interaction in TW2 is
+  not going that well. But due seeveral user requests/complains ensured the arrival graph is clonable.
+
+
+- Still need to look at and other notes:
+	- cash to cash calculation [ escor-calculate-financial-assets() ]
+	- Product composite input reports: I think there is a bug.  If I create the report, 
+	  do a change to the Replenishment Threshold of one of the product composites, then
+ 	  Apply the change, the value in the spreadsheet gets reset to the original value from 
+	  the model.  It's as if the Apply is behaving like an Update.  Should the Product 
+	  Composite Input Report work the same as the Level 2 Input Report?
+	- T2 dependent issues:
+		- Bug HQ-4177871: Objects are transferred to 0,0 before being
+		  transferred to the target location
+		- Issue HQ-4178321/Issue HQ-4214265/Bug HQ-3973026: Moving
+		  WorkspaceView after maximize and shrink wrap not working
+		- Bug HQ-4219294: double-clicking on folder in file chooser
+		  gives a file not found error
+		- Bug HQ-3943189: When zooming out a ScalableWorkspaceView,
+		  text can become truncated
+		- Issue HQ-4222943: Client Message Browser Template Configure Error
+		- HQ-4245349
+		- escor-demos acme with PC report does not work
+		- Issue HQ-4257603: Changing Image filename in icon background does
+		  not update view in T2
+		- Bug HQ-4276330: changes to images in icons do not get updated in Telewindows 2
+	- P2.1 has a 2 second delay after the source block that should be removed
+	- M1 and D1 order selection needs to revised and collapsed. Has implications
+	  with partial orders that cannot be delivered -> the order is split and
+	  attempted to be returned to the pool but the time it takes to return to
+	  the pool is longer (in steps within the same second) then the re-trigger
+	  of the order selection therefore the next order maybe processed with the
+	  same second if a build cycle finishes just a step before the original
+	  order that got split is returned into the pool.
+	- report trigger update bug/workaround
+	- logging cut when simulation is paused : HQ-4275545
+	- should think of removing auto shrink wrap after displaying a workspace view. Gets rid of
+	  the gray warea and looks much more professional but some users get annoyed especially with
+	  small workspaces. As they add objects, it attempts to shrink wrap again.
+	- flag on output reports to always collect objects to report for each update? Maybe relevant
+	  for some reports such as when reporting information in pools since the number of objects
+	  chnages dynamically (some disapeared or others got added).
+	- On instrument time stamo feed to store time in excel time format
+	- On instrument delta time probe add options to store delta time to in excel time format
+
+  --------------------------------------------------------------------
+
+  Pprintz: 6/25/2002 Temporal constraints 
+
+- bpr-schedule-event() needs to call bpr-remove-events() to remove events if they were
+already scheduled, especially in different buckets. This occurs with temporal constriants
+for example. FIrst observed with HQ-4317417.kb after finding out that the start event of
+resources with temporal constraints was firing twice. The reason is that after the event
+got reevaluated due to the temporal constraints, the start event was twice in the event
+queue in the scenario. See Bug HQ-4319988.
+
+
+  --------------------------------------------------------------------
+
+  Pprintz: 7/13-15/2002 Misc
+
+- G2 6.2 introduced line patterns for connections... needed to copy it in bpr-copy-path() from source
+  to destination path (used when path is deleted to create stubs).
+- in bpr-delete-path(): deleting junction block at the output of a path if the connected block is of
+  class ds_element (e-SCOR block). Necessary since we are going to use the restriction on SCOR blocks
+  so that the stubs cannot be removed. But if one disconnects a role or deletes a path, the stub wit
+  a junction block is created which can then be deleted (not what we want).
+- For ds_level_1_elements (roles) and ds_level_2_elements (scor category blocks) added following item
+  configuration (now supported in G2/T2) to avoid that users can delete stubs and loose the relations
+  to the bpr-connector on the detail: "declare properties of any ds_level_1_element as follows : not 
+  manual-connections"
+- Added connection line pattern to path dialogs (StandardPathGeneralPanel.java)... but well the display
+  of line patterns is not supported in Telewindows2. So commenting out code in dialog!
+- Update/finilized support for email block and email library
+- Create 2 new io pools: one for db and for email. Configuring a single one for all cases started to be
+  too complex (i.e. too many attributes that are not relevant). Also helps to filter pools to list in
+  blocks to ease the pain for users.
+- Reloaded all rethink and escor examples, updated revision number and auto resolved conflicts + saved.
+  Ran all rethink online database examples.
+
+  --------------------------------------------------------------------
+
+  Pprintz: 7/13-18/2002
+
+- When a new block is dropped close to an existing one, ReThink swaps the old one with the new one. This
+  is a great feature except when by mistake a user drags a block in the model to another place and by
+  mistake drops it close another block: blocks were swapped as well, messing up the model. This occured
+  several times during e-SCOR classes where people moved blocks around. The fix that I added in
+  bpr-block:bpr-swap-objects is to check if any other block is connected to the new block. If so, just
+  exit and do not perform a swap. This should help to get around the frustration new users ran into.
+
+  --------------------------------------------------------------------
+
+  Pprintz: 7/23/2002
+
+- Enhanced ReThinkCustomPanel.java to support editing of g2 lists that contain multiple selected choices.
+  If the extended properties for this attribute (retrieved from bpr-get-attribute-properties) specifies
+  that the type is LIST, the a panel with multiple check boxes is displayed. The entries of the panel
+  are collected by calling the procedure specified in the choices attribute of these extended attributes.
+  A frame is added around the list of choices and displays the label of the attribute.  Also the NB-COLUMNS
+  of the extended attribute specifies the number of columns to use when aligning the check boxes. It can
+  be used to edit either bpr-permament-symbol-lists or bpr-permanent-quantity-lists.
+
+
+  --------------------------------------------------------------------
+
+  Pprintz: 7/24/2002
+
+- HQ-4340823: added attribute to bpr-resource-manager to be able to specify a procedure that is called before
+  the resources are allocated so that the number of resources that are allocated can be changed dynamically.
+  For example the work object may specify the number of resources required to perform a task, instead of 
+  being fixed at design time. This procedure is called by bpr-request-resources() (updated call) just before
+  the resources are allocated (only called if the name is defined and a procedure with that name exists).
+  This user defined procedure can then do any calculations and update the number of required resources (the
+  utilization attribute on the resource manager). The signature of this user defined procedure is:
+  bpr-update-resource-utilization(Block: class bpr-block, Manager: class bpr-resource-manager, Activity: class bpr-activity)
+  For and example, see rethink-variable-resource-utilization-demo.kb.
+  Was a last minute request from Eli Lilly. They needed a solution to be able to model their processes. They
+  have been a long time ReThink user, use it for operational activities and any customization did not cut it.
+
+
+  --------------------------------------------------------------------
+
+  Pprintz: 7/29/2002
+
+- Description of changes: bpr-evaluate-query() required that the block had an
+  attribute called database-input-object-name, which did not exist for the
+  email block. Therefore the call to bpr-evaluate-query() in
+  BPR-EMAIL-SEND::BPR-ASYNC-START-METHOD failed. To solve the problem, we could
+  have added the attribute to the email block, but the naming convention was not very
+  consistent. Therefore we added a more generic attribute to the email block and 
+  created the procedure called bpr-evaluate-query-for-object-keyword(), which
+  takes the attribute name of the input object that is part of the query as an
+  argument. We also recasted bpr-evaluate-query() to call
+  bpr-evaluate-query-for-object-keyword() ot ease the maintenance in the long term.
+
+  --------------------------------------------------------------------
+
+  Pprintz: 9/24/2002
+
+- Fixed two regression bugs in kbs. Enabling following rule in bpr.kb so that instruments attached to
+  quantitative parameters get fired (Rule existed but was disabled ; it has negative impact on e-SCOR
+  performance since lots of internal attributes on blocks are implemented as parameters and therefore
+  the rule fires a lot but creates a regression problem - see issue HQ-4398939.kb)
+
+"whenever any quantitative-parameter Parameter receives a value and when
+there exists a bpr-sample-probe Probe connected to Parameter such that (the workspace Ws of Probe exists and the bpr-scenario that is the-bpr-scenario-of-workspace Ws exists) then
+start bpr-evaluate-instrument(Probe, Parameter)"
+
+- Fixed stop method of bpr-sample-probe. When fetching a value from a parameter, the code aborted. Old code
+
+        if item is a quantitative-parameter then begin 
+            sample-probe = item;
+
+  New code:
+
+        if item is a quantitative-parameter then begin
+            sample-value = item;
+  
+
+  --------------------------------------------------------------------
+
+  Pprintz: 11/14/2002
+
+- HQ-4387281: bug fix from Poshika. In bpr-email-send() when calling bpr-db-parse-query() passing empty string
+  as the bind variable prefix and in bpr-db-parse-query() added a space when defining pattern variable between
+  [bind-variable-prefix] and <g2symbol>*". Otherwise it would loop forever if the query string included a space
+  between the : and the bind variable. Tested different combinations with Poshika to ensure we did not break
+  pattern if space or no space is included in query string.
+
+- Fixed bug HQ-4445219: Custom text enumeration attribute in property dialogs does not apply. For text attribute,
+  the combobox ui control needed to be told to add quotes around the edited field before sending it to the server
+  for text attributes. They are removed for display purpose. The change is in method addAttribute() in file 
+  ReThinkCustomPanel.java and at line 200-201. Added the following lines:
+	if (type.equals(TYPE_TEXT))
+        	comboBoxField.setAddQuotesForMapping(true);
+
+- Fixed bug HQ-4445225: Wrong display of multiple custom duration attribute in property dialog. When displaying mulltiple
+  custom duration attributes on the same panel, the values did not display correctly. Displaying them individually
+  worked fine. The bug was related to the fact a static IntervalFieldType was used that was shared between the
+  different duration displays, therefore each influencing the other. The fix in method addAttribute() in file 
+  ReThinkCustomPanel.java and at line 249 consisted in creating on IntervalFieldType per attribute/ui control. Also
+  had to remove the initial static definition at the beginning of the file.
+
+- Above bugs created for issue HQ-4434449
+
+  --------------------------------------------------------------------
+
+  Pprintz: 4/4/2003
+
+- Started a while back to add SCOR 5.0 coverage. Has many implications due to return processes
+  which means that products flow the same way orders due, product structures need to be more
+  complex since we have multiple recepies to fullfill orders or build products. Also looking
+  at adding a better object model/structure to e-SCOR with simpler implementation to better
+  balance customer modeling/configuration versus implementation we provide that is required.
+  If we can better separate the two, maintenance in the field for existing models will be much
+  easier since currently to fix some code we have to touch customer's models. Therefore we
+  should use the model to configurare/add specification for the execution model, but any
+  implementation related to execution should be maintained via code/rules to ease maintenance
+  and bug fixes. Example of current issues where bug fixes are required in model and if 
+  customer does not upgrade he will run into problems (adding/remvoing attributes from objects
+  is automatically taken care by G2):
+	- value propagation from categories to level 4 blocks is done via specifications
+ 	  on blocks instead of G2 rules or methods
+	- metrics update from level 4 to higher levels
+- remove role verification process since it is not based on a formal specification
+  and not flexible enough (cannot specify suppliers for products in complex models)
+- Introduce contracts that specify the forecast, demand and return policies to be 
+  used in execution. Multiple contracts for same product can be specified at the same
+  time. For each contract a potential list of suppliers is specified.
+- revising classes and attribute names to be much more explicit (name), not reuse
+  attributes for multiple purpose and type them strongly if possible
+- Add relation between work objects (orders, products, financial, etc) and product
+  specification and contract specification to improve performance at runtime
+- Add relation between orders sent to suppliers (pending orders) and buyer role. The
+  goal is to be able to keep track of pending orders and take them into account when
+  calculating performance metrics. Otherwise (in e-SCOR < V4.1) the metrics is only
+  updated when there is flow and will not reflect the correct pictures for missing
+  or late orders. The worst is that when there is no flow the metrics is good but
+  should be bad!!! Also usign the metrics update interval specified on the role to
+  refresh these performance metrics based on a schedule to ensure they are updated
+  even if no flow occurs. Will also update them as dialogs or reports are updated.
+- Logging will go to a report, and the report will then distribute the information
+  to clients (Java, G2, Excel, csv files, database, etc) using standard techniques
+  for all reports. Optionally may cache information in G2 and dump it at the end
+  of the simulation.
+- Instead of using regular source blocks for entry points of orders, contract requests
+  using a remote io input style with custom events in scheduler. This will help to
+  reuse the same entry block with multiple events scheduled at different times (multiple
+  products for example with different schedule) and not blow up the modeling as the
+  entry types and frequency scales up (for example multiple contracts with different
+  frequencies or multiple orders/change orders for multiple products). The custom
+  events will schedule the timing per functional area and will rely on the minimal
+  remote io source type input blocks to insert the work objects into the model.
+- introducing variables costs in addition to fixed costs.
+- Using fixed durations for all blocks that do not have a duration to avoid generating random
+  numbers and associated overhead.
+- Using as much as possible (and where it makes sense) escor-metrics structures instead of
+  simple metrics values. This will gives more datapoints to understand dynamism of model
+  and keep histories of transactions if required.
+- Lookup mechanism to create work objects:
+	- product specification specifies real class for
+		- escor-product-composite
+	- product-composite specifies real class for
+		- escor-product-ordered
+	- contract-specification specifies rela class for
+		- escor-customer-order
+		- escor-internal-order
+		- escor-replenishment-order
+		- escor-invoice
+		- escor-payment
+		- escor-purchase-request
+		- escor-purchase-response
+		- escor-purchase-award=======
+  
+  --------------------------------------------------------------------
+  ppaliwal: 6/6/2003
+
+- Added color coding feature for messages in the message browser code, based on priority.Files modified are
+  JTreeTable.java, Messages.properties.
+
+- Created an instrument to create messages when simulation model is running. The existing bpr-messge-probe was
+  extended by adding additional attributes to it, relevant to construct a message instance within the model.Files
+  modified are SortTableModel.java, ScenarioTabbedPane.java, MsgProbeInstrumentPanel.java,MsgProbeDialog.java,
+  Messge.properties.
+
+- The message browser specification requires that when multiple message browser tabs are created, each tab must
+  contain data belonging to one queue only. To fix this, the user input dialog has been changed, such that now user
+  can select only one queue from the combo box. Also the updation logic for the user interface has been modified
+  to reflect these changes, such that the browser tab gets updated with its respective messages.Files modified are
+  UserInputDialog.java, ScenarioTabbedPane.java, MessageBrowserPane.java, G2Data.java, MetricSystemModel.java
+
+- At times index returned by the sub events was not correct, causing any action(like deletion) performed on them 
+  to fail. Fixed this bug, now sub events can be deleted successfully. File modified is MessageBrowserPane.java
+
+- When multiple browser tabs are loaded, with every tab having different queue data then at times the deltion was
+  failing in the browser view. Fixed this bug, file modified G2Data.java
+
+- Upon disconnect of client from server, not all the browser tabs were getting deleted, fixed this bug.Now after a 
+  disconnect all the browser tabs get cleaned up. File modified is ScenarioTabbedPane.java
+
+  ----------------------------------------------------------------------
+
+  ppaliwal: 6/6/2003
+
+- Features have been added to charting functionality. When a new chart tab is created in the report view, and update button
+  is clicked to request the data, now the chart doesn't get plotted with all the rows and columns selected. Instead the 
+  view remains the same, user has to clieck select columns and select rows buttons on the chart toolbar and then select
+  the values from the check box panels to plot the chart. Files modified ReportDocument.java, JFCCOlumnSample.java,
+  RowSelectionPanel.java, SelectionPanel.java
+
+- Added the feature os being able to save chart configuration to the server, so that when client is reloaded or if a new view 
+  of report is created, user can still see the saved chart tabs. All the user has to do to save the chart is, create a chart/
+  charts tabs , choose the colums and rows from check box panels, choose the chart type and then close the report view.Closing
+  the report view ensures that chart is saved at the server.Its essential to delete all the chart tabs if the user intends to 
+  change the update mode of the report to some other value, say from simulation time to manual. Files modified are ReportDocument.java, 
+  JFCCOlumnSample.java,RowSelectionPanel.java, SelectionPanel.java
+
+- According to the charting specifications, the charts must update only on user request, irrespective of how the report view
+  is getting updated. To update the chart with fresh current data, click the update button. File modified is ReportDocument.java
+
+- Fixed the bug for check box panels,where the state of the check boxes was not getting saved after closing the check box panel.This bug
+  appeared only when split panes were added to the check box panels(check box panel is launched when select columns and 
+  select rows button is slected on the chart toolbar).Files modified ReportDocument.java, JFCCOlumnSample.java,
+  RowSelectionPanel.java, SelectionPanel.java
+
+- The chart key icon on the chart tool bar displays the color keys so that charts can be interpreted by the user. There was no row
+  label associated with the chart key before. The current change makes sure that the color coded chart keys have row labesl associated
+  with them so that user can understand what color stands for what row data, specially in 2D charts. Also the chart key is now added in
+  a split pane. Files modified are JFCCOlumnSample.java,RowSelectionPanel.java, SelectionPanel.java
+
+- Fixed the following bug -The chart tab has a button, select columns, if a selection of columns is made, such that all columns are not visible,
+  then updates to the chart can be made upon user request, but when select rows button is hit, and user wants to select limited no of rows, then 
+  though the display changes correctly, but if the data is also changing in the report and if an update request is made to update the chart, then
+  that doesn’t do the desired action. After that select columns and select rows, both are broken.Files modified are JFCColumnSample.java
+
+- Fixed the bug -When some columns are selected for the display on the chart and report data is continuously changing then if update request is 
+  made multiple times, then if we try to change the chart type using the combo box then certain chart types don’t display. File modified is
+  JFCColumnSample.java
+
+- For time series reports, the chart doesn't need to show the check box panel which shows upon clicking select columns 
+  button. The reason is that for time series data, the check box panel will contain time stamps and can be in large number.
+  Thus for time series reports, select columns button is disabled. File Modified is JFCColumnSample.java
+  
+  ---------------------------------------------------------------------------
+  
+  ppaliwal : 6/19/2006
+  
+- Comitted changes to escor-customiz ( 1.81), integrated returns functionality to the module
+- Added attributes to escor-product-composite and modified the dialogs to show returns related tabs
+- Made palette changes to incorporate return blocks
+- Added references to the resource file for showing labels for palette items
+
+ -----------------------------------------------------------------------------
+
+   ppaliwal : 6/19/2006
+  
+- Comitted changes to escor-customizq ( 1.26), integrated returns examples to the module
+- Upgraded the return examples to reflect most recent palette changes
+
+ -----------------------------------------------------------------------------
+
