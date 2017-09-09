@@ -1,0 +1,61 @@
+        4-in-1 READ.ME file
+See new info at "03/12/92 Release 2.1:"
+
+To install the source and make files for the 4demo
+program, use the xcopy command to copy each of the 
+three disks labeled "4-in-1" to your hard disk.  For 
+example, if the source drive is a: and the destination 
+drive is c:, then type
+
+    xcopy a: c: /s /e /v
+
+for each disk.
+
+03/12/92 Release 2.1:
+There are two makefiles per processor in each 
+sub-directory.  IBM PC makefiles end with the extension 
+".PC", and Unix makefiles are simply named "makefile".  
+The makefile for testing the Speedo stand-alone processor 
+is in the speedo sub-directory and is called "mknsamp.pc", 
+while the other makefiles are named "makefile.pc".  The 
+PC makefiles have ".lnk" files containing the link list to 
+build each program.
+
+The pcl5 sub-directory has no makefiles and no test 
+program to build.  To test the HP Type Reader 
+(PCL5) code, build and test the 4demo 
+program or one of the other programs in the demo 
+package (in the 4demo sub-directory).
+
+Currently, there is a "makeall.pc" makefile in the 4demo
+sub-directory for building all the programs in the demo
+package.  There is no corresponding Unix makefile.  We 
+intend to provide a comprehensive suite of demo programs 
+that can be executed on a common platform.  We chose the 
+IBM PC because of its popularity among our development 
+partners, and we will make an effort to port these packages 
+to more device-independent configurations.  As these 
+packages are ported to Unix, we will make them available.
+
+This is the current directory structure:
+
+                  4in1
+                   |
+    ---------------------------------
+    |      |     |    |     |       |
+  4demo  speedo  tt type1  pcl5  fitutil
+
+4demo is the main sub-directory for building the demo 
+programs. Include files are spread among all the 
+sub-directories. In the 4demo sub-directory, some sample 
+font files have been provided for testing the various 
+processors.  These are:
+
+        0003A___.PFB    (Type 1 font)
+        0003A___.AFM   (metrics file for 0003A.PFB)
+        FONT0003.SPD   (Speedo font file)
+        AA0003.TDF       (metrics file for FONT0003.SPD)
+        TT0003M_.TTF   (TrueType font)
+        AA000RKI.SFS    (unhinted PCLeo font)
+        AA000RKI.TFM   (metrics file for AA000RKI.SFS)
+
