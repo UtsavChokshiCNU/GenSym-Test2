@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="02/06/02 18:38:40">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Configuring Make Category Parameters: Base Manufacturer Role</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="level2t4.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="level2t6.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+      <div align="center"><b>e-SCOR Tutorials</b></div>
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/e-SCOR/OnlineHelpFiles/Tutorials/html/level2tu.htm">  
+        Configuring Level 2 SCOR: Simplest Model  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Configuring Make Category Parameters: Base Manufacturer Role
+</h2>
+<p>The Make category is responsible for creating batches from build orders, selecting build orders for manufacture, and manufacturing delivery products. Therefore, you configure timing, batch, and build-selection parameters related to manufacturing delivery products.<a name="125660"></a></p>
+<p>For a Manufacturer role, you configure the <b><a href="../../UsersGuide/html/level230.htm#436958">Production Material Cycle Time</a></b> and the <a href="../../UsersGuide/html/level230.htm#437013">Production Material Handling</a> cost of the Make category to determine the time from when the role receives components to when it starts manufacturing batches and the cost of handling those components. However, because a Base Manufacturer role does not source components, you do not configure these parameters for this role.<a name="127001"></a></p>
+<p>Base Manufacturer and Manufacturer roles use make planning to determine the size of each build order and when to start manufacturing batches, based on orders for its delivery products. Therefore, you configure planning parameters in the P3: Plan Make category and in the delivery products for the role. <a name="245777"></a></p>
+<p>Normally, the Order Type of the source and delivery product of a role determines the planning strategy the role uses to source, make, and deliver its products-stock, make-to-order, or engineer-to-order. However, because a Base Manufacturer role has no upstream suppliers, you configure the <a href="../../UsersGuide/html/level230.htm#514378">Order Type</a> for the Mb: Make Base Manufacturer category to determine how the role sources its components. <a name="128976"></a></p>
+<p>By default, a Base Manufacturer uses a stock planning strategy to determine build order size, based on orders for its delivery products. If the role uses an engineer-to-order planning strategy, you configure additional parameters for the Base Manufacturer role related to engineering time and costs. <a name="229124"></a></p>
+<p>A Base Manufacturer role always chooses build orders based on a first-in first-out (FIFO) selection criteria. A Manufacturer role that makes stock products, on the other hand, can choose build orders, based on a set of build-selection criteria that you configure in the Make category. <a name="129040"></a></p>
+<p>Configure the Mb category so that it:<a name="228991"></a></p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Manufactures stock products, the default.<a name="229016"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Takes 1 day, on average, from when the role receives a build order to when it begins manufacturing batches.<a name="229584"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Takes 10 hours, on average, to manufacture a batch of product families.<a name="229595"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Takes 1 hour, on average, to place the finished products in inventory.<a name="229609"></a></td>  </tr></table><h4 >	 To configure Make category parameters for the Base Manufacturer role:<a name="129838"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td valign="top" width="20"><img src="images/arrow1.gif"></td>
+    <td valign="top" width="580">Configure these parameters for the Mb: Make Base Manufacturer category on the Base Manufacturer role detail:<a name="129839"></a></td>
+  </tr>
+</table><p >
+  <a name="282748"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="289300"><div >Tab</a></div></th>
+    <th><a name="289302"><div >Group/Parameter</a></div></th>
+    <th><a name="289304"><div >Value</a></div></th>
+  </tr>
+  <tr>
+    <td><p>Manufacturer<a name="289306"></a></p>
+</td>
+    <td><p><a href="../../UsersGuide/html/level230.htm#514378">Order Type</a><a name="289309"></a></p>
+</td>
+    <td><p><code>stock (default)</code><a name="289311"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Build<a name="289313"></a></p>
+</td>
+    <td><p><a href="../../UsersGuide/html/level230.htm#436943">Order Release to Build Time<br></a>   Mode Type<br>   Min<br>   Mode<br>   Max<a name="289316"></a></p>
+</td>
+    <td><p><code><br>Random-Triangular<br>12 hours<br>1 day<br>1.5 days</code><a name="289318"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Build<a name="289320"></a></p>
+</td>
+    <td><p><b><a href="../../UsersGuide/html/level230.htm#436973">Total Build Time<br></a></b>   Mode Type<br>   Min<br>   Mode<br>   Max<a name="289323"></a></p>
+</td>
+    <td><p><code><br>Random-Triangular<br>  9 hours<br>10 hours<br>11 hours</code><a name="289325"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Build<a name="289327"></a></p>
+</td>
+    <td><p><a href="../../UsersGuide/html/level230.htm#436987">Move to Delivery<br></a>   Mode Type<br>   Min<br>   Mode<br>   Max<a name="289330"></a></p>
+</td>
+    <td><p><code><br>Random-Triangular<br>12 hours<br>1 day<br>1.5 days</code><a name="306598"></a></p>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<p><b>Related help topics:</b><a name="314604"></a></p>
+<p><a href="../../UsersGuide/html/level221.htm#514235">Configuring the Make Category</a><a name="314608"></a></p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="level2t4.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="level2t6.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
