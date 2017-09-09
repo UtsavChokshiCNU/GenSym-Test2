@@ -1,0 +1,909 @@
+= G2 Language Reference Card
+Gensym Corporation
+:revnumber: Gensym.2015.20
+:revdate: August 2017
+:pagenums:
+:doctype: book
+:experimental:
+:toc: preamble
+:toclevels: 3
+:title-logo-image: image:g2splash.png[]
+:media: prepress
+
+:numbered!:
+
+G2 Language Reference Card, Version {revnumber}
+
+Copyright (c) 1985-2017 Gensym Corporation
+
+include::common_preamble.adoc[]
+
+== G2 Language Reference
+
+=== Syntax Notation
+
+[cols="2,5"]
+|===
+| Syntax element | Description
+
+| `keyword` |  Keyword(s) of the G2 Language
+|_italic-term_| User supplied term
+|{_choice~1~_ \| _choice~2~_  \| ... \| _choice~n~_} | Choose one
+|[,...] [; ...] ... | Repeat 0 or more times
+|{} | Group elements
+|[] | Optional syntax
+|*[]* | Literal brackets
+|===
+
+=== Actions
+
+==== abort
+
+`abort` {_procedure_ | _method_ | _procedure-invocation_ | _method-invocation_}
+
+
+==== activate/deactivate
+
+{`activate` | `deactivate`} `the subworkspace of` _item_
+
+==== change
+
+`change` {_g2-array_ | _g2-list_} *[* _integer-expression_ *]* = _item-or-value_
+
+`change` {_g2-array_ | _g2-list_} *[* _integer-expression_ *]* `to have no value`
+
+`change the array-length of` _g2-array_ `to` _quantity-expression_
+
+`change the` _color-attribute-name_ `of` _item_ `to` {_color-name_ | _symbolic-expression_}
+
+`change the color-pattern of` _item_ `so that` {_color-attribute-name_ `is` _color-name_} [, ...]
+
+`change the` _region-name_ `icon-color of` _object_ `to` _color-name_
+
+`change the name of` _item_ `to` _symbolic-expression_
+
+`change the size of` _kb-workspace_ `to minimum`
+
+`change the text of the` _attribute_ `of` _item_ `to` _text-expression_
+
+`change the text of` {_procedure_ | _statement_ | _free-text_ | _message_} `to` _text-expression_
+
+==== conclude
+
+`conclude that` {_g2-array_ | _g2-list_} *[* _integer-expression_ *]* +
+{nbsp}{nbsp}{ = _value-expression_ | is _symbolic-expression_ | `has no value`}
+
+`conclude that the` _attribute_ `of` _item_ {= _value-expression_ | +
+{nbsp}{nbsp} `is` _symbolic-expression_ | `has no value`}
+
+`conclude that the` { _class-name_ | _type_} `that is an attribute of` _item_ +
+{nbsp}{nbsp} `named by` _symbolic-expression_ {= _value-expression_ | `is` _symbolic-expression_}
+
+`conclude that the` _icon-variables_ `of` _item_ = _value-expression_
+
+`conclude that` {_variable_ | _parameter_} = _value-expression_
+
+`conclude that` {_symbolic-variable_ | _symbolic-parameter_} `is` _symbol_
+
+`conclude that` {_logical-variable_ | _logical-parameter_} `is` {`true` | `false`}
+
+`conclude that not` {_logical-variable_ | _logical-parameter_}
+
+`conclude that` _variable_ `has no` [`current`] `value`
+
+`conclude that` _item_ `is` [ {`not` | `now`} ] _relation-name_ _item_
+
+==== create
+
+`create` {`a` | `an`} _class-name_ [_local-name_] [`by cloning` _item_]
+
+`create an instance` [_local-name_] `of the class named by` _symbolic-expression_
+
+`create a connection` [_local-name_] [`of` {`class` _connection-class-name_ | + 
+{nbsp}{nbsp} `the class named by` _symbolic-expression_} ] `connected` {_between-spec_ | _to-spec_}
+
+==== delete
+
+`delete` {_item_ | _connection_ [`removing connection stubs`] }
+
+==== focus
+`focus on` {_object_ | _object-class_}, `awaiting completion`
+
+==== halt
+`halt` [`with` _text-expression_] `if breakpoints are enabled`
+
+==== hide
+`hide` {`the workspace of` _item_ | `the item superior to` _item_ |  +
+{nbsp}{nbsp} `the subworkspace of` _item_ | `this workspace`} [`on` _g2-window_]
+
+==== inform
+`inform` {`the operator` | _item_} [`on` _kb-workspace_ [`below` _item_ | _above item_] ] +
+{nbsp}{nbsp}[`for the next` _time-interval_] `that` _text-expression_
+
+==== insert
+
+`insert` _item-or-value_ {`at the` {`beginning` | `end`} `of` } |
+{ {`before` | `after`} _item-or-value_ `in`} _g2-list_
+
+`insert` _item-or-value_ {`before` | `after`} `element` _integer-expression_ `of` _g2-list_
+
+==== invoke
+`invoke` _rule-category-name_ [ {, | `or`} _rule-category-name_ `rules`] +
+{nbsp}{nbsp}[`for` {_object_ | _object-class_}], `awaiting completion`
+
+==== make
+`make` _item_ [`permanent` | `transient`]
+
+`make` _kb-workspace_ `the subworkspace of` _item_
+
+==== move
+`move` _item_ [`to` | `by`] (_x_, _y_)
+
+==== pause
+`pause knowledge-base`
+
+==== post
+`post` [`for the next` _time-interval_] _text-expression_
+
+==== print
+`print` _kb-workspace_
+
+==== remove
+`remove` {_item-or-value_ | `the` {`first` | `last`} _type_} `from` _g2-list_
+
+`remove element` _integer-expression_ `from` _g2-list_
+
+==== reset
+`reset knowledge-base`
+
+==== rotate
+`rotate` _item_ {`by` | `to the heading`} _quantity-expression_ `degrees`
+
+==== set
+`set` _variable_ `to` _value-expression_
+
+==== show
+`show` {_kb-workspace_ | _item_} +
+{nbsp}{nbsp}[{`on window at` {_scale_ | (_x_, _y_) `in the screen`} | +
+{nbsp}{nbsp}{`at the` _item-location_ `of the screen`} | +
+{nbsp}{nbsp}{`scaled by` _numeric-expression_} | +
+{nbsp}{nbsp}{`scaled by its current scale times` +
+{nbsp}{nbsp}{_quantity-expression_ | (_x_, _y_) } } | +
+{nbsp}{nbsp}{`with its` _item-location_ `at the` _window-location_ `of the screen`} | +
+{nbsp}{nbsp}{`with focal point` (_x_, _y_) `at` (_x_, _y_) `in the screen`} | +
+{nbsp}{nbsp}{`with its` _workspace-location_ `at the` _window-location_ `of the screen`} ]
+
+`show the item superior to` {_kb-workspace_ | _item_}
+
+`show the` {`workspace` | `subworkspace`} `of` {_kb-workspace_ | _item_}
+
+==== shut down G2
+`shut down g2`
+
+==== start
+`start` _procedure_ ( [_argument_ [, ...] ] ) [`across` _g2-to-g2-interface_ | _gsi-interface_] +
+{nbsp}{nbsp}[`at priority` _integer-expression_] [`after` _time-expression_] )
+
+==== transfer
+`transfer` _item_ {`to` _kb-workspace_ [`at` (_x_, _y_) ] | `off`}
+
+`transfer` _item_ `to the mouse of` _g2-window_
+
+`transfer` {`the` _attribute_ `of` _object_ | _object_} `to` {_item_ | `the` _attribute_ `of` _object_}
+
+==== update
+`update` _item_
+
+
+=== Procedure Syntax
+
+The term _statement_ in the syntax that follows refers to the statements under
+<<Procedure Statements>>.
+
+_procedure-name_ ( [_argument_:{ {`class` _class-name_} | _type_} ] [, ...] ) +
+{nbsp}{nbsp}[= ( {`class` _class-name_} | _type_} [, ...] ) ]
+
+[_local-name_ [, ...]:{`class` _class-name_ [= _item_] } | _type_ [= _value-expression_] } ; ] ...
+
+`begin`
+
+[_statement-label_: ] _statement_ [; ...] +
+
+`end`
+
+[`on error` (_local-name_) [_statement_ [; ...] ] `end`] +
+
+=== Procedure Statements
+
+==== Allow Other Processing
+
+`allow other processing`
+
+==== Assignment
+
+_local-name_ = _value-expression_
+
+==== Begin ... End
+`begin` +
+{nbsp}{nbsp}[_statement-label_:] _statement_ [; ...] +
+`end`
+
+==== Call
+[_local-name_ [, ...] =] `call` _procedure_ (_item-or-value_ [, ...] ) +
+{nbsp}{nbsp}[`across` {_g2-to-g2-interface_ | _gsi-interface_} ] +
+
+==== Case
+`case` (_value-expression_) `of` +
+{nbsp}{nbsp}{ {_quantity_ | _text_ | _symbol_}: _statement_ [; ...] } ... +
+{nbsp}{nbsp}[`otherwise`: _statement_] [; ...] +
+`end`
+
+==== Collect Data
+`collect data` [ (`timing out after` _time-expression_) ] +
+{nbsp}{nbsp} _local-name_ = _value-expression_ [; ...] +
+{nbsp}{nbsp}[; `if timeout then` _statement_] [;] +
+`end`
+
+==== Do in Parallel
+`do in parallel` [`until one completes`] +
+{nbsp}{nbsp} _statement_ [; ...] +
+`end`
+
+==== Exit
+`exit if` _truth-value-expression_
+
+==== For
+`for` _local-name_ = `each` _generic-reference-expression_  `do` [`in parallel` [`until one completes`] ]  +
+{nbsp}{nbsp} _statement_ [; ...] +
+`end`
+
+`for` _local-name_ = _quantity-expression_ {`to` | `down to`} _quantity-expression_ [`by increment`] +
+`do` [`in parallel` [`until one completes`] ] +
+{nbsp}{nbsp} _statement_ [; ...] +
+`end`
+
+==== Go To
+`go to` _statement-label_
+
+==== If-Then
+`if` _truth-value-expression_ `then` _statement_ [`else` _statement_]
+
+==== On Error
+This statement can follow the `end` keyword of any kind of block.
+
+`on error` (_local-name_) [_statement_ [; ...] ] `end`
+
+==== Repeat
+`repeat` _statement_ [; ...] `end`
+
+==== Return
+`return` [_value-expression_ [, ...] ]
+
+==== Signal
+`signal` _error-object_
+
+==== Wait
+`wait` { {`for` _time-expression_} | +
+{nbsp}{nbsp}{`until` _truth-value-expression_ `checking every` _time-expression_} | +
+{nbsp}{nbsp}{`until` {_variable_ | _parameter_ | +
+{nbsp}{nbsp}{`the` _attribute_ [_local-name_] `of` _item_} | +
+{nbsp}{nbsp}{`the` {_class-name_ | _type_} `that is an attribute of` _item_ +
+{nbsp}{nbsp}{nbsp}{nbsp}[`named by` _symbolic-expression_] } receives a value}}}
+
+
+=== Rules Syntax
+For an explanation of _generic-reference-expression_, see <<Generic References>>.
+
+==== for prefix
+_for-prefix_ := {`for` {`any` | `the`} _generic-reference-expression_} ...
+
+==== if rule
+[_for-prefix_] `if` _truth-value-expression_ `then`
+{nbsp}{nbsp}[`in order`] _action_ [`and` _action_] ...
+
+==== initially rule
+`initially` [_for-prefix_ [`unconditionally`] ] +
+{nbsp}{nbsp}[`if` _truth-value-expression_ `then`] +
+{nbsp}{nbsp}[`in order`] _action_ [`and` _action_] ...
+
+==== unconditionally rule
+[_for-prefix_] `unconditionally` [`in order`] _action_ [`and` _action_] ...
+
+==== when rule
+[_for-prefix_] `when` _truth-value-expression_ `then`
+{nbsp}{nbsp}[`in order`] _action_ [`and` _action_] ...
+
+==== whenever rule
+[_for-prefix_] `whenever` _event-expression_ [`or` _event-expression_] +
+{nbsp}{nbsp}[`and when` _truth-value-expression_] `then` +
+{nbsp}{nbsp}[`in order`] _action_ [`and` _action_] ...
+
+=== Generic References
+Precede a generic reference expression with one of the following five quantifiers,
+as appropriate.
+
+==== the _generic-reference-expression_
+
+In any expression, specifies a unique value.
+
+==== any _generic-reference-expression_
+In the antecedent of a rule, specifies a generic reference.
+
+==== every _generic-reference-expression_
+In the consequent of a rule, causes an action to execute on every item matching
+the reference; in a for every expression, iterates over a set.
+
+==== each _generic-reference-expression_
+In expressions over sets, computes a value based on the set; in procedures, iterates
+over items in a class.
+
+==== a(n) _generic-reference-expression_
+In there exists expressions, specifies a single element to test existence.
+
+==== generic reference expression
+_generic-reference-expression_ := +
+{nbsp}{nbsp}{_class-name_ | _type_} [_local-name_] [_generic-reference-qualifier_]
+
+_generic-reference-qualifier_ := +
+{nbsp}{nbsp}{`upon` _kb-workspace_} | {`connected` _connected-expression_} | +
+{nbsp}{nbsp}{`at` _at-expression_} | {`nearest to` _item_} | +
+{nbsp}{nbsp}{`superior to` _kb-workspace_ | _object-attribute_} | +
+{nbsp}{nbsp}{`that is` _relation-name item_} | +
+{nbsp}{nbsp}{`named by` _symbolic-expression_} | +
+{nbsp}{nbsp}{`in` {_g2-list_ | _g2-array_} } | {`name of` _item_} | +
+{nbsp}{nbsp}{`that is` {`a superior-class` | `an inferior-class`} `of` _symbolic-expression_}
+
+=== Expressions
+Generic reference qualifier expressions are indicated with a `*`. Use `the`, `any`, `every`,
+`each`, or `a(n)`, as appropriate.
+
+
+==== Attribute
+`the` _attribute-name_ [_local-name_] `of` {_item_ | _structure_} +
+`the text` [_local-name_] `of` _item_ +
+`the text of the` _attribute_ `of` _item_ +
+`the attribute name of` _subobject-expression_
+
+
+`the` {_variable_ | _parameter_} `giving the` _attribute-name_ `of` +
+{_object_ | _connection_ | _message_}
+
+`*the` {_class-name_ | _type_} `that is an attribute of` {_item_ | _structure_} +
+{nbsp}{nbsp}[`named by` symbolic-expression] +
+
+`*the symbol` [_local-name_] `that is` {`a` | `an`} +
+{nbsp}{nbsp} `user-defined attribute name of` {_item_ | _structure_}
+
+`*the symbol` [_local-name_] `that is an attribute name of` {_item_ | _structure_}
+
+==== Class
+`the class of` _item_
+
+`the symbol` [_local-name_] `that is` +
+{nbsp}{nbsp}{`a superior-class` | `an inferior-class`} `of` _symbolic-expression_
+
+`any instance of` _class_ `is created`
+
+==== Connection
+`the` _class-name_ [_local-name_] `connected to item`
+
+`the` _class-name_ [_local-name_] `connected at` +
+`an` {`input to` | `input of` | `output of`} _item_
+
+`the` _class-name_ [_local-name_] `connected at the` +
+{nbsp}{nbsp}{_port-name_ `of` | `input to` | `input of` | `output of`} _item_
+
+`the` _class-name_ [_local-name_] `at` {`an input end` | `an output end` | +
+{nbsp}{nbsp} `either end`} `of` _connection_
+
+_item_ `is` {`connected to` | `disconnected from`} _item_
+
+`connection` {`of class` _class_] `is directly` +
+{nbsp}{nbsp}{`connected to` | `disconnected from`} +
+{nbsp}{nbsp}{`an input of` | `an output of` | `the portname of`} _item_
+
+==== Item
+===== Name
+_item-name_
+
+`the` _class-name_ [_local-name_] `named by` _symbolic-expression_
+
+`the` _class-name_ [_local-name_] `superior to` _object_
+
+`the name` [local-name] of item
+
+===== Module Assignment
+`the containing-module of` _item_
+
+===== Scope
+{`the item` | `this procedure` | `this procedure-invocation` | `this rule` | +
+{nbsp}{nbsp} `this window` | `this workspace`}
+
+===== Status
+{_item_ | _subworkspace_} `is` {`activated` | `deactivated`}
+
+_item_ `is` {`enabled` | `disabled`}
+
+===== Truth Value
+_item_ `is` [`not`] `the same object as` _item_
+
+_item_ `has a name`
+
+_item_ `is` {`a` | `an`} _class-name_
+
+`item is an instance of the class named by` (_symbolic-expression_)
+
+===== Representation
+`the` {`item-height` | `item-width`} `of` _item_
+
+`the icon-heading of` _item_
+
+
+==== Location
+`the distance between` _item_ `and` {_item_ | `the nearest` _class-name_}
+
+`the` _class-name_ [_local-name_] `nearest to` _item_
+
+_object_ `is moved` [`by` {`the user` | `G2`} ]
+
+`the` {`item-x-position` | `item-y-position`} `of` _item_
+
+==== List and Array
+===== List and Array
+{_g2-array_ | _g2-list_ | _sequence_ | _text_} *[* _integer-expression_ *]*
+
+`the` {_class-name_ | _type_} [_local-name_] `in` {_g2-array_ | _g2-list_ | _sequence_}
+
+===== List
+`the` {`first` | `second` | `next to last` | `last`} {_class-name_ | _type_} +
+{nbsp}{nbsp}[_local-name_] `in` {_g2-list_ | _sequence_}
+
+{_class-name_ | _type_} `is` [`not`] `a member of` {_g2-list_ | _sequence_}
+
+`the number of elements in` {_g2-list_ | _sequence_}
+
+_g2-list_ `that contains` _item_
+
+===== Array
+`the array-length of` _g2-array_
+
+==== Numeric
+===== Arithmetic Operations
+_quantity-expression_ { `+` | `-` | `*` | `/` } _quantity-expression_
+
+_quantity-expression_ `^` integer-expression
+
+===== Comparison
+_quantity-expression_ { `=` | `/=` | `>` | `>=` | `<` | `<=` } _quantity-expression_
+
+===== Numeric Expressions Over Sets
+`the` {`sum` | `product` | `average` | `minimum` | `maximum`} `over each` +
+{nbsp}{nbsp} _generic-reference-expression_ `of` (_quantity-expression_)
+
+`the count of each` _generic-reference-expression_ +
+{nbsp}{nbsp}[`such that` (_truth-value-expression_) ] +
+
+===== Fuzzy Truth
+_truth-value-expression_ {`is more true than` | `is less true than` | +
+{nbsp}{nbsp} `is not more true than` | `is not less true than` | `=` | `/=`} +
+{nbsp}{nbsp} _truth-value-expression_
+
+_quantity-expression_ {`<` | `<=` | `>` | `>=` | `=`} _quantity-expression_ +
+{nbsp}{nbsp}(`+-`__quantity-expression__)
+
+==== Relation
+`the` _class-name_ [_local-name_] `that is` _relation-name_ _item_
+
+_item_ `is` [`not`] _relation-name_ _item_
+
+`the relationships of` _item_
+
+`the items-in-this-relation of` _relation-name_
+
+_item_ {`becomes` | `ceases to be`} _relation-name_ _item_
+
+_item_ {`becomes` | `ceases to be`} `related to` _item_
+
+==== Symbol
+`the symbol` _symbol_
+
+_symbolic-expression_ {`is` | `is not`} _symbol_
+
+==== Text
+" [_text_] *[* _value-expression_ *]* [_text_] "
+
+_text-expression_ { `=` | `/=` | `>` | `>=` | `<` | `<=`} _text-expression_
+
+===== Formatting
+_quantity-expression_ [`as` {_ddd.dddd-format_ | `a time stamp` | `an interval`} ]
+
+==== Time
+`the current` [`subsecond`] [`real`] `time`
+
+`the current` {`year` | `month` | `day of the month` | `day of the week` | +
+{nbsp}{nbsp} `hour` | `minute` | `second`}
+
+`the current system` [`real`] `time`
+
+==== Truth Value
+===== Logical Operation
+_truth-value-expression_ {`and` | `or`} _truth-value-expression_
+
+`not` _truth-value-expression_
+
+===== Conditional
+(`if` _truth-value-expression_ `then` _item-or-value_ +
+[`else` _item-or-value_] )
+
+===== For Every
+`for every` _generic-reference-expression_ (_truth-value-expression_)
+
+
+==== Existence
+`there exists` {`a` | `an`} _generic-reference-expression_ +
+{nbsp}{nbsp}[`such that` (_truth-value-expression_) ] +
+
+_item-or-value_ {`exists` | `does not exist`}
+
+==== Values
+_value-expression_ `is a type`
+
+`the` [`current`] `value of` (_value-expression_)
+
+_value-expression_ `has` {`a` | `no`} [`current`] `value`
+
+`the first of the following expressions that has a` [`current`] `value` +
+(_value-expression_ [, ...] )
+
+
+==== Variable and Parameter
+===== Variables
+_variable_ `loses its value`
+
+===== Variables and Parameters
+`the simulated value of` {_variable_ | _parameter_}
+
+`the value of` {_variable_ | _parameter_} {`as of` _time-expression_ `ago` | +
+{nbsp}{nbsp} `as of` _integer-expression_ `datapoints ago`}
+
+===== History (_quantity_, _integer_, _float variables_ and _parameters_ only)
+`the` {`average value of` | `maximum value of` | `minimum value of` | +
+{nbsp}{nbsp} `sum of the values of` | `standard deviation of` | `number of history datapoints in`} +
+{nbsp}{nbsp}{_variable_ | _parameter_} {`during the last` time-expression | +
+{nbsp}{nbsp} `between` _time-expression_ `ago and` _time-expression_ ago`}
+
+`the` {`rate of change per` | `integral in`} _time-unit_ `of` {_variable_ | _parameter_} +
+{nbsp}{nbsp}{`during the last` _time-expression_ | `between` _time-expression_ `ago and` _time-expression_ `ago`}
+
+`the interpolated value of` {_variable_ | _parameter_} `as of` _time-expression_ `ago`
+
+`the` {`history` | `history-using-unix-time`} `of` {_variable_ | _parameter_}
+
+`history-expression of` _variable-or-parameter_ `during the` _time-expression_ +
+{nbsp}{nbsp} `ending with the collection time`
+
+===== Time
+`the collection time of` {_variable_ | _parameter_} +
+[`as of` _integer-expression_ `datapoints ago`] +
+
+`the expiration time of` _variable_
+
+==== Workspace
+`the` {`workspace` | `subworkspace`} [_local-name_] `of` _item_
+
+_kb-workspace_ `has` [`not`] `been activated`
+
+`the` _class-name_ [_local-name_] `superior to` _kb-workspace_
+
+`the` _class-name_ [_local-name_] `upon` _kb-workspace_
+
+`the module-assignment of` _kb-workspace_
+
+
+=== Functions
+==== Arithmetic Functions
+`abs` (_quantity-expression_)
+
+`arctan` (_quantity-expression_ [, _quantity-expression_] )
+
+`average` (_quantity-expression_, _quantity-expression_ [, _quantity-expression_...] )
+
+`ceiling` (_quantity-expression_)
+
+`cos` (_quantity-expression_)
+
+`exp` (_quantity-expression_)
+
+`expt` (_quantity-expression_, _quantity-expression_)
+
+`floor` (_quantity-expression_)
+
+`ln` (_quantity-expression_)
+
+`log` (_quantity-expression_)
+
+`max` (_quantity-expression_, _quantity-expression_ [, ...] )
+
+`min` (_quantity-expression_, _quantity-expression_ [, ...] )
+
+`quotient` (_quantity-expression_, _quantity-expression_)
+
+`random` (_quantity-expression_ [, _quantity-expression_] )
+
+`remainder` (_quantity-expression_, _quantity-expression_)
+
+`round` (_quantity-expression_)
+
+`sin` (_quantity-expression_)
+
+`sqrt` (_quantity-expression_)
+
+`tan` (_quantity-expression_)
+
+`truncate` (_quantity-expression_)
+
+`truth-value` (_quantity-expression_)
+
+==== Bitwise Functions
+`bitwise-or` (_value-expression_, _value-expression_)
+
+`bitwise-and` (_value-expression_, _value-expression_)
+
+`bitwise-xor` (_value-expression_, _value-expression_)
+
+`bitwise-not` (_value-expression_)
+
+`bitwise-right-shift` (_value-expression_, _value-expression_)
+
+`bitwise-left-shift` (_value-expression_, _value-expression_)
+
+`bitwise-test` (_value-expression_, _value-expression_)
+
+`bitwise-set` (_value-expression_, _value-expression_)
+
+==== Call
+`call-function` (_function-definition-expression_ [_argument_] [, ...])
+
+
+==== Character Support Functions
+`character-codes-to-text` (_character-codes_: `sequence`)
+
+`compare-text` (_text-1_: `text`, _text-2_: `text`)
+
+`export-text` (_unicode-text_: `text`,
+_conversion-style_: `class text-conversion-style`)
+
+`import-text` (_external-text_: `text`, _conversion-style_: `class text-conversion-style`)
+
+`is-digit` (_character-code_: `integer`)
+
+`is-lowercase` (_character-code_: `integer`)
+
+`is-readable-digit` (_character-code_: `integer`)
+
+`is-readable-digit-in-radix` (_character-code_: `integer`, _radix_: `integer`)
+
+`is-titlecase` (_character-code_: `integer`)
+
+`is-uppercase` (_character-code_: `integer`)
+
+`readable-symbol-text` (_printed-text_: `text`)
+
+`readable-text` (_printable-text_: `text`)
+
+`readable-text-for-value` (_value-for-text_: `value`)
+
+`text-to-character-codes` (_input-text_: `text`)
+
+`to-lowercase` (_character-code_: `integer`)
+
+`to-titlecase` (_character-code_: `integer`)
+
+`to-uppercase` (_character-code_: `integer`)
+
+`transform-text-for-unicode-comparison` (_text-to-transform_: `text`, +
+_consider-case_: `truth-value`)
+
+`transform-text-for-G2-4.0-comparison` (_text-to-transform_: `text`, +
+_consider-case_: `truth-value`)
+
+
+==== Connection Evaluator Functions
+`connection-direction` (_object_, _connection_)
+
+`connection-portname` (_object_, _connection_)
+
+`connection-position` (_object_, _connection_)
+
+`connection-side` (_object_, _connection_)
+
+`connection-style` (_connection_)
+
+`items-are-connected` (_item1_: `class item`, _item2_: `class item`)
+
+`items-are-connected-with-direction` (_item1_: `class item`, +
+_item2_: `class item`, _item1-direction_: `symbol`)
+
+`items-are-connected-at-ports` (_item1_: `class item`, _item2_: `class item`, +
+_portname1_: `symbol`, _portname2_: `symbol`)
+
+
+==== Format Numeric Text Function
+`format-numeric-text` (_quantity-text_: `text`, _formatting-expression_: `text`)
+
+
+==== Great Circle Distance Function
+`great-circle-distance` (_latitude-1_: `quantity`, _longitude-1_: `quantity`, +
+_latitude-2_: `quantity`, _longitude-2_: `quantity`, _radius_: `quantity`)
+
+==== Quantity Function
+`quantity` ( {_truth-value-expression_ | _text-expression_})
+
+==== RGB Symbol Function
+`rgb-symbol` (_rr_, _gg_, _bb_)
+
+==== Regular Expressions Text Functions
+`find-next-pattern` (_search-pattern_: `text`, _source-text_: `text`, _start-position_: `integer`)
+
+`find-next-substring-matching-pattern` (_search-pattern_: `text`, +
+_source-text_: `text`, _start-position_: `integer`)
+
+`find-and-replace-pattern` (_search-pattern_: `text`, +
+_text-to-substitute_: `text`, _source-text_: `text`, +
+_start-position_: `integer`, _end-position_: `integer`)
+
+==== Sequence Functions
+`change-element` (_sequence_, _integer_, _item-or-value_)
+
+`concatenate` (_sequence_, _sequence_ [,...])
+
+`insert-at-beginning` (_sequence_, _item-or-value_)
+
+`insert-at-end` (_sequence_, _item-or-value_)
+
+`insert-after` (_sequence_, _item-or-value_, _item-or-value_)
+
+`insert-before-element` (_sequence_, _integer_, _item-or-value_)
+
+`insert-after-element` (_sequence_, _integer_, _item-or-value_)
+
+`remove` (_sequence_, _integer_)
+
+`portion` (_sequence_, _integer_, _integer_)
+
+`sequence` (_item-or-value_ [,...])
+
+==== Symbol Function
+`symbol` (_text-expression_)
+
+==== Structure Functions
+`change-attribute` (_structure_, _attribute-name_, _item-or-value_)
+
+`change-evaluated-attribute` (_structure_, _symbol-expression_, _item-or-value_)
+
+`evaluated-structure` (_symbol-expression_, _item-or-value_ [,...])
+
+`remove-attribute` (_structure_, _attribute-name_)
+
+`remove-evaluated-attribute` (_structure_, _symbol-expression_)
+
+`structure` (_attribute-name_: _item-or-value_ [,...])
+
+==== Text Functions
+`capitalize-words` (_text-expression_)
+
+`get-from-text` (_source-text_: `text`, _start-index_: `integer`, _end-index_: `integer`)
+
+`insert-in-text` (_text-expression_, _text-expression_, _integer_)
+
+`is-contained-in-text` (_text-expression_, _text-expression_)
+
+`length-of-text` (_text-expression_)
+
+`lower-case-text` (_text-expression_)
+
+`omit-from-text` (_text-expression_, _integer_, _integer_)
+
+`position-of-text` (_text-expression_, _text-expression_)
+
+`replace-in-text` (_text-to-substitute_: `text`, _source-text_: `text`, +
+_start-index_: `integer`, _end-index_: `integer`)
+
+`text-begins-with-quantity` (_text-expression_)
+
+`upper-case-text` (_text-expression_)
+
+==== Text Tokenizing Function
+`get-next-token` (_tokenizer_: `class G2-tokenizer`, _source-text_: `text`, _start-position_: `integer`)
+
+==== Time Functions
+{`year` | `month` | `day-of-the-month` | `day-of-the-week` | `minute` | `hour` | `second`} (_time-expression_)
+
+`time` (_year_, _month_, _day_, _hour_, _minute_, _second_)
+
+==== User-Defined Functions
+_function-name_ ( [_argument_] [, ...] )
+
+
+=== Inspect Syntax
+
+`show on a workspace` {_item_ | `the` _class-name_ `named` _item-name_} | +
+{nbsp}{nbsp} `every` _class-name_ [_filter_] | `the workspace hierarchy`  +
+{nbsp}{nbsp}[`of` {_kb-workspace-name_ | _object-name_} ] | +
+{nbsp}{nbsp} `the class hierarchy` [`of` _class-name_] | +
+{nbsp}{nbsp} `the module hierarchy` [`of` _module-name_] | +
+{nbsp}{nbsp} `the method hierarchy of` _method-name_ | +
+{nbsp}{nbsp} `the method inheritance path for` _class-name_ +
+{nbsp}{nbsp}[`and the method` _method-name_] }
+
+`write to the file` _filename_ {_item_ | `the` _class-name named_ _item-name_} | +
+{nbsp}{nbsp} `every` _class-name_ [_filter_] | `the class hierarchy` [`of` _class-name_] }
+
+`go to` _symbol_
+
+`display a table` [`columnwise`] `of` [`the` _attribute-name_ [, ...] `of`] +
+{nbsp}{nbsp}{_item_ | `the` _class-name_ `named` _item-name_ | +
+{nbsp}{nbsp} `every` _class-name_ [_filter_] }
+
+`replace` | `highlight` [ `the` {`word` | `symbol`} ] {_text_ | _symbol_} `with` +
+{nbsp}{nbsp}{_text_ | _symbol_} `in` {_item_ | `the` _class-name_ `named` _item-name_ | +
+{nbsp}{nbsp} `every` _class-name_ [_filter_] }
+
+`check for consistent modularization`
+
+`recompile` {_item_ | `the` _class-name_ `named` _item-name_ | +
+`every` _class-name_ [_filter_] }
+
+==== Filters
+`such that` _truth-value-expression_
+
+`containing` [`the` {`word` | `symbol`} ] _text-expression_
+
+`with notes`
+
+`whose status is` _status_
+
+`where` _attribute-name_ _relational-operator_ _quantity-expression_
+
+`where` _attribute_ `is` {_truth-value-expression_ | _symbolic-expression_}
+
+`in the category` _symbolic-expression_
+
+`which has the focal` {`class` | `object`} _symbolic-expression_
+
+`found on the workspace` _kb-workspace_
+
+`assigned to module` _module-name_ [`or` _module-name_]
+
+`assigned to the hierarchy of module` _module-name_
+
+==== Version Control
+`show on a workspace the change log entry of the` _attribute_ `of` _item_ +
+{nbsp}{nbsp}{`as of` _timestamp_} | {`with revision` _num_} | {`with tag` _tag_}
+
+`show on a workspace the differences between` +
+{nbsp}{nbsp} `the change log entry of the` _attribute_ `of` _item_ +
+{nbsp}{nbsp}{`as of` _timestamp_} | {`with revision` _num_} | {`with tag` _tag_} +
+{nbsp}{nbsp} `and the change log entry of the` _attribute_ `of` _item_ +
+{nbsp}{nbsp}{`as of` _timestamp_} | {`with revision` _num_} | {`with tag` _tag_}
+
+`use version control to tag the change log entry of every logged attribute of` +
+{nbsp}{nbsp} `every item in module` _module-name_ [ `as of` _timestamp_ ] `using tag` _tag_
+
+`use version control to tag the change log entry of the` _attribute_ `of` _item_ +
+{nbsp}{nbsp}[ `as of` _timestamp_ | `with revision` _num_ ] `using tag` _tag_
+
+`use version control to revert the text of every logged attribute of every` +
+{nbsp}{nbsp} `item in module` _module-name_ `to the change log entry` {`as of` _timestamp_} +
+{nbsp}{nbsp} | {`using tag` _tag_}
+
+`use version control to revert the text of the` _attribute_ `of` _item_ `to the` +
+{nbsp}{nbsp} `change log entry` {`as of` _timestamp_} | {`with revision` _num_} | +
+{nbsp}{nbsp} {`with tag` _tag_}
+
+`use version control to delete the change log entry of the` _attribute_ `of` _item_ +
+{nbsp}{nbsp}{`as of` _timestamp_} | {`with revision` _num_} | {`with tag` _tag_}
+
+`use version control to enable change logging on` _item_
+
+`use version control to disable change logging on` _item_
