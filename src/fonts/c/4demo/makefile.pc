@@ -1,0 +1,408 @@
+#
+# DOS make file to make bench mark testing which reads Speedo, TrueType,
+# Type1 and PCL fonts
+# $Log: not supported by cvs2svn $
+# Revision 1.1.1.1  1993/04/15 20:14:50  mhd
+# Initial checkin of Version 2.1 of 4-in-1 from Bitstream.  -jra & mpc
+#
+#  Revision 2.19  93/03/15  13:57:13  roberte
+#  Release
+#  
+#  Revision 2.13  93/03/12  16:30:22  roberte
+#  Changed directory for stdef.h dependency on item in type1 directory.
+#  No more stdef.h in truetype directory!
+#  
+#  Revision 2.12  93/03/11  11:38:00  roberte
+#   Removed command line define of INTEL- now performed in useropt.h if MSDOS defined
+#  
+#  Revision 2.11  93/03/10  09:17:45  roberte
+#  Explicitly set INTEL to 1
+#  
+#  Revision 2.10  93/03/09  15:32:38  roberte
+#   Fall back to large model, add -DMSDOS
+#  
+#  Revision 2.9  93/03/09  13:30:39  roberte
+#  Removed all references to now dead "fi_proto.h"
+#  
+#  Revision 2.8  93/03/09  11:23:04  weili
+#  Replaced old makefile.pc with new one that builds all
+#  components of the demo package on the PC (4demo, 4test,
+#  selsym, wfdemo, txtdemo and fdump).  Memory model set to huge
+#  on all (matches model in the /fitutil directory).
+#  
+#
+
+# compiler options
+options = -c /AL /G2 /Ot
+
+
+# linker options
+link_options = /STACK:6144
+
+sdef = -D_4DEMO_ -DMSDOS
+
+# source directories
+sd = ../speedo
+pcl_dir = ../pcl5
+type1_dir = ../type1
+tt_dir = ../tt
+fit_dir = ../fitutil
+
+
+# list of object modules 
+
+4demo_objs =	4demo.obj frontend.obj cmt.obj cmtglob.obj \
+		msst.obj msstglob.obj msl.obj
+
+4test_objs =	4test.obj frontend.obj cmt.obj cmtglob.obj \
+		msst.obj msstglob.obj msl.obj
+
+txtdemo_objs =	txtdemo.obj frontend.obj cmt.obj cmtglob.obj \
+		msst.obj msstglob.obj msl.obj
+
+wfdemo_objs =	wfdemo.obj frontend.obj cmt.obj cmtglob.obj \
+		msst.obj msstglob.obj msl.obj
+
+fdump_objs =	fdump.obj frontend.obj cmt.obj cmtglob.obj \
+		msst.obj msstglob.obj msl.obj
+
+selsym_objs =	selsym.obj frontend.obj cmt.obj cmtglob.obj \
+		msst.obj msstglob.obj msl.obj
+
+
+type1_objs = tr_names.obj tr_ldfnt.obj tr_mkchr.obj tr_trans.obj
+
+tt_objs = tt_iface.obj tt_specs.obj fontscal.obj fsglue.obj fnt.obj \
+	sfntd.obj mapstrng.obj newscan.obj fixed_pt.obj
+
+speedo_objs = reset.obj do_char.obj do_trns.obj set_spcs.obj\
+		set_trns.obj set_keys.obj
+
+hp_objs = hpfnt1.obj hpfnt2.obj load_pcl.obj
+
+out_objs = out_blk.obj out_util.obj out_outl.obj out_scrn.obj \
+	out_bl2d.obj out_wht.obj
+
+inc = -I$(sd) -I$(pcl_dir) -I$(type1_dir) -I$(tt_dir) -I$(fit_dir) -I.
+
+all: 4demo 4test txtdemo wfdemo fdump selsym
+
+4demo: 4demo.exe
+
+4test: 4test.exe
+
+txtdemo: txtdemo.exe
+
+wfdemo: wfdemo.exe
+
+fdump: fdump.exe
+
+selsym: selsym.exe
+
+
+# Misc. dependencies
+$(sd)/speedo.h: $(sd)/useropt.h
+$(sd)/spdo_prv.h: $(sd)/speedo.h
+$(tt_dir)/sc.h : $(tt_dir)/sfnt.h
+$(tt_dir)/sfnt.h : $(tt_dir)/sfntenum.h
+
+# Type1
+tr_names.obj: $(type1_dir)/tr_names.c \
+		$(sd)/spdo_prv.h  \
+		$(type1_dir)/type1.h \
+                fino.h
+	cl  $(sdef) $(inc) $(options) $(type1_dir)/$(@B).c
+
+tr_ldfnt.obj: $(type1_dir)/tr_ldfnt.c\
+		$(sd)/useropt.h \
+		$(type1_dir)/stdef.h \
+		$(type1_dir)/type1.h \
+		$(type1_dir)/fnt_a.h\
+		$(type1_dir)/errcodes.h \
+		$(type1_dir)/tr_fdata.h fino.h
+	cl  $(sdef) $(inc) $(options) $(type1_dir)/$(@B).c
+
+tr_mkchr.obj:$(type1_dir)/tr_mkchr.c\
+		$(sd)/spdo_prv.h \
+		$(type1_dir)/type1.h \
+		$(type1_dir)/fnt_a.h \
+		$(type1_dir)/tr_fdata.h  fino.h
+	cl  $(sdef) $(inc) $(options) $(type1_dir)/$(@B).c
+
+tr_trans.obj: $(type1_dir)/tr_trans.c\
+		$(sd)/speedo.h \
+		$(type1_dir)/stdef.h \
+		$(type1_dir)/type1.h \
+		$(type1_dir)/fnt_a.h fino.h
+	cl  $(sdef) $(inc) $(options) $(type1_dir)/$(@B).c
+
+# Out_??? modules 
+out_util.obj: $(sd)/out_util.c $(sd)/spdo_prv.h fino.h
+	cl  $(sdef) $(inc) $(options) $(sd)/$(@B).c
+
+out_blk.obj:  $(sd)/out_blk.c  $(sd)/spdo_prv.h fino.h
+	cl  $(sdef) $(inc) $(options) $(sd)/$(@B).c
+
+out_wht.obj:  $(sd)/out_wht.c  $(sd)/spdo_prv.h fino.h
+	cl  $(sdef) $(inc) $(options) $(sd)/$(@B).c
+
+out_outl.obj:  $(sd)/out_outl.c $(sd)/spdo_prv.h fino.h
+	cl  $(sdef) $(inc) $(options) $(sd)/$(@B).c
+
+out_scrn.obj:  $(sd)/out_scrn.c $(sd)/spdo_prv.h fino.h
+	cl  $(sdef) $(inc) $(options) $(sd)/$(@B).c
+
+out_bl2d.obj:  $(sd)/out_bl2d.c $(sd)/spdo_prv.h fino.h
+	cl  $(sdef) $(inc) $(options) $(sd)/$(@B).c
+
+# Truetype
+tt_iface.obj: $(tt_dir)/tt_iface.c\
+		$(sd)/spdo_prv.h \
+		$(sd)/useropt.h \
+		$(tt_dir)/fscdefs.h \
+		$(tt_dir)/fontscal.h \
+		$(tt_dir)/sfnt.h \
+		$(tt_dir)/fserror.h\
+		$(tt_dir)/truetype.h fino.h
+	cl  $(sdef) $(inc) $(options) $(tt_dir)/$(@B).c
+
+tt_specs.obj: $(tt_dir)/tt_specs.c \
+		$(sd)/useropt.h \
+		$(sd)/spdo_prv.h \
+		$(tt_dir)/fscdefs.h \
+		$(tt_dir)/fontscal.h \
+		$(tt_dir)/truetype.h fino.h
+	cl  $(sdef) $(inc) $(options) $(tt_dir)/$(@B).c
+
+fontscal.obj: $(tt_dir)/fontscal.c \
+		$(sd)/useropt.h \
+		$(tt_dir)/fserror.h \
+		$(tt_dir)/fscdefs.h  \
+		$(tt_dir)/fontmath.h \
+		$(tt_dir)/sfnt.h \
+		$(tt_dir)/sc.h \
+      		$(tt_dir)/fnt.h \
+		$(tt_dir)/fontscal.h \
+		$(tt_dir)/fsglue.h \
+		$(tt_dir)/privsfnt.h \
+		$(tt_dir)/privfosc.h fino.h
+	cl  $(sdef) $(inc) $(options) $(tt_dir)/$(@B).c
+
+fsglue.obj: $(tt_dir)/fsglue.c \
+		$(sd)/useropt.h \
+		$(tt_dir)/fserror.h \
+		$(tt_dir)/fscdefs.h \
+		$(tt_dir)/fontmath.h \
+		$(tt_dir)/sfnt.h \
+		$(tt_dir)/sc.h \
+		$(tt_dir)/fnt.h \
+		$(tt_dir)/fontscal.h \
+		$(tt_dir)/fsglue.h \
+		$(tt_dir)/privsfnt.h fino.h
+	cl  $(sdef) $(inc) $(options) $(tt_dir)/$(@B).c
+
+
+fnt.obj: $(tt_dir)/fnt.c \
+	$(sd)/useropt.h \
+	$(tt_dir)/fscdefs.h \
+	$(tt_dir)/fontmath.h \
+	$(tt_dir)/sc.h \
+	$(tt_dir)/fnt.h \
+	$(tt_dir)/fserror.h fino.h
+	cl  $(sdef) $(inc) $(options) /Gy $(tt_dir)/$(@B).c
+# need to add /Gy option; otherwise, when fnt.c is compiled, compiler gives a "CODE segment too large" error 
+
+sfntd.obj: $(tt_dir)/sfntd.c \
+		$(sd)/useropt.h \
+		$(tt_dir)/fserror.h \
+		$(tt_dir)/fscdefs.h \
+		$(tt_dir)/fontmath.h \
+		$(tt_dir)/sfnt.h \
+		$(tt_dir)/fnt.h \
+		$(tt_dir)/sc.h \
+		$(tt_dir)/fontscal.h \
+		$(tt_dir)/fsglue.h \
+		$(tt_dir)/privsfnt.h \
+		$(tt_dir)/mapstrng.h fino.h
+	cl  $(sdef) $(inc) $(options) $(tt_dir)/$(@B).c
+
+			
+
+mapstrng.obj: $(tt_dir)/mapstrng.c \
+		$(sd)/useropt.h \
+		$(tt_dir)/fscdefs.h \
+		$(tt_dir)/mapstrng.h fino.h
+	cl  $(sdef) $(inc) $(options) $(tt_dir)/$(@B).c
+
+newscan.obj: $(tt_dir)/newscan.c \
+		$(sd)/useropt.h \
+		$(sd)/spdo_prv.h \
+		$(tt_dir)/fscdefs.h \
+		$(tt_dir)/fontscal.h  fino.h
+	cl  $(sdef) $(inc) $(options) $(tt_dir)/$(@B).c
+
+fixed_pt.obj: $(tt_dir)/fixed_pt.c \
+		$(tt_dir)/fixed.h fino.h
+	cl  $(sdef) $(inc) $(options) $(tt_dir)/$(@B).c
+
+
+# Speedo
+
+reset.obj: $(sd)/reset.c $(sd)/spdo_prv.h $(sd)/keys.h fino.h
+	cl  $(sdef) $(inc) $(options) $(sd)/$(@B).c
+
+do_char.obj:	$(sd)/do_char.c $(sd)/spdo_prv.h fino.h
+	cl  $(sdef) $(inc) $(options) $(sd)/$(@B).c
+
+do_trns.obj:	$(sd)/do_trns.c $(sd)/spdo_prv.h fino.h
+	cl  $(sdef) $(inc) $(options) $(sd)/$(@B).c
+
+set_spcs.obj: $(sd)/set_spcs.c $(sd)/spdo_prv.h fino.h
+	cl  $(sdef) $(inc) $(options) $(sd)/$(@B).c
+
+set_trns.obj: $(sd)/set_trns.c $(sd)/spdo_prv.h fino.h
+	cl  $(sdef) $(inc) $(options) $(sd)/$(@B).c
+
+set_keys.obj: $(sd)/set_keys.c $(type1_dir)/stdef.h fino.h
+	cl  $(sdef) $(inc) $(options) $(sd)/$(@B).c
+
+# HP modules
+
+hpfnt1.obj: $(pcl_dir)/hpfnt1.c $(sd)/spdo_prv.h $(pcl_dir)/hp_readr.h fino.h
+	cl  $(sdef) $(inc) $(options) $(pcl_dir)/$(@B).c
+
+hpfnt2.obj: $(pcl_dir)/hpfnt2.c \
+		$(sd)/spdo_prv.h \
+		$(pcl_dir)/hp_readr.h fino.h
+	cl  $(sdef) $(inc) $(options) $(pcl_dir)/$(@B).c
+
+load_pcl.obj: load_pcl.c \
+		$(sd)/speedo.h \
+		$(pcl_dir)/hp_readr.h\
+		pcl5fnt.h fino.h
+	cl  $(sdef) $(inc) $(options) $(@B).c
+
+# main modules
+4demo.obj: 4demo.c \
+		$(sd)/speedo.h \
+		$(sd)/useropt.h \
+		$(type1_dir)/stdef.h \
+		$(type1_dir)/type1.h \
+		$(type1_dir)/fnt_a.h \
+		$(type1_dir)/tr_fdata.h \
+		$(type1_dir)/errcodes.h \
+		$(pcl_dir)/hp_readr.h \
+		ufe.h fino.h
+	cl  $(sdef) $(inc) $(options) $(@B).c
+
+4test.obj: 4test.c \
+		$(sd)/speedo.h \
+		$(sd)/useropt.h \
+		$(type1_dir)/stdef.h \
+		$(type1_dir)/type1.h \
+		$(type1_dir)/fnt_a.h \
+		$(type1_dir)/tr_fdata.h \
+		$(type1_dir)/errcodes.h \
+		$(pcl_dir)/hp_readr.h \
+		ufe.h fino.h
+	cl  $(sdef) $(inc) $(options) $(@B).c
+
+txtdemo.obj: txtdemo.c \
+		$(sd)/speedo.h \
+		$(sd)/useropt.h \
+		$(type1_dir)/stdef.h \
+		$(type1_dir)/type1.h \
+		$(type1_dir)/fnt_a.h \
+		$(type1_dir)/tr_fdata.h \
+		$(type1_dir)/errcodes.h \
+		$(pcl_dir)/hp_readr.h \
+		ufe.h fino.h
+	cl  $(sdef) $(inc) $(options) $(@B).c
+
+wfdemo.obj: wfdemo.c \
+		$(sd)/speedo.h \
+		$(sd)/useropt.h \
+		$(type1_dir)/stdef.h \
+		$(type1_dir)/type1.h \
+		$(type1_dir)/fnt_a.h \
+		$(type1_dir)/tr_fdata.h \
+		$(type1_dir)/errcodes.h \
+		$(pcl_dir)/hp_readr.h \
+		ufe.h fino.h
+	cl  $(sdef) $(inc) $(options) $(@B).c
+
+fdump.obj: fdump.c \
+		$(sd)/speedo.h \
+		$(sd)/useropt.h \
+		$(type1_dir)/stdef.h \
+		$(type1_dir)/type1.h \
+		$(type1_dir)/fnt_a.h \
+		$(type1_dir)/tr_fdata.h \
+		$(type1_dir)/errcodes.h \
+		$(pcl_dir)/hp_readr.h \
+		ufe.h fino.h
+	cl  $(sdef) $(inc) $(options) $(@B).c
+
+
+selsym.obj: selsym.c \
+		$(sd)/speedo.h \
+		$(sd)/useropt.h \
+                $(fit_dir)/finfotbl.h \
+		$(type1_dir)/stdef.h \
+		$(type1_dir)/type1.h \
+		$(type1_dir)/fnt_a.h \
+		$(type1_dir)/tr_fdata.h \
+		$(type1_dir)/errcodes.h \
+		$(pcl_dir)/hp_readr.h \
+		ufe.h fino.h
+	cl  $(sdef) $(inc) $(options) $(@B).c
+
+
+frontend.obj: frontend.c \
+		$(sd)/spdo_prv.h \
+		ufe.h $(type1_dir)/type1.h fino.h
+	cl  $(sdef) $(inc) $(options) $(@B).c
+
+msl.obj: msl.c \
+        	$(sd)/spdo_prv.h \
+	        ufe.h $(type1_dir)/type1.h fino.h
+	cl  $(sdef) $(inc) $(options) $(@B).c
+
+cmt.obj: cmt.c $(sd)/spdo_prv.h ufe.h $(type1_dir)/type1.h fino.h
+	cl  $(sdef) $(inc) $(options) $(@B).c
+
+cmtglob.obj: cmtglob.c $(sd)/spdo_prv.h ufe.h $(type1_dir)/type1.h fino.h
+	cl  $(sdef) $(inc) $(options) $(@B).c
+
+msst.obj: msst.c $(sd)/spdo_prv.h ufe.h $(type1_dir)/type1.h fino.h
+	cl  $(sdef) $(inc) $(options) $(@B).c
+
+msstglob.obj: msstglob.c $(sd)/spdo_prv.h ufe.h $(type1_dir)/type1.h fino.h
+	cl  $(sdef) $(inc) $(options) $(@B).c
+
+
+# EXE's
+4demo.exe :  $(4demo_objs) $(type1_objs) $(tt_objs) $(out_objs)\
+		$(speedo_objs) $(hp_objs)
+	link $(link_options) @4demo.lnk
+
+4test.exe :  $(4test_objs) $(tt_objs) $(type1_objs) $(out_objs)\
+		$(speedo_objs) $(hp_objs)
+	link $(link_options) @4test.lnk
+
+txtdemo.exe :  $(txtdemo_objs) $(type1_objs) $(tt_objs) $(out_objs)\
+		$(speedo_objs) $(hp_objs)
+	link $(link_options) @txtdemo.lnk
+
+wfdemo.exe :  $(wfdemo_objs) $(type1_objs) $(tt_objs) $(out_objs)\
+		$(speedo_objs) $(hp_objs)
+	link $(link_options) @wfdemo.lnk
+
+fdump.exe :  $(fdump_objs) $(type1_objs) $(tt_objs) $(out_objs)\
+		$(speedo_objs) $(hp_objs)
+	link $(link_options) @fdump.lnk
+
+selsym.exe :  $(selsym_objs) $(type1_objs) $(tt_objs) $(out_objs)\
+		$(speedo_objs) $(hp_objs)
+	link $(link_options) @selsym.lnk
+
