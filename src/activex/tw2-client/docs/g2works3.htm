@@ -1,0 +1,216 @@
+<html><head><title>G2WorkspacePanel</title></head>
+<body bgcolor="#ffffff">
+<h5><a href="g2works2.htm">| Prev </a> 
+  | Next
+  <a href="g2worksp.htm">| Start of Chapter </a>
+ <a href="__indext.htm">| Next Chapter </a> <a href="booktoc.htm">| Contents </a> <a href="glossary.htm">| Glossary </a> <a href="bookix.htm">| Index </a>  <a href="mailto:docs@gensym.com">| Comments | </a> (4 out of 4) </h5> <br>
+
+<a name="2106">
+<h1> Methods</h1>
+</a><a name="996906">
+<h2> AddWorkspace()</h2>
+</a><a name="996909">
+The <code>AddWorkspace()</code> method initializes selection scroll states, color tables, and the event handler, sets up a listener to the workspace in G2, and displays the workspace view in Visual Basic.<p>
+</a><a name="996910">
+<h3> Syntax</h3>
+</a><ul><a name=996911">
+<pre><code>AddWorkspace(</code><code><em>Workspace</code></em><code> As G2Item,<br>&#32;&#32;&#32;[</code><code><em>UpdateWhenNotShown </code></em><code>As </code><code>Boolean</code><code>])</code></pre>
+</a><a name="996927">
+<table border="3">
+<caption></caption>
+<tr><th align="left" valign="middle"><a name="996916">
+<strong>Arguments </strong>
+</a><th align="left" valign="middle"><a name="996918">
+<strong>Description </strong>
+</a>
+<tr><td valign="middle"><a name="996920">
+<code><code><em>Workspace </code></em><code>As G2Item</code></code>
+</a><br><td valign="middle"><a name="996922">
+The workspace in G2 you want to display.
+</a><br>
+<tr><td valign="middle"><a name="996924">
+<code><code><em>UpdateWhenNot<br>Shown</code></em><code><em> </code></em><code>As Boolean</code></code>
+</a><br><td valign="middle"><a name="1001213">
+Overides the UpdateNewWorkspaces property for the specified workspace. If <code>true</code>, specifies that the hidden workspace be updated continuously and kept synchronized with the G2 server. If <code>false</code>, specifies that the hidden workspace be updated only when shown.
+</a><br>
+
+</table>
+
+<table>
+<tr><td>
+</table>
+<p>
+</a></ul><a name="1001353">
+<h3> Example</h3>
+</a><a name="1001366">
+In the following code example, the click event passes to the Visual Basic method <code>showWorkspace</code> the name of the workspace the user has selected for display. Inside the Visual Basic method <code>showWorkspace</code>, the <code>GetNamedItem</code> method of <code>G2UiGateway</code> gets the workspace from the G2 server. The <code>AddWorkspace</code> method adds the workspace to a <code>FrmT2Workspace</code> form, a chld form. The <code>ShowWorkspace</code> method makes the workspace visible in the workspace panel. The <code>FrmT2Workspace</code> form's caption is also updated.<p>
+</a><ul><a name=1001372">
+<pre>Private Sub Command1_Click()<br>&#32;&#32;&#32;Dim WorkspaceName As String</pre>
+</a><a name=1001375">
+<pre>&#32;&#32;&#32;WorkspaceName = List1.Text<br>&#32;&#32;&#32;Unload Me<br>&#32;&#32;&#32;showWorkspace (WorkspaceName)<br>End Sub</pre>
+</a><a name=1001379">
+<pre>Private Sub showWorkspace(name As String)<br>&#32;&#32;&#32;Dim NewWorkspace As New FrmT2Workspace<br>&#32;&#32;&#32;Dim G2Workspace As g2Item</pre>
+</a><a name=1001383">
+<pre>&#32;&#32;&#32;' Get the workspace and put it in the panel</pre>
+</a><a name=1001384">
+<pre>&#32;&#32;&#32;Set G2Workspace = G2Connector.GetNamedItem(name, "kb-workspace")<br>&#32;&#32;&#32;Call NewWorkspace.Panel.AddWorkspace(G2Workspace, True)<br>&#32;&#32;&#32;Call NewWorkspace.Panel.showWorkspace(G2Workspace)</pre>
+</a><a name=1001388">
+<pre>&#32;&#32;&#32;' Now update the dialog<br>&#32;&#32;&#32;NewWorkspace.Caption = name &amp; " (" &amp; G2Connector.G2Location &amp; " )"<br>&#32;&#32;&#32;NewWorkspace.Tag = G2Connector.G2Location<br>&#32;&#32;&#32;NewWorkspace.Show<br>End Sub</pre>
+</a></ul><a name="998535">
+For an illustration of displayed workspace, see <a href="introdu3.htm#13980">Viewing and Using Workspaces</a>.<p>
+</a><a name="1001495">
+<h2> ClearSelection()</h2>
+</a><a name="998536">
+The <code>ClearSelection()</code> method clears the selection on the current workspace.<p>
+</a><a name="998537">
+<h3> Syntax</h3>
+</a><ul><a name=998538">
+<pre><code>ClearSelection</code><code>() </code></pre>
+</a></ul><a name="998564">
+<h2> DeleteSelection()</h2>
+</a><a name="998565">
+The <code>DeleteSelection()</code> method deletes the items corresponding to each of the elements in the selection on the current workspace.<p>
+</a><a name="998566">
+<h3> Syntax</h3>
+</a><ul><a name=998567">
+<pre><code>DeleteSelection</code><code>() </code></pre>
+</a></ul><a name="998595">
+<h2> GetSelection()</h2>
+</a><a name="998596">
+The <code>GetSelection()</code> method gets a list of currently selected workspace elements.<p>
+</a><a name="998597">
+<h3> Syntax</h3>
+</a><ul><a name=1000047">
+<pre><code>GetSelection</code><code>() As G2Item</code></pre>
+</a></ul><a name="1000048">
+<h2> MoveSelection()</h2>
+</a><a name="1000049">
+The <code>MoveSelection()</code> method moves the current selection by the current deltas.<p>
+</a><a name="998640">
+<h3> Syntax</h3>
+</a><ul><a name=998641">
+<pre><code>MoveSelection</code><code>(</code><code><em>deltaX</code></em><code> As Long, </code><code><em>deltaY</code></em><code> As Long, </code><code><em>enlargeWorkspace</code></em><code> As Boolean) </code></pre>
+</a><a name="1000062">
+<table border="3">
+<caption></caption>
+<tr><th align="left" valign="middle"><a name="1000055">
+<strong>Arguments </strong>
+</a><th align="left" valign="middle"><a name="1000057">
+<strong>Description </strong>
+</a>
+<tr><td valign="middle"><a name="1000059">
+<code><code><em>deltaX </code></em><code>As Long</code></code>
+</a><br><td valign="middle"><a name="1000061">
+The number of pixels to move along left to right. A negative number causes the selection to move left.
+</a><br>
+<tr><td valign="middle"><a name="1000082">
+<code><code><em>deltaY </code></em><code>As Long</code></code>
+</a><br><td valign="middle"><a name="1000080">
+The number of pixels to move along up or down. A negative number causes the selection to move down
+</a><br>
+<tr><td valign="middle"><a name="1000074">
+<code><code><em>enlargeWorkspace<br></code></em><code>As Boolean</code></code>
+</a><br><td valign="middle"><a name="1000076">
+If <code>true</code>, specifies that the workspace resize as it moves. If <code>false</code>, specifies that the workspace move without resizing.
+</a><br>
+
+</table>
+
+<table>
+<tr><td>
+</table>
+<p>
+</a></ul><a name="998668">
+<h2> NextWorkspace()</h2>
+</a><a name="998669">
+The <code>NextWorkspace</code>() method displays the next workspace if it is listed in the history buffer.<p>
+</a><a name="998670">
+<h3> Syntax</h3>
+</a><ul><a name=998671">
+<pre><code>NextWorkspace</code>() </pre>
+</a></ul><a name="998700">
+<h2> PreviousWorkspace()</h2>
+</a><a name="998701">
+The <code>PreviousWorkspace</code>() method displays the previous workspace if it is listed in the history buffer.<p>
+</a><a name="998702">
+<h3> Syntax</h3>
+</a><ul><a name=998703">
+<pre><code>PreviousWorkspace</code>() </pre>
+</a></ul><a name="998737">
+<h2> RemoveWorkspace()</h2>
+</a><a name="998738">
+The <code>RemoveWorkspace</code>() method deletes the specified workspace from the workspace view.<p>
+</a><a name="998803">
+<h3> Syntax</h3>
+</a><ul><a name=1000175">
+<pre><code>RemoveWorkspace</code>(<code><em>Workspace</code></em> As G2Item)</pre>
+</a><a name="1000200">
+<table border="3">
+<caption></caption>
+<tr><th align="left" valign="middle"><a name="1000185">
+<strong>Argument</strong>
+</a><th align="left" valign="middle"><a name="1000187">
+<strong>Description </strong>
+</a>
+<tr><td valign="middle"><a name="1000189">
+<code><code><em>Workspace </code></em><code>As G2Item</code></code>
+</a><br><td valign="middle"><a name="1000191">
+The workspace you want to remove from the workspace panel.
+</a><br>
+
+</table>
+
+<table>
+<tr><td>
+</table>
+<p>
+</a></ul><a name="998879">
+<h2> SelectAll()</h2>
+</a><a name="998880">
+The <code>SelectAll</code>() method adds all of the workspace elements to the current selection.<p>
+</a><a name="998881">
+<h3> Syntax</h3>
+</a><ul><a name=998882">
+<pre><code>SelectAll</code>() </pre>
+</a></ul><a name="998921">
+<h2> ShowWorkspace()</h2>
+</a><a name="998922">
+The <code>ShowWorkspace</code>() method makes the specified KB workspace visible in a workspace panel. <p>
+</a><a name="998923">
+<h3> Syntax</h3>
+</a><ul><a name=998924">
+<pre><code>ShowWorkspace</code>(<code><em>Workspace</code></em> As G2Item) </pre>
+</a><a name="1000252">
+<table border="3">
+<caption></caption>
+<tr><th align="left" valign="middle"><a name="1000245">
+<strong>Argument</strong>
+</a><th align="left" valign="middle"><a name="1000247">
+<strong>Description </strong>
+</a>
+<tr><td valign="middle"><a name="1000249">
+<code><code><em>Workspace </code></em><code>As G2Item</code></code>
+</a><br><td valign="middle"><a name="1000251">
+The name of the workspace you want to want to make visible.
+</a><br>
+
+</table>
+
+<table>
+<tr><td>
+</table>
+<p>
+</a></ul><a name="1001434">
+<h3> Example</h3>
+</a><a name="1001441">
+For an example, see <a href="g2works3.htm#996906">AddWorkspace()</a>.<p>
+</a><a name="1001277">
+<p>
+</a>
+
+<h5><a href="g2works2.htm">| Prev </a> 
+  | Next
+  <a href="g2worksp.htm">| Start of Chapter </a>
+ <a href="__indext.htm">| Next Chapter </a> <a href="booktoc.htm">| Contents </a> <a href="glossary.htm">| Glossary </a> <a href="bookix.htm">| Index </a>  <a href="mailto:docs@gensym.com">| Comments | </a> (4 out of 4) </h5> <br>
+<A HREF="http://www.gensym.com"><IMG ALIGN = BOTTOM SRC = "logo.gif" height=51 width=162><A HREF="http://www.gensym.com"><h6>Gensym Corporation, Inc.</h6></A>
+<A HREF="titlepa1.htm"><h6>Copyright &#169; 1998 Gensym Corporation, Inc.</h6></A>
