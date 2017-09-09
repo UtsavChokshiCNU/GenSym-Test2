@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="02/06/02 18:48:01">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>How Processes Interacts</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="threads3.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="threads5.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+      <div align="center"><b>e-SCOR User's Guide</b></div>
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/e-SCOR/OnlineHelpFiles/UsersGuide/html/threads.htm">  
+        What Happens When the Simulation Runs  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+How Processes Interacts
+</h2>
+<p>When you run the simulation for a model, e-SCOR performs these high-level processes, which interact with each other as this figure shows:<a name="198427"></a></p>
+<p >
+  <a name="152757"> </a>
+<p><div align="left"><img src="images/threaa13.gif" border="0" hspace="0" vspace="0">
+</div><a name="152756"></a></p>
+
+
+
+</p>
+<p>This diagram assumes the model does not use contracts.<a name="144896"></a></p>
+<p>As the diagram illustrates, each process initiates, based on some triggering event or some other process, and certain processes trigger other process. Here is a high-level description of each process in terms of the triggering event, the high-level task it performs, and the process it triggers, where relevant:<a name="303491"></a></p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580"><b><a href="threads5.htm#116809">Role Verification process</a></b><a name="152848"></a></td>  </tr></table><blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>-</b></td>    <td valign="top" width="560">Initiates when the simulation starts and takes 1 second.<a name="151253"></a></td>  </tr></table></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>-</b></td>    <td valign="top" width="560">Determines available suppliers for source products.<a name="152881"></a></td>  </tr></table></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>-</b></td>    <td valign="top" width="560">Coordinates pull and push planning.<a name="151257"></a></td>  </tr></table></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580"><b><a href="threads6.htm#265529">Order/Product process</a></b><a name="109395"></a></td>  </tr></table><blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>-</b></td>    <td valign="top" width="560">Initiates based on customer orders from Consumer role or replenishment orders from Source Planning process.<a name="151476"></a></td>  </tr></table></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>-</b></td>    <td valign="top" width="560">Sends orders to suppliers for source products.<a name="151259"></a></td>  </tr></table></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>-</b></td>    <td valign="top" width="560">Initiates order selection, based on customer or replenishment orders, or based on the Build process.<a name="151547"></a></td>  </tr></table></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>-</b></td>    <td valign="top" width="560">Processes and fulfills those orders by sending product shipments to buyers. <a name="151544"></a></td>  </tr></table></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>-</b></td>    <td valign="top" width="560">Triggers the Financial process when products get shipped.<a name="151228"></a></td>  </tr></table></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580"><b><a href="threads7.htm#103348">Build process</a></b><a name="109418"></a></td>  </tr></table><blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>-</b></td>    <td valign="top" width="560">Initiates based on a cyclical Make Planning process or by receiving source products, based on Order/Product process.<a name="151569"></a></td>  </tr></table></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>-</b></td>    <td valign="top" width="560">Processes build orders and manufactures finished products.<a name="151581"></a></td>  </tr></table></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>-</b></td>    <td valign="top" width="560">Triggers Order/Product process when finished product is released.<a name="151592"></a></td>  </tr></table></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580"><b><a href="thread12.htm#108630">Financial process</a></b><a name="109434"></a></td>  </tr></table><blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>-</b></td>    <td valign="top" width="560">Initiates based on customer orders from Consumer role or replenishment orders from Source Planning process.<a name="151607"></a></td>  </tr></table></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>-</b></td>    <td valign="top" width="560">Performs accounting of financial collections and payments, both ongoing and per Financial Period.<a name="151614"></a></td>  </tr></table></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>-</b></td>    <td valign="top" width="560">Updates asset metrics, based on costs and inventory once every Financial Period.<a name="151654"></a></td>  </tr></table></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580"><b><a href="thread17.htm#251378">Make Planning process</a></b><a name="135991"></a></td>  </tr></table><blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>-</b></td>    <td valign="top" width="560">Initiates on a regular planning cycle.<a name="151673"></a></td>  </tr></table></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>-</b></td>    <td valign="top" width="560">Plan when Base Manufacturer and Manufacture roles manufacture delivery products.<a name="151693"></a></td>  </tr></table></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>-</b></td>    <td valign="top" width="560">Triggers the Build process.<a name="151697"></a></td>  </tr></table></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580"><b><a href="thread18.htm#139218">Source Planning process</a></b><a name="139574"></a></td>  </tr></table><blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>-</b></td>    <td valign="top" width="560">Initiates on a regular planning cycle.<a name="151698"></a></td>  </tr></table></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>-</b></td>    <td valign="top" width="560">Plans when Distributor and Manufacturer roles create replenishment orders for source products.<a name="151744"></a></td>  </tr></table></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>-</b></td>    <td valign="top" width="560">Triggers the Order/Product process.<a name="151841"></a></td>  </tr></table></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580"><b><a href="thread19.htm#252317">Contracts process</a></b><a name="151909"></a></td>  </tr></table><blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>-</b></td>    <td valign="top" width="560">Initiates based on Source Planning process.<a name="162590"></a></td>  </tr></table></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>-</b></td>    <td valign="top" width="560">Chooses suppliers and determines order size, based on contracts.<a name="162612"></a></td>  </tr></table></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>-</b></td>    <td valign="top" width="560">Can split the order among multiple suppliers.<a name="162605"></a></td>  </tr></table></blockquote> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="threads3.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="threads5.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
