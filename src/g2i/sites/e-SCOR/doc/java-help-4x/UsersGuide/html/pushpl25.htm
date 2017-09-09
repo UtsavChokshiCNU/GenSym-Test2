@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="02/06/02 18:48:35">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Manufacturer Role that Uses Pull-Push</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="pushpl24.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="pushpl26.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+      <div align="center"><b>e-SCOR User's Guide</b></div>
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/e-SCOR/OnlineHelpFiles/UsersGuide/html/pushplan.htm">  
+        Using Pull and Push Planning Modes  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Manufacturer Role that Uses Pull-Push
+</h2>
+<p>The following table describes the behavior of a model in which a Manufacturer role's Source Type is pull and its Delivery Type is push. The numbers represent the order in which the planning events occur. Push mode of the delivery phase takes precedence over pull mode of the source phase in terms of when planning takes place.<a name="7684"></a></p>
+<p >
+  <a name="7712"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="7687"><div >Process Category</a></div></th>
+    <th><a name="7689"><div >When</a></div></th>
+    <th><a name="7691"><div >How Much</a></div></th>
+  </tr>
+  <tr>
+    <td><p>Make<br>(push)<a name="7693"></a></p>
+</td>
+    <td><p>1) Creates internal build orders for finished products, based on the Push Amount, which takes place based on its make planning cycle (P3: Plan Make).<a name="7695"></a></p>
+</td>
+    <td><p>Makes as many finished products as it has build orders, which depends indirectly on inventory levels for components.<a name="7697"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Deliver<br>(push)<a name="7699"></a></p>
+</td>
+    <td><p>2) Creates internal replenishment orders for finished products, based on internal build orders, which takes place based on the same make planning cycle (P3: Plan Make) as the internal build orders for finished products.<a name="7701"></a></p>
+<p>3) Delivers finished products whenever it can, based on inventory levels for finished products.<a name="7702"></a></p>
+</td>
+    <td><p>Delivers as many finished products as it has replenishment orders, which depends indirectly on inventory levels for components.<a name="7704"></a></p>
+<p>The Push Amount of the delivery product is ignored.<a name="7705"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Source<br>(pull)<a name="7707"></a></p>
+</td>
+    <td><p>4) Sources components, based on the source planning cycle (P2: Plan Source).<a name="7709"></a></p>
+</td>
+    <td><p>Sources components, based on build orders for finished products. Determines the amount to source, based on customer orders for finished products, the Replenishment Threshold, and the current inventory level of the source product.<a name="7711"></a></p>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="pushpl24.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="pushpl26.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
