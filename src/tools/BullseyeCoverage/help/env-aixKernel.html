@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_platform.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+AIX Kernel
+</h1>
+<p>
+<ol>
+<li>
+Add <i>BullseyeCoverage</i><code>/lib/libcov-kernel.a</code> to your link command.
+<li>
+Export the symbol <code>cov_kernel</code>.
+For example, add the 
+<a href="http://publib.boulder.ibm.com/infocenter/pseries/v5r3/topic/com.ibm.aix.cmds/doc/aixcmds3/ld.htm">ld</a>
+option <code>-Bexport=cov_kernel</code> to your link command.
+<li>
+Enable <a href=build_coverageBuild.html>coverage build</a>
+and build as usual.
+<li>
+After testing your kernel code, run the command <a href=ref_covgetkernel.html>covgetkernel</a>
+to save coverage measurements from memory to the coverage file.
+<li>
+View a <a href=index_report.html>coverage report</a> as usual.
+</ol>
+<p>
+Environment variable
+<a href="ref_environment.html#COVAUTOSAVE">COVAUTOSAVE</a>
+has no effect.
+
+<p style="font-size:xx-small">
+Last reviewed: 2 Dec 2008
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
