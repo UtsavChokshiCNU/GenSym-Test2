@@ -1,0 +1,62 @@
+#!/bin/csh -f
+
+#### Introduction
+
+### This script is fired from the ab's crontab entry on the machine called corp9
+### (or corp8 or pythia).  That machine is utilized for the eternal translate and 
+### the licensing server.  This script's job is to worry about keeping those
+### running. 
+###
+### If it notices that the licensing server has died it will launch
+### a fresh one.
+###
+### Note that corp8 is the backup machine for corp9.  The plan
+### is to have it run on both machines.  To have it run on either one
+### be logged in on the machine as lserv, cd /home/mhd/tmp/lserv/, and execute
+### this command: crontab corp9.crontab
+###
+### Note that the fact that the licensing server now uses local file unique
+### to each machine runs on permits more than one machine to run the licensing
+### server.
+
+onintr cleanup
+
+
+#### Check environment, etc.
+
+if (( corp9 != `hostname` ) && ( corp8 != `hostname` ) && ( pythia != `hostname` )) then 
+  echo "LOG: `date`  this is only useful if run on corp9 or corp8 or pythia"
+  exit 1
+endif
+
+
+
+
+#### Watchdog for Licensing Server
+
+echo "LOG `date` Check on licensing server"
+
+setenv LS_SERVER_HOST `hostname`
+/usr/.lserv/licensing-client -u guest -p anonymous noop > /tmp/$$
+unsetenv LS_SERVER_HOST
+if( { grep -s 'Have a nice day.' /tmp/$$ } ) then
+  echo "LOG `date` He is running."
+else
+  echo "LOG `date` He is not running, attempt to restart him."
+  /usr/.lserv/corp9-launch-licensing-server sUGAr
+endif
+
+
+
+
+
+
+#### Watchdog for eternal recompile
+
+### TBD
+
+
+
+
+cleanup:
+rm -rf /tmp/$$
