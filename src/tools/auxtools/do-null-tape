@@ -1,0 +1,42 @@
+#!/bin/csh
+# See the following file for documentation.
+source auxtools/wtape-init.csh
+
+# This script is used to write the "null-tape" media.  It doesn't really do
+# anything, but it would be a fine place to do some additional validation of the
+# release directory.
+
+# This is used as a way to test make-gensym-tape without bothering to write a
+# tape.
+
+switch ($command)
+  case "write":
+    echo "LOG: null tape attempting to list product contents..."
+    ls -lLR $release_directory
+    set result = $status
+    breaksw
+  case "online":
+    echo "LOG: null tape is now online."
+    set result = 0
+    breaksw
+  case "rewind":
+    echo "LOG: null tape is now rewound."
+    set result = 0
+    breaksw
+  case "offline":
+    echo "LOG: null tape is now offline."
+    set result = 0
+    breaksw
+  case default :
+    echo "ERROR: null tape received unrecognized command $command"
+    set result = 1
+    breaksw
+endsw
+
+if ($result) then
+  echo "ERROR: null tape failed for command $command"
+else
+  echo "LOG: null tape command succeeded"
+endif
+
+exit $result
