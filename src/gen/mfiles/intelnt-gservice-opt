@@ -1,0 +1,23 @@
+PRODUCT = gservice
+ODIR = opt
+PLATFORM = intelnt
+CDIR = $(SRCBOX)\$(PRODUCT)\c
+TAPEDST = $(DSTBOX)\$(PRODUCT)\tape
+
+
+all: gservice.exe
+
+gservice.exe: $(CDIR)\gservice.c $(CDIR)\gservice.h gservice.res
+	cl $(CDIR)\gservice.c gservice.res advapi32.lib version.lib
+
+gservice.res: $(CDIR)\gservice.rc
+	- del gservice.res
+	rc.exe /fo"gservice.res" $(CDIR)\gservice.rc
+
+install: gservice.exe
+	- echo y | rmdir /s $(TAPEDST)
+	mkdir $(TAPEDST)
+	copy gservice.exe $(TAPEDST)\gservice.exe
+
+clean:
+	del *.exe
