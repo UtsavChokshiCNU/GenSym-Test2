@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_platform.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>Tensilica Xtensa</h1>
+<p>
+The Xtensa Xplorer Development Environment cannot be configured
+to build using BullseyeCoverage.
+You can build with BullseyeCoverage using the command line compiler.
+This information applies to the Xtensa tools version 2.1.3.
+
+<h2>Build Run-Time Library</h2>
+<p>
+Invoke a command shell with the environment variables set properly to invoke the Xtensa compiler for your project.
+For example, use the Windows start menu command Programs: RB-2009.5 Diamond: DC_B_108mini CMD Shell.
+<p>
+Use the commands below to build the BullseyeCoverage run-time library.
+Modify the compile command to use the same compile options as your project.
+<pre>
+cd %ProgramFiles%\BullseyeCoverage\run
+xt-xcc -c -O libcov-xtensa.c
+xt-ar -cr ../lib/libcov-xtensa.a
+</pre>
+
+<h2>Build Project</h2>
+<p>
+Invoke a command shell as described above.
+<ol>
+<li>
+Make a copy of the device-specific <code>Makefile</code> for your project.
+For example,
+<pre>
+cd workspace\HelloWorld\bin\DC_B_108mini\Debug
+copy Makefile Makefile.BullseyeCoverage
+</pre>
+<li>
+Modify the copy to invoke the BullseyeCoverage compiler interceptor rather than the real compiler.
+For example, add this line to the top of the makefile:
+<pre>
+bindir = C:/Program Files/BullseyeCoverage/bin
+</pre>
+<p>
+Change the compiler invocations from this:
+<pre>
+C:/xtensa/XtDevToolsDE/install/tools/RB-2009.5-win32/XtensaTools/bin/xt-xc++ ...
+</pre>
+to this:
+<pre>
+"$(bindir)/xt-xc++" ...
+</pre>
+<li>
+Enable coverage build and rebuild the project:
+<pre>
+cov01 -1
+make -f Makefile.BullseyeCoverage clean all
+</pre>
+</ol>
+
+<h2>Run under Instruction Set Simulator</h2>
+<p>
+The BullseyeCoverage run-time uses the Xtensa Instruction Set Simulator semi-hosting to perform file i/o.
+<p>
+The BullseyeCoverage run-time reads environment variables from the file <code>/BullseyeCoverageEnv.txt</code>, which is located on the host system.
+This ASCII text file has the format below.
+<pre>
+<i>name1</i>=<i>value1</i>
+<i>name2</i>=<i>value2</i>
+<i>...</i>
+</pre>
+<p>
+Set <code>COVFILE</code> to match the host system setting.
+<pre>
+COVFILE=<i>(same setting as host system)</i>
+</pre>
+
+<p style="font-size:xx-small">
+Last reviewed: 4 Sep 2009
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
