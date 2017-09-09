@@ -1,0 +1,294 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_platform.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>Custom and Embedded Environments</h1>
+<p>
+This topic does not apply to embedded systems running POSIX/Unix compliant operating systems such as Linux.
+For instructions to build the run-time for such systems, see <a href=env-unix.html>Unix</a>.
+<h2>Contents</h2>
+<ul>
+<li><a href="#1">CPU Support</a>
+<li><a href="#2">Compiler Support</a>
+<li><a href="#3">Core Run-time Functions</a>
+<li><a href="#4">Optional Run-time Functions</a>
+<li><a href="#5">File I/O Implementation Requirements</a>
+<li><a href="#6">Memory Requirements</a>
+<li><a href="#7">Porting Procedure</a>
+<li><a href="#8">Build Options</a>
+</ul>
+<h2><a name=1></a>CPU Support</h2>
+<p>
+BullseyeCoverage can support any CPU with a size of <code>int</code> of 32-bits or more.
+<h2><a name=2></a>Compiler Support</h2>
+<p>
+BullseyeCoverage must have support for your specific compiler regardless of how
+well the compiler conforms to standards.
+This is because all compilers have extensions and
+the standards do not cover command line option syntax.
+<p>
+For a full list of supported embedded system compilers, see
+<a href="http://www.bullseye.com/platform.html">BullseyeCoverage Platform Support</a>.
+If your compiler is not yet supported,
+contact <a href="http://www.bullseye.com/support.html">Technical Support</a>
+so that we can determine whether we can add support for your compiler.
+<h2><a name=3></a>Core Run-time Functions</h2>
+<p>
+The functions listed below support the operation of the run-time library.
+They are already implemented for many platforms, provided in the <code>run</code> subdirectory.
+Otherwise, you must provide working implementations.
+<ul>
+<li>
+<code>open</code>
+<p>
+This function must be defined according to the Open Group Single UNIX Specification for
+<a href="http://www.opengroup.org/onlinepubs/009695399/functions/open.html">open</a>,
+except the run-time uses only the arguments shown below.
+<pre>
+open(<i>path</i>, O_RDONLY, 0)
+open(<i>path</i>, O_RDWR, 0)
+open(<i>path</i>, O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR)
+</pre>
+<p>
+<li>
+<code>write</code>
+<p>
+This function must be defined according to the Open Group Single UNIX Specification for
+<a href="http://www.opengroup.org/onlinepubs/009695399/functions/write.html">write</a>.
+<pre>
+write(<i>fildes</i>, <i>buf</i>, <i>nbyte</i>)
+</pre>
+The run-time reports errors by calling <code>write</code> with file descriptor 2
+(the value of <a href="http://www.opengroup.org/onlinepubs/009695399/basedefs/unistd.h.html">STDERR_FILENO</a>).
+<pre>
+write(2, <i>errorMessage</i>, <i>errorMessageLength</i>)
+</pre>
+<p>
+<li>
+<code>close</code>,
+<code>read</code>,
+<code>lseek</code>
+<p>
+These functions must be defined according to the Open Group Single UNIX Specification for
+<a href="http://www.opengroup.org/onlinepubs/009695399/functions/close.html">close</a>,
+<a href="http://www.opengroup.org/onlinepubs/009695399/functions/read.html">read</a>,
+<a href="http://www.opengroup.org/onlinepubs/009695399/functions/lseek.html">lseek</a>.
+<p>
+<li>
+<code>cov_atomic_tryLock</code>,
+<code>cov_atomic_unlock</code>
+<p>
+The run-time uses these functions to synchronize multiple threads.
+They are defined in <code>run/atomic.h</code>.
+This source already supports many compiler/CPU combinations.
+</ul>
+<h2><a name=4></a>Optional Run-time Functions</h2>
+<p>
+The functions listed below must be defined,
+however they can remain stubbed as provided in the source file
+<code>run/libcov-user.c</code>.
+<ul>
+<li>
+<code>atexit</code>
+<p>
+The run-time uses this function to save coverage upon program termination.
+See the Open Group Single UNIX Specification for
+<a href="http://www.opengroup.org/onlinepubs/009695399/functions/atexit.html">atexit</a>.
+<p>
+<li>
+<code>fcntl</code>
+<p>
+The run-time uses this function to synchronize access to the coverage file among multiple threads and processes.
+See the Open Group Single UNIX Specification for
+<a href="http://www.opengroup.org/onlinepubs/009695399/functions/fcntl.html">fcntl</a>.
+The run-time uses only the arguments shown below.
+<pre>
+fcntl(<i>fildes</i>, F_SETLKW, <i>arg</i>)
+</pre>
+<p>
+<li>
+<code>getcwd</code>
+<p>
+See the Open Group Single UNIX Specification for
+<a href="http://www.opengroup.org/onlinepubs/009695399/functions/getcwd.html">getcwd</a>.
+<p>
+<li>
+<code>getenv</code>
+<p>
+See the Open Group Single UNIX Specification for
+<a href="http://www.opengroup.org/onlinepubs/009695399/functions/getenv.html">getenv</a>.
+<p>
+<li>
+<code>nanosleep</code>,
+<code>pthread_create</code>,
+<code>pthread_exit</code>,
+<code>pthread_join</code>
+<p>
+The run-time uses these functions to automatically save coverage periodically.
+See the Open Group Single UNIX Specification for
+<a href="http://www.opengroup.org/onlinepubs/009695399/functions/nanosleep.html">nanosleep</a>,
+<a href="http://www.opengroup.org/onlinepubs/009695399/functions/pthread_create.html">pthread_create</a>,
+<a href="http://www.opengroup.org/onlinepubs/009695399/functions/pthread_exit.html">pthread_exit</a>,
+<a href="http://www.opengroup.org/onlinepubs/009695399/functions/pthread_join.html">pthread_join</a>.
+</ul>
+<h2><a name=5></a>File I/O Implementation Requirements</h2>
+<p>
+The BullseyeCoverage run-time both reads and writes the coverage file, which is
+created during the build process.
+The BullseyeCoverage run-time requires access to the entire coverage file.
+The size of the coverage file is proportional to the size of the test program.
+You can estimate the size of the coverage file by compiling a test
+program, or the sample programs supplied with BullseyeCoverage.
+The number of bytes read or written in each operation varies from 1 to 512 bytes.
+The BullseyeCoverage run-time updates the coverage file when the test program calls
+<a href=ref_cov_write.html>cov_write</a>.
+This function updates the information which has changed since the last call.
+If no coverage has changed, no file i/o activity occurs.
+The coverage file format is extremely complex, subject to frequent
+change, and therefore undocumented.
+<p>
+One possible design which meets these requirements is to
+have <code>open</code> download the coverage file from the host system
+into the embedded system memory via a serial port or network card and
+<code>close</code> upload the file back to the host system.
+Then <code>read</code>, <code>write</code>, and <code>lseek</code> can
+access the file directly and quickly in memory.
+<p>
+Another possible design is for each i/o function to forward the request
+to the host system; transferring data when needed.
+<p>
+The size of data transferred is difficult to predict but here is an estimate.
+Each call to <code>cov_write</code> transfers data in both directions in
+blocks ranging in size from 1 to 512 bytes.
+Typically there are a number of small downloads on the order of 4-8 bytes.
+The number of these is a multiple of the number of object files in your program.
+Interspersed will be fewer, bigger downloads and uploads ranging from
+100 to 512 bytes, proportional to the size of your object files.
+BullseyeCoverage only transfers the larger blocks when some coverage info changes
+so in general you should see a decrease in activity with each call to
+<code>cov_write</code> as time goes on.
+If you call <code>cov_write</code> just once at program end, you should expect the total data
+transfer approximately equal to the size of the coverage file, in both
+directions.
+<h2><a name=6></a>Memory Requirements</h2>
+<p>
+Code size generally increases by about 1.4x.
+The increase varies, depending on the compiler brand, compiler optimization settings, and CPU architecture.
+<p>
+The run-time library occupies approximately 3KB code and 5KB data compiled with GCC for x86.
+For each source file instrumented, BullseyeCoverage adds a data structure in
+memory about 32 bytes plus one byte for each probe in that source file.
+Each probe corresponds to a function entry, condition, decision, switch
+label or exception handler.
+<h2><a name=7></a>Porting Procedure</h2>
+<p>
+These steps describe how to port the BullseyeCoverage run-time to a new environment.
+Keep us apprised of your progress to reduce the risk of back tracking due to
+misunderstanding the run-time requirements.
+Read all these steps before beginning work.
+<ol>
+<li>
+Enable <a href=build_coverageBuild.html>Coverage Build</a>
+and verify your build procedure invokes BullseyeCoverage.
+You should see the banner shown below in your build log each time the compiler is invoked.
+<pre>
+BullseyeCoverage Compile C++ <i>version platform</i>
+Copyright (c) Bullseye Testing Technology 1990-<i>year</i>
+</pre>
+<p>
+If you do not see the banner,
+see <a href=trouble_coverageBuild.html>Coverage Build Does Not Take Effect </a> or
+contact us.
+<p>
+It is normal to see link errors at this step.
+After you compile, <a href=index_report.html>look at a coverage report</a>.
+The measurements show all 0%, but you see what will be measured.
+<p>
+<li>
+Build the BullseyeCoverage run-time
+user-defined platform source file <code>run/libcov-user.c</code>,
+which contains stubs for all functions.
+<p>
+If you see an error in <code>run/atomic-user.h</code> (due to a <code>#error</code> directive),
+then the functions in that source file need implementation now.
+See the comments in that file.
+Contact us for assistance.
+<p>
+You should see no compile errors before moving on.
+<p>
+<li>
+Link a test program with the library created in the previous step.
+You should see no link errors before moving on.
+<p>
+<li>
+Modify <code>run/libcov-user.c</code> to implement the core functions described above.
+The first and most important function to implement is <code>write(2,<i>buf</i>,<i>nbyte</i>)</code>,
+which displays error messages.
+By implementing this function first,
+you can more easily diagnose problems with the other function implementations.
+After implementing the core functions, then implement any optional functions that are feasible.
+<p>
+Iteratively re-link and run your test program to try out your changes.  When the
+coverage reports show all expected measurements and you get no run-time errors,
+your port is complete.
+<p>
+Linking does not change the coverage file.
+You only need to download the coverage file after compiling the test program.
+<p>
+<li>
+Send us your changes to <code>run/libcov-user.c</code>.
+We will inspect your code and verify that it complies with our run-time requirements.
+We can incorporate your code into our release distribution so that you do not
+need to apply patches when you receive updates.
+By maintaining your port in our distribution, we can take your run-time
+requirements into consideration when we make architectural changes in the
+future.
+</ol>
+<h2><a name=8></a>Build Options</h2>
+<p>
+The macro settings listed below select optional run-time configurations.
+<table border=1>
+<tr><td>
+<code>-DLibcov_covfile=\"<i>path</i>\"</code>
+<td>
+If environment variable <code>COVFILE</code> is not set or if <code>getenv</code> is not available,
+look for the coverage file at <i>path</i>.
+<tr><td>
+<code>-DLibcov_noAutoSave</code>
+<td>
+Do not include code to create the auto-save thread.
+</table>
+<p style="font-size:xx-small">
+Last reviewed: 11 Jan 2010
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
