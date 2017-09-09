@@ -1,0 +1,40 @@
+HKCR
+{
+	ForceRemove G2ItemHolder.G2ItemHolder.2 = s 'G2ItemHolder 2.0'
+	{
+		CLSID = s '{37760294-1CC3-11D2-86C7-00008618F471}'
+        'Insertable'
+	}
+	ForceRemove G2ItemHolder.G2ItemHolder.1 = s 'G2ItemHolder 1.0'
+	{
+		CLSID = s '{37760294-1CC3-11D2-86C7-00008618F471}'
+        'NotInsertable'
+	}
+	ForceRemove G2ItemHolder.G2ItemHolder = s 'G2ItemHolder'
+	{
+		CLSID = s '{37760294-1CC3-11D2-86C7-00008618F471}'
+		CurVer = s 'G2ItemHolder.G2ItemHolder.2'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {37760294-1CC3-11D2-86C7-00008618F471} = s 'G2ItemHolder 2.0'
+		{
+			ProgID = s 'G2ItemHolder.G2ItemHolder.2'
+			VersionIndependentProgID = s 'G2ItemHolder.G2ItemHolder'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			ForceRemove 'Control'
+			ForceRemove 'Programmable'
+			ForceRemove 'Insertable'
+			ForceRemove 'ToolboxBitmap32' = s '%MODULE%, 205'
+			'MiscStatus' = s '0'
+			{
+			    '1' = s '132497'
+			}
+			'TypeLib' = s '{42B6C7E0-06C1-11d2-8698-00008618F471}'
+			'Version' = s '1.0'
+		}
+	}
+}
