@@ -1,0 +1,204 @@
+SHELL = /bin/sh
+PRODUCT = fonts
+ODIR = opt
+PLATFORM = sparcsol
+CDIR = $(SRCBOX)/$(PRODUCT)/c
+FONTPROMDIR = $(SRCBOX)/promote/fonts
+HELPERDIR = /home/development/helpers
+KBDIR = $(SRCBOX)/kbs
+MFDIR = $(DSTBOX)/$(PRODUCT)/$(ODIR)
+PROMDIR = $(SRCBOX)/promote
+SCRIPTSDIR = /home/development/scripts
+TAPEDST = $(SANDBOX)/stage/$(PRODUCT)
+TESTDST = $(DSTBOX)/$(PRODUCT)/test
+CONTENTS = $(SANDBOX)/stage/$(PRODUCT)/contents.txt
+
+install : 
+	- rm -rf $(TAPEDST)
+	mkdir $(TAPEDST)
+	echo "j16_0.gb   `sum $(FONTPROMDIR)/j16_0.gb` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/j16_0.gb $(TAPEDST)/j16_0.gb
+	chmod 444 $(TAPEDST)/j16_0.gb
+	echo "j16_1.gb   `sum $(FONTPROMDIR)/j16_1.gb` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/j16_1.gb $(TAPEDST)/j16_1.gb
+	chmod 444 $(TAPEDST)/j16_1.gb
+	echo "j16_2.gb   `sum $(FONTPROMDIR)/j16_2.gb` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/j16_2.gb $(TAPEDST)/j16_2.gb
+	chmod 444 $(TAPEDST)/j16_2.gb
+	echo "j24_0.gb   `sum $(FONTPROMDIR)/j24_0.gb` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/j24_0.gb $(TAPEDST)/j24_0.gb
+	chmod 444 $(TAPEDST)/j24_0.gb
+	echo "j24_1.gb   `sum $(FONTPROMDIR)/j24_1.gb` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/j24_1.gb $(TAPEDST)/j24_1.gb
+	chmod 444 $(TAPEDST)/j24_1.gb
+	echo "j24_2.gb   `sum $(FONTPROMDIR)/j24_2.gb` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/j24_2.gb $(TAPEDST)/j24_2.gb
+	chmod 444 $(TAPEDST)/j24_2.gb
+	echo "k16_0.gb   `sum $(FONTPROMDIR)/k16_0.gb` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/k16_0.gb $(TAPEDST)/k16_0.gb
+	chmod 444 $(TAPEDST)/k16_0.gb
+	echo "k16_1.gb   `sum $(FONTPROMDIR)/k16_1.gb` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/k16_1.gb $(TAPEDST)/k16_1.gb
+	chmod 444 $(TAPEDST)/k16_1.gb
+	echo "k16_2.gb   `sum $(FONTPROMDIR)/k16_2.gb` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/k16_2.gb $(TAPEDST)/k16_2.gb
+	chmod 444 $(TAPEDST)/k16_2.gb
+	echo "k24_0.gb   `sum $(FONTPROMDIR)/k24_0.gb` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/k24_0.gb $(TAPEDST)/k24_0.gb
+	chmod 444 $(TAPEDST)/k24_0.gb
+	echo "k24_1.gb   `sum $(FONTPROMDIR)/k24_1.gb` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/k24_1.gb $(TAPEDST)/k24_1.gb
+	chmod 444 $(TAPEDST)/k24_1.gb
+	echo "k24_2.gb   `sum $(FONTPROMDIR)/k24_2.gb` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/k24_2.gb $(TAPEDST)/k24_2.gb
+	chmod 444 $(TAPEDST)/k24_2.gb
+	echo "minm_00.spd   `sum $(FONTPROMDIR)/minm_00.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_00.spd $(TAPEDST)/minm_00.spd
+	chmod 444 $(TAPEDST)/minm_00.spd
+	echo "minm_81.spd   `sum $(FONTPROMDIR)/minm_81.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_81.spd $(TAPEDST)/minm_81.spd
+	chmod 444 $(TAPEDST)/minm_81.spd
+	echo "minm_81v.spd   `sum $(FONTPROMDIR)/minm_81v.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_81v.spd $(TAPEDST)/minm_81v.spd
+	chmod 444 $(TAPEDST)/minm_81v.spd
+	echo "minm_82.spd   `sum $(FONTPROMDIR)/minm_82.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_82.spd $(TAPEDST)/minm_82.spd
+	chmod 444 $(TAPEDST)/minm_82.spd
+	echo "minm_82v.spd   `sum $(FONTPROMDIR)/minm_82v.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_82v.spd $(TAPEDST)/minm_82v.spd
+	chmod 444 $(TAPEDST)/minm_82v.spd
+	echo "minm_83.spd   `sum $(FONTPROMDIR)/minm_83.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_83.spd $(TAPEDST)/minm_83.spd
+	chmod 444 $(TAPEDST)/minm_83.spd
+	echo "minm_83v.spd   `sum $(FONTPROMDIR)/minm_83v.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_83v.spd $(TAPEDST)/minm_83v.spd
+	chmod 444 $(TAPEDST)/minm_83v.spd
+	echo "minm_84.spd   `sum $(FONTPROMDIR)/minm_84.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_84.spd $(TAPEDST)/minm_84.spd
+	chmod 444 $(TAPEDST)/minm_84.spd
+	echo "minm_85.spd   `sum $(FONTPROMDIR)/minm_85.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_85.spd $(TAPEDST)/minm_85.spd
+	chmod 444 $(TAPEDST)/minm_85.spd
+	echo "minm_86.spd   `sum $(FONTPROMDIR)/minm_86.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_86.spd $(TAPEDST)/minm_86.spd
+	chmod 444 $(TAPEDST)/minm_86.spd
+	echo "minm_87.spd   `sum $(FONTPROMDIR)/minm_87.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_87.spd $(TAPEDST)/minm_87.spd
+	chmod 444 $(TAPEDST)/minm_87.spd
+	echo "minm_87v.spd   `sum $(FONTPROMDIR)/minm_87v.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_87v.spd $(TAPEDST)/minm_87v.spd
+	chmod 444 $(TAPEDST)/minm_87v.spd
+	echo "minm_88.spd   `sum $(FONTPROMDIR)/minm_88.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_88.spd $(TAPEDST)/minm_88.spd
+	chmod 444 $(TAPEDST)/minm_88.spd
+	echo "minm_89.spd   `sum $(FONTPROMDIR)/minm_89.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_89.spd $(TAPEDST)/minm_89.spd
+	chmod 444 $(TAPEDST)/minm_89.spd
+	echo "minm_8a.spd   `sum $(FONTPROMDIR)/minm_8a.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_8a.spd $(TAPEDST)/minm_8a.spd
+	chmod 444 $(TAPEDST)/minm_8a.spd
+	echo "minm_8b.spd   `sum $(FONTPROMDIR)/minm_8b.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_8b.spd $(TAPEDST)/minm_8b.spd
+	chmod 444 $(TAPEDST)/minm_8b.spd
+	echo "minm_8c.spd   `sum $(FONTPROMDIR)/minm_8c.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_8c.spd $(TAPEDST)/minm_8c.spd
+	chmod 444 $(TAPEDST)/minm_8c.spd
+	echo "minm_8d.spd   `sum $(FONTPROMDIR)/minm_8d.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_8d.spd $(TAPEDST)/minm_8d.spd
+	chmod 444 $(TAPEDST)/minm_8d.spd
+	echo "minm_8e.spd   `sum $(FONTPROMDIR)/minm_8e.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_8e.spd $(TAPEDST)/minm_8e.spd
+	chmod 444 $(TAPEDST)/minm_8e.spd
+	echo "minm_8f.spd   `sum $(FONTPROMDIR)/minm_8f.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_8f.spd $(TAPEDST)/minm_8f.spd
+	chmod 444 $(TAPEDST)/minm_8f.spd
+	echo "minm_90.spd   `sum $(FONTPROMDIR)/minm_90.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_90.spd $(TAPEDST)/minm_90.spd
+	chmod 444 $(TAPEDST)/minm_90.spd
+	echo "minm_91.spd   `sum $(FONTPROMDIR)/minm_91.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_91.spd $(TAPEDST)/minm_91.spd
+	chmod 444 $(TAPEDST)/minm_91.spd
+	echo "minm_92.spd   `sum $(FONTPROMDIR)/minm_92.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_92.spd $(TAPEDST)/minm_92.spd
+	chmod 444 $(TAPEDST)/minm_92.spd
+	echo "minm_93.spd   `sum $(FONTPROMDIR)/minm_93.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_93.spd $(TAPEDST)/minm_93.spd
+	chmod 444 $(TAPEDST)/minm_93.spd
+	echo "minm_94.spd   `sum $(FONTPROMDIR)/minm_94.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_94.spd $(TAPEDST)/minm_94.spd
+	chmod 444 $(TAPEDST)/minm_94.spd
+	echo "minm_95.spd   `sum $(FONTPROMDIR)/minm_95.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_95.spd $(TAPEDST)/minm_95.spd
+	chmod 444 $(TAPEDST)/minm_95.spd
+	echo "minm_96.spd   `sum $(FONTPROMDIR)/minm_96.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_96.spd $(TAPEDST)/minm_96.spd
+	chmod 444 $(TAPEDST)/minm_96.spd
+	echo "minm_97.spd   `sum $(FONTPROMDIR)/minm_97.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_97.spd $(TAPEDST)/minm_97.spd
+	chmod 444 $(TAPEDST)/minm_97.spd
+	echo "minm_98.spd   `sum $(FONTPROMDIR)/minm_98.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_98.spd $(TAPEDST)/minm_98.spd
+	chmod 444 $(TAPEDST)/minm_98.spd
+	echo "minm_99.spd   `sum $(FONTPROMDIR)/minm_99.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_99.spd $(TAPEDST)/minm_99.spd
+	chmod 444 $(TAPEDST)/minm_99.spd
+	echo "minm_9a.spd   `sum $(FONTPROMDIR)/minm_9a.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_9a.spd $(TAPEDST)/minm_9a.spd
+	chmod 444 $(TAPEDST)/minm_9a.spd
+	echo "minm_9b.spd   `sum $(FONTPROMDIR)/minm_9b.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_9b.spd $(TAPEDST)/minm_9b.spd
+	chmod 444 $(TAPEDST)/minm_9b.spd
+	echo "minm_9c.spd   `sum $(FONTPROMDIR)/minm_9c.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_9c.spd $(TAPEDST)/minm_9c.spd
+	chmod 444 $(TAPEDST)/minm_9c.spd
+	echo "minm_9d.spd   `sum $(FONTPROMDIR)/minm_9d.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_9d.spd $(TAPEDST)/minm_9d.spd
+	chmod 444 $(TAPEDST)/minm_9d.spd
+	echo "minm_9e.spd   `sum $(FONTPROMDIR)/minm_9e.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_9e.spd $(TAPEDST)/minm_9e.spd
+	chmod 444 $(TAPEDST)/minm_9e.spd
+	echo "minm_9f.spd   `sum $(FONTPROMDIR)/minm_9f.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_9f.spd $(TAPEDST)/minm_9f.spd
+	chmod 444 $(TAPEDST)/minm_9f.spd
+	echo "minm_e0.spd   `sum $(FONTPROMDIR)/minm_e0.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_e0.spd $(TAPEDST)/minm_e0.spd
+	chmod 444 $(TAPEDST)/minm_e0.spd
+	echo "minm_e1.spd   `sum $(FONTPROMDIR)/minm_e1.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_e1.spd $(TAPEDST)/minm_e1.spd
+	chmod 444 $(TAPEDST)/minm_e1.spd
+	echo "minm_e2.spd   `sum $(FONTPROMDIR)/minm_e2.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_e2.spd $(TAPEDST)/minm_e2.spd
+	chmod 444 $(TAPEDST)/minm_e2.spd
+	echo "minm_e3.spd   `sum $(FONTPROMDIR)/minm_e3.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_e3.spd $(TAPEDST)/minm_e3.spd
+	chmod 444 $(TAPEDST)/minm_e3.spd
+	echo "minm_e4.spd   `sum $(FONTPROMDIR)/minm_e4.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_e4.spd $(TAPEDST)/minm_e4.spd
+	chmod 444 $(TAPEDST)/minm_e4.spd
+	echo "minm_e5.spd   `sum $(FONTPROMDIR)/minm_e5.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_e5.spd $(TAPEDST)/minm_e5.spd
+	chmod 444 $(TAPEDST)/minm_e5.spd
+	echo "minm_e6.spd   `sum $(FONTPROMDIR)/minm_e6.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_e6.spd $(TAPEDST)/minm_e6.spd
+	chmod 444 $(TAPEDST)/minm_e6.spd
+	echo "minm_e7.spd   `sum $(FONTPROMDIR)/minm_e7.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_e7.spd $(TAPEDST)/minm_e7.spd
+	chmod 444 $(TAPEDST)/minm_e7.spd
+	echo "minm_e8.spd   `sum $(FONTPROMDIR)/minm_e8.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_e8.spd $(TAPEDST)/minm_e8.spd
+	chmod 444 $(TAPEDST)/minm_e8.spd
+	echo "minm_e9.spd   `sum $(FONTPROMDIR)/minm_e9.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_e9.spd $(TAPEDST)/minm_e9.spd
+	chmod 444 $(TAPEDST)/minm_e9.spd
+	echo "minm_ea.spd   `sum $(FONTPROMDIR)/minm_ea.spd` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/minm_ea.spd $(TAPEDST)/minm_ea.spd
+	chmod 444 $(TAPEDST)/minm_ea.spd
+	echo "chinese.ttf   `sum $(FONTPROMDIR)/chinese.ttf` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/chinese.ttf $(TAPEDST)/chinese.ttf
+	chmod 444 $(TAPEDST)/chinese.ttf
+	echo "hangul.ttf   `sum $(FONTPROMDIR)/hangul.ttf` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/hangul.ttf $(TAPEDST)/hangul.ttf
+	chmod 444 $(TAPEDST)/hangul.ttf
+	echo "thai.ttf   `sum $(FONTPROMDIR)/thai.ttf` " >> $(CONTENTS)
+	cp -p $(FONTPROMDIR)/thai.ttf $(TAPEDST)/thai.ttf
+	chmod 444 $(TAPEDST)/thai.ttf
