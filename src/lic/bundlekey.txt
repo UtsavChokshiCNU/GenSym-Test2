@@ -1,0 +1,269 @@
+Bundle License Key Creation
+Mark H. David, 4/6/01
+Updates: Mark H. David, 4/23/01
+
+HOW TO CREATE A KEY
+
+  Note: this is confidential information, for Gensym 
+  development use only, subject to change, and disseminated 
+  on a need-to-know basis, usually for emergency use only.
+  The supported interface for this is through order services,
+  and potentially some future yet-to-be-devised client-server
+  system.
+
+  NOTE 2: the code for doing this is open on Gensym's
+  network, where every machine and user is considered
+  "trusted".  There is a security benefit to having these
+  notes kept secret; it's significant, though perhaps
+  minimal.
+
+0a. Prerequisite: sandbox containing module bundle/c
+0b. Change to the bundle/c sandbox directory
+
+  bt bundle/c
+
+0c. Create the executables, typically on Solaris.  Note: the make file doesn't
+handle multiplatform builds or dependencies.  For safety's sake, use make clean
+before using make.
+
+  make clean
+  make
+
+0d. How to create the key:
+
+useful file: codes.h
+
+- has system id and error codes.  e.g., sparcsol system id: 1, from the line:
+
+  #define SPARCSOL_CODE 1
+
+
+G2 family file: tools/datafiles/families/g2.fam
+
+Get the family id, i.e., 1 in this case, from the line
+
+  index: 1
+
+(Hint: index: x, should really be "family id: x" or something, but we're not
+fixing that right now.  Same with "bundle id", although that's in context.  But
+would help to be able to search for "bundle-id".)
+
+
+So this does every component in a G2 family file, which happens to have 38
+components, for Sparcsol, after gotten to the base of the sandbox (run: bt).
+
+	bundle/c/createkey 1 1 1 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38
+=>
+        6fyd5-wzf7d-tnbp7-kzaza-xit39
+
+Note: what results is usually different at each different second in time.  If
+creating a batch by hand, always leave 2 or more seconds between calls to avoid
+having identical license keys.
+
+Note: Order Services understands:
+
+ (a) identical license keys should NEVER be given out to customers; 
+ (b) license keys given out should be logged in the corporate database;
+ (c) some internal users, e.g., testers, sales people, etc., may be given
+     identical license keys
+
+This creates a license key for for the same G2, but it only has 4 components
+enabled, those with component indexes 13, 14, 31, and 38
+
+	bundle/c/createkey 1 1 1 13 14 31 38
+=>
+        54wx5-qw44a-umnys-herwj-3xfex
+
+
+
+0f. How to decode the key (from the base of the sandbox):
+
+	bundle/c/decode-key 6fyd5-wzf7d-tnbp7-kzaza-xit39
+=>
+	key struct contents ----------------
+	 installer_version: 10
+	 family_id: 1
+	 bundle_id: 1
+	 system_id: 1
+	 00 01 02 03 04 05 06 07 08 09 10 11 12 13 14
+	  0  1  1  1  1  1  1  1  1  1  1  1  1  1  1
+	 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29
+	  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1
+	 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44
+	  1  1  1  1  1  1  1  1  1  0  0  0  0  0  0
+	 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59
+	  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
+
+
+	bundle/c/decode-key 54wx5-qw44a-umnys-herwj-3xfex
+=>
+	key struct contents ----------------
+	 installer_version: 10
+	 family_id: 1
+	 bundle_id: 1
+	 system_id: 1
+	 00 01 02 03 04 05 06 07 08 09 10 11 12 13 14
+	  0  0  0  0  0  0  0  0  0  0  0  0  0  1  1
+	 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29
+	  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
+	 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44
+	  0  1  0  0  0  0  0  0  1  0  0  0  0  0  0
+	 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59
+	  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
+
+(Observe that a bundle may have a maximum of 59 components.)
+
+
+
+================
+MHD, 4/23/01:
+
+The license key was not designed with a family versioning provision.  If the
+same ID were used across major revisions, users could upgrade without so much as
+receiving a new license key from Gensym. This could also very easily lead to
+incorrect components being installed, which could lead to customer
+disappointments and customer support headaches.
+
+In order to solve this in the short term, we can prevent old license keys from
+authorizing new versions changing the family ID for major new versions.  This
+allows for up to 256 unique family IDs.  This has the advantage that no changes
+in any bundling software, including the license key generator, are needed to
+obtain the desired effect.
+
+Refer to bundle/c/key-public.c, function words_to_keystruct, and its
+documentation for the breakdown of how bits are allocated for the encoding of
+information into the license key.
+
+We could design a more lasting longterm solution at some future point.  The
+three major possibilities I see are: (1) interpret what is now "installer
+version" as the family version; (2) start recycling old family IDs that are
+"quite old"; (3) bump up the installer version, and do something totally new.
+
+Approach (1) exploits the fact that we did not end up using the installer
+version field at all as intended.  Instead, it has been stuck at version 10
+since inception, and we now used a hand-coded version string that we change
+whenever we deem a new version of the bundle installer to be released or at
+least in the making.  (It is still checked by the software; presumably it can
+always be used for making deep changes; see (3).) This approach involves some
+changes in software, including the license key generator.
+
+Approach (2) exploits the fact that we have relatively few families, and they
+change "significantly" rather seldomly.  If we consider "quite old" to be two or
+more years old, and this seems reasonable, then we will most likely be able to
+reuse family IDs associated with "quite old" versions of software, i.e., for
+which license keys have not been issued for two or more years.
+
+Approach (3) says we can change the design of license keys significantly,
+starting almost with a blank slate, by upping the installer version number
+(assuming it's still being interpreted as such), then fixing this issue by
+adding new fields, widening old fields, etc.
+
+================
+
+Late breaking news: the getting of the family ID by the Windows bundle installer
+was not working in early versions of the bundle installer.  This is because
+there apparently was a copy and specialize coding error in this code:
+
+  int get_familyid()
+  {
+      if (lic_key_initialized)
+          return (int)lic_key.installer_version;
+      else
+          return -1;
+  }
+
+This code returns the installer version rather than the family ID.  It appears
+in the sources just below the code to return the installer version:
+
+  int get_installer_version()
+  {
+      if (lic_key_initialized)
+          return (int)lic_key.installer_version;
+      else
+          return -1;
+  }
+
+so I surmise the code with the bug was copy-and-pasted and then edited, but not
+quite correctly.  The cvs log entry for this (by MES) also says he had not had
+the opportunity to test this with the Windows bundle installer, since it was
+under construction at the time.
+
+I guess what this means is that the Windows installer will unlock components for
+any family with any license key.  (For additional entertainment, by the way,
+note that the Windows bundle installer also has the bug that it unlocks for any
+system ID, e.g., Solaris, HP, etc., not just for Windows.)
+
+Additional late breaking news: the encoded bundle installer version information
+is also not used.
+
+ADDITIONAL IMPORTANT NEWS: THE CODE THAT WAS BROKEN WAS DUPLICATED IN A .cpp
+FILE!  And the code has now been fixed in both the .c and the .cpp file.
+(Just grep for it to find the definitions.)
+
+
+================================================================
+
+Lack of Encryption for the .Cab Files (Windows Installer)
+Damage Assessment as of 5/19/01
+
+It was discovered a short while ago by me and Carl Shapiro that the files
+included with the Windows bundle installer were accessible to people as .cab
+files.  Mark Kramer and Jim Wright had presumably felt this was encrypted
+reasonably.  However, .cab files are just an archive format, not as common
+as .zip or .tar, but not very difficult to decode.
+
+InstallShield says that their .cab files can be encrypted.  When this is done,
+they say:
+
+    Encrypted files can be read only by the
+    InstallShield engine (or by an expert
+    code-breaker).
+
+However, it appears the "InstallShield engine" is
+accessible to pretty anyone who has
+InstallShield's IDE.  That comes with a tool
+called InstallShield Cabinet File Viewer.  That
+lets you look at "encrypted" files in the cabinet
+file.  This is not very secure, but it appears that
+it at least is not possible to read the .cab file
+with standard .cab file reading tools, only with 
+InstallShield's.
+
+
+    Encryption is not the same as password
+    protection. Encrypting a file scrambles it so that
+    if someone opens it in a text editor, they cannot
+    read strings and other data to get confidential
+    information about your application. Password
+    protecting a component prevents it from being
+    installed by someone who does not know the password.
+
+    You can encrypt a component's files or
+    you can password protect the component -- or, for
+    maximum security, you can do both.  If a
+    component's files are encrypted but neither the
+    component nor the setup is password protected, the
+    component can be installed by anyone who obtains
+    your distribution media (or a copy). If a
+    component is password protected but its files are
+    not encrypted, someone can open the files in a
+    text editor and read confidential
+    information -- possibly including the component's
+    password.
+
+
+
+
+================================================================
+
+Lack of expiration intervals for packages (Evaluation G2.OK Files)
+
+The package authorizations in temporary G2.OK files included with the bundle
+were never generated as temporary. This has been corrected in the generation
+code in lic/bundleok.lisp by today's commit by MHD, 12/13/01. The G2 Classic
+6.1r0 release will incorporate these OK files.  E-SCOR/Rethink should be
+checked; they just were finalizing a bundle for the first time with temporary OK
+files.  Integrity has no temporary OK files.
+
+-- MHD, 12/13/01
+
