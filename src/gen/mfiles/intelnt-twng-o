@@ -1,0 +1,15 @@
+# -*- Mode: Makefile -*-
+
+# twng (TW Next Generation) makefile.
+
+ODIR = o
+DEBUGFLAGS = -D_DEBUG
+EXTRA_LINK_FLAGS = /nodefaultlib:"msvcrt.lib" /nodefaultlib:"libcmtd.lib"
+LPROFILE =
+
+!include "$(SRCBOX)\gen\mfiles\intelnt-twng-opt"
+
+coverage : set.profile all
+
+set.profile :
+LPROFILE = -map -profile
