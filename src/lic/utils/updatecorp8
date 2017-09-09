@@ -1,0 +1,7 @@
+# This copies over a selected list of files in /usr/.lserv
+# to /usr/.lserv on corp8. We dont copy the whole directory
+# because we don't want to overwrite log files.  This should
+# only be used on corp9. This file is maintained in the
+# repository as the file: lic/utils/updatecorp8    MHD/DDM 6/6/97
+
+tar cf - /usr/.lserv/corp9-launch-licensing-server /usr/.lserv/corp9.crontab /usr/.lserv/corp9-often /usr/.lserv/licensing-server /usr/.lserv/licensing-users.lisp /usr/.lserv/logger /usr/.lserv/logger.c /usr/.lserv/products.lisp | (rsh corp8 "cd /usr/.lserv/; tar xf -")
