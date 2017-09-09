@@ -1,0 +1,513 @@
+#!/bin/csh -f
+
+# This script creates a table describing the state of g2, tw, and gsi
+# executables/libraries.  It gathers this information by looking at the
+# executables/libraries themselves as well as by looking at the translation
+# and smoke test log files.
+#
+# The table is written into the file logs/build-summary.log and echoed to
+# standard output.  The output table contains a key that describes the entries.
+# See an example of the report for the format and key.  The key is also found
+# near the end of this script.
+#
+# Basic usage:
+#   With no arguments, this script generates a report for all active platforms.
+#   $SANDBOX is used identify the sandbox.  $SRCBOX/build/build-machines
+#   identifies the active platforms.  Log files are in $SANDBOX/logs while
+#   executables/libraries are found in $SANDBOX/dst/<platform>/...; i.e.,
+#   the sandbox must have a dst directory.
+#
+#   The script may take a one or more platforms as final arguments.  In this
+#   case, only platforms in the list are reported.
+#
+#   -sandbox <sandbox>:  If this pair is the first set of arguments, it overrides
+#   $SANDBOX as the value of the sandbox.  <sandbox> must be a full path.
+#
+#   -onebox <platform>:  This indicates that the sandbox is organized as a
+#   single-platform build without a dst directory.  c source files and object
+#   directories are both found in the product directory; e.g., g2/c, g2/opt,
+#   g2/tape share the g2 directory.  The <platform> argument is needed to
+#   identify the appropriate smoke-test log file and to differentiate
+#   between unix, vms, and nt.
+#
+# The components that are examined to determine the viability of a product
+# are as follows.  Images are used for their dates, and log files are used
+# for both their dates and content (the final line is a summary status).
+#   Image: the executable/library in <SANDBOX>/dst/<platform>/<product>/tape
+#   Update: dated by <SANDBOX>/logs/build-prep-trans-tc.log
+#   Translate: dated by <SANDBOX>/logs/g2-trans-tc.log,
+#   Post Process: dated by <SANDBOX>/logs/postg2-trans-tc.log,
+#   C source files: dated by the newest c file in <SRCBOX>/<product>/c
+#   Image originals: dated by
+#     /<DSTBOX>/<product>/<objdir>/<product>
+#     -- opt/<product> is used for date comparison with the Image.
+#
+#-------------------------------------------
+
+goto main        # so that the usage section can be in plain sight below
+
+#-------------------------------------------
+usage:
+
+echo ""
+echo 'Usage report-build-summary [-sandbox <sandbox>] [<machine-type> ...]
+echo '   or report-build-summary [-sandbox <sandbox>] [-onebox <machine-type>]"
+
+exit 1
+
+#-------------------------------------------
+main:
+
+#-------------------------------------------
+# Check and parse the arguments.  Set some variables. 
+
+set exit_status = 0
+
+# Set sandbox from the command-line or environment.  -sandbox
+# on the command-line overrides the $SANDBOX environment variable.
+if ("$1" == "-sandbox" && "$2" != "") then
+     set sandbox=$2
+     shift
+     shift
+else
+   if (!($?SANDBOX)) then
+     echo 'ERROR: No SANDBOX variable found. Try running "sandbox <spin-id>".'
+     goto usage
+   else
+     set sandbox=$SANDBOX
+   endif
+endif
+
+if ( -d ${sandbox}/src ) then
+  set srcbox=${sandbox}/src
+else
+  set srcbox=${sandbox}
+endif
+
+set mch_file = ${srcbox}/build/bt-machines.dat
+
+if ("$1" == "-onebox" ) then
+  set onebox = yes
+  shift
+  if ($#argv != 1) then
+     echo "ERROR: -onebox requires exactly one platform as an argument"
+     goto usage
+  endif
+else
+  set onebox = no
+endif
+
+# If no additional arguments are passed, generate the report for all active
+# machines.  Otherwise the remaining arguments are machine (platform) names.
+# The -onebox option is guaranteed exactly one machine name above.
+
+set count = $#argv
+if ( $count == 0) then
+  set machines_list = (`$srcbox/build/build-machines -active -alltypes`)
+else
+  set machines_list = ($*)
+endif
+
+#-------------------------------------------
+# Set up to produce the report
+
+# Make a new file in the /tmp directory to store error output, which will be
+# written at the end of the report, and get the name of the machines data file.
+# All output is written to the status log, which is then run through cat to
+# standard output.
+
+set error_log = "/tmp/report-errors.$$"
+set status_log = "/tmp/build-status.$$"
+
+if ( -e $error_log) rm $error_log
+touch $error_log
+
+if ( -e $status_log) rm $status_log
+
+set logs_dir = ${sandbox}/logs
+set updates_log = ${logs_dir}/build-prep-trans-tc.log
+set product_list = "g2 tw gsi twng gservice"
+set objdir_list = "opt o o-pg opt-intc"
+set summary_log = /tmp/build-summary.log.$$
+
+#Unfortunately, tw is a substring of twng so it gets false hits on the greps.
+#So we grep for "$product ", but that means we need to put a space in the 
+#not_translated grep target, so I give it this bogus non-translated product.
+
+#Note also that we are depending on the fact that all our non-translated 
+#products are (a) intelnt-only and (b) not compiled with opt-intc, but only opt.
+
+set not_translated = "twng gservice not_translated_end"
+
+
+if (-e $summary_log) rm $summary_log
+touch $summary_log
+
+#-------------------------------------------
+# Check that the update and translation log files exist.
+
+echo "Checking args and log file existence..."
+
+if (! -e $updates_log) then
+  echo "ERROR:  The file $updates_log doesn't exist.  Unable to Continue."
+  set exit_status = 1
+endif
+
+foreach product ($product_list)
+  set grep_result = `echo $not_translated | grep "$product "`
+  # if it's translated, then check for existence of translation logs
+  if ( ! $#grep_result > 0 ) then
+    if ( ! -e "${logs_dir}/${product}-trans-tc.log") then
+      echo "ERROR:  The translation log file for $product does not exist."
+      set exit_status = 1
+    else if ( ! -e "${logs_dir}/post${product}-trans-tc.log") then
+      echo "ERROR:  The post processing log file for $product does not exist."
+      set exit_status = 1
+    endif
+  endif
+end
+
+if ($exit_status == 1) goto done
+
+#-------------------------------------------
+# Write the header for the report
+
+echo -n "G2, TW, and GSI Build Status Summary Report for `$SRCBOX/build/get-build-id $SRCBOX/lisp` from " >> $summary_log
+date >> $summary_log
+
+#-------------------------------------------
+# Check that all products' Update, Translate, and Post-Process file dates are
+# temporally sequential.  Check that files indicate proper completion.
+
+foreach product ($product_list)
+  set grep_result = `echo $not_translated | grep "$product "`
+  # if it's translated, then ...
+  if ( ! $#grep_result > 0 ) then
+    set trans_log = "${logs_dir}/${product}-trans-tc.log"
+    set post_log = "${logs_dir}/post${product}-trans-tc.log"
+    # check temporal order of last modification
+    set ls_result=`ls -ct $trans_log $updates_log`
+    if ($ls_result[1] == $trans_log) then
+      # order is fine, so check contents
+      set grep_result=`tail $trans_log | grep "PROCESS-FINISHED"`
+      if (! $#grep_result > 0) then
+        echo "Log for $product up to date, but translation did not successfully complete\!" >> $summary_log
+      endif
+    else  # wrong temporal ordering!
+      echo "Log for $product translation not up to date with build prep file\!" >> $summary_log
+    endif
+
+    set ls_result=`ls -ct $post_log $trans_log`
+    if ($ls_result[1] == $post_log) then
+      # order is fine, so check contents
+      set grep_result=`tail $post_log | grep "LOG: post-process finish all"`
+      if (! $#grep_result > 0) then
+        echo "Log for $product up to date, but post processing did not successfully complete\!" >> $summary_log
+      endif
+    else  # wrong temporal ordering!
+      echo "Post processing log for $product not up to date with translate log\!" >> $summary_log
+    endif
+  endif
+end
+
+if ( -e $sandbox/dst/kbs/utilities-build-log.txt ) then 
+set grep_result = `grep FAILED $sandbox/dst/kbs/utilities-build-log.txt`
+  if ( $#grep_result > 0) then
+     echo "KB Build Failure:  " >> $summary_log
+     grep FAILED $sandbox/dst/kbs/utilities-build-log.txt >> $summary_log
+  endif
+endif
+
+echo "" >> $summary_log
+
+#-------------------------------------------
+# Loop and report for each product (and machine).
+
+#-----0000---- begin product loop ---0000---
+foreach product ($product_list)
+
+  set grep_result = `echo $not_translated | grep $product`
+  if ( $#grep_result > 0) then
+    set translated = 0
+  else
+    set translated = 1
+  endif 
+
+  echo "Product $product..."
+  if ( $translated ) then
+    set trans_log = "${logs_dir}/${product}-trans-tc.log"
+    set post_log = "${logs_dir}/post${product}-trans-tc.log"
+  endif
+
+  #-------------------------------------------
+  # Create and write the column headings for the product
+
+  set header="Machine $product/tape"
+  foreach objdir ($objdir_list)
+    set header = "$header $product/$objdir"
+  end
+  echo $header | awk '{printf "%-11s %-9s %-9s %-9s %-9s %-11s\n",$1,$2,$3,$4,$5,$6}' >> $summary_log
+  echo "----------  --------- --------- --------- --------- -----------" >> $summary_log
+
+  #-------------------------------------------
+  # The following code grabs the newest C file for this product, and puts it
+  # into c_file.
+
+  set c_dir = "${srcbox}/${product}/c"
+  set ls_result=`ls -ct ${c_dir}/*.[ch] | head -1`
+  set unix_c_file = $ls_result[1]
+
+  #-------------------------------------------
+  # The loop below emits one line per machine-type/obj-type into a new
+  # status_log file.  Output is generated for the user by then running the
+  # status_log file through awk to generate a nicely formatted table of the
+  # results.  The formatting is done after the end of the machine loop.
+
+  #----1111---- begin machine loop ----1111---
+  foreach machine_type ($machines_list)
+
+    set product_grep_result = `echo $not_translated | grep "$product "`
+    if (! $#product_grep_result == 0 && $machine_type != intelnt) goto end_machine_loop
+    echo "Checking $machine_type..."
+
+    #-------------------------------------------
+    # Determine the machine
+
+    touch $status_log
+    echo -n "$machine_type" >> $status_log
+    set os_type = `grep $machine_type $mch_file | grep active | awk '{print $4}'`
+
+    #-------------------------------------------
+    # Set variables for the product.
+
+    # Set the appropriate sandbox organization
+    if ($onebox == no) then
+      set root_dir = "${sandbox}/dst/${machine_type}/${product}"
+    else    # sandbox has obj dirs and c dir together in product dir
+      set root_dir = "${srcbox}/${product}"
+    endif
+
+    # Files have different suffixes for different OS types.
+    if ($product == gsi) then
+      if ($os_type == unix) then
+        set executable = libgsi.a
+      else if ($os_type == vms) then
+        set executable = libgsi.olb
+      else
+        set executable = libgsi.lib
+      endif
+    else
+      if ($os_type == unix) then
+        set executable = $product
+      else
+        set executable = ${product}.exe
+      endif
+    endif
+
+    set c_file = $unix_c_file
+    set smoke_file = "${logs_dir}/smoke-${machine_type}.log"
+
+    #-------------------------------------------
+    # Determine the product file for the tape directory and set the flags
+    # to reflect the status of the product executable (or library) in
+    # the tape directory.
+
+    set product_file = "${root_dir}/tape/${executable}"
+
+    set flags = ""
+    if (! -e ${product_file}) then
+      set flags = "none"
+    else
+      # Is it executable?
+      if ($os_type != nt && $product != gsi && ! -x $product_file) then
+        set flags = "${flags}X"
+      endif
+
+      # Is older than its updates file?
+      set ls_result=`ls -ct $product_file $updates_log`
+      if (! ($ls_result[1] == $product_file)) set flags = "${flags}U"
+
+      # Is it older than its translate or post-process log file?
+      if ( $translated ) then
+        set ls_result=`ls -ct $product_file $trans_log`
+        if (! ($ls_result[1] == $product_file)) set flags = "${flags}T"
+        set ls_result=`ls -ct $product_file $post_log`
+        if (! ($ls_result[1] == $product_file)) set flags = "${flags}P"
+      endif
+
+      # Is it older than the newest source file?
+      set ls_result=`ls -ct $product_file $c_file`
+      if (! ($ls_result[1] == $product_file)) set flags = "${flags}C"
+
+      # Is it older than the original opt file
+      if (-e  ${root_dir}/opt/${executable}) then
+        set ls_result=`ls -ct $product_file ${root_dir}/opt/${executable}`
+        if (! ($ls_result[1] == $product_file)) set flags = "${flags}I"
+      endif
+
+      #-------------------------------------------
+      # Check status of smoke test and append status as needed.
+
+      if ($product == g2) then
+        if (-e $smoke_file) then
+          set ls_result=`ls -t $product_file $smoke_file`
+          if ($ls_result[1] == $smoke_file) then
+            if ($os_type == vms) then
+              set grep_result=`strings $smoke_file | grep "Smoke Test Passed"`
+            else
+              set grep_result=`grep "Smoke Test Passed" $smoke_file`
+            endif
+            # If it didn't explicitly pass ...
+            if (! $#grep_result > 0) then
+              if ($os_type == vms) then
+                set grep_result=`strings $smoke_file | grep "Smoke Test Failed"`
+              else
+                set grep_result=`grep "Smoke Test Failed" $smoke_file`
+              endif
+              if ($#grep_result > 0) then
+                set flags = "${flags}F"  # smoke test failed with message
+              else
+                set flags = "${flags}N"  # failed with no message
+              endif
+            endif
+          else 
+            set flags = "${flags}S"   # smoke test failure - out of date
+          endif
+        else 
+          set flags = "${flags}S"     # smoke test failure - no log file
+        endif
+      endif
+
+      set ls_result   # clear it; probably not needed
+
+      #-------------------------------------------
+      # Do some final processing of the flags.
+
+      if ("$flags" == "") then
+        set flags = "-"          # Success!
+      else
+        set flags = "O$flags"    # The prepended O has no info content
+      endif
+
+    endif  # if product-file exists
+
+    #-------------------------------------------
+    # Write the product tape executable (or library) status to the log file.
+
+    echo -n " $flags" >> $status_log
+
+    #-------------------------------------------
+    # Iterate over the objdirs, setting up the product file and emitting
+    # a status entry for each.  Note that the flag-changing lines below are
+    # identical to the flag-setting code for the tape directory, except that
+    # no image is checked for.
+
+    #-----2222----- begin obj loop -----2222----
+    foreach objdir ($objdir_list)
+      set product_file = "${root_dir}/${objdir}/${executable}"
+      set objflags = ""
+      if (! -e ${product_file}) then
+        if ($objdir == opt) then
+          set objflags = "none"
+        else if ($objdir == opt-intc && $machine_type == intelnt && $#product_grep_result == 0) then
+          set objflags = "none"
+	else
+          set objflags = "."       # only the file in opt or opt-intc is required
+        endif
+      else
+
+        # Is it executable?
+        if ($os_type != nt && $product != gsi && ! -x $product_file) then
+          set objflags = "${objflags}X"
+        endif
+
+        # Is older than its updates file?
+        set ls_result=`ls -ct $product_file $updates_log`
+        if (! ($ls_result[1] == $product_file)) set objflags = "${objflags}U"
+
+        # Is it older than its translate or post-process log file?
+        if ( $translated ) then
+          set ls_result=`ls -ct $product_file $trans_log`
+          if (! ($ls_result[1] == $product_file)) set objflags = "${objflags}T"
+          set ls_result=`ls -ct $product_file $post_log`
+          if (! ($ls_result[1] == $product_file)) set objflags = "${objflags}P"
+        endif
+
+        # Is it older than the newest source file?
+        set ls_result=`ls -ct $product_file $c_file`
+        if (! ($ls_result[1] == $product_file)) set objflags = "${objflags}C"
+
+        # Do some final processing of the flags
+        if ("$objflags" == "") then
+          set objflags = "-"
+        else
+          set objflags = "O$objflags"
+        endif
+      endif
+
+      #-------------------------------------------
+      # Write the object executable (or library) status to the log file.
+      echo -n " $objflags" >> $status_log
+
+    end
+    #-----2222------ end obj loop ------2222----
+
+    echo "" >> $status_log
+
+end_machine_loop:
+  end
+  #----1111----- end machine loop ----1111----
+
+  #-------------------------------------------
+  # At this point, the status_log file is filled with status lines for
+  # the product.  The following code runs through the lines with awk and
+  # formats them in the table body.  The formatting command here is the same
+  # as the one for the header of the table.
+
+  cat $status_log | awk '{printf "%-11s %-9s %-9s %-9s %-9s %-11s\n",$1,$2,$3,$4,$5,$6}' >> $summary_log
+  echo "" >> $summary_log
+  rm $status_log
+
+end  # foreach product
+
+#-----0000----- end product loop ----0000---
+
+#-------------------------------------------
+# Append the report's key using a here document.
+
+cat <<+ >> $summary_log
+Key for Build Status Summary Report:
+  -    = Image present, executable, smoke tested, and up to date
+  none = No image present
+  .    = No image present in non-essential directory
+  O    = Out of date or non-executable
+         O will be followed by one or more of the following characters:
+         X = Image is not executable
+         U = Image is older than the updates file
+         T = Image is older than the translate log
+         P = Image is older than the post processing log
+         C = Image is older than the newest source C file
+         I = Image in tape directory is older than its corresponding opt image
+         F = Smoke test failed (G2 only)
+         N = Smoke test ran, but reported neither success nor failure (G2 only)
+         S = Smoke test file did not exist or was out out date (G2 only)
++
+
+#-------------------------------------------
+done:
+
+# Append errors to report
+cat $error_log >> $summary_log
+rm $error_log
+
+if (-e $logs_dir/build-summary.log) then
+  rm $logs_dir/build-summary.log    # delete old build summary, if it exists
+endif
+mv $summary_log $logs_dir/build-summary.log
+
+echo ""
+cat $logs_dir/build-summary.log
+echo ""
+echo "The preceding report can now be found in $logs_dir/build-summary.log"
+
+exit $exit_status
