@@ -1,0 +1,24 @@
+HKCR
+{
+	Sink.Sink.1 = s 'Sink Class'
+	{
+		CLSID = s '{0C3435A5-0206-11D2-868D-00008618F471}'
+	}
+	Sink.Sink = s 'Sink Class'
+	{
+		CurVer = s 'Sink.Sink.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {0C3435A5-0206-11D2-868D-00008618F471} = s 'Sink Class'
+		{
+			ProgID = s 'Sink.Sink.1'
+			VersionIndependentProgID = s 'Sink.Sink'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+		}
+	}
+}
