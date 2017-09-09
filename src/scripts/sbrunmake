@@ -1,0 +1,74 @@
+#!/bin/sh
+
+# sbrunmake - "sandbox runmake" - this executes a runmake, but sets up an
+# environment using the given srcbox and dstbox.  It doesn't rely on any
+# inherited environment variables.  It also doesn't set up much of the
+# environment necessary for an interactive shell.  It does a minimal amount
+# of stuff to perform a runmake.  We don't have to bother with setting up CVS,
+# for example.  We definitely don't care about CLASSPATH since we don't do
+# java, but we don't need to worry about PATH either.  We are going to call
+# runmake from a specific location, and we set SCRIPTSDIR, so it doesn't
+# need to have the UTILDIR in the PATH.
+
+# Author: jv
+
+util_name=scripts
+
+if [ -z "$5" ]; then
+   echo "ERROR: missing argument.  (See jv)"
+   echo "Usage: sbrunmake <srcbox> <dstbox> <toolsdir> <module> <compile-type> [<targets>]"
+   exit 1
+fi
+
+srcbx=$1
+if [ ! -d "$srcbx" ]; then
+   echo "ERROR: $srcbx does not exist."
+   exit 1
+fi
+shift
+
+dstbx=$1
+if [ ! -d "$dstbx" ]; then
+   echo "ERROR: $dstbx does not exist."
+   exit 1
+fi
+shift
+
+tlsdir=$1
+if [ ! -d "$tlsdir" ]; then
+   echo "ERROR: $tlsdir does not exist."
+   exit 1
+fi
+shift
+
+scrptsdir=$tlsdir/$util_name
+if [ ! -f "$scrptsdir/CVS/Root" ]; then
+   echo -n "ERROR: directory $tlsdir has not properly checked out the "
+   echo "'${util_name}' module."
+   exit 1
+fi
+# The variable SCRIPTSDIR is probably set up by default, but we are going
+# to just override it for this process.  I think that's a fair thing to
+# do.  -jv, 4/29/03
+
+# The variable MACHINE is very likely set already, but try to set it
+# if for some reason it is not.
+if [ -z "$MACHINE" ]; then
+  if [ -x /usr/local/bin/machine ]; then
+    MACHINE=`/usr/local/bin/machine`
+  else
+    echo "ERROR: could not determine type of machine"
+    exit 1
+  fi
+fi
+
+if [ -x "${scrptsdir}/runmake" ]; then
+  SRCBOX="$srcbx"
+  DSTBOX="$dstbx"
+  SCRIPTSDIR="$scrptsdir"
+  export SRCBOX DSTBOX SCRIPTSDIR MACHINE
+  ${scrptsdir}/runmake $*
+else
+  echo "ERROR: runmake does not exist in ${scrptsdir}"
+  exit 1
+fi
