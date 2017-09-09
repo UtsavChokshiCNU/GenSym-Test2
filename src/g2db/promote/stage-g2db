@@ -1,0 +1,156 @@
+#!/bin/csh
+
+# =======================================================================
+# Make sure that one or two command line parameters have been specified,
+# that the first one is the root directory for the staging area, and that
+# SRCBOX is set to a directory.
+# =======================================================================
+if ($#argv != 2) goto echu
+if (! -d $argv[1]) then
+    echo '*** ' $argv[1] does not exist or is not a directory
+    goto echu
+endif
+if (! -d "$SRCBOX") then
+    echo SRCBOX is not defined or is not a directory
+    goto echu
+endif
+
+# =========================================================
+# Scan through the subdirectories of dst in the build tree.
+# =========================================================
+set stdir = $cwd
+set pdir=$SRCBOX/g2db/promote
+foreach platform (alphaosf hp9000s700 intelnt linux rs6000 sparcsol)
+    foreach db (odbc oracle sybase)
+        set tdir=$SRCBOX/dst/$platform/g2$db/opt
+        set dname=g2$db-$argv[2]
+        set ddir=$argv[1]/$platform/$dname
+
+        # Not every combination of platform and database exists.
+        # If this combination does exist, set look4 to a list of
+        # the bridges that might be in this directory.
+        # ------------------------------------------------------
+        if (-d $tdir) then
+            cd $tdir
+            if ($db == odbc ) then 
+                set look4 = (g2-odbc.exe)
+                set runscript = (run-g2-odbc.bat)
+            else if ($db == oracle) then
+                if ($platform == intelnt) then
+                    set look4 = (g2-ora7.exe g2-ora80.exe g2-ora81.exe g2-ora90.exe g2-ora92.exe g2-ora10.exe)
+                    set runscript = (run-g2-ora7.bat run-g2-ora80.bat run-g2-ora81.bat run-g2-ora90.bat run-g2-ora92.bat run-g2-ora10.bat)
+                else
+                    set look4 = (g2-ora7 g2-ora80 g2-ora81 g2-ora90 g2-ora92 g2-ora10)
+                endif
+             else #sybase
+                if ($platform == intelnt) then
+                    set look4 = (g2-syb11.exe g2-syb125.exe)
+                    set runscript = (run-g2-syb11.bat run-g2-syb125.bat)
+                else
+                    set look4 = (g2-syb11 g2-syb125)
+                endif
+            endif
+
+            # See if at least one of the possible bridges are in this directory
+            # -----------------------------------------------------------------
+            foreach f ($look4)
+                if (-e $f) goto prepDest
+            end
+
+            # No - nothing to stage
+            # ---------------------
+            continue
+
+            # Yes - See if there is already a directory for this bridge in
+            #       the staging area.  If so, remove it.  Then, create it.
+            # -------------------------------------------------------------
+prepDest:
+            pushd $stdir > /dev/null # ($ddir might be relative)
+            if (-e $ddir) then
+                if (-d $ddir) then
+                    rm -rf $ddir
+                else
+                    echo '**  Unable to continue!  ' $ddir is not a directory.
+                    exit 2
+                endif
+            endif
+
+            if (! -d $argv[1]/$platform) mkdir $argv[1]/$platform
+            if (! -d $ddir) then
+                mkdir $ddir
+                mkdir $ddir/bin
+                mkdir $ddir/kbs
+            endif
+            popd > /dev/null
+
+            # Copy and report every bridge that exists for this platform/db
+            # -------------------------------------------------------------
+            foreach fn ($look4)
+                if (-e $fn) then
+                    pushd $stdir > /dev/null
+                    cp $tdir/$fn $ddir/bin/$fn
+                    chmod +x $ddir/bin/$fn
+                    echo $platform : $db : $fn
+                    popd > /dev/null
+                endif
+            end
+
+            # Copy g2-database.kb to the destination directory
+            # ------------------------------------------------
+            cd $stdir
+            cp $SRCBOX/g2db/kbs/g2-database.kb $ddir/kbs/g2-database.kb
+            chmod +r $ddir/kbs/g2-database.kb
+            echo $platform : $db : g2-database.kb
+
+            # Copy the database-specific support files to the staging directory
+            # -----------------------------------------------------------------
+            if ( $db == odbc ) then
+                mkdir $ddir/sql
+                cp $SRCBOX/g2db/sql/deinst_g2odbc_trigs.sql $ddir/sql
+                echo $platform : $db : deinst_g2odbc_trigs.sql
+                cp $SRCBOX/g2db/sql/inst_g2odbc_trigs.sql $ddir/sql
+                echo $platform : $db : inst_g2odbc_trigs.sql
+                cp $SRCBOX/g2db/sql/inst_g2odbc_trigs-ms7.sql $ddir/sql/inst_mssql7_trigs.sql
+                echo $platform : $db : inst_mssql7_trigs.sql
+                chmod +r $ddir/sql/*.sql
+            else if ( $db == sybase ) then
+                mkdir $ddir/sql
+                cp $SRCBOX/g2db/sql/deinst_g2sybase_trigs.sql $ddir/sql/deinst_g2trigs.sql
+                echo $platform : $db : deinst_g2trigs.sql
+                cp $SRCBOX/g2db/sql/inst_g2sybase_trigs.sql $ddir/sql/inst_g2trigs.sql
+                echo $platform : $db : inst_g2trigs.sql
+                chmod +r $ddir/sql/*.sql
+            endif
+
+            # Copy the shortcut target batch file
+            # -----------------------------------
+            if ( $platform == intelnt ) then
+                foreach f ($runscript)
+                    cp $SRCBOX/g2db/promote/$f $ddir/bin
+                    echo $platform : $db : $f
+                end
+            endif
+
+            # Generate contents.txt
+            # ---------------------
+            $pdir/gensum $ddir | awk -v sd=$ddir -f $pdir/makc.awk - > $ddir/contents.txt
+            echo $platform : $db : contents.txt
+        endif
+    end
+end
+exit 0
+
+/* Tell the user how to use this script */
+/* ==================================== */
+echu:
+    echo Usage: stage-g2db '<stage root> <version>'
+    echo '       Prepare the database bridges that were built under $SRCBOX/dst'
+    echo '       for promotion by copying all the files that will be available'
+    echo '       for each specific bridge and platform to staging directories'
+    echo '       under the "stage root".'
+    echo
+    echo '       The version parameter is used in determining the names of the'
+    echo '       staging directories.  For example, if you enter this as'
+    echo '       "60r10-FD10", the Oracle bridges for alphaosf will be staged'
+    echo '       in the directory <stage root>/alphaosf/g2oracle-60r10-FD10.'
+    exit 1
