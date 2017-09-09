@@ -1,0 +1,186 @@
+<html><head><title>Configuring G2 WebLink</title></head>
+<body bgcolor="#ffffff">
+<a href="configur.htm"><h5>| Prev </a> <a href="configu2.htm">| Next </a> <a href="configur.htm">| Start of Chapter </a> <a href="configu2.htm">| End of Chapter </a> <a href="booktoc.htm">| Contents </a> <a href="bookix.htm">| Index |</a> (2 out of 3)</h5> <br>
+
+
+<a name="2545">
+<h1> Steps for Configuring G2 WebLink </h1>
+</a><a name="2546">
+You can configure G2 WebLink for your site and application by editing objects in 
+the workspace <code>GW-CONFIGURATION-WORKSPACE</code>, which is the top-level 
+workspace of the module <code>gwlow</code>. The <code>gwlow</code> module is stored in the module file 
+<code>gwlow.kb</code>. 
+<p>
+</a><a name="2548">
+Before you run G2 WebLink, you <em>must</em> edit a free text named <code>GW-DESIRED-
+CONNECTION-CONFIGURATION</code>, which configures the connection between G2 
+and G2 WebLink. 
+<p>
+</a><a name="3823">
+You can optionally edit the following objects on <code>GW-CONFIGURATION-WORKSPACE</code>: 
+<p>
+</a><ul><a name="2550">
+<li>A GW Bridge Configuration (a <code>gw-bridge-configuration)</code>, which specifies how G2 WebLink behaves. 
+<p></a><a name="3828">
+<li>A procedure named <code>monitor-gsi-interface-to-gw()</code> and an <code>initially</code> rule that starts this procedure. The procedure maintains and initializes the connection. In most situations, you will not need to modify this rule or procedure. 
+<p></a></ul><a name="2553">
+The following sections explain how to edit the objects on <code>GW-CONFIGURATION-
+WORKSPACE</code> to configure your G2 WebLink application. 
+<p>
+</a><a name="2556">
+<h2> Configuring the Connection Between G2 and G2 WebLink</h2>
+</a><a name="3922">
+To configure the connection between G2 WebLink and G2, edit the <code>free-text</code> that 
+appears near the top of <code>GW-CONFIGURATION-WORKSPACE</code>. For most 
+purposes, editing this <code>free-text</code> is the only thing that you need to do to configure 
+the connection. G2 WebLink uses the <code>free-text</code> to set the value of the <code>Gsi-connection-configuration</code> attribute of a GSI Interface Object, which configures the connection. 
+<p>
+</a><a name="3918">
+The initial value of the <code>free-text</code> is: 
+<p>
+</a><ul><ul><a name="2558">
+<pre>tcp-ip host "localhost" port-number 7736 
+</pre>
+</a></ul></ul><a name="2560">
+When you edit the free-text, use the syntax required for the <code>Gsi-connection-
+configuration</code> attribute of a GSI Interface Object. The syntax for the expression 
+depends upon the protocol that the computer running G2 uses to connect to the 
+computer running G2 WebLink. 
+<p>
+</a><a name="2561">
+In order for G2 to establish a connection to the G2 WebLink process, the <code>Gsi-
+connection-configuration</code> attribute must match the name of the computer that 
+runs the bridge process, and the DECnet port name or TCP/IP port number 
+displayed by the G2 WebLink process on the command line interface where it is 
+started. 
+<p>
+</a><a name="2562">
+For example, the following expression specifies a G2 WebLink process with port 
+name <code>RDB</code> that runs on the computer <code>BOSTON</code>, and to which G2 connects through 
+a network connection over the DECnet protocol: 
+<p>
+</a><ul><a name="2563">
+<pre>decnet connecting to RDB on host BOSTON 
+</pre>
+</a></ul><a name="2564">
+The following expression specifies a G2 WebLink process with port number 
+<code>22041</code> that runs on the computer <code>localhost</code>, and to which G2 connects through 
+a network connection over the TCP/IP protocol: 
+<p>
+</a><ul><a name="2565">
+<pre>tcp-ip host "localhost" port-number 22041 
+</pre>
+</a></ul><a name="2568">
+<h2> Configuring G2 WebLink Behavior </h2>
+</a><a name="3889">
+To configure G2 WebLink behavior, follow these steps: 
+<p>
+</a><ol><a name="3891">
+<li>Open the attribute table of the GW Bridge Configuration object that you find on <code>GW-CONFIGURATION-WORKSPACE</code>.<p>
+</a><a name="2573">
+<li>Edit the attributes of the GW Bridge Configuration object to specify details of how G2 WebLink operates. <p>
+</a></ol><a name="2574">
+The following table lists attributes of a GW Bridge Configuration object that you 
+can set. The default values listed are those of the preconfigured GW Bridge 
+Configuration object provided with <code>gwlow.kb. 
+</code><p>
+</a><a name="2628">
+<table border=4>
+<tr><td valign="middle"><a name="3290">
+<pre><strong>Maximum count of 
+simultaneous 
+transactions
+</strong></pre>
+</a><br><td valign="middle"><a name="3292">
+Specifies how many clients the G2 WebLink server can serve at 
+one time. The server will decline client requests in excess of this 
+number. 
+<p>
+</a><br>
+<tr><td valign="middle"><a name=3286>
+<em>Allowable values: 
+
+</em><p></a><br><td valign="middle"><a name="3288">
+integers
+<p>
+</a><br>
+<tr><td valign="middle"><a name=3282>
+<em>Default value: 
+
+</em><p></a><br><td valign="middle"><a name="3284">
+25
+<p>
+</a><br>
+<tr><td valign="middle"><a name=3278>
+<em>
+
+</em><p></a><br><td valign="middle"><a name="3280">
+
+<p>
+</a><br>
+<tr><td valign="middle"><a name="3324">
+<pre><strong>Message pool size
+</strong></pre>
+</a><br><td valign="middle"><a name="3326">
+Not used in this release. 
+<p>
+</a><br>
+<tr><td valign="middle"><a name=3320>
+<em>Allowable values: 
+
+</em><p></a><br><td valign="middle"><a name="3322">
+
+<p>
+</a><br>
+<tr><td valign="middle"><a name=3316>
+<em>Default value: 
+
+</em><p></a><br><td valign="middle"><a name="3318">
+100
+<p>
+</a><br>
+<tr><td valign="middle"><a name=3312>
+<em>
+
+</em><p></a><br><td valign="middle"><a name="3314">
+
+<p>
+</a><br>
+
+</table>
+
+<p></a><a name="3938">
+After your G2 application establishes a connection to G2 WebLink, it must call the 
+remote procedure <a href="procedu3.htm#2737">gw-configure-bridge()</a> to send the configuration information in 
+the GW Bridge Configuration to G2 WebLink. 
+<p>
+</a><a name="4058">
+<h2> Checking the Status of the Connection to the Bridge</h2>
+</a><a name="3939">
+You can monitor the status of the connection between G2 and the bridge by 
+checking the value of the symbolic variable <code>GW-STATUS-OF-CONNECTION-TO-
+BRIDGE</code>, in <code>GW-CONFIGURATION-WORKSPACE.
+</code><p>
+</a><a name="3992">
+This variable is maintained by the <code>gwlow</code> module and is used by code in your KB 
+to determine the state of the connection to the bridge.
+<p>
+</a><a name="3963">
+<code>GW-STATUS-OF-CONNECTION-TO-BRIDGE </code>can take the following symbolic 
+values: 
+<p>
+</a><ul><a name=3948">
+<pre>OK<br>
+KB-WAS-RESET<br>
+AWAITING-GSI-CONNECTION-TO-BRIDGE<br>
+CONNECTED-BUT-AWAITING-CONFIGURATION-OF-BRIDGE 
+</pre>
+</a></ul><a name="3949">
+Remote procedure calls to the bridge succeed only when the value <code>GW-STATUS-
+OF-CONNECTION-TO-BRIDGE</code> of is <code>OK</code>. 
+<p>
+</a>
+
+<a href="configur.htm"><h5>| Prev </a> <a href="configu2.htm">| Next </a> <a href="configur.htm">| Start of Chapter </a> <a href="configu2.htm">| End of Chapter </a> <a href="booktoc.htm">| Contents </a> <a href="bookix.htm">| Index |</a> (2 out of 3)</h5> <br>
+<A HREF="titlepa1.htm"><h6>Copyright &#169; 1996, Gensym Corporation, Inc.</h6></A>
+</body></html>
