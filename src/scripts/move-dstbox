@@ -1,0 +1,71 @@
+#!/bin/csh
+
+# The point of this script is to make it easy to move your dst box to
+# /gensym/dstboxes, which is an un-backed-up partition.  Why back up object
+# files?
+
+if ($#argv < 1) then
+  echo "Error: Wrong number of arguments, $#argv supplied, 1 required."
+  goto usage
+endif
+
+
+
+set to_loc = $2
+if ($to_loc == "") set to_loc = dstboxes
+
+if ($to_loc =~ dstboxes*) then
+  set to_dir = /gensym/$to_loc
+  if !(-d $to_dir) then
+    echo "Error: $to_dir doesn't exist."
+    goto usage
+  endif
+else if (-d $to_loc) then
+  set to_dir = $to_loc
+else
+  echo "Error: $to_loc is not a supported location."
+  echo "       The supported locations are dstboxes<n>, and existing directories."
+  goto usage
+endif
+
+set sandbox = $1
+set bt_loc = /bt/$1
+set from_dir = $bt_loc/dst
+
+set to_dir = $to_dir/$sandbox
+
+
+if !(-d $from_dir) then 
+  echo "Can't find dst in sandbox $1"
+  goto usage
+endif
+
+#Finally we get to the real work!!
+
+echo Moving $from_dir to $to_dir
+
+cd $bt_loc
+
+mv dst $to_dir 
+
+if !(-d dst) then
+  ln -s $to_dir dst 
+  echo "Moved and linked:"
+  ls -ld dst
+else
+  echo "$from_dir still exists, cannot link.  Please clean up and manually execute"
+  echo "ln -s $to_dir $from_dir"
+endif
+
+
+
+exit 0
+
+usage:
+
+echo "Usage: move-dstbox <sandbox-name> [<location>]"
+echo "  where location  = dstboxes<n> | <dir>"
+echo "  e.g. move-dstbox yduj dstboxes2"
+
+
+exit 1
