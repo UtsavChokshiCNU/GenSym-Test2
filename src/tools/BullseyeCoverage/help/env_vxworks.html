@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_platform.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>VxWorks</h1>
+<p>
+This documentation applies to VxWorks 6.3-6.6 and Wind River Workbench 2.5-3.0.
+
+<h2>Build Run-Time Library</h2>
+<p>
+From the Wind River program menu, invoke the VxWorks Development Shell.
+Use the commands below to build the BullseyeCoverage run-time library.
+Modify the compile command to use the same compile options as your project.
+<pre>
+cd %ProgramFiles%\BullseyeCoverage\run
+
+<i>(With Diab)</i>
+dcc -c -D_VX_CPU=_VX_SIMPENTIUM -I%WIND_USR%/h -tX86LH:rtpsim -Xdialect-c99 libcov-vxworks.c
+dar -r ../lib/libcov-vxworks-diab.a libcov-vxworks.o
+
+<i>(With GCC)</i>
+ccpentium -c -D_VX_CPU=_VX_SIMPENTIUM -I%WIND_USR%/h -mrtp libcov-vxworks.c
+arpentium -r ../lib/libcov-vxworks-gnu.a libcov-vxworks.o
+</pre>
+
+<h2>Integrating with Wind River Workbench</h2>
+<p>
+<img alt="Project Properties" src=env_vxworks-tool.png style="float:right;padding-bottom:1em;padding-left:1em">
+<ol>
+<li>
+Use the command <code>Project Properties</code>
+<li>
+Click on <code>Build Properties</code>
+<li>
+Click on <code>Build Tools</code>
+<li>
+Select <code>Build tool</code> <code>C-Compiler</code>
+<li>
+In the <code>Command</code> edit box, change <code>$(TOOL_PATH)</code> to
+<code>"c:/Program Files/BullseyeCoverage/bin/"</code>
+<li>
+Select <code>Build tool</code> <code>C++-Compiler</code>.
+Repeat step 5.
+<li>
+Select <code>Build tool</code> <code>Linker</code>.
+Repeat step 5.
+<li>
+If you are building a real time process, press the <code>OK</code> button and skip the rest of the steps.
+If you are building a downloadable kernel module, continue below.
+<p style=clear:both>
+<img alt="Project Properties" src=env_vxworks-lib.png style="float:right;padding-left:1em">
+<li>
+Click on <code>Build Macros</code>
+<li>
+Add to the <code>LIBS</code> macro the value <code>"c:/Program Files/BullseyeCoverage/lib/libcov-vxworks-<i>compiler</i>.a"</code>, where <i>compiler</i> is either <code>diab</code> or <code>gnu</code>.
+<li>
+Press the <code>OK</code> button
+</ol>
+
+<p style=clear:both>
+<h2>Running from Wind River Workbench, Real Time Process</h2>
+<p>
+<img alt="Run" src=env_vxworks-run.png style="float:right;padding-left:1em">
+You can use the steps below to set the <code>COVFILE</code> environment variable
+to the path of the coverage file where the target application can access it.
+<ol>
+<li>
+Use the menu command <code>Run Open Run Dialog</code> (Workbench 3) or <code>Run Run</code> (Workbench 2)
+<li>
+In the <code>Environment</code> setting, add <code>COVFILE=host:</code><i>path</i>,
+where <i>path</i> is your coverage file name.
+<li>
+Click <code>Run</code> to run your application.
+</ol>
+
+<p style=clear:both>
+<h2>Running from Wind River Workbench, Downloadable Kernel Module</h2>
+<p>
+The kernel cannot access environment variables.
+The default coverage file is <code>/tgtsvr/test.cov</code>, which works out to your workspace directory.
+You can either locate your coverage file in your workspace directory, or
+copy your coverage file to your workspace directory before running and
+copy it back to the original location afterward.
+<p style=clear:both>
+
+<!-- For indexing and searching -->
+<p style="visibility:hidden;font-size:1px;margin:0;padding:0">
+Tornado
+
+<p style="font-size:xx-small">
+Last reviewed: 6 Feb 2009
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
