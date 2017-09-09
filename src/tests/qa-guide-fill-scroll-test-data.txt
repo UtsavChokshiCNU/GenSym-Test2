@@ -1,0 +1,29 @@
+---------------------------------------------------+
+This is a test file that is used as input file for |
+ qa-guide-fill-scroll-test of qa-guide-tests.kb.   |
+Each line contains data for scroll area row.       |
+---------------------------------------------------+
+
+There are the contents of the t2-build.bat file that are used as test's input data.
+
+@echo off
+
+rem * This script will compile all of the java files necessary to run T2
+rem * out of a sandbox.  For this first revision, it does no error checking.
+
+cd %SRCBOX%\java
+
+echo devtools
+call %SCRIPTSBOX%\scripts\nt\jmake.bat com/gensym/devtools devtools
+
+echo javalink
+call %SCRIPTSBOX%\scripts\nt\jmake.bat . javalink
+
+echo sequoia
+call %SCRIPTSBOX%\scripts\nt\jmake.bat . sequoia
+
+if not "%1" == "g2studio" goto end
+echo g2studio
+call %SCRIPTSBOX%\scripts\nt\jmake.bat . g2studio
+
+:end
