@@ -1,0 +1,77 @@
+
+** Development Version
+
+Set environment variable TW_HOME_FOR_ACTIVEX to point to the path
+   of an 8.0 tw.exe, build GA28 or greater.
+
+Set environment variable GSIDIR to a directory containing gsi header files
+   (necessary only if you are going to *build* ActiveX Link)
+
+cvs co -A activex vstudio
+
+Register G2 ActiveX Link 1.0r8 or greater.  It is not promoted yet.
+To build it, do the following:
+   - copy gsi.dll into activex\G2Com\Debug
+   - open activex\G2Com\G2Com.dsw
+   - set active configuation to "Win32 Debug"
+   - to make sure that everything works, go to the project settings, go to
+     "Custom Build", and edit the command to omit the "/s".  Just do
+         regsvr32 /c "$(TargetPath)"
+     The /s means silent, and if you use it, and registration fails, you will
+     not be informed about any problem.
+   - build the project.  The final step should be a dialog box telling you that
+     G2Com.dll was registered successfully
+
+Run g2, again 8.0 GA22 or greater, on port 1112
+
+Copy activex\G2Com\demos\g2com.kb into activex\control\examples (or use module
+   search paths to make sure g2com.kb is loaded)
+
+Load kb activex/control/examples/wsvdemo.kb.  It should start automatically.
+
+Open vstudio/ctrl/WSViewControl.dsw; set active configuration to "Win32 Debug";
+   build control
+
+If you are using a Unix sandbox through samba, you may need to fix the VB
+   project files to have only Windows newlines.
+
+Run VB with file activex/G2Com/demos/VBDemo/WorkspaceViewDemo.vbp
+
+When you start the project, at least one workspace should show up.  If it
+doesn't, things are not working.  You may need to ask jv for help.
+
+********************************************************************************
+
+** Production Version
+
+Set environment variable TW_HOME_FOR_ACTIVEX to point to the path
+   of an 8.0 tw.exe, build GA28 or greater, e.g.,
+   c:\Program Files\Gensym\g2-8.0a0\g2\tw.exe
+
+Make sure G2 ActiveX Link 1.0r8 or greater is registered on your machine.
+There is a file, runme.bat, which ships with AxL and registers the DLL.
+   e.g., c:\Program Files\Gensym\g2-8.0a0\activexlink\runme.bat
+
+Run "registerWSV.bat"
+   e.g., c:\Program Files\Gensym\g2-8.0a0\g2\registerWSV.bat
+
+
+Run g2, again 8.0 GA28 or greater, on port 1112
+  (that's 1112, not 1111!!!  The VB Demo has the port hard-coded)
+
+Load kb wsvdemo.kb from the G2 directory.  It should start automatically.
+  It will pull in two other kbs: g2com.kb and workspace-views.kb
+  e.g., c:\Program Files\Gensym\g2-8.0a0\g2\wsvdemo.kb
+
+Run VB with project WorkspaceViewDemo.vbp
+  e.g., c:\Program Files\Gensym\g2-8.0a0\g2\WorkspaceViewDemo.vbp
+
+It should display two workspaces.  You can supply different names or UUIDs to
+view other workspaces.  G2 must be running and must have workspace-views.kb
+and g2com.kb loaded.  You certainly should be able to merge in other kbs and
+look at their workspaces as well.
+
+Note you can transfer and clone items from one workspace view into the other
+one.
+
+There is also an html demo, wsview.html.
