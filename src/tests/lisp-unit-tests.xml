@@ -1,0 +1,151 @@
+<?xml version="1.0"?>
+<rdf:RDF
+ xmlns:rdf="http://www.w3.org/TR/WD-rdf-syntax#"
+ xmlns:g2="g2-12-0-14.rdf"
+ xmlns="">
+
+<g2:Module ID="LISP-UNIT-TESTS">
+  <g2:version>
+    <g2:Structure>
+      <g2:sa.MAJOR-VERSION g2:type="Integer">12</g2:sa.MAJOR-VERSION>
+      <g2:sa.MINOR-VERSION g2:type="Integer">0</g2:sa.MINOR-VERSION>
+      <g2:sa.RELEASE-QUALITY g2:type="Text"></g2:sa.RELEASE-QUALITY>
+      <g2:sa.REVISION g2:type="Integer">14</g2:sa.REVISION>
+      <g2:sa.BUILD-IDENTIFICATION g2:type="Text">TC23</g2:sa.BUILD-IDENTIFICATION></g2:Structure></g2:version>
+  <g2:systemtables>
+    <g2:Sequence>
+      <rdf:li>
+      <g2:c.MODULE-INFORMATION ID="bf00a58c147611e7f370014703bc01ce">
+        <g2:a.TOP-LEVEL-MODULE g2:type="Symbol">LISP-UNIT-TESTS</g2:a.TOP-LEVEL-MODULE>
+        <g2:a.DIRECTLY-REQUIRED-MODULES>
+          <g2:Sequence>
+            <rdf:li g2:type="Symbol">SYS-MOD</rdf:li></g2:Sequence></g2:a.DIRECTLY-REQUIRED-MODULES>
+        </g2:c.MODULE-INFORMATION></rdf:li>
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      <rdf:li>
+      <g2:c.MISCELLANEOUS-PARAMETERS ID="bf11a58c147611e7f370014703bc01ce">
+        <g2:a.BACKWARD-COMPATIBILITY-FEATURES>
+          <g2:Sequence>
+            <rdf:li g2:type="Symbol">PRINT-MEANS-PRINT-TO-SERVER-IN-CONFIGURATIONS</rdf:li>
+            <rdf:li g2:type="Symbol">INCONSISTENT-BEHAVIOR-OF-MOVE-IN-CONFIGURATIONS</rdf:li></g2:Sequence></g2:a.BACKWARD-COMPATIBILITY-FEATURES>
+        </g2:c.MISCELLANEOUS-PARAMETERS></rdf:li>
+      
+      <rdf:li>
+      <g2:c.SAVING-PARAMETERS ID="bf13a58c147611e7f370014703bc01ce">
+        <g2:a.KB-FILE-COMMENT><![CDATA[
+2013-06-17: added 2nd return value (bias: integer) for g2-get-current-time-zone. (GENSYMCID-1034)
+
+]]></g2:a.KB-FILE-COMMENT>
+        <g2:a.ENABLE-KB-CHANGE-LOGGING g2:type="TruthValue">true</g2:a.ENABLE-KB-CHANGE-LOGGING>
+        </g2:c.SAVING-PARAMETERS></rdf:li>
+      </g2:Sequence></g2:systemtables>
+  <g2:panes>
+    <g2:Sequence>
+      <rdf:li>
+      <g2:Structure>
+        <g2:sa.WORKSPACE><g2:c.KB-WORKSPACE rdf:resource="#bf15a58c147611e7f370014703bc01ce"/></g2:sa.WORKSPACE>
+        <g2:sa.X-IN-WORKSPACE g2:type="Integer">0</g2:sa.X-IN-WORKSPACE>
+        <g2:sa.Y-IN-WORKSPACE g2:type="Integer">0</g2:sa.Y-IN-WORKSPACE>
+        <g2:sa.X-MAGNIFICATION g2:type="Integer">256</g2:sa.X-MAGNIFICATION>
+        <g2:sa.Y-MAGNIFICATION g2:type="Integer">256</g2:sa.Y-MAGNIFICATION></g2:Structure></rdf:li></g2:Sequence></g2:panes>
+  </g2:Module>
+
+<g2:c.KB-WORKSPACE ID="bf15a58c147611e7f370014703bc01ce">
+  <g2:a.MODULE-ASSIGNMENT g2:type="Symbol">LISP-UNIT-TESTS</g2:a.MODULE-ASSIGNMENT>
+  <g2:a.EDGES-OF-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.LEFT g2:type="Integer">-350</g2:sa.LEFT>
+      <g2:sa.TOP g2:type="Integer">250</g2:sa.TOP>
+      <g2:sa.RIGHT g2:type="Integer">350</g2:sa.RIGHT>
+      <g2:sa.BOTTOM g2:type="Integer">-250</g2:sa.BOTTOM></g2:Structure></g2:a.EDGES-OF-WORKSPACE></g2:c.KB-WORKSPACE>
+
+<g2:c.PROCEDURE ID="bf16a58c147611e7f370014703bc01ce">
+  
+  <g2:a.TEXT><![CDATA[
+run-lisp-unit-tests()
+auto-test-dir: text;
+auto-test-dir-exists: truth-value;
+tests-exist: truth-value;
+stream: class g2-stream;
+begin
+auto-test-dir = call g2-get-environment-variable("G2_AUTO_TEST");
+auto-test-dir-exists = call g2-directory-exists(auto-test-dir);
+if not(auto-test-dir-exists) or auto-test-dir="" then shut down g2;
+call g2-change-default-directory(auto-test-dir);
+tests-exist = system call g2-are-lisp-unit-tests-included-p();
+if not (tests-exist) then
+begin
+stream = call g2-open-file-for-append("test-results-log.rg", true);
+call g2-write-line(stream, "LISP-UNIT-TESTS, written @ [the current time as a time stamp]");
+call g2-write-line(stream, "");
+call g2-write-line(stream, "");
+call g2-write-line(stream, "end-of-file, LISP-UNIT-TESTS, [the current time]");
+call g2-write-line(stream, "--------------------------------------------------------------");
+shut down g2;
+end;
+system call g2-run-lisp-unit-tests-and-write-rg("test-results-log.rg");
+shut down g2;
+end
+]]></g2:a.TEXT>
+  <g2:a.ICON-VARIABLES>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES>
+  <g2:a.POSITION-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.X g2:type="Integer">-159</g2:sa.X>
+      <g2:sa.Y g2:type="Integer">38</g2:sa.Y>
+      <g2:sa.SUPERIOR><g2:c.KB-WORKSPACE rdf:resource="#bf15a58c147611e7f370014703bc01ce"/></g2:sa.SUPERIOR></g2:Structure></g2:a.POSITION-IN-WORKSPACE>
+  <g2:a.SIZE-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.SIZE-IN-WORKSPACE>
+  <g2:a.NAME-BOX>
+    <g2:Structure>
+      <g2:sa.COLOR>
+        <g2:Structure>
+          <g2:sa.BACKGROUND-COLOR g2:type="Symbol">TRANSPARENT</g2:sa.BACKGROUND-COLOR>
+          <g2:sa.TEXT-COLOR g2:type="Symbol">FOREGROUND</g2:sa.TEXT-COLOR></g2:Structure></g2:sa.COLOR>
+      <g2:sa.POSITION>
+        <g2:Structure>
+          <g2:sa.X-OFFSET g2:type="Integer">-89</g2:sa.X-OFFSET>
+          <g2:sa.Y-OFFSET g2:type="Integer">-29</g2:sa.Y-OFFSET></g2:Structure></g2:sa.POSITION></g2:Structure></g2:a.NAME-BOX></g2:c.PROCEDURE>
+
+<g2:c.RULE ID="0b421c29148011e7907d9eb6d01063cf">
+  <g2:a.OPTIONS>
+    <g2:Structure>
+      <g2:sa.BACKWARD-CHAIN g2:type="TruthValue">true</g2:sa.BACKWARD-CHAIN>
+      <g2:sa.FORWARD-CHAIN g2:type="TruthValue">true</g2:sa.FORWARD-CHAIN>
+      <g2:sa.DATA-SEEKING g2:type="TruthValue">true</g2:sa.DATA-SEEKING>
+      <g2:sa.CAUSE-FORWARD g2:type="TruthValue">true</g2:sa.CAUSE-FORWARD></g2:Structure></g2:a.OPTIONS>
+  <g2:a.TEXT>initially start run-lisp-unit-tests ()</g2:a.TEXT>
+  <g2:a.TEXT-FONT>
+    <g2:Structure>
+      <g2:sa.FONT-SIZE g2:type="Symbol">LARGE</g2:sa.FONT-SIZE></g2:Structure></g2:a.TEXT-FONT>
+  <g2:a.TEXT-ALIGNMENT g2:type="Symbol">LEFT</g2:a.TEXT-ALIGNMENT>
+  <g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING><g2:c.PROCEDURE rdf:resource="#bf16a58c147611e7f370014703bc01ce"/></g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING>
+  <g2:a.POSITION-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.X g2:type="Integer">52</g2:sa.X>
+      <g2:sa.Y g2:type="Integer">133</g2:sa.Y>
+      <g2:sa.SUPERIOR><g2:c.KB-WORKSPACE rdf:resource="#bf15a58c147611e7f370014703bc01ce"/></g2:sa.SUPERIOR></g2:Structure></g2:a.POSITION-IN-WORKSPACE>
+  <g2:a.SIZE-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">293</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">41</g2:sa.HEIGHT></g2:Structure></g2:a.SIZE-IN-WORKSPACE></g2:c.RULE>
+</rdf:RDF>
