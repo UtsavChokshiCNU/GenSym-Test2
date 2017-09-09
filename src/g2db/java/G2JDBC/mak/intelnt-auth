@@ -1,0 +1,37 @@
+AUTHDIR	    = $(SRCBOX)\g2db\c\authorize
+JDBCAUTH    = $(SRCBOX)\g2db\java\G2JDBC\c
+EXEDIR	    = $(DSTBOX)\jdbc
+C_FLAGS	    = $(cflags) -DWIN32
+INCLUDE_FLAGS	= -I"$(JAVA_HOME)\include\win32" -I"$(JAVA_HOME)\include" \
+		-I$(SRCBOX)\specific\intelnt -I$(AUTHDIR) -I$(JDBCAUTH)
+COMMON	    = -DNEW_CLASS_MAPPING
+CCFLAGS	    = /nologo $(COMMON) $(C_FLAGS) $(cvars) $(INCLUDE_FLAGS)
+link	    = link
+CC	    = cl
+WINLIBS	    =  libcmt.lib netapi32.lib wsock32.lib ws2_32.lib kernel32.lib user32.lib gdi32.lib\
+		winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib rpcrt4.lib \
+		crypt32.lib
+LIBS	    = $(WINLIBS)
+LINKFLAGS   = /DLL /nodefaultlib:"libc.lib" /nodefaultlib:"libcmtd.lib"
+H_FILES	    = $(JDBCAUTH)\core_G2JDBCAuthorize.h \
+	      $(AUTHDIR)\gsi_brg.h
+ALL_FILES   = $(AUTHDIR)\gsi_brg.obj $(AUTHDIR)\nsleep.obj $(JDBCAUTH)\core_G2JDBCAuthorize.obj
+EXECUTABLES = $(EXEDIR)\G2JDBCAuthorize.dll
+
+ALL	    : $(EXECUTABLES)
+
+$(EXEDIR)\G2JDBCAuthorize.dll	: $(ALL_FILES)
+				$(link) -out:$(EXEDIR)\G2JDBCAuthorize.dll $(LINKFLAGS) $(LIBS) $(ALL_FILES)
+
+$(JDBCAUTH)\core_G2JDBCAuthorize.obj : $(JDBCAUTH)\core_G2JDBCAuthorize.c \
+	    $(JDBCAUTH)\core_G2JDBCAuthorize.h
+	    $(CC) -c $(CCFLAGS) $(JDBCAUTH)\core_G2JDBCAuthorize.c -Fo$(JDBCAUTH)\core_G2JDBCAuthorize.obj
+
+$(AUTHDIR)\gsi_brg.obj		: $(AUTHDIR)\gsi_brg.h $(AUTHDIR)\gsi_brg.c
+	    $(CC) -c $(CCFLAGS) $(AUTHDIR)\gsi_brg.c -Fo$(AUTHDIR)\gsi_brg.obj
+
+$(AUTHDIR)\nsleep.obj		: $(AUTHDIR)\nsleep.c
+	    $(CC) -c $(CCFLAGS) $(AUTHDIR)\nsleep.c -Fo$(AUTHDIR)\nsleep.obj
+
+
+
