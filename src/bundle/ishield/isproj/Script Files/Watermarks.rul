@@ -1,0 +1,14 @@
+function DoWatermarks()
+  STRING szOKFile,szTemp;
+begin
+  VarSave(SRCTARGETDIR);
+
+    Sprintf(szOKFile,"%s", TARGETDIR);
+  StrSub(szTemp,szOKFile, StrLength(szOKFile) - 1, 1);
+  if (StrCompare("\\", szTemp)!= 0) then
+    szOKFile = szOKFile + "\\";
+  endif;
+  make_watermark_file(szOKFile, BUNDLENAME, sgName, sgCompany, sgRegNumber);
+
+end;
+
