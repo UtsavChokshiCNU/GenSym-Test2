@@ -1,0 +1,264 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_licenseManager.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>Using the License Manager</h1>
+<hr>
+<h2>
+<a name=1></a>
+Background</h2>
+<p>
+The license manager is optional.
+You should use it if you wish to ensure that you do not exceed the
+number of simultaneous users specified by your license.
+When the number of simultaneous users reaches the number allowed
+by your license, subsequent requesters wait until the number decreases.
+<p>
+The license manager does not apply to test programs built with
+BullseyeCoverage, only to the programs that ship as a part of
+BullseyeCoverage.
+After acquiring a license,
+BullseyeCoverage programs hold the license for the length of time they run.
+This includes the <a href=coverageBrowser.html>Coverage Browser</a>,
+even if it is idle.
+However, if all licenses are busy, <a href=ref_cov01.html>cov01</a> and
+<a href=ref-covlmgr.html>covlmgr</a> proceed without acquiring a license.
+This exception allows you to disable Coverage Build and to monitor the license
+manager, even when all licenses are busy.
+<p>
+If a BullseyeCoverage program holding a license is killed and therefore does not
+release the license, that license remains unavailable for 10 minutes,
+after which it is automatically released.
+<p>
+You can use the license manager with an evaluation license.
+The license manager cannot be used with an unlimited license.
+<h2>
+<a name=2></a>
+The License Manager File</h2>
+<p>
+BullseyeCoverage stores information about the licenses currently in use in a
+file, called the <i>license manager file</i>.
+This file must be accessible to all users for reading and writing.
+Usually the license manager file is located on a network file server.
+The network file server must support file locking.
+The license manager file is updated directly by the BullseyeCoverage
+programs each time they run.
+There is no server process to configure or start.
+<p>
+You can manage licenses for BullseyeCoverage running on different
+operating systems all with the same license manager file or with
+separate license manager files, or in any combination.
+The key requirement is that all users on the same operating system use
+the same license manager file.
+<p>
+Only the license administrator should create the license manager file,
+and only once.
+<p>
+The license administrator can require that all users use the license
+manager file by distributing to them only the path to the license
+manager file and keeping license keys secret.
+<h2>
+<a name=3></a>
+Setting Up on Windows</h2>
+<p>
+The setup program displays a page titled <code>License</code> where
+you can enter either a license key, the path of an existing license file,
+or both.
+The license administrator can also create the license manager file when
+specifying both.
+<p>
+After installation, you can verify the license manager file contents with the
+Coverage Browser command
+<code>Help About</code>.
+<p>
+To stop using the license manager, re-run setup and enter an empty path
+in the <code>License</code> page.
+<p>
+<div style="float:left">
+<img alt="Example: creating the license manager file" src="licenseManager-windows-create.png">
+<br>
+<p style="text-align:center">
+Example: creating the license manager file
+</div>
+<div style="float:left;margin-left:1em">
+<img alt="Example: using the license manager file" src="licenseManager-windows-use.png">
+<br>
+<p style="text-align:center">
+Example: using the license manager file
+</div>
+<h2>
+<a name=4></a>
+Setting Up on Unix</h2>
+<p>
+The <code>install</code> program,
+which is the first installation step,
+accepts several options to configure the license manager:
+<p>
+<table>
+<tr><td colspan=2>
+<code>Usage: install </code><i>options</i>
+<tr><td>
+<code>&nbsp;&nbsp;--create </code><i>path</i>
+<td><code>Create license manager file </code><i>path</i>
+<tr><td>
+<code>&nbsp;&nbsp;--help</code>
+<td><code>Show this message</code>
+<tr><td>
+<code>&nbsp;&nbsp;--key </code><i>string</i>
+<td><code>Use license key </code><i>string</i>
+<tr><td>
+<code>&nbsp;&nbsp;--prefix </code><i>dir</i>
+<td><code>Install to directory </code><i>dir</i>
+<tr><td>
+<code>&nbsp;&nbsp;--use </code><i>path</i>
+<td><code>Use license manager file </code><i>path</i>
+</table>
+<p>
+Use option <code>--key</code> if you were given a license key.
+You do not need to specify <code>--key</code> if your distribution is
+pre-serialized or if you have an existing license manager file
+containing a license you wish to use.
+<p>
+Options <code>--create</code> and <code>--use</code> specify that the BullseyeCoverage
+installation should use the license manager.
+If the license manager file does not yet exist, use option <code>--create</code>,
+otherwise use <code>--use</code>.
+The <code>install</code> program records the path in
+<code>$HOME/.BullseyeCoverage</code> for subsequent access by
+BullseyeCoverage programs.
+<p>
+For example, to create the license manager file:
+<pre>
+./install --key <i>key</i> --create /server/BullseyeCoverageLicenseManager
+</pre>
+<p>
+For example, to use the license manager file:
+<pre>
+./install --use /server/BullseyeCoverageLicenseManager
+</pre>
+<p>
+After installation, you can verify the license manager file contents with the
+command below.
+<pre>
+covlmgr --status
+</pre>
+<p>
+To stop using the license manager, re-run <code>install</code>
+specifying neither <code>--create</code> nor <code>--use</code>.
+<p>
+If you do not run the <code>install</code> program because you are
+running a shared installation, set environment variable
+<code>COVLM</code> to the path of the license manager file.
+<h2>
+<a name=5></a>
+Sharing Licenses</h2>
+<p>
+If your organization owns multiple licenses purchased at different
+times, you can share them all among many users.
+To share multiple licenses, add each license key to your license manager
+file with <code>covlmgr --add <i>key</i></code>.
+<p>
+For example on Windows, follow these steps.
+<ol>
+<li>Gather all your license keys and download the latest release of
+BullseyeCoverage.
+<li>Run the setup program.
+When the <code>License</code> page appears, enter your first license key.
+<li>Specify to create a license manager file.
+<li>Complete the installation.
+<li>Run <code>covlmgr --add <i>key</i></code> for each of your remaining license keys.
+</ol>
+<p>
+For example on Unix, follow these steps.
+<ol>
+<li>Gather all your license keys and download the latest release of
+BullseyeCoverage.
+<li>Run <code>install --create </code><i>path</i><code> --key </code><i>key</i>,
+specifying your first license key
+<li>Run <code>covlmgr --add <i>key</i></code> for each of your remaining license keys.
+</ol>
+<h2>
+<a name=6></a>
+Adding or Updating Licenses</h2>
+<p>
+When you purchase an additional license or an update, you will receive a
+new license key.
+The license administrator can add this key to the license manager file
+with <code>covlmgr --add <i>key</i></code>,
+or by performing an installation using the existing license manager file using the new key.
+It is recommended to download the latest release of BullseyeCoverage at
+this time if you have not done so recently.
+<h2>
+<a name=7></a>
+Monitoring Utilization</h2>
+<p>
+You can determine some basic license manager utilization information
+with either <code>covlmgr --status</code> or the
+Coverage Browser command <code>Help About</code>.
+Specifically, you can determine:
+<ol>
+<li>The users currently holding a license
+<li>The total number of minutes all users spent waiting
+<li>The peak number of users that were made to wait
+</ol>
+<p>
+You can reset the status information with <code>covlmgr --clear</code>.
+<h2>
+<a name=8></a>
+File Format Version History</h2>
+<p>
+When new features are added to the license manager, the file format is updated.
+BullseyeCoverage creates a license manager file in the newest format known to that software release.
+The format of an existing license manager file never changes.
+This is to maintain compatibility among different software versions in use within a group.
+If you wish to update the file format, you must recreate the file.
+<p>
+To determine the current file version, use the Coverage Browser command
+<code>Help About</code>, or <code>covlmgr --status</code>.
+<p>
+<table border=1>
+<tr>
+<th>File Version
+<th>Software Version
+<th>Date
+<th>Changes
+<tr><td>1<td>6.1.0<td>Nov 2002<td>
+<tr><td>2<td>6.6.14<td>Jul 2003<td>status contains list of waiting users, total wait minutes, and peak users waiting
+<tr><td>3<td>6.8.0<td>May 2004<td>key encryption, licenses issued first-in-first-out rather than random order
+<tr><td>4<td>7.5.13<td>Nov 2005<td>bug fix for multiple platforms in one file
+<tr><td>5<td>7.8.19<td>Jan 2008<td>encrypted binary format, prevent using copied file
+</table>
+<p style="font-size:xx-small">
+Last reviewed: 11 Feb 2009
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
