@@ -1,0 +1,106 @@
+#!/bin/sh
+# run-rg-reports [ -commit ] [ sandbox ]
+# if -commit is specified, and the user is ab, then the regression-summary.log
+# file is committed to the cvs repository under the tests module.  If sandbox
+# is specified, then that sandbox will be used to read the logs.  In all cases,
+# rg-report.lisp will be run from the sandbox which specifies SANDBOX.
+
+
+solaris="/home/lucid/liquid50/lisp-clos-50"
+sparcsol="/home/lucid/lucid42/lisp-clos-patched"
+sunos="/home/lucid/lucid41/lisp-clos-411"
+
+lispinit="/tmp/lisp-init.lisp"
+  
+if [ -z "$SANDBOX" ]
+then
+  echo "You must first set SANDBOX (presumably with use-sandbox)"
+  exit 1
+fi
+if [ ! -d $SANDBOX ]
+then
+  echo "Error: SANDBOX $SANDBOX does not exist"
+  exit 1
+fi
+if [ -d $SANDBOX/src ]
+then
+  SRCBOX=$SANDBOX/src
+else
+  SRCBOX=$SANDBOX
+fi
+if [ ! -d ${SRCBOX}/lisp ]
+then
+  echo "Error: SANDBOX $SRCBOX/lisp does not exist"
+  exit 1
+fi
+
+
+if [ "$MACHINE" = "sparcsol" ]
+then
+  lisp=$solaris
+  if [ "$SPARC_TYPE" -ne "ultra" ]
+  then
+    lisp=$sparcsol
+    if [ "$SPARC_TYPE" != "sparc" ]
+    then
+      echo "Warning: unknown architecture \"$SPARC_TYPE\"."
+    fi
+  fi
+else
+  if [ ! "$MACHINE" = "sun4" ]
+  then
+    echo "Warning: unknown architecture: $MACHINE"
+    echo "Trying $sunos."
+  fi
+  lisp=$sunos
+fi
+
+# hack from set-ut-links:
+# flags is set to the set of all arguments beginning with '-'.
+
+flags=`echo $* | awk 'BEGIN {RS=" "} $1 ~ /^-/'`
+
+commit="NIL"
+
+for flag in $flags
+do
+  case $flag in
+    -commit)
+	     commit="T"
+	     ;;
+    *)
+       echo "Unknown flag $flag"
+       exit 1
+  esac
+done
+
+/bin/rm -f $lispinit
+echo '(in-package "USER")' > $lispinit
+echo '(pushnew :simple-unix-rg *features*)' >> $lispinit
+
+# Things to parameterize in the future: whether or not to push :recompile onto
+# the *features* list (currently off); which Lisp to use (Allegro?)
+# (currently platform dependent, see top of file.)
+
+# echo '(pushnew :recompile *features*)' >> $lispinit
+
+echo "cd $SRCBOX/lisp"
+cd $SRCBOX/lisp
+
+$lisp -l $lispinit <<+
+(proclaim (quote (optimize (compilation-speed 0))))
+#+recompile
+(compile-file "rg-report.lisp")
+(load "rg-report")
+(in-package "AB")
+(setq sandbox "$SANDBOX")
+(setq commit-report $commit)
+(values (format t "Collecting reports (wait.)~%"))
+(collect-reports)
+(values (format t "Showing reports~%"))
+(show-reports)
+(quit)
++
+
+/bin/rm $lispinit
+echo ""
