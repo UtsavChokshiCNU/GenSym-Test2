@@ -1,0 +1,232 @@
+#!/bin/sh
+#
+# USAGE: build-check [<machine-type list>]
+#
+# This is a tool to search the spin-id build log files for build errors and
+# warnings. It uses egrep to collect the build errors or warnings. It then
+# filters out any known non-warnings or non-errors that were also collected.
+# For each filtered warnings and errors, it also finds out the adjacent lines
+# which gives some hints about what kind of the error or warning. The
+# collected information are written into three log files in the spin-id
+# logs directory:
+#   all-build-check.log contains all build errors and warnings.
+#   build-check.log contains the errors and warnings after filtering.
+#   build-check-detail.log contains not only the filtered errors and warnings
+#                           but also the lines around the errors and warnings.
+
+# Not this file should be updated to search for any new warnings or errors that
+# are not being collected. This script may not find some unexpected errors or
+# warnings! Therefore, occasionally check the log files yourself.  If you
+# find any new errors or warnings, update this script to search for these.
+
+# NEEDS TO BE DONE:
+#   Figure out how to do the sed search and replace more compactly.
+#   Search errors and warnings for the vms log files.
+#     VAX errors and warnings are of the form:
+#       %CC-I-SUMMARY, Completed with 0 error(s), 0 suppressed warning(s),
+#       %MMS-F-GWKNOACTS, Actions to update EXTS are unknown.
+#   Check for suppressed warnings?
+
+# Check the lexical enviroment.
+
+builduser="ab"
+
+if [ ! $?SANDBOX -o ! $?SRCBOX ]
+then
+  echo "ERROR: This must be run after setting <spin-id> and <srcbox>"
+  exit 1
+fi
+
+if [ `whoami` != $builduser ]
+then
+  echo "ERROR: Only $builduser can run this script."
+  exit 1
+fi
+
+# Check the arguments.
+
+machine_types=""
+#machine_types=`$SRCBOX/build/build-machines -active -alltypes`
+
+if [ $# != 0 ]; then
+  while [ $# -gt 0 ]; do
+    machine_types="$machine_types $1"; shift
+  done
+fi
+
+if [ "$machine_types" = "" ]; then
+  machine_types=`$SRCBOX/build/build-machines -active -alltypes`
+fi
+
+logs_dir="$SANDBOX/logs"
+log_types="trans-tc $machine_types"
+build_check_data="${logs_dir}/all-build-check.log"
+build_check="${logs_dir}/build-check.log"
+build_check_detail="${logs_dir}/build-check-detail.log"
+
+# Remove the old log files, if they exist
+
+if [ -f $build_check_data ]
+then
+   rm $build_check_data
+fi
+touch $build_check_data
+
+if [ -f $build_check ]
+then
+   rm $build_check
+fi
+touch $build_check
+
+if [ -f $build_check_detail ]
+then
+   rm $build_check_detail
+fi
+touch $build_check_detail
+
+# Search the log files of the build (TC) and release platforms for possible
+# errors and warnings.
+#   error
+#   failed
+#   illegal
+#   warning
+#   CC-E  - a C compiler error on VMS
+#   unable - (Unable to read from input)
+#   violation - (violation of Common Lisp ... semantics)
+
+echo "Creating $build_check_data for $SANDBOX."
+
+# Collect Data
+
+for machine_type in $log_types
+do
+   if [ $machine_type != "mswin31" ]
+   then
+      egrep -ni '(error|failed|illegal|warning|CC-E|unable|violation)' $logs_dir/*$machine_type*.log \
+		>> $build_check_data
+      echo "  " >> $build_check_data
+   fi
+done
+
+# Filter the non-warnings and non-errors.
+
+# "RMS-E-PRV" is a possible real error.  This is VMS's way of saying
+# that we had insufficient privileges to delete a file.  Given our
+# history with Multinet, it is conceivable that the permissions could
+# be screwed up.  But much more likely is that the file doesn't exist.
+# VMS complains about that.
+
+echo "Creating $build_check for $SANDBOX."
+
+echo " " >> $build_check
+echo "Build Errors and Warnings Report from `date`" >> $build_check
+echo " " >> $build_check
+
+# jv, 12/6/98 - "egrep -v" would probably be faster than "sed //d".
+
+cat $build_check_data | \
+
+sed /"warning C[0-9][0-9][0-9][0-9]:"/d | \
+sed /"incompatible pointer type"/d | \
+sed /"equality constant evaluation found"/d | \
+sed /"statement not reached"/d | \
+sed /"before array or function[:;] ignored"/d | \
+sed /"assignment makes integer from pointer without a cast"/d | \
+sed /"runtime error"/d | \
+sed /os-error/d | \
+sed /OS-ERROR/d | \
+sed /neterror/d | \
+sed /NETERROR/d | \
+sed /objerror\.gif/d | \
+sed /pagerror\.gif/d | \
+sed /errors\.h/d | \
+sed /errors\.c/d | \
+sed /errors\.o/d | \
+sed /jerror\.c/d | \
+sed /jerror\.o/d | \
+sed /stderror\.c/d | \
+sed /stderror\.o/d | \
+sed /get-warnings/d | \
+sed /get-c-warnings/d | \
+sed /"was lost"/d | \
+sed /"pointer from integer without a cast"/d | \
+sed /"trigraph sequence replaced"/d | \
+sed /"not optimized"/d | \
+sed /"suppressed warning"/d | \
+sed /"error deleting"/d | \
+sed /"error searching for"/d | \
+sed /"is not (any longer) pertinent"/d | \
+sed /"MACHINE not specified"/d | \
+sed /"ignore=warning"/d | \
+sed /"RMS-E-PRV"/d | \
+sed /"making BSS section"/d | \
+sed /"contains undefined escape sequence"/d | \
+sed /"some optimizations skipped"/d | \
+sed /"compilation warnings"/d | \
+sed /"Completed with 0 error"/d | \
+sed /"g2ext_g2_stream_get_error_numbe"/d | \
+sed /"^Binary file "/d | \
+sed /"--> moved to "/d | \
+sed /" 0 error(s), 0 warning(s)"/d | \
+sed /"LINK : warning LNK4049: locally defined symbol \"_xmlFree\" imported"/d | \
+sed /"LINK : warning LNK4049: locally defined symbol \"_xmlMalloc\" imported"/d | \
+sed /"LINK : warning LNK4049: locally defined symbol \"_xmlIndentTreeOutput\" imported"/d  \
+>> $build_check
+
+# For filtered warnings and errors, find the adjacent lines in the
+# corresponding log file. Put these lines include the errors and warnings
+# into another file.
+
+# To analyze each error or warning, we need to know the whole body of the error
+# or warning message, not just one line. But the pattern of each error or
+# warning message are different. There is no easy way to do it. Here I simply
+# find the line before the error or warnings and the line after the errors or
+# warnings. This at least gives us some hints.  --hsh 4/2/96
+
+file_name=""
+line_num=""
+
+echo "Creating $build_check_detail for $SANDBOX."
+
+cat $build_check | \
+while read line
+do
+  if [ "$line" != "" ]
+  then
+     current_file_name=`echo $line | sed -n 's/^\(.*log\):[0-9]*:.*/\1/p`
+     current_line_num=`echo $line | sed -n 's/^.*log:\([0-9]*\):.*/\1/p`
+     if [ "$current_file_name" = "" -a "$current_line_num" = "" ]
+     then
+       echo "" >> $build_check_detail
+       echo "$line" >> $build_check_detail
+     else
+       if [ "$current_file_name" != "$file_name" ]
+       then
+	 file_name=$current_file_name
+	 echo "" >> $build_check_detail
+	 echo "${file_name}: " >> $build_check_detail
+       fi
+       if [ "$current_line_num" = "1" ]
+       then
+	 line_num_1=$current_line_num
+       elif [ "$current_line_num" = "$line_num" ]
+       then
+	 line_num_1=`expr $current_line_num + 1`
+       else
+	 line_num_1=`expr $current_line_num - 1`
+	 if [ "$line_num_1" = "$line_num" ]
+	 then
+	   line_num_1=$current_line_num
+	 fi
+       fi
+       line_num_2=`expr $current_line_num + 1`
+       line_num=$line_num_2
+       sed -n "$line_num_1,$line_num_2 p" $file_name >> $build_check_detail
+     fi
+  fi
+done
+
+echo "A listing of $SANDBOX build errors and warnings can be found in the following files:"
+echo "  $build_check_data contains all build errors and warnings"
+echo "  $build_check contains filtered build errors and warnings"
+echo "  $build_check_detail contains filtered build errors and warnings with more information
