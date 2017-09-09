@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <Keyword>AtlProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <UseOfAtl>Static</UseOfAtl>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <UseOfAtl>Static</UseOfAtl>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>.\Release\</OutDir>
+    <IntDir>.\Release\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>.\Debug\</OutDir>
+    <IntDir>.\Debug\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <StringPooling>true</StringPooling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>MinSpace</Optimization>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <AdditionalIncludeDirectories>./demos/VCppDemo;../../gsi/c;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;UNICODE;GSI_USE_WIDE_STRING_API;GSI_USE_NEW_SYMBOL_API;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>.\Release\</AssemblerListingLocation>
+      <BrowseInformation>true</BrowseInformation>
+      <PrecompiledHeaderOutputFile>.\Release\G2Com.pch</PrecompiledHeaderOutputFile>
+      <ObjectFileName>.\Release\</ObjectFileName>
+      <ProgramDataBaseFileName>.\Release\</ProgramDataBaseFileName>
+    </ClCompile>
+    <Midl>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TypeLibraryName>.\Release\G2Com.tlb</TypeLibraryName>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <RedirectOutputAndErrors>NUL</RedirectOutputAndErrors>
+      <TargetEnvironment>Win32</TargetEnvironment>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>.\Release\G2Com.bsc</OutputFile>
+    </Bscmake>
+    <Link>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <LinkDLL>true</LinkDLL>
+      <SubSystem>Windows</SubSystem>
+      <IgnoreSpecificDefaultLibraries>libc.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <OutputFile>.\Release\G2Com.dll</OutputFile>
+      <ImportLibrary>.\Release\G2Com.lib</ImportLibrary>
+      <AdditionalLibraryDirectories>$(GSIDIR);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>../../bundle/stage/intelnt-g2-84r3/gsi/gsi.lib;odbc32.lib;odbccp32.lib;atl.lib;wsock32.lib;../../bundle/stage/intelnt-g2-84r3/gsi/gsi_misc.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/mapinfo:exports /opt:noref </AdditionalOptions>
+      <OptimizeReferences>false</OptimizeReferences>
+      <ModuleDefinitionFile>.\G2Com.def</ModuleDefinitionFile>
+    </Link>
+    <CustomBuildStep>
+      <Command>regsvr32 /s /c "$(TargetPath)" 
+echo regsvr32 exec. time &gt; "$(OutDir)regsvr32.trg" 
+copy G2Com.h demos\VCppDemo\G2Com.h 
+copy G2Com.tlb demos\VCppDemo\G2Com.tlb 
+copy G2Com_i.c demos\VCppDemo\G2Com_i.c 
+copy G2Com_p.c demos\VCppDemo\G2Com_p.c </Command>
+      <Message>Registering ActiveX Control...</Message>
+      <Outputs>$(OutDir)\regsvr32.trg;%(Outputs)</Outputs>
+    </CustomBuildStep>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>Disabled</Optimization>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <MinimalRebuild>false</MinimalRebuild>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <AdditionalIncludeDirectories>../../gsi/c;$(GSIDIR);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;GSI_USE_NEW_SYMBOL_API;UNICODE;GSI_USE_WIDE_STRING_API;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
+      <BrowseInformation>true</BrowseInformation>
+      <PrecompiledHeaderOutputFile>.\Debug\G2Com.pch</PrecompiledHeaderOutputFile>
+      <ObjectFileName>.\Debug\</ObjectFileName>
+      <ProgramDataBaseFileName>.\Debug\</ProgramDataBaseFileName>
+      <StringPooling>true</StringPooling>
+    </ClCompile>
+    <Midl>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TypeLibraryName>.\Debug\G2Com.tlb</TypeLibraryName>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <RedirectOutputAndErrors>NUL</RedirectOutputAndErrors>
+      <TargetEnvironment>Win32</TargetEnvironment>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>.\Debug\G2Com.bsc</OutputFile>
+    </Bscmake>
+    <Link>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <LinkDLL>true</LinkDLL>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <IgnoreSpecificDefaultLibraries>libc.lib;libcmt;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <OutputFile>.\Debug\G2Com.dll</OutputFile>
+      <ImportLibrary>.\Debug\G2Com.lib</ImportLibrary>
+      <AdditionalLibraryDirectories>$(GSIDIR);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>../../bundle/stage/intelnt-g2-84r3/gsi/gsi.lib;odbc32.lib;odbccp32.lib;atl.lib;wsock32.lib;../../bundle/stage/intelnt-g2-84r3/gsi/gsi_misc.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/mapinfo:exports /opt:noref </AdditionalOptions>
+      <OptimizeReferences>false</OptimizeReferences>
+      <ModuleDefinitionFile>.\G2Com.def</ModuleDefinitionFile>
+    </Link>
+    <CustomBuildStep>
+      <Command>regsvr32 /c "$(TargetPath)" 
+echo regsvr32 exec. time &gt; "$(OutDir)regsvr32.trg" </Command>
+      <Message>Registering ActiveX Control...</Message>
+      <Outputs>$(OutDir)\regsvr32.trg;%(Outputs)</Outputs>
+    </CustomBuildStep>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="BConReq.cpp" />
+    <ClCompile Include="BRPCReq.cpp" />
+    <ClCompile Include="ConnectingRequest.cpp" />
+    <ClCompile Include="Converter.cpp" />
+    <ClCompile Include="Datum.cpp" />
+    <ClCompile Include="DisconReq.cpp" />
+    <ClCompile Include="ForcedDisconReq.cpp" />
+    <ClCompile Include="G2Attribute.cpp" />
+    <ClCompile Include="G2Com.cpp" />
+    <ClCompile Include="G2ComConfigurator.cpp" />
+    <ClCompile Include="G2Container.cpp" />
+    <ClCompile Include="G2Item.cpp" />
+    <ClCompile Include="G2ItemRef.cpp" />
+    <ClCompile Include="G2LAElement.cpp" />
+    <ClCompile Include="G2ListOrArray.cpp" />
+    <ClCompile Include="g2string.cpp" />
+    <ClCompile Include="G2Structure.cpp" />
+    <ClCompile Include="G2StructureEntry.cpp" />
+    <ClCompile Include="G2Symbol.cpp" />
+    <ClCompile Include="G2Window.cpp" />
+    <ClCompile Include="G2Workspace.cpp" />
+    <ClCompile Include="Gateway.cpp" />
+    <ClCompile Include="GatewayProp.cpp" />
+    <ClCompile Include="GsiContext.cpp" />
+    <ClCompile Include="GsiThread.cpp" />
+    <ClCompile Include="Lock.cpp" />
+    <ClCompile Include="NBConReq.cpp" />
+    <ClCompile Include="NBRPCReq.cpp" />
+    <ClCompile Include="RequestObj.cpp" />
+    <ClCompile Include="RetValsReq.cpp" />
+    <ClCompile Include="RPCRequest.cpp" />
+    <ClCompile Include="StdAfx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">stdafx.h</PrecompiledHeaderFile>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="G2Com.def" />
+    <CustomBuild Include="G2Structure.rgs" />
+    <CustomBuild Include="G2StructureEntry.rgs" />
+    <CustomBuild Include="G2Window.rgs" />
+    <CustomBuild Include="G2Workspace.rgs" />
+    <CustomBuild Include="Gateway.rgs" />
+    <CustomBuild Include="GatewayProp.rgs" />
+    <CustomBuild Include="icon1.ico" />
+    <CustomBuild Include="G2Attribute.rgs" />
+    <CustomBuild Include="G2ComConfigurator.rgs" />
+    <CustomBuild Include="G2Item.rgs" />
+    <CustomBuild Include="G2ItemRef.rgs" />
+    <CustomBuild Include="G2LAElement.rgs" />
+    <CustomBuild Include="G2ListOrArray.rgs" />
+    <CustomBuild Include="G2Symbol.rgs" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="G2Com.idl">
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">midl /Oicf /h "G2Com.h" /iid "G2Com_i.c" "G2Com.idl"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Performing MIDL step</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\G2Com.tlb;.\G2Com.h;.\G2Com_i.c;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">midl /Oicf /h "G2Com.h" /iid "G2Com_i.c" "G2Com.idl"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Performing MIDL step</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\G2Com.tlb;.\G2Com.h;.\G2Com_i.c;%(Outputs)</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BConReq.h" />
+    <ClInclude Include="BRPCReq.h" />
+    <ClInclude Include="ConnectingRequest.h" />
+    <ClInclude Include="Converter.h" />
+    <ClInclude Include="CPG2Com.h" />
+    <ClInclude Include="Datum.h" />
+    <ClInclude Include="DisconReq.h" />
+    <ClInclude Include="ForcedDisconReq.h" />
+    <ClInclude Include="G2Attribute.h" />
+    <ClInclude Include="G2ComConfigurator.h" />
+    <ClInclude Include="G2Container.h" />
+    <ClInclude Include="G2Item.h" />
+    <ClInclude Include="G2ItemRef.h" />
+    <ClInclude Include="G2LAElement.h" />
+    <ClInclude Include="G2ListOrArray.h" />
+    <ClInclude Include="g2string.h" />
+    <ClInclude Include="G2Structure.h" />
+    <ClInclude Include="G2StructureEntry.h" />
+    <ClInclude Include="G2Symbol.h" />
+    <ClInclude Include="G2Window.h" />
+    <ClInclude Include="G2Workspace.h" />
+    <ClInclude Include="Gateway.h" />
+    <ClInclude Include="GatewayProp.h" />
+    <ClInclude Include="gsi_main_cpp.h" />
+    <ClInclude Include="gsiaxlmisc.h" />
+    <ClInclude Include="GsiContext.h" />
+    <ClInclude Include="GsiThread.h" />
+    <ClInclude Include="Lock.h" />
+    <ClInclude Include="NBConReq.h" />
+    <ClInclude Include="NBRPCReq.h" />
+    <ClInclude Include="RequestObj.h" />
+    <ClInclude Include="RetValsReq.h" />
+    <ClInclude Include="RPCRequest.h" />
+    <ClInclude Include="StdAfx.h" />
+    <ClInclude Include="Resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="G2Com.rc">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OUTDIR);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OUTDIR);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
