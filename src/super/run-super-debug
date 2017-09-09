@@ -1,0 +1,11 @@
+#! /bin/csh
+unlimit descriptors
+use-sandbox ab ab
+bt super
+cvs update *.kb
+set logfile = /bt/ab/logs/super/`date +sup-%y-%m-%d-%H-%M.log`
+setenv G2_DEBUG_OBJECT_USE
+/home/helpdesk/gdb-4.16-sun4 /bt/ab/super/super-g2 >& $logfile <<end_input@@ &
+source /bt/ab/super/super-gdbinit-common
+run -tcpport 3030 -tcpipexact -kb /bt/ab/super/supervisor.kb -start -nowindow
+end_input@@
