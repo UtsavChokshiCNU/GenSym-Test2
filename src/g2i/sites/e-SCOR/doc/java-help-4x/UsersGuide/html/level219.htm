@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="02/06/02 18:47:45">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Configuring Initial Order Demand through a Report</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="level218.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="level220.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+      <div align="center"><b>e-SCOR User's Guide</b></div>
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/e-SCOR/OnlineHelpFiles/UsersGuide/html/level2.htm">  
+        Configuring Level 2 SCOR  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Configuring Initial Order Demand through a Report
+</h2>
+<p>By default, initial order demand for the overall supply chain is based on parameters that you configure for each Sc: Source Consumer category in the model. <a name="273747"></a></p>
+<p>You might have actual order-demand data for your supply chain, which you would like to use in your model. To do this, you configure initial order demand through a report by:<a name="328138"></a></p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Creating a Demand Input Report with the initial order-demand data.<a name="328937"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Enabling the importing of data through the report and configure the report to use. <a name="328950"></a></td>  </tr></table><p>When you run the simulation, the model creates orders for as many products as you configured in the report, then stops. You configure a duration for each order, which is offset from the start of the simulation. The duration can be a number, which the model interprets using the time unit of the report, or it can be a duration, which uses a format such as <code>4 weeks, 2 days, 1 hour, and 30 minutes</code>. <a name="328954"></a></p>
+<p>You can configure through a report values for the following attributes of an order:<a name="326120"></a></p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580"><a href="metric38.htm#132668">Product Name/SKU</a> <a name="433536"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580"><a href="level247.htm#296760">Order Period</a> <a name="433540"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580"><a href="level247.htm#296773">Order Size</a> <a name="433544"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580"><a href="level262.htm#146003">Desired Turnaround</a> <a name="444500"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580"><a href="level262.htm#146011">Order Fulfillment Preference</a> <a name="444503"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580"><a href="level260.htm#410046">Customer Preference</a> <a name="444506"></a></td>  </tr></table><p>These attributes correspond to the Level 2 category and product composite parameters of the same name.<a name="328008"></a></p>
+<h6><b>Note: </b>The Demand Input Report uses Duration as the column header for the Order 
+Period parameter. The rows can be in any order; you do not need to sort them 
+based on the Duration.
+<a name="513817"></a></h6><h4 >	 To configure initial order demand through a report:<a name="273920"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>1	</b></td>    <td valign="top" width="580">Create product specifications for each product whose initial order demand you want to configure through a report, then assign each of these product specifications to a Consumer role in the model.<a name="489003"></a></td>  </tr></table><blockquote>  <a name="489024">For example, if you are configuring initial order demand through a report for computers and monitors, create one product composite named Computer and another named Monitor and assign each to a Consumer role. You must also assign them to the appropriate supplier roles upstream in the model.</a></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>2	</b></td>    <td valign="top" width="580">Display the e-SCOR toolbar, click the Reports tab, and create a Demand Input Report on the model detail.<a name="489009"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>3	</b></td>    <td valign="top" width="580">Create a report template for the Demand Input Report.<a name="1079931"></a></td>  </tr></table><blockquote>  <a name="1079932">For details, see one of the following, depending on whether you want to create the report locally or in Excel:</a></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="560"><a href="reports3.htm#89393">Creating Reports</a>.<a name="1079944"></a></td>  </tr></table></blockquote><blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="560"><a href="report20.htm#1066861">Creating Reports in Excel</a>.<a name="1079960"></a></td>  </tr></table></blockquote><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>4	</b></td>    <td valign="top" width="580">In the report, configure the Product Name associated with each order, the duration of each order, and the parameters of each order.<a name="1079933"></a></td>  </tr></table><blockquote>  <a name="274113">To use the default value for the parameter, leave cells empty.</a></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>5	</b></td>    <td valign="top" width="580">Apply the data to the model.<a name="488990"></a></td>  </tr></table><blockquote>  <a name="1080130">For details, see one of the following, depending on whether you created the report locally or in Excel:</a></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="560"><a href="reports7.htm#250584">Applying Input Report Data to the Model</a>.<a name="1080101"></a></td>  </tr></table></blockquote><blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="560"><a href="report24.htm#262918">Applying Input Report Data to the Model from Excel</a>.<a name="1080156"></a></td>  </tr></table></blockquote><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>6	</b></td>    <td valign="top" width="580">On the Source tab of the Sc: Source Consumer category, click the Enabled option of the Order Demand Import group "on".<a name="274125"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>7	</b></td>    <td valign="top" width="580">Configure the Report Title of the Sc category to be the name of the Demand Input Report that contains the order demand data to use.<a name="274508"></a></td>  </tr></table><p>e-SCOR displays all Demand Input Reports that exist on the model detail in the Report Title dropdown list.<a name="274680"></a></p>
+<p>This figure shows a simple model in which a Consumer role sources computers and monitors, and imports initial order demand data through a Demand Input Report:<a name="274732"></a></p>
+<p >
+  <a name="1092398"> </a>
+<p><div align="left"><img src="images/sc-dem17.gif" border="0" hspace="0" vspace="0">
+</div><a name="1092397"></a></p>
+
+
+
+</p>
+<p >
+  <a name="1092409"> </a>
+<p><div align="left"><img src="images/sc-dem21.gif" border="0" hspace="0" vspace="0">
+</div><a name="1092408"></a></p>
+
+
+
+</p>
+<p>Here is a sample Demand Input Report in Excel, which creates orders for computers and monitors. The report specifies the duration of each order, using the time unit of the report, which is hours. It generates orders at each time unit in sequence; it generates orders for two monitors 48 hours into the simulation, for one computer 120 hours into the simulation, for two computers 144 hours into the simulation, and so on. The order size for computers varies between 21 and 33 units, and the order size for monitors varies between 2 and 3 units. Computer orders have a Desired Turnaround of 3 days (72 hours), and monitors have a Desired Turnaround of 4 days (96 hours). Computers have an Order Fulfillment Preference of complete, and monitors have an Order Fulfillment Preference of partial.<a name="275644"></a></p>
+<p >
+  <a name="433941"> </a>
+<p><div align="left"><img src="images/sc-deman.gif" border="0" hspace="0" vspace="0">
+</div><a name="433940"></a></p>
+
+
+
+</p>
+<p>When the simulation runs, the model generates 13 orders for the products listed in the report, then stops.<a name="267551"></a></p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="level218.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="level220.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
