@@ -1,0 +1,42 @@
+
+g2-sax-finish-parsing requires a change in sys-mod
+  - sent email to Mike, check that everything is good after his commit
+
+limit the size of strings held in the C queue to 1,000,000 characters;
+   need to find some way to notify the user that his string has been
+   truncated (as well as documenting the limitation fairly prominently)
+   HQ-4478346 "Limit size of XML strings"
+
+finalize data that we put into structures, including member names
+   - change tag-name and tag-value to attribute-name and attribute-value
+   - remove "length" from characters structure
+   HQ-4478408 "improve data sent to SAX callbacks"
+
+when you delete a sax parser, it should automatically call cleanup functions;
+   also on reset for transient ones, if this isn't the same thing
+   HQ-4478407 "leak when deleting sax-parser in the middle of parsing"
+
+what happens when you clone a sax-parser?
+   HQ-4478437 "cloned sax-parser left in bad state"
+
+implement ignorable-whitespace
+
+implement the externalSubset and internalSubset callbacks
+
+deal with other errors better -- e.g., (null parser-context)
+throw a "please call customer support" stack-error if we get a callback that
+   we don't support?  (see "Temp hack" in sax.lisp)
+   - something like this could possibly be done as a post-code-freeze commit,
+     since the code review would be easy and even beneficial to QA
+
+test out-of-memory error behavior by building a version which returns NULL
+   intentionally.  (We return g2ext_cache_cpointer(NULL) to Lisp!)
+
+create an example kb that uses g2-read-line-from-stream to parse a file on disk
+
+from the C side, am I calling g2ext_cache_cpointer too much?  is there an
+   alternative which means "lookup this already cached cpointer"?  
+
+better error messages when the requested callback doesn't exist
+
+work with DTDs in 7.0r1
