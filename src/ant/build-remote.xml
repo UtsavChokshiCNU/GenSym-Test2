@@ -1,0 +1,182 @@
+<?xml version="1.0"?>
+<project name="remote ant execution" basedir=".">
+
+<!-- load environment variables -->
+	<property environment="env"/>
+
+<!-- load antcontrib. The JAR is supposed to be present at ANT_HOME\lib -->
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+
+<!--  All properties --> 
+	<property name="antserver.port" value="9999"/>
+	<property name="antserivce.port" value="9998"/>
+
+	<target name="start-ant-server">
+		<antserver port="${antserver.port}"/>
+	</target>
+	
+	<target name="remote-execute">
+		<remoteant host="${antserver.host}" port="${antserver.port}">
+			<runtarget target="${antserver.target}"/>
+		</remoteant>
+	</target>
+	
+	<macrodef name="remote-exec">
+		<attribute name="roleName"/>
+		<attribute name="target"/>
+		<attribute name="port" default="${antserver.port}"/>
+		<sequential>
+			<remoteant machine="@{roleName}" port="@{port}">
+				<runtarget target="@{target}"/>
+			</remoteant>
+		</sequential>
+	</macrodef>
+	
+	<macrodef name="remote-ant">
+		<attribute name="roleName"/>
+		<attribute name="target"/>
+		<attribute name="dir" default="" />
+		<attribute name="port" default="${antserver.port}"/>
+		<sequential>
+			<remoteant machine="@{roleName}" port="@{port}">
+				<runant dir="@{dir}" target="@{target}"/>
+			</remoteant>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="initSlave">
+		<attribute name="roleName"/>
+		<attribute name="srcDir"/>
+		<attribute name="antDir"/>
+
+		<sequential>
+			<antcall target="_initSlave">
+				<param name="srcDir" value="@{srcDir}"/>
+				<param name="antDir" value="@{antDir}"/>
+				<param name="roleName" value="@{roleName}"/>
+			</antcall>
+		</sequential>
+	</macrodef>
+	
+	<target name="_initSlave">
+	        <exec executable="svn" outputproperty="svnlog.out" dir="${srcDir}">
+	            <arg line="info"/>
+	        </exec>
+        	<propertyregex property="svnBranch"
+				input="${svnlog.out}"
+	            regexp="URL:\s(.+)"
+				select="\1"/>
+			<echo message="Updating ${roleName} to ${srcDir} to ${svnBranch}" />
+			
+			<remoteant machine="${roleName}" port="${antserivce.port}">
+				<runtarget target="_switchSVN">
+    				<property name="srcDir" value="${srcDir}"/>
+    				<property name="svnBranch" value="${svnBranch}"/>
+				</runtarget>
+			</remoteant>
+
+			<remoteant machine="${roleName}" port="${antserivce.port}">
+				<runtarget target="_startRemoteAnt" >
+    				<property name="antDir" value="${antDir}"/>
+				</runtarget>
+			</remoteant>
+	</target>
+
+	<target name="__initSlave">
+	        <exec executable="svn" outputproperty="svnlog.out" dir="${srcDir}">
+	            <arg line="info"/>
+	        </exec>
+        	<propertyregex property="svn.url"
+				input="${svnlog.out}"
+	            regexp="URL:\s(.+)"
+				select="\1"/>
+			<echo message="Updating ${roleName} to ${srcDir} to ${svn.url}" />
+			<exec executable="C:\Softwares\PSTools\psexec.exe" failonerror="true">
+				<arg line="\\${roleName} -w ${srcDir} svn cleanup" />
+			</exec>
+			<exec executable="C:\Softwares\PSTools\psexec.exe" failonerror="true">
+				<arg line="\\${roleName} -w ${srcDir} svn revert --recursive ." />
+			</exec>
+			<exec executable="C:\Softwares\PSTools\psexec.exe" failonerror="true">
+				<arg line="\\${roleName} -w ${srcDir} svn switch ${svn.url} --accept theirs-full" />
+			</exec>
+			<exec executable="C:\Softwares\PSTools\psexec.exe" failonerror="true">
+				<arg line="\\${roleName} -d -w ${antDir} ant start-ant-server" />
+			</exec>
+	</target>
+	
+
+	<macrodef name="syncTo">
+		<attribute name="roleName"/>
+		<attribute name="srcDir"/>
+		<attribute name="destDir" default="@{srcDir}"/>
+		<sequential>
+			<antcall target="_syncTo">
+				<param name="srcDir" value="@{srcDir}"/>
+				<param name="destDir" value="@{destDir}"/>
+				<param name="roleName" value="@{roleName}"/>
+			</antcall>
+		</sequential>
+	</macrodef>
+	
+	<target name="_syncTo">
+			<exec executable="cmd" outputproperty="srcDirModified">
+				<arg line="/c cygpath"/>
+				<arg line="-a"/>
+				<arg line="${srcDir}"/>
+			</exec>
+			<exec executable="cmd" outputproperty="destDirModified">
+				<arg line="/c cygpath"/>
+				<arg line="-a"/>
+				<arg line="${destDir}"/>
+			</exec>
+			<propertyregex property="destDirFinal"
+				input="${destDirModified}"
+				regexp="/cygdrive/(.*)"
+				select="\1"/>
+			<echo message="Syncing files in ${srcDir} to ${roleName}:${destDir}"/>
+			<exec executable="cmd">
+				<arg line="/c C:\Softwares\cwrsync-client\bin\rsync"/>
+				<arg line="-r -z"/>
+				<arg line="${srcDirModified}"/>
+				<arg line="${roleName}::root/${destDirFinal}"/>
+			</exec>
+	</target>
+
+	<macrodef name="syncFrom">
+		<attribute name="roleName"/>
+		<attribute name="srcDir"/>
+		<attribute name="destDir" default="@{srcDir}"/>
+		<sequential>
+			<antcall target="_syncFrom">
+				<param name="srcDir" value="@{srcDir}"/>
+				<param name="destDir" value="@{destDir}"/>
+				<param name="roleName" value="@{roleName}"/>
+			</antcall>
+		</sequential>
+	</macrodef>
+	
+		<target name="_syncFrom">
+			<exec executable="cmd" outputproperty="destDirModified">
+				<arg line="/c cygpath"/>
+				<arg line="-a"/>
+				<arg line="${destDir}"/>
+			</exec>
+			<exec executable="cmd" outputproperty="srcDirModified">
+				<arg line="/c cygpath"/>
+				<arg line="-a"/>
+				<arg line="${srcDir}"/>
+			</exec>
+			<propertyregex property="srcDirFinal"
+				input="${srcDirModified}"
+				regexp="/cygdrive/(.*)"
+				select="\1"/>
+			<echo message="Syncing files in ${roleName}:${destDir} to ${srcDir}"/>
+			<exec executable="cmd">
+				<arg line="/c C:\Softwares\cwrsync-client\bin\rsync"/>
+				<arg line="-r -z"/>
+				<arg line="${roleName}::root/${srcDirFinal}/*"/>
+				<arg line="${destDirModified}"/>
+			</exec>
+	</target>
+</project>
