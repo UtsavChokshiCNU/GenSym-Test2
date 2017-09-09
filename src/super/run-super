@@ -1,0 +1,73 @@
+#!/bin/sh
+
+# First, set up some default values for variables
+G2EXE=g2
+TWEXE=tw
+CVS=cvs
+
+SMACH=lenox
+PORT=3030
+
+SUSER=ab
+SUPBOX=/g2/src
+MSPATH=/gensym/src/kbs
+OK_FILE="${SUPBOX}/license/g2sitev2011-ent.ok"
+
+LOGDIR=.
+LOGFILE="${LOGDIR}/log-super.log"
+
+if [ "`uname`" = "Interix" ]; then
+  G2EXE=${G2EXE}.exe
+  TWEXE=${TWEXE}.exe
+  CVS=${CVS}.exe
+
+  OK_FILE=`posixpath2nt $OK_FILE`
+  MSPATH=`posixpath2nt $MSPATH`
+fi
+
+CFG="-nowindow -rgn1lmt 40474240 -rgn2lmt 3928336"
+PTCFG="-tcpport ${PORT} -tcpipexact"
+G2OK="-ok ${OK_FILE}"
+MSP="-module-search-path ${MSPATH}"
+CMD="/gensym/dst/g2/o/$G2EXE $CFG -kb supervisor.kb $PTCFG $MSP $G2OK"
+
+# Everything set up, now run the script.  If "-test" is not supplied, we will
+# try to run out of Mr. AB's sandbox.  Only Mr. AB should be doing this.
+if [ "$1" = "-test" ]; then
+  if [ -z "$SRCBOX" ]; then
+    echo "Error: you must set SRCBOX to run with -test."
+    exit 1
+  fi
+  SUPBOX=$SRCBOX
+  shift
+  CMD="$CMD $*"
+else
+  CMD="$CMD -start"
+fi
+
+if [ -n "$G2_MODULE_MAP" ]; then
+  echo "Ignoring value of G2_MODULE_MAP (was ${G2_MODULE_MAP})"
+  echo " "
+  G2_MODULE_MAP=
+fi
+
+cd ${SUPBOX}/super
+echo "Updating files in ${SUPBOX}/super"
+${CVS} update > /dev/null
+
+echo "Starting Supervisor"
+echo "Running $CMD; See $LOGFILE"
+
+echo "/gensym/dst/tw/opt/$TWEXE `hostname` ${PORT} -user-mode developer &" > ./tw-here
+chmod 755 ./tw-here
+${CMD} > ${LOGFILE}
+
+/bin/rm ./tw-here
+
+# Should end up with something like
+
+# /gensym/ut/g2-shipping/g2.exe -nowindow -rgn1lmt 40474240 -rgn2lmt 3928336
+#   -kb supervisor.kb -tcpport 3030 -tcpipexact
+#   -module-search-path C:\\SFU\\gensym\\ut\\kbs-shipping\\utils
+#   -ok C:\\SFU\\home\\config\\gensym\\gensym-site.ok
+#   -log C:\\SFU\\tmp\\supervisor.log
