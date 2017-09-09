@@ -1,0 +1,48 @@
+<HTML>
+<HEAD>
+<META NAME="GENERATOR" Content="Microsoft Visual Studio 6.0">
+<TITLE></TITLE>
+<SCRIPT ID=clientEventHandlersJS LANGUAGE=vbscript>
+<!--
+
+Sub recv_onclick() 
+  G2Gateway4.G2Location = locg2.value 
+  G2Gateway4.Connect(True)
+  rannum = G2Gateway4.Call("GET-MESSAGE")
+  msg.value = rannum
+  G2Gateway4.Disconnect()
+end sub
+
+Sub send_onclick() 
+  G2Gateway4.G2Location = locg2.value 
+  G2Gateway4.Connect(True)
+  rannum = G2Gateway4.PostMessage(msg.value)
+  G2Gateway4.Disconnect()
+end sub
+
+//-->
+</SCRIPT>
+</HEAD>
+<BODY>
+
+<P>
+<OBJECT id=G2Gateway4 style="LEFT: 0px; TOP: 0px" 
+data=data:application/x-oleobject;base64,0IVMrGyx0RGnGABgCMX5MwADAAArBQAAKwUAAAgAHgAAAGwAbwBjAGEAbABoAG8AcwB0ADoAMQAxADEAMQAAAAgAIAAAAEcAMgBDAE8ATQAtAEkATgBUAEUAUgBGAEEAQwBFAAAACAAAAAAAAwAeAAAACwAAAAsAAAA= 
+classid=clsid:AC4C85D0-B16C-11D1-A718-006008C5F933></OBJECT>
+</P>
+<H3>Test Case 23: Sending a Message to G2 from Internet 
+Explorer(Using G2 ActiveXLink with Microsoft Internet Explorer)</H3>
+<BR>
+<H7>Location Server <INPUT style="WIDTH: 292px; HEIGHT: 21px" size=37 value="localhost:1111" id=locg2 name=locg2> </H7>
+<P>
+<INPUT type=button value="Get String from G2" id=recv name=recv LANGUAGE=vbscript onclick="recv_onclick()">
+</P>
+<P>
+<INPUT style="WIDTH: 537px; HEIGHT: 67px" size=68  value="Test Case 23: Sending a Message to G2 from Internet 
+Explorer(Using G2 ActiveXLink with Microsoft Internet Explorer)" id=msg name=msg>                
+</P>
+<P>
+<INPUT type=button value="Post above message" id=send name=send LANGUAGE=vbscript onclick="send_onclick()">
+</P>
+</BODY>
+</HTML>
