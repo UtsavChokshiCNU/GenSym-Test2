@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<HTML>
+<TITLE>TW ActiveX Installation</TITLE>
+<BODY BGCOLOR="#ffffff">
+
+<CENTER><H1>Telewindows ActiveX Control Installation</H1></CENTER>
+
+This HTML page can be used to easily install Gensym's Telewindows ActiveX
+control on your computer.  It will install the control from the cabinet file
+(TwControl.cab) that you installed as part of Telewindows version 7 or greater.
+After installing the control, it will attempt to connect to a G2 running on this
+machine at port 1111.
+
+<p>
+
+<HR>
+<P>
+<!-- Begin TW code -->
+<OBJECT CLASSID="clsid:EC99E4EE-F5F1-4323-9829-06E9B0AFB934"
+        ID=WorkstationView HEIGHT=500 WIDTH=700 HSPACE=85
+        codebase="TwControl.cab#Version=8,3,128,1">
+</OBJECT>
+<br><a href="examples/html/diag-exe.html"><i>If you don't see G2 running, click here.</i></a>
+
+<script language="javascript">
+  var WorkstationView = document.getElementById('WorkstationView');
+  WorkstationView.LaunchHost = "localhost";
+  WorkstationView.LaunchPort = "1111";
+  WorkstationView.LaunchUI = "standard";
+  WorkstationView.ConnectToG2();
+</script>
+
+<!-- End TW code -->
+
+</BODY>
+</HTML>
