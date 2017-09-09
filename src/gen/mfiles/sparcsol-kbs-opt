@@ -1,0 +1,475 @@
+SHELL = /bin/sh
+PRODUCT = kbs
+ODIR = opt
+PLATFORM = sparcsol
+CDIR = $(SRCBOX)/$(PRODUCT)/c
+HELPERDIR = /home/development/helpers
+KBDIR = $(SRCBOX)/kbs
+MFDIR = $(DSTBOX)/$(PRODUCT)/$(ODIR)
+SCRIPTSDIR = /home/development/scripts
+TESTDST = $(DSTBOX)/$(PRODUCT)/test
+CONTENTS = $(SANDBOX)/stage/$(PRODUCT)/contents.txt
+DKBDST = $(SANDBOX)/stage/$(PRODUCT)/demos
+KBDST = $(SANDBOX)/stage/$(PRODUCT)/utils
+SKBDST = $(SANDBOX)/stage/$(PRODUCT)/samples
+TAPEDST = $(SANDBOX)/stage/$(PRODUCT)
+TKBDST = $(SANDBOX)/stage/$(PRODUCT)/tutors
+
+install : 
+	- rm -rf $(TAPEDST)
+	mkdir $(TAPEDST)
+	mkdir $(DKBDST)
+	chmod ug+r+w $(DKBDST)
+	mkdir $(SKBDST)
+	chmod ug+r+w $(SKBDST)
+	mkdir $(TKBDST)
+	chmod ug+r+w $(TKBDST)
+	mkdir $(KBDST)
+	chmod ug+r+w $(KBDST)
+	echo "demos/agitatr1.gif   `sum $(KBDIR)/agitatr1.gif` " >> $(CONTENTS)
+	cp -p $(KBDIR)/agitatr1.gif $(DKBDST)/agitatr1.gif
+	chmod 444 $(DKBDST)/agitatr1.gif
+	echo "demos/agitatr2.gif   `sum $(KBDIR)/agitatr2.gif` " >> $(CONTENTS)
+	cp -p $(KBDIR)/agitatr2.gif $(DKBDST)/agitatr2.gif
+	chmod 444 $(DKBDST)/agitatr2.gif
+	echo "demos/attank.gif   `sum $(KBDIR)/attank.gif` " >> $(CONTENTS)
+	cp -p $(KBDIR)/attank.gif $(DKBDST)/attank.gif
+	chmod 444 $(DKBDST)/attank.gif
+	echo "demos/bin.gif   `sum $(KBDIR)/bin.gif` " >> $(CONTENTS)
+	cp -p $(KBDIR)/bin.gif $(DKBDST)/bin.gif
+	chmod 444 $(DKBDST)/bin.gif
+	echo "demos/blower.gif   `sum $(KBDIR)/blower.gif` " >> $(CONTENTS)
+	cp -p $(KBDIR)/blower.gif $(DKBDST)/blower.gif
+	chmod 444 $(DKBDST)/blower.gif
+	echo "demos/car.gif   `sum $(KBDIR)/car.gif` " >> $(CONTENTS)
+	cp -p $(KBDIR)/car.gif $(DKBDST)/car.gif
+	chmod 444 $(DKBDST)/car.gif
+	echo "demos/comprssr.gif   `sum $(KBDIR)/comprssr.gif` " >> $(CONTENTS)
+	cp -p $(KBDIR)/comprssr.gif $(DKBDST)/comprssr.gif
+	chmod 444 $(DKBDST)/comprssr.gif
+	echo "demos/disttwr.gif   `sum $(KBDIR)/disttwr.gif` " >> $(CONTENTS)
+	cp -p $(KBDIR)/disttwr.gif $(DKBDST)/disttwr.gif
+	chmod 444 $(DKBDST)/disttwr.gif
+	echo "demos/exchgr.gif   `sum $(KBDIR)/exchgr.gif` " >> $(CONTENTS)
+	cp -p $(KBDIR)/exchgr.gif $(DKBDST)/exchgr.gif
+	chmod 444 $(DKBDST)/exchgr.gif
+	echo "demos/filter1.gif   `sum $(KBDIR)/filter1.gif` " >> $(CONTENTS)
+	cp -p $(KBDIR)/filter1.gif $(DKBDST)/filter1.gif
+	chmod 444 $(DKBDST)/filter1.gif
+	echo "demos/filter2.gif   `sum $(KBDIR)/filter2.gif` " >> $(CONTENTS)
+	cp -p $(KBDIR)/filter2.gif $(DKBDST)/filter2.gif
+	chmod 444 $(DKBDST)/filter2.gif
+	echo "demos/furn1.gif   `sum $(KBDIR)/furn1.gif` " >> $(CONTENTS)
+	cp -p $(KBDIR)/furn1.gif $(DKBDST)/furn1.gif
+	chmod 444 $(DKBDST)/furn1.gif
+	echo "demos/furn2.gif   `sum $(KBDIR)/furn2.gif` " >> $(CONTENTS)
+	cp -p $(KBDIR)/furn2.gif $(DKBDST)/furn2.gif
+	chmod 444 $(DKBDST)/furn2.gif
+	echo "demos/gashldr.gif   `sum $(KBDIR)/gashldr.gif` " >> $(CONTENTS)
+	cp -p $(KBDIR)/gashldr.gif $(DKBDST)/gashldr.gif
+	chmod 444 $(DKBDST)/gashldr.gif
+	echo "demos/hopper1.gif   `sum $(KBDIR)/hopper1.gif` " >> $(CONTENTS)
+	cp -p $(KBDIR)/hopper1.gif $(DKBDST)/hopper1.gif
+	chmod 444 $(DKBDST)/hopper1.gif
+	echo "demos/kiln1.gif   `sum $(KBDIR)/kiln1.gif` " >> $(CONTENTS)
+	cp -p $(KBDIR)/kiln1.gif $(DKBDST)/kiln1.gif
+	chmod 444 $(DKBDST)/kiln1.gif
+	echo "demos/mixer.gif   `sum $(KBDIR)/mixer.gif` " >> $(CONTENTS)
+	cp -p $(KBDIR)/mixer.gif $(DKBDST)/mixer.gif
+	chmod 444 $(DKBDST)/mixer.gif
+	echo "demos/pump.gif   `sum $(KBDIR)/pump.gif` " >> $(CONTENTS)
+	cp -p $(KBDIR)/pump.gif $(DKBDST)/pump.gif
+	chmod 444 $(DKBDST)/pump.gif
+	echo "demos/reactor.gif   `sum $(KBDIR)/reactor.gif` " >> $(CONTENTS)
+	cp -p $(KBDIR)/reactor.gif $(DKBDST)/reactor.gif
+	chmod 444 $(DKBDST)/reactor.gif
+	echo "demos/tankroof.gif   `sum $(KBDIR)/tankroof.gif` " >> $(CONTENTS)
+	cp -p $(KBDIR)/tankroof.gif $(DKBDST)/tankroof.gif
+	chmod 444 $(DKBDST)/tankroof.gif
+	echo "demos/turbine.gif   `sum $(KBDIR)/turbine.gif` " >> $(CONTENTS)
+	cp -p $(KBDIR)/turbine.gif $(DKBDST)/turbine.gif
+	chmod 444 $(DKBDST)/turbine.gif
+	echo "demos/vessel1.gif   `sum $(KBDIR)/vessel1.gif` " >> $(CONTENTS)
+	cp -p $(KBDIR)/vessel1.gif $(DKBDST)/vessel1.gif
+	chmod 444 $(DKBDST)/vessel1.gif
+	echo "demos/vessel2.gif   `sum $(KBDIR)/vessel2.gif` " >> $(CONTENTS)
+	cp -p $(KBDIR)/vessel2.gif $(DKBDST)/vessel2.gif
+	chmod 444 $(DKBDST)/vessel2.gif
+	echo "demos/vessel3.gif   `sum $(KBDIR)/vessel3.gif` " >> $(CONTENTS)
+	cp -p $(KBDIR)/vessel3.gif $(DKBDST)/vessel3.gif
+	chmod 444 $(DKBDST)/vessel3.gif
+	echo "demos/vessel4.gif   `sum $(KBDIR)/vessel4.gif` " >> $(CONTENTS)
+	cp -p $(KBDIR)/vessel4.gif $(DKBDST)/vessel4.gif
+	chmod 444 $(DKBDST)/vessel4.gif
+	echo "demos/vlv3way.gif   `sum $(KBDIR)/vlv3way.gif` " >> $(CONTENTS)
+	cp -p $(KBDIR)/vlv3way.gif $(DKBDST)/vlv3way.gif
+	chmod 444 $(DKBDST)/vlv3way.gif
+	echo "demos/vlvcklg.gif   `sum $(KBDIR)/vlvcklg.gif` " >> $(CONTENTS)
+	cp -p $(KBDIR)/vlvcklg.gif $(DKBDST)/vlvcklg.gif
+	chmod 444 $(DKBDST)/vlvcklg.gif
+	echo "demos/vlvcksm.gif   `sum $(KBDIR)/vlvcksm.gif` " >> $(CONTENTS)
+	cp -p $(KBDIR)/vlvcksm.gif $(DKBDST)/vlvcksm.gif
+	chmod 444 $(DKBDST)/vlvcksm.gif
+	echo "demos/vlvmanlg.gif   `sum $(KBDIR)/vlvmanlg.gif` " >> $(CONTENTS)
+	cp -p $(KBDIR)/vlvmanlg.gif $(DKBDST)/vlvmanlg.gif
+	chmod 444 $(DKBDST)/vlvmanlg.gif
+	echo "demos/vlvmansm.gif   `sum $(KBDIR)/vlvmansm.gif` " >> $(CONTENTS)
+	cp -p $(KBDIR)/vlvmansm.gif $(DKBDST)/vlvmansm.gif
+	chmod 444 $(DKBDST)/vlvmansm.gif
+	echo "demos/world.gif   `sum $(KBDIR)/world.gif` " >> $(CONTENTS)
+	cp -p $(KBDIR)/world.gif $(DKBDST)/world.gif
+	chmod 444 $(DKBDST)/world.gif
+	echo "demos/axldemo.kb   `sum $(KBDIR)/axldemo.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/axldemo.kb $(DKBDST)/axldemo.kb
+	chmod 444 $(DKBDST)/axldemo.kb
+	echo "demos/business.kb   `sum $(KBDIR)/business.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/business.kb $(DKBDST)/business.kb
+	chmod 444 $(DKBDST)/business.kb
+	echo "demos/dialogs-demo.kb   `sum $(KBDIR)/dialogs-demo.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/dialogs-demo.kb $(DKBDST)/dialogs-demo.kb
+	chmod 444 $(DKBDST)/dialogs-demo.kb
+	echo "demos/explnfac.kb   `sum $(KBDIR)/explnfac.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/explnfac.kb $(DKBDST)/explnfac.kb
+	chmod 444 $(DKBDST)/explnfac.kb
+	echo "demos/g2-80r0-doc-examples.kb   `sum $(KBDIR)/g2-80r0-doc-examples.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/g2-80r0-doc-examples.kb $(DKBDST)/g2-80r0-doc-examples.kb
+	chmod 444 $(DKBDST)/g2-80r0-doc-examples.kb
+	echo "demos/g2-80r0-doc-examples-remote.kb   `sum $(KBDIR)/g2-80r0-doc-examples-remote.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/g2-80r0-doc-examples-remote.kb $(DKBDST)/g2-80r0-doc-examples-remote.kb
+	chmod 444 $(DKBDST)/g2-80r0-doc-examples-remote.kb
+	echo "demos/g2gl-credit-rating-example.kb   `sum $(KBDIR)/g2gl-credit-rating-example.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/g2gl-credit-rating-example.kb $(DKBDST)/g2gl-credit-rating-example.kb
+	chmod 444 $(DKBDST)/g2gl-credit-rating-example.kb
+	echo "demos/g2uifile.kb   `sum $(KBDIR)/g2uifile.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/g2uifile.kb $(DKBDST)/g2uifile.kb
+	chmod 444 $(DKBDST)/g2uifile.kb
+	echo "demos/g2uiprnt.kb   `sum $(KBDIR)/g2uiprnt.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/g2uiprnt.kb $(DKBDST)/g2uiprnt.kb
+	chmod 444 $(DKBDST)/g2uiprnt.kb
+	echo "demos/g2web-demo.kb   `sum $(KBDIR)/g2web-demo.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/g2web-demo.kb $(DKBDST)/g2web-demo.kb
+	chmod 444 $(DKBDST)/g2web-demo.kb
+	echo "demos/gddroot.kb   `sum $(KBDIR)/gddroot.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/gddroot.kb $(DKBDST)/gddroot.kb
+	chmod 444 $(DKBDST)/gddroot.kb
+	echo "demos/gfr.kb   `sum $(KBDIR)/gfr.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/gfr.kb $(DKBDST)/gfr.kb
+	chmod 444 $(DKBDST)/gfr.kb
+	echo "demos/gms.kb   `sum $(KBDIR)/gms.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/gms.kb $(DKBDST)/gms.kb
+	chmod 444 $(DKBDST)/gms.kb
+	echo "demos/gms-native-language-demo.kb   `sum $(KBDIR)/gms-native-language-demo.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/gms-native-language-demo.kb $(DKBDST)/gms-native-language-demo.kb
+	chmod 444 $(DKBDST)/gms-native-language-demo.kb
+	echo "demos/gms-native-large-menu-demo.kb   `sum $(KBDIR)/gms-native-large-menu-demo.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/gms-native-large-menu-demo.kb $(DKBDST)/gms-native-large-menu-demo.kb
+	chmod 444 $(DKBDST)/gms-native-large-menu-demo.kb
+	echo "demos/gms-native-multiple-menubar-demo.kb   `sum $(KBDIR)/gms-native-multiple-menubar-demo.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/gms-native-multiple-menubar-demo.kb $(DKBDST)/gms-native-multiple-menubar-demo.kb
+	chmod 444 $(DKBDST)/gms-native-multiple-menubar-demo.kb
+	echo "demos/gms-native-popup-demo.kb   `sum $(KBDIR)/gms-native-popup-demo.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/gms-native-popup-demo.kb $(DKBDST)/gms-native-popup-demo.kb
+	chmod 444 $(DKBDST)/gms-native-popup-demo.kb
+	echo "demos/guidelib.kb   `sum $(KBDIR)/guidelib.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/guidelib.kb $(DKBDST)/guidelib.kb
+	chmod 444 $(DKBDST)/guidelib.kb
+	echo "demos/guislide.kb   `sum $(KBDIR)/guislide.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/guislide.kb $(DKBDST)/guislide.kb
+	chmod 444 $(DKBDST)/guislide.kb
+	echo "demos/kbtools.kb   `sum $(KBDIR)/kbtools.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/kbtools.kb $(DKBDST)/kbtools.kb
+	chmod 444 $(DKBDST)/kbtools.kb
+	echo "demos/mill.kb   `sum $(KBDIR)/mill.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/mill.kb $(DKBDST)/mill.kb
+	chmod 444 $(DKBDST)/mill.kb
+	echo "demos/nmsdemo.kb   `sum $(KBDIR)/nmsdemo.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/nmsdemo.kb $(DKBDST)/nmsdemo.kb
+	chmod 444 $(DKBDST)/nmsdemo.kb
+	echo "demos/publish-subscribe-doc-ex.kb   `sum $(KBDIR)/publish-subscribe-doc-ex.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/publish-subscribe-doc-ex.kb $(DKBDST)/publish-subscribe-doc-ex.kb
+	chmod 444 $(DKBDST)/publish-subscribe-doc-ex.kb
+	echo "demos/publish-subscribe-remote-doc-ex.kb   `sum $(KBDIR)/publish-subscribe-remote-doc-ex.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/publish-subscribe-remote-doc-ex.kb $(DKBDST)/publish-subscribe-remote-doc-ex.kb
+	chmod 444 $(DKBDST)/publish-subscribe-remote-doc-ex.kb
+	echo "demos/space.kb   `sum $(KBDIR)/space.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/space.kb $(DKBDST)/space.kb
+	chmod 444 $(DKBDST)/space.kb
+	echo "demos/sys-mod.kb   `sum $(KBDIR)/sys-mod.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/sys-mod.kb $(DKBDST)/sys-mod.kb
+	chmod 444 $(DKBDST)/sys-mod.kb
+	echo "demos/uil.kb   `sum $(KBDIR)/uil.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/uil.kb $(DKBDST)/uil.kb
+	chmod 444 $(DKBDST)/uil.kb
+	echo "demos/uilcombo.kb   `sum $(KBDIR)/uilcombo.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/uilcombo.kb $(DKBDST)/uilcombo.kb
+	chmod 444 $(DKBDST)/uilcombo.kb
+	echo "demos/uildefs.kb   `sum $(KBDIR)/uildefs.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/uildefs.kb $(DKBDST)/uildefs.kb
+	chmod 444 $(DKBDST)/uildefs.kb
+	echo "demos/uillib.kb   `sum $(KBDIR)/uillib.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/uillib.kb $(DKBDST)/uillib.kb
+	chmod 444 $(DKBDST)/uillib.kb
+	echo "demos/uilroot.kb   `sum $(KBDIR)/uilroot.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/uilroot.kb $(DKBDST)/uilroot.kb
+	chmod 444 $(DKBDST)/uilroot.kb
+	echo "demos/uilsa.kb   `sum $(KBDIR)/uilsa.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/uilsa.kb $(DKBDST)/uilsa.kb
+	chmod 444 $(DKBDST)/uilsa.kb
+	echo "demos/uilslide.kb   `sum $(KBDIR)/uilslide.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/uilslide.kb $(DKBDST)/uilslide.kb
+	chmod 444 $(DKBDST)/uilslide.kb
+	echo "demos/uiltdlg.kb   `sum $(KBDIR)/uiltdlg.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/uiltdlg.kb $(DKBDST)/uiltdlg.kb
+	chmod 444 $(DKBDST)/uiltdlg.kb
+	echo "utils/guide.doc   `sum $(KBDIR)/guide.doc` " >> $(CONTENTS)
+	cp -p $(KBDIR)/guide.doc $(KBDST)/guide.doc
+	chmod 444 $(KBDST)/guide.doc
+	echo "utils/japanese.kl   `sum $(KBDIR)/japanese.kl` " >> $(CONTENTS)
+	cp -p $(KBDIR)/japanese.kl $(KBDST)/japanese.kl
+	chmod 444 $(KBDST)/japanese.kl
+	echo "utils/jiscodes.kl   `sum $(KBDIR)/jiscodes.kl` " >> $(CONTENTS)
+	cp -p $(KBDIR)/jiscodes.kl $(KBDST)/jiscodes.kl
+	chmod 444 $(KBDST)/jiscodes.kl
+	echo "utils/korean.kl   `sum $(KBDIR)/korean.kl` " >> $(CONTENTS)
+	cp -p $(KBDIR)/korean.kl $(KBDST)/korean.kl
+	chmod 444 $(KBDST)/korean.kl
+	echo "utils/kscodes.kl   `sum $(KBDIR)/kscodes.kl` " >> $(CONTENTS)
+	cp -p $(KBDIR)/kscodes.kl $(KBDST)/kscodes.kl
+	chmod 444 $(KBDST)/kscodes.kl
+	echo "utils/language.kl   `sum $(KBDIR)/language.kl` " >> $(CONTENTS)
+	cp -p $(KBDIR)/language.kl $(KBDST)/language.kl
+	chmod 444 $(KBDST)/language.kl
+	echo "samples/car.gif   `sum $(KBDIR)/car.gif` " >> $(CONTENTS)
+	cp -p $(KBDIR)/car.gif $(SKBDST)/car.gif
+	chmod 444 $(SKBDST)/car.gif
+	echo "samples/world.gif   `sum $(KBDIR)/world.gif` " >> $(CONTENTS)
+	cp -p $(KBDIR)/world.gif $(SKBDST)/world.gif
+	chmod 444 $(SKBDST)/world.gif
+	echo "samples/chaos.kb   `sum $(KBDIR)/chaos.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/chaos.kb $(SKBDST)/chaos.kb
+	chmod 444 $(SKBDST)/chaos.kb
+	echo "samples/charts.kb   `sum $(KBDIR)/charts.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/charts.kb $(SKBDST)/charts.kb
+	chmod 444 $(SKBDST)/charts.kb
+	echo "samples/fgntest.kb   `sum $(KBDIR)/fgntest.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/fgntest.kb $(SKBDST)/fgntest.kb
+	chmod 444 $(SKBDST)/fgntest.kb
+	echo "samples/g2tog2.kb   `sum $(KBDIR)/g2tog2.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/g2tog2.kb $(SKBDST)/g2tog2.kb
+	chmod 444 $(SKBDST)/g2tog2.kb
+	echo "samples/gfr.kb   `sum $(KBDIR)/gfr.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/gfr.kb $(SKBDST)/gfr.kb
+	chmod 444 $(SKBDST)/gfr.kb
+	echo "samples/gms.kb   `sum $(KBDIR)/gms.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/gms.kb $(SKBDST)/gms.kb
+	chmod 444 $(SKBDST)/gms.kb
+	echo "samples/gsi_exam.kb   `sum $(KBDIR)/gsi_exam.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/gsi_exam.kb $(SKBDST)/gsi_exam.kb
+	chmod 444 $(SKBDST)/gsi_exam.kb
+	echo "samples/image.kb   `sum $(KBDIR)/image.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/image.kb $(SKBDST)/image.kb
+	chmod 444 $(SKBDST)/image.kb
+	echo "samples/itempass.kb   `sum $(KBDIR)/itempass.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/itempass.kb $(SKBDST)/itempass.kb
+	chmod 444 $(SKBDST)/itempass.kb
+	echo "samples/japanese.kb   `sum $(KBDIR)/japanese.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/japanese.kb $(SKBDST)/japanese.kb
+	chmod 444 $(SKBDST)/japanese.kb
+	echo "samples/language.kb   `sum $(KBDIR)/language.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/language.kb $(SKBDST)/language.kb
+	chmod 444 $(SKBDST)/language.kb
+	echo "samples/objpass.kb   `sum $(KBDIR)/objpass.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/objpass.kb $(SKBDST)/objpass.kb
+	chmod 444 $(SKBDST)/objpass.kb
+	echo "samples/sptools.kb   `sum $(KBDIR)/sptools.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/sptools.kb $(SKBDST)/sptools.kb
+	chmod 444 $(SKBDST)/sptools.kb
+	echo "samples/statfns.kb   `sum $(KBDIR)/statfns.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/statfns.kb $(SKBDST)/statfns.kb
+	chmod 444 $(SKBDST)/statfns.kb
+	echo "samples/sys-mod.kb   `sum $(KBDIR)/sys-mod.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/sys-mod.kb $(SKBDST)/sys-mod.kb
+	chmod 444 $(SKBDST)/sys-mod.kb
+	echo "samples/twgame.kb   `sum $(KBDIR)/twgame.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/twgame.kb $(SKBDST)/twgame.kb
+	chmod 444 $(SKBDST)/twgame.kb
+	echo "samples/twtour.kb   `sum $(KBDIR)/twtour.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/twtour.kb $(SKBDST)/twtour.kb
+	chmod 444 $(SKBDST)/twtour.kb
+	echo "samples/uil.kb   `sum $(KBDIR)/uil.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/uil.kb $(SKBDST)/uil.kb
+	chmod 444 $(SKBDST)/uil.kb
+	echo "samples/uilcombo.kb   `sum $(KBDIR)/uilcombo.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/uilcombo.kb $(SKBDST)/uilcombo.kb
+	chmod 444 $(SKBDST)/uilcombo.kb
+	echo "samples/uildefs.kb   `sum $(KBDIR)/uildefs.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/uildefs.kb $(SKBDST)/uildefs.kb
+	chmod 444 $(SKBDST)/uildefs.kb
+	echo "samples/uillib.kb   `sum $(KBDIR)/uillib.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/uillib.kb $(SKBDST)/uillib.kb
+	chmod 444 $(SKBDST)/uillib.kb
+	echo "samples/uilroot.kb   `sum $(KBDIR)/uilroot.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/uilroot.kb $(SKBDST)/uilroot.kb
+	chmod 444 $(SKBDST)/uilroot.kb
+	echo "samples/uilsa.kb   `sum $(KBDIR)/uilsa.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/uilsa.kb $(SKBDST)/uilsa.kb
+	chmod 444 $(SKBDST)/uilsa.kb
+	echo "samples/uilslide.kb   `sum $(KBDIR)/uilslide.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/uilslide.kb $(SKBDST)/uilslide.kb
+	chmod 444 $(SKBDST)/uilslide.kb
+	echo "samples/uiltdlg.kb   `sum $(KBDIR)/uiltdlg.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/uiltdlg.kb $(SKBDST)/uiltdlg.kb
+	chmod 444 $(SKBDST)/uiltdlg.kb
+	echo "samples/xml.kb   `sum $(KBDIR)/xml.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/xml.kb $(SKBDST)/xml.kb
+	chmod 444 $(SKBDST)/xml.kb
+	echo "samples/escher.xbm   `sum $(KBDIR)/escher.xbm` " >> $(CONTENTS)
+	cp -p $(KBDIR)/escher.xbm $(SKBDST)/escher.xbm
+	chmod 444 $(SKBDST)/escher.xbm
+	echo "tutors/ch2.kb   `sum $(KBDIR)/ch2.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/ch2.kb $(TKBDST)/ch2.kb
+	chmod 444 $(TKBDST)/ch2.kb
+	echo "tutors/ch2soln.kb   `sum $(KBDIR)/ch2soln.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/ch2soln.kb $(TKBDST)/ch2soln.kb
+	chmod 444 $(TKBDST)/ch2soln.kb
+	echo "tutors/ch3.kb   `sum $(KBDIR)/ch3.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/ch3.kb $(TKBDST)/ch3.kb
+	chmod 444 $(TKBDST)/ch3.kb
+	echo "tutors/ch3soln.kb   `sum $(KBDIR)/ch3soln.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/ch3soln.kb $(TKBDST)/ch3soln.kb
+	chmod 444 $(TKBDST)/ch3soln.kb
+	echo "tutors/ch4.kb   `sum $(KBDIR)/ch4.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/ch4.kb $(TKBDST)/ch4.kb
+	chmod 444 $(TKBDST)/ch4.kb
+	echo "tutors/ch4soln.kb   `sum $(KBDIR)/ch4soln.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/ch4soln.kb $(TKBDST)/ch4soln.kb
+	chmod 444 $(TKBDST)/ch4soln.kb
+	echo "tutors/ch5.kb   `sum $(KBDIR)/ch5.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/ch5.kb $(TKBDST)/ch5.kb
+	chmod 444 $(TKBDST)/ch5.kb
+	echo "tutors/solution.kb   `sum $(KBDIR)/solution.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/solution.kb $(TKBDST)/solution.kb
+	chmod 444 $(TKBDST)/solution.kb
+	echo "utils/sitemap.txt   `sum $(KBDIR)/sitemap.txt` " >> $(CONTENTS)
+	cp -p $(KBDIR)/sitemap.txt $(KBDST)/sitemap.txt
+	chmod 444 $(KBDST)/sitemap.txt
+	echo "utils/g2com.kb   `sum $(KBDIR)/g2com.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/g2com.kb $(KBDST)/g2com.kb
+	chmod 444 $(KBDST)/g2com.kb
+	echo "utils/g2cuidev.kb   `sum $(KBDIR)/g2cuidev.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/g2cuidev.kb $(KBDST)/g2cuidev.kb
+	chmod 444 $(KBDST)/g2cuidev.kb
+	echo "utils/g2evliss.kb   `sum $(KBDIR)/g2evliss.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/g2evliss.kb $(KBDST)/g2evliss.kb
+	chmod 444 $(KBDST)/g2evliss.kb
+	echo "utils/g2uifile.kb   `sum $(KBDIR)/g2uifile.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/g2uifile.kb $(KBDST)/g2uifile.kb
+	chmod 444 $(KBDST)/g2uifile.kb
+	echo "utils/g2uimenu.kb   `sum $(KBDIR)/g2uimenu.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/g2uimenu.kb $(KBDST)/g2uimenu.kb
+	chmod 444 $(KBDST)/g2uimenu.kb
+	echo "utils/g2uiprnt.kb   `sum $(KBDIR)/g2uiprnt.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/g2uiprnt.kb $(KBDST)/g2uiprnt.kb
+	chmod 444 $(KBDST)/g2uiprnt.kb
+	echo "utils/g2uitree.kb   `sum $(KBDIR)/g2uitree.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/g2uitree.kb $(KBDST)/g2uitree.kb
+	chmod 444 $(KBDST)/g2uitree.kb
+	echo "utils/g2web.kb   `sum $(KBDIR)/g2web.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/g2web.kb $(KBDST)/g2web.kb
+	chmod 444 $(KBDST)/g2web.kb
+	echo "utils/gdddemo.kb   `sum $(KBDIR)/gdddemo.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/gdddemo.kb $(KBDST)/gdddemo.kb
+	chmod 444 $(KBDST)/gdddemo.kb
+	echo "utils/gdddev.kb   `sum $(KBDIR)/gdddev.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/gdddev.kb $(KBDST)/gdddev.kb
+	chmod 444 $(KBDST)/gdddev.kb
+	echo "utils/gddlib.kb   `sum $(KBDIR)/gddlib.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/gddlib.kb $(KBDST)/gddlib.kb
+	chmod 444 $(KBDST)/gddlib.kb
+	echo "utils/gddroot.kb   `sum $(KBDIR)/gddroot.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/gddroot.kb $(KBDST)/gddroot.kb
+	chmod 444 $(KBDST)/gddroot.kb
+	echo "utils/gensym-raised-button.kb   `sum $(KBDIR)/gensym-raised-button.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/gensym-raised-button.kb $(KBDST)/gensym-raised-button.kb
+	chmod 444 $(KBDST)/gensym-raised-button.kb
+	echo "utils/gfr.kb   `sum $(KBDIR)/gfr.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/gfr.kb $(KBDST)/gfr.kb
+	chmod 444 $(KBDST)/gfr.kb
+	echo "utils/gms.kb   `sum $(KBDIR)/gms.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/gms.kb $(KBDST)/gms.kb
+	chmod 444 $(KBDST)/gms.kb
+	echo "utils/gmsdemo.kb   `sum $(KBDIR)/gmsdemo.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/gmsdemo.kb $(KBDST)/gmsdemo.kb
+	chmod 444 $(KBDST)/gmsdemo.kb
+	echo "utils/gold.kb   `sum $(KBDIR)/gold.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/gold.kb $(KBDST)/gold.kb
+	chmod 444 $(KBDST)/gold.kb
+	echo "utils/goldui.kb   `sum $(KBDIR)/goldui.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/goldui.kb $(KBDST)/goldui.kb
+	chmod 444 $(KBDST)/goldui.kb
+	echo "utils/guicolor.kb   `sum $(KBDIR)/guicolor.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/guicolor.kb $(KBDST)/guicolor.kb
+	chmod 444 $(KBDST)/guicolor.kb
+	echo "utils/guidata.kb   `sum $(KBDIR)/guidata.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/guidata.kb $(KBDST)/guidata.kb
+	chmod 444 $(KBDST)/guidata.kb
+	echo "utils/guide.kb   `sum $(KBDIR)/guide.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/guide.kb $(KBDST)/guide.kb
+	chmod 444 $(KBDST)/guide.kb
+	echo "utils/guidelib.kb   `sum $(KBDIR)/guidelib.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/guidelib.kb $(KBDST)/guidelib.kb
+	chmod 444 $(KBDST)/guidelib.kb
+	echo "utils/guidemo.kb   `sum $(KBDIR)/guidemo.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/guidemo.kb $(KBDST)/guidemo.kb
+	chmod 444 $(KBDST)/guidemo.kb
+	echo "utils/guidesa.kb   `sum $(KBDIR)/guidesa.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/guidesa.kb $(KBDST)/guidesa.kb
+	chmod 444 $(KBDST)/guidesa.kb
+	echo "utils/guigfr.kb   `sum $(KBDIR)/guigfr.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/guigfr.kb $(KBDST)/guigfr.kb
+	chmod 444 $(KBDST)/guigfr.kb
+	echo "utils/guimove.kb   `sum $(KBDIR)/guimove.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/guimove.kb $(KBDST)/guimove.kb
+	chmod 444 $(KBDST)/guimove.kb
+	echo "utils/guislide.kb   `sum $(KBDIR)/guislide.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/guislide.kb $(KBDST)/guislide.kb
+	chmod 444 $(KBDST)/guislide.kb
+	echo "utils/guitools.kb   `sum $(KBDIR)/guitools.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/guitools.kb $(KBDST)/guitools.kb
+	chmod 444 $(KBDST)/guitools.kb
+	echo "utils/gxl.kb   `sum $(KBDIR)/gxl.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/gxl.kb $(KBDST)/gxl.kb
+	chmod 444 $(KBDST)/gxl.kb
+	echo "utils/gxldemo.kb   `sum $(KBDIR)/gxldemo.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/gxldemo.kb $(KBDST)/gxldemo.kb
+	chmod 444 $(KBDST)/gxldemo.kb
+	echo "utils/starter.kb   `sum $(KBDIR)/starter.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/starter.kb $(KBDST)/starter.kb
+	chmod 444 $(KBDST)/starter.kb
+	echo "utils/sys-mod.kb   `sum $(KBDIR)/sys-mod.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/sys-mod.kb $(KBDST)/sys-mod.kb
+	chmod 444 $(KBDST)/sys-mod.kb
+	echo "utils/uil.kb   `sum $(KBDIR)/uil.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/uil.kb $(KBDST)/uil.kb
+	chmod 444 $(KBDST)/uil.kb
+	echo "utils/uilcombo.kb   `sum $(KBDIR)/uilcombo.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/uilcombo.kb $(KBDST)/uilcombo.kb
+	chmod 444 $(KBDST)/uilcombo.kb
+	echo "utils/uildefs.kb   `sum $(KBDIR)/uildefs.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/uildefs.kb $(KBDST)/uildefs.kb
+	chmod 444 $(KBDST)/uildefs.kb
+	echo "utils/uillib.kb   `sum $(KBDIR)/uillib.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/uillib.kb $(KBDST)/uillib.kb
+	chmod 444 $(KBDST)/uillib.kb
+	echo "utils/uilroot.kb   `sum $(KBDIR)/uilroot.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/uilroot.kb $(KBDST)/uilroot.kb
+	chmod 444 $(KBDST)/uilroot.kb
+	echo "utils/uilsa.kb   `sum $(KBDIR)/uilsa.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/uilsa.kb $(KBDST)/uilsa.kb
+	chmod 444 $(KBDST)/uilsa.kb
+	echo "utils/uilslide.kb   `sum $(KBDIR)/uilslide.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/uilslide.kb $(KBDST)/uilslide.kb
+	chmod 444 $(KBDST)/uilslide.kb
+	echo "utils/uiltdlg.kb   `sum $(KBDIR)/uiltdlg.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/uiltdlg.kb $(KBDST)/uiltdlg.kb
+	chmod 444 $(KBDST)/uiltdlg.kb
