@@ -1,0 +1,388 @@
+#!/bin/sh
+
+# pm-g2i-promote -- poor man's G2I promote
+
+G2I_BOX=${DSTBOX}/g2i/tape
+G2I_RETHINK=${DSTBOX}/rethink
+G2I_RETHINKDOC=${DSTBOX}/rethinkdoc
+G2I_OPTEGRITY=${DSTBOX}/optegrity
+G2I_OPTEGDOC=${DSTBOX}/optegdoc
+G2I_INTEGRITY=${DSTBOX}/integrity
+G2I_INTEGDOC=${DSTBOX}/integdoc
+G2I_NOL=${DSTBOX}/nol
+GDADOC_BOX=${DSTBOX}/gdadoc
+NOLDOC_BOX=${DSTBOX}/noldoc
+G2I_HLA=${DSTBOX}/hla
+G2I_ESCOR=${DSTBOX}/escor
+G2I_ESCORDOC=${DSTBOX}/escordoc
+
+rm -R ${G2I_RETHINK}
+rm -R ${G2I_RETHINKDOC}
+rm -R ${G2I_OPTEGRITY}
+rm -R ${G2I_OPTEGDOC}
+rm -R ${G2I_INTEGRITY}
+rm -R ${G2I_INTEGDOC}
+rm -R ${G2I_NOL}
+rm -R ${GDADOC_BOX}
+rm -R ${NOLDOC_BOX}
+rm -R ${G2I_HLA}
+rm -R ${G2I_ESCOR}
+rm -R ${G2I_ESCORDOC}
+
+mkdir -p ${G2I_NOL}
+mkdir -p ${G2I_NOL}/bin
+mkdir -p ${G2I_NOL}/kbs
+mkdir -p ${G2I_NOL}/projects
+mkdir -p ${G2I_NOL}/projects/examples
+mkdir -p ${G2I_NOL}/projects/examples/gnne-demo
+mkdir -p ${G2I_NOL}/projects/examples/bakery-demo
+mkdir -p ${G2I_NOL}/projects/examples/bleach-demo
+mkdir -p ${G2I_NOL}/projects/examples/total-demo
+mkdir -p ${GDADOC_BOX}
+mkdir -p ${GDADOC_BOX}/gda/gdaugrm
+mkdir -p ${GDADOC_BOX}/gda/gdaapi
+mkdir -p ${NOLDOC_BOX}
+mkdir -p ${G2I_ESCOR}/bin
+mkdir -p ${G2I_ESCOR}/data
+mkdir -p ${G2I_ESCOR}/examples
+mkdir -p ${G2I_ESCOR}/kbs
+mkdir -p ${G2I_ESCOR}/kbs/images
+mkdir -p ${G2I_ESCORDOC}
+mkdir -p ${G2I_RETHINK}/bin
+mkdir -p ${G2I_RETHINK}/data
+mkdir -p ${G2I_RETHINK}/kbs
+mkdir -p ${G2I_RETHINK}/kbs/images
+mkdir -p ${G2I_RETHINK}/examples
+mkdir -p ${G2I_RETHINK}/resources
+mkdir -p ${G2I_RETHINKDOC}
+mkdir -p ${G2I_INTEGRITY}/bin
+mkdir -p ${G2I_INTEGRITY}/examples
+mkdir -p ${G2I_INTEGRITY}/deprecated
+mkdir -p ${G2I_INTEGRITY}/kbs
+mkdir -p ${G2I_INTEGRITY}/resources
+mkdir -p ${G2I_INTEGRITY}/resources/symcure
+mkdir -p ${G2I_INTEGDOC}
+mkdir -p ${G2I_OPTEGRITY}/bin
+mkdir -p ${G2I_OPTEGRITY}/examples
+mkdir -p ${G2I_OPTEGRITY}/deprecated
+mkdir -p ${G2I_OPTEGRITY}/kbs
+mkdir -p ${G2I_OPTEGRITY}/data
+mkdir -p ${G2I_OPTEGDOC}
+mkdir -p ${G2I_HLA}/bin
+mkdir -p ${G2I_HLA}/examples
+mkdir -p ${G2I_HLA}/images
+mkdir -p ${G2I_HLA}/kbs
+mkdir -p ${G2I_HLA}/resources
+mkdir -p ${G2I_BOX}/data/http_root/images
+mkdir -p ${G2I_BOX}/kbs
+mkdir -p ${G2I_BOX}/examples
+
+# --- Copying e-SCOR
+cp -p ${SRCBOX}/g2i/bin/linux/startescor ${G2I_ESCOR}/bin
+cp -p ${SRCBOX}/g2i/sites/e-SCOR/bin/startACMETutorial ${G2I_ESCOR}/bin
+cp -p ${SRCBOX}/g2i/sites/e-SCOR/bin/startEscorExamples ${G2I_ESCOR}/bin
+cp -p ${SRCBOX}/g2i/sites/e-SCOR/bin/startSimplestTutorial ${G2I_ESCOR}/bin
+cp -p ${SRCBOX}/g2i/sites/e-SCOR/bin/startVMITutorial ${G2I_ESCOR}/bin
+cp -p ${SRCBOX}/g2i/builds/e-SCOR-1r10/staging/escor-customiz.kb ${G2I_ESCOR}/kbs
+cp -p ${SRCBOX}/g2i/builds/e-SCOR-1r10/staging/e-scor.kb ${G2I_ESCOR}/kbs
+cp -p ${SRCBOX}/g2i/sites/e-SCOR/images/*.gif ${G2I_ESCOR}/kbs/images
+cp -p ${SRCBOX}/g2i/builds/e-SCOR-1r10/staging/escor-demo.kb ${G2I_ESCOR}/examples
+cp -p ${SRCBOX}/g2i/builds/e-SCOR-1r10/staging/escor-tutorial-acme.kb ${G2I_ESCOR}/examples
+cp -p ${SRCBOX}/g2i/builds/e-SCOR-1r10/staging/escor-tutorial-vmi.kb ${G2I_ESCOR}/examples
+cp -p ${SRCBOX}/g2i/builds/e-SCOR-1r10/staging/escor-tutorial-simplest.kb ${G2I_ESCOR}/examples
+
+# --- Copying e-SCOR Doc
+cp -p ${SRCBOX}/documentation/e-SCORQuickReference.pdf ${G2I_ESCORDOC}
+cp -p ${SRCBOX}/documentation/e-SCORTutorials.pdf ${G2I_ESCORDOC}
+cp -p ${SRCBOX}/documentation/e-SCORUsersGuide.pdf ${G2I_ESCORDOC}
+
+# --- Copying Rethink
+cp -p ${SRCBOX}/g2i/bin/linux/startReThink ${G2I_RETHINK}/bin
+cp -p ${SRCBOX}/g2i/sites/ReThink/bin/startAeroModel ${G2I_RETHINK}/bin
+cp -p ${SRCBOX}/g2i/sites/ReThink/bin/startOrderfulModel ${G2I_RETHINK}/bin
+cp -p ${SRCBOX}/g2i/sites/ReThink/bin/startChapter3Model ${G2I_RETHINK}/bin
+cp -p ${SRCBOX}/g2i/sites/ReThink/bin/start4.0OnlineExamples ${G2I_RETHINK}/bin
+cp -p ${SRCBOX}/g2i/sites/ReThink/bin/start4.0Examples ${G2I_RETHINK}/bin
+cp -p ${SRCBOX}/g2i/builds/ReThink-1r10/staging/rethink.kb ${G2I_RETHINK}/kbs
+cp -p ${SRCBOX}/g2i/builds/ReThink-1r10/staging/rethink-online.kb ${G2I_RETHINK}/kbs
+cp -p ${SRCBOX}/g2i/builds/ReThink-1r10/staging/rethink-online-core.kb ${G2I_RETHINK}/kbs
+cp -p ${SRCBOX}/g2i/builds/ReThink-1r10/staging/rethink-core.kb ${G2I_RETHINK}/kbs
+cp -p ${SRCBOX}/g2i/builds/ReThink-1r10/staging/bpr.kb ${G2I_RETHINK}/kbs
+cp -p ${SRCBOX}/g2i/builds/ReThink-1r10/staging/bprui.kb ${G2I_RETHINK}/kbs
+cp -p ${SRCBOX}/g2i/builds/ReThink-1r10/staging/customiz.kb ${G2I_RETHINK}/kbs
+cp -p ${SRCBOX}/g2i/builds/ReThink-1r10/staging/methods.kb ${G2I_RETHINK}/kbs
+cp -p ${SRCBOX}/g2i/builds/ReThink-1r10/staging/menus.kb ${G2I_RETHINK}/kbs
+cp -p ${SRCBOX}/g2i/builds/ReThink-1r10/staging/methods-online.kb ${G2I_RETHINK}/kbs
+cp -p ${SRCBOX}/g2i/sites/ReThink/images/money.gif ${G2I_RETHINK}/kbs/images
+cp -p ${SRCBOX}/g2i/sites/ReThink/images/world.gif ${G2I_RETHINK}/kbs/images
+cp -p ${SRCBOX}/g2i/builds/ReThink-1r10/staging/ ${G2I_RETHINK}/examples
+cp -p ${SRCBOX}/g2i/builds/ReThink-1r10/staging/aero.kb ${G2I_RETHINK}/examples
+cp -p ${SRCBOX}/g2i/builds/ReThink-1r10/staging/chapter3.kb ${G2I_RETHINK}/examples
+cp -p ${SRCBOX}/g2i/builds/ReThink-1r10/staging/orderful.kb ${G2I_RETHINK}/examples
+cp -p ${SRCBOX}/g2i/builds/ReThink-1r10/staging/rethink-40-doc-examples.kb ${G2I_RETHINK}/examples
+cp -p ${SRCBOX}/g2i/builds/ReThink-1r10/staging/rethink-40-online-examples.kb ${G2I_RETHINK}/examples
+cp -p ${SRCBOX}/g2i/sites/ReThink/resources/* ${G2I_RETHINK}/resources
+cp -p ${SRCBOX}/g2i/sites/ReThink/data/ReThink-Summary-Reports.xls ${G2I_RETHINK}/data
+cp -p ${SRCBOX}/g2i/sites/ReThink/data/orders.mdb ${G2I_RETHINK}/data
+
+# --- Copying ReThink Document
+cp -p ${SRCBOX}/documentation/CustomizingReThinkUsersGuide.pdf ${G2I_RETHINKDOC}
+cp -p ${SRCBOX}/documentation/ReThinkTutorials.pdf ${G2I_RETHINKDOC}
+cp -p ${SRCBOX}/documentation/ReThinkUsersGuide.pdf ${G2I_RETHINKDOC}
+
+# --- Copying Integrity
+cp -p ${SRCBOX}/g2i/bin/linux/startintegrity ${G2I_INTEGRITY}/bin
+cp -p ${SRCBOX}/g2i/sites/Integrity/bin/Integrity.ico ${G2I_INTEGRITY}/bin
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/dxi_demo.kb ${G2I_INTEGRITY}/examples
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/mpe-demo.kb ${G2I_INTEGRITY}/examples
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/opacdemo.kb ${G2I_INTEGRITY}/examples
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/opx_demo.kb ${G2I_INTEGRITY}/examples
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/svcmdemo.kb ${G2I_INTEGRITY}/examples
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/doc_demo.kb ${G2I_INTEGRITY}/examples
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/csruisup.kb ${G2I_INTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/csuisup.kb ${G2I_INTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/devui.kb ${G2I_INTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/gdxi.kb ${G2I_INTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/gqsvsup.kb ${G2I_INTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/ievlnr.kb ${G2I_INTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/integrity-core.kb ${G2I_INTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/integrity.kb ${G2I_INTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/ipra.kb ${G2I_INTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/mpe.kb ${G2I_INTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/mpe-ui.kb ${G2I_INTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/ode-d.kb ${G2I_INTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/ode-opac.kb ${G2I_INTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/ode-r.kb ${G2I_INTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/odg-core.kb ${G2I_INTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/odg-odt.kb ${G2I_INTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/ompe.kb ${G2I_INTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/ompe-ui.kb ${G2I_INTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/opac.kb ${G2I_INTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/opacore.kb ${G2I_INTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/opcs.kb ${G2I_INTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/opcsrui.kb ${G2I_INTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/opcsui.kb ${G2I_INTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/opexpes.kb ${G2I_INTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/opexui.kb ${G2I_INTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/opfom.kb ${G2I_INTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/ora-two.kb ${G2I_INTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/ping.kb ${G2I_INTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/pingmgr.kb ${G2I_INTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/pps.kb ${G2I_INTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/pp-snmp.kb ${G2I_INTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/scroll.kb ${G2I_INTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/scrollui.kb ${G2I_INTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/smh.kb ${G2I_INTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/smhui.kb ${G2I_INTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Integrity-1r10/staging/tc_core.kb ${G2I_INTEGRITY}/kbs
+
+# --- Copying Integrity Documents
+cp -p ${SRCBOX}/documentation/IntegrityUsersGuide.pdf ${G2I_INTEGDOC}
+cp -p ${SRCBOX}/documentation/IntegrityUtilitiesGuide.pdf ${G2I_INTEGDOC}
+
+# --- Copying Optegrity
+cp -p ${SRCBOX}/g2i/sites/Optegrity/bin/Optegrity.ico ${G2I_OPTEGRITY}/bin
+cp -p ${SRCBOX}/g2i/bin/linux/startoptegrity ${G2I_OPTEGRITY}/bin
+cp -p ${SRCBOX}/g2i/sites/Optegrity/bin/startHeaterTutorial ${G2I_OPTEGRITY}/bin
+cp -p ${SRCBOX}/g2i/builds/Optegrity-1r10/staging/f102demo.kb ${G2I_OPTEGRITY}/examples
+cp -p ${SRCBOX}/g2i/builds/Optegrity-1r10/staging/fo2demo.kb ${G2I_OPTEGRITY}/examples
+cp -p ${SRCBOX}/g2i/builds/Optegrity-1r10/staging/equipmnt.kb ${G2I_OPTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Optegrity-1r10/staging/iato.kb ${G2I_OPTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Optegrity-1r10/staging/icco.kb ${G2I_OPTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Optegrity-1r10/staging/ico.kb ${G2I_OPTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Optegrity-1r10/staging/icso.kb ${G2I_OPTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Optegrity-1r10/staging/idco.kb ${G2I_OPTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Optegrity-1r10/staging/iedo.kb ${G2I_OPTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Optegrity-1r10/staging/iffo.kb ${G2I_OPTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Optegrity-1r10/staging/iho.kb ${G2I_OPTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Optegrity-1r10/staging/ioc.kb ${G2I_OPTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Optegrity-1r10/staging/ipo.kb ${G2I_OPTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Optegrity-1r10/staging/irco.kb ${G2I_OPTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Optegrity-1r10/staging/iso.kb ${G2I_OPTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Optegrity-1r10/staging/ito.kb ${G2I_OPTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Optegrity-1r10/staging/ivo.kb ${G2I_OPTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Optegrity-1r10/staging/ixo.kb ${G2I_OPTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Optegrity-1r10/staging/optegrity-core.kb ${G2I_OPTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Optegrity-1r10/staging/optegrity.kb ${G2I_OPTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Optegrity-1r10/staging/opt-event.kb ${G2I_OPTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/builds/Optegrity-1r10/staging/sdb.kb ${G2I_OPTEGRITY}/kbs
+cp -p ${SRCBOX}/g2i/sites/Optegrity/data/*.csv ${G2I_OPTEGRITY}/data
+
+# --- Copying Optegrity Document
+cp -p ${SRCBOX}/documentation/OptegrityUsersGuide.pdf ${G2I_OPTEGDOC}
+cp -p ${SRCBOX}/documentation/OptegrityHeaterTutorial.pdf ${G2I_OPTEGDOC}
+
+# NOL 
+cp -p ${SRCBOX}/g2i/builds/Nol-1r10/staging/gnne.kb ${G2I_NOL}/kbs
+cp -p ${SRCBOX}/g2i/builds/Nol-1r10/staging/java-module.kb ${G2I_NOL}/kbs
+cp -p ${SRCBOX}/g2i/builds/Nol-1r10/staging/nolspack.kb ${G2I_NOL}/kbs
+cp -p ${SRCBOX}/g2i/builds/Nol-1r10/staging/nolstudio.kb ${G2I_NOL}/kbs
+cp -p ${SRCBOX}/g2i/sites/Nol/kbs/gnneapps.kb ${G2I_NOL}/kbs
+cp -p ${SRCBOX}/gdanol/common/demos/kbs/noldemo.kb ${G2I_NOL}/kbs
+cp -p ${SRCBOX}/kbs/tools/nol/dist/kbs/*.kb ${G2I_NOL}/kbs
+cp -p ${SRCBOX}/bundle/stage/intelnt-g2-84r3/nol/projects/examples/gnne-demo/* ${G2I_NOL}/projects/examples/gnne-demo
+cp -p ${SRCBOX}/g2i/builds/Nol-1r10/staging/gnne-demo.kb ${G2I_NOL}/projects/examples/gnne-demo
+cp -p ${SRCBOX}/gdanol/common/demos/kbs/bakery-demo/* ${G2I_NOL}/projects/examples/bakery-demo
+cp -p ${SRCBOX}/gdanol/common/demos/kbs/bleach-demo/* ${G2I_NOL}/projects/examples/bleach-demo
+cp -p ${SRCBOX}/gdanol/common/demos/kbs/total-demo/*  ${G2I_NOL}/projects/examples/total-demo
+cp -p ${SRCBOX}/g2i/bin/linux/startnolapps ${G2I_NOL}/bin
+cp -p ${SRCBOX}/g2i/sites/Nol/bin/startbakery-demo ${G2I_NOL}/bin
+cp -p ${SRCBOX}/g2i/sites/Nol/bin/startbleach-demo ${G2I_NOL}/bin
+cp -p ${SRCBOX}/g2i/sites/Nol/bin/starttotal-demo  ${G2I_NOL}/bin
+cp -p ${DSTBOX}/gsi/opt/linuxnol ${G2I_NOL}/bin
+
+# GDADOC
+cp -p ${SRCBOX}/documentation/gdarefman.pdf ${GDADOC_BOX}/gda/gdaugrm
+cp -p ${SRCBOX}/documentation/gdaug.pdf ${GDADOC_BOX}/gda/gdaugrm
+cp -p ${SRCBOX}/documentation/gdaapi.pdf ${GDADOC_BOX}/gda/gdaapi
+
+# NOLDOC
+cp -p ${SRCBOX}/documentation/GNNEUsersGuide.pdf ${NOLDOC_BOX}
+cp -p ${SRCBOX}/documentation/nolrm.pdf ${NOLDOC_BOX}
+cp -p ${SRCBOX}/documentation/nolstudioug.pdf ${NOLDOC_BOX}
+cp -p ${SRCBOX}/documentation/nolusersguide.pdf ${NOLDOC_BOX}
+
+# --- Copying HLA
+cp -p ${SRCBOX}/g2i/builds/HLA-1r10/staging/ghla.kb ${G2I_HLA}/kbs
+cp -p ${SRCBOX}/g2i/builds/HLA-1r10/staging/ghla-demo.kb ${G2I_HLA}/examples
+cp -p ${SRCBOX}/g2i/sites/HLA/bin/startHLADemo ${G2I_HLA}/bin
+
+# copy g2i KBs
+cp -p ${DSTBOX}/g2i/staging/gerr.kb  ${G2I_BOX}/kbs
+cp -p ${DSTBOX}/g2i/staging/grtl.kb  ${G2I_BOX}/kbs
+cp -p ${DSTBOX}/g2i/staging/grtl-utils.kb  ${G2I_BOX}/kbs
+cp -p ${DSTBOX}/g2i/staging/grtl-icons.kb  ${G2I_BOX}/kbs
+cp -p ${DSTBOX}/g2i/staging/guif.kb  ${G2I_BOX}/kbs
+cp -p ${DSTBOX}/g2i/staging/grlb.kb  ${G2I_BOX}/kbs
+cp -p ${DSTBOX}/g2i/staging/cdggrlb.kb  ${G2I_BOX}/kbs
+cp -p ${DSTBOX}/g2i/staging/cdg.kb  ${G2I_BOX}/kbs
+cp -p ${DSTBOX}/g2i/staging/gevm.kb  ${G2I_BOX}/kbs
+cp -p ${DSTBOX}/g2i/staging/gdsm.kb  ${G2I_BOX}/kbs
+cp -p ${DSTBOX}/g2i/staging/gdsm-agent.kb  ${G2I_BOX}/kbs
+cp -p ${DSTBOX}/g2i/staging/gdsm-db.kb  ${G2I_BOX}/kbs
+cp -p ${DSTBOX}/g2i/staging/gdsm-jmail.kb  ${G2I_BOX}/kbs
+cp -p ${DSTBOX}/g2i/staging/gdsm-jms.kb  ${G2I_BOX}/kbs
+cp -p ${DSTBOX}/g2i/staging/gdsm-opc.kb  ${G2I_BOX}/kbs
+cp -p ${DSTBOX}/g2i/staging/gdsm-pi.kb  ${G2I_BOX}/kbs
+cp -p ${DSTBOX}/g2i/staging/gdsm-web.kb  ${G2I_BOX}/kbs
+cp -p ${DSTBOX}/g2i/staging/gdsm-snmp.kb ${G2I_BOX}/kbs
+cp -p ${DSTBOX}/g2i/staging/gedp.kb  ${G2I_BOX}/kbs
+cp -p ${DSTBOX}/g2i/staging/gdpm.kb  ${G2I_BOX}/kbs
+cp -p ${DSTBOX}/g2i/staging/grpe.kb  ${G2I_BOX}/kbs
+cp -p ${DSTBOX}/g2i/staging/gdu.kb  ${G2I_BOX}/kbs
+cp -p ${DSTBOX}/g2i/staging/gduc.kb  ${G2I_BOX}/kbs
+cp -p ${DSTBOX}/g2i/staging/gdue.kb  ${G2I_BOX}/kbs
+cp -p ${DSTBOX}/g2i/staging/brms.kb  ${G2I_BOX}/kbs
+cp -p ${DSTBOX}/g2i/staging/bpms.kb  ${G2I_BOX}/kbs
+cp -p ${DSTBOX}/g2i/staging/geuc.kb  ${G2I_BOX}/kbs
+cp -p ${DSTBOX}/g2i/staging/gweb.kb  ${G2I_BOX}/kbs
+cp -p ${DSTBOX}/g2i/staging/brms.kb  ${G2I_BOX}/kbs
+cp -p ${DSTBOX}/g2i/staging/symcure.kb ${G2I_BOX}/kbs
+cp -p ${DSTBOX}/g2i/staging/gndo.kb  ${G2I_BOX}/kbs
+cp -p ${DSTBOX}/g2i/staging/gtrap.kb  ${G2I_BOX}/kbs
+cp -p ${DSTBOX}/g2i/staging/gmib.kb  ${G2I_BOX}/kbs
+cp -p ${DSTBOX}/g2i/staging/gvad.kb  ${G2I_BOX}/kbs
+cp -p ${DSTBOX}/g2i/staging/gtad.kb  ${G2I_BOX}/kbs
+cp -p ${DSTBOX}/g2i/staging/gens.kb  ${G2I_BOX}/kbs
+cp -p ${DSTBOX}/g2i/staging/gqs.kb  ${G2I_BOX}/kbs
+cp -p ${DSTBOX}/g2i/staging/gqsui.kb  ${G2I_BOX}/kbs
+cp -p ${DSTBOX}/g2i/staging/gqsviews.kb  ${G2I_BOX}/kbs
+cp -p ${DSTBOX}/g2i/staging/glf.kb  ${G2I_BOX}/kbs
+
+cp -p ${DSTBOX}/g2i/staging/gqsdemo.kb  ${G2I_BOX}/examples
+cp -p ${DSTBOX}/g2i/staging/cdg-modguide.kb ${G2I_BOX}/examples
+cp -p ${DSTBOX}/g2i/staging/gedp-demo.kb ${G2I_BOX}/examples
+cp -p ${DSTBOX}/g2i/staging/gdsm-demo.kb ${G2I_BOX}/examples
+cp -p ${DSTBOX}/g2i/staging/gdpm-demo.kb ${G2I_BOX}/examples
+cp -p ${DSTBOX}/g2i/staging/gevm-demo.kb ${G2I_BOX}/examples
+cp -p ${DSTBOX}/g2i/staging/geuc-demo.kb ${G2I_BOX}/examples
+cp -p ${DSTBOX}/g2i/staging/gdu-demo.kb ${G2I_BOX}/examples
+cp -p ${DSTBOX}/g2i/staging/grpe-demo.kb ${G2I_BOX}/examples
+cp -p ${DSTBOX}/g2i/staging/brms-demo.kb ${G2I_BOX}/examples
+cp -p ${DSTBOX}/g2i/staging/bpms-demo.kb ${G2I_BOX}/examples
+cp -p ${DSTBOX}/g2i/staging/g2i-ui-demo.kb  ${G2I_BOX}/examples
+
+cp -p ${SRCBOX}/g2i/kbs/config.txt ${G2I_BOX}/kbs
+cp -p ${SRCBOX}/g2i/kbs/resources-english.txt ${G2I_BOX}/kbs
+cp -p ${SRCBOX}/g2i/kbs/guif-resources.txt ${G2I_BOX}/kbs
+cp -p ${SRCBOX}/g2i/kbs/cdg-resources-english.txt ${G2I_BOX}/kbs
+cp -p ${SRCBOX}/g2i/kbs/gdpm-resources-english.txt ${G2I_BOX}/kbs
+cp -p ${SRCBOX}/g2i/kbs/gedp-resources-english.txt ${G2I_BOX}/kbs
+cp -p ${SRCBOX}/g2i/kbs/gevm-resources-english.txt ${G2I_BOX}/kbs
+cp -p ${SRCBOX}/g2i/kbs/resources-english.txt ${G2I_BOX}/kbs
+cp -p ${SRCBOX}/g2i/kbs/g2i-ui-demo.html ${G2I_BOX}/examples
+cp -p ${SRCBOX}/g2i/kbs/g2i-ui-demo-resource-english.txt ${G2I_BOX}/examples
+
+# g2i-data
+cp -p ${SRCBOX}/g2i/data/custom-conversions.csv ${G2I_BOX}/data
+cp -p ${SRCBOX}/g2i/data/custom-synonyms.csv ${G2I_BOX}/data
+cp -p ${SRCBOX}/g2i/data/G2-Excel-VBA.xla ${G2I_BOX}/data
+cp -p ${SRCBOX}/g2i/data/images/*.gif ${G2I_BOX}/data/http_root/images
+
+### promote scripts
+BUILDID=`$SRCBOX/build/build-date`
+
+$SRCBOX/tools/remove-product -noconfirm -i rethink 51r1-$BUILDID
+$SRCBOX/tools/promote-product -noconfirm -i rethink $G2I_RETHINK 51r1-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e rethink 51r1
+$SRCBOX/tools/promote-product -noconfirm -e rethink 51r1-$BUILDID 51r1
+
+$SRCBOX/tools/remove-product -noconfirm -i rethinkdoc 51r0-$BUILDID
+$SRCBOX/tools/promote-product -noconfirm -i rethinkdoc $G2I_RETHINKDOC 51r0-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e rethinkdoc 51r0
+$SRCBOX/tools/promote-product -noconfirm -e rethinkdoc 51r0-$BUILDID 51r0
+
+$SRCBOX/tools/remove-product -noconfirm -i optegrity 51r1-$BUILDID
+$SRCBOX/tools/promote-product -noconfirm -i optegrity $G2I_OPTEGRITY 51r1-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e optegrity 51r1
+$SRCBOX/tools/promote-product -noconfirm -e optegrity 51r1-$BUILDID 51r1
+
+$SRCBOX/tools/remove-product -noconfirm -i optegdoc 51r0-$BUILDID
+$SRCBOX/tools/promote-product -noconfirm -i optegdoc $G2I_OPTEGDOC 51r0-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e optegdoc 51r0-JG18
+$SRCBOX/tools/promote-product -noconfirm -e optegdoc 51r0-$BUILDID 51r0-JG18
+
+$SRCBOX/tools/remove-product -noconfirm -i nol 51r1-$BUILDID
+$SRCBOX/tools/promote-product -noconfirm -i nol $G2I_NOL 51r1-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e nol 51r1
+$SRCBOX/tools/promote-product -noconfirm -e nol 51r1-$BUILDID 51r1
+
+$SRCBOX/tools/remove-product -noconfirm -i gdadoc 51r0-$BUILDID
+$SRCBOX/tools/promote-product -noconfirm -i gdadoc $GDADOC_BOX 51r0-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e gdadoc 51r0
+$SRCBOX/tools/promote-product -noconfirm -e gdadoc 51r0-$BUILDID 51r0
+
+$SRCBOX/tools/remove-product -noconfirm -i noldoc 51r0-$BUILDID
+$SRCBOX/tools/promote-product -noconfirm -i noldoc $NOLDOC_BOX 51r0-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e noldoc 51r0-JG20
+$SRCBOX/tools/promote-product -noconfirm -e noldoc 51r0-$BUILDID 51r0-JG20
+
+$SRCBOX/tools/remove-product -noconfirm -i escor 51r1-$BUILDID $MACHINE 
+$SRCBOX/tools/promote-product -noconfirm -i escor $MACHINE $G2I_ESCOR 51r1-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e escor 51r1 $MACHINE 
+$SRCBOX/tools/promote-product -noconfirm -e escor $MACHINE 51r1-$BUILDID 51r1
+
+$SRCBOX/tools/remove-product -noconfirm -i escordoc 51r0-$BUILDID
+$SRCBOX/tools/promote-product -noconfirm -i escordoc $G2I_ESCORDOC 51r0-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e escordoc 51r0
+$SRCBOX/tools/promote-product -noconfirm -e escordoc 51r0-$BUILDID 51r0
+
+$SRCBOX/tools/remove-product -noconfirm -i intereas 50r1-$BUILDID
+$SRCBOX/tools/promote-product -noconfirm -i intereas $G2I_INTEGRITY 50r1-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e intereas 50r1
+$SRCBOX/tools/promote-product -noconfirm -e intereas 50r1-$BUILDID 50r1
+
+$SRCBOX/tools/remove-product -noconfirm -i opexdoc 50r1-$BUILDID
+$SRCBOX/tools/promote-product -noconfirm -i opexdoc $G2I_INTEGDOC 50r1-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e opexdoc 50r1
+$SRCBOX/tools/promote-product -noconfirm -e opexdoc 50r1-$BUILDID 50r1
+
+$SRCBOX/tools/remove-product -noconfirm -i hla 20r1-$BUILDID $MACHINE 
+$SRCBOX/tools/promote-product -noconfirm -i hla $MACHINE $G2I_HLA 20r1-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e hla 20r1 $MACHINE 
+$SRCBOX/tools/promote-product -noconfirm -e hla $MACHINE 20r1-$BUILDID 20r1
+
+$SRCBOX/tools/remove-product -noconfirm -i g2i 23r1-$BUILDID
+$SRCBOX/tools/promote-product -noconfirm -i g2i $G2I_BOX 23r1-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e g2i 23r1
+$SRCBOX/tools/promote-product -noconfirm -e g2i 23r1-$BUILDID 23r1
