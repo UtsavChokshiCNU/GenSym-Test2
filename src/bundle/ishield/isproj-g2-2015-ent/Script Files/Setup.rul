@@ -1,0 +1,959 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+//  IIIIIII SSSSSS
+//    II    SS                         InstallShield (R)
+//    II    SSSSSS      (c) 1996-2000, InstallShield Software Corporation
+//    II        SS      (c) 1990-1996, InstallShield Corporation
+//  IIIIIII SSSSSS                     All Rights Reserved.
+//
+//
+//  This code is generated as a starting setup template.  You should
+//  modify it to provide all necessary steps for your setup.
+//
+//
+//    File Name:  Setup.rul
+//
+//  Description:  InstallShield script
+//
+//     Comments:  This template script performs a basic setup. With minor
+//                modifications, this template can be adapted to create
+//                new, customized setups.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+
+// Include header files
+
+#include "ifx.h" //DO NOT REMOVE
+
+////////////////////// string defines ////////////////////////////
+
+//////////////////// installation declarations ///////////////////
+
+prototype cdecl int gensym.initialize_license_key (BYREF STRING);
+prototype int gensym.get_installer_version();
+prototype int gensym.get_familyid();
+prototype int gensym.get_bundleid();
+prototype int gensym.get_systemid();
+prototype int gensym.get_first_component_index();
+prototype int gensym.get_next_component_index();
+prototype cdecl void gensym.test_key_interface(BYREF STRING);
+prototype void gensym.test_key_interface2();
+prototype cdecl int gensym.Test_key (BYREF STRING);
+prototype cdecl int gensym.add_watermark_to_ok_file(BYREF STRING, BYREF STRING, BYREF STRING, BYREF STRING, BYREF STRING);
+prototype cdecl int gensym.make_watermark_file(BYREF STRING, BYREF STRING, BYREF STRING, BYREF STRING, BYREF STRING);
+prototype cdecl int gensym.CheckDllVersion(BYVAL STRING, INT, INT, BYVAL STRING);
+
+// The following declares the devious name for the unobfuscate_in_place function:  (MHD 5/25/01)
+prototype cdecl void gensym.set_log_file_info(BYREF STRING, BYREF STRING);
+
+prototype USER.WinHelp( INT, LPSTR, INT, LONG);
+
+
+// ---- script function prototypes -----
+
+#include 	"dialog.h" 	//Contains all dialog code
+#include 	"tools.h" 		//Contains helper functions
+#include 	"Path.h"		//Contains functions unquie to path names
+
+
+// ----- Functions built by the InstallGenerator -- JW 8/21 ----
+
+
+prototype CreateEnvVars();
+prototype DoWatermarks();
+prototype SetBundleDirAndVersion(NUMBER);
+prototype init_bundle_installer_version();
+prototype generated_check_for_previous_installations();
+prototype init_registration_if_necessary();
+prototype init_install_all_users(); 
+prototype unregister_activexlink_dll();
+
+// your global variables
+#define  	ERROR "Error"
+#define  	STEP  "Step"
+#define  	DEBUG "Debug"
+
+#define  	START 15
+#define  	GENSYMDLL "gensym.dll"
+#define		ACTIVEXLINKDLL "G2Com.dll"
+#define 	MAXCOMPONENT 150
+#define 	RES_PBUT_NEXT         1   // ID of 'Next' push button
+
+#define 	RES_PBUT_CANCEL       9   // ID of 'Cancel' push button
+
+#define 	RES_PBUT_BACK        12   // ID of 'Back' push button
+
+#define GENSYM_UNINSTALL_KEYTEXT "Uninstall"
+
+
+// We don't want the default Msg presented by SdLicense, since all it says is
+// instructions on scrolling.  They might not even need to scroll.  It's dumb.
+// So use our LICENSE_AGT_ABOVE_SCROLLBOX_MSG instead for that dialog, making
+// the message blank.  Note the standard instruction messages are still
+// presented elsewhere.
+
+#define LICENSE_AGT_ABOVE_SCROLLBOX_MSG " "
+
+
+
+
+LONG 	lgHelpID;  	//Help ID
+BOOL 	bgVerbose; 	//error tracking:
+    					//FALSE no error tracking
+    					//TRUE error tracking on see nDebug for level of tracking
+BOOL 	INSTALL_ALL_USERS;
+
+#define	ASK_IF_ALL_USERS FALSE
+// Controls whether to enable the Ask_if_all_users step.
+// This feature is not ready for prime time.  INSTALL_ALL_USERS is
+// ignored by the (automatic) setup of program groups ("shortcuts"),
+// which just bases its action on whether the user is an administrator,
+// and it would be a bunch more work to fix that.  This should also
+// be parameterized from the family file.  More work we're deferring.
+// -- MHD, 12/5/00
+
+BOOL 	INSTALL_ENVVARS_FOR_CURRENT_USER; // New (v1.0.2) Bundle Install Feature: this
+                                          // overrides INSTALL_ALL_USERS in that if it
+                                          // it's true, system variables are never set.
+
+BOOL 	MAY_SETENV_CLASSPATH; // New (v1.0.2) Bundle Install Feature:
+BOOL    MAY_SETENV_PATH;      // We obey these to determine if PATH/CLASSPATH
+                              // may be set.
+
+#define IGNORE_ENVVARS_FOR_WIN9X TRUE
+// New (v1.0.2) Bundle Install Feature:
+// this makes environment variables be ignored for Windows 95 and Windows 98
+// ("WIN9X"); setbelow initializing globals; used in tools.rul. A globally
+// true constant at present because we do not support Windows98*.  There is,
+// however, code in tools.rul that could support it.  It has not been fully
+// tested, however, except that it obeys this setting. (MHD 12/18/00)
+//
+//    * Gang Chen says Neuronline supporte Windows 98
+//    for deployment, but the readme file says to modify
+//    the autoexec.bat file.
+
+
+NUMBER 	ngToDo;		//Global flag for to do list
+INT  	ngDebug; 	// Support for mutiple level of support:
+    					// 2 On screen messages when an error occurs
+    					// 3 Error log is created or added to when errors occur
+    					// 5 On screen messages for each step of the program, I would not advise to use
+    					// 6 Error log for each step of the program
+    					// 7 Display a list of all settings at the end of the user interaction
+
+STRING sgDebugLogFile; 	//path and filename of log
+
+STRING sgComponentSet; 	// Global Script-based ComponentSet
+LIST   lBundleList; 		// NEED TO MOVE into a function
+STRING sgName, sgCompany; 	// Global User name and company name
+
+STRING BUNDLEVERSION;     // Bundle version
+STRING BUNDLENAME;        // Bundle product name
+
+STRING BUNDLE_INSTALLER_VERSION;  // Version of installer software (not the product)
+  // set by init_bundle_installer_version, generated code, in BundleInfo.rul
+
+NUMBER BUNDLE_FAMILY_ID;  // Family ID of the product bundle we're installing
+  // set by init_bundle_installer_version, generated code, in BundleInfo.rul
+
+NUMBER BUNDLE_SYSTEM_ID;  // System ID of the product bundle we're installing
+  // set by init_bundle_installer_version, generated code, in BundleInfo.rul
+
+STRING BUNDLE_OBFUSCATION_SEED_STRING;  // used for obfuscated files only
+  // set by init_bundle_installer_version, generated code, in BundleInfo.rul
+
+STRING sgRegNumber;       // License Key
+STRING sgOKFile;          // Location of OK File
+
+
+
+
+// The function init_registration_if_necessary initializes global
+// variables sgName, sgCompany, and sgRegNumber to their default
+// values, which are the gotten from the system's registry in the case
+// of the user name and the company, and made a blank string in the
+// case of the serial number.  It should be called one time at the
+// start of a first or maintenance install.  Thereafter, the values
+// will be kept, as possibly modificatied by the user, as the user
+// goes back and forth through the dialogs.
+function init_registration_if_necessary()
+begin
+  SdGetUserCompanyInfo(sgName, sgCompany);
+  SdRemoveEndSpace(sgName);
+  SdRemoveEndSpace(sgCompany);
+  sgRegNumber = "";
+end;
+
+// The function init_install_all_users sets up the global variable
+// INSTALL_ALL_USERS.  For a first-time install, that variable will
+// be overridden by the Ask_if_all_users step.  For a maintenance
+// install, it will not be changed by this routine.  However, if this
+// routine sees that the first setup was done for all users, and the
+// users is not now an administrator, the user will get a fatal warning
+// message box, and the setup will be aborted.  This also (as of 2/13/02)
+// checks the somewhat related requirement that for Windows 2000, the 
+// installation must be done by an administrator; it quits out if this
+// is Windows 2000 (or later) but the user is not an administrator.  
+
+function init_install_all_users()
+begin
+  // require now that users be administrators or quit out. Previously, users would
+  // get a strange abort from InstallShield with G2 Classic 5.1r7 & 5.2. With
+  // G2 (Classic) 6.1, there were reports of this going through but not really working.
+  if (!Is(USER_ADMINISTRATOR, "") && SYSINFO.WINNT.bWin2000) then
+     MessageBox("This software can only be installed by an administrator.\nThe setup will now be cancelled.", SEVERE);
+     abort;
+  endif;
+  if (MAINTENANCE) then
+     if (!Is(USER_ADMINISTRATOR, "") && INSTALL_ALL_USERS) then
+        MessageBox("This software was originally installed by an administrator for all users.\n  You must be an administrator to do maintenance.\n  The setup will now be cancelled.", SEVERE);
+        abort;
+     endif;
+  endif;
+  if Is(USER_ADMINISTRATOR, "") then
+    INSTALL_ALL_USERS = TRUE;
+  else
+    INSTALL_ALL_USERS = FALSE;
+  endif;
+end;
+
+
+// For the time being this is being coded by hand.  Later, have
+// this generated by the Install Generator, based on the family
+// file, coordinated through guid.dat.  It should provide for
+// different kinds of actions, e.g., disallow, move elsewhere,
+// allow but frown, allow cheerfully, etc. E-SCOR already handles
+// checking for previous installations.  Note that we do not check
+// for previous prebundling installations, e.g., TW2 1.1r0 installed
+// as a component circa Spring, 2000. -mhd, 10/31/00
+
+prototype check_for_previous_installations();
+function check_for_previous_installations()
+begin
+  // These are all the "shunned" first customer shipments (FCS) of G2 and NOLS bundles.
+  // They should not be allowed to remain by any user of the new installer.  Note that
+  // the FCS of NetSleuth has the GUID, but is allowed to remain. (MHD 10/31/00)
+  disallow_previous_install("5f736340-7ea5-11d4-9b74-ca6847000000", "G2 Development", "G2 Classic", "5.1r6");
+  disallow_previous_install("5f736340-7ea5-11d4-9b74-ca6847000000", "G2 Deployment", "G2 Classic", "5.1r6");
+  disallow_previous_install("5f736340-7ea5-11d4-9b74-ca6847000000", "NOL Studio Development", "NOLS", "2.2r0");
+  disallow_previous_install("5f736340-7ea5-11d4-9b74-ca6847000000", "Nol Premium Deployment", "NOLS", "2.2r0");
+  disallow_previous_install("5f736340-7ea5-11d4-9b74-ca6847000000", "Nol Studio Deployment", "NOLS", "2.2r0");
+  disallow_previous_install("5f736340-7ea5-11d4-9b74-ca6847000000", "NOL Premium Development", "NOLS", "2.2r0");
+
+  // Product specific shuns:   (from generated BundleInfo.rul)
+  generated_check_for_previous_installations();
+
+end;
+
+
+prototype gensym_component_is_selected(STRING);
+function gensym_component_is_selected (gensym_component_name)
+  NUMBER error, i, n;
+  STRING internal_component_name, component_number_string, display_name;
+begin
+  i = 1;
+  while ((error = 0) && (i < MAXCOMPONENT))
+    NumToStr(component_number_string, i);
+    internal_component_name = BUNDLENAME + component_number_string;
+    if FeatureIsItemSelected(MEDIA, internal_component_name) then
+
+      error = FeatureGetData(MEDIA, internal_component_name, FEATURE_FIELD_DISPLAYNAME, n, display_name);
+
+      // Debugging:
+      // MessageBox("internal_component_name: " + internal_component_name + " display_name: " + display_name, INFORMATION);
+
+      if (error = 0) then
+        if (gensym_component_name = display_name) then
+          return (TRUE);
+        endif;
+      endif;
+    endif;
+    i = i + 1;
+  endwhile;
+  return (FALSE);
+end;
+
+prototype gensym_component_previously_installed(STRING);
+function gensym_component_previously_installed(gensym_component_name)
+STRING installed_internal_name, display_name;
+NUMBER listresult, getresult, n;
+begin
+  if !MAINTENANCE then
+    return(FALSE);
+  endif;
+  listresult = ListGetFirstString(maintenance_previously_installed_list, installed_internal_name);
+  while (listresult != END_OF_LIST)
+    getresult = FeatureGetData(MEDIA, installed_internal_name,
+					FEATURE_FIELD_DISPLAYNAME, n, display_name);
+    if (getresult = 0) then  // then OK
+      if (display_name = gensym_component_name) then
+        return(TRUE);  // a match
+      endif;
+    else
+      MessageBox("Error getting data about previously installed component "
+		  + installed_internal_name + ".", WARNING);
+    endif;
+    listresult = ListGetNextString(maintenance_previously_installed_list, installed_internal_name);
+  endwhile;
+  return(FALSE);
+end;
+
+
+
+// The function ask_about_shared_setenv asks if PATH and CLASSPATH, shared
+// environment variables, should be set by this setup.  The only arg, for_reinstall,
+// should be TRUE if this is for a maintenance reinstall.  Otherwise, it should
+// be FALSE.  (Note: to reinstall is also known as to "repair".)
+//
+// last_nResult should be a value to return if this doesn't need to show
+// a dialog, e.g., NEXT or BACK, so you can determine direction.
+
+// For now, this is hardwired to know the components, TW2 and JVL, iff
+// selected, want to set these. In the future, or as required, we will
+// either add other components, or make it be learned from the
+// family (.fam) file. (MHD 12/6/00)
+
+// NOTE: THIS IS A DEPRECATED PRACTICE.  As of our all-engineering meeting
+// on 2/29/02, we confirmed that no bundle rely on this feature.  Accordingly,
+// we are making the names hyphenated and all-caps. This will keep them from
+// from matching the names in the family files. (MHD/yduJ 2/29/02)
+
+#define TW2_NAME "TELEWINDOWS2-TOOLKIT"
+#define JVL_NAME "G2-JAVALINK"
+prototype ask_about_shared_setenv(BOOL, NUMBER);
+function ask_about_shared_setenv(for_reinstall, last_nResult)
+    NUMBER  nResult;
+    NUMBER tw2_installing_p, javalink_installing_p;
+    STRING szTemp;
+begin
+  nResult = last_nResult;
+
+  // Bail out if this is WIN9X but we don't do envvars:
+  if (SYSINFO.WIN9X.bWin9X && IGNORE_ENVVARS_FOR_WIN9X) then
+    return(nResult);
+  endif;
+
+  tw2_installing_p
+    = (gensym_component_is_selected(TW2_NAME)
+         && (for_reinstall || !gensym_component_previously_installed(TW2_NAME)));
+  javalink_installing_p
+    = (gensym_component_is_selected(JVL_NAME)
+         && (for_reinstall || !gensym_component_previously_installed(JVL_NAME)));
+  // Hack for now!  If TW2 and/or Javalink are selected, then do this:
+  if (tw2_installing_p || javalink_installing_p) then
+    if (tw2_installing_p && javalink_installing_p) then
+      szTemp = TW2_NAME + " and " + JVL_NAME;
+    else
+      if (tw2_installing_p) then
+        szTemp = TW2_NAME;
+      else
+        szTemp = JVL_NAME;
+      endif;
+    endif;
+    SetDialogTitle(DLG_ASK_OPTIONS, "Shared Environment Variables");
+    nResult = AskOptions(NONEXCLUSIVE,
+      "The following shared environment variables must be set up properly for " +
+      szTemp + " to run. The selected variables will be modified by Setup.",
+      "PATH", MAY_SETENV_PATH,
+      "CLASSPATH", MAY_SETENV_CLASSPATH);
+  endif;
+  return(nResult);
+end;
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  FUNCTION:   OnFirstUIBefore
+//
+//  EVENT:      FirstUIBefore event is sent when installation is run for the first
+//              time on given machine. In the handler installation usually displays
+//              UI allowing end user to specify installation parameters. After this
+//              function returns, ComponentTransferData is called to perform file
+//              transfer.
+//
+///////////////////////////////////////////////////////////////////////////////
+function OnFirstUIBefore()
+    NUMBER  nResult;
+    STRING  szTitle, szMsg;
+    STRING  szLicenseFile, szQuestion;
+    STRING  szTargetPath;
+    STRING  szDir;
+    STRING  szComponents, szTargetdir;
+    NUMBER  nLevel;
+    LIST    listStartCopy;
+    NUMBER  nvSize;
+
+    // Added by JW
+    NUMBER  nTemp, nCount, nError, selected_component_count;
+    STRING szComponent, szDisplayName, szComponentNumber;
+    NUMBER nSetupType;
+    BOOL bSelected, bSelected2;
+    NUMBER nComponents;
+    LIST lComponentsList;
+    NUMBER nVisible;
+    STRING szTemp;
+    BOOL bvOpt1, bvOpt2;
+
+begin
+
+    init_bundle_installer_version();
+    init_install_all_users();
+    nSetupType = TYPICAL;
+    MAY_SETENV_CLASSPATH = TRUE;
+    MAY_SETENV_PATH = TRUE;
+    init_registration_if_necessary();
+
+    // See tools.rul for usage in set_env_var and RejectEnvVar:
+    global_system_envvar_problem_warning_issued = FALSE;
+    global_system_envvar_changes_require_reboot = FALSE;
+
+    // Related to env. var's: here we impose our final policy
+    // decision for 1.0.2 bundle installer: system variables
+    // are bad, very, very bad, on Windows NT 4.0 SP 5 or lower.
+    // We're just saying, "no".  (MHD 12/3/00)
+    INSTALL_ENVVARS_FOR_CURRENT_USER
+      = system_subject_to_large_system_environment_variable_limit();
+
+Dlg_Start:
+    // beginning of dialogs label
+    DialogSetInfo(DLG_INFO_ALTIMAGE, SUPPORTDIR ^ "gensym_logo.bmp", TRUE);
+
+Dlg_SdWelcome:
+    szTitle = "";
+    szMsg = "The InstallShield Wizard will install "
+      + @PRODUCT_NAME + " " + @PRODUCT_VERSION
+      + " on your computer. To continue, click Next.\n\n(Gensym Installer Version "
+      + BUNDLE_INSTALLER_VERSION + ")";
+    nResult = SdWelcome( szTitle, szMsg );
+
+    // Run this right after the welcome message, so if they get booted out
+    // they'll at least have seen the product/version info. -mhd, 10/31/00
+    check_for_previous_installations();
+
+    if (nResult = BACK) goto Dlg_Start;
+
+Dlg_SdLicense:
+    szLicenseFile = SUPPORTDIR ^ "license.txt";
+    szTitle    = ""; szMsg      = LICENSE_AGT_ABOVE_SCROLLBOX_MSG; szQuestion = "";
+    nResult    = SdLicense( szTitle, szMsg, szQuestion, szLicenseFile );
+    if (nResult = BACK) goto Dlg_SdWelcome;
+
+Dlg_SdRegisterUserEx:
+    nResult = DialogShowSdRegisterUserEx(sgRegNumber, sgName, sgCompany);
+    if (nResult = BACK) goto Dlg_SdLicense;
+
+Ask_if_all_users:
+    if ASK_IF_ALL_USERS then
+      // On Windows NT or 2000, a user with administrative privaleges
+      // has the option to install for all users or not:
+      if (Is(USER_ADMINISTRATOR, "")
+  	&& (SYSINFO.WINNT.bWinNT4 || SYSINFO.WINNT.bWin2000)) then
+        bSelected = INSTALL_ALL_USERS;
+        bSelected2 = !bSelected;
+        SetDialogTitle(DLG_ASK_OPTIONS, "Select Install Type");
+        nResult = AskOptions(EXCLUSIVE, "Choose which type of install you want Setup to do.",
+  			   "Install for all users", bSelected,
+  			   "Install just for the current user", bSelected2);
+        INSTALL_ALL_USERS = bSelected;
+      endif;
+    endif;
+    if (nResult = BACK) goto Dlg_SdRegisterUserEx;
+
+Dlg_SdAskDestPath:
+    szTitle = ""; szMsg   = ""; szDir = TARGETDIR;
+    nResult = SdAskDestPath( szTitle, szMsg, szDir, 0 );
+    TARGETDIR = szDir;
+    // now set the location of uninstallation information as well 
+    //so it will be easier to find, for HQ-3666381
+    DISK1TARGET = TARGETDIR ^ BUNDLENAME + " Installation Info";
+    if (nResult = BACK) goto Ask_if_all_users;
+
+Dlg_SetupType:
+    szTitle    = "";
+    szMsg      = "";
+
+    // Changed from SetupType() to use only Typical and Custom -- JW 8/30
+    // nResult = SdSetupTypeEx ( szTitle , szMsg , "" , szSetupType, 0 );
+    // Added option to not have this dialog, set via family file. -mhd, 10/23/00
+    if (BUNDLE_TYPICAL_ONLY) then   // from BundleInfo.rul
+      nSetupType = TYPICAL;
+      nResult = NEXT; // i.e., arbitrary, irrelevant
+    else
+      nResult = DialogShowSetupType (nSetupType);
+    endif;
+
+    if (nResult = BACK) then
+        goto Dlg_SdAskDestPath;
+    else
+      if (nSetupType != CUSTOM) then
+        szTargetPath = TARGETDIR;
+        nvSize = 0;
+        FeatureCompareSizeRequired(MEDIA,szTargetPath,nvSize);
+        if (nvSize != 0) then
+          MessageBox( szSdStr_NotEnoughSpace, WARNING );
+        endif;
+      endif;
+    endif;
+
+Dlg_SdComponentTree:
+    if ((nResult = BACK) && (nSetupType != CUSTOM)) goto Dlg_SetupType;
+    szTitle    = "";
+    szMsg      = "";
+    szTargetdir = TARGETDIR;
+    szComponents = "";
+    // nLevel = 2;
+    if (nSetupType = CUSTOM) then
+      // nResult = SdComponentTree(szTitle, szMsg, szTargetdir, szComponents, nLevel);
+      nResult = SdFeatureDialogAdv(szTitle, szMsg, TARGETDIR, szComponents);
+      if (nResult = BACK) then
+        if (BUNDLE_TYPICAL_ONLY) then
+          goto Dlg_SdAskDestPath;
+        else
+          goto Dlg_SetupType;
+        endif;
+      endif;
+    endif;
+
+Ask_about_shared_environment_variables:
+  nResult = ask_about_shared_setenv(FALSE, nResult);
+  if (nResult = BACK) goto Dlg_SdComponentTree;
+
+Dlg_ObjDialogs:
+    // NOTE: this doesn't appear to users in practice with our setups. (MHD 11/29/00)
+    nResult = ShowObjWizardPages(nResult);
+    if (nResult = BACK) goto Ask_about_shared_environment_variables;
+
+Dlg_SdStartCopy:
+
+    szTitle = ""; szMsg   = "";
+    listStartCopy = ListCreate( STRINGLIST );
+    //The following is an example of how to add a string(svName) to a list(listStartCopy).
+    //eg. ListAddString(listStartCopy,svName,AFTER);
+
+    // Make a list of all the components the user is installing:
+    nError = 0;
+    nCount = 1;
+    selected_component_count = 0;
+    while (nCount < MAXCOMPONENT)
+      NumToStr(szComponentNumber,nCount);
+      szComponent = BUNDLENAME + szComponentNumber;
+      if FeatureIsItemSelected(MEDIA, szComponent) then
+          nError = FeatureGetData(MEDIA, szComponent, FEATURE_FIELD_DISPLAYNAME, nTemp, szDisplayName);
+          if (nError = 0) then
+              if (selected_component_count = 0) then   // first component selected, so introduce list:
+                ListAddString(listStartCopy, "You have chosen to install the following components:", AFTER);
+                ListAddString(listStartCopy, "", AFTER);
+              endif;
+              selected_component_count = selected_component_count + 1;
+              ListAddString(listStartCopy, "    " + szDisplayName, AFTER);
+          endif;
+      endif;
+      nCount = nCount + 1;
+    endwhile;
+    // If there are really no components selected, tell the user no changes
+    // will be made, and make sure not to make any changes (below).
+    if (selected_component_count = 0) then
+       ListAddString(listStartCopy, "You have chosen to not install any components.", AFTER);
+    endif;
+
+    nResult = SdStartCopy( szTitle, szMsg, listStartCopy );
+    ListDestroy(listStartCopy);
+    if (nResult = BACK) goto Dlg_ObjDialogs;
+
+    // If no components, then nothing to do, so leave now without doing anything:
+    if (selected_component_count = 0) then
+      SdFinish ("", "", "", "", "", bvOpt1, bvOpt2);
+      abort;
+    endif;
+
+    // Otherwise, start installing now.
+
+    // setup default status
+    SetStatusWindow(0, "");
+    Enable(STATUSEX);
+    StatusUpdate(ON, 100);
+
+    // Added as a part of disabling the automatic uninstall on 2nd run feature.  -- JW 9/14
+    // See document ID Q104327 "HOWTO: Allowing Setup to Tell whether It
+    // Is Being Run from the Add/Remove Programs Dialog Box" -- MHD
+    UNINSTALL_STRING = UNINSTALL_STRING + GENSYM_UNINSTALL_KEYTEXT;
+
+    return 0;
+end;
+
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  FUNCTION:   OnMaintUIBefore
+//
+//  EVENT:      MaintUIBefore event is sent when end user runs installation that
+//              has already been installed on the machine. Usually this happens
+//              through Add/Remove Programs applet. In the handler installation
+//              usually displays UI allowing end user to modify existing installation
+//              or uninstall application. After this function returns,
+//              ComponentTransferData is called to perform file transfer.
+//
+///////////////////////////////////////////////////////////////////////////////
+
+// NOTE: See document ID Q104327 "HOWTO: Allowing Setup to Tell whether It
+// Is Being Run from the Add/Remove Programs Dialog Box" -- MHD
+function OnMaintUIBefore()
+    NUMBER nResult, nType;
+    STRING szTitle, szMsg, svDir, svResult, szCaption;
+
+    // Added by JW
+    NUMBER  nTemp, nCount, nError;
+    STRING szComponent, szDisplayName, szComponentNumber;
+    STRING  szLicenseFile, szQuestion;
+    NUMBER nSetupType;
+    BOOL bSelected;
+    BOOL adding_p, removing_p;
+    NUMBER nComponents;
+    LIST lComponentsList;
+    NUMBER nVisible;
+    STRING szTemp;
+    LIST listStartCopy;
+    BOOL bvOpt1, bvOpt2;
+
+begin
+  init_bundle_installer_version();
+  init_install_all_users();
+  nSetupType = TYPICAL;
+  MAY_SETENV_CLASSPATH = TRUE;
+  MAY_SETENV_PATH = TRUE;
+  init_registration_if_necessary();
+
+  // See tools.rul for usage in set_env_var and RejectEnvVar:
+  global_system_envvar_problem_warning_issued = FALSE;
+  global_system_envvar_changes_require_reboot = FALSE;
+
+  // Related to env. var's: here we impose our final policy
+  // decision for 1.0.2 bundle installer: system variables
+  // are bad, very, very bad, on Windows NT 4.0 SP 5 or lower.
+  // We're just saying, "no".  (MHD 12/3/00)
+  INSTALL_ENVVARS_FOR_CURRENT_USER
+    = system_subject_to_large_system_environment_variable_limit();
+
+  set_up_maintenance_previously_installed_list();
+
+Dlg_Start:
+  DialogSetInfo(DLG_INFO_ALTIMAGE, SUPPORTDIR ^ "gensym_logo.bmp", TRUE);
+
+  if (CMDLINE = GENSYM_UNINSTALL_KEYTEXT) then
+    nType = REMOVEALL;
+  else
+    Disable(BACKBUTTON);
+    szTitle = "";
+    szMsg = "Welcome to the " + @PRODUCT_NAME + " " + @PRODUCT_VERSION
+            + " Setup Maintenance program. The program lets you modify the current\n"
+            + "installation. Click on one of the options below.     (Gensym Installer Version "
+            + BUNDLE_INSTALLER_VERSION + ")";
+    nType = SdWelcomeMaint(szTitle, szMsg, MODIFY);
+    Enable(BACKBUTTON);
+  endif;
+  if (nType = REMOVEALL) then
+    svResult = SdLoadString(IFX_MAINTUI_MSG);
+    szCaption = SdLoadString(IFX_ONMAINTUI_CAPTION);
+    nResult = SprintfBox(MB_OKCANCEL,szCaption,"%s",svResult);
+    if (nResult = IDCANCEL) then
+      Do(EXIT);
+    else    
+      // If activexlink is installed, unregister activeslink dll, when
+      // uninstall
+      if FeatureIsItemSelected(MEDIA,"G2 ActiveXLink") then    // axl-g2com-dll
+      	unregister_activexlink_dll();
+      endif;
+      goto Dlg_ObjDialogs;
+    endif;
+  endif;
+
+  // Run this right after the welcome message, if we have one for maintenance,
+  // so if they get booted out they'll at least have seen the product/version
+  // info. -mhd, 10/31/00
+  check_for_previous_installations();
+
+Dlg_SdLicense:
+  szLicenseFile = SUPPORTDIR ^ "license.txt";
+  szTitle = ""; szMsg = LICENSE_AGT_ABOVE_SCROLLBOX_MSG; szQuestion = "";
+  nResult = SdLicense(szTitle, szMsg, szQuestion, szLicenseFile);
+  if (nResult = BACK) goto Dlg_Start;
+
+Dlg_SdRegisterUserEx:
+  nResult = DialogShowSdRegisterUserEx(sgRegNumber, sgName, sgCompany);
+  if (nResult = BACK) goto Dlg_SdLicense;
+
+Dlg_SdComponentTree:
+  if (nType = MODIFY) then
+    // Default Title: Select Components
+    szTitle = "";
+    // Default Message: Select the components you want to install, and clear the components you do not want to install.
+    // The problem with the message above is that users think it will reinstall things that are not already installed.
+    // But users think that it will, think that's what "install" means here.  Also, it does not tell users that it will
+    // uninstall things that are cleared if they're installed.
+    szMsg = "Check the components you wish to have installed.  Uncheck the components you do not wish to have installed. Note: previously installed components will be removed unless checked.";
+    nResult = SdFeatureTree(szTitle, szMsg, TARGETDIR, "", 2);
+    if (nResult = BACK) goto Dlg_SdRegisterUserEx;
+  endif;
+
+Ask_about_shared_environment_variables:
+  if ((nType != REMOVEALL) && (nType != REPAIR)) then
+    // ask about shared env. var.'s, but only for modify-type:
+    // nType = REPAIR is the reinstall case.
+    nResult = ask_about_shared_setenv((nType = REPAIR), nResult);
+  endif;
+  if (nResult = BACK) goto Dlg_SdComponentTree;
+
+Dlg_ObjDialogs:
+  nResult = ShowObjWizardPages(nResult);
+  if ((nResult = BACK) && (nType != MODIFY)) goto Dlg_Start;
+  if ((nResult = BACK) && (nType = MODIFY)) goto Ask_about_shared_environment_variables;
+  if (nType !=  MODIFY) goto do_it;
+
+Dlg_SdStartCopy:
+
+  szTitle = ""; szMsg   = "";
+  adding_p = FALSE;
+  removing_p = FALSE;
+  listStartCopy = ListCreate( STRINGLIST );
+
+  // Make a list of all the components the user is installing:
+  nError = 0;
+  nCount = 1;
+  while (nCount < MAXCOMPONENT)
+    NumToStr(szComponentNumber,nCount);
+    szComponent = BUNDLENAME + szComponentNumber;
+    if FeatureIsItemSelected(MEDIA, szComponent) then
+        nError = FeatureGetData(MEDIA, szComponent, FEATURE_FIELD_DISPLAYNAME, nTemp, szDisplayName);
+        if (nError = 0) then
+          if (!gensym_component_previously_installed(szDisplayName)) then
+            if (!adding_p) then
+              adding_p = TRUE;
+              ListAddString(listStartCopy, "", AFTER);
+              ListAddString(listStartCopy, "You have chosen to install the following components:", AFTER);
+              ListAddString(listStartCopy, "", AFTER);
+            endif;
+            ListAddString(listStartCopy, "    " + szDisplayName, AFTER);
+          endif;
+        endif;
+    endif;
+    nCount = nCount + 1;
+  endwhile;
+  // Make a list of all the components the user is removing:
+  nError = 0;
+  nCount = 1;
+  while (nCount < MAXCOMPONENT)
+    NumToStr(szComponentNumber,nCount);
+    szComponent = BUNDLENAME + szComponentNumber;
+    if (!FeatureIsItemSelected(MEDIA, szComponent)) then
+        nError = FeatureGetData(MEDIA, szComponent, FEATURE_FIELD_DISPLAYNAME, nTemp, szDisplayName);
+        if (nError = 0) then
+          if (gensym_component_previously_installed(szDisplayName)) then
+            if (!removing_p) then
+              removing_p = TRUE;
+              ListAddString(listStartCopy, "", AFTER);
+              ListAddString(listStartCopy, "You have chosen to uninstall the following components:", AFTER);
+              ListAddString(listStartCopy, "", AFTER);
+            endif;
+            ListAddString(listStartCopy, "    " + szDisplayName, AFTER);
+          endif;
+        endif;
+    endif;
+    nCount = nCount + 1;
+  endwhile;
+
+  if (!adding_p && !removing_p) then
+    ListAddString(listStartCopy, "", AFTER);
+    ListAddString(listStartCopy, "No changes will be made.", AFTER);
+  endif;
+  szTitle = "Review Settings"; szMsg = "If you are satisfied with these settings, click Next to begin making changes.  If you are not satisfied with these settings, click Back to review your changes.";
+
+  nResult = SdStartCopy(szTitle, szMsg, listStartCopy );
+  ListDestroy(listStartCopy);
+  if (nResult = BACK) goto Dlg_ObjDialogs;
+
+  if (!adding_p && !removing_p) then  // Nothing to do, so do nothing.
+    SdFinish ("", "", "", "", "", bvOpt1, bvOpt2);
+    abort;
+  endif;
+
+  // OK, now ready to do the installation:
+do_it:
+  load_gensym_dll();
+  switch(nType)
+    case REMOVEALL: FeatureRemoveAll();
+    case REPAIR:    FeatureReinstall();
+  endswitch;
+  unload_gensym_dll();
+  // setup default status
+  SetStatusWindow(0, "");
+  Enable(STATUSEX);
+  StatusUpdate(ON, 100);
+
+  // Added as a part of disabling the automatic uninstall on 2nd run feature.  -- JW 9/14
+  // See document ID Q104327 "HOWTO: Allowing Setup to Tell whether It
+  // Is Being Run from the Add/Remove Programs Dialog Box" -- MHD
+  UNINSTALL_STRING = UNINSTALL_STRING + GENSYM_UNINSTALL_KEYTEXT;
+
+end;
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  FUNCTION:   OnMoving
+//
+//  EVENT:      Moving event is sent when file transfer is started as a result of
+//              ComponentTransferData call, before any file transfer operations
+//              are performed.
+//
+///////////////////////////////////////////////////////////////////////////////
+function OnMoving()
+    STRING szAppPath;
+begin
+    // Set LOGO Compliance Application Path
+    // TO DO : if your application .exe is in a subfolder of TARGETDIR then add subfolder
+    szAppPath = TARGETDIR;
+    RegDBSetItem(REGDB_APPPATH, szAppPath);
+    RegDBSetItem(REGDB_APPPATH_DEFAULT, szAppPath ^ @PRODUCT_KEY);
+end;
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  FUNCTION:   OnMoved
+//
+//  EVENT:      Moved event is sent when file transfer is completed.
+//
+///////////////////////////////////////////////////////////////////////////////
+function OnMoved()
+begin
+   if (CMDLINE != "Uninstall") then
+       load_gensym_dll();
+       CreateEnvVars();
+       DoWatermarks();
+       unload_gensym_dll();
+   endif;
+end;
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  FUNCTION:   OnFileReadOnly
+//
+//  EVENT:      FileReadOnly event is sent during file transfer when a read-only
+//              file is needs to be overwritten or removed.
+//
+//  ARGUMENTS:  File - full path of file that is marked as read-only.
+//
+//  RETURN:     ERR_YES - the file should be overwritten or removed.
+//              ERR_NO  - the file should not be modified.
+//
+///////////////////////////////////////////////////////////////////////////////
+function OnFileReadOnly(File)
+begin
+	// Orig/default:
+	// return SdExceptions(READONLY, File);
+	return(ERR_YES);  // Gensym's software doesn't want this hassle. -mhd, 10/24/00
+end;
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  FUNCTION:   OnFirstUIAfter
+//
+//  EVENT:      FirstUIAfter event is sent after file transfer, when installation
+//              is run for the first time on given machine. In this event handler
+//              installation usually displays UI that will inform end user that
+//              installation has been completed successfully.
+//
+///////////////////////////////////////////////////////////////////////////////
+function OnFirstUIAfter()
+    STRING szTitle, szMsg1, szMsg2, szOption1, szOption2;
+    NUMBER bOpt1, bOpt2;
+begin
+    Disable(STATUSEX);
+
+    ShowObjWizardPages(NEXT);
+
+  // Reboot the system if necessary, i.e., if we've changed
+  // environment variables. -mhd, 10/31/00
+  if (global_system_envvar_changes_require_reboot) then
+    SdFinishReboot("", "", SYS_BOOTMACHINE, "", 0);
+  else
+    bOpt1  = FALSE;
+    bOpt2  = FALSE;
+    szMsg1 = SdLoadString(IFX_SDFINISH_MSG1);
+    SdFinishEx(szTitle, szMsg1, szMsg2, szOption1, szOption2, bOpt1, bOpt2);
+  endif;
+end;
+
+///////////////////////////////////////////////////////////////////////////////
+//
+//  FUNCTION:   OnMaintUIAfter
+//
+//  EVENT:      MaintUIAfter event is sent after file transfer, when end user runs
+//              installation that has already been installed on the machine. Usually
+//              this happens through Add/Remove Programs applet.
+//              In the handler installation usually displays UI that will inform
+//              end user that maintenance/uninstallation has been completed successfully.
+//
+///////////////////////////////////////////////////////////////////////////////
+function OnMaintUIAfter()
+    STRING szTitle, szMsg1, szMsg2, szOption1, szOption2;
+    NUMBER bOpt1, bOpt2;
+begin
+    Disable(STATUSEX);
+
+    ShowObjWizardPages(NEXT);
+
+   // Reboot the system if necessary, i.e., if we've changed
+   // environment variables. -mhd, 10/31/00
+   if (global_system_envvar_changes_require_reboot) then
+     SdFinishReboot("", "", SYS_BOOTMACHINE, "", 0);
+   else
+     bOpt1   = FALSE;
+     bOpt2   = FALSE;
+     szMsg1  = SdLoadString(IFX_SDFINISH_MAINT_MSG1);
+     szTitle = SdLoadString(IFX_SDFINISH_MAINT_TITLE);
+     SdFinishEx(szTitle, szMsg1, szMsg2, szOption1, szOption2, bOpt1, bOpt2);
+   endif;  
+   if ( CMDLINE = GENSYM_UNINSTALL_KEYTEXT ) then  
+   try
+   	DeleteDir(TARGETDIR ^ "G2 Development Installation Info", ALLCONTENTS);
+   	DeleteFile(TARGETDIR ^ "watermark.txt");
+   catch
+   	MessageBox("Cannot remove all files", INFORMATION);
+   endcatch;
+   endif;
+end;
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  FUNCTION:   OnRemovingSharedFile
+//
+//  EVENT:      RemovingSharedFile event is sent during file transfer when a
+//              shared file is being uninstalled and ref. count for the file
+//              reached zero.
+//
+//  ARGUMENTS:  File - full path of the shared file
+//
+//  RETURN:     ERR_YES - the file should be removed from system
+//              ERR_NO  - the file should not be removed from system
+//
+///////////////////////////////////////////////////////////////////////////////
+function OnRemovingSharedFile(File)
+begin
+    // originally:
+	// return SdExceptions(SHARED, File);
+	// now:
+	return(ERR_YES);
+end;
+
+// --- include script file section ---
+#include "Dialog.rul" 	//Contains all dialog code
+#include "Tools.rul" 	//Contains helper functions
+#include "Path.rul"		//Contains functions unquie to path names
+
+#include "ComponentEvents.rul"  // Component Event Handlers
+
+#include "Environment.rul"  // Contains the CreateEnvVars() function created by the InstallGenerator
+#include "Renames.rul"      // Contains the per-component postinstall code created by the InstallGenerator
+#include "BundleInfo.rul"   // Contains the bundle resolution functions SetBundleDir(), etc. created by the InstallGenerator
+#include "Precheck.rul"     // Contains the revised OnBegin function.
+#include "Watermarks.rul"   // Contains the DoWatermarks() function created by the InstallGenerator.
