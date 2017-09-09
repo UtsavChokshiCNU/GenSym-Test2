@@ -1,0 +1,92 @@
+#!/bin/csh
+
+
+### Emit doc, if invoked with bad args.
+
+if ( $1 != -please || $#argv != 1 ) then
+cat <<EOF
+$0 -please
+Build gsi-web, from scratch, doing translate, compiles, link, etc. etc.
+EOF
+exit -1
+endif
+
+
+### Global Variables
+use-sandbox bhyde-gw2 ab
+if ($status) goto error_exit
+
+### Local Variables
+set module = $SRCBOX/gw
+cd $module
+
+
+
+echo "---- START ${0}: `date` ----"
+
+
+
+
+echo "---- Translate: `date` ----"
+setenv TRANS_ID bhyde-gwt
+misc/translate-it -please
+if ($status) goto error_exit
+  
+
+
+echo "---- Synch C files: `date` ----"
+cd $module
+misc/update-c-files -please
+if ($status) goto error_exit
+
+
+
+# echo "---- Generate Makefiles: `date` ----"
+# cd $module
+# misc/generate-makefiles -please
+if ($status) goto error_exit
+
+
+
+echo "---- Compile Debug version: `date` ----"
+runmake gw o
+if ($status) goto error_exit
+
+
+
+echo "---- Compile Optimized version: `date` ----"
+runmake gw opt
+if ($status) goto error_exit
+
+
+echo "---- update GM, compile opt and o: `date` ----"
+cd $SRCBOX/gm
+misc/update-gm-c-files -please
+runmake gm opt
+runmake gm o
+cd $module
+
+
+echo "---- Build Tags files: `date`  ----"
+$module/misc/make-tags -please
+if ($status) goto error_exit
+
+
+
+echo "---- Build documentation: `date`  ----"
+cd $module
+$module/misc/build-html -please
+if ($status) goto error_exit
+
+
+
+echo "---- DONE ${0}: `date` ----"
+exit 0
+
+error_exit:
+  echo "ERROR: Error - exiting."
+  exit 1
+
+
+
+
