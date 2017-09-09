@@ -1,0 +1,40 @@
+HKCR
+{
+	ForceRemove G2WorkspacePanel.G2WorkspacePanel.2 = s 'G2WorkspacePanel 2.0'
+	{
+		CLSID = s '{8850F112-1FFF-11D2-86CC-00008618F471}'
+        'Insertable'
+	}
+	ForceRemove G2WorkspacePanel.G2WorkspacePanel.1 = s 'G2WorkspacePanel 1.0'
+	{
+		CLSID = s '{8850F112-1FFF-11D2-86CC-00008618F471}'
+        'NotInsertable'
+	}
+	ForceRemove G2WorkspacePanel.G2WorkspacePanel = s 'G2WorkspacePanel'
+	{
+		CLSID = s '{8850F112-1FFF-11D2-86CC-00008618F471}'
+		CurVer = s 'G2WorkspacePanel.G2WorkspacePanel.2'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {8850F112-1FFF-11D2-86CC-00008618F471} = s 'G2WorkspacePanel 2.0'
+		{
+			ProgID = s 'G2WorkspacePanel.G2WorkspacePanel.2'
+			VersionIndependentProgID = s 'G2WorkspacePanel.G2WorkspacePanel'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			ForceRemove 'Control'
+			ForceRemove 'Programmable'
+			ForceRemove 'Insertable'
+			ForceRemove 'ToolboxBitmap32' = s '%MODULE%, 207'
+			'MiscStatus' = s '0'
+			{
+			    '1' = s '131473'
+			}
+			'TypeLib' = s '{42B6C7E0-06C1-11d2-8698-00008618F471}'
+			'Version' = s '1.0'
+		}
+	}
+}
