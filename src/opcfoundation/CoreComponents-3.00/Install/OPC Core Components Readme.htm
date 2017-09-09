@@ -1,0 +1,1636 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns:m="http://schemas.microsoft.com/office/2004/12/omml"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<!--[if !mso]>
+<style>
+v\:* {behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style>
+<![endif]-->
+<title>OPC Core Components</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+
+  <o:Revision>2</o:Revision>
+  <o:TotalTime>3</o:TotalTime>
+  <o:Created>2008-05-10T09:23:00Z</o:Created>
+  <o:LastSaved>2008-05-10T09:26:00Z</o:LastSaved>
+  <o:Pages>3</o:Pages>
+  <o:Words>1725</o:Words>
+  <o:Characters>9833</o:Characters>
+  <o:Lines>81</o:Lines>
+  <o:Paragraphs>23</o:Paragraphs>
+  <o:CharactersWithSpaces>11535</o:CharactersWithSpaces>
+  <o:Version>12.00</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]-->
+<!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:SpellingState>Clean</w:SpellingState>
+  <w:GrammarState>Clean</w:GrammarState>
+  <w:TrackMoves>false</w:TrackMoves>
+  <w:TrackFormatting/>
+  <w:ValidateAgainstSchemas/>
+  <w:SaveIfXMLInvalid>false</w:SaveIfXMLInvalid>
+  <w:IgnoreMixedContent>false</w:IgnoreMixedContent>
+  <w:AlwaysShowPlaceholderText>false</w:AlwaysShowPlaceholderText>
+  <w:DoNotPromoteQF/>
+  <w:LidThemeOther>EN-US</w:LidThemeOther>
+  <w:LidThemeAsian>X-NONE</w:LidThemeAsian>
+  <w:LidThemeComplexScript>X-NONE</w:LidThemeComplexScript>
+  <w:Compatibility>
+   <w:BreakWrappedTables/>
+   <w:SnapToGridInCell/>
+   <w:WrapTextWithPunct/>
+   <w:UseAsianBreakRules/>
+   <w:DontGrowAutofit/>
+   <w:SplitPgBreakAndParaMark/>
+   <w:DontVertAlignCellWithSp/>
+   <w:DontBreakConstrainedForcedTables/>
+   <w:DontVertAlignInTxbx/>
+   <w:Word11KerningPairs/>
+   <w:CachedColBalance/>
+  </w:Compatibility>
+  <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>
+  <m:mathPr>
+   <m:mathFont m:val="Cambria Math"/>
+   <m:brkBin m:val="before"/>
+   <m:brkBinSub m:val="--"/>
+   <m:smallFrac m:val="off"/>
+   <m:dispDef/>
+   <m:lMargin m:val="0"/>
+   <m:rMargin m:val="0"/>
+   <m:defJc m:val="centerGroup"/>
+   <m:wrapIndent m:val="1440"/>
+   <m:intLim m:val="subSup"/>
+   <m:naryLim m:val="undOvr"/>
+  </m:mathPr></w:WordDocument>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:LatentStyles DefLockedState="false" DefUnhideWhenUsed="true"
+  DefSemiHidden="true" DefQFormat="false" DefPriority="99"
+  LatentStyleCount="267">
+  <w:LsdException Locked="false" Priority="0" SemiHidden="false"
+   UnhideWhenUsed="false" QFormat="true" Name="Normal"/>
+  <w:LsdException Locked="false" Priority="9" SemiHidden="false"
+   UnhideWhenUsed="false" QFormat="true" Name="heading 1"/>
+  <w:LsdException Locked="false" Priority="9" QFormat="true" Name="heading 2"/>
+  <w:LsdException Locked="false" Priority="9" QFormat="true" Name="heading 3"/>
+  <w:LsdException Locked="false" Priority="9" QFormat="true" Name="heading 4"/>
+  <w:LsdException Locked="false" Priority="9" QFormat="true" Name="heading 5"/>
+  <w:LsdException Locked="false" Priority="9" QFormat="true" Name="heading 6"/>
+  <w:LsdException Locked="false" Priority="9" QFormat="true" Name="heading 7"/>
+  <w:LsdException Locked="false" Priority="9" QFormat="true" Name="heading 8"/>
+  <w:LsdException Locked="false" Priority="9" QFormat="true" Name="heading 9"/>
+  <w:LsdException Locked="false" Priority="39" Name="toc 1"/>
+  <w:LsdException Locked="false" Priority="39" Name="toc 2"/>
+  <w:LsdException Locked="false" Priority="39" Name="toc 3"/>
+  <w:LsdException Locked="false" Priority="39" Name="toc 4"/>
+  <w:LsdException Locked="false" Priority="39" Name="toc 5"/>
+  <w:LsdException Locked="false" Priority="39" Name="toc 6"/>
+  <w:LsdException Locked="false" Priority="39" Name="toc 7"/>
+  <w:LsdException Locked="false" Priority="39" Name="toc 8"/>
+  <w:LsdException Locked="false" Priority="39" Name="toc 9"/>
+  <w:LsdException Locked="false" Priority="35" QFormat="true" Name="caption"/>
+  <w:LsdException Locked="false" Priority="10" SemiHidden="false"
+   UnhideWhenUsed="false" QFormat="true" Name="Title"/>
+  <w:LsdException Locked="false" Priority="1" Name="Default Paragraph Font"/>
+  <w:LsdException Locked="false" Priority="11" SemiHidden="false"
+   UnhideWhenUsed="false" QFormat="true" Name="Subtitle"/>
+  <w:LsdException Locked="false" Priority="22" SemiHidden="false"
+   UnhideWhenUsed="false" QFormat="true" Name="Strong"/>
+  <w:LsdException Locked="false" Priority="20" SemiHidden="false"
+   UnhideWhenUsed="false" QFormat="true" Name="Emphasis"/>
+  <w:LsdException Locked="false" Priority="59" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Table Grid"/>
+  <w:LsdException Locked="false" UnhideWhenUsed="false" Name="Placeholder Text"/>
+  <w:LsdException Locked="false" Priority="1" SemiHidden="false"
+   UnhideWhenUsed="false" QFormat="true" Name="No Spacing"/>
+  <w:LsdException Locked="false" Priority="60" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Light Shading"/>
+  <w:LsdException Locked="false" Priority="61" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Light List"/>
+  <w:LsdException Locked="false" Priority="62" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Light Grid"/>
+  <w:LsdException Locked="false" Priority="63" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium Shading 1"/>
+  <w:LsdException Locked="false" Priority="64" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium Shading 2"/>
+  <w:LsdException Locked="false" Priority="65" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium List 1"/>
+  <w:LsdException Locked="false" Priority="66" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium List 2"/>
+  <w:LsdException Locked="false" Priority="67" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium Grid 1"/>
+  <w:LsdException Locked="false" Priority="68" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium Grid 2"/>
+  <w:LsdException Locked="false" Priority="69" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium Grid 3"/>
+  <w:LsdException Locked="false" Priority="70" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Dark List"/>
+  <w:LsdException Locked="false" Priority="71" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Colorful Shading"/>
+  <w:LsdException Locked="false" Priority="72" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Colorful List"/>
+  <w:LsdException Locked="false" Priority="73" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Colorful Grid"/>
+  <w:LsdException Locked="false" Priority="60" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Light Shading Accent 1"/>
+  <w:LsdException Locked="false" Priority="61" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Light List Accent 1"/>
+  <w:LsdException Locked="false" Priority="62" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Light Grid Accent 1"/>
+  <w:LsdException Locked="false" Priority="63" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium Shading 1 Accent 1"/>
+  <w:LsdException Locked="false" Priority="64" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium Shading 2 Accent 1"/>
+  <w:LsdException Locked="false" Priority="65" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium List 1 Accent 1"/>
+  <w:LsdException Locked="false" UnhideWhenUsed="false" Name="Revision"/>
+  <w:LsdException Locked="false" Priority="34" SemiHidden="false"
+   UnhideWhenUsed="false" QFormat="true" Name="List Paragraph"/>
+  <w:LsdException Locked="false" Priority="29" SemiHidden="false"
+   UnhideWhenUsed="false" QFormat="true" Name="Quote"/>
+  <w:LsdException Locked="false" Priority="30" SemiHidden="false"
+   UnhideWhenUsed="false" QFormat="true" Name="Intense Quote"/>
+  <w:LsdException Locked="false" Priority="66" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium List 2 Accent 1"/>
+  <w:LsdException Locked="false" Priority="67" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium Grid 1 Accent 1"/>
+  <w:LsdException Locked="false" Priority="68" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium Grid 2 Accent 1"/>
+  <w:LsdException Locked="false" Priority="69" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium Grid 3 Accent 1"/>
+  <w:LsdException Locked="false" Priority="70" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Dark List Accent 1"/>
+  <w:LsdException Locked="false" Priority="71" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Colorful Shading Accent 1"/>
+  <w:LsdException Locked="false" Priority="72" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Colorful List Accent 1"/>
+  <w:LsdException Locked="false" Priority="73" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Colorful Grid Accent 1"/>
+  <w:LsdException Locked="false" Priority="60" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Light Shading Accent 2"/>
+  <w:LsdException Locked="false" Priority="61" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Light List Accent 2"/>
+  <w:LsdException Locked="false" Priority="62" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Light Grid Accent 2"/>
+  <w:LsdException Locked="false" Priority="63" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium Shading 1 Accent 2"/>
+  <w:LsdException Locked="false" Priority="64" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium Shading 2 Accent 2"/>
+  <w:LsdException Locked="false" Priority="65" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium List 1 Accent 2"/>
+  <w:LsdException Locked="false" Priority="66" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium List 2 Accent 2"/>
+  <w:LsdException Locked="false" Priority="67" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium Grid 1 Accent 2"/>
+  <w:LsdException Locked="false" Priority="68" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium Grid 2 Accent 2"/>
+  <w:LsdException Locked="false" Priority="69" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium Grid 3 Accent 2"/>
+  <w:LsdException Locked="false" Priority="70" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Dark List Accent 2"/>
+  <w:LsdException Locked="false" Priority="71" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Colorful Shading Accent 2"/>
+  <w:LsdException Locked="false" Priority="72" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Colorful List Accent 2"/>
+  <w:LsdException Locked="false" Priority="73" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Colorful Grid Accent 2"/>
+  <w:LsdException Locked="false" Priority="60" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Light Shading Accent 3"/>
+  <w:LsdException Locked="false" Priority="61" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Light List Accent 3"/>
+  <w:LsdException Locked="false" Priority="62" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Light Grid Accent 3"/>
+  <w:LsdException Locked="false" Priority="63" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium Shading 1 Accent 3"/>
+  <w:LsdException Locked="false" Priority="64" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium Shading 2 Accent 3"/>
+  <w:LsdException Locked="false" Priority="65" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium List 1 Accent 3"/>
+  <w:LsdException Locked="false" Priority="66" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium List 2 Accent 3"/>
+  <w:LsdException Locked="false" Priority="67" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium Grid 1 Accent 3"/>
+  <w:LsdException Locked="false" Priority="68" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium Grid 2 Accent 3"/>
+  <w:LsdException Locked="false" Priority="69" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium Grid 3 Accent 3"/>
+  <w:LsdException Locked="false" Priority="70" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Dark List Accent 3"/>
+  <w:LsdException Locked="false" Priority="71" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Colorful Shading Accent 3"/>
+  <w:LsdException Locked="false" Priority="72" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Colorful List Accent 3"/>
+  <w:LsdException Locked="false" Priority="73" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Colorful Grid Accent 3"/>
+  <w:LsdException Locked="false" Priority="60" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Light Shading Accent 4"/>
+  <w:LsdException Locked="false" Priority="61" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Light List Accent 4"/>
+  <w:LsdException Locked="false" Priority="62" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Light Grid Accent 4"/>
+  <w:LsdException Locked="false" Priority="63" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium Shading 1 Accent 4"/>
+  <w:LsdException Locked="false" Priority="64" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium Shading 2 Accent 4"/>
+  <w:LsdException Locked="false" Priority="65" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium List 1 Accent 4"/>
+  <w:LsdException Locked="false" Priority="66" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium List 2 Accent 4"/>
+  <w:LsdException Locked="false" Priority="67" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium Grid 1 Accent 4"/>
+  <w:LsdException Locked="false" Priority="68" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium Grid 2 Accent 4"/>
+  <w:LsdException Locked="false" Priority="69" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium Grid 3 Accent 4"/>
+  <w:LsdException Locked="false" Priority="70" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Dark List Accent 4"/>
+  <w:LsdException Locked="false" Priority="71" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Colorful Shading Accent 4"/>
+  <w:LsdException Locked="false" Priority="72" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Colorful List Accent 4"/>
+  <w:LsdException Locked="false" Priority="73" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Colorful Grid Accent 4"/>
+  <w:LsdException Locked="false" Priority="60" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Light Shading Accent 5"/>
+  <w:LsdException Locked="false" Priority="61" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Light List Accent 5"/>
+  <w:LsdException Locked="false" Priority="62" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Light Grid Accent 5"/>
+  <w:LsdException Locked="false" Priority="63" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium Shading 1 Accent 5"/>
+  <w:LsdException Locked="false" Priority="64" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium Shading 2 Accent 5"/>
+  <w:LsdException Locked="false" Priority="65" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium List 1 Accent 5"/>
+  <w:LsdException Locked="false" Priority="66" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium List 2 Accent 5"/>
+  <w:LsdException Locked="false" Priority="67" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium Grid 1 Accent 5"/>
+  <w:LsdException Locked="false" Priority="68" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium Grid 2 Accent 5"/>
+  <w:LsdException Locked="false" Priority="69" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium Grid 3 Accent 5"/>
+  <w:LsdException Locked="false" Priority="70" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Dark List Accent 5"/>
+  <w:LsdException Locked="false" Priority="71" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Colorful Shading Accent 5"/>
+  <w:LsdException Locked="false" Priority="72" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Colorful List Accent 5"/>
+  <w:LsdException Locked="false" Priority="73" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Colorful Grid Accent 5"/>
+  <w:LsdException Locked="false" Priority="60" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Light Shading Accent 6"/>
+  <w:LsdException Locked="false" Priority="61" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Light List Accent 6"/>
+  <w:LsdException Locked="false" Priority="62" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Light Grid Accent 6"/>
+  <w:LsdException Locked="false" Priority="63" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium Shading 1 Accent 6"/>
+  <w:LsdException Locked="false" Priority="64" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium Shading 2 Accent 6"/>
+  <w:LsdException Locked="false" Priority="65" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium List 1 Accent 6"/>
+  <w:LsdException Locked="false" Priority="66" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium List 2 Accent 6"/>
+  <w:LsdException Locked="false" Priority="67" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium Grid 1 Accent 6"/>
+  <w:LsdException Locked="false" Priority="68" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium Grid 2 Accent 6"/>
+  <w:LsdException Locked="false" Priority="69" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Medium Grid 3 Accent 6"/>
+  <w:LsdException Locked="false" Priority="70" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Dark List Accent 6"/>
+  <w:LsdException Locked="false" Priority="71" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Colorful Shading Accent 6"/>
+  <w:LsdException Locked="false" Priority="72" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Colorful List Accent 6"/>
+  <w:LsdException Locked="false" Priority="73" SemiHidden="false"
+   UnhideWhenUsed="false" Name="Colorful Grid Accent 6"/>
+  <w:LsdException Locked="false" Priority="19" SemiHidden="false"
+   UnhideWhenUsed="false" QFormat="true" Name="Subtle Emphasis"/>
+  <w:LsdException Locked="false" Priority="21" SemiHidden="false"
+   UnhideWhenUsed="false" QFormat="true" Name="Intense Emphasis"/>
+  <w:LsdException Locked="false" Priority="31" SemiHidden="false"
+   UnhideWhenUsed="false" QFormat="true" Name="Subtle Reference"/>
+  <w:LsdException Locked="false" Priority="32" SemiHidden="false"
+   UnhideWhenUsed="false" QFormat="true" Name="Intense Reference"/>
+  <w:LsdException Locked="false" Priority="33" SemiHidden="false"
+   UnhideWhenUsed="false" QFormat="true" Name="Book Title"/>
+  <w:LsdException Locked="false" Priority="37" Name="Bibliography"/>
+  <w:LsdException Locked="false" Priority="39" QFormat="true" Name="TOC Heading"/>
+ </w:LatentStyles>
+</xml><![endif]-->
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:"Cambria Math";
+	panose-1:0 0 0 0 0 0 0 0 0 0;
+	mso-font-charset:1;
+	mso-generic-font-family:roman;
+	mso-font-format:other;
+	mso-font-pitch:variable;
+	mso-font-signature:0 0 0 0 0 0;}
+@font-face
+	{font-family:Verdana;
+	panose-1:2 11 6 4 3 5 4 4 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:-1593833729 1073750107 16 0 415 0;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-unhide:no;
+	mso-style-qformat:yes;
+	mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	mso-fareast-font-family:"Times New Roman";
+	mso-fareast-theme-font:minor-fareast;}
+p.MsoBodyText, li.MsoBodyText, div.MsoBodyText
+	{mso-style-noshow:yes;
+	mso-style-priority:99;
+	mso-style-link:"Body Text Char";
+	mso-margin-top-alt:auto;
+	margin-right:0in;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	mso-fareast-font-family:"Times New Roman";
+	mso-fareast-theme-font:minor-fareast;}
+a:visited, span.MsoHyperlinkFollowed
+	{mso-style-noshow:yes;
+	mso-style-priority:99;
+	color:purple;
+	text-decoration:underline;
+	text-underline:single;}
+p
+	{mso-style-priority:99;
+	mso-margin-top-alt:auto;
+	margin-right:0in;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	mso-fareast-font-family:"Times New Roman";
+	mso-fareast-theme-font:minor-fareast;}
+span.BodyTextChar
+	{mso-style-name:"Body Text Char";
+	mso-style-noshow:yes;
+	mso-style-priority:99;
+	mso-style-unhide:no;
+	mso-style-locked:yes;
+	mso-style-link:"Body Text";
+	mso-ansi-font-size:12.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:"Times New Roman","serif";
+	mso-fareast-font-family:"Times New Roman";
+	mso-fareast-theme-font:minor-fareast;}
+span.SpellE
+	{mso-style-name:"";
+	mso-spl-e:yes;}
+span.GramE
+	{mso-style-name:"";
+	mso-gram-e:yes;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	mso-default-props:yes;
+	font-size:10.0pt;
+	mso-ansi-font-size:10.0pt;
+	mso-bidi-font-size:10.0pt;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.0in 1.0in 1.0in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+<!--[if gte mso 10]>
+<style>
+ /* Style Definitions */
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-priority:99;
+	mso-style-qformat:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0in 5.4pt 0in 5.4pt;
+	mso-para-margin:0in;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman","serif";}
+.auto-style1 {
+	font-family: Verdana, Geneva, Tahoma, sans-serif;
+	font-size: x-small;
+}
+.auto-style3 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: x-small;
+}
+</style>
+<![endif]--><!--[if gte mso 9]><xml>
+ <o:shapedefaults v:ext="edit" spidmax="2050"/>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <o:shapelayout v:ext="edit">
+  <o:idmap v:ext="edit" data="1"/>
+ </o:shapelayout></xml><![endif]-->
+</head>
+
+<body lang=EN-US link="#000000" vlink=purple style='tab-interval:.5in'>
+
+<div class=Section1>
+
+<table class=MsoNormalTable border=0 cellspacing=4 cellpadding=0 width="100%"
+ style='width:100.0%;mso-cellspacing:3.0pt;mso-yfti-tbllook:1184;mso-padding-alt:
+ 3.0pt 3.0pt 3.0pt 3.0pt'>
+ <tr style='mso-yfti-irow:0;mso-yfti-firstrow:yes'>
+  <td style='padding:3.0pt 3.0pt 3.0pt 3.0pt'>
+  <p align=center style='text-align:center;tab-stops:292.5pt 315.0pt 319.5pt'><b><span
+  style='font-size:13.5pt;font-family:"Arial","sans-serif";color:maroon'>OPC 
+  Core Components 3.00 (105.1)</span></b></p>
+  <p align=center style='text-align:center;tab-stops:292.5pt 315.0pt 319.5pt'>
+  <b>
+      <span
+  style='font-family:"Arial","sans-serif";color:maroon'>January 18, 2011</span></b></p>
+  <p><a name=Overview></a><b><span style='font-family:"Arial","sans-serif"'>Overview</span></b></p>
+  <p><span style='font-size:10.0pt;font-family:"Verdana","sans-serif"'>The OPC
+  Core Components consists of all shared OPC modules that need to be
+  distributed by multiple vendors. These modules include DCOM proxy/stub
+  libraries, the OPC Server Enumerator, .NET wrappers, etc. The OPC Core
+  Components<i> </i>installer packages bundle modules from all released
+  specifications for convenience. OPC Foundation Members, who have access to
+  the source code version of the Core Components, may modify the installation
+  projects to suit their own needs.</span></p>
+                    <p><span style='font-size:10.0pt;font-family:"Verdana","sans-serif"'>T<span style='font-size:10.0pt;font-family:"Verdana","sans-serif"'>he 
+                        Core Components <span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Redistributables</span><span style='mso-fareast-font-family:"Times New Roman"'><o:p> 
+					installs the proxy/stubs and the .NET RCWs required to run <span style='font-size:10.0pt;font-family:"Verdana","sans-serif"'><span style='mso-fareast-font-family:"Times New Roman"'><o:p> 
+					applications that use the OPC COM based specifications.</o:p></span></span><br>
+					The <span style='font-size:10.0pt;font-family:"Verdana","sans-serif"'>
+					Core Components SDK installs the headers and assemblies 
+					required to build applications that use the <span style='mso-fareast-font-family:"Times New Roman"'>
+					OPC COM based specifications.</span></span></o:p></span></span></span></p>
+  <p><span style='font-size:10.0pt;font-family:"Verdana","sans-serif"'>The
+  latest version of this document always on the OPC foundation <a
+  href="http://www.opcfoundation.org/Downloads.aspx?CM=1&amp;CN=KEY&amp;CI=280&amp;EBP=0&amp;SRT=ModificationTime&amp;DES=Y&amp;SE1=ReleaseStatus&amp;FV1=Released&amp;FT1=&amp;SE2=&amp;FV2=&amp;FT2=">website</a>.&nbsp;</span></p>
+  <p><span style='font-size:10.0pt;font-family:"Verdana","sans-serif"'>Any use
+  of the <i>OPC Core Components</i> is subject to the terms the <a
+  href="http://opcfoundation.org/Downloads/LicenseAgreement.asp">OPC Foundation
+  License Agreement</a>.</span></p>
+  <O:P>
+   <O:P>
+   <O:P>
+   <O:P>
+  <p><b><span style='font-family:"Arial","sans-serif"'>Release Notes</span></b></p>
+  <p class="auto-style3"><strong>Build 105.1</strong></p>
+  <p class="auto-style1">This build addresses a number of significant issues 
+  including:</p>
+  <ol class="auto-style1">
+	  <li>
+Upgrades the projects to VS2008</li>
+<li>Fixes the conflict 
+  between x64 and x86 versions of OpcEnum</li>
+  <li>Adds a .NET RCW that supports the 
+  x64 and x86 platforms (MSIL compliant)</li><li>All source code is installed in 
+	  the $(LocalAppDataFolder) instead of $(ProgramFiles)</li>
+
+  </ol>
+  <p class="auto-style1">On x64 systems the components install a new component 
+  called the Category Manager. This component makes x64 servers visible to x86 
+  clients. <br>The x64 version of the Core Components Redistributables installs 
+  the 32bit versions so it is the only package that needs to be installed on x64 
+  systems.<br>The OpcComRcw.dll replaces all of the OpcRcw.*.dlls. However, the 
+  old DLLs are still installed for backward compatibility.<br>The Merge Modules 
+  install the development environment if the OPC_INSTALL_SDK property is set.<br>The installers no 
+  longer try to detect the presence of Visual Studio. The SDK package always installs 
+  the development environment.<br>All .NET assemblies are placed in GAC and 
+  $(ProgramFiles)\Reference Assemblies\OPC Foundation directory (the latter only 
+  for the development environment install). <br>All C++ headers and 
+  typelibs are placed in&nbsp; $(CommonProgramFiles)\OPC Foundation\Include. The 
+  x64 versions are in the 'x64\Include' directory.<br>The SDK package installs 
+  the Merge Modules in the $(CommonProgramFiles)\Merge Modules directory.</p>
+  <p><b><span style='font-family:"Arial","sans-serif"'>Version
+  History</span></b></p>
+  <table class=MsoNormalTable border=1 cellspacing=0 cellpadding=0 width="100%"
+   style='width:100.0%;mso-cellspacing:0in;mso-yfti-tbllook:1184;mso-padding-alt:
+   1.5pt 1.5pt 1.5pt 1.5pt'>
+   <tr style='mso-yfti-irow:0;mso-yfti-firstrow:yes'>
+    <td width="10%" style='width:10.0%;background:navy;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><b><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman";color:white'>Date</span></b><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td width="10%" style='width:10.0%;background:navy;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><b><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman";color:white'>Version</span></b><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='background:navy;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p align=center style='text-align:center'><b><span style='font-size:10.0pt;
+    font-family:"Verdana","sans-serif";color:white'>Description</span></b></p>
+    </td>
+   </tr>
+   <tr style='mso-yfti-irow:1'>
+    <td width="10%" style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>2003-01-31</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td width="10%" style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>1.00.0.07</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>First release.</span><span
+    style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+   </tr>
+   <tr style='mso-yfti-irow:2'>
+    <td width="10%" style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>2003-02-06</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td width="10%" style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>1.01.0.00</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Incorporates currently released
+    shared modules for all specifications.</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+   </tr>
+   <tr style='mso-yfti-irow:3'>
+    <td width="10%" style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>2003-02-12</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td width="10%" style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>1.02.1.00</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Updated to reflect changes in
+    the source code tree.</span><span style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+   </tr>
+   <tr style='mso-yfti-irow:4'>
+    <td width="10%" style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>2003-02-19</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td width="10%" style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>1.10.1.00</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Incorporates a merge module for
+    the SDK.</span><span style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+   </tr>
+   <tr style='mso-yfti-irow:5'>
+    <td width="10%" style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>2003-02-27</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td width="10%" style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>1.10.1.02</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Removed dependency on .NET
+    Framework from the Binaries installers; Added OPC DX components.</span><span
+    style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+   </tr>
+   <tr style='mso-yfti-irow:6'>
+    <td width="10%" style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>2003-03-02</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td width="10%" style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>1.10.1.03</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Fixes a bug during
+    un-registration of <span class=SpellE>OpcEnum</span>; <span class=SpellE>OpcEnum</span>
+    now registers itself as a service.</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+   </tr>
+   <tr style='mso-yfti-irow:7'>
+    <td width="10%" style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>2003-03-03</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td width="10%" style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>1.10.1.04</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Added fields for natural byte
+    alignment in DA and DX structures.&nbsp;</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+   </tr>
+   <tr style='mso-yfti-irow:8'>
+    <td width="10%" style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>2003-03-04</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td width="10%" style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>1.10.1.05</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Fixed problem with DX .NET
+    wrapper.&nbsp;</span><span style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+   </tr>
+   <tr style='mso-yfti-irow:9'>
+    <td width="10%" style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>2003-03-05</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td width="10%" style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>1.10.1.06</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Fixed problem incorrect assembly
+    version in Common .NET wrapper.&nbsp;</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+   </tr>
+   <tr style='mso-yfti-irow:10'>
+    <td width="10%" valign=top style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>2003-06-04</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td width="10%" valign=top style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>1.12.1.01</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Incorporates interface changes
+    into the DA and DX .NET wrappers.</span><span style='mso-fareast-font-family:
+    "Times New Roman"'> <o:p></o:p></span></p>
+    <p style='margin:0in;margin-bottom:.0001pt'><span style='font-size:10.0pt;
+    font-family:"Verdana","sans-serif"'>Removed dependency on .NET Framework
+    from the SDK installers.&nbsp;</span></p>
+    </td>
+   </tr>
+   <tr style='mso-yfti-irow:11'>
+    <td width="10%" valign=top style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>2003-06-30</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td width="10%" valign=top style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>2.00.1.00</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p style='margin:0in;margin-bottom:.0001pt'><span style='font-size:10.0pt;
+    font-family:"Verdana","sans-serif"'>Updated to build with VS .NET 2003 and
+    .NET Framework 1.1.</span> </p>
+    <p style='margin:0in;margin-bottom:.0001pt'><span style='font-size:10.0pt;
+    font-family:"Verdana","sans-serif"'>Added project source code for HDA,
+    Batch and Security proxy/stubs.</span></p>
+    <p style='margin:0in;margin-bottom:.0001pt'><span style='font-size:10.0pt;
+    font-family:"Verdana","sans-serif"'>Added .NET Wrappers for HDA and
+    Security.</span></p>
+    </td>
+   </tr>
+   <tr style='mso-yfti-irow:12'>
+    <td width="10%" valign=top style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>2003-08-12</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td width="10%" valign=top style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>2.00.1.02</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Minor update for administrative
+    purposes.&nbsp;</span><span style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+   </tr>
+   <tr style='mso-yfti-irow:13'>
+    <td width="10%" valign=top style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>2003-10-14</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td width="10%" valign=top style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>2.00.1.03</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Added constants used for Complex
+    Data into the Data Access IDL and error header files.&nbsp;</span><span
+    style='mso-fareast-font-family:"Times New Roman"'> <o:p></o:p></span></p>
+    <p style='margin:0in;margin-bottom:.0001pt'><span style='font-size:10.0pt;
+    font-family:"Verdana","sans-serif"'>Added a registry key in the SDK merge
+    module that makes the RCWs visible inside VS .NET.</span></p>
+    </td>
+   </tr>
+   <tr style='mso-yfti-irow:14'>
+    <td width="10%" valign=top style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>2003-12-02</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td width="10%" valign=top style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>2.00.1.04</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Added .NET Wrappers for AE and
+    Batch.</span><span style='mso-fareast-font-family:"Times New Roman"'> <o:p></o:p></span></p>
+    </td>
+   </tr>
+   <tr style='mso-yfti-irow:15'>
+    <td width="10%" valign=top style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>2004-02-04</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td width="10%" valign=top style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>2.00.1.06</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Minor updates to the HDA
+    proxy/stub library.</span><span style='mso-fareast-font-family:"Times New Roman"'>
+    <o:p></o:p></span></p>
+    </td>
+   </tr>
+   <tr style='mso-yfti-irow:16'>
+    <td width="10%" valign=top style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>2004-09-01</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td width="10%" valign=top style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>2.00.2.00</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Fixed name conflict for modules
+    defined in the DA, AE, DX and Batch proxy/stub type libraries.<br>
+    Fixed array marshalling problem for <span class=SpellE>IEnumXXX</span>
+    interfaces defined in the <span class=SpellE>Comn</span>, <span
+    class=SpellE>Da</span>, <span class=SpellE>Ae</span> and <span
+    class=SpellE>Hda</span> RCWs</span><span style='mso-fareast-font-family:
+    "Times New Roman"'> <o:p></o:p></span></p>
+    </td>
+   </tr>
+   <tr style='mso-yfti-irow:17'>
+    <td width="10%" valign=top style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>2004-11-22</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td width="10%" valign=top style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>2.00.2.10</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Fixed namespace for AE, Batch
+    and Security RCWs<span class=GramE>.</span><br>
+    Fixed bugs in the AE RCW.<br>
+    Changed byte packing for <span class=SpellE>structs</span> containing
+    VARIANTs from 8 to 4.</span><span style='mso-fareast-font-family:"Times New Roman"'>
+    <o:p></o:p></span></p>
+    </td>
+   </tr>
+   <tr style='mso-yfti-irow:18'>
+    <td width="10%" valign=top style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>2004-12-01</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td width="10%" valign=top style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>2.00.2.20</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Updated <span class=SpellE>OpcEnum</span>
+    to use the DCOM configuration APIs from the Windows XP SP2 Platform SDK.<br>
+    No changes in behavior for <span class=SpellE>OSes</span> earlier than XP
+    SP2 or W2003 SP1.&nbsp;</span><span style='mso-fareast-font-family:"Times New Roman"'>
+    <o:p></o:p></span></p>
+    </td>
+   </tr>
+   <tr style='mso-yfti-irow:19'>
+    <td width="10%" valign=top style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>2005-11-25</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td width="10%" valign=top style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>2.00.2.30</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Added the <span class=SpellE>PrimaryInteropAssembly</span>
+    attribute to all .NET RCWs.</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+   </tr>
+   <tr style='mso-yfti-irow:20'>
+    <td width="10%" valign=top style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>2007-02-10</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td width="10%" valign=top style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>3.00.1.00</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Rebuilt all binaries with Visual
+    Studio 2005<br>
+    Linked .NET RCWs to .NET 2.0</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+   </tr>
+   <tr style='mso-yfti-irow:21'>
+    <td width="10%" valign=top style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>2007-03-06</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td width="10%" valign=top style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>3.00.1.01</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Fixed bug in <span class=SpellE>OpcEnum</span>
+    introduced by the port to VS2005.</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+   </tr>
+   <tr style='mso-yfti-irow:22'>
+    <td width="10%" valign=top style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>2007-04-15</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td width="10%" valign=top style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>3.00.1.02</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Fixed problems with the
+    installers and UAC on Vista. <br>
+    <span class=SpellE>OpcEnum</span> now registers itself as an NT service.<br>
+    Binaries did not change.</span><span style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+   </tr>
+      <tr>
+    <td width="10%" valign=top style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>2008-05-10</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td width="10%" valign=top style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>3.00.100.0</span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p style='margin:0in;margin-bottom:.0001pt'><span style='font-size:10.0pt;
+    font-family:"Verdana","sans-serif"'>Added installer and merge module for
+    the x64 versions of the proxy/stubs.<o:p></o:p></span></p>
+    <p style='margin:0in;margin-bottom:.0001pt'><span style='font-size:10.0pt;
+    font-family:"Verdana","sans-serif"'>Added Authenticode signature to all redistributable
+    binaries.</span></p>
+    </td>
+                        </tr>
+      <tr>
+    <td width="10%" valign=top style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>2008-07-08</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td width="10%" valign=top style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>3.00.101.0</span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p style='margin:0in;margin-bottom:.0001pt'>
+        <span style='font-size:10.0pt;
+    font-family:"Verdana","sans-serif"'>Rebuilt assemblies using the correct strong name.<o:p></o:p></span></p>
+    </td>
+      </tr>
+      <tr>
+    <td width="10%" valign=top style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>2009-02-05</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td width="10%" valign=top style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>3.00.101.2</span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p style='margin:0in;margin-bottom:.0001pt'>
+        <span style='font-size:10.0pt;
+    font-family:"Verdana","sans-serif"'>Fixed problem with installers and UAC on 
+		Vista.<o:p></o:p></span></p>
+    </td>
+      </tr>
+      <tr>
+    <td width="10%" valign=top style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>2010-12-20</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td width="10%" valign=top style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>3.00.105.0</span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p style='margin:0in;margin-bottom:.0001pt'>
+        <span style='font-size:10.0pt;
+    font-family:"Verdana","sans-serif"'>Ported to VS2008, Fixed x64 
+		compatibility issues.<o:p></o:p></span></p>
+    </td>
+      </tr>
+   <tr style='mso-yfti-irow:23;mso-yfti-lastrow:yes'>
+    <td width="10%" valign=top style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>2011-01-18</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td width="10%" valign=top style='width:10.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman"'>3.00.105.1</span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p style='margin:0in;margin-bottom:.0001pt'>
+        <span style='font-size:10.0pt;
+    font-family:"Verdana","sans-serif"'>Fixed problem with x64 version of 
+		OpcEnum.<o:p></o:p></span></p>
+    </td>
+   </tr>
+  </table>
+  <p><a name=Distribution></a><b><span style='font-family:"Arial","sans-serif"'>Distribution</span></b></p>
+  <p><span style='font-size:10.0pt;font-family:"Verdana","sans-serif"'>The core
+  components are distributed in several ways:<o:p> &nbsp;</span><o:p></o:p></p>
+  <table class=MsoNormalTable border=1 cellspacing=0 cellpadding=0 width="100%"
+   style='width:100.0%;mso-cellspacing:0in;mso-yfti-tbllook:1184;mso-padding-alt:
+   1.5pt 1.5pt 1.5pt 1.5pt' height=135>
+   <tr style='mso-yfti-irow:0;mso-yfti-firstrow:yes;height:12.0pt'>
+    <td width="25%" style='width:25.0%;background:navy;padding:1.5pt 1.5pt 1.5pt 1.5pt;
+    height:12.0pt'>
+    <p align=center style='text-align:center'><b><span style='font-size:10.0pt;
+    font-family:"Verdana","sans-serif";color:white'>File</span></b></p>
+    </td>
+    <td style='background:navy;padding:1.5pt 1.5pt 1.5pt 1.5pt;height:12.0pt'>
+    <p align=center style='text-align:center'><b><span style='font-size:10.0pt;
+    font-family:"Verdana","sans-serif";color:white'>Description</span></b></p>
+    </td>
+   </tr>
+      <tr>
+    <td width="25%" style='width:25.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt;
+    height:12.0pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>OPC Core Components
+    Redistributable (x86)</span><span style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt;height:12.0pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Installs the COM proxy/stubs, <span
+    class=SpellE>OpcEnum</span> and the .NET 2.0 RCWs for x86 platforms.</span></p>
+    </td>
+      </tr>
+   <tr style='mso-yfti-irow:1;height:12.0pt'>
+    <td width="25%" style='width:25.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt;
+    height:12.0pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>OPC Core Components
+    Redistributable (x64)</span><span style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt;height:12.0pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Installs the COM proxy/stubs<span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>, <span
+    class=SpellE>OpcEnum</span> and the .NET 2.0 RCWs for x64 platforms 
+	(installs 32 bit and 64 bit versions).</span></span></p>
+    </td>
+   </tr>
+   <tr style='mso-yfti-irow:2;height:12.0pt'>
+    <td width="25%" style='width:25.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt;
+    height:12.0pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>OPC Core Components SDK</span><span
+    style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt;height:12.0pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Installs the COM IDLs and C/C++
+    header files in the $(<span class=SpellE>CommonProgramFiles</span>)
+    directory (always installs).</span></p>
+    </td>
+   </tr>
+   <tr style='mso-yfti-irow:3;height:12.0pt'>
+    <td width="25%" style='width:25.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt;
+    height:12.0pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>OPC Core Components Source Code</span><span
+    style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt;height:12.0pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Installs the source code for the
+    COM proxy/stubs, <span class=SpellE>OpcEnum</span> and the .NET 2.0
+    RCWs.</span><span style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+   </tr>
+      <tr>
+    <td width="25%" style='width:25.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt;
+    height:12.0pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>OPC COM <span class=SpellE>ProxyStub</span>
+    Merge Module (x86)</span><span style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt;height:12.0pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>A merge module containing the
+    COM proxy/stubs and <span class=SpellE>OpcEnum</span> (no dependency on the
+    .NET runtime) for x86 platforms.</span></p>
+    </td>
+      </tr>
+   <tr style='mso-yfti-irow:4;height:12.0pt'>
+    <td width="25%" style='width:25.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt;
+    height:12.0pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>OPC COM <span class=SpellE>ProxyStub</span>
+    Merge Module (x64)</span><span style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt;height:12.0pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>A merge module containing the
+    COM proxy/stubs and <span class=SpellE>OpcEnum</span> (no dependency on the
+    .NET runtime) for x64 platforms.</span></p>
+    </td>
+   </tr>
+   <tr style='mso-yfti-irow:6;mso-yfti-lastrow:yes;height:12.0pt'>
+    <td width="25%" style='width:25.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt;
+    height:12.0pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>OPC .NET 2.0 RCWs Merge Module</span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt;height:12.0pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>A merge module containing the
+    .NET 2.0 RCWs</span><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'> for all platforms.</span></p>
+    </td>
+   </tr>
+  </table>
+  <p><a name=SystemRequirements></a><b><span style='font-family:"Arial","sans-serif"'>System
+  Requirements  Requirements</span></b></p>
+  <p class=MsoBodyText><a name=OperatingSystems></a><b><span style='font-size:
+  10.0pt;font-family:"Verdana","sans-serif"'>Operating Systems</span></b></p>
+  <p class=MsoBodyText style='margin:0in;margin-bottom:.0001pt'><span
+  style='font-size:10.0pt;font-family:"Verdana","sans-serif"'>The Core
+  Components binaries (excluding merge modules and installers) support the
+  following operating systems:</span></p>
+  <p class=MsoBodyText style='margin:0in;margin-bottom:.0001pt'>&nbsp;</p>
+  <p class=MsoBodyText style='margin-top:0in;margin-right:0in;margin-bottom:
+  0in;margin-left:18.75pt;margin-bottom:.0001pt'><span style='font-size:10.0pt;
+  font-family:"Verdana","sans-serif"'>Windows 95 with <a
+  href="http://www.microsoft.com/com/dcom/dcom95/dcom1_3.asp">DCOM95</a>;</span></p>
+  <p class=MsoBodyText style='margin-top:0in;margin-right:0in;margin-bottom:
+  0in;margin-left:18.75pt;margin-bottom:.0001pt'><span style='font-size:10.0pt;
+  font-family:"Verdana","sans-serif"'>Windows 98 with <a
+  href="http://www.microsoft.com/com/dcom/dcom98/dcom1_3.asp">DCOM98</a>;</span></p>
+  <p class=MsoBodyText style='margin-top:0in;margin-right:0in;margin-bottom:
+  0in;margin-left:18.75pt;margin-bottom:.0001pt'><span style='font-size:10.0pt;
+  font-family:"Verdana","sans-serif"'>Windows ME;</span></p>
+  <p class=MsoBodyText style='margin-top:0in;margin-right:0in;margin-bottom:
+  0in;margin-left:18.75pt;margin-bottom:.0001pt'><span style='font-size:10.0pt;
+  font-family:"Verdana","sans-serif"'>Windows NT;</span></p>
+  <p class=MsoBodyText style='margin-top:0in;margin-right:0in;margin-bottom:
+  0in;margin-left:18.75pt;margin-bottom:.0001pt'><span style='font-size:10.0pt;
+  font-family:"Verdana","sans-serif"'>Windows 2000;</span></p>
+  <p class=MsoBodyText style='margin-top:0in;margin-right:0in;margin-bottom:
+  0in;margin-left:18.75pt;margin-bottom:.0001pt'><span style='font-size:10.0pt;
+  font-family:"Verdana","sans-serif"'>Windows XP;</span></p>
+  <p class=MsoBodyText style='margin-top:0in;margin-right:0in;margin-bottom:
+  0in;margin-left:18.75pt;margin-bottom:.0001pt'><span style='font-size:10.0pt;
+  font-family:"Verdana","sans-serif"'>Windows Server 2003;</span></p>
+  <p class=MsoBodyText style='margin-top:0in;margin-right:0in;margin-bottom:
+  0in;margin-left:18.75pt;margin-bottom:.0001pt'><span style='font-size:10.0pt;
+  font-family:"Verdana","sans-serif"'>Windows Vista;<br>Windows 7</span></p>
+  <p class=MsoBodyText><span style='font-size:10.0pt;font-family:"Verdana","sans-serif"'>The
+  installers have only been tested on Windows XP and Windows 7 at this
+  time.</span></p>
+  <p class=MsoBodyText><a name=Installers></a><b><span style='font-size:10.0pt;
+  font-family:"Verdana","sans-serif"'>Installers</span></b></p>
+  <p class=MsoBodyText><span style='font-size:10.0pt;font-family:"Verdana","sans-serif"'>The
+  installers come with a setup.exe file. This is the file that must be used to
+  install under Windows Vista. Double clicking on the MSI will cause an error.</span></p>
+  <p class=MsoBodyText><span style='font-size:10.0pt;font-family:"Verdana","sans-serif"'>The
+  installer packages are self-installing files; however, they require that
+  Windows Installer 2.0 be present on the system (it is standard on Windows
+  2000 SP3 and Windows XP). The Windows Installer 2.0 support files for other
+  operating systems can be downloaded from Microsoft's website at:</span></p>
+  <p class=MsoBodyText style='margin:0in;margin-bottom:.0001pt;text-indent:
+  18.75pt'><span class=MsoHyperlink><span style='font-size:10.0pt;font-family:
+  "Verdana","sans-serif"'><a
+  href="http://www.microsoft.com/downloads/details.aspx?FamilyID=4b6140f9-2d36-4977-8fa1-6f8a0f5dca8f&amp;DisplayLang=en"
+  target="_top"><u><span style='color:blue'>Download Windows Installer 2.0
+  Redistributable for Windows NT 4.0 and 2000</span></u></a><O:P> &nbsp;</span></span></p>
+  <p class=MsoBodyText style='margin:0in;margin-bottom:.0001pt;text-indent:
+  18.75pt'><span class=MsoHyperlink><span style='font-size:10.0pt;font-family:
+  "Verdana","sans-serif"'><a
+  href="http://www.microsoft.com/downloads/details.aspx?FamilyID=cebbacd8-c094-4255-b702-de3bb768148f&amp;DisplayLang=en"
+  target="_top"><u><span style='color:blue'>Download Windows Installer 2.0
+  Redistributable for Windows 95, 98 and ME</span></u></a></span></span></p>
+  <p class=MsoBodyText style='margin:0in;margin-bottom:.0001pt'>&nbsp;</p>
+  <p style='margin:0in;margin-bottom:.0001pt'><span class=MsoHyperlink><span
+  style='font-size:10.0pt;font-family:"Verdana","sans-serif"'>The installers
+  automatically check if the .NET framework is installed on a particular
+  system; if it is not found the .NET components are not installed.&nbsp;</span></span></p>
+  <p class=MsoBodyText><a name=SourceCode></a><b><span style='font-size:10.0pt;
+  font-family:"Verdana","sans-serif"'>Source Code</span></b></p>
+  <p><span class=MsoHyperlink><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+  mso-fareast-font-family:"Times New Roman"'>All source code projects require Visual
+  Studio 2005 with Service Pack 1 installed.</span></span></p>
+  <p><span class=MsoHyperlink><span style='font-size:10.0pt;font-family:"Verdana","sans-serif"'>T</span></span><span
+  class=MsoHyperlink><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+  mso-fareast-font-family:"Times New Roman"'>he service pack can be downloaded <a
+  href="http://msdn2.microsoft.com/en-us/vstudio/aa718695.aspx"><u><span
+  style='color:blue'>here</span></u></a>.</span></span><span
+  class=MsoHyperlink><span style='font-size:10.0pt;font-family:"Verdana","sans-serif"'>&nbsp;</span></span>
+  </p>
+  <p><a name=RedistributableInstallation></a><b><span style='font-family:"Arial","sans-serif"'>Installation</span></b></p>
+  <p><b><span style='font-size:10.0pt;font-family:"Verdana","sans-serif"'>Redistributable</span></b><o:p></o:p></p>
+  <p style='margin:0in;margin-bottom:.0001pt;mso-pagination:none;mso-layout-grid-align:
+  none'><span style='font-size:10.0pt;font-family:"Verdana","sans-serif"'><O:P>All
+  COM servers and proxy/stub libraries that have been previously released are
+  installed in the system folder and reference counted in order to ensure
+  compatibility with older install programs.</span> <span style='font-size:
+  10.0pt;font-family:"Verdana","sans-serif"'>New COM servers and proxy/stub
+  libraries are installed in the common files folder under &quot;OPC
+  Foundation\Bin<O:P> &quot;.</span></p>
+  <p><span style='font-size:10.0pt;font-family:"Verdana","sans-serif"'>Shared
+  .NET assemblies are signed with the OPC Foundation's master key-pair and
+  installed in the Global Assembly Cache (GAC). The source code distribution
+  includes a test key-pair that permits developers to experiment with the
+  assemblies without affecting other vendor's applications.</span></p>
+  <p><span style='font-size:10.0pt;font-family:"Verdana","sans-serif"'>Vendors
+  may install these assemblies in a vendor specific directory, but the vendor
+  needs to recognize that .NET framework will look in the GAC for an assembly
+  before probing the vendor specific directory.&nbsp; As a result, applications
+  will use the assemblies in the GAC even if a vendor has installed copies in a
+  vendor specific directory. </span></p>
+  <p><span style='font-size:10.0pt;font-family:"Verdana","sans-serif"'>Vendors
+  who wish to always use their private versions must re-sign the assemblies
+  with their own key pair and build their applications against these re-signed
+  assemblies. This approach will not impact other applications that were built
+  against the OPC Foundation signed and versioned assemblies.</span></p>
+  <p><b><span style='font-size:10.0pt;font-family:"Verdana","sans-serif"'>Source
+  Code</span></b></p>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span
+  style='font-size:10.0pt;font-family:"Verdana","sans-serif"'>The Source Code
+  installer places all files in the default directory:</span></p>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+  text-indent:18.75pt'><b>
+  <span style='font-size:10.0pt;font-family:"Verdana","sans-serif"'>&nbsp;$(LocalAppDataFolder)\OPC Foundation\Core Components 3.00</span></b></p>
+  <p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span
+  style='font-size:10.0pt;font-family:"Verdana","sans-serif"'>The root of the
+  source tree contains the following sub-directories:</span></p>
+  <table class=MsoNormalTable border=1 cellspacing=0 cellpadding=0 width="100%"
+   style='width:100.0%;mso-cellspacing:0in;mso-yfti-tbllook:1184;mso-padding-alt:
+   1.5pt 1.5pt 1.5pt 1.5pt'>
+   <tr style='mso-yfti-irow:0;mso-yfti-firstrow:yes'>
+    <td width="25%" style='width:25.0%;background:navy;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><b><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman";color:white'>Directory</span></b><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='background:navy;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p align=center style='text-align:center'><b><span style='font-size:10.0pt;
+    font-family:"Verdana","sans-serif";color:white'>Description</span></b></p>
+    </td>
+   </tr>
+   <tr style='mso-yfti-irow:1'>
+    <td width="25%" style='width:25.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Bin<u1:p></u1:p> </span><span
+    style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Executable and configuration
+    files.</O:P> </span><span style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+   </tr>
+   <tr style='mso-yfti-irow:2'>
+    <td width="25%" style='width:25.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Keys<u2:p></u2:p> </span><span
+    style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>The key pairs used to sign .NET
+    assemblies.</span><span style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+   </tr>
+   <tr style='mso-yfti-irow:3'>
+    <td width="25%" style='width:25.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Merge Modules<u2:p></u2:p> </span><span
+    style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Merge modules.</O:P> </span><span
+    style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+   </tr>
+   <tr style='mso-yfti-irow:4;mso-yfti-lastrow:yes'>
+    <td width="25%" style='width:25.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Source<u3:p></u3:p> </span><span
+    style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Source code.</O:P> </span><span
+    style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+   </tr>
+  </table>
+  <p><span style='font-size:10.0pt;font-family:"Verdana","sans-serif"'>The
+  'Source' directory contains the following sub-directories:</span></p>
+  <table class=MsoNormalTable border=1 cellspacing=0 cellpadding=0 width="100%"
+   style='width:100.0%;mso-cellspacing:0in;mso-yfti-tbllook:1184;mso-padding-alt:
+   1.5pt 1.5pt 1.5pt 1.5pt'>
+   <tr style='mso-yfti-irow:0;mso-yfti-firstrow:yes'>
+    <td width="25%" style='width:25.0%;background:navy;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><b><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman";color:white'>Directory</span></b><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='background:navy;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p align=center style='text-align:center'><b><span style='font-size:10.0pt;
+    font-family:"Verdana","sans-serif";color:white'>Description</span></b></p>
+    </td>
+   </tr>
+   <tr style='mso-yfti-irow:1'>
+    <td width="25%" style='width:25.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Bin</span><span
+    style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Exported COM servers and .NET
+    assemblies. </span><span style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+   </tr>
+   </O:P>
+   <tr style='mso-yfti-irow:2'>
+    <td width="25%" style='width:25.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Include </span><span
+    style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Exported C++ header files and
+    type libraries. </span><span style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+   </tr>
+   <tr style='mso-yfti-irow:3'>
+    <td width="25%" style='width:25.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Solutions </span><span
+    style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>A directory containing the
+    solutions used to build the components.</span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+   </tr>
+   <tr style='mso-yfti-irow:4'>
+    <td width="25%" style='width:25.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Alarms and Events</O:P> </span><span
+    style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Source code related to the
+    Alarms and Events specifications. </span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+   </tr>
+   </O:P>
+   <tr style='mso-yfti-irow:5'>
+    <td width="25%" style='width:25.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Batch</O:P> </span><span
+    style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Source code related to the Batch</O:P>
+    specifications. </span><span style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+   </tr>
+   </O:P>
+   <tr style='mso-yfti-irow:6'>
+    <td width="25%" style='width:25.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Common</O:P> </span><span
+    style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Source code related to the
+    Common specifications. </span><span style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+   </tr>
+   </O:P>
+   <tr style='mso-yfti-irow:7'>
+    <td width="25%" style='width:25.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Commands </span><span
+    style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Source code related to the
+    Common specifications. </span><span style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+   </tr>
+   </O:P>
+   <tr style='mso-yfti-irow:8'>
+    <td width="25%" style='width:25.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Data Access</O:P> </span><span
+    style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Source code related to the Data
+    Access specifications. </span><span style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+   </tr>
+   <tr style='mso-yfti-irow:9'>
+    <td width="25%" style='width:25.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Data <span class=SpellE>eXchange</span>
+    </span><span style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Source code related to the Data <span
+    class=SpellE>eXchange</span> specification. </span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+   </tr>
+   <tr style='mso-yfti-irow:10'>
+    <td width="25%" style='width:25.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Historical Data Access </span><span
+    style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Source code related to the
+    Historical Data Access specifications. </span><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+   </tr>
+   <tr style='mso-yfti-irow:11;mso-yfti-lastrow:yes'>
+    <td width="25%" style='width:25.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Security</span><span
+    style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Source code related to the
+    Security specification. </span><span style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+   </tr>
+  </table>
+  <p><span style='font-size:10.0pt;font-family:"Verdana","sans-serif"'>The
+  following projects directories exist in the specification specific
+  sub-directories:</span></p>
+  <table class=MsoNormalTable border=1 cellspacing=0 cellpadding=0 width="100%"
+   style='width:100.0%;mso-cellspacing:0in;mso-yfti-tbllook:1184;mso-padding-alt:
+   1.5pt 1.5pt 1.5pt 1.5pt'>
+   <tr style='mso-yfti-irow:0;mso-yfti-firstrow:yes'>
+    <td width="25%" style='width:25.0%;background:navy;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal align=center style='text-align:center'><b><span
+    style='font-size:10.0pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+    "Times New Roman";color:white'>Directory</span></b><span style='mso-fareast-font-family:
+    "Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='background:navy;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p align=center style='text-align:center'><b><span style='font-size:10.0pt;
+    font-family:"Verdana","sans-serif";color:white'>Description</span></b></p>
+    </td>
+   </tr>
+   <tr style='mso-yfti-irow:1'>
+    <td width="25%" style='width:25.0%;padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>Proxy Stub</span><span
+    style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+    <td style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Verdana","sans-serif";
+    mso-fareast-font-family:"Times New Roman"'>The DCOM proxy/stub library. </span><span
+    style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+    </td>
+   </tr>
+   </table>
+  <p><a name=ProblemReporting></a><b><span style='font-family:"Arial","sans-serif"'>Problem
+  Reporting</span></b></p>
+  <p><span style='font-size:10.0pt;font-family:"Verdana","sans-serif"'>As part
+  of a broader initiative to increase adoption of OPC specifications and to
+  improve service to members, the OPC Foundation intends to maintain binaries
+  and sample code over time following a model similar to Open Source projects.
+  Vendors are encouraged to report problems, bug fixes, enhancements and any
+  other comments about the components supplied by the OPC Foundation. To
+  support this effort, the OPC Foundation has technical staff prepared to
+  review and incorporate feedback into the baseline and release new versions of
+  the components and sample code in a timely manner for the benefit of all
+  members.</span></p>
+  <p><span style='font-size:10.0pt;font-family:"Verdana","sans-serif"'>Please
+  note that this support is intended for OPC Foundation members who are
+  incorporating OPC support into their products.</span></p>
+  <p><span style='font-size:10.0pt;font-family:"Verdana","sans-serif"'>Problems
+  related to a particular download should be posted to the appropriate group on
+  the <a href="http://opcfoundation.org/forum"><u><span style='color:blue'>OPC
+  Foundation Message Board</span></u></a>.</span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:1;mso-yfti-lastrow:yes'>
+  <td style='padding:3.0pt 3.0pt 3.0pt 3.0pt'>
+  <div class=MsoNormal align=center style='text-align:center'><span
+  style='mso-fareast-font-family:"Times New Roman"'>
+  <hr size=1 width="100%" align=center>
+  </span></div>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:7.5pt;font-family:"Verdana","sans-serif";mso-fareast-font-family:
+  "Times New Roman"'>Please send website comments or report any problems to: <a
+  href="mailto:webmaster@opcfoundation.org?Subject=OPC%20website%20comments"><u><span
+  style='color:blue'>webmaster@opcfoundation.org</span></u></a></span><span
+  style='mso-fareast-font-family:"Times New Roman"'><o:p></o:p></span></p>
+  </td>
+ </tr>
+</table>
+
+<p class=MsoNormal><span style='mso-fareast-font-family:"Times New Roman"'><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+</body>
+
+</html>
