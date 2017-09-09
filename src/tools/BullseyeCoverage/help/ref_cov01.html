@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_reference.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+cov01 - Coverage Build Enable/Disable
+</h1>
+<PRE>
+cov01 -0|--off [<i>options</i>]
+cov01 -1|--on [<i>options</i>]
+cov01 -s|--status [<i>options</i>]
+</PRE>
+<H2>DESCRIPTION</H2>
+<P>
+<CODE>cov01</CODE> enables, disables, and displays the current
+status of BullseyeCoverage compiler interceptors for the current user.
+When Coverage Build is enabled, compiler interceptors
+pass control to <code><a href=ref_covc.html>covc</a></code>.
+When Coverage Build is disabled, compiler interceptors pass control to the
+real compiler with the same name as the compiler interceptor.
+<P>
+Action <code>-0</code> (<code>--off</code>) disables Coverage Build.
+Action <code>-1</code> (<code>--on</code>) enables Coverage Build.
+When these actions succeed, <CODE>cov01</CODE>
+normally displays no messages.
+<P>
+Action <CODE>-s</CODE> (<CODE>--status</CODE>) displays the status
+of each compiler interceptor command.
+If Coverage Build is enabled, the exit status is 0, otherwise 1.
+<H2>OPTIONS</H2>
+<TABLE CELLSPACING=12 summary="">
+<tr><td><code>-h</code><td><code>--help</code>
+<td>Display a summary of options.
+<tr><td><code>-q</code><td><code>--quiet</code>
+<td>Suppress warnings and the copyright message.
+
+<tr><td><code>-v</code><td><code>--verbose</code>
+<td>Show informational messages.
+<tr><td><code>--no-banner</code><td>
+<td>
+Suppress startup banner
+
+</TABLE>
+<h2>ENVIRONMENT VARIABLES</h2>
+<table cellspacing=12>
+<tr><td><code>COVBUILDZONE</code><td>
+You can use this environment variable to allow changing the Coverage Build
+status without affecting other simultaneous builds done with the same user account on the
+same computer.
+BullseyeCoverage stores a separate Coverage Build status for each
+unique value of <code>COVBUILDZONE</code>.
+For example, if you have a session A with <code>COVBUILDZONE=A</code> and a
+session B with <code>COVBUILDZONE=B</code>, running <code>cov01</code> in
+session A does not affect session B.
+</table>
+<H2>FILES</H2>
+<table cellspacing=12 summary="">
+<tr><td>
+<i>BullseyeCoverage</i><code>/bin/cov01.cfg</code><br>
+<code>$COV01CFG</code><br>
+<i>home-directory</i><code>/cov01.cfg</code>
+<td>If these files exist, they contain initial options separated by white space.
+</table>
+
+<H2>NOTES</H2>
+<P>
+One Windows, you may find the Coverage
+Browser menu command Tools Coverage Build more convenient than
+<CODE>cov01</CODE>.
+<p style="font-size:xx-small">
+Last reviewed: 1 Dec 2008
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
