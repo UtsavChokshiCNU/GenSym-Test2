@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_platform.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>Renesas High-performance Embedded Workshop</h1>
+<p>
+The Renesas High-performance Embedded Workshop cannot be configured to build
+using BullseyeCoverage.
+However, you can build from the command prompt using a makefile as described below. 
+This documentation applies to HEW version 4.7.
+
+<h2>Port The Run-Time Library</h2>
+<p>
+For detailed information on porting the BullseyeCoverage run-time library, see
+<a href=env_custom.html>Custom and Embedded Environments</a>
+
+<h2>Build with a Makefile</h2>
+<p>
+<ol>
+<li>
+Use the menu command <code>Build Generate Makefile</code>.
+Load the resulting makefile into a text editor.
+<p>
+<li>
+Add the <i>BullseyeCoverage</i><code>\bin</code> directory at the front of
+the <code>PATH</code> setting.
+For example, insert the underlined text below.
+<pre>
+set PATH=<span style=text-decoration:underline>c:\Program Files\BullseyeCoverage\bin;</span>$(TC_INSTALL_DIR)\bin
+</pre>
+<p>
+<li>
+Change all invocations of the compiler from absolute to relative.
+For example, remove the lined-through text below.
+<pre>
+"<span style=text-decoration:line-through>$(PROJECT_SIMDEBUG_SH1_SH_CC_LIBRARY_GENERATOR01_EXEDIR)\</span>$(PROJECT_SIMDEBUG_SH1_SH_CC_COMPILER02_EXE)" -subcommand=<<
+</pre>
+<p>
+<li>
+Perform a clean build using the Renesas make program.
+For example:
+<pre>
+del ..\..\<i>workspace</i>\<i>project</i>\Debug\*.obj
+cov01 -1
+hmake -f project.mak
+</pre>
+</ol>
+
+<p style="font-size:xx-small">
+Last reviewed: 2 Nov 2009
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
