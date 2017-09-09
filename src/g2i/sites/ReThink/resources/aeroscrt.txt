@@ -1,0 +1,454 @@
+
+                      Turbine Blade Demo Script
+                      -------------------------
+
+  Introduction
+  ------------
+
+  This demonstration simulates the current and future processes to
+  design and begin manufacturing aircraft turbine blades.  These
+  models illustrate the difference in time and cost between the
+  classic "throw the design over the wall" and "design for manufact-
+  urability" processes.
+
+  If the top-level workspace, Turbine-Blade-Design-Process, is not
+  already visible:
+
+  * Display the top level workspace, by using Get Workspace menu item
+    from the Workspace Menu and selecting Turbine-Blade-Design-
+    Process.
+
+  There are two models controlled by one scenario.
+
+  * Show both models by clicking on the As-Is and Vision icons.
+
+  From this high-level view, both models appear similar.  As illust-
+  rated by the task blocks, the production of turbine blades is
+  comprised of five fundamental steps: Engineering Design, Engineering
+  Analysis, Manufacturing Design, Manufacturing, and Quality Control.
+  Each of these blocks contains several layers of detail, as we will
+  see later.
+
+  The primary difference between As-Is and Vision models involves
+  feedback loops, as shown by the red colored paths.  As-Is takes a
+  serial approach: once objects pass through the Engineering stages
+  into Manufacturing Design, they do not return.  In contrast, the
+  Vision model makes use of concurrent engineering concepts.  With the
+  exception of Quality Control, feedback paths exist between each
+  Vision stage.
+
+  The Vision model is an example of the counter-intuitive notion that
+  doing something several times can actually be faster than doing it
+  once.  The problem with trying to finish something satisfactorily
+  the first time is that it rarely happens in practice.  Therefore,
+  preparing for several development cycles often saves time and
+  reduces costs.
+
+  Running the Model
+  -----------------
+
+  * Examine the Scenario Control Panel by clicking on it.
+
+  You will notice the usual action buttons for controlling Activation,
+  Status, and Mode.  In addition, this control panel contains some
+  customizations.  Most conspicuous are the buttons for Branching.  In
+  Fixed mode, the process simulation runs with a predetermined number
+  of problems.  In probabilistic mode the simulation runs more
+  realistically, with a variable number of problems.
+
+  * Activate the scenario by clicking the Activate button on the
+    Scenario Control Panel.
+  * Make sure the scenario is in Fixed mode by clicking the Fixed
+    button on the Scenario Control Panel.  This forces the simulation
+    to produce results corresponding to the average case.
+  * Also, within the Mode menu item under the Options menu, click on
+    the Modeler menu item, to designate yourself as a Modeler.
+  * From the Scenario Control Panel, press the Start As-Is button to
+    start the simulation.
+
+  Due to the scale and complexity of the model, there will be a delay
+  while resetting and starting.  When the scenario is finished
+  resetting, explore the rest of the top level.
+
+  Comparing Processes
+  -------------------
+
+  The Output-Tables organizer contains a display of several key
+  simulation values important for evaluating and comparing the
+  performance of both As-Is and Vision approaches.  In the depths of
+  each model's workspace hierarchy lie an assortment of instruments
+  such as Timestamp feeds and Sample probes.  These tie data from the
+  model to the display.
+
+  * Bring up the Output-Tables organizer (located on the upper right
+    hand corner of the Turbine-Blade-Design-Process workspace) by
+    clicking upon it and selecting show detail.
+
+  Workspace labels have pink borders and are usually located in the
+  upper left corner of workspaces.  They can be used to close
+  workspaces when you are in User or Modeler mode.  After you have
+  examined Output-Tables,
+
+  * Close Output-Tables by clicking on the Process Comparison
+    workspace label.
+
+  Exploring the As-Is Model
+  -------------------------
+
+  * Examine the gray path between the Engineering Design and Engineer-
+    ing Analysis tasks on the As-Is model.
+
+  From the path's Set Path dialog, you see blade-designs are being
+  produced in Engineering Design, and being passed to Engineering
+  Analysis.  Also examine the red feedback path between these
+  Engineering stages, which carries analysis-results.
+
+  * Inspect the Engineering Design detail from the As-Is model.
+
+  Note the use of resource managers to incorporate Engineering Design-
+  ers into the design process.  The start block Start Project
+  initiates the process by creating a mgmt-report-as-is object.  The
+  Initial Design task outputs a blade-design.  This can be verified by
+  looking at the Set Path dialog of the output path.  Initial designs
+  are sent to Engineering Analysis via the node on the right side of
+  the workspace.  Note the time it takes to complete an initial
+  design:
+
+  * Click on the Initial Design task, and select set block... from its
+    menu.
+  * Click on the Duration tab.
+
+  Also, follow the path FROM-ENG-ANALYSIS which corresponds to the red
+  feedback path we saw earlier.  When problems occur in analysis, re-
+  design work is necessary, as indicated by the task block labeled Re-
+  Design.  Designs that were re-done are sent along the same path as
+  initial designs with the merge block.
+
+  For bookkeeping, it is important to record how much time each
+  engineering stage takes.  One way to accomplish this goal is by
+  creating management reports.
+
+  * Open the Mgmt Report block's detail.
+
+  Here, reports are created, stamped with time information by the
+  purple feeds, and stored in a resource pool by the Store block at
+  the right.
+
+  * Close Mgmt-Report, and examine the detail of Time Update.
+
+  It is here that we account for the two types of blade designs.  For
+  both initial and re-designs, it is necessary to note that Engineer-
+  ing Design is complete.  After the retrieve block on the left
+  retrieves a management report from the resource pool, the Eng-
+  Design-Complete timestamp takes care of this.  The branch block
+  insures that only initial design reports are updated with an Eng-
+  Analysis-Begin value, since re-designs have already been through
+  Engineering Analysis.
+
+  * Display the Set Block dialog of the branch block.  Observe its
+    branch mode, branch attribute, and branch attribute operation.
+  * Now look at the branch upper and branch lower of its two output
+    paths.
+
+  Reports that have already been through (i.e. with Eng-Analysis-Begin
+  attributes of time greater than 1) are put back into the resource
+  pool.  The others (with Eng-Analysis-Begin attributes of time 0),
+  are timestamped appropriately before being stored.  Observe the two
+  blue sample probes.  These record begin and completion times; the
+  values are linked to bpr-remotes, which update a display.
+
+  * Click on either probe.  Select the menu item show remotes to
+    revisit the output tables.
+
+  A pink arrow will direct you to a remote, which is hidden under a
+  display chart.  Above, notice the quantitative parameters, which
+  depict begin and completion times corresponding to the time-stamps
+  from the Time Update detail.
+
+  * Close the Time-Update and the Engineering Design details.
+  * Examine the Engineering Analysis detail.
+
+  As expected, blade designs enter FROM-ENG-DESIGN.  The As-Is process
+  takes about 26 weeks to finish these designs.  Subsequently, Hot and
+  Cold FEM's (Finite Element Models, which are wire-frame represent-
+  ations of the blades) are defined by Eng. Analysts with Analyst
+  Computers.
+
+  Three output nodes lead TO-MANUFACTURING-DESIGN, TO-QUALITY-CONTROL,
+  and TO-ENG-DESIGN.  Remember, there is no feedback path from either
+  Manufacturing Design or Quality Control; so once objects leave
+  through one of those nodes, they are there for the duration of the
+  simulation.
+
+  Manufacturing Design typically does not receive completed designs
+  until 15 months into the project.  Likewise, they have had no
+  opportunity to make comments.  Copies of drawings are also sent to
+  Quality Control - but they will not be able to use it for about 9
+  months.  The odds that changes will occur before then are high.
+
+  Finally, a feedback path exists back to Engineering Design.  This is
+  required when FEM analysis reveals problems.  Situations can occur
+  with an FEM which warrant requesting a new blade design (a re-
+  design).  These problems surface in Check Cold FEM.
+
+  * Display the Check Cold FEM detail.
+
+  The heart of this detail lies in the customized branch block on the
+  left.  Its job is to examine cold FEM's, and filter out those that
+  are problematic.  In Fixed mode, ReThink presets the number of
+  problems to the average case of two (determined experimentally from
+  the real-life process).  Therefore, the first two fem-cold-models
+  will follow the lower path marked Problems.  The third will follow
+  the upper path labeled No problems.
+
+  In Probabilistic mode, the branch block filters FEM's randomly,
+  according to a proportion.
+
+  * View the branch block's lower path's Set Path dialog. Read its
+    branch proportion attribute.
+
+  Verify that the value agrees with the readout table marked decaying
+  proportion.  This is the proportion of cold-fem-models which will
+  follow the lower path.  Custom procedures divide the proportion in
+  half after each FEM passes through.  For example, when the model
+  starts the percent chance of a FEM having a problem may be 75%.  If
+  chance permits, and a problem occurs, the next FEM which results
+  from a re-design will only have a 37.5% chance of having a problem.
+  Eventually a fem-cold-model will be produced without problems and it
+  will allow Manufacturing Design to begin.  Customizations can be
+  viewed from the top-level workspace, TURBINE-BLADE-DESIGN-PROCESS.
+
+  * Close Check Cold FEM
+
+  Let's look at one more part of Engineering Analysis before moving
+  on.
+
+  * Display the Determine Problem detail.
+
+  Observe that the branch block only has one output path.  To figure
+  out how this block works:
+
+  * From the Set Path dialog of the branch's input path, examine the
+    type attribute.
+  * From the branch's Set Block dialog, examine the branch attribute
+    value.
+  * From the Set Path dialog of the branch's output path, examine the
+    branch value.
+
+  The effect of the single output path is as follows: problem noted
+  objects flow in.  If their problem attributes are of type not-ok
+  then the objects pass through, enabling the re-design process in
+  Engineering Design.  Otherwise, nothing happens.
+
+  * Close the Determine Problem Detail.
+  * Close the Engineering Analysis Detail.
+
+  The feedback relationship between Manufacturing Design and Manufact-
+  uring is similar to that of Engineering Design and Engineering
+  Analysis.  In Manufacturing Design, in-process-shapes are created.
+  When problems occur while making airfoils in Manufacturing, in-
+  process-shapes need to be re-designed, and Manufacturing Design
+  becomes active again.
+
+  * Open the Manufacturing detail
+  * Open the Make Airfoils detail
+
+  Observe the similarities of this detail, and that of Check Cold FEM.
+  The same type of custom branch block controls when problems occur.
+
+  * Close Make Airfoils and Manufacturing.
+
+  Let's summarize what happened in the As-Is model:
+
+  1. During long portions of the process only one group of blocks was
+     working while the rest waited.
+  2. Steps repeated themselves in loops, sequentially.
+  3. There was no interaction between Manufacturing and Engineering.
+
+  The Vision Model takes a different approach.  The process will
+  repeat at least three times, refining the design, and getting
+  feedback along the way.
+
+  Exploring the Vision Model
+  --------------------------
+
+  * From the Scenario Control Panel, select Start All to run the
+    Vision Model in parallel to the As-Is Model.
+  * Display the Engineering Design detail from the Vision Model.
+
+  The three colored boxes highlight the three phases of the Vision
+  approach.  In the first phase, high level designs are constructed
+  for the purpose of getting quick feedback.
+
+  * On the blue background, reveal the detail of the Phase 1 Draft
+    Design.
+
+  Use the set block... menu choice and the Duration tab to observe the
+  duration of the Draft Design task (3 weeks).  Compare this with the
+  corresponding Initial Design task from Engineering Design in the As-
+  Is model (26 weeks).  Also note that re-design is saved for Phase 2.
+
+  * Close the Draft Design Detail and open Flesh Out Design.
+
+  Here you can see three feedback paths, which carry objects from
+  different parts of the model.  The branch block separates objects
+  based on their type.
+
+  * From the branch block's Set Block dialog, examine its branch mode
+    attribute.
+  * Now look at the type attribute from each output path.
+
+  Initial-tools-reports, initial-conversion-problems, and initial-
+  deflections come here to be "fleshed out" from Manufacturing and
+  Engineering Analysis stages.
+
+  * Close Flesh Out Design and Engineering Design Detail
+  * Display the detail of Engineering Analysis.
+  * Look at the Phase 1 Initial Analysis detail.
+
+  Many steps were left out, such as cold FEM analysis.  Phase 1 is
+  only concerned with studying feasibility, to catch problems in
+  advance.
+
+  * Close Initial Analysis Detail and Engineering Analysis Detail.
+  * Open the Manufacturing Design task block.
+
+  The three phases are here as well.  Each consecutive phase assumes a
+  higher level of assurance and completeness of the objects it works
+  with.  To see this:
+
+  * Open the Phase 1 task block's detail.
+  * Examine the type attribute of each output path of the branch block
+    on the left.
+
+  By now, you should be able to see a pattern: each Phase 1 path
+  carries a work object prefixed with "initial" such as "initial-
+  deflections."
+
+  * Close the Mfg Design Detail for Phase 1
+  * View the detail of the Phase 2 task block.
+  * Examine the type attributes of some of the output paths from the
+    branch blocks.
+
+  These paths are carrying the same types of objects as in Phase 1,
+  only these are prefixed with "working" such as "working-
+  deflections."  These objects have already been approved to a certain
+  degree by Phase 1 from other stages.  Phase 3's paths carry objects
+  prefixed with "refine," indicating an even higher level of
+  confidence.
+
+  * Close the Phase 2 Manufacturing Design Detail, and return to the
+    higher level Manufacturing Design Detail.
+
+  Also observe the higher number of input and output paths.  This is
+  indicative of the increased feedback from different stages.  The
+  work is distributed across many tasks and resources at any given
+  time, in contrast to the As-Is model.
+
+  * Close the Manufacturing Design Detail.
+
+  If the scenario is running, and neither the Vision nor As-Is models
+  have finished, you should observe that the Vision model often has
+  several high-level task blocks activated simultaneously.  To see the
+  resources in action while the model is running:
+
+  * Show the details of the resource pools for both versions of the
+    model, labeled As-Is-Resources and Vision-Resources respectively.
+    Watch the icons change color when they become active.
+
+  For more information about the utilization, cost, or other
+  attributes of the individual resources, try viewing their Set and
+  Show Resource dialogs.
+
+  * Close the resource pool details.
+
+  Results:
+  --------
+
+  * Open the Output-Tables organizer from the top-level workspace.
+
+  As the model progresses, you will see values for the Begin and Done
+  columns of each stage.  Observe how quickly the Vision model started
+  the Analysis process compared to As-Is.
+
+  The Vision model usually costs a fourth to a half the amount of the
+  As-Is process, and finishes in about half the time.
+
+  Organizing Versions:
+  --------------------
+
+  One complication imposed by the three phases of the vision model is
+  managing the many revisions during each stage.  To help keep track
+  of versions of the blade's components, the VISION-ORGANIZER was
+  developed.
+
+  * Close the Output-Tables by clicking on Process Comparison.
+  * Go to the detail of VISION-ORGANIZER from the Vision workspace.
+
+  Here we see messages indicating the time each version was produced.
+  Versions were stamped at the beginning of each phase, and when
+  passed between tasks.  To see just where this happens, you can
+  explore the Mgmt Report tasks throughout the model, and look at the
+  instruments which do the stamping.  In the vision model, special
+  attributes of management reports keep track of how many revisions
+  take place in each revision category ("Super," "Major," or "Minor"
+  revisions are possible).
+
+  * Close the VISION-ORGANIZER's detail.
+  * Open the VISION-DATA-OBJECTS organizer.
+  * Look at the class specific attributes of the MGMT-REPORT-VISION
+    class.  An attribute exists for each type of revision.
+
+  Customizations:
+  ---------------
+
+  * Study the detail of the CUSTOMIZATIONS organizer from the top-
+    level TURBINE-BLADE-DESIGN-PROCESS.
+
+  Customizations were added to control branching and to display
+  versions in management reports.  In the case of branching, a new
+  type of branch block was defined, BPR-HALF-LIFE-BRANCH.  It is used
+  to model complicated branching situations such as the decaying
+  branch probabilities we encountered earlier.  For a closer look,
+  click on the Branching Notes memo in the orange Custom Branching
+  box.
+
+  Management report versions are complicated in a more subtle way.
+  The version attribute of mgmt-report-vision objects is a string of
+  the "X.Y.Z" format where X,Y, and Z represent super, major, and
+  minor revisions respectively.  Rules (located in the VERSION-RULES
+  organizer) trigger the UPDATE-VERSION procedure when any kind of
+  revision occurs.  This procedure manipulates the version string
+  appropriately for each revision.  For example, a minor revision
+  after version "2.0.9" leads to version "2.0.10".  A major revision,
+  however, yields version "2.1.0" and a super revision produces
+  "3.0.0".
+
+  Object Hierarchy:
+  -----------------
+
+  * Study the contents of the data object organizers, labeled AS-IS-
+    DATA-OBJECTS and VISION-DATA-OBJECTS, for both As-Is and Vision
+    models.
+
+  Note the object hierarchy.  Look at the multiple inheritance of the
+  work objects of the Vision model.  Each is a subclass of both a
+  development stage (like Manufacturing) and a phase.
+
+  Typical Questions and Answers:
+  ------------------------------
+
+  How was this model built?
+
+  * The serial model was constructed from a set of IDEF diagrams and
+    verified with actual process measurements.
+  * The concurrent model was developed as a design for a new process.
+    Since the tasks themselves did not change significantly, only the
+    ordering, there is a high degree of confidence in the new results.
+
+  How long did this model take to develop?
+
+  * About a week of knowledge gathering, another week to implement and
+    test.
+  * Cosmetic changes were necessary for demo purposes.  These took an
+    extra few days.
