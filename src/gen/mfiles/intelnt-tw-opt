@@ -1,0 +1,631 @@
+PRODUCT = tw
+ODIR = opt
+PLATFORM = intelnt
+ACTIVEXDIR = $(DSTBOX)\activex\$(ODIR)
+BINPROMDIR = $(SRCBOX)\promote\bin
+CDIR = $(SRCBOX)\$(PRODUCT)\c
+EXTDIR = $(DSTBOX)\ext\$(ODIR)
+FNTDIR = $(DSTBOX)\fnt\$(ODIR)
+FONTPROMDIR = $(SRCBOX)\promote\fonts
+JPEGDIR = $(DSTBOX)\jpeg\$(ODIR)
+KBDIR = $(SRCBOX)\kbs
+MFDIR = $(DSTBOX)\$(PRODUCT)\$(ODIR)
+MISCDIR = $(SRCBOX)\$(PRODUCT)\c\misc
+NODEBUG = 1
+PROMDIR = $(SRCBOX)\promote
+RTHDIR = $(SRCBOX)\rtl\c
+RTLDIR = $(DSTBOX)\rtl\$(ODIR)
+SCRIPTSDIR = $(SCRIPTSBOX)\scripts\nt
+SPFCDIR = $(SRCBOX)\specific\$(PLATFORM)
+TWPLUGDIR = $(DSTBOX)\twplug\$(ODIR)
+FONTSDST = $(DSTBOX)\$(PRODUCT)\tape\fonts
+TAPEDST = $(DSTBOX)\$(PRODUCT)\tape
+TESTDST = $(DSTBOX)\$(PRODUCT)\test
+W2KDST = $(DSTBOX)\$(PRODUCT)\tape\win2000
+CONTENTS = $(DSTBOX)\$(PRODUCT)\tape\contents.txt
+CC_FLAGS = $(cflags) $(cvarsmt) -D_CTYPE_DISABLE_MACROS -I$(SRCBOX)\common\c\include
+
+# The include file ntwin32.mak defines macros to provide independence
+# macro      Intel NT             Alpha NT      Definition
+# =====      ========             ========      ===========
+# $(cc)      cl                   claxp         compiler
+# $(ccommon) -c -W3               same          standard compiler flags
+# $(cdebug)  -Od -Zi              -Od -Zi -Zh   standard debug flags*
+# $(cflags)  $(ccommon) -D_X86_=1 -c -DALPHA=1  to identify platform
+# $(cvarsdll) -DWIN32 $(noansi)    same          to identify o.s.
+# $(link)    link32               same          linker
+# $(ldebug)  -debug:full          same          linker debug flags*
+#            -debugtype:cv              
+# $(guilflags) -subsystem:windows same          GUI link flags
+#             -entry:WinMainCRTStartup  
+#
+# (*) A NODEBUG option or macro turns off debugging and specifies
+#    full optimization.
+
+!include <ntwin32.mak>
+
+RTHFILES = $(RTHDIR)\c-ifuns.h $(RTHDIR)\c-sdefs.h \
+  $(RTHDIR)\config.h $(RTHDIR)\core.h $(RTHDIR)\externs.h $(RTHDIR)\ffi.h \
+  $(RTHDIR)\gensym.h $(RTHDIR)\ifuns.h $(RTHDIR)\initvars.h \
+  $(RTHDIR)\inline.h $(RTHDIR)\instance.h $(RTHDIR)\kernel.h \
+  $(RTHDIR)\librtl.h $(RTHDIR)\lisplib.h $(RTHDIR)\longname.h \
+  $(RTHDIR)\object.h $(RTHDIR)\smcompat.h $(RTHDIR)\specific.h \
+  $(RTHDIR)\svarargs.h $(RTHDIR)\uconfig.h $(RTHDIR)\values.h \
+  $(RTHDIR)\varkey.h
+
+all : _mfenter libtw.lib tw.exe _mfexit
+
+_mfenter : 
+	@- $(SCRIPTSDIR)\errsweep.bat -init
+
+_mfexit : 
+	@- $(SCRIPTSDIR)\errsweep.bat -finish
+
+libtw.lib : basics.obj btstrp.obj chars.obj chars2.obj clocks.obj \
+  delta.obj dlogs.obj f-keys.obj flprse.obj fntfls.obj fonts.obj gbmap.obj \
+  gbmapr.obj glbscs.obj g2cnfg.obj hb72.obj hbrw14.obj hbrw18.obj hbrw24.obj hm14.obj \
+  hm18.obj hm24.obj int0.obj int1.obj int2.obj int3a.obj int3b.obj int4.obj \
+  is2022.obj is8859.obj jismap.obj ksmap2.obj kybrds.obj kydfs.obj launch.obj \
+  load.obj loop.obj lspimg.obj lttrs.obj main.obj names.obj natvtw.obj \
+  ntrrr.obj ntvnt.obj ntwrks.obj os-mem.obj os-set.obj osfrgn.obj osrrr.obj \
+  ostme.obj prmtvs.obj ptfms.obj pthnms.obj rings.obj schdle.obj slvc14.obj \
+  slvc18.obj slvc24.obj sqncs1.obj strms.obj symtab.obj systm.obj telesb.obj \
+  thai14.obj thai18.obj thai24.obj times.obj tlwn.obj tran.obj trnscd.obj \
+  twpts.obj uncde.obj userfuns.obj userinit.obj usersyms.obj utlts0.obj \
+  utlts1.obj utlts2.obj utlts3.obj win1.obj win2.obj win3.obj win3a.obj \
+  win4.obj
+	- del libtw.lib
+	@- $(SCRIPTSDIR)\errsweep.bat libtw.lib
+	$(implib) /out:libtw.lib   main.obj symtab.obj userfuns.obj userinit.obj usersyms.obj names.obj load.obj btstrp.obj systm.obj delta.obj twpts.obj loop.obj glbscs.obj osfrgn.obj basics.obj ostme.obj os-set.obj os-mem.obj prmtvs.obj chars.obj jismap.obj ksmap2.obj gbmap.obj gbmapr.obj chars2.obj g2cnfg.obj kybrds.obj kydfs.obj utlts0.obj utlts1.obj utlts2.obj lttrs.obj uncde.obj is2022.obj trnscd.obj is8859.obj utlts3.obj times.obj f-keys.obj osrrr.obj ptfms.obj launch.obj pthnms.obj flprse.obj strms.obj schdle.obj clocks.obj ntwrks.obj int0.obj int1.obj ntrrr.obj ntvnt.obj int2.obj int3a.obj int3b.obj int4.obj win1.obj win2.obj win3.obj win3a.obj win4.obj lspimg.obj fonts.obj hb72.obj hm14.obj hm18.obj hm24.obj slvc14.obj slvc18.obj slvc24.obj hbrw14.obj hbrw18.obj hbrw24.obj thai14.obj thai18.obj thai24.obj sqncs1.obj telesb.obj dlogs.obj natvtw.obj rings.obj fntfls.obj tlwn.obj tran.obj
+	@- del current.bat
+
+tw.exe : $(EXTDIR)\libcprim.lib $(FNTDIR)\libfnt.lib \
+  $(JPEGDIR)\libjpeg.lib $(RTLDIR)\librtl.lib winmain.obj tw.res libtw.lib
+	- del tw.exe
+	@- $(SCRIPTSDIR)\errsweep.bat tw.exe
+	$(link) @<<
+  -out:tw.exe -MAP:tw.map /incremental:no /nologo /subsystem:windows,$(APPVER) /release /debug /opt:ref /nodefaultlib:libc.lib /machine:IX86  winmain.obj tw.res libtw.lib $(FNTDIR)\libfnt.lib $(EXTDIR)\libcprim.lib $(JPEGDIR)\libjpeg.lib $(RTLDIR)\librtl.lib $(SPFCDIR)\spromeps.lib $(guilibsmt) $(olelibsmt) comctl32.lib shell32.lib winmm.lib crypt32.lib ws2_32.lib rpcrt4.lib Activeds.lib ADSIid.Lib version.lib
+<<
+	@- del current.bat
+
+tw.res : $(CDIR)\tw.rc
+	- del tw.res
+	@- $(SCRIPTSDIR)\errsweep.bat tw.res
+	rc.exe /fo"$(MFDIR)\tw.res" $(CDIR)\tw.rc
+	@- del current.bat
+
+basics.obj : $(CDIR)\basics.c $(CDIR)\basics.h $(RTHFILES)
+	- del basics.obj
+	@- $(SCRIPTSDIR)\errsweep.bat basics.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\basics.c
+	@- del current.bat
+
+btstrp.obj : $(CDIR)\btstrp.c $(CDIR)\btstrp.h $(RTHFILES)
+	- del btstrp.obj
+	@- $(SCRIPTSDIR)\errsweep.bat btstrp.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\btstrp.c
+	@- del current.bat
+
+chars.obj : $(CDIR)\chars.c $(CDIR)\chars.h $(RTHFILES)
+	- del chars.obj
+	@- $(SCRIPTSDIR)\errsweep.bat chars.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\chars.c
+	@- del current.bat
+
+chars2.obj : $(CDIR)\chars2.c $(CDIR)\chars2.h $(RTHFILES)
+	- del chars2.obj
+	@- $(SCRIPTSDIR)\errsweep.bat chars2.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\chars2.c
+	@- del current.bat
+
+clocks.obj : $(CDIR)\clocks.c $(CDIR)\clocks.h $(RTHFILES)
+	- del clocks.obj
+	@- $(SCRIPTSDIR)\errsweep.bat clocks.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\clocks.c
+	@- del current.bat
+
+delta.obj : $(CDIR)\delta.c $(CDIR)\delta.h $(RTHFILES)
+	- del delta.obj
+	@- $(SCRIPTSDIR)\errsweep.bat delta.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\delta.c
+	@- del current.bat
+
+dlogs.obj : $(CDIR)\dlogs.c $(CDIR)\dlogs.h $(RTHFILES)
+	- del dlogs.obj
+	@- $(SCRIPTSDIR)\errsweep.bat dlogs.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\dlogs.c
+	@- del current.bat
+
+f-keys.obj : $(CDIR)\f-keys.c $(CDIR)\f-keys.h $(RTHFILES)
+	- del f-keys.obj
+	@- $(SCRIPTSDIR)\errsweep.bat f-keys.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\f-keys.c
+	@- del current.bat
+
+flprse.obj : $(CDIR)\flprse.c $(CDIR)\flprse.h $(RTHFILES)
+	- del flprse.obj
+	@- $(SCRIPTSDIR)\errsweep.bat flprse.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\flprse.c
+	@- del current.bat
+
+fntfls.obj : $(CDIR)\fntfls.c $(CDIR)\fntfls.h $(RTHFILES)
+	- del fntfls.obj
+	@- $(SCRIPTSDIR)\errsweep.bat fntfls.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\fntfls.c
+	@- del current.bat
+
+fonts.obj : $(CDIR)\fonts.c $(CDIR)\fonts.h $(RTHFILES)
+	- del fonts.obj
+	@- $(SCRIPTSDIR)\errsweep.bat fonts.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\fonts.c
+	@- del current.bat
+	
+g2cnfg.obj : $(CDIR)\g2cnfg.c $(CDIR)\g2cnfg.h $(RTHFILES)
+	- del g2cnfg.obj
+	@- $(SCRIPTSDIR)\errsweep.bat g2cnfg.obj
+	$(cc) $(CC_FLAGS_COMPILE) $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\g2cnfg.c
+	@- del current.bat	
+
+gbmap.obj : $(CDIR)\gbmap.c $(CDIR)\gbmap.h $(RTHFILES)
+	- del gbmap.obj
+	@- $(SCRIPTSDIR)\errsweep.bat gbmap.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\gbmap.c
+	@- del current.bat
+
+gbmapr.obj : $(CDIR)\gbmapr.c $(CDIR)\gbmapr.h $(RTHFILES)
+	- del gbmapr.obj
+	@- $(SCRIPTSDIR)\errsweep.bat gbmapr.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\gbmapr.c
+	@- del current.bat
+
+glbscs.obj : $(CDIR)\glbscs.c $(CDIR)\glbscs.h $(RTHFILES)
+	- del glbscs.obj
+	@- $(SCRIPTSDIR)\errsweep.bat glbscs.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\glbscs.c
+	@- del current.bat
+
+hb72.obj : $(CDIR)\hb72.c $(CDIR)\hb72.h $(RTHFILES)
+	- del hb72.obj
+	@- $(SCRIPTSDIR)\errsweep.bat hb72.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\hb72.c
+	@- del current.bat
+
+hbrw14.obj : $(CDIR)\hbrw14.c $(CDIR)\hbrw14.h $(RTHFILES)
+	- del hbrw14.obj
+	@- $(SCRIPTSDIR)\errsweep.bat hbrw14.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\hbrw14.c
+	@- del current.bat
+
+hbrw18.obj : $(CDIR)\hbrw18.c $(CDIR)\hbrw18.h $(RTHFILES)
+	- del hbrw18.obj
+	@- $(SCRIPTSDIR)\errsweep.bat hbrw18.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\hbrw18.c
+	@- del current.bat
+
+hbrw24.obj : $(CDIR)\hbrw24.c $(CDIR)\hbrw24.h $(RTHFILES)
+	- del hbrw24.obj
+	@- $(SCRIPTSDIR)\errsweep.bat hbrw24.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\hbrw24.c
+	@- del current.bat
+
+hm14.obj : $(CDIR)\hm14.c $(CDIR)\hm14.h $(RTHFILES)
+	- del hm14.obj
+	@- $(SCRIPTSDIR)\errsweep.bat hm14.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\hm14.c
+	@- del current.bat
+
+hm18.obj : $(CDIR)\hm18.c $(CDIR)\hm18.h $(RTHFILES)
+	- del hm18.obj
+	@- $(SCRIPTSDIR)\errsweep.bat hm18.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\hm18.c
+	@- del current.bat
+
+hm24.obj : $(CDIR)\hm24.c $(CDIR)\hm24.h $(RTHFILES)
+	- del hm24.obj
+	@- $(SCRIPTSDIR)\errsweep.bat hm24.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\hm24.c
+	@- del current.bat
+
+int0.obj : $(CDIR)\int0.c $(CDIR)\int0.h $(RTHFILES)
+	- del int0.obj
+	@- $(SCRIPTSDIR)\errsweep.bat int0.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\int0.c
+	@- del current.bat
+
+int1.obj : $(CDIR)\int1.c $(CDIR)\int1.h $(RTHFILES)
+	- del int1.obj
+	@- $(SCRIPTSDIR)\errsweep.bat int1.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\int1.c
+	@- del current.bat
+
+int2.obj : $(CDIR)\int2.c $(CDIR)\int2.h $(RTHFILES)
+	- del int2.obj
+	@- $(SCRIPTSDIR)\errsweep.bat int2.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\int2.c
+	@- del current.bat
+
+int3a.obj : $(CDIR)\int3a.c $(CDIR)\int3a.h $(RTHFILES)
+	- del int3a.obj
+	@- $(SCRIPTSDIR)\errsweep.bat int3a.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\int3a.c
+	@- del current.bat
+
+int3b.obj : $(CDIR)\int3b.c $(CDIR)\int3b.h $(RTHFILES)
+	- del int3b.obj
+	@- $(SCRIPTSDIR)\errsweep.bat int3b.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\int3b.c
+	@- del current.bat
+
+int4.obj : $(CDIR)\int4.c $(CDIR)\int4.h $(RTHFILES)
+	- del int4.obj
+	@- $(SCRIPTSDIR)\errsweep.bat int4.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\int4.c
+	@- del current.bat
+
+is2022.obj : $(CDIR)\is2022.c $(CDIR)\is2022.h $(RTHFILES)
+	- del is2022.obj
+	@- $(SCRIPTSDIR)\errsweep.bat is2022.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\is2022.c
+	@- del current.bat
+
+is8859.obj : $(CDIR)\is8859.c $(CDIR)\is8859.h $(RTHFILES)
+	- del is8859.obj
+	@- $(SCRIPTSDIR)\errsweep.bat is8859.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\is8859.c
+	@- del current.bat
+
+jismap.obj : $(CDIR)\jismap.c $(CDIR)\jismap.h $(RTHFILES)
+	- del jismap.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jismap.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\jismap.c
+	@- del current.bat
+
+ksmap2.obj : $(CDIR)\ksmap2.c $(CDIR)\ksmap2.h $(RTHFILES)
+	- del ksmap2.obj
+	@- $(SCRIPTSDIR)\errsweep.bat ksmap2.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\ksmap2.c
+	@- del current.bat
+
+kybrds.obj : $(CDIR)\kybrds.c $(CDIR)\kybrds.h $(RTHFILES)
+	- del kybrds.obj
+	@- $(SCRIPTSDIR)\errsweep.bat kybrds.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\kybrds.c
+	@- del current.bat
+
+kydfs.obj : $(CDIR)\kydfs.c $(CDIR)\kydfs.h $(RTHFILES)
+	- del kydfs.obj
+	@- $(SCRIPTSDIR)\errsweep.bat kydfs.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\kydfs.c
+	@- del current.bat
+
+launch.obj : $(CDIR)\launch.c $(CDIR)\launch.h $(RTHFILES)
+	- del launch.obj
+	@- $(SCRIPTSDIR)\errsweep.bat launch.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\launch.c
+	@- del current.bat
+
+load.obj : $(CDIR)\load.c $(CDIR)\load.h $(RTHFILES)
+	- del load.obj
+	@- $(SCRIPTSDIR)\errsweep.bat load.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\load.c
+	@- del current.bat
+
+loop.obj : $(CDIR)\loop.c $(CDIR)\loop.h $(RTHFILES)
+	- del loop.obj
+	@- $(SCRIPTSDIR)\errsweep.bat loop.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\loop.c
+	@- del current.bat
+
+lspimg.obj : $(CDIR)\lspimg.c $(CDIR)\lspimg.h $(RTHFILES)
+	- del lspimg.obj
+	@- $(SCRIPTSDIR)\errsweep.bat lspimg.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\lspimg.c
+	@- del current.bat
+
+lttrs.obj : $(CDIR)\lttrs.c $(CDIR)\lttrs.h $(RTHFILES)
+	- del lttrs.obj
+	@- $(SCRIPTSDIR)\errsweep.bat lttrs.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\lttrs.c
+	@- del current.bat
+
+main.obj : $(CDIR)\main.c $(CDIR)\main.h $(RTHFILES)
+	- del main.obj
+	@- $(SCRIPTSDIR)\errsweep.bat main.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\main.c
+	@- del current.bat
+
+names.obj : $(CDIR)\names.c $(CDIR)\names.h $(RTHFILES)
+	- del names.obj
+	@- $(SCRIPTSDIR)\errsweep.bat names.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\names.c
+	@- del current.bat
+
+natvtw.obj : $(CDIR)\natvtw.c $(CDIR)\natvtw.h $(RTHFILES)
+	- del natvtw.obj
+	@- $(SCRIPTSDIR)\errsweep.bat natvtw.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\natvtw.c
+	@- del current.bat
+
+ntrrr.obj : $(CDIR)\ntrrr.c $(CDIR)\ntrrr.h $(RTHFILES)
+	- del ntrrr.obj
+	@- $(SCRIPTSDIR)\errsweep.bat ntrrr.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\ntrrr.c
+	@- del current.bat
+
+ntvnt.obj : $(CDIR)\ntvnt.c $(CDIR)\ntvnt.h $(RTHFILES)
+	- del ntvnt.obj
+	@- $(SCRIPTSDIR)\errsweep.bat ntvnt.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\ntvnt.c
+	@- del current.bat
+
+ntwrks.obj : $(CDIR)\ntwrks.c $(CDIR)\ntwrks.h $(RTHFILES)
+	- del ntwrks.obj
+	@- $(SCRIPTSDIR)\errsweep.bat ntwrks.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\ntwrks.c
+	@- del current.bat
+
+os-mem.obj : $(CDIR)\os-mem.c $(CDIR)\os-mem.h $(RTHFILES)
+	- del os-mem.obj
+	@- $(SCRIPTSDIR)\errsweep.bat os-mem.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\os-mem.c
+	@- del current.bat
+
+os-set.obj : $(CDIR)\os-set.c $(CDIR)\os-set.h $(RTHFILES)
+	- del os-set.obj
+	@- $(SCRIPTSDIR)\errsweep.bat os-set.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\os-set.c
+	@- del current.bat
+
+osfrgn.obj : $(CDIR)\osfrgn.c $(CDIR)\osfrgn.h $(RTHFILES)
+	- del osfrgn.obj
+	@- $(SCRIPTSDIR)\errsweep.bat osfrgn.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\osfrgn.c
+	@- del current.bat
+
+osrrr.obj : $(CDIR)\osrrr.c $(CDIR)\osrrr.h $(RTHFILES)
+	- del osrrr.obj
+	@- $(SCRIPTSDIR)\errsweep.bat osrrr.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\osrrr.c
+	@- del current.bat
+
+ostme.obj : $(CDIR)\ostme.c $(CDIR)\ostme.h $(RTHFILES)
+	- del ostme.obj
+	@- $(SCRIPTSDIR)\errsweep.bat ostme.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\ostme.c
+	@- del current.bat
+
+prmtvs.obj : $(CDIR)\prmtvs.c $(CDIR)\prmtvs.h $(RTHFILES)
+	- del prmtvs.obj
+	@- $(SCRIPTSDIR)\errsweep.bat prmtvs.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\prmtvs.c
+	@- del current.bat
+
+ptfms.obj : $(CDIR)\ptfms.c $(CDIR)\ptfms.h $(RTHFILES)
+	- del ptfms.obj
+	@- $(SCRIPTSDIR)\errsweep.bat ptfms.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\ptfms.c
+	@- del current.bat
+
+pthnms.obj : $(CDIR)\pthnms.c $(CDIR)\pthnms.h $(RTHFILES)
+	- del pthnms.obj
+	@- $(SCRIPTSDIR)\errsweep.bat pthnms.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\pthnms.c
+	@- del current.bat
+
+rings.obj : $(CDIR)\rings.c $(CDIR)\rings.h $(RTHFILES)
+	- del rings.obj
+	@- $(SCRIPTSDIR)\errsweep.bat rings.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\rings.c
+	@- del current.bat
+
+schdle.obj : $(CDIR)\schdle.c $(CDIR)\schdle.h $(RTHFILES)
+	- del schdle.obj
+	@- $(SCRIPTSDIR)\errsweep.bat schdle.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\schdle.c
+	@- del current.bat
+
+slvc14.obj : $(CDIR)\slvc14.c $(CDIR)\slvc14.h $(RTHFILES)
+	- del slvc14.obj
+	@- $(SCRIPTSDIR)\errsweep.bat slvc14.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\slvc14.c
+	@- del current.bat
+
+slvc18.obj : $(CDIR)\slvc18.c $(CDIR)\slvc18.h $(RTHFILES)
+	- del slvc18.obj
+	@- $(SCRIPTSDIR)\errsweep.bat slvc18.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\slvc18.c
+	@- del current.bat
+
+slvc24.obj : $(CDIR)\slvc24.c $(CDIR)\slvc24.h $(RTHFILES)
+	- del slvc24.obj
+	@- $(SCRIPTSDIR)\errsweep.bat slvc24.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\slvc24.c
+	@- del current.bat
+
+sqncs1.obj : $(CDIR)\sqncs1.c $(CDIR)\sqncs1.h $(RTHFILES)
+	- del sqncs1.obj
+	@- $(SCRIPTSDIR)\errsweep.bat sqncs1.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\sqncs1.c
+	@- del current.bat
+
+strms.obj : $(CDIR)\strms.c $(CDIR)\strms.h $(RTHFILES)
+	- del strms.obj
+	@- $(SCRIPTSDIR)\errsweep.bat strms.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\strms.c
+	@- del current.bat
+
+symtab.obj : $(CDIR)\symtab.c $(CDIR)\symtab.h $(RTHFILES)
+	- del symtab.obj
+	@- $(SCRIPTSDIR)\errsweep.bat symtab.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\symtab.c
+	@- del current.bat
+
+systm.obj : $(CDIR)\systm.c $(CDIR)\systm.h $(RTHFILES)
+	- del systm.obj
+	@- $(SCRIPTSDIR)\errsweep.bat systm.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\systm.c
+	@- del current.bat
+
+telesb.obj : $(CDIR)\telesb.c $(CDIR)\telesb.h $(RTHFILES)
+	- del telesb.obj
+	@- $(SCRIPTSDIR)\errsweep.bat telesb.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\telesb.c
+	@- del current.bat
+
+thai14.obj : $(CDIR)\thai14.c $(CDIR)\thai14.h $(RTHFILES)
+	- del thai14.obj
+	@- $(SCRIPTSDIR)\errsweep.bat thai14.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\thai14.c
+	@- del current.bat
+
+thai18.obj : $(CDIR)\thai18.c $(CDIR)\thai18.h $(RTHFILES)
+	- del thai18.obj
+	@- $(SCRIPTSDIR)\errsweep.bat thai18.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\thai18.c
+	@- del current.bat
+
+thai24.obj : $(CDIR)\thai24.c $(CDIR)\thai24.h $(RTHFILES)
+	- del thai24.obj
+	@- $(SCRIPTSDIR)\errsweep.bat thai24.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\thai24.c
+	@- del current.bat
+
+times.obj : $(CDIR)\times.c $(CDIR)\times.h $(RTHFILES)
+	- del times.obj
+	@- $(SCRIPTSDIR)\errsweep.bat times.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\times.c
+	@- del current.bat
+
+tlwn.obj : $(CDIR)\tlwn.c $(CDIR)\tlwn.h $(RTHFILES)
+	- del tlwn.obj
+	@- $(SCRIPTSDIR)\errsweep.bat tlwn.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\tlwn.c
+	@- del current.bat
+
+tran.obj : $(CDIR)\tran.c $(CDIR)\tran.h $(RTHFILES)
+	- del tran.obj
+	@- $(SCRIPTSDIR)\errsweep.bat tran.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\tran.c
+	@- del current.bat
+
+trnscd.obj : $(CDIR)\trnscd.c $(CDIR)\trnscd.h $(RTHFILES)
+	- del trnscd.obj
+	@- $(SCRIPTSDIR)\errsweep.bat trnscd.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\trnscd.c
+	@- del current.bat
+
+twpts.obj : $(CDIR)\twpts.c $(CDIR)\twpts.h $(RTHFILES)
+	- del twpts.obj
+	@- $(SCRIPTSDIR)\errsweep.bat twpts.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\twpts.c
+	@- del current.bat
+
+uncde.obj : $(CDIR)\uncde.c $(CDIR)\uncde.h $(RTHFILES)
+	- del uncde.obj
+	@- $(SCRIPTSDIR)\errsweep.bat uncde.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\uncde.c
+	@- del current.bat
+
+userfuns.obj : $(CDIR)\userfuns.c $(CDIR)\userfuns.h $(RTHFILES)
+	- del userfuns.obj
+	@- $(SCRIPTSDIR)\errsweep.bat userfuns.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\userfuns.c
+	@- del current.bat
+
+userinit.obj : $(CDIR)\userinit.c $(CDIR)\userinit.h $(RTHFILES)
+	- del userinit.obj
+	@- $(SCRIPTSDIR)\errsweep.bat userinit.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\userinit.c
+	@- del current.bat
+
+usersyms.obj : $(CDIR)\usersyms.c $(CDIR)\usersyms.h $(RTHFILES)
+	- del usersyms.obj
+	@- $(SCRIPTSDIR)\errsweep.bat usersyms.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\usersyms.c
+	@- del current.bat
+
+utlts0.obj : $(CDIR)\utlts0.c $(CDIR)\utlts0.h $(RTHFILES)
+	- del utlts0.obj
+	@- $(SCRIPTSDIR)\errsweep.bat utlts0.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\utlts0.c
+	@- del current.bat
+
+utlts1.obj : $(CDIR)\utlts1.c $(CDIR)\utlts1.h $(RTHFILES)
+	- del utlts1.obj
+	@- $(SCRIPTSDIR)\errsweep.bat utlts1.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\utlts1.c
+	@- del current.bat
+
+utlts2.obj : $(CDIR)\utlts2.c $(CDIR)\utlts2.h $(RTHFILES)
+	- del utlts2.obj
+	@- $(SCRIPTSDIR)\errsweep.bat utlts2.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\utlts2.c
+	@- del current.bat
+
+utlts3.obj : $(CDIR)\utlts3.c $(CDIR)\utlts3.h $(RTHFILES)
+	- del utlts3.obj
+	@- $(SCRIPTSDIR)\errsweep.bat utlts3.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\utlts3.c
+	@- del current.bat
+
+win1.obj : $(CDIR)\win1.c $(CDIR)\win1.h $(RTHFILES)
+	- del win1.obj
+	@- $(SCRIPTSDIR)\errsweep.bat win1.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\win1.c
+	@- del current.bat
+
+win2.obj : $(CDIR)\win2.c $(CDIR)\win2.h $(RTHFILES)
+	- del win2.obj
+	@- $(SCRIPTSDIR)\errsweep.bat win2.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\win2.c
+	@- del current.bat
+
+win3.obj : $(CDIR)\win3.c $(CDIR)\win3.h $(RTHFILES)
+	- del win3.obj
+	@- $(SCRIPTSDIR)\errsweep.bat win3.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\win3.c
+	@- del current.bat
+
+win3a.obj : $(CDIR)\win3a.c $(CDIR)\win3a.h $(RTHFILES)
+	- del win3a.obj
+	@- $(SCRIPTSDIR)\errsweep.bat win3a.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\win3a.c
+	@- del current.bat
+
+win4.obj : $(CDIR)\win4.c $(CDIR)\win4.h $(RTHFILES)
+	- del win4.obj
+	@- $(SCRIPTSDIR)\errsweep.bat win4.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\win4.c
+	@- del current.bat
+
+winmain.obj : $(CDIR)\winmain.c $(CDIR)\winmain.h $(RTHFILES)
+	- del winmain.obj
+	@- $(SCRIPTSDIR)\errsweep.bat winmain.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(RTHDIR) $(CDIR)\winmain.c
+	@- del current.bat
+
+clean : 
+	- del *.obj
+	- del *.lib
+	- del *.exe
+
+install : 
+	- echo y | rmdir /s $(TAPEDST)
+	mkdir $(TAPEDST)
+	- echo y | rmdir /s $(TESTDST)
+	mkdir $(TESTDST)
+	mkdir $(W2KDST)
+	echo win2000\gdiplus.dll >> $(CONTENTS)
+	copy  $(BINPROMDIR)\gdiplus.dll $(W2KDST)\gdiplus.dll
+	echo nptwplug.dll >> $(CONTENTS)
+	copy  $(TWPLUGDIR)\nptwplug.dll $(TAPEDST)\nptwplug.dll
+	echo pegrp32g.dll >> $(CONTENTS)
+	copy  $(BINPROMDIR)\pegrp32g.dll $(TAPEDST)\pegrp32g.dll
+	echo tw.exe >> $(CONTENTS)
+	copy  tw.exe $(TAPEDST)\tw.exe
+	echo tw.map >> $(CONTENTS)
+	copy  tw.map $(TAPEDST)\tw.map
+	echo tw.ok >> $(CONTENTS)
+	copy  $(PROMDIR)\tw.ok $(TAPEDST)\tw.ok
+	xcopy /s /e /i $(TAPEDST) $(TESTDST)
+	del $(TESTDST)\tw.ok
