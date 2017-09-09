@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="02/06/02 18:48:29">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Understanding How the Role Computes Order Size for Forecast Planning</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="stockp12.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="stockp14.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+      <div align="center"><b>e-SCOR User's Guide</b></div>
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/e-SCOR/OnlineHelpFiles/UsersGuide/html/stockpla.htm">  
+        Using Stock Planning Strategies  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Understanding How the Role Computes Order Size for Forecast Planning
+</h2>
+<p>When Plan Type is <code>Forecast Customer</code>, the supplier role determines the size of its replenishment or build orders by estimating how much delivery product the role needs, based on awards for contracts from downstream buyers. The role assumes a linear order/build cycle over the lifetime of the contract; it does not look at inventory levels to determine order size.<a name="5815"></a></p>
+<p>For example, suppose a Manufacturer role has received a contract award for 100 units of its finished product. Suppose the length of the contract is 10 days and the role performs its make planning once a day. The role plans to build 10 units per day for the length of the contract. The role does not care whether it has actually received orders for this amount of finished product; it makes this amount for the life of the contract, regardless of orders. Assuming the downstream buyer always orders the amount of the contract, the role always has enough stock in inventory to fill orders, and it will never have too much stock.<a name="5821"></a></p>
+<p>Now, suppose the downstream buyer orders more than the amount of the contract. When the current contract expires, the Manufacturer role automatically makes just enough additional products to catch up with the orders during its next make planning cycle.<a name="5865"></a></p>
+<p>Similarly, suppose the downstream buyer orders less than the amount of the contract. Again, when the current contract expires, the Manufacturer role takes into account the extra products it has already made and makes that many fewer products during its next make planning cycle. <a name="5866"></a></p>
+<p>This table shows an example where the actual order amount varies with each new contract, which results in different build order sizes each contract period:<a name="5867"></a></p>
+<p >
+  <a name="15561"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="15689"><div >Contract<br>Period</a></div></th>
+    <th><a name="15691"><div >Estimated <br>Contract Amount</a></div></th>
+    <th><a name="15693"><div >Amount Buyer Actually Orders</a></div></th>
+    <th><a name="15695"><div >Amount Mfg.<br>Actually Makes</a></div></th>
+  </tr>
+  <tr>
+    <td><p>C<font ><sub>1</sub></font><a name="15697"></a></p>
+</td>
+    <td><p>100<a name="15699"></a></p>
+</td>
+    <td><p>100<a name="15701"></a></p>
+</td>
+    <td><p>100<a name="15703"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>C<font ><sub>2</sub></font><a name="15705"></a></p>
+</td>
+    <td><p>100<a name="15707"></a></p>
+</td>
+    <td><p>110<a name="15709"></a></p>
+</td>
+    <td><p>110<a name="15711"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>C<font ><sub>3</sub></font><a name="15713"></a></p>
+</td>
+    <td><p>100<a name="15715"></a></p>
+</td>
+    <td><p>90<a name="15717"></a></p>
+</td>
+    <td><p>100<a name="15719"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>C<font ><sub>4</sub></font><a name="15721"></a></p>
+</td>
+    <td><p>100<a name="15723"></a></p>
+</td>
+    <td><p>100<a name="15725"></a></p>
+</td>
+    <td><p>90<a name="15727"></a></p>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<p>When using a forecast planning strategy, a supplier can maintain optimal inventory levels, while still reacting to order fluctuations. Keep in mind, however, that forecast planning assumes that the Estimated Contract Amount that you configure for the buyer role's source product is relatively accurate. If not, the downstream buyer receives product shipments late, which can adversely affect turnaround time.<a name="5910"></a></p>
+<p><b>Related topics</b><a name="77023"></a></p>
+<p><a href="stockp12.htm#5797">Configuring Buyer Roles to Use Forecast Planning</a><a name="77027"></a></p>
+<p><a href="thread19.htm#252317">Contracts Process</a><a name="77031"></a></p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="stockp12.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="stockp14.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
