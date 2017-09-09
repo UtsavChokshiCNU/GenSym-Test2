@@ -1,0 +1,29 @@
+#set host=`hostname`
+#set user=`whoami`
+#if ($host == "be" && $user == "ab") echo ab on be... starting .login
+#
+# Standard .login for Gensym's Unix systems
+#
+# This may source following file(s):
+# 
+#    ~/.console  (if it exists)
+#    /home/ab/.console (if ~/.console does not exist)
+#
+# MHD 4/8/92
+# MHD 1/23/92
+#
+
+if { tty -s } then
+  set tty = `tty`
+  if (($tty == /dev/console) || \
+      ($tty == /dev/hft/0)) then       # NOTE: /dev/hft/0 is the file
+                                     #   name of the console device on
+                                     #   our IBM RS6000, BE.  (MHD 9/92)
+    if ( -f ~/.console ) then
+      source ~/.console
+    else
+      source /home/ab/.console
+    endif
+  endif
+endif
+
