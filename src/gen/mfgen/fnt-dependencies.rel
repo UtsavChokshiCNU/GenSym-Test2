@@ -1,0 +1,119 @@
+;;; -*- Mode: LISP; Syntax: Common-Lisp; Base: 10; Package: USER -*-
+(in-package "USER")
+
+;;;; Makefile generator relational database: fnt-dependencies.rel
+
+;;; Copyright (c) 1986-2017 Gensym Corporation.
+;;; All Rights Reserved.
+
+;;; author: Mark E. Staknis
+
+;;; This file contains the relation that maintains the dependencies
+;;; for creation of the font library in the fnt directory.
+
+;;; modifications: 7/23/00 Mark H. David - removed entries for object files
+;;;                  tr_names, tr_mkchr, and tr_mkchr (type1), and hpfnt1,
+;;;                  hpfnt2, and load_pcl (pcl).  This is type remove support
+;;;                  for the type1 rasterizer ("tr") and PCL ("hp") rasterizer.
+;;;                  The changes here are done in synch with the change in
+;;;                  fnt/c/useropt.h, turning off support for these rasterizers. 
+
+(setq fnt-dependency-relation
+ '(( target-group  type-group
+                        platform-group
+                                    dependency    dependency-type
+                                                       local )
+;;   ------------  ---- ----------- ------------  ---- -----
+   ((all           dum  _all        libfnt        lib  y     )
+    (fnthfiles     var  _all        errcodes      h    y     )
+    (fnthfiles     var  _all        finfotbl      h    y     )
+    (fnthfiles     var  _all        fino          h    y     )
+    (fnthfiles     var  _all        fixed         h    y     )
+    (fnthfiles     var  _all        fnt           h    y     )
+    (fnthfiles     var  _all        fnt_a         h    y     )
+    (fnthfiles     var  _all        font3004      h    y     )
+    (fnthfiles     var  _all        font3008      h    y     )
+    (fnthfiles     var  _all        fontmath      h    y     )
+    (fnthfiles     var  _all        fontscal      h    y     )
+    (fnthfiles     var  _all        fscdefs       h    y     )
+    (fnthfiles     var  _all        fserror       h    y     )
+    (fnthfiles     var  _all        fsglue        h    y     )
+    (fnthfiles     var  _all        hp_readr      h    y     )
+    (fnthfiles     var  _all        hpf           h    y     )
+    (fnthfiles     var  _all        keys          h    y     )
+    (fnthfiles     var  _all        mapstrng      h    y     )
+    (fnthfiles     var  _all        pcl5fnt       h    y     )
+    (fnthfiles     var  _all        pclhdrs       h    y     )
+    (fnthfiles     var  _all        privfosc      h    y     )
+    (fnthfiles     var  _all        privsfnt      h    y     )
+    (fnthfiles     var  _all        sc            h    y     )
+    (fnthfiles     var  _all        sfnt          h    y     )
+    (fnthfiles     var  _all        sfntenum      h    y     )
+    (fnthfiles     var  _all        slavic        h    y     )
+    (fnthfiles     var  _all        spdo_prv      h    y     )
+    (fnthfiles     var  _all        speedo        h    y     )
+    (fnthfiles     var  _all        stdef         h    y     )
+    (fnthfiles     var  _all        tr_fdata      h    y     )
+    (fnthfiles     var  _all        truetype      h    y     )
+    (fnthfiles     var  _all        type1         h    y     )
+    (fnthfiles     var  _all        ufe           h    y     )
+    (fnthfiles     var  _all        useropt       h    y     )
+    (_all          obj  _all        fnthfiles     var  y     )
+    (libfnt        lib  _all        cmt           obj  y     )
+    (libfnt        lib  _all        do_char       obj  y     )
+    (libfnt        lib  _all        do_trns       obj  y     )
+    (libfnt        lib  _all        cmtglob       obj  y     )
+    (libfnt        lib  _all        fixed_pt      obj  y     )
+    (libfnt        lib  _all        fnt           obj  y     )
+    (libfnt        lib  _all        fontrip       obj  y     )
+    (libfnt        lib  _all        fontscal      obj  y     )
+    (libfnt        lib  _all        frontend      obj  y     )
+    (libfnt        lib  _all        fsglue        obj  y     )
+    (libfnt        lib  _all        mapstrng      obj  y     )
+    (libfnt        lib  _all        msl           obj  y     )
+    (libfnt        lib  _all        msst          obj  y     )
+    (libfnt        lib  _all        msstglob      obj  y     )
+    (libfnt        lib  _all        newscan       obj  y     )
+    (libfnt        lib  _all        out_bl2d      obj  y     )
+    (libfnt        lib  _all        out_blk       obj  y     )
+    (libfnt        lib  _all        out_outl      obj  y     )
+    (libfnt        lib  _all        out_scrn      obj  y     )
+    (libfnt        lib  _all        out_util      obj  y     )
+    (libfnt        lib  _all        out_wht       obj  y     )
+    (libfnt        lib  _all        reset         obj  y     )
+    (libfnt        lib  _all        set_keys      obj  y     )
+    (libfnt        lib  _all        set_spcs      obj  y     )
+    (libfnt        lib  _all        set_trns      obj  y     )
+    (libfnt        lib  _all        sfntd         obj  y     )
+    (libfnt        lib  _all        tt_iface      obj  y     )
+    (libfnt        lib  _all        tt_specs      obj  y     )
+
+    (libfnt        dso  _all        cmt           obj  y     )
+    (libfnt        dso  _all        do_char       obj  y     )
+    (libfnt        dso  _all        do_trns       obj  y     )
+    (libfnt        dso  _all        cmtglob       obj  y     )
+    (libfnt        dso  _all        fixed_pt      obj  y     )
+    (libfnt        dso  _all        fnt           obj  y     )
+    (libfnt        dso  _all        fontrip       obj  y     )
+    (libfnt        dso  _all        fontscal      obj  y     )
+    (libfnt        dso  _all        frontend      obj  y     )
+    (libfnt        dso  _all        fsglue        obj  y     )
+    (libfnt        dso  _all        mapstrng      obj  y     )
+    (libfnt        dso  _all        msl           obj  y     )
+    (libfnt        dso  _all        msst          obj  y     )
+    (libfnt        dso  _all        msstglob      obj  y     )
+    (libfnt        dso  _all        newscan       obj  y     )
+    (libfnt        dso  _all        out_bl2d      obj  y     )
+    (libfnt        dso  _all        out_blk       obj  y     )
+    (libfnt        dso  _all        out_outl      obj  y     )
+    (libfnt        dso  _all        out_scrn      obj  y     )
+    (libfnt        dso  _all        out_util      obj  y     )
+    (libfnt        dso  _all        out_wht       obj  y     )
+    (libfnt        dso  _all        reset         obj  y     )
+    (libfnt        dso  _all        set_keys      obj  y     )
+    (libfnt        dso  _all        set_spcs      obj  y     )
+    (libfnt        dso  _all        set_trns      obj  y     )
+    (libfnt        dso  _all        sfntd         obj  y     )
+    (libfnt        dso  _all        tt_iface      obj  y     )
+    (libfnt        dso  _all        tt_specs      obj  y     )
+    )))
