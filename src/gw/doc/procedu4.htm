@@ -1,0 +1,100 @@
+<html><head><title>Remote Procedures</title></head>
+<body bgcolor="#ffffff">
+<a href="procedu3.htm"><h5>| Prev </a> <a href="procedu5.htm">| Next </a> <a href="procedur.htm">| Start of Chapter </a> <a href="proced11.htm">| End of Chapter </a> <a href="booktoc.htm">| Contents </a> <a href="bookix.htm">| Index |</a> (5 out of 12)</h5> <br>
+
+
+<a name="2774">
+<h1> gw-decline-to-serve-url 
+</h1>
+</a><a name="2775">
+Invoked by a response procedure in G2 when G2 WebLink requests a URL for 
+which G2 is unable to provide a resource. 
+<p>
+</a><a name="2776">
+<h2> Synopsis </h2>
+</a><ul><a name="2777">
+<pre><code>gw-decline-to-serve-url(</code><em>fetch-id</em><code>: integer, </code><em>apology</em><code>: text) 
+</code></pre>
+</a><a name="2791">
+<table border=4>
+<tr><th align="left" valign="middle"><a name="2780">
+<strong>Argument 
+</strong>
+</a><th align="left" valign="middle"><a name="2782">
+<strong>Description 
+</strong>
+</a>
+<tr><td valign="middle"><a name="2784">
+<em>fetch-id 
+</em><p>
+</a><br><td valign="middle"><a name="2786">
+Should match the number provided in the 
+call made by G2 WebLink to G2 requesting 
+the resource.
+<p>
+</a><br>
+<tr><td valign="middle"><a name="2788">
+ <em>apology 
+</em><p>
+</a><br><td valign="middle"><a name="2790">
+Text that is included in the result that is 
+returned to the HTTP client. The result 
+returned to the client is marked as an error.
+<p>
+</a><br>
+
+</table>
+
+<p></a></ul><a name="2792">
+<h2> Description </h2>
+</a><a name="2793">
+When the bridge requests a resource from G2, the URL that it uses in the request 
+must match one of the tendered patterns that G2 provided through <a href="proced11.htm#3253">gw-tender-
+resources()</a>. If G2 cannot provide a resource for a URL that matches a tendered 
+pattern, it calls <code>gw-decline-to-serve-url()</code> to notify the client making the request. 
+<p>
+</a><a name="2795">
+A G2 application may not be able to serve some requests even though the URLs 
+for those requests match patterns that the G2 application has tendered. This can 
+happen because a tendered pattern can match many URLs &#175; including URLs for 
+resources that the G2 application does not provide. A URL can also request a 
+resource that the G2 application does in fact provide, but at a time when the 
+resource is not available. In these cases, G2 notifies the client requesting the 
+resource by calling <code>gw-decline-to-serve-url()</code>.
+<p>
+</a><a name="2796">
+<h2> Return Values</h2>
+</a><a name="2797">
+None. 
+<p>
+</a><a name="2798">
+<h2> Signals</h2>
+</a><a name="2808">
+<table border=4>
+<tr><th align="left" valign="middle"><a name="2801">
+<strong>Signal 
+</strong>
+</a><th align="left" valign="middle"><a name="2803">
+<strong>Description 
+</strong>
+</a>
+<tr><td valign="middle"><a name="2805">
+<code>invalid-url-request-
+number 
+</code><p>
+</a><br><td valign="middle"><a name="2807">
+Indicates that when the call was received 
+by G2 WebLink, no client request with this 
+ID was in progress. This may indicate that 
+the client closed the connection before G2 
+finished it.
+<p>
+</a><br>
+
+</table> 
+
+<p></a>
+
+<a href="procedu3.htm"><h5>| Prev </a> <a href="procedu5.htm">| Next </a> <a href="procedur.htm">| Start of Chapter </a> <a href="proced11.htm">| End of Chapter </a> <a href="booktoc.htm">| Contents </a> <a href="bookix.htm">| Index |</a> (5 out of 12)</h5> <br>
+<A HREF="titlepa1.htm"><h6>Copyright &#169; 1996, Gensym Corporation, Inc.</h6></A>
+</body></html>
