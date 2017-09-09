@@ -1,0 +1,226 @@
+<!DOCTYPE project [
+    <!ENTITY ivycommons SYSTEM "./ivycommons.xml">
+]>
+<project default="all" name="JFree charts adapter" xmlns:jacoco="antlib:org.jacoco.ant">
+
+  <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
+    <classpath path="${basedir}/../../../java/jacoco-0.7.9/lib/jacocoant.jar" />
+  </taskdef>
+
+	<property file="${basedir}/../../../ant/build.properties"/>
+	<property file="${basedir}/ivysettings.properties"/>
+	<property file="${basedir}/build.properties" description="Build property file" />
+	<property file="threshold.properties"/>
+
+	&ivycommons;
+	<ivy-settings file="${basedir}/ivysettings.xml"/>
+
+	<!--Classpath for build.-->
+	<path id="classpath">
+		<fileset dir="${jfree.lib.dir}" includes="**/*.jar"/>
+		<fileset dir="${jfree.ivy.retrieved}" includes="**/*.jar"/>
+	</path>
+
+	<!--Classpath for build.-->
+	<path id="checkstyle.classpath">
+<!--		<fileset dir="${jfree.ivy.retrieved}/log4j" includes="**/*.jar"/> -->
+		<fileset dir="${jfree.ivy.retrieved}/checkstyle" includes="**/*.jar"/>
+		<fileset dir="${jfree.lib.dir}" includes="**/*.jar"/>
+	</path>
+
+	<path id="findbugs.classpath">
+		<fileset dir="${jfree.ivy.retrieved}/findbugs" includes="**/*.jar"/>
+		<fileset dir="${jfree.ivy.retrieved}/junit"  includes="**/*.jar"/>
+		<fileset dir="${jfree.lib.dir}" includes="**/*.jar"/>
+	</path>
+  
+	<!--Classpath for test lib.-->
+	<path id="classpath.test">
+		<path refid="classpath" />
+		<fileset dir="${jfree.dest.dir}" includes="**/*.jar"/>
+	</path>
+
+	<!--Classpath for test.-->
+	<path id="classpath.junit">
+		<path refid="classpath.test"/>
+		<pathelement location="${jfree.tests.build.dir}"/>
+	</path>
+
+	<!--This target compile and build main module.-->
+	<target name="build" depends="clean,resolve,create-dir">
+		<javac srcdir="${jfree.src.dir}" destdir="${jfree.build.dir}/main" debug="true">
+			<classpath>
+				<path refid="classpath" />
+			</classpath>
+		</javac>
+		<jar destfile="${jfree.dest.dir}/${jfree.name}.jar" basedir="${jfree.build.dir}/main"/>
+	</target>
+
+
+	<!--Should depend on junit-run and build-tests target.  -->
+	<target name="all" depends="build, copy-to-dest">
+		<echo> The application has been build successfully.</echo>
+	</target>
+
+	<!--Copy classpath librarys to destributive directory-->
+	<target name="copy-to-dest" depends="create-dir" description="Copy librarys in to dest dir.">
+		<copy file="${jfree.lib.dir}/jfreechart-1.0.13.jar" todir="${jfree.dest.dir}"/>
+		<copy file="${jfree.lib.dir}/jcommon-1.0.16.jar" todir="${jfree.dest.dir}"/>
+	</target>
+
+	<target name="test" depends="build" description="Runs jfree tests">
+	  <delete dir="${jfree.tests.lib.dir}"/> 
+	  <mkdir dir="${jfree.tests.lib.dir}"/>
+	  <mkdir dir="${jfree.cov.dir}" />
+	  <javac srcdir="${jfree.tests.src.dir}" destdir="${jfree.tests.lib.dir}" includes="**/*.java" classpathref="classpath.test" encoding="UTF-8" debug="yes" debuglevel="source,lines,vars" fork="yes" includeantruntime="false" />
+	  <jacoco:coverage>
+	    <junit printsummary="yes" fork="true" maxmemory="256m">
+	      <classpath>
+		<path refid="classpath.junit"/>
+		<pathelement location="${jfree.tests.lib.dir}" />
+	      </classpath>
+	      <formatter type="xml" />
+	      <batchtest fork="yes" todir="${jfree.cov.dir}">
+		<fileset dir="${jfree.tests.dir}/src">
+		  <include name="**/*Test.java" />
+		</fileset>
+	      </batchtest>
+	    </junit>
+	  </jacoco:coverage>
+	</target>
+
+	<target name="resolve">
+		<ivy-retrieve pattern="${jfree.ivy.retrieved}/[module]/[artifact].[ext]"/>
+	</target>
+
+	<target name="clean-cache">
+		<ivy-cleancache/>
+	</target>
+
+	<!--Clean target.-->
+  <target name="clean-build" depends="clean"/>
+  <target name="clean-results" depends="clean"/>
+  
+	<target name="clean" depends="">
+		<delete dir="${jfree.build.dir}" failonerror="false"/>
+		<delete dir="${jfree.dest.dir}" failonerror="false"/>
+		<delete dir="${jfree.cov.dir}" failonerror="false"/>
+		<delete dir="${jfree.ivy.retrieved}" failonerror="false"/>
+		<delete dir="$(jfree.result.dir}" failonerror="false"/>
+	</target>
+
+	<!--Create all dirs for application.-->
+	<target name="create-dir" depends="">
+		<mkdir dir="${jfree.build.dir}/main"/>
+		<mkdir dir="${jfree.tests.build.dir}"/>
+		<mkdir dir="${jfree.dest.dir}"/>
+		<mkdir dir="${jfree.cov.dir}"/>
+		<mkdir dir="${jfree.cov.dir.junit}"/>
+	</target>
+
+	<!-- Run 3D demo app -->
+	<target name="run-3d-demo" depends="">
+		<java classname="gensym.charts.j3d.Demo" spawn="true" fork="true">
+			<classpath>
+				<path refid="classpath" />
+				<fileset dir="${jfree.dest.dir}" includes="**/*.jar"/>
+			</classpath>
+		</java>
+	</target>
+
+	<target name="check-cpd">
+		<delete file="${jfree.result.dir}/cpd_check.xml"/>
+		<delete file="${jfree.result.dir}/cpd_check.html"/>
+		<mkdir dir="${jfree.result.dir}"/>
+
+		<taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" classpath="${pmd.dir}/lib/pmd-4.2.6.jar">
+		</taskdef>
+		<cpd minimumTokenCount="100" format="xml" outputFile="${jfree.result.dir}/cpd_check.xml" encoding="UTF-8">
+			<fileset dir="${jfree.src.dir}">
+				<include name="**/*.java" />
+			</fileset>
+		</cpd>
+	</target>
+ 
+	<target name="check-pmd">
+	  <delete file="${jfree.result.dir}/pmd_report.xml"/>
+	  <delete file="${jfree.result.dir}/pmd_report.html"/>
+    <mkdir dir="${jfree.result.dir}"/>
+    
+    <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpath="${pmd.dir}/lib/pmd-4.2.6.jar"/>
+    <pmd>
+      <ruleset>rulesets/favorites.xml</ruleset>
+      <ruleset>rulesets/design.xml</ruleset>
+      <ruleset>basic</ruleset>
+      <formatter type="html" toFile="${jfree.result.dir}/pmd_report.html" linkPrefix="file:///${jfree.result.dir}/pmd-html/"/>
+      <formatter type="xml" toFile="${jfree.result.dir}/pmd_report.xml"/>
+      <fileset dir="${jfree.src.dir}">
+        <include name="**/*.java"/>
+      </fileset>
+    </pmd>
+	</target>
+
+  <!-- Checkstyle check -->
+  <target name="run-checkstyle" depends="resolve">
+    <delete dir="${jfree.checkstyle.report.dir}"/>
+    <mkdir dir="${jfree.checkstyle.report.dir}" />
+
+    <taskdef resource="checkstyletask.properties" classpathref="checkstyle.classpath" />
+    <checkstyle config="${jfree.checkstyle.config.file}" failOnViolation="false" maxErrors="${CHECKSTYLE_THRESHOLD}">
+      <fileset dir="${jfree.src.dir}">
+          <include name="**/*.java" />
+      </fileset>
+      <formatter type="xml" toFile="${jfree.checkstyle.report.dir}/checkstyle_errors.xml" />
+    </checkstyle>
+    <xslt in="${jfree.checkstyle.report.dir}/checkstyle_errors.xml" 
+          out="${jfree.checkstyle.report.dir}/checkstyle_errors.html" 
+          style="${jfree.metric_style.checkstyle.dir}/checkstyle-noframes-sorted.xsl" />
+  </target>
+
+  <target name="check-style-threshold"  depends="run-checkstyle">
+    <taskdef name="checkstyle_threshold" classname="com.trilogy.buildmgmt.emma.CheckStyleTask" classpathref="checkstyle.classpath"/> 
+    <checkstyle_threshold checkStyleReportXmlFile="${jfree.checkstyle.report.dir}/checkstyle_errors.xml" failOnError="true" >
+      <checkthreshold ctCheckStyle="${CHECKSTYLE_THRESHOLD}" thresholdFile="threshold.properties"/>
+    </checkstyle_threshold>
+  </target>
+
+  <target name="check-checkstyle" depends="run-checkstyle"/>
+  
+  <target name="check-coverage" depends="test" description="Run the Test Cases, generate the Coverage Report">
+    <jacoco:report>
+      <executiondata>
+	<file file="jacoco.exec" />
+      </executiondata>
+      <structure name="jfree-lib">
+	<classfiles>
+	  <fileset dir="${jfree.build.dir}" />
+	</classfiles>
+      </structure>
+      <html destdir="${jfree.cov.dir}" />
+    </jacoco:report>
+  </target>
+
+  <!-- Findbugs check -->  
+  <target name="findbugs-init" depends="resolve">
+    <delete dir="${jfree.findbugs.report.dir}" />
+    <mkdir dir="${jfree.findbugs.report.dir}" />
+    <property name="jfree.findbugs.home" value="${jfree.ivy.retrieved}/findbugs" />
+    <untar src="${jfree.ivy.retrieved}/findbugs/findbugs.tgz" dest="${jfree.findbugs.home}" compression="gzip" />
+    <taskdef name="findbugs"
+       classname="edu.umd.cs.findbugs.anttask.FindBugsTask"
+       classpathref="findbugs.classpath" />
+  </target>
+
+  <target name="findbugs" depends="findbugs-init">
+    <findbugs home="${jfree.findbugs.home}" output="xml" outputFile="${jfree.findbugs.report.file}" failOnError="false">
+      <class location="${jfree.src.dir}" />
+      <class location="${jfree.tests.dir}" />
+      <auxClasspath refid="findbugs.classpath" />
+    </findbugs>
+    <xslt in="${jfree.findbugs.report.file}" out="${jfree.findbugs.report.dir}/findbugs_result.html" 
+          style="${jfree.metric_style.findbugs.dir}/default.xsl" />
+  </target>
+
+  <target name="check-findbugs" depends="findbugs"/>
+ 
+</project>
