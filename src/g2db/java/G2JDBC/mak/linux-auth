@@ -1,0 +1,27 @@
+include ${SRCBOX}/g2db/mak/unix.def
+
+AUTHDIR	    = $(SRCBOX)/g2db/c/authorize
+JDBCAUTH    = $(SRCBOX)/g2db/java/G2JDBC/c
+EXEDIR	    = $(DSTBOX)/jdbc
+C_FLAGS	    = $(cflags)
+INCLUDE_FLAGS	= -I"$(JAVA_HOME)/include/linux" -I"$(JAVA_HOME)/include" \
+		-I$(AUTHDIR) -I$(JDBCAUTH)
+COMMON	    = -D_REENTRANT -DNEW_CLASS_MAPPING
+CCFLAGS	    = $(COMMON) $(C_FLAGS) $(cvars) $(INCLUDE_FLAGS) -fPIC -fno-stack-protector
+LINUX_LIBS  = -lpthread -lm -lnsl
+LIBS	    = -L. $(LINUX_LIBS)
+LINKFLAGS   = -G
+H_FILES	    = $(JDBCAUTH)/core_G2JDBCAuthorize.h $(AUTHDIR)/gsi_brg.h
+ALL_FILES   = $(AUTHDIR)/gsi_brg.o ${DSTBOX}/ext/opt/nsleep.o $(JDBCAUTH)/core_G2JDBCAuthorize.o
+EXECUTABLES = $(EXEDIR)/libG2JDBCAuthorize.so
+
+ALL	    : $(EXECUTABLES)
+
+$(EXEDIR)/libG2JDBCAuthorize.so	: $(ALL_FILES)
+	ld -o $(EXEDIR)/libG2JDBCAuthorize.so $(LINKFLAGS) $(LIBS) $(ALL_FILES)
+
+$(JDBCAUTH)/core_G2JDBCAuthorize.o : $(JDBCAUTH)/core_G2JDBCAuthorize.c $(JDBCAUTH)/core_G2JDBCAuthorize.h
+	$(CC) -c $(CCFLAGS) $(JDBCAUTH)/core_G2JDBCAuthorize.c -o $(JDBCAUTH)/core_G2JDBCAuthorize.o
+
+$(AUTHDIR)/gsi_brg.o : $(AUTHDIR)/gsi_brg.c
+	$(CC) -c -D$(PLATFM) $(CCFLAGS) $(AUTHDIR)/gsi_brg.c -o $(AUTHDIR)/gsi_brg.o
