@@ -1,0 +1,302 @@
+#!/bin/csh -f                            #Translate to a real language ASAP! 
+
+if (-f /tmp/g2-51r1) then
+  set G2EXEC='/tmp/g2-51r1'              #Is there a local g2?
+else
+  set G2EXEC='/gensym/ut/dev/g2-latest/g2'     #Run test g2
+endif
+
+set APPLCN=apps                          #apps/g1/etc.
+set LOADTOP=0                            #Do not load top by default
+set LOADKB=""                            #Determined from .module
+set MODMAPDIR='/tmp'                     #Where to keep the module-map file.
+set G2MMTEXT="";                         #To build the module-map.
+set MACHINE=`uname -n`;                  #What machine are we running on?
+set BACKUPMODE=0                         #Source File Backups on by default
+set LOCKMODE=1                           #Source File Locking on by default
+set MMFILE="g2_$$.mm"                    #Set MM filename to the process id
+#set OS=`uname -s`                        #Operating System
+set OS="HP-UX"
+
+set REQAPPMODS=
+set SRCAPPMODS=
+set DEPAPPMODS=()
+
+set ARGS=($*)
+set numargs=$#ARGS
+
+if ( $numargs == 0 ) then
+  echo "Usage: cmd [top-level-module] [options]"
+  echo "Type loadapps -help for a detailed description"
+  exit(1);
+endif
+
+#First argument MUST be the top level G1 module.
+set loadmod=$1
+#echo "Top Level Module = $loadmod"
+shift
+
+#if Not exists /home/apps/${loadmod} then complain and exit.
+#or not a member of .appmodules
+set APPKNOWNMODULE=0;
+set APPMODLIST=
+foreach appmodule (`cat /home/apps/.appmodules`)
+    if !(-d /home/${APPLCN}/$appmodule) then
+	echo "Incorrect Application Module ($appmodule) specified.\
+No such directory /home/${APPLCN}/$appmodule exists. Exiting..."
+	exit(2);
+    endif
+    set APPMODLIST="$APPMODLIST $appmodule"
+    if ( $appmodule == $loadmod ) set APPKNOWNMODULE=1
+end;
+
+if ( $APPKNOWNMODULE == 0 ) then
+  echo "${loadmod} is not a known module. Exiting..."
+  exit(1);
+endif
+
+if !(-d /home/apps/${loadmod}) then
+    echo "${loadmod} directory does not exist. Exiting...";
+    exit(1);
+endif
+set APPMODLIST=($APPMODLIST)
+
+set SRCAPPMODS=($loadmod)
+
+#Determine dependencies (hard coded for now).
+#set DEPENDENCIESFILE="/home/${APPLCN}/${loadmod}/.reqmods";
+#set moddep=`cat ${DEPENDENCIESFILE}`;
+#set moddep=($moddep)
+set moddep=($loadmod)
+set unexpappmods=($moddep)
+set fullappmodlist=($moddep)
+while ($#unexpappmods)
+#    echo "Number of unexp mods = $#unexpappmods ($unexpappmods)";
+    set currmod=$unexpappmods[1];
+    set reqappmods=`cat /home/${APPLCN}/${currmod}/.reqmods`;
+    if ($#reqappmods) then
+	foreach reqcompmod ($reqappmods)
+	    echo $APPMODLIST | egrep -e $reqcompmod > /dev/null
+	    if ($status) then
+		echo "Non recognized Application Module ($reqcompmod) found in dependencies for $currmod. Exiting...";
+		exit(2);
+	    endif
+	    echo $fullappmodlist | egrep -e $reqcompmod > /dev/null
+	    if ($status) then
+	        set fullappmodlist=($fullappmodlist $reqcompmod)
+	        set unexpappmods=($unexpappmods $reqcompmod)
+	    endif
+	end
+    endif
+    set unexpappmods=($unexpappmods[2-]);
+end
+
+#echo "Loaded Modules List: $fullappmodlist"
+echo ""
+echo ""
+
+#Parse arguments -s file1 <filen...> -top
+
+set ARGS=($*)
+set numargs=$#ARGS
+set sourcefiles=()
+if ( $numargs != 0 ) then #Can't believe how broken csh is!!!!!
+while ( $numargs != 0 )
+  set ARG=$1;
+  if ( "`echo $ARG|cut -c1`" == "-" ) then
+      switch($ARG)
+	  case -help:
+	      cat /home/apps/scripts/.helpfile
+	      exit(0);
+	      breasksw;
+#          case -d:
+#              shift;
+#              set loadmod=
+#	      set DEPAPPMODS=($loadmod)
+#              breaksw;
+	  case -s:                         #Force source KB load for args...
+	      shift;
+	      set ARGS=($*);
+	      set numargs=$#ARGS;
+	      foreach appmodule ($ARGS)
+		  if ( "`echo $appmodule|cut -c1`" == "-" ) break
+		  echo $APPMODLIST | egrep -e $appmodule > /dev/null
+                  if ($status) then 
+		      echo "Requested source app-module ($appmodule) of $loadmod is invalid. Exiting..."
+		      exit(2);
+		  endif
+		  echo $fullappmodlist | egrep -e $appmodule > /dev/null
+		  if ($status) then
+		      echo "Requested source Application Module ($appmodule) is not required to load $loadmod.\
+Ignoring this request and continuing...";
+		  else
+		      set SRCAPPMODS=($SRCAPPMODS $appmodule)
+		      set sourcefiles=($sourcefiles $appmodule)
+		  endif
+		  if ( $numargs > 0 ) then
+		    shift;
+		    set ARGS=($*);
+		    set numargs=$#ARGS
+		  endif
+	      end;
+	      breaksw;
+	  case -top:                       #Load test file for top module
+	      set LOADTOP=1;
+	      if ( $numargs > 0 ) then
+	        shift;
+	        set ARGS=($*);
+	        set numargs=$#ARGS
+	      endif
+	      breaksw;
+	  case -nb:                        #Turn backups off
+	      set BACKUPMODE=0;
+	      echo "No Backups\!"
+              if ( $numargs > 0 ) then
+                shift;
+                set ARGS=($*);
+                set numargs=$#ARGS
+              endif
+              breaksw;
+	  case -nl:                        #Turn Locking (&lock checking) off
+	      set LOCKMODE=0;
+	      echo "NO LOCKING\!"
+              if ( $numargs > 0 ) then
+                shift;
+                set ARGS=($*);
+                set numargs=$#ARGS
+              endif
+              breaksw;
+	  default:
+	      echo "Unknown argument ($ARG). Will pass rest of line\
+$*\
+to G2";
+	      break;
+	      breaksw;
+      endsw
+  endif
+end				#while
+endif 				#Dummy for skipping while if no options.
+
+set sourcefiles=($loadmod $sourcefiles)
+#echo "SourceFiles: $sourcefiles";
+
+#Now remove dependencies for which we want source.
+
+@ index=0;
+foreach dep ($fullappmodlist)
+@ index=`expr $index + 1`;
+    echo $SRCAPPMODS | egrep -e $dep > /dev/null
+    if ($status) set DEPAPPMODS=($DEPAPPMODS $dep)
+end;
+
+#Tell the user what is being loaded
+
+echo "Loading distribution: $DEPAPPMODS\
+Loading source: $SRCAPPMODS"
+
+#Give a chance to abort this execution.
+
+echo -n "Continue? ([y]/n) >"
+set response=($<)
+if !( $response == "y" || $response == "Y" || $response == "") then
+  echo "Usage: %run-g1-module [top-level-module] -top -s <source modules> -<G2 args>";
+  exit 5;
+endif
+
+#Get source files.
+
+#
+# *********  IMPLEMENT LOCKING MECHANISM  ***********
+#
+
+set REQSRCLOCKED = 0
+if ( $LOCKMODE == 1 ) then
+  foreach srcmod ($SRCAPPMODS)
+    /bin/test -f /home/${APPLCN}/${srcmod}/current/.lock && set REQSRCLOCKED=1 && break;
+  end
+endif
+
+if ( $REQSRCLOCKED != 0 ) then 
+  echo "The following sources are not available."
+  foreach srcmod ($SRCAPPMODS)
+    /bin/test -f /home/${APPLCN}/${srcmod}/current/.lock && echo -n "$srcmod is locked -- " && cat /home/${APPLCN}/${srcmod}/current/.lock;
+  end;
+  echo "Quitting application launch...";
+  exit(6);
+endif
+
+
+echo "" > /tmp/alt.mm
+if ( $BACKUPMODE == 1 ) echo -n "Backing up and "
+if ( $LOCKMODE == 1) echo "Locking sources..."
+set BACKUP_DATE=`date '+%m%d%y-%H%M'`
+echo "${USER}@$MACHINE  `date`" >! /tmp/.lock
+foreach srcmod ($SRCAPPMODS)
+  set APPDIR="/home/${APPLCN}/${srcmod}"
+  set SRCDIR="${APPDIR}/current"
+  if ( $BACKUPMODE == 1) then
+    mkdir ${SRCDIR}/backups/${BACKUP_DATE}
+    cp ${SRCDIR}/${srcmod}.kb ${SRCDIR}/backups/${BACKUP_DATE}
+  endif
+  if ( $LOCKMODE == 1) cp /tmp/.lock ${SRCDIR}/.lock
+  foreach g2module (`cat ${APPDIR}/.modules`)
+      if ( $srcmod == $loadmod && $LOADKB == "") set LOADKB="${SRCDIR}/${g2module}.kb"
+      if ( $OS == "HP-UX") then
+        echo "${g2module}             ${SRCDIR}/${g2module}.kb" >> /tmp/alt.mm
+      else
+        set G2MMTEXT="$G2MMTEXT\${g2module}		${SRCDIR}/${g2module}.kb";
+      endif
+  end
+end;
+/bin/rm /tmp/.lock
+
+foreach depmod ($DEPAPPMODS)
+    set APPDIR="/home/${APPLCN}/${depmod}"
+    set DEPDIR="/home/${APPLCN}/${depmod}/best"
+    foreach g2module (`cat $APPDIR/.modules`)
+	if ( $OS == "HP-UX") then
+	    echo "${g2module}             ${DEPDIR}/${g2module}.kb" >> /tmp/alt.mm
+	else
+            set G2MMTEXT="$G2MMTEXT\${g2module}		${DEPDIR}/${g2module}.kb";
+	endif
+    end;
+end;
+
+#Insert CR in the g2.mm text.
+echo "\
+The MODULE-MAP is:"
+
+if !( $OS == "HP-UX")  echo $G2MMTEXT| tr "\\" "\012"
+echo $G2MMTEXT| tr "\\" "\012" >! $MODMAPDIR/$MMFILE
+if ( $OS == "HP-UX" ) then
+    cat /tmp/alt.mm >> $MODMAPDIR/$MMFILE
+    /bin/rm /tmp/alt.mm
+    cat $MODMAPDIR/$MMFILE
+endif
+echo ""
+
+#What is the kb to load? Top-level module known. Based on LOADTOP?
+#Add loading top to modules as and when implemented!
+
+#DOne above. Move comment.
+
+#And then, run it.
+
+echo ""
+echo ${G2EXEC} $* -name $loadmod -module-map $MODMAPDIR/$MMFILE -kb $LOADKB
+${G2EXEC} $* -name $loadmod -module-map $MODMAPDIR/$MMFILE 
+#-kb $LOADKB
+
+#Clean up locks!
+
+echo ""
+foreach srcmod ($SRCAPPMODS)
+  set SRCDIR="/home/${APPLCN}/${srcmod}/current"
+  test -f ${SRCDIR}/.lock && /bin/rm ${SRCDIR}/.lock
+end;
+
+#By demand, clean up module-map temporary file
+/bin/rm $MODMAPDIR/$MMFILE
+
+#Be polite.
+echo "GoodBye\!"
