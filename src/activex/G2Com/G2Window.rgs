@@ -1,0 +1,26 @@
+HKCR
+{
+	G2Com.G2Window.1 = s 'G2Window Class'
+	{
+		CLSID = s '{4E1A836D-1FEA-4E83-8F2F-A21204406222}'
+	}
+	G2Com.G2Window = s 'G2Window Class'
+	{
+		CLSID = s '{4E1A836D-1FEA-4E83-8F2F-A21204406222}'
+		CurVer = s 'G2Com.G2Window.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {4E1A836D-1FEA-4E83-8F2F-A21204406222} = s 'G2Window Class'
+		{
+			ProgID = s 'G2Com.G2Window.1'
+			VersionIndependentProgID = s 'G2Com.G2Window'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{AC4C85D1-B16C-11d1-A718-006008C5F933}'
+		}
+	}
+}
