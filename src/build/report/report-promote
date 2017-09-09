@@ -1,0 +1,25 @@
+#!/bin/sh
+#
+# usage: report-promote [filename]
+#
+# This script reads the CVS commitlog searching for groups of lines delimited
+# by
+#   @begin(public-announcement)
+# and
+#   @end(public-announcement)
+# If no filename is present each group is printed to the file
+# /home/ab/promote.log (so the user must be ab).  If a filename is present, 
+# the groups are printed to that file.
+# The @begin lines are replaced by an empty line to provide spacing. The
+# @end lines are deleted.
+# It is assumed that $CVSROOT is set appropriately.
+
+if [ $# != 1 ]; then
+    filename=/home/ab/promote.log
+    echo "storing output in $filename"
+else
+    filename="$1"
+fi
+
+sed -n '/^@begin(public/,/^@end(public/p' $CVSROOT/CVSROOT/commitlog | \
+    sed -e 's/^@begin.*//' -e '/^@end.*/d' > $filename
