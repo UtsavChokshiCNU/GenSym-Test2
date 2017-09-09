@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_trouble_build.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+Sun C++ Undefined Symbol in SunWS_cache
+</h1>
+<h2>SYMPTOMS</h2>
+<p>
+<pre>
+Undefined          first referenced
+ symbol                in file
+ cov_o_data_...         .../SunWS_cache/....o
+ cov_o_...              .../SunWS_cache/....o
+ ld: fatal: Symbol referencing errors. No output written
+</pre>
+<h2>CAUSE</h2>
+<p>
+You built more than one program using the same template repository.
+This is not allowed by the Sun C++ compiler.
+<h2>RESOLUTION</h2>
+<p>
+Remove the template repository before building each program, with the
+command below.
+<pre>
+CCadmin -clean
+</pre>
+<h2>MORE INFORMATION</h2>
+<p>
+This restriction is described in the Sun C++ User's Guide
+<a href="http://docs.sun.com/source/819-3690/Creating_Templates.html#pgfId-8013">
+6.7.7 Building Multiple Programs Using Templates in the Same Directory
+</a>
+
+<p style="font-size:xx-small">
+Last reviewed: 28 Apr 2005
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
