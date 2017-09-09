@@ -1,0 +1,279 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_report.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+Command Line Reports
+</h1>
+<ul>
+<li><a href="#1">Directory Summary</a>
+<li><a href="#2">Source Summary</a>
+<li><a href="#3">Class Summary</a>
+<li><a href="#4">Function Summary</a>
+<li><a href="#5">Source Code Report</a>
+<li><a href="#6">Reducing Output with Regions</a>
+<li><a href="#7">Argument Files</a>
+</ul>
+<h2>
+<a name=1></a>
+Directory Summary</h2>
+<p>
+If your project consists of source files in multiple directories, use
+<a href=ref_summary.html>covdir</a>
+to determine which directory contains the least-tested code.
+The report is sorted by the percentage of functions invoked,
+then by the percentage of branches covered to break ties.
+For example:
+<pre>
+Directory      Function Coverage           C/D Coverage
+---------  ---------------------  ---------------------
+text\           9 /    17 =  52%     117 /   259 =  45%
+win\            3 /     4 =  75%      10 /    17 =  58%
+---------  ---------------------  ---------------------
+Total          12 /    21 =  57%     127 /   276 =  46%
+</pre>
+<h2>
+<a name=2></a>
+Source Summary</h2>
+<p>
+Use
+<a href=ref_summary.html>covsrc</a>
+to see measurements for each source file.
+For example, the report below shows <CODE>calc3stk.cpp</CODE>,
+<CODE>calc3stk.h</CODE>, and <CODE>calc3.cpp</CODE> have no coverage.
+<PRE>
+Source                 Function Coverage           C/D Coverage
+-----------------  ---------------------  ---------------------
+text\calc3stk.h         0 /     3 =   0%       0 /     2 =   0%
+text\calc3stk.cpp       0 /     2 =   0%       0 /     2 =   0%
+text\calc3.cpp          0 /     1 =   0%       0 /    25 =   0%
+win\bouncedl.c          1 /     2 =  50%       4 /     8 =  50%
+text\calc2.c            5 /     7 =  71%     101 /   196 =  51%
+text\calc1.c            4 /     4 = 100%      16 /    34 =  47%
+win\bounce.c            2 /     2 = 100%       6 /     9 =  66%
+-----------------  ---------------------  ---------------------
+Total                  12 /    21 =  57%     127 /   276 =  46%
+</PRE>
+<h2>
+<a name=3></a>
+Class Summary</h2>
+<p>
+Use
+<a href=ref_summary.html>covclass</a>
+to see coverage measurements grouped by C++ class.
+For example:
+<PRE>
+Class            Function Coverage         C/D Coverage
+-------------  -------------------  -------------------
+stack::            0 /    5 =   0%      0 /    4 =   0%
+CAboutDlg::        0 /    3 =   0%      0 /    3 =   0%
+CSampleView::      8 /   12 =  66%      8 /   12 =  66%
+CSampleApp::       3 /    4 =  75%      4 /    7 =  57%
+CSampleDoc::       7 /    9 =  77%      7 /   11 =  63%
+CMainFrame::       6 /    7 =  85%     11 /   18 =  61%
+-------------  -------------------  -------------------
+Total             24 /   40 =  60%     30 /   55 =  54%
+</PRE>
+<h2>
+<a name=4></a>
+Function Summary</h2>
+<p>
+Use
+<a href=ref_summary.html>covfn</a>
+to see measurements for each function.
+For example:
+<PRE>
+Function         Source             Line  FCov           C/D Coverage
+---------------  -----------------------  ----  ---------------------
+main             text\calc3.cpp        6   0/1       0 /    25 =   0%
+name             text\calc2.c         99   0/1       0 /    11 =   0%
+match            text\calc2.c        128   0/1       0 /     4 =   0%
+stack::~stack    text\calc3stk.cpp     5   0/1       0 /     2 =   0%
+stack::pop       text\calc3stk.h      23   0/1       0 /     2 =   0%
+stack::selftest  text\calc3stk.cpp    15   0/1       0 /     0
+stack::stack     text\calc3stk.h       8   0/1       0 /     0
+stack::push      text\calc3stk.h      15   0/1       0 /     0
+ball_change      win\bouncedl.c       39   0/1       0 /     0
+push             text\calc1.c         11   1/1       0 /     0
+pop              text\calc1.c         21   1/1       0 /     0
+Input            text\calc1.c         26   1/1       0 /     0
+lex              text\calc2.c         54   1/1       7 /    36 =  19%
+z                text\calc2.c        143   1/1       1 /     4 =  25%
+main             text\calc1.c         31   1/1      16 /    34 =  47%
+ball_update      win\bouncedl.c       14   1/1       4 /     8 =  50%
+eval             text\calc2.c        252   1/1       3 /     6 =  50%
+WndProc          win\bounce.c         12   1/1       3 /     5 =  60%
+prs              text\calc2.c        158   1/1      82 /   125 =  65%
+WinMain          win\bounce.c         51   1/1       3 /     4 =  75%
+main             text\calc2.c        271   1/1       8 /    10 =  80%
+---------------  -----------------------  ----  ---------------------
+Total                                      57%     127 /   276 =  46%
+</PRE>
+<h2>
+<a name=5></a>
+Source Code Report</h2>
+<p>
+Use
+<a href=ref_covbr.html>covbr</a>
+to see details about which specific control structure conditions
+and decisions are not exercised.
+By default, <CODE>covbr</CODE> displays coverage for the entire project.
+Since this is usually a large amount of information,
+you may wish to pipe the output through <code>more</code>.
+<PRE>
+covbr | more
+</PRE>
+<p>
+The branch report is an annotated listing of the source file.
+In the left margin, arrows <CODE>--&gt;</CODE> indicate incomplete
+coverage and the letters <CODE>X</CODE>, <CODE>T</CODE>, <CODE>F</CODE>,
+<CODE>t</CODE>, and <CODE>f</CODE> indicate coverage which has
+occurred. Uninteresting sections are replaced by &quot;<CODE>...</CODE>&quot;.
+For example, the command <code>covbr calc2.c:main</code>
+produces the following.
+<PRE>
+calc2.c:
+  ...
+      260  }
+      261
+      262  /* read one line at a time from standard
+X     263  int main(void)
+      264  {
+      265    char buf[128];
+      266    unsigned long value = 0;
+      267
+      268    printf(&quot;Enter infix expressions, q to
+TF    269    while (!feof(stdin)) {
+      270      buf[0] = '\n';
+      271      fgets(buf, sizeof(buf), stdin);
+--&gt;F  272      if (strcmp(buf, &quot;q\n&quot;) == 0) {
+--&gt;   273        if (quit)
+      274          break;
+      275      }
+--&gt;T  276a     if (
+ --&gt;t 276b         buf[0] != '\n' &amp;&amp;
+ --&gt;t 276c                           eval(buf, &amp;val
+      277        printf(&quot;%ld\n&quot;, value);
+      278      }
+      279    }
+  ...
+</PRE>
+<p>
+This shows the function <CODE>main</CODE> was invoked, the condition
+<CODE>!feof(stdin)</CODE> on line 269 evaluated to both true and
+false, the decision on line 272 evaluated only to false, the decision
+tested on line 273 was never encountered, and the decision on
+line 276 evaluated only to true.
+<P>
+BullseyeCoverage reports the outcome of boolean conditions on all control
+structures except <CODE>switch</CODE> and C++ <CODE>catch</CODE>.
+Each <CODE>case</CODE> or <CODE>default</CODE> label or <CODE>catch</CODE>
+has an arrow if the flow of control did not branch to that line,
+or an <CODE>X</CODE> if it did. For example:
+<PRE>
+          9    try {
+         10      switch (c) {
+--&gt;      11a     case 'y':
+--&gt;      11b               case 'Y':
+X        12a     case 'z':
+--&gt;      12b               case 'Z':
+         13        break;
+--&gt;      14      default:
+         15        f();
+         16        break;
+         17      }
+         18    }
+--&gt;      19    catch (...) {
+         20      printf(&quot;catch\n&quot;);
+         21    }
+   ...
+--&gt;F    276a     if (
+  tf    276b         buf[0] != '\n'
+  --&gt;f  276b                        &amp;&amp; eval(buf, &amp;val
+</PRE>
+<h2>
+<a name=6></a>
+Reducing Output with Regions</h2>
+<p>
+By default, BullseyeCoverage shows coverage for the entire project. You
+can reduce the amount of output by specifying source regions.
+For example, the command
+<code>covfn TEXT/calc3stk.cpp TEXT/calc3stk.h TEXT/calc3.cpp</code>
+produces the following report.
+<PRE>
+Function         Source             Line  FCov           C/D Coverage
+---------------  -----------------------  ----  ---------------------
+main             text\calc3.cpp        6   0/1       0 /    25 =   0%
+stack::~stack    text\calc3stk.cpp     5   0/1       0 /     2 =   0%
+stack::pop       text\calc3stk.h      23   0/1       0 /     2 =   0%
+stack::selftest  text\calc3stk.cpp    15   0/1       0 /     0
+stack::stack     text\calc3stk.h       8   0/1       0 /     0
+stack::push      text\calc3stk.h      15   0/1       0 /     0
+---------------  -----------------------  ----  ---------------------
+Total                                       0%       0 /    29 =   0%
+</PRE>
+<p>
+Sometimes after building a large project, you discover functions,
+classes, or source files which you do not want BullseyeCoverage to report.
+With the command line programs you can exclude regions from reports
+by specifying those regions prefixed with <CODE>!</CODE>.
+<h2>
+<a name=7></a>
+Argument Files</h2>
+<p>
+All the BullseyeCoverage commands automatically process an argument
+file with the same name as the command, but with suffix
+<CODE>.cfg</CODE>.
+BullseyeCoverage reads options from each of the locations below, in order.
+<OL>
+<li>The directory where the command is located (<i>BullseyeCoverage</i><code>/bin</code>).
+<LI>Your home directory.
+On Windows, this directory is named
+by the environment variables <CODE>HOMEDRIVE</CODE>+<CODE>HOMEPATH</CODE>.
+On other systems, this directory is named by the environment variable
+<CODE>HOME</CODE>.
+</OL>
+<p>
+The example commands below show how you could create an argument file
+for <a href=ref_summary.html>covdir</a> to use verbose
+mode.
+<PRE>
+echo -q &gt;BullseyeCoverage/bin/covdir.cfg
+echo -v &gt;%HOMEDRIVE%%HOMEPATH%\covdir.cfg (Windows)
+echo -v &gt;$HOME/covdir.cfg (Unix)
+</PRE>
+<p>
+Notice the option <CODE>-v</CODE> in the home directory overrides
+option <code>-q</code> in <i>BullseyeCoverage</i><code>/bin</code>.
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
