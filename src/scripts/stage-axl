@@ -1,0 +1,50 @@
+#!/bin/csh
+
+# This is a temporary script to do ActiveX link staging.  It depends upon the
+# prior version (first argument), to copy the demos etc. Instead, it should be
+# rebuilding or getting things from the cvs repository, but there are some
+# corrupted files in cvs.  Until this is resolved, we will use the prior version
+# plan.
+
+# This script depends on two environment variables: the usual SRCBOX, and
+# additionally the GSIDIR which was used to build activexlink.  In a future
+# script, because we will not be copying from the old prior version, we won't
+# need to clobber the entire staging directory here, and so we can have gsi.dll
+# copied by the Intel machine, which needs to know GSIDIR anyway for purposes of
+# actual building, and not need to supply to this script as well.
+
+# Note that GSIDIR will be set to something ugly like
+# /gensym/st/ab/eship/dep/intelnt/gsi-81b0/test, which is another reason to
+# prefer not to have it.
+
+# We expect to run the script on a sparcsol machine.
+
+setenv priorversion $1
+rm -rf $SRCBOX/stage/activex
+mkdir $SRCBOX/stage/activex
+
+cd /gensym/st/ab/eship/dep/intelnt/axl-$priorversion/test
+
+tar cf - . | (cd $SRCBOX/stage/activex ; tar xf -)
+
+cd $SRCBOX/stage/activex
+
+rm contents.txt bin/G2Com.dll bin/gsi.dll bin/G2Com.oca demos/vcppdemo/G2Com*.*
+
+foreach file (G2Com.h G2Com.tlb G2Com_i.c G2Com_p.c)
+  cp -p $SRCBOX/activex/G2Com/$file demos/vcppdemo
+end
+
+mkdir -p demos/vbnetdemo/bin
+
+cp -p $SRCBOX/activex/G2Com/demos/vbnetdemo/*.* demos/vbnetdemo
+
+cp -p $SRCBOX/activex/G2Com/demos/vbnetdemo/bin/*.* demos/vbnetdemo/bin
+
+rm -f /gensym/bridges/intelnt/G2Com-unsigned.dll
+
+cp -p $SRCBOX/activex/G2Com/Release/G2Com.dll /gensym/bridges/intelnt/G2Com-unsigned.dll
+
+cp -p $SRCBOX/activex/G2Com/Release/G2Com.dll $SRCBOX/stage/activex/bin/G2Com.dll
+
+cp -p $GSIDIR/gsi.dll $SRCBOX/stage/activex/bin/gsi.dll
