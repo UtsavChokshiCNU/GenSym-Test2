@@ -1,0 +1,149 @@
+<html><head><title>G2ItemHolder</title></head>
+<body bgcolor="#ffffff">
+<h5><a href="g2itemh1.htm">| Prev </a> 
+  <a href="g2itemh3.htm">| Next </a>
+ <a href="g2itemho.htm">| Start of Chapter </a>
+ <a href="g2itemh4.htm">| End of Chapter </a>
+ <a href="booktoc.htm">| Contents </a> <a href="glossary.htm">| Glossary </a> <a href="bookix.htm">| Index </a>  <a href="mailto:docs@gensym.com">| Comments | </a> (3 out of 5) </h5> <br>
+
+<a name="1002358">
+<h1> Properties</h1>
+</a><a name="1002360">
+<code>G2ItemHolder</code> has the following properties, which you can set in a container application. Properties configure the behavior of <code>G2ItemHolder</code> and indicate its status. Most container applications save the state of the properties in your document and restore them when you load the document. The properties can be modified either by using the Property window or programmatically. <p>
+</a><a name="1001774">
+<h3> Design Time Properties</h3>
+</a><a name="1002064">
+You can set the <code>CallTimeout</code>, <code>ObjectAddress</code>, <code>ObjectAddressClass</code>, and <code>SubscribedAttributes</code> properties at design time in the properties window or programmatically.<p>
+</a><a name="996823">
+<table border="3">
+<caption></caption>
+<tr><th align="left" valign="middle"><a name="996736">
+<strong>Property </strong>
+</a><th align="left" valign="middle"><a name="996738">
+<strong>Description</strong>
+</a>
+<tr><td valign="middle"><a name="1002402">
+<code>AutoDownload As Boolean</code>
+</a><br><td valign="middle"><a name="1002404">
+If <code>true</code>, you automatically receive an event when the item in <code>G2ItemHolder</code> is updated in G2. If <code>false</code>, you do not automatically receive events when the item is updated in G2. If you do not receive events, your application takes up less CPU time.
+</a><br>
+<tr><td valign="middle"><a name="1002406">
+<code>AutoUpload As Boolean</code>
+</a><br><td valign="middle"><a name="1002457">
+If <code>true</code>, updates you make in a Visual Basic application are automatically uploaded to G2. If <code>false</code>, your updates to the item in <code>G2ItemHolder</code> are not automatically uploaded to G2.
+</a><br>
+<tr><td valign="middle"><a name="998179">
+<code><code>CallTimeout As Long</code></code>
+</a><br><td valign="middle"><a name="998181">
+Sets the maximum amount of time for the Telewindows2 Toolkit to wait for G2 to respond. The default is 30 seconds.
+</a><br>
+<tr><td valign="middle"><a name="996804">
+<code>ObjectAddress As String</code>
+</a><br><td valign="middle"><a name="996806">
+A reference to a particular item in named connection to G2 in the format:
+</a><a name="999589">
+<code><em>G2Item</code></em>@<code><em>GatewayId</code></em>
+</a><a name="999594">
+The named connection to G2 is the GatewayId property of the G2UiGateway object. If ObjectAddress is blank, there is no downloading of an object at <em>startup</em>.
+</a><br>
+<tr><td valign="middle"><a name="1000988">
+<code>ObjectClass As String</code>
+</a><br><td valign="middle"><a name="1000978">
+The class of object referenced by <code>ObjectAddress</code>. You can use this property to restrict the class type for the item specified by the ObjectAddress property. The class may be a superclass, such as ITEM or OBJECT. Default is ITEM.
+</a><br>
+<tr><td valign="middle"><a name="1000972">
+<code>SubscribedAttributes As String</code>
+</a><br><td valign="middle"><a name="1000974">
+For the item specified by ObjectAddress, SubscribedAttributes is a comma-delineated list of attributes to subscribe to at <em>startup</em>.
+</a><br>
+
+</table>
+
+<table>
+<tr><td>
+</table>
+<p>
+</a><a name="1001792">
+You can use the <code>ObjectAddress</code>, <code>ObjectClass</code>, and <code>SubscribedAttributes</code> properties to reference an item in G2 at startup. Doing so enables you to open your Visual Basic application already pointing to the specified item in G2. You immediately have access to its attributes. <p>
+</a><a name="1002316">
+If you want to assign or change a G2 item reference once your Visual Basic application is running, use the <code>Item</code> property, described in <a href="g2itemh2.htm#1002269">Runtime Properties</a>.<p>
+</a><a name="1002269">
+<h3> Runtime Properties</h3>
+</a><a name="1001936">
+You can use the <code>Attribute</code>, <code>Element</code>, and <code>Item</code> properties at runtime, <em>not</em> design time. Once a connection to G2 is established, you can programmatically access the values of these properties of the connected object<p>
+</a><a name="1001873">
+<table border="3">
+<caption></caption>
+<tr><th align="left" valign="middle"><a name="1001813">
+<strong>Property </strong>
+</a><th align="left" valign="middle"><a name="1001815">
+<strong>Description</strong>
+</a>
+<tr><td valign="middle"><a name="1001817">
+<code>Attribute(<code><em>AttributeName</code></em> As String)</code>
+</a><br><td valign="middle"><a name="1001819">
+Access the value of the named attribute
+</a><br>
+<tr><td valign="middle"><a name="1001948">
+<code>AttributeNames As Variant</code>
+</a><br><td valign="middle"><a name="1001950">
+A read-only list of attribute names in the G2 item.
+</a><br>
+<tr><td valign="middle"><a name="1001831">
+<code>Element(<code><em>Index</code></em> As Long)</code>
+</a><br><td valign="middle"><a name="1001833">
+Access an element in a list or array.
+</a><br>
+<tr><td valign="middle"><a name="1001835">
+<code>ElementCount As Long</code>
+</a><br><td valign="middle"><a name="1001837">
+Specifies the length of an array. It is read only.
+</a><br>
+<tr><td valign="middle"><a name="1001839">
+<code>Elements As Variant</code>
+</a><br><td valign="middle"><a name="1001841">
+Specifies all the elements of an array.
+</a><br>
+<tr><td valign="middle"><a name="1001843">
+<code>ElementType As Long</code>
+</a><br><td valign="middle"><a name="1001845">
+Specifies the enumerated G2 type in a list or array. It is read only. The type is one of the following:
+</a><ul><a name="1001846">
+<li>Const g2Integer = 1
+</a><a name="1001847">
+<li>Const g2Symbol = 3
+</a><a name="1001848">
+<li>Const g2Text = 4
+</a><a name="1001849">
+<li>Const g2TruthValue = 5
+</a><a name="1001850">
+<li>Const g2Float = 6
+</a><a name="1001851">
+<li>Const g2Item = 7
+</a><a name="1001852">
+<li>Const g2Value = 8
+</a><a name="1001853">
+<li>Const g2ItemOrValue = 9
+</a><a name="1001854">
+<li>Const g2Quantity = 10
+</a></ul><br>
+<tr><td valign="middle"><a name="1001856">
+<code>Item As G2Item</code>
+</a><br><td valign="middle"><a name="1001858">
+Assigns a reference to an object in G2. This property enables G2ItemHolder to persistently point to an object on the G2 server.
+</a><br>
+
+</table>
+
+<table>
+<tr><td>
+</table>
+<p>
+</a>
+
+<h5><a href="g2itemh1.htm">| Prev </a> 
+  <a href="g2itemh3.htm">| Next </a>
+ <a href="g2itemho.htm">| Start of Chapter </a>
+ <a href="g2itemh4.htm">| End of Chapter </a>
+ <a href="booktoc.htm">| Contents </a> <a href="glossary.htm">| Glossary </a> <a href="bookix.htm">| Index </a>  <a href="mailto:docs@gensym.com">| Comments | </a> (3 out of 5) </h5> <br>
+<A HREF="titlepa1.htm"><h6>Copyright &#169; 1998 Gensym Corporation, Inc.</h6></A>
