@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_trouble_build.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>Error LNK1104: cannot open file libcov-windows-<i>cpu</i>.lib</h1>
+<h2>SYMPTOMS</h2>
+<pre>
+fatal error LNK1104: cannot open file "libcov-windows-<i>cpu</i>.lib"
+</pre>
+<h2>CAUSE</h2>
+<p>
+Coverage Build was enabled when you built one or more of your object files
+or library files, but BullseyeCoverage is not installed during linking.
+<h2>RESOLUTION</h2>
+<p>
+Delete all object files and library
+files which might have been built with Coverage Build enabled.
+You can find these files using <code>Start|Find|Files and Folders</code>
+specifying <code>Containing text</code> as
+<code>libcov-windows-</code><i>cpu</i><code>.lib</code>.
+and
+<code>Look in</code> as your root directory.
+Search all your disks and network drives.
+<p>
+Alternatively, you can determine which object files were built with
+Coverage Build enabled by temporarily adding <code>link</code> option
+<code>-nodefaultlib:libcov-windows-</code><i>cpu</i><code>.lib</code>.
+This results in LNK2001 or LNK2019 errors which contain the name of the problematic
+object file(s).
+In the example below, <code>calc1.obj</code> was built with BullseyeCoverage.
+<pre>
+calc1.obj: error LNK2001: unresolved external symbol _cov_probe_<i>x_y_z</i>
+</pre>
+<p style="font-size:xx-small">
+Last reviewed: 14 Feb 2006
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
