@@ -1,0 +1,302 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_platform.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+Linux Kernel
+</h1>
+<p>
+BullseyeCoverage supports measuring coverage of code running inside Linux kernel version 2.4 and 2.6.
+<h2>
+Building the BullseyeCoverage Run-time
+</h2>
+<p>
+To measure coverage of Linux kernel code,
+you must build the BullseyeCoverage run-time library for your kernel configuration.
+You must have a configured kernel source tree that matches the test kernel
+you run.
+<h3>Choose Module or Kernel Image Method</h3>
+<p>
+First decide whether you want to load the BullseyeCoverage run-time as a kernel module,
+or link it into the kernel executable image.
+Consider the following issues.
+<ul>
+<li>
+If you only measure coverage of code in modules, you can load the run-time as a module.
+<li>
+If you measure any code in the kernel image, you must link the run-time into the kernel image.
+<li>
+We recommend building the run-time as a module if possible.
+</ul>
+<h3>As a Module for Kernel 2.6</h3>
+<p>
+To build the BullseyeCoverage run-time as a module for kernel 2.6,
+use the commands below.
+<pre>
+cd <i>BullseyeCoverage</i>/run/linuxKernel-2.6
+make -C <i>linux-2.6.x</i> M=`pwd` modules
+# The following two lines are only needed if CONFIG_MODVERSIONS is enabled
+grep -v libcov-lkm <i>linux-2.6.x</i>/Module.symvers | cat - Module.symvers >tmp.Module.symvers
+mv tmp.Module.symvers <i>linux-2.6.x</i>/Module.symvers
+</pre>
+<p>
+Where <i>linux-2.6.x</i> represents the full path to the kernel source code directory,
+for example, <code>/usr/src/linux-2.6</code>.
+<h3>For the Kernel Image 2.6</h3>
+<p>
+To build the BullseyeCoverage run-time into the kernel 2.6
+image, edit the top-level kernel makefile to modify the
+setting <code>core-y</code> by appending the BullseyeCoverage Linux
+kernel run-time directory shown below underlined.
+<pre>
+# Objects we will link into vmlinux / subdirs we need to visit
+init-y      := init/
+drivers-y   := drivers/ sound/ firmware/
+net-y       := net/
+libs-y      := lib/
+core-y      := usr/ <span style=text-decoration:underline><i>BullseyeCoverage</i>/run/linuxKernel-2.6/</span>
+</pre>
+<p>
+Then rebuild the kernel.
+For example,
+<pre>
+make clean
+cov01 -1
+make vmlinux
+</pre>
+<h3>As a Module for Kernel 2.4</h3>
+<p>
+To build the BullseyeCoverage run-time as a module for kernel 2.4,
+use the commands below.
+<pre>
+cd <i>BullseyeCoverage</i>/run/linuxKernel-2.4
+make -C <i>linux-2.4.x</i> SUBDIRS=`pwd` modules
+</pre>
+<p>
+Where <i>linux-2.4.x</i> represents the full path to the kernel source code directory,
+for example, <code>/usr/src/linux-2.4</code>.
+<h3>For the Kernel Image 2.4</h3>
+<p>
+To build the BullseyeCoverage run-time into the kernel 2.4
+image, edit the top-level kernel makefile to modify the
+<code>LIBS</code> and <code>SUBDIRS</code> settings by inserting the
+lines shown below underlined.
+<pre>
+LIBS = $(TOPDIR)/lib/lib.a
+<span style=text-decoration:underline>LIBS += <i>BullseyeCoverage</i>/run/linuxKernel-2.4/libcov-linuxKernel.o</span>
+SUBDIRS = kernel drivers mm fs net ipc lib crypto
+<span style=text-decoration:underline>SUBDIRS += <i>BullseyeCoverage</i>/run/linuxKernel-2.4</span>
+</pre>
+<p>
+Then rebuild the kernel.
+For example,
+<pre>
+echo --no-lib >>$HOME/covc.cfg
+make clean
+cov01 -1
+make vmlinux
+</pre>
+<h2>
+Building Kernel Sources
+</h2>
+<p>
+The procedure to build kernel sources for code coverage is much the same
+as for any project.
+Enable <a href=build_coverageBuild.html>Coverage Build</a>, then run your
+usual <code>make</code> command.
+<h3>Avoid Linking the User Mode Run-Time</h3>
+<p>
+An unresolved symbol beginning with <code>__libc_</code> means the
+BullseyeCoverage user-mode run-time is inadvertently getting linked.
+Take one of the actions below to avoid this.
+<ul>
+<li>Use <a href=ref_covc.html>covc</a> option <code>--no-lib</code>
+<li>Rather than link with <code>gcc</code>, use the absolute path to
+<code>gcc</code>, for example <code>/usr/bin/gcc</code>
+<li>Link using <code>ld</code> rather than <code>gcc</code>
+<li>Disable Coverage Build before linking
+</ul>
+<h3>Exclude Problematic Kernel Headers</h3>
+<p>
+Some kernel sources in the <code>init/</code> and <code>arch/</code>
+directories cannot be built with BullseyeCoverage and you must exclude them.
+Additionally, we recommend excluding the <code>include/</code> directory.
+You can do this by adding the options below to <a href=ref_covc.html>covc.cfg</a>.
+<pre>
+-t!<i>path</i>/arch/
+-t!<i>path</i>/include/
+-t!<i>path</i>/init/
+-t!<i>path</i>/lib/
+-t!<i>path</i>/scripts/
+</pre>
+<p>
+where <i>path</i> is the full path of the kernel source tree,
+without symbolic links.
+<h3>Building Kernel Supplied Modules</h3>
+<p>
+If you want to build modules supplied with the Linux kernel sources,
+make the symbolic link shown below.
+<pre>
+ln -s <i>BullseyeCoverage</i>/run/linuxKernel-2.6 <i>linux-2.6.x</i>/drivers/BullseyeCoverage
+</pre>
+<p>
+In the file <i>linux-2.6.x</i><code>/drivers/Makefile</code>, add the line below to the end of the file:
+<pre>
+obj-m += BullseyeCoverage/
+</pre>
+<p>
+If you skip these steps, you might encounter the error below.
+<pre>
+ERROR: "cov_probe_6_4_7" [...] undefined!
+</pre>
+<h3>Ignore WARNING ... undefined</h3>
+<p>
+Ignore the undefined symbol message shown below when building a module.
+The BullseyeCoverage run-time module defines this symbol.
+<pre>
+WARNING: "cov_probe_6_4_7" [<i>...</i>] undefined!
+</pre>
+<h2>Loading the Run-time Module</h2>
+<p>
+The name of the run-time module is
+<code>libcov-lkm.ko</code> for 2.6, and
+<code>libcov-lkm.o</code> for 2.4.
+<h3>Automatically</h3>
+<p>
+To cause the BullseyeCoverage run-time to load automatically,
+install the run-time and your instrumented modules
+into <code>/lib/modules</code>, then use <code>depmod -a</code>.
+For example,
+<pre>
+cp <i>path</i>/libcov-lkm.ko /lib/modules/misc/
+depmod -a
+</pre>
+<h3>Manually</h3>
+<p>
+To manually load the BullseyeCoverage run-time, use the command below.
+You must load the run-time before loading any instrumented modules.
+<pre>
+insmod <i>path</i>/libcov-lkm.ko
+</pre>
+<p>
+where <code><i>path</i></code> is the full path of the directory containing
+<code>libcov-lkm.ko</code>.
+<h2>
+Saving Coverage
+</h2>
+<p>
+Run the command <a href=ref_covgetkernel.html>covgetkernel</a> to save coverage measurements
+from memory to the coverage file.
+You must be the super-user to run this command.
+You cannot save coverage measurements of code in a module exercised
+after you run <code>covgetkernel</code>
+but before the module is unloaded.
+In particular, it is impossible to save coverage measurements for the
+<code>module_exit</code> function.
+<p>
+For embedded Linux, the directory
+<code><i>BullseyeCoverage</i>/bin-embeddedLinux</code> contains
+covgetkernel programs for common platforms.
+These programs require a separate license.
+For example, <code>covgetkernel-arm-le-oabi</code> requires a license for BullseyeCoverage for Linux ARM.
+<p>
+Environment variable
+<a href="ref_environment.html#COVAUTOSAVE">COVAUTOSAVE</a>
+has no effect.
+<h2>Tutorial Using Module with Kernel 2.6</h2>
+<p>
+Here are example commands that show how to build and run a kernel module using Linux 2.6.
+<p>
+Build the BullseyeCoverage run-time module <code>libcov-lkm.ko</code>.
+<pre>
+$ cd $HOME/BullseyeCoverage/run/linuxKernel-2.6
+$ # OpenWRT on Broadcom BCM47xx
+$ make -C $HOME/kamikaze_7.09/build_mipsel/linux-2.6-brcm47xx/linux-2.6.22 M=`pwd` ARCH=mips CROSS_COMPILE=mipsel-linux-uclibc- modules
+</pre>
+<p>
+Exclude the Linux kernel headers.
+This is optional.
+<pre>
+echo "-t!$HOME/kamikaze_7.09/build_mipsel/linux-2.6-brcm47xx/linux-2.6.22/include/" &gt;&gt;$HOME/covc.cfg
+</pre>
+<p>
+Build the sample module <code>hello.ko</code>.
+<pre>
+$ cd sample
+$ PATH=$HOME/BullseyeCoverage/bin:$PATH
+$ cov01 -1
+$ # OpenWRT on Broadcom BCM47xx
+$ make -C $HOME/kamikaze_7.09/build_mipsel/linux-2.6-brcm47xx/linux-2.6.22 M=`pwd` ARCH=mips CROSS_COMPILE=mipsel-linux-uclibc- modules
+</pre>
+<p>
+Transfer
+<code>hello.ko</code>,
+<code>libcov-lkm.ko</code> and
+<code>test.cov</code>
+to the target system.
+Load <code>libcov-lkm.ko</code>, then <code>hello.ko</code>.
+<pre>
+$ insmod libcov-lkm.ko
+$ insmod hello.ko
+$ dmesg | tail -2
+BullseyeCoverage: kernel run-time init succeeded
+hello world
+</pre>
+<p>
+Transfer the appropriate covgetkernel executable from
+<code>$HOME/BullseyeCoverage/bin-embeddedLinuxKernel/</code>
+to the target system.
+Run covgetkernel to save the coverage into <code>test.cov</code>.
+<pre>
+$ covgetkernel-mips-le-32
+</pre>
+<p>
+Transfer <code>test.cov</code> back to the host system.
+There, you can view the coverage.
+<pre>
+$ covsrc -q hello.c
+Source       Function Coverage           C/D Coverage
+-------  ---------------------  ---------------------
+hello.c       1 /     2 =  50%       0 /     0
+-------  ---------------------  ---------------------
+Total         1 /     2 =  50%       0 /     0
+</pre>
+
+<p style=font-size:xx-small>
+Last reviewed: 4 Mar 2010
+
+<!-- For indexing and searching -->
+<p style="visibility:hidden;font-size:1px;margin:0;padding:0">
+Windows Mobile
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
