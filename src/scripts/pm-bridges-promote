@@ -1,0 +1,249 @@
+#!/bin/sh
+
+# pm-bridges-promote -- poor man's G2 bridges promote
+
+JVL_BOX=${DSTBOX}/jvl/tape
+JVLDOC_BOX=${DSTBOX}/jvl-javadoc/tape
+JDBC_BOX=${DSTBOX}/jdbc/tape
+JDBCDOC_BOX=${DSTBOX}/jdbcdoc/tape
+G2JMAIL_BOX=${DSTBOX}/jmail
+G2JMAILDOC_BOX=${DSTBOX}/jmaildoc/tape
+G2JMS_BOX=${DSTBOX}/jms
+G2JMSDOC_BOX=${DSTBOX}/jmsdoc/tape
+G2JSNMP_BOX=${DSTBOX}/jsnmp
+G2MIBPARSER_BOX=${DSTBOX}/g2mibparser
+G2SOCKMAN_BOX=${DSTBOX}/sockman
+G2SOCKMANDOC_BOX=${DSTBOX}/sockmandoc/tape
+CORBALINK_BOX=${DSTBOX}/corbalink/tape
+G2ORACLE_BOX=${DSTBOX}/g2oracle/tape
+G2ODBC_BOX=${DSTBOX}/g2odbc/tape
+JRE_BOX=/opt/jdk1.6.0_45/jre
+GDA_BOX=${DSTBOX}/gda/tape
+NOLSTUDIO_BOX=${DSTBOX}/nols
+
+ODIR=opt
+
+rm -R ${JVL_BOX}
+rm -R ${JDBC_BOX}
+rm -R ${JDBCDOC_BOX}
+rm -R ${G2JMAILDOC_BOX}
+rm -R ${G2JMSDOC_BOX}
+rm -R ${G2SOCKMANDOC_BOX}
+rm -R ${JVLDOC_BOX}
+rm -R ${CORBALINK_BOX}
+rm -R ${G2ORACLE_BOX}
+rm -R ${G2ODBC_BOX}
+rm -R ${GDA_BOX}
+rm -R ${NOLSTUDIO_BOX}
+
+mkdir -p ${JVL_BOX}
+mkdir -p ${JVL_BOX}/bin
+mkdir -p ${JVL_BOX}/classes/com/gensym/demos/jgi
+mkdir -p ${JVL_BOX}/classes/com/gensym/classes/modules/jgidemo
+mkdir -p ${JVL_BOX}/kbs
+mkdir -p ${JDBC_BOX}
+mkdir -p ${JDBC_BOX}/bin
+mkdir -p ${JDBC_BOX}/classes
+mkdir -p ${JDBC_BOX}/doc
+mkdir -p ${JDBC_BOX}/examples
+mkdir -p ${JDBC_BOX}/kbs
+mkdir -p ${JDBCDOC_BOX}
+mkdir -p ${G2JMAILDOC_BOX}
+mkdir -p ${G2JMSDOC_BOX}
+mkdir -p ${G2SOCKMANDOC_BOX}
+mkdir -p ${JVLDOC_BOX}/docs/guides/g2beanbuilder/
+mkdir -p ${JVLDOC_BOX}/docs/guides/g2downloadinterfaces/
+mkdir -p ${JVLDOC_BOX}/docs/guides/g2javalink/
+mkdir -p ${CORBALINK_BOX}
+mkdir -p ${CORBALINK_BOX}/kbs
+mkdir -p ${CORBALINK_BOX}/idl
+mkdir -p ${CORBALINK_BOX}/example_clients/cpp
+mkdir -p ${CORBALINK_BOX}/example_clients/java/feature
+mkdir -p ${G2ORACLE_BOX}
+mkdir -p ${G2ORACLE_BOX}/bin
+mkdir -p ${G2ORACLE_BOX}/kbs
+mkdir -p ${G2ODBC_BOX}
+mkdir -p ${G2ODBC_BOX}/bin
+mkdir -p ${G2ODBC_BOX}/kbs
+mkdir -p ${GDA_BOX}
+mkdir -p ${GDA_BOX}/bin
+mkdir -p ${GDA_BOX}/examples
+mkdir -p ${GDA_BOX}/kbs
+mkdir -p ${NOLSTUDIO_BOX}
+
+# JavaLink
+cp -p ${DSTBOX}/javalink/bin/libJgiInterface.so ${JVL_BOX}/bin/
+cp -p ${SRCBOX}/java/products/javalink/linux/bin/g2beanbuilder ${JVL_BOX}/bin/
+cp -p ${SRCBOX}/java/products/javalink/linux/bin/g2downloadinterfaces ${JVL_BOX}/bin/
+cp -p ${SRCBOX}/java/products/javalink/linux/bin/installproperties ${JVL_BOX}/bin/
+cp -p ${SRCBOX}/java/products/javalink/linux/bin/set-envvars ${JVL_BOX}/bin/
+cp -p ${SRCBOX}/java/products/javalink/linux/bin/.com.gensym.properties ${JVL_BOX}/bin/
+cp -p ${DSTBOX}/javalink/classes/beanbuilder.jar ${JVL_BOX}/classes/
+cp -p ${DSTBOX}/javalink/classes/classtools.jar ${JVL_BOX}/classes/
+cp -p ${DSTBOX}/javalink/classes/core.jar ${JVL_BOX}/classes/
+cp -p ${DSTBOX}/javalink/classes/javalink.jar ${JVL_BOX}/classes/
+
+cp -p ${SRCBOX}/java/products/javalink/common/kbs/javalink.kb ${JVL_BOX}/kbs/
+cp -p ${SRCBOX}/java/products/javalink/common/kbs/jgidemo.kb ${JVL_BOX}/kbs/
+cp -p ${SRCBOX}/java/products/javalink/common/ExamplesReadme.html ${JVL_BOX}/
+cp -p ${SRCBOX}/java/com/gensym/classes/modules/jgidemo/*.java ${JVL_BOX}/classes/com/gensym/classes/modules/jgidemo/
+cp -p ${SRCBOX}/java/com/gensym/classes/modules/jgidemo/*.class ${JVL_BOX}/classes/com/gensym/classes/modules/jgidemo/
+cp -p ${SRCBOX}/java/com/gensym/classes/modules/jgidemo/*.ser ${JVL_BOX}/classes/com/gensym/classes/modules/jgidemo/
+cp -p ${SRCBOX}/java/com/gensym/demos/jgi/*.java ${JVL_BOX}/classes/com/gensym/demos/jgi/
+cp -p ${SRCBOX}/java/com/gensym/demos/jgi/*.class ${JVL_BOX}/classes/com/gensym/demos/jgi/
+# ToDo generate Java docs correctly
+cp -p ${SRCBOX}/documentation/g2javalink.pdf ${JVLDOC_BOX}/docs/guides/g2javalink/
+cp -p ${SRCBOX}/documentation/g2beanbuilder.pdf ${JVLDOC_BOX}/docs/guides/g2beanbuilder/
+cp -p ${SRCBOX}/documentation/g2downloadinterfaces.pdf ${JVLDOC_BOX}/docs/guides/g2downloadinterfaces/
+cp -R ${SRCBOX}/bundle/stage/intelnt-g2-84r3/doc/javalink/docs/api/ ${JVLDOC_BOX}/docs
+find ${JVLDOC_BOX}/ -name .svn -print0 | xargs -0 rm -rf
+#find ${SRCBOX}/bundle/stage/intelnt-g2-84r3/doc/javalink/docs/api/ ! -name '*.svn' | xargs -i cp {} ${JVLDOC_BOX}/
+
+cp -p ${SRCBOX}/java/products/jdbc/linux/bin/set-envvars ${JDBC_BOX}/bin/
+cp -p ${SRCBOX}/java/products/jdbc/linux/bin/run-g2jdbc.sh ${JDBC_BOX}/bin/
+cp -p ${DSTBOX}/jdbc/libG2JDBCAuthorize.so ${JDBC_BOX}/bin/
+cp -p ${DSTBOX}/jdbc/g2jdbc.jar ${JDBC_BOX}/classes/
+cp -p ${SRCBOX}/g2db/java/G2JDBC/libs/log4j-1.2.15.jar ${JDBC_BOX}/classes/
+cp -p ${SRCBOX}/g2db/java/G2JDBC/libs/postgresql-8.3-604.jdbc3.jar ${JDBC_BOX}/classes/
+cp -p ${SRCBOX}/kbs/g2-database.kb ${JDBC_BOX}/kbs/
+
+# TODO: ant target <copy> copied files lost their +x flags.
+chmod a+x ${G2JMAIL_BOX}/bin/*
+chmod a+x ${G2JMS_BOX}/bin/*
+chmod a+x ${G2JSNMP_BOX}/bin/*
+chmod a+x ${G2SOCKMAN_BOX}/bin/*
+
+cp -p ${SRCBOX}/documentation/g2jmailbridge.pdf ${G2JMAILDOC_BOX}
+cp -p ${SRCBOX}/documentation/g2jmslink.pdf ${G2JMSDOC_BOX}
+cp -p ${SRCBOX}/documentation/g2javasocketmanager.pdf ${G2SOCKMANDOC_BOX}
+
+cp -p ${DSTBOX}/corba/g2-corba ${CORBALINK_BOX}/
+cp -p ${SRCBOX}/corba/kbs/g2idl.kb ${CORBALINK_BOX}/kbs/
+cp -p ${SRCBOX}/corba/kbs/g2orb.kb ${CORBALINK_BOX}/kbs/
+cp -p ${SRCBOX}/corba/as-is/common/kbs/feature.kb ${CORBALINK_BOX}/kbs/
+cp -p ${SRCBOX}/corba/as-is/common/kbs/g2orb-util.kb ${CORBALINK_BOX}/kbs/
+cp -p ${SRCBOX}/corba/as-is/common/kbs/publish.kb ${CORBALINK_BOX}/kbs/
+cp -p ${SRCBOX}/corba/as-is/common/idl/feature.idl ${CORBALINK_BOX}/idl/
+cp -p ${SRCBOX}/corba/as-is/common/idl/grid.idl ${CORBALINK_BOX}/idl/
+cp -p ${SRCBOX}/corba/as-is/common/idl/publish.idl ${CORBALINK_BOX}/idl/
+cp -p ${SRCBOX}/corba/as-is/common/example_clients/cpp/*.cpp ${CORBALINK_BOX}/example_clients/cpp/
+cp -p ${SRCBOX}/corba/as-is/common/example_clients/java/*.java ${CORBALINK_BOX}/example_clients/java/
+
+# G2 Oracle bridges
+cp -p ${SRCBOX}/g2db/mak/g2-ora10  ${G2ORACLE_BOX}/bin
+cp -p ${SRCBOX}/g2db/mak/g2-ora11  ${G2ORACLE_BOX}/bin
+cp -p ${SRCBOX}/g2db/mak/g2-ora12  ${G2ORACLE_BOX}/bin
+cp -p ${SRCBOX}/kbs/g2-database.kb  ${G2ORACLE_BOX}/kbs
+
+# G2 ODBC bridges
+cp -p ${SRCBOX}/g2db/mak/g2-odbc  ${G2ODBC_BOX}/bin
+cp -p ${SRCBOX}/g2db/promote/run-g2-odbc ${G2ODBC_BOX}/bin
+cp -p ${SRCBOX}/kbs/g2-database.kb ${G2ODBC_BOX}/kbs
+
+# GDA
+cp -p ${SRCBOX}/gdanol/common/demos/kbs/gdareact.kb ${GDA_BOX}/examples
+cp -p ${SRCBOX}/gdanol/common/demos/kbs/gdatank.kb ${GDA_BOX}/examples
+cp -p ${SRCBOX}/gdanol/common/demos/kbs/gdacerel.kb ${GDA_BOX}/examples
+cp -p ${SRCBOX}/kbs/tools/gda/dist/kbs/*.kb ${GDA_BOX}/kbs
+cp -p ${SRCBOX}/gdanol/common/build/README ${GDA_BOX}
+
+# NOLSTUDIO
+cp -p ${SRCBOX}/nolstudio/out/Jar/NolStudioData.jar ${NOLSTUDIO_BOX}
+cp -p ${SRCBOX}/nolstudio/out/Jar/NolStudioDeploy.jar ${NOLSTUDIO_BOX}
+cp -p ${SRCBOX}/nolstudio/out/Jar/NolStudioGUI.jar ${NOLSTUDIO_BOX}
+cp -p ${SRCBOX}/nolstudio/out/Jar/NolStudioMath.jar ${NOLSTUDIO_BOX}
+cp -p ${SRCBOX}/nolstudio/nolstudio ${NOLSTUDIO_BOX}
+
+### promote scripts
+
+BUILDID=`$SRCBOX/build/build-date`
+
+$SRCBOX/tools/remove-product -noconfirm -i jvl ${G2_VERSION}-$BUILDID $MACHINE
+$SRCBOX/tools/promote-product -noconfirm -i jvl $MACHINE $JVL_BOX ${G2_VERSION}-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e jvl ${G2_VERSION} $MACHINE
+$SRCBOX/tools/promote-product -noconfirm -e jvl $MACHINE ${G2_VERSION}-$BUILDID ${G2_VERSION}
+
+$SRCBOX/tools/remove-product -noconfirm -i jdbc ${G2_VERSION}-$BUILDID $MACHINE
+$SRCBOX/tools/promote-product -noconfirm -i jdbc $MACHINE $JDBC_BOX ${G2_VERSION}-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e jdbc ${G2_VERSION} $MACHINE
+$SRCBOX/tools/promote-product -noconfirm -e jdbc $MACHINE ${G2_VERSION}-$BUILDID ${G2_VERSION}
+
+$SRCBOX/tools/remove-product -noconfirm -i jmail 23r1-$BUILDID $MACHINE
+$SRCBOX/tools/promote-product -noconfirm -i jmail $MACHINE $G2JMAIL_BOX 23r1-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e jmail 23r1 $MACHINE
+$SRCBOX/tools/promote-product -noconfirm -e jmail $MACHINE 23r1-$BUILDID 23r1
+
+$SRCBOX/tools/remove-product -noconfirm -i jms 23r1-$BUILDID $MACHINE
+$SRCBOX/tools/promote-product -noconfirm -i jms $MACHINE $G2JMS_BOX 23r1-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e jms 23r1 $MACHINE
+$SRCBOX/tools/promote-product -noconfirm -e jms $MACHINE 23r1-$BUILDID 23r1
+
+$SRCBOX/tools/remove-product -noconfirm -i g2snmpgn 40r0-$BUILDID $MACHINE
+$SRCBOX/tools/promote-product -noconfirm -i g2snmpgn $MACHINE $G2JSNMP_BOX 40r0-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e g2snmpgn 40r0 $MACHINE
+$SRCBOX/tools/promote-product -noconfirm -e g2snmpgn $MACHINE 40r0-$BUILDID 40r0
+
+$SRCBOX/tools/remove-product -noconfirm -i g2mibparser 40r0-$BUILDID $MACHINE
+$SRCBOX/tools/promote-product -noconfirm -i g2mibparser $MACHINE $G2MIBPARSER_BOX 40r0-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e g2mibparser 40r0 $MACHINE
+$SRCBOX/tools/promote-product -noconfirm -e g2mibparser $MACHINE 40r0-$BUILDID 40r0
+
+$SRCBOX/tools/remove-product -noconfirm -i sockman 42r1-$BUILDID $MACHINE
+$SRCBOX/tools/promote-product -noconfirm -i sockman $MACHINE $G2SOCKMAN_BOX 42r1-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e sockman 42r1 $MACHINE
+$SRCBOX/tools/promote-product -noconfirm -e sockman $MACHINE 42r1-$BUILDID 42r1
+
+$SRCBOX/tools/remove-product -noconfirm -i corbalink ${G2_VERSION}-$BUILDID $MACHINE
+$SRCBOX/tools/promote-product -noconfirm -i corbalink $MACHINE $CORBALINK_BOX ${G2_VERSION}-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e corbalink ${G2_VERSION} $MACHINE
+$SRCBOX/tools/promote-product -noconfirm -e corbalink $MACHINE ${G2_VERSION}-$BUILDID ${G2_VERSION}
+
+$SRCBOX/tools/remove-product -noconfirm -i g2oracle ${G2_VERSION}-$BUILDID $MACHINE
+$SRCBOX/tools/promote-product -noconfirm -i g2oracle $MACHINE $G2ORACLE_BOX ${G2_VERSION}-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e g2oracle ${G2_VERSION} $MACHINE
+$SRCBOX/tools/promote-product -noconfirm -e g2oracle $MACHINE ${G2_VERSION}-$BUILDID ${G2_VERSION}
+
+$SRCBOX/tools/remove-product -noconfirm -i g2odbc ${G2_VERSION}-$BUILDID $MACHINE
+$SRCBOX/tools/promote-product -noconfirm -i g2odbc $MACHINE $G2ODBC_BOX ${G2_VERSION}-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e g2odbc ${G2_VERSION} $MACHINE
+$SRCBOX/tools/promote-product -noconfirm -e g2odbc $MACHINE ${G2_VERSION}-$BUILDID ${G2_VERSION}
+
+$SRCBOX/tools/remove-product -noconfirm -i jre 16r45-$BUILDID $MACHINE
+$SRCBOX/tools/promote-product -noconfirm -i jre $MACHINE $JRE_BOX 16r45-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e jre 16r45 $MACHINE
+$SRCBOX/tools/promote-product -noconfirm -e jre $MACHINE 16r45-$BUILDID 16r45
+
+$SRCBOX/tools/remove-product -noconfirm -i jvl-javadoc ${G2_VERSION}-$BUILDID
+$SRCBOX/tools/promote-product -noconfirm -i jvl-javadoc $JVLDOC_BOX ${G2_VERSION}-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e jvl-javadoc ${G2_VERSION}
+$SRCBOX/tools/promote-product -noconfirm -e jvl-javadoc ${G2_VERSION}-$BUILDID ${G2_VERSION}
+
+# $SRCBOX/tools/remove-product -noconfirm -i jdbcdoc ${G2_VERSION}-$BUILDID
+# $SRCBOX/tools/promote-product -noconfirm -i jdbcdoc $JDBCDOC_BOX ${G2_VERSION}-$BUILDID
+# $SRCBOX/tools/remove-product -noconfirm -e jdbcdoc ${G2_VERSION}
+# $SRCBOX/tools/promote-product -noconfirm -e jdbcdoc ${G2_VERSION}-$BUILDID ${G2_VERSION}
+
+$SRCBOX/tools/remove-product -noconfirm -i jmaildoc 23r0-$BUILDID
+$SRCBOX/tools/promote-product -noconfirm -i jmaildoc $G2JMAILDOC_BOX 23r0-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e jmaildoc 23r0
+$SRCBOX/tools/promote-product -noconfirm -e jmaildoc 23r0-$BUILDID 23r0
+
+$SRCBOX/tools/remove-product -noconfirm -i jmsdoc 23r0-$BUILDID
+$SRCBOX/tools/promote-product -noconfirm -i jmsdoc $G2JMSDOC_BOX 23r0-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e jmsdoc 23r0
+$SRCBOX/tools/promote-product -noconfirm -e jmsdoc 23r0-$BUILDID 23r0
+
+$SRCBOX/tools/remove-product -noconfirm -i sockmandoc 42r0-$BUILDID
+$SRCBOX/tools/promote-product -noconfirm -i sockmandoc $G2SOCKMANDOC_BOX 42r0-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e sockmandoc 42r0
+$SRCBOX/tools/promote-product -noconfirm -e sockmandoc 42r0-$BUILDID 42r0
+
+$SRCBOX/tools/remove-product -noconfirm -i gda 51r1-$BUILDID
+$SRCBOX/tools/promote-product -noconfirm -i gda $GDA_BOX 51r1-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e gda 51r1
+$SRCBOX/tools/promote-product -noconfirm -e gda 51r1-$BUILDID 51r1
+
+$SRCBOX/tools/remove-product -noconfirm -i nols 51r1-$BUILDID $MACHINE 
+$SRCBOX/tools/promote-product -noconfirm -i nols $MACHINE $NOLSTUDIO_BOX 51r1-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e nols 51r1 $MACHINE 
+$SRCBOX/tools/promote-product -noconfirm -e nols $MACHINE 51r1-$BUILDID 51r1
