@@ -1,0 +1,60 @@
+<html>
+<head>
+<title>Updating Field Widgets Example</title>
+</head>
+
+<body background=/images/bg.gif>
+
+<h1>Updating Field Widgets Example</h1>
+
+This is an example of dynamically updated data feeds between
+WebLink and Java. The applet can be supplied multiple field
+names and data sources. The data can either be static (default)
+or dynamically updated at specified refresh rate.<p>
+
+<font size=-2>
+Note: Due to yet-to-be-determined bugs in certain Java implementations
+you may need to do a "Reload" to jumpstart the updates. Go figure.
+</font>
+
+<center>
+<applet code="SimpleTextField.class" codebase=applets width=450 height=200>
+<param name=refreshRateInMS value="5000">
+<param name=fontname value="TimesRoman">
+<param name=fontslant value="italic">
+<param name=fontweight value="bold">
+<param name=fontsize value="24">
+<param name=data0Name value="Who: ">
+<param name=data0URL  value="http://siam:8080/IndividualAttribute?who=bob&attr=name">
+<param name=data0Width value ="40">
+<param name=data1Name value="Saying: ">
+<param name=data1URL  value="http://siam:8080/IndividualAttribute?who=bob&attr=favorite-saying">
+<param name=data1Width value ="40">
+<param name=data2Name value="Activity: ">
+<param name=data2URL  value="http://siam:8080/IndividualAttribute?who=bob&attr=activity">
+</applet>
+</center>
+
+This applet was instantiated with the following HTML code:
+<pre><code>
+&lt;applet code="SimpleTextField.class" codebase=applets width=450 height=200&gt;
+&lt;param name=refreshRateInMS value="5000"&gt;
+&lt;param name=fontname value="TimesRoman"&gt;
+&lt;param name=fontslant value="italic"&gt;
+&lt;param name=fontweight value="bold"&gt;
+&lt;param name=fontsize value="24"&gt;
+&lt;param name=data0Name value="Who: "&gt;
+&lt;param name=data0URL  value="http://siam:8080/IndividualAttribute?who=bob&attr=name"&gt;
+&lt;param name=data0Width value ="40"&gt;
+&lt;param name=data1Name value="Saying: "&gt;
+&lt;param name=data0URL  value="http://siam:8080/IndividualAttribute?who=bob&attr=favorite-saying"&gt;
+&lt;param name=data1Width value ="40"&gt;
+&lt;param name=data2Name value="Activity: "&gt;
+&lt;param name=data0URL  value="http://siam:8080/IndividualAttribute?who=bob&attr=activity"&gt;
+&lt;/applet&gt;
+</code></pre>
+
+Click <a href="SimpleTextField.java">here</a> to view the applet source code.
+
+</body>
+</html>
