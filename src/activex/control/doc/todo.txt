@@ -1,0 +1,289 @@
+
+in VB demo, why are instances destroyed and created when I hide and
+   show the form?
+
+dialog boxes for serious errors???
+   maybe add new error level between ALWAYS and DERROR
+
+sysprocs should return boolean values
+
+test what happens when TW isn't able to connect
+  -- is there any useful error message?
+  -- does TW send a -1 message to the WSView?
+  -- is someone still holding the lock after TW shuts down?
+  -- what about killing the process from the task manager?
+
+change cursor -- moving watch?
+
+do not draw gray rectangle when TW is drawing us
+  - refresh problems -- gray box on top of TW
+  - need more info from TW or G2
+
+a way to set the verbosity at run time
+
+memory leaks
+
+call internal system procedure directly, instead of relying on sysproc cap
+
+get rid of findtwwindow -- tw tells us its hwnd
+
+more to be done in OnResetState?
+
+view-resources.rc: what's this about resource.h?
+
+create a workspace from wsv?
+
+----------------------------------------------------------------------
+
+check dprintfs for verbosity -- run release version, check log, should be quiet
+
+runmake activex opt stage
+
+convert batch and html files to Windows newlines in stage
+
+automate process of text-stripping workspace-views.kb
+
+----------------------------------------------------------------------
+
+HKEY_CLASSES_ROOT\TypeLib\{76993C43-65C7-481A-88EE-B805E48E0810}
+HKEY_CLASSES_ROOT\TypeLib\{76993C43-65C7-481A-88EE-B805E48E0810}\1.3\0\win32
+
+HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Visual Basic\6.0\{D03BCBA5-8C30-4FD6-A02E-9F7BE412FA3F}#8.0
+HKEY_CLASSES_ROOT\Interface\{064BEA68-090C-47FE-8D43-1BF88F5BC47D}
+
+
+form = 12960
+  each ws = 4935.  total = 9870
+  left = 2640
+  left = 7800 = 2640 + 4935 + 225
+
+2640 + 4935 + 225 + 4935 + 225
+
+widths = (form width - 3090) / 2
+     aka (form width / 2) - 1540
+
+left = 2640
+left = 2865 + width
+
+tw's running are 3012 and 3056
+
+left = 2640; width = 7215
+  form width = 10200
+
+  10200 - 7215 = 2985
+
+top = 1320; height = 6495
+  form height = 8430
+
+   8430 - 6495 = 1935
+
+
+height = 8430
+height = 6495
+
+
+l 2640
+t 1320
+h 6495
+w 7215
+
+pEntries 
+
+
+ATL::AtlInternalQueryInterface(void * 0x03096500, const ATL::_ATL_INTMAP_ENTRY * 0x0310ee88 struct ATL::_ATL_INTMAP_ENTRY const * const `CG2Gateway::_GetEntries(void)'::`2'::_entries, const _GUID & {IID_IG2Gateway}, void * * 0x0012ec70) line 5336
+
+ATL::CComObjectRootBase::InternalQueryInterface(void * 0x03096500, const ATL::_ATL_INTMAP_ENTRY * 0x0310ee88 struct ATL::_ATL_INTMAP_ENTRY const * const `CG2Gateway::_GetEntries(void)'::`2'::_entries, const _GUID & {IID_IG2Gateway}, void * * 0x0012ec70) line 2172 + 21 bytes
+
+CG2Gateway::_InternalQueryInterface(const _GUID & {IID_IG2Gateway}, void * * 0x0012ec70) line 50 + 35 bytes
+
+ATL::CComObject<CG2Gateway>::QueryInterface(ATL::CComObject<CG2Gateway> * const 0x03096568, const _GUID & {IID_IG2Gateway}, void * * 0x0012ec70) line 2424 + 28 bytes
+
+OLE32! 771c5d39()
+
+OLE32! 771c5dc2()
+
+OLE32! 771c54ec()
+
+OLE32! 771c56ad()
+
+OLE32! 771c6d8e()
+
+OLE32! 771c6f11()
+
+OLE32! 771c6e9e()
+
+OLE32! 771c6b7e()
+
+OLE32! 771db8ae()
+
+
+     mpContext->mThreadObj = new EventThread(this);
+CG2Gateway::AutoConnect(LockObj * 0x0012eff8) line 112 + 62 bytes
+
+CG2Gateway::Start(CG2Gateway * const 0x03096568, unsigned short * 0x0019f340, tagSAFEARRAY * * 0x001b98e4) line 304 + 15 bytes
+
+OLEAUT32! 77124626()
+
+OLEAUT32! 7713d52f()
+
+OLEAUT32! 771942e9()
+
+OLEAUT32! 771942e9()
+
+ATL::CComTypeInfoHolder::Invoke(IDispatch * 0x03096568, long 5, const _GUID & {00000000-0000-0000-0000-000000000000}, unsigned long 1033, unsigned short 1, tagDISPPARAMS * 0x0012f3bc, tagVARIANT * 0x00000000 {???}, tagEXCEPINFO * 0x0012f39c, unsigned int * 0x0012f3cc) line 3276 + 47 bytes
+
+ATL::IDispatchImpl<IG2Gateway3,&IID_IG2Gateway3,&LIBID_GensymAxl,1,3,ATL::CComTypeInfoHolder>::Invoke(ATL::IDispatchImpl<IG2Gateway3,&IID_IG2Gateway3,&LIBID_GensymAxl,1,3,ATL::CComTypeInfoHolder> * const 0x03096568, long 5, const _GUID & {00000000-0000-0000-0000-000000000000}, unsigned long 1033, unsigned short 1, tagDISPPARAMS * 0x0012f3bc, tagVARIANT * 0x00000000 {???}, ...) line
+
+VB6! 0049028d()
+
+VBA6! 0fa9475c()
+
+VBA6! 0fc03292()
+
+VBA6! 0fc000e4()
+
+VB6! 004841cd()
+
+001986cc()
+
+VB6! 004841a6()
+
+VB6! 0047d8c6()
+
+VB6! 0047d738()
+
+VB6! 0049771b()
+
+VB6! 0047aeda()
+
+VB6! 0047d034()
+
+VB6! 0048fa6f()
+
+VB6! 0047c72b()
+
+VB6! 0047eb8d()
+
+VB6! 0047aeda()
+
+VB6! 0047d034()
+
+USER32! 77d43a50()
+
+USER32! 77d43b1f()
+
+USER32! 77d45453()
+
+USER32! 77d454b4()
+
+USER32! 77d68d69()
+
+USER32! 77d6511b()
+
+USER32! 77d43a50()
+
+USER32! 77d43b1f()
+
+USER32! 77d45b2c()
+
+USER32! 77d45f73()
+
+VB6! 0047bf3d()
+
+VB6! 00496093()
+
+VB6! 0047aeda()
+
+VB6! 0047d034()
+
+USER32! 77d43a50()
+
+USER32! 77d43b1f()
+
+USER32! 77d43d79()
+
+USER32! 77d44374()
+
+VB6! 00482852()
+
+MSO97RT! 3078d224()
+
+MSO97RT! 306c3498()
+
+0824448b()
+
+
+
+  -rw-rw-rw-   1 jv       5            9529 Jan 19 17:08 inst-ws.cpp
+
+const GUID CDECL BASED_CODE _tlid =
+                { 0xf0f0cc75, 0x38f6, 0x443a, { 0x83, 0x9e, 0xfd, 0x43, 0x28, 0x3c, 0x2b, 0x4b } };
+
+
+  -rw-rw-rw-   1 jv       5           48535 Jan 19 17:24 cws.cpp
+IMPLEMENT_OLECREATE_EX(CTelewindowsCtrl, "TW.Telewindows.1",
+	0xec99e4ee, 0xf5f1, 0x4323, 0x98, 0x29, 0x6, 0xe9, 0xb0, 0xaf, 0xb9, 0x34)
+const IID BASED_CODE IID_DTwControl =
+		{ 0xa3132a7d, 0x1a9a, 0x41c0, { 0x84, 0x68, 0x7a, 0xb, 0x2b,
+						0xa3, 0xb0, 0xe8 } };
+const IID BASED_CODE IID_DTwControlEvents =
+		{ 0x480b1a49, 0xd990, 0x4385, { 0x9f, 0x67, 0x90, 0xb1, 0xc9,
+						0x17, 0x4e, 0xea } };
+
+  -rw-rw-rw-   1 jv       5            2611 Jan 19 11:38 WorkspaceView.odl
+
+
+
+14. const GUID CDECL BASED_CODE _tlid =
+                { 0xf0f0cc75, 0x38f6, 0x443a, { 0x83, 0x9e, 0xfd, 0x43, 0x28, 0x3c, 0x2b, 0x4b } };
+{D03BCBA5-8C30-4fd6-A0 2E 9F 7B E4 12 FA 3F}
+
+
+24. const IID BASED_CODE IID_DTwControl =
+      		{ 0xa3132a7d, 0x1a9a, 0x41c0, { 0x84, 0x68, 0x7a,  0xb, 0x2b, 0xa3, 0xb0, 0xe8 } };
+{3068339E-6BE7-4bbd-85 3F-84 92 F1 50 D2 A4}
+
+
+58. const IID BASED_CODE IID_DTwControlEvents =
+		{ 0x480b1a49, 0xd990, 0x4385, { 0x9f, 0x67, 0x90, 0xb1, 0xc9, 0x17, 0x4e, 0xea } };
+{50985B9F-47E6-4e26-B0 41 DF A1 23 CF FB BA}
+
+
+74. CTelewindowsCtrl, "TW.Telewindows.1",
+	          0xec99e4ee, 0xf5f1, 0x4323,   0x98, 0x29,  0x6, 0xe9, 0xb0, 0xaf, 0xb9, 0x34)
+{A02C8A0F-46E9-450f-B173-FB C8 5F 1F 5E 91}
+
+
+{78310B63-1163-48d4-AA96-06499A3156DC}
+{537E0770-E213-46c4-A6DC-E47A7104CDFD}
+{31E358E2-9D66-4f49-AC1A-4CC66B7EA42B}
+{C8C859D3-4D02-4a49-A22A-394DAE5A20C5}
+{B602CFBF-45A3-41bd-8E68-B2B5847E0EDC}
+{BE1A7BAE-7237-4402-9C87-6DF0D34A21F4}
+{9C72B73F-5592-4245-84B4-5F700F18207D}
+{33F13768-4E17-4ef7-867A-168373DA23C6}
+{45B544CE-8C37-4e74-8C07-815DB874BE0E}
+{CD44FEFE-E067-42ab-981C-63C0BC52C64F}
+{7748F095-2C03-4e7d-818B-7CA2ED610539}
+{9FACC958-17E3-4183-B421-6D6C5D130A1C}
+{1295B0CE-FCE8-473a-AD89-AD23D607EB2E}
+{3E59AF70-6E58-4c76-B83E-6B0E4CC3889F}
+{3AE9BA92-DEC2-4fdd-9194-98ABD1128C26}
+{A533B3DD-68A0-4f46-B6F4-514E4969D8C2}
+{E48E4EFA-7B42-4f7b-B209-A20FAB72C25E}
+{2845F5E3-EDA3-4db5-99F4-CEE81C6C2451}
+{D03F24B7-0B23-48e2-A50B-A6636ACD6460}
+{CC24622F-2CF1-41ef-BE5A-25B40C75F287}
+{6E747624-5311-4971-891D-7D9E0DC5E0EA}
+{5BCA11B9-760A-4678-B197-4AA27EEC077C}
+
+
+Things to grep for:
+_tlid, _wVerMajor, _wVerMinor
+CTelewindowsCtrl
+TW.Telewindows.1
+IID_DTwControl
+IID_DTwControlEvents
+_dwTwControlOleMisc
+IDS_TWAX
+G2Com
