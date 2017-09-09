@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="02/06/02 18:47:45">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Manufacture Tab</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="level255.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="level257.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+      <div align="center"><b>e-SCOR User's Guide</b></div>
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/e-SCOR/OnlineHelpFiles/UsersGuide/html/level2.htm">  
+        Configuring Level 2 SCOR  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Manufacture Tab
+</h2>
+<p>The following figure shows the Manufacture tab of the properties dialog for the delivery product of a Base Manufacturer role:<a name="327588"></a></p>
+<p >
+  <a name="1094272"> </a>
+<p><div align="left"><img src="images/delive69.gif" border="0" hspace="0" vspace="0">
+</div><a name="1094271"></a></p>
+
+
+
+</p>
+<p >
+  <a name="327689"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="327610"><div >Group/<br>Parameter</a></div></th>
+    <th><a name="327612"><div ><br>Description</a></div></th>
+  </tr>
+  <tr>
+    <td><p>Product<a name="327618"></a></p>
+<blockquote>  <a name="327621">Maximum Batch Size<br>Minimum Batch Size</a></blockquote>
+</td>
+    <td><p>The maximum and minimum number of delivery products to manufacture in each batch. The role can only manufacture finished products if the order size is greater than or equal to the Minimum Batch Size and less than or equal to the Maximum Batch Size. The value of the <b>Total Build Time </b>parameter can be proportional to the batch size, based on the Built Time Dependent on Order Size option on the product composite. The default values are <code>100</code> and <code>0</code>, respectively.<a name="327623"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Product<a name="327625"></a></p>
+<blockquote>  <a name="327629"><b>Yield</b></a></blockquote>
+</td>
+    <td><p>A percentage of the Batch Size, which determines the number of delivery products the role can actually use to fulfill build orders. The rest is considered defective product. The default value is <code>1.0</code>. <a name="327631"></a></p>
+<p>If you configure this number to be less than <code>1.0</code>, the Make category creates additional build orders for delivery products to make up for the loss. <a name="327632"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Product<a name="1062166"></a></p>
+<blockquote>  <a name="1062169">Build Time Dependent on Order Size</a></blockquote>
+</td>
+    <td><p>Whether the <b>Total Build Time</b> parameter of the Make category depends on the actual size of a batch. If Build Time Dependent on Order Size is true and the size of the build order is for less than a complete batch, the actual time it takes to manufacture the batch is adjusted proportionally. If Build Time Dependent on Order Size is false, the time it takes to manufacture a batch of products is the entire <b>Total Build Time</b>, regardless of whether the batch is complete. The default value is false.<a name="1062168"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Multipliers<a name="327634"></a></p>
+<blockquote>  <a name="327637">Total Build Time</a></blockquote>
+</td>
+    <td><p>A number that the role multiplies by the <b>Total Build Time</b> parameter of the Make category to determine the actual time it takes to make one batch of delivery products. The default value is <code>1.0</code>, which means it takes exactly the <b>Total Build Time</b>. <a name="327639"></a></p>
+<p>For details, see <a href="level251.htm#119161">Configuring Multipliers for Timing Parameters</a>.<a name="327642"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Multipliers<a name="327645"></a></p>
+<blockquote>  <a name="327648">Order Release to <br>Build Time</a></blockquote>
+</td>
+    <td><p>A number that the role multiplies by the Order Release to Build Time parameter of the Make category to determine the actual time it takes from when the Make category receives a build order for delivery products to when it receives components. The default value is <code>1.0</code>, which means it takes exactly the Order Release to Build Time.<a name="327650"></a></p>
+<p>For details, see <a href="level251.htm#119161">Configuring Multipliers for Timing Parameters</a>.<a name="327653"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Multipliers<a name="327656"></a></p>
+<blockquote>  <a name="327659">Production Material<br>Cycle Time</a></blockquote>
+</td>
+    <td><p>A number that the role multiplies by the <b>Production Material Cycle Time</b> parameter of the Make category to determine the actual time it takes from when the role receives components to when it starts to manufacture delivery products. The default value is <code>1.0</code>, which means it takes exactly the <b>Production Material Cycle Time</b>.<a name="327661"></a></p>
+<p>For details, see <a href="level251.htm#119161">Configuring Multipliers for Timing Parameters</a>.<a name="327664"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Multipliers<a name="327667"></a></p>
+<blockquote>  <a name="327670">Move to Delivery </a></blockquote>
+</td>
+    <td><p>A number that the role multiplies by the Move to Delivery parameter of the Make category to determine the actual time it takes from when the Make category finishes manufacturing a batch of delivery products to when the finished build order is transferred to the delivery location. The default value is 1.0, which means it takes exactly the Move to Delivery. <a name="327673"></a></p>
+<p>For details, see <a href="level251.htm#119161">Configuring Multipliers for Timing Parameters</a>.<a name="327676"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Multipliers<a name="327679"></a></p>
+<blockquote>  <a name="327682">Engineering Time</a></blockquote>
+</td>
+    <td><p>A number that the role multiplies by the Engineering Time of the Make category to determine the actual time it takes to engineer a single batch of engineer-to-order delivery products. The default value is <code>1.0</code>, which means it takes exactly the Engineering Time.<a name="327684"></a></p>
+<p>For details, see <a href="level251.htm#119161">Configuring Multipliers for Timing Parameters</a>.<a name="327687"></a></p>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<p><b>Related topics:</b><a name="1094313"></a></p>
+<p><a href="thread17.htm#251378">Make Planning Process</a><a name="1094317"></a></p>
+<p><a href="thread18.htm#139218">Source Planning Process</a><a name="1094321"></a></p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="level255.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="level257.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
