@@ -1,0 +1,58 @@
+;INF file for TelewindowsAX.ocx
+;DestDir can be 10 for Windows directory, 11 for Windows\System(32) directory, or left blank for the Occache directory.
+
+[version]
+signature="$CHICAGO$"
+AdvancedINF=2.0
+
+[Add.Code]
+TelewindowsAX.ocx=TelewindowsAX.ocx
+twng.exe=twng.exe
+pegrp32g.dll=pegrp32g.dll
+mfc100u.dll=mfc100u.dll
+msvcr100.dll=msvcr100.dll
+
+[TelewindowsAX.ocx]
+file-win32-x86=thiscab
+RegisterServer=yes
+clsid={C9ACF70C-5532-4AC3-8AB0-C5127786AB50}
+DestDir=
+FileVersion=1,5,0,0
+
+[Twng.exe]
+file-win32-x86=thiscab
+RegisterServer=no
+DestDir= 
+FileVersion=2011,0,128,0
+
+[pegrp32g.dll]
+file-win32-x86=thiscab
+RegisterServer=no
+DestDir=
+FileVersion=6,0,0,62
+
+[mfc100u.dll]
+file-win32-x86=thiscab
+FileVersion=10,0,30319,1
+RegisterServer=no
+DestDir=11
+
+[msvcr100.dll]
+file-win32-x86=thiscab
+FileVersion=10,0,30319,1
+RegisterServer=no
+DestDir=11
+
+[Setup Hooks]
+AddToRegHook=AddToRegHook
+
+[AddToRegHook]
+InfSection=DefaultInstall2
+
+[DefaultInstall2]
+AddReg=AddToRegistry
+
+[AddToRegistry]
+HKLM,"SOFTWARE\Classes\CLSID\{C9ACF70C-5532-4AC3-8AB0-C5127786AB50}\Implemented Categories\{7DD95802-9882-11CF-9FA9-00AA006C42C4}"
+HKLM,"SOFTWARE\Classes\CLSID\{C9ACF70C-5532-4AC3-8AB0-C5127786AB50}\Implemented Categories\{7DD95801-9882-11CF-9FA9-00AA006C42C4}"
+HKCR,"Licenses",,,"Licensing: Copying the keys may be a violation of established copyrights."
