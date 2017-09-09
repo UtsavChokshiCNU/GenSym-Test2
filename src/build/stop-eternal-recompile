@@ -1,0 +1,52 @@
+#!/bin/csh
+# Example stop-eternal-recompile
+goto main
+
+usage:
+echo "usage: stop-eternal-recompile: [asap]"
+echo "   This will create files who's existance triggers"
+echo "   bootstrap and/or the eternal-recompile to pack it in."
+goto exit
+
+main:
+
+# Locals.
+set log_dir = "/bt/er/logs"
+set lisp_dir = "/bt/er/lisp"
+set stop_soon = "$log_dir/STOP-ETERNAL-RECOMPILE"
+set asap = 0
+
+# Parse the arguments
+if( $#argv != 0 && $#argv != 1 ) then
+  echo "ERROR: wrong argument count."
+  goto usage
+endif
+
+if( $#argv == 1 ) then
+  if ( $1 != asap ) then
+    echo "ERROR: argument, if given, must be asap."
+    goto usage
+  else
+    set asap = 1
+  endif
+endif
+
+set stop_compile = "$lisp_dir/STOP-ER-NOW"
+
+if ( -e $stop_soon ) then
+  echo "WARN: The eternal-recompile already has an out standing stop request containing:"
+  cat $stop_soon
+endif
+if ( -e $stop_compile ) then
+  echo "WARN: the translate already has an outstanding stop request containing:"
+  cat $stop_compile
+endif
+
+echo "LOG: Requesting eternal recompile to stop. ( $stop_soon )"
+date >> $stop_soon
+if ( $asap == 1 ) then
+  echo "LOG: Requesting translate to stop. ( $stop_compile )"
+  date >> $stop_compile
+endif
+
+exit:
