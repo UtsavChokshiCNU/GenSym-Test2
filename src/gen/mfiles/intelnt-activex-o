@@ -1,0 +1,83 @@
+PRODUCT = activex
+ODIR = o
+PLATFORM = intelnt
+AUXDIR = $(SRCBOX)\$(PRODUCT)\control\auxi
+TWAXDIR = $(SRCBOX)\$(PRODUCT)\control\src
+OUTPUTDIR = $(DSTBOX)\$(PRODUCT)\$(ODIR)
+MTL=midl.exe
+SCRIPTSDIR = $(SCRIPTSBOX)\scripts\nt
+DEFINES=/D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_WINDLL" /D "_AFXDLL" /D "_MBCS" /D "_USRDLL" /D "L_IMPL_OBJECTSAFETY" /D "L_USE_COMCAT"
+CC_FLAGS = /nologo /MDd /W3 /GX /Zi /Od $(DEFINES) /Fo"$(OUTPUTDIR)\\" /Fd"$(OUTPUTDIR)\\" /FD /GZ /c 
+
+# The include file ntwin32.mak defines macros to provide independence
+# macro      Intel NT             Alpha NT      Definition
+# =====      ========             ========      ===========
+# $(cc)      cl                   claxp         compiler
+# $(ccommon) -c -W3               same          standard compiler flags
+# $(cdebug)  -Od -Zi              -Od -Zi -Zh   standard debug flags*
+# $(cflags)  $(ccommon) -D_X86_=1 -c -DALPHA=1  to identify platform
+# $(cvarsdll) -DWIN32 $(noansi)    same          to identify o.s.
+# $(link)    link32               same          linker
+# $(ldebug)  -debug:full          same          linker debug flags*
+#            -debugtype:cv              
+# $(guilflags) -subsystem:windows same          GUI link flags
+#             -entry:WinMainCRTStartup  
+#
+# (*) A NODEBUG option or macro turns off debugging and specifies
+#    full optimization.
+
+!include <ntwin32.mak>
+
+all : _mfenter TwControl.ocx regsvr32.trg _mfexit
+
+_mfenter : 
+	@- $(SCRIPTSDIR)\errsweep.bat -init
+
+_mfexit : 
+	@- $(SCRIPTSDIR)\errsweep.bat -finish
+
+TwControl.tlb : $(TWAXDIR)\TwControl.odl
+	$(MTL) /nologo /D _DEBUG /tlb TwControl.tlb /mktyplib203 /win32 $(TWAXDIR)\TwControl.odl
+
+TwControl.res : TwControl.tlb $(TWAXDIR)\resources.rc $(AUXDIR)\bmp-tw.bmp \
+  $(TWAXDIR)\defs-twax.h
+	$(rc) /l 0x409 /foTwControl.res /i $(TWAXDIR) /i $(OUTPUTDIR) /d _DEBUG /d _AFXDLL $(TWAXDIR)\resources.rc
+
+TwControl.ocx : TwControl.res $(TWAXDIR)\exports.def instance.obj logger.obj \
+  page.obj xtw.obj
+    $(link) /nologo /subsystem:windows /dll /incremental:no /pdb:TwControl.pdb /debug:full /machine:I386 /def:$(TWAXDIR)\exports.def /out:TwControl.ocx /implib:TwControl.lib /pdbtype:sept instance.obj logger.obj page.obj xtw.obj TwControl.res
+
+regsvr32.trg : TwControl.ocx registerTwControl.bat
+	registerTwControl.bat
+
+registerTwControl.bat : $(AUXDIR)\registerTwControl.bat
+	copy $(AUXDIR)\registerTwControl.bat registerTwControl.bat
+
+instance.obj : $(TWAXDIR)\instance.cpp $(TWAXDIR)\classes-twax.hxx \
+  $(TWAXDIR)\defs-twax.h $(TWAXDIR)\gafx.h
+	$(cc) $(CC_FLAGS) $(TWAXDIR)\instance.cpp
+
+logger.obj : $(TWAXDIR)\logger.cpp $(TWAXDIR)\defs-twax.h $(TWAXDIR)\gafx.h
+	$(cc) $(CC_FLAGS) /D MFGEN $(TWAXDIR)\logger.cpp
+
+page.obj : $(TWAXDIR)\page.cpp $(TWAXDIR)\classes-twax.hxx \
+  $(TWAXDIR)\defs-twax.h $(TWAXDIR)\gafx.h
+	$(cc) $(CC_FLAGS) $(TWAXDIR)\page.cpp
+
+xtw.obj : $(TWAXDIR)\xtw.cpp $(TWAXDIR)\classes-twax.hxx \
+  $(TWAXDIR)\defs-twax.h  $(TWAXDIR)\gafx.h
+	$(cc) $(CC_FLAGS) $(TWAXDIR)\xtw.cpp
+
+clean :
+	- del instance.obj
+	- del logger.obj
+	- del page.obj
+	- del TwControl.res
+	- del TwControl.tlb
+	- del vc60.idb
+	- del xtw.obj
+	- del TwControl.exp
+	- del TwControl.lib
+	- del TwControl.ocx
+	- del regsvr32.trg
+	- del TwControl.pdb
