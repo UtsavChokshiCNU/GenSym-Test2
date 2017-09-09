@@ -1,0 +1,174 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="01/11/02 11:07:56">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Creating Custom Icon Regions</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="customi5.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="customi7.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/ReThink/custom-manual/stylesets/Customizing%20ReThink/Output/html/customia.htm">  
+        Customizing Blocks  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Creating Custom Icon Regions
+</h2>
+<p>You might want to create and animate custom icon regions for your icon. To do this, edit the icon to add new regions, add new colors to a custom animation subtable for the block, and create a custom animation procedure that references these custom colors.<a name="14706"></a></p>
+<h4 >	 To animate custom icon regions:<a name="14707"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>1	</b></td>    <td valign="top" width="580">Create a subclass of block and place it on your customization workspace.<a name="14708"></a></td>  </tr></table><blockquote>  <a name="14709">For example:</a></blockquote>
+<p >
+  <a name="14723"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="14712"><div >Attribute</a></div></th>
+    <th><a name="14714"><div >Value</a></div></th>
+  </tr>
+  <tr>
+    <td><p>Class Name<a name="14716"></a></p>
+</td>
+    <td><code>custom-task-with-new-region<a name="14718"> </a></code></blockquote></td>
+  </tr>
+  <tr>
+    <td><p>Direct Superior Classes<a name="14720"></a></p>
+</td>
+    <td><code>bpr-task<a name="14722"> </a></code></blockquote></td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>2	</b></td>    <td valign="top" width="580">Choose Edit Icon on the class definition and add new named regions, which you will animate.<a name="14724"></a></td>  </tr></table><blockquote>  <a name="89186">For details, see the <i>ReThink User's Guide</i>.</a></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>3	</b></td>    <td valign="top" width="580">Create a subclass of <code>bpr-block-animation-subtable</code> that specifies new color attributes of the custom icon regions.<a name="14725"></a></td>  </tr></table><blockquote>  <a name="14726">For example, if you add a region called <code>new-region</code>, the class definition might look like this:</a></blockquote>
+<p >
+  <a name="14744"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="14729"><div >Attribute</a></div></th>
+    <th><a name="14731"><div >Value</a></div></th>
+  </tr>
+  <tr>
+    <td><p>Class Name<a name="14733"></a></p>
+</td>
+    <td><code>custom-task-animation-subtable<a name="14735"> </a></code></blockquote></td>
+  </tr>
+  <tr>
+    <td><p>Direct Superior Classes<a name="14737"></a></p>
+</td>
+    <td><code>bpr-block-animation-subtable<a name="14739"> </a></code></blockquote></td>
+  </tr>
+  <tr>
+    <td><p>Class Specific Attributes<a name="14741"></a></p>
+</td>
+    <td><code>new-region-active-color initially is red;
+new-region-inactive-color initially is black<a name="14743"> </a></code></blockquote></td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>4	</b></td>    <td valign="top" width="580">Edit the class definition of the custom block to refer to the subclass of <code>bpr-block-animation-subtable</code> by specifying Attribute Initializations for the class.<a name="14745"></a></td>  </tr></table><blockquote>  <a name="14746">For example, the following specification overrides the default <code>animation-subtable</code> in the definition of the custom task:</a></blockquote>
+<p >
+  <a name="14760"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="14749"><div >Attribute</a></div></th>
+    <th><a name="14751"><div >Value</a></div></th>
+  </tr>
+  <tr>
+    <td><p>Class Name<a name="14753"></a></p>
+</td>
+    <td><code>custom-task-with-new-region<a name="14755"> </a></code></blockquote></td>
+  </tr>
+  <tr>
+    <td><p>Attribute Initializations<a name="14757"></a></p>
+</td>
+    <td><code>animation-subtable initially is an instance of 
+a custom-task-animation-subtable<a name="14759"> </a></code></blockquote></td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<blockquote>  <a name="14761">For information on why you use Attribute Initializations, see the note in <a href="how-to35.htm#16323">Creating New Attributes for Subobjects</a>.</a></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>5	</b></td>    <td valign="top" width="580">Copy the <code>bpr-animate-block</code> procedure from the Block Animation Subtables workspace and place it on your customizations workspace.<a name="14765"></a></td>  </tr></table><blockquote>  <a name="14766">This is the default <code>procedure-name</code> for the <code>bpr-block-animation-subtable</code>.</a></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>6	</b></td>    <td valign="top" width="580">Change the name of the procedure and edit the procedure to animate the custom icon regions by using the custom color attributes. <a name="14767"></a></td>  </tr></table><blockquote>  <a name="14768">For example, the procedure might be named <code>animate-task-block</code>, and you might change the procedure to animate the <code>new-region</code> icon region rather than the <code>flashing</code> icon region by referring to the custom color attribute of the custom block class.</a></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>7	</b></td>    <td valign="top" width="580">In the class definition of the subclass of <code>bpr-block-animation-subtable</code>, initialize the <code>procedure-name</code> to refer to the custom procedure by specifying Attribute Initializations for the class.<a name="14769"></a></td>  </tr></table><blockquote>  <a name="14770">For example, if the custom procedure is named <code>animate-task-block</code>, the specification would look as follows:</a></blockquote>
+<p >
+  <a name="14784"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="14773"><div >Attribute</a></div></th>
+    <th><a name="14775"><div >Value</a></div></th>
+  </tr>
+  <tr>
+    <td><p>Class Name<a name="14777"></a></p>
+</td>
+    <td><code>custom-task-animation-subtable<a name="14779"> </a></code></blockquote></td>
+  </tr>
+  <tr>
+    <td><p>Attribute Initializations<a name="14781"></a></p>
+</td>
+    <td><code>procedure-name initially is 
+animate-task-block<a name="14783"> </a></code></blockquote></td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<p>The following simple example shows a custom task block with a new region. When the work object arrives at the block, the region at the right of the icon turns green. The custom block and animation subtable class definitions show the attributes that you must configure.<a name="14785"></a></p>
+<p >
+  <a name="85376"> </a>
+<div style="color: #000000;  font-size: 4pt; font-style: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: justify; text-decoration: none; text-indent: 0pt; text-transform: none; vertical-align: baseline">
+<a name="85375"> </a><div align="left"><img src="images/custom27.gif" border="0" hspace="0" vspace="0">
+</div><br>
+</div>
+
+
+
+</p>
+<p>Here is the text of the custom animation procedure:<a name="14798"></a></p>
+<p >
+  <a name="89894"> </a>
+<div style="color: #000000;  font-size: 4pt; font-style: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: justify; text-decoration: none; text-indent: 0pt; text-transform: none; vertical-align: baseline">
+<a name="89893"> </a><div align="left"><img src="images/customie.gif" border="0" hspace="0" vspace="0">
+</div><br>
+</div>
+
+
+
+</p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="customi5.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="customi7.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
