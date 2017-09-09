@@ -1,0 +1,196 @@
+GEDP Modification Log
+
+
+Date		Developer
+
+1/6/03		msn
+
+	1.  Added new alogrithm for the median-input block
+
+	2.  Fixed bug in inverse block evaluator where the inverse was only done
+	    if the value was greater than zero otherwise the input was just passed
+	    on.
+
+	3.  Fixed gain block configuration dialog to point to the gedp-gain instead
+	    of the old _gedp-gain.
+
+	NOTE: Evaluating entry points that feed peer input blocks results in a block 
+	      error on the first entry point that has no value that gedp finds 
+	      connected to the peer input block being evaluated.
+
+	4.  Fixed data delay block configuration dialog to point to gedp-delay
+	    instead of the old _gedp-delay.
+
+	5.  Fixed override-value block evaluator.  It was displaying the structure
+	    instead of the current-value of the structure to the override dialog
+	    and then passing it on.
+
+
+2/11/03		msn
+
+	1.  Moved gedp dialogs (64) to non-proprietary workspace.
+
+	2.  Added gedp-signal-generator as a direct superior class of 
+	    gedp-sine-wave-block, gedp-real-time-clock & gedp-white-noise-block.
+	
+	3.  Added new attributes gedp-reset-time (float) and gedp-reset-phase, 
+	    a truth-value determining whether the phase-angle is reset when 
+	    the block is.
+
+	4.  Reworked the evaluator, _gedp-evaluate-block, for the
+	    gedp-sine-wave-block.
+
+	5.  Added an action to the OK/Apply buttons of the config dialog of the 
+	    standard-deviation & discrete-rate-of-change blocks to initialize them 
+	    after the configuration is complete.
+
+
+2/14/03		msn
+
+	Conflict on reload (after updating from CVS changes made on 2/13)
+            -- gedp-diagram & gedp-diagram in gedpq -- strange inheritance from 
+            grtl-scheme-from-gedp & grtl-scheme-from-gedpq, classes which did not 
+            exist.  Changed superior to grtl-scheme and merged.
+
+	1. Re-added the action to the OK/Apply buttons of the
+            dialog of the standard-deviation & discrete-ra
+            of-change blocks to initialize them after the
+            configuration is complete.  This change appare
+            did not make it into the last commit -- either
+            not save it when I thought I did or CVS someho
+            to save it correctly.
+	2. Deleted the class & hierarchy for gedp-item-or-valu
+            a. Removed code from gedp-generic-value-entry-
+               block::_gedp-reset-block to remove referenc
+               was not used.
+            b. Deleted method gedp-bias-block::_gedp-check
+               connection which was not used.
+            c. Deleted the procedure test-this & associate
+	3. Created an new mixin class gedp-block-with-attribut
+            name that has the attribute gedp-attribute-val
+            Made this the a superior class in 37 class def
+            and removed that attribute from those definiti
+	4. Added an initialization method for the classes gedp
+            history-value-block, gedp-standard-deviation-2
+            gedp-discrete-rate-of-change-2-block.  It chec
+            preceding float-variable-block (required for t
+            blocks) and if the spec is - do not keep histo
+            sets the history-keeping-spec to a time interv
+            appropriate for the time setting on the block.
+
+
+3/20/03		msn
+
+	Replaced the call to cdg-send-event with a call to grtl-dispatch-event 
+	in 2 procedures:  gedp-post-cdg-event-block::_gedp-evaluate-block & 
+	gedp-smo-post-cdg-event-block::_gedp-evaluate-block.
+
+
+3/24/03		msn
+
+	changed the way we detect the presence of CDG 4.0 in the evaluators
+	for the 2 blocks that post cdg events;  gedp-post-cdg-event-block &
+  	gedp-smo-post-cdg-event-block.  They now look for the object named
+  	by the symbol _cdg-symcure.  If it is present then we are using V4.0
+  	otherwise we are in a pre-4.0 version.  This is used for calling the
+  	compatibility code for pre-4.0 software.
+
+
+5/12/03		msn
+
+	1. Added data inhibit block & dialog.
+	2. Added generic action block (function or procedure) & dialog.
+	3. Added message-type attribute to post message blocks (2) &
+	   emended dialog.
+	4. Added dialog for gedp-diagram-template.
+	5. Added dialog fields for gedp-source-datapoint-key &
+	   gedp-evaluate-upon-source-datapoint-change.
+	6. Added pattern replacement for raw event and post message blocks (4).
+
+
+5/13/03		msn
+
+	1. Added attribute gedp-message-type to gedp-post-message-block & 
+  	   gedp-io-post-message-block.
+	2. Added error messages to gedp-text-resources -- property dialog errors
+  	   for message type edits.
+	3. Changed category attribute from symbol to text in evaluators for:
+		gedp-post-message-block
+		gedp-io-post-message-block
+		gedp-post-raw-event-block
+		gedp-io-post-raw-event-block
+	4. Added grtl-show-properties method for gedp-diagram & gedp-block.
+	5. Added new properties dialog for gedp-template-diagram.
+	6. Enhanced entry point properties dialogs (6).  Added fields for
+  	   source-datapoint-key & evaluate-on-source-datapoint-change.
+	7. Added new generic-action-block which allows the user to execute a
+  	   function or procedure in a diagram.  Function or procedure takes
+  	   a gedp-block and a value as arguments and returns a value (the procedure
+  	   can actually return a item or a value).
+	8. Added new inhibit block which passes or does not pass an item-or-value
+  	   based on the state of a truth-value operated inhibitor.
+	9. Added attribute substitution to 4 evaluators:
+		gedp-post-message-block
+		gedp-io-post-message-block
+		gedp-post-raw-event-block
+		gedp-io-post-raw-event-block
+	10. For gedp-post-cdg-event-block & gedp-io-post-cdg-event-block:
+  	    a. Changed 3 attribute names:  
+		gedp-send-cdg-true-states to gedp-send-cdg-true-events
+		gedp-send-cdg-suspect-states to gedp-send-cdg-suspect-events
+		gedp-send-cdg-false-states to gedp-send-cdg-false-events
+  	    b. Added the 3 above attributes to the properties dialog for each
+		block.
+
+
+5/15/03		msn
+
+	1. Added new block gedp-switch-block & properties dialog.
+	   The properties dialog required several new procedures
+	   and a temporary storage object.
+	2. Added a properties dialog for gedp-inhibit-block.
+	3. Fixed up some help texts on the subworkspaces of the
+	   uil-help-buttons which I had cloned or whose dialogs
+	   I had cloned.
+	4. Added switch block to data control palette.
+
+
+5/16/03		msn
+
+	1. Restricted item starting with underscore on switch block.
+	2. Added small borders around the inputs (1, 2 & 3) on the
+	   switch block dialog.
+	3. Added 2 rules to the gedp-block workspace to handle block
+	   connections & disconnections.
+	4. Made Tasha's label changes of the following dialogs:
+		Dialog template:  Key -> Name
+		Entry Points: Source Datapoint Key --> S... D... Name
+		Fetch Named Object:  Name or Key --> Name
+
+
+5/19/03		msn
+
+	1. Added check for block existance within the repeat loops on 
+	   the 3 signal generators.
+
+
+5/22/03		msn
+
+	1. Changed desactivate to deactivate on gedp-block user menu choice.
+  	2. Changed palette labels according to Natasha's suggestions.
+  	3. Replaced "gevm" with "gedp" in the following misnamed objects and 
+    	   all references:
+		gevm-block-evaluation-count
+		gevm-block-evaluation-rate
+		gevm-block-evaluation-rate-start-time
+	4. Finished switch block dialog.
+  	5. Finished diagram dialog (prototype - needs review).
+
+
+5/23/03		msn
+	1. Removed the top tier of stuff (help button, block, output text &
+    	   top thin separator) from all block property dialogs.
+	2. Changed the toggle buttons on all block dialogs so that there is
+    	   only one label for the button forming a statement and the state of
+    	   the button declaring whether that statement is true of false.  This
+    	   was done to eliminate the confusion of dual labels and toggle states.
