@@ -1,0 +1,24 @@
+HKCR
+{
+	ForceRemove AXClient.G2Symbol.1 = s 'G2Symbol 1.0'
+	{
+		CLSID = s '{2B010C0E-09E5-11D2-869E-00008618F471}'
+	}
+	ForceRemove AXClient.G2Symbol = s 'G2Symbol'
+	{
+		CLSID = s '{2B010C0E-09E5-11D2-869E-00008618F471}'
+		CurVer = s 'AXClient.G2Symbol.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {2B010C0E-09E5-11D2-869E-00008618F471} = s 'G2Symbol 1.0'
+		{
+			ProgID = s 'AXClient.G2Symbol.1'
+			VersionIndependentProgID = s 'AXClient.G2Symbol'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'both'
+			}
+		}
+	}
+}
