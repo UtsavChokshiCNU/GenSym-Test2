@@ -1,0 +1,84 @@
+#!/bin/csh -f
+onintr cleanup
+
+#### Introduction
+
+### This script is responsible for firing up the licensing server.
+
+### - It knows how to decrypt the executable. 
+### - It knows how to push it into the background immune from the
+###   death of the controling terminal.
+### - It knows how to user logger to capture it's output.
+### - It knows how to check if one is already running.
+
+### - /usr/ucb/ps substituted for ps and /usr/sbin/ifconfig
+###   for ifconfig; NOTE: this ifconfig location is for Solaris; 
+###   it's /etc/ifconfig on Sun4.
+### - these are not in the default path, and we
+###   don't have or want a .cshrc file. -MHD 6/10/97
+
+#### Kill Switch?
+if ( $1 == -kill ) then
+  set pinfo = ( `/usr/ucb/ps -auxgww | grep '/tmp/[l]icensing-server'` )
+  if ( $#pinfo ) then
+    echo "LOG `date` Killing running server"
+    kill -9 $pinfo[2]
+  endif
+endif
+
+#### Is one already running.
+echo "LOG `date` Check against launching two licensing servers"
+setenv LS_SERVER_HOST `hostname`
+echo $LS_SERVER_HOST
+/usr/.lserv/licensing-client -u guest -p anonymous noop > /tmp/$$
+unsetenv LS_SERVER_HOST
+if( { grep -s 'Have a nice day.' /tmp/$$ } ) then
+  echo "LOG `date` There is already a healthy licensing server."
+  exit 1
+endif
+
+
+#### Check against race condition of two attempts to fix the problem.
+echo "LOG `date` Check against multiple launch attempts"
+set count = `/usr/ucb/ps -alxgww | grep '[l]aunch-licensing-server' | wc -l`
+if ( $count > 1 ) then
+  echo "LOG `date` More than launch one attempt in progress"
+  exit 1
+endif
+
+#### Check if temp file already exists?
+if ( -e /tmp/licensing-server ) then
+  echo "LOG `date` temp. file already exists? /tmp/licensing-server."
+  exit 1
+endif
+
+
+#### OK launch up a fresh server.
+
+echo "LOG `date` Launching a fresh server, this takes a while..."
+
+### The password to the decrypt is the union of the password
+### given on the command line, information in /var/tmp/.lspw
+### and finally the eithernet board address of the machine the
+### licensing server must run upon.
+ 
+set myaddr = `/usr/sbin/ifconfig -au | sed -n 2p | awk '{print $2}'`
+set key = "WaTeR$1`hostid``cat /var/tmp/.lspw`"
+cp /usr/.lserv/licensing-server /tmp/licensing-server
+if ( $status ) goto cleanup
+chmod u+x /tmp/licensing-server
+cd /usr/.lserv
+echo yes | /tmp/licensing-server |& /usr/.lserv/logger /usr/.lserv/logs/licensing-server.log 1000 5 &
+# Differs from the original launch-licensing-server used for sdev3
+# in that it cd's to the /usr/.lserv directory and uses local file
+# storage for logs, one of the major aims of the port to
+# corp9. MHD/DDM 6/11/97
+
+
+echo "LOG `date` Process launched, give it a little while to get going."
+sleep 120
+
+cleanup:
+echo "LOG `date` All done."
+rm -rf /tmp/licensing-server
+
