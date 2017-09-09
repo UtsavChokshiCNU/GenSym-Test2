@@ -1,0 +1,399 @@
+# -*- Mode: Makefile -*-
+
+# twng (TW Next Generation) makefile.
+# Note: intelnt-twng-o sets some variables and includes this file.
+
+PRODUCT = twng
+
+!ifndef ODIR
+ODIR = opt
+!endif
+
+!ifndef DEBUGFLAGS
+NODEBUG = 1
+PDB_FLAGS = /incremental:no /debug /debugtype:cv /opt:ref /release
+!else
+PDB_FLAGS = $(ldebug)
+!endif
+
+DYNODIR = $(ODIR)d
+PLATFORM = intelnt
+BINPROMDIR = $(SRCBOX)\promote\bin
+CDIR = $(SRCBOX)\$(PRODUCT)\c
+JDIR = $(SRCBOX)\$(PRODUCT)\java
+RESDIR = $(SRCBOX)\$(PRODUCT)\c\res
+EXTDIR = $(DSTBOX)\ext\$(DYNODIR)
+EXTHDIR = $(SRCBOX)\ext\c
+JPEGDIR = $(DSTBOX)\jpeg\$(DYNODIR)
+FNTDIR = $(DSTBOX)\fnt\$(DYNODIR)
+TWDIR = $(DSTBOX)\tw\$(DYNODIR)
+RTLDIR = $(DSTBOX)\rtl\$(DYNODIR)
+SCINDIR = $(DSTBOX)\scintilla\$(ODIR)
+SCINHDIR = $(SRCBOX)\scintilla\include
+W2KDST = $(DSTBOX)\$(PRODUCT)\tape\win2000
+WGTDIR = $(DSTBOX)\widgets\$(ODIR)
+WGTHDIR = $(SRCBOX)\widgets
+SPFCDIR = $(SRCBOX)\specific\$(PLATFORM)
+PEGRPLIB = pegrp32g
+MYDIR = $(DSTBOX)\$(PRODUCT)\$(ODIR)
+TAPEDST = $(DSTBOX)\$(PRODUCT)\tape
+TESTDST = $(DSTBOX)\$(PRODUCT)\test
+CONTENTS = $(DSTBOX)\$(PRODUCT)\tape\contents.txt
+LIBXML2DIR = $(SRCBOX)\libxml2
+!ifdef USE_VS2008
+LIBXMLNAME = libxml2_a9.lib
+ZC_OPT = /Zc:wchar_t- /Zc:forScope-
+!else
+LIBXMLNAME = libxml2_a.lib
+ZC_OPT =
+!endif
+
+CC_FLAGS = $(cflags) $(cdebug) $(cvarsdll) -D_WINDOWS -D_AFXDLL -D_MBCS -EHsc -FD -Zi \
+       -Yc"stdafx.h" -I"$(CJ)\Source" -I"$(EXTHDIR)" -I"$(WGTHDIR)" -I"$(SCINHDIR)" \
+       -D_UNICODE $(DEBUGFLAGS) -I"$(LIBXML2DIR)\include" -I"$(SRCBOX)\common\c\include" $(ZC_OPT) 
+PERL = $(SPFCDIR)\perl4.exe
+
+_WIN32_IE = 0x0400
+
+!include <ntwin32.mak>
+
+# Use the sandbox copy of the XTP library and header files.
+CJ = $(SRCBOX)\xtp
+CJLIB = $(DSTBOX)\xtp\$(ODIR)
+
+objs = ChildFrm.obj MainFrm.obj StdAfx.obj Twng.obj \
+       JMessageFactory.obj JChartXML.obj JChartServer.obj JChartView.obj JString.obj \
+       DynamicDlg.obj DynamicTabsDlg.obj DynamicBaseDlg.obj PropertyDlg.obj RGTreeCtrl.obj\
+       WorkspaceView.obj HtmlView.obj ShortcutBar.obj ListBar.obj TreeView.obj LogBook.obj PropGrid.obj \
+       ChartView.obj Editor.obj ScintillaWnd.obj EditorFrame.obj ModalEdit.obj Debugger.obj StatusBar.obj \
+       TabularView.obj cjmenu.obj ControlIniter.obj ConfirmExitDlg.obj twng.res
+
+# Like guilflags, but using a PDB file.
+pdblflags = /nologo /subsystem:windows,$(APPVER) $(PDB_FLAGS) \
+        /pdb:"twng.pdb" /machine:I386 /nodefaultlib:"libc.lib" /nodefaultlib:"libcmt.lib" \
+        $(EXTRA_LINK_FLAGS)
+
+# Libs we require and can build if necessary.
+deptargets = libcprim libfnt libjpeg librtl libtw
+deplibs =$(EXTDIR)\libcprim.lib $(FNTDIR)\libfnt.lib $(JPEGDIR)\libjpeg.lib $(SPFCDIR)\$(LIBXMLNAME) \
+     $(RTLDIR)\librtl.lib $(TWDIR)\libtw.lib $(SCINDIR)\scintilla.lib $(WGTDIR)\widgets.lib
+
+libs =  /libpath:"$(CJLIB)" $(deplibs) $(SPFCDIR)\spromeps.lib \
+    crypt32.lib ws2_32.lib winmm.lib imm32.lib rpcrt4.lib netapi32.lib Activeds.lib ADSIid.lib version.lib
+
+
+all : $(deptargets) $(PRODUCT).exe jfree-lib
+
+{$(CDIR)}.cpp{}.obj::
+    $(cc) $(CC_FLAGS) $<
+
+{$(CDIR)}.rc{}.res::
+    $(rc) $(rcflags) /fo"$(PRODUCT).res" /i"$(CJ)\Source" /i"$(EXTHDIR)" $<
+
+$(PRODUCT).exe : $(objs) $(deplibs)
+    $(link) /entry:"wWinMainCRTStartup" $(objs) $(lprofile) $(pdblflags) $(libs) /ignore:4089 /out:$(PRODUCT).exe
+
+install :
+    - echo y | rmdir /s $(TAPEDST)
+    mkdir $(TAPEDST)
+    - echo y | rmdir /s $(TESTDST)
+    mkdir $(TESTDST)
+    mkdir $(W2KDST)
+    echo $(PRODUCT).exe >> $(CONTENTS)
+    copy $(PRODUCT).exe $(TAPEDST)\$(PRODUCT).exe
+    echo win2000\gdiplus.dll >> $(CONTENTS)
+    copy  $(BINPROMDIR)\gdiplus.dll $(W2KDST)\gdiplus.dll
+    echo $(PEGRPLIB).dll >> $(CONTENTS)
+    copy  $(BINPROMDIR)\$(PEGRPLIB).dll $(TAPEDST)\$(PEGRPLIB).dll
+    mkdir $(TAPEDST)\jfree
+    copy $(JDIR)\jfreelib\dest\*.jar $(TAPEDST)\jfree
+    copy  $(BINPROMDIR)\$(PEGRPLIB).dll $(MYDIR)\$(PEGRPLIB).dll
+    xcopy /s /e /i $(TAPEDST) $(TESTDST)
+
+clean :
+    -@erase *.obj *.sbr *.pch *.pdb *.res *.idb *.bsc *.exe *.tlh *.lib *.exp makefile
+
+realclean : clean
+    -@erase $(EXTDIR)\*.obj
+    -@erase $(FNTDIR)\*.obj
+    -@erase $(JPEGDIR)\*.obj
+    -@erase $(RTLDIR)\*.obj
+    -@erase $(TWDIR)\*.obj
+
+
+jfree-lib :
+    call ant -f $(JDIR)\jfreelib\build.xml -DdestDir=$(MYDIR)\jfree
+
+
+# ----------------------------------------------------------------------------
+# Targets to recompile G2 libraries against the DLL C library (cvarsdll). We
+# also have to remove the compiler options, "-Gs -Ob1 -Og -Oi -Ot", which are
+# hardwired into the makefiles, or else twng fails on startup, for some
+# unknown reason.
+#  -Gs  Controls stack probes 
+#  -Ob1 Controls inline expansion
+#  -Oi  Generates intrinsic functions
+#  -Ot  Favors fast code 
+# ----------------------------------------------------------------------------
+
+libcprim:
+    @if not exist $(EXTDIR) mkdir $(EXTDIR)
+    @$(PERL) -pe "s/-Gs -Ob1 -Og -Oi -Ot//" < $(SRCBOX)\gen\mfiles\$(PLATFORM)-ext-$(ODIR) > $(EXTDIR)\makefile
+    @cd $(EXTDIR)
+    @$(MAKE) /nologo CC_FLAGS="$$(cflags) $$(cvarsdll) -DCODEJOCK $$(ZC_OPT) -I$(SRCBOX)\common\c\include" libcprim.lib
+    @cd $(MYDIR)
+
+libfnt:
+    @if not exist $(FNTDIR) mkdir $(FNTDIR)
+    @$(PERL) -pe "s/-Gs -Ob1 -Og -Oi -Ot//" < $(SRCBOX)\gen\mfiles\$(PLATFORM)-fnt-$(ODIR) > $(FNTDIR)\makefile
+    @cd $(FNTDIR)
+    @$(MAKE) /nologo CC_FLAGS="$$(cflags) $$(cvarsdll) -UDEBUG" libfnt.lib
+    @cd $(MYDIR)
+
+libjpeg:
+    @if not exist $(JPEGDIR) mkdir $(JPEGDIR)
+    @$(PERL) -pe "s/-Gs -Ob1 -Og -Oi -Ot//" < $(SRCBOX)\gen\mfiles\$(PLATFORM)-jpeg-$(ODIR) > $(JPEGDIR)\makefile
+    @cd $(JPEGDIR)
+    @$(MAKE) /nologo CC_FLAGS="$$(cflags) $$(cvarsdll)" libjpeg.lib
+    @cd $(MYDIR)
+
+librtl:
+    @if not exist $(RTLDIR) mkdir $(RTLDIR)
+    @$(PERL) -pe "s/-Gs -Ob1 -Og -Oi -Ot//" < $(SRCBOX)\gen\mfiles\$(PLATFORM)-rtl-$(ODIR) > $(RTLDIR)\makefile
+    @cd $(RTLDIR)
+    @$(MAKE) /nologo CC_FLAGS="$$(cflags) $$(cvarsdll) -DCHESTNUT -DNDEBUG -UDEBUG -I$(SRCBOX)\common\c\include" librtl.lib
+    @cd $(MYDIR)
+
+libtw:
+    @if not exist $(TWDIR) mkdir $(TWDIR)
+    @$(PERL) -pe "s/-Gs -Ob1 -Og -Oi -Ot//" < $(SRCBOX)\gen\mfiles\$(PLATFORM)-tw-$(ODIR) > $(TWDIR)\makefile
+    @cd $(TWDIR)
+    @$(MAKE) /nologo CC_FLAGS="$$(cflags) $$(cvarsdll) -I$(SRCBOX)\common\c\include" libtw.lib
+    @cd $(MYDIR)
+
+#
+# TWNG dependencies, originally created by Visual Studio.
+#
+
+$(CDIR)\Twng.rc : "$(CDIR)\Resource.h" "$(EXTHDIR)\ddrsc.h" "$(EXTHDIR)\filedlg.rc" \
+    "$(RESDIR)\Twng.rc2"
+
+twng.res : "$(CDIR)\Twng.rc" "$(RESDIR)\standard.bmp" "$(RESDIR)\toolbar.bmp" \
+    "$(RESDIR)\editor.bmp" "$(RESDIR)\filetree.bmp" "$(RESDIR)\tw.ico" \
+    "$(RESDIR)\delay.avi"
+
+$(CDIR)\ChartView.cpp : \
+    "$(EXTHDIR)\TypeSafeMsgMap.h"\
+    "$(CDIR)\ChartView.h"\
+    "$(CDIR)\MainFrm.h"\
+    "$(CDIR)\Twng.h"
+
+$(CDIR)\ChildFrm.cpp : \
+    "$(EXTHDIR)\TypeSafeMsgMap.h"\
+    "$(CDIR)\ChildFrm.h"\
+    "$(CDIR)\MainFrm.h"\
+    "$(CDIR)\Twng.h"
+
+$(CDIR)\cjmenu.cpp : \
+    "$(EXTHDIR)\TypeSafeMsgMap.h"\
+    "$(CDIR)\MainFrm.h"\
+    "$(CDIR)\Twng.h"
+
+$(CDIR)\Debugger.cpp : \
+    "$(EXTHDIR)\TypeSafeMsgMap.h"\
+    "$(EXTHDIR)\filedlg.h"\
+    "$(EXTHDIR)\resizer.h"\
+    "$(SCINHDIR)\scintilla.h"\
+    "$(CDIR)\Debugger.h"\
+    "$(CDIR)\Editor.h"\
+    "$(CDIR)\MainFrm.h"\
+    "$(CDIR)\ScintillaWnd.h"\
+    "$(CDIR)\Twng.h"
+
+$(CDIR)\DynamicDlg.cpp : \
+    "$(EXTHDIR)\TypeSafeMsgMap.h"\
+    "$(EXTHDIR)\cprim.h"\
+    "$(EXTHDIR)\dyndlgs.h"\
+    "$(EXTHDIR)\lispicp.h"\
+    "$(EXTHDIR)\msincls.h"\
+    "$(EXTHDIR)\resizer.h"\
+    "$(CDIR)\DynamicDlg.h"\
+    "$(CDIR)\DynamicTabsDlg.h"\
+    "$(CDIR)\DynamicBaseDlg.h"\
+    "$(CDIR)\MainFrm.h"\
+    "$(CDIR)\Twng.h"\
+    "$(WGTHDIR)\AdvancedColorPicker\advancedcolorpicker.h"\
+    "$(WGTHDIR)\colorpicker\ColorCombo.h"\
+    "$(WGTHDIR)\combotree\ComboTree.h"\
+    "$(WGTHDIR)\combotree\ComboTreeButton.h"\
+    "$(WGTHDIR)\combotree\ComboTreeDropList.h"\
+    "$(WGTHDIR)\combotree\ComboTreeEdit.h"\
+    "$(WGTHDIR)\combotree\ComboTreeHook.h"\
+    "$(WGTHDIR)\combotree\ComboTreeTip.h"\
+    "$(WGTHDIR)\combotree\PupText.h"\
+    "$(WGTHDIR)\combotree\SubClass.h"\
+    "$(WGTHDIR)\duration\MyCDateTime.h"\
+    "$(WGTHDIR)\duration\MyCEdit.h"\
+    "$(WGTHDIR)\duration\MySpinButton.h"\
+    "$(WGTHDIR)\duration\NewDuration1.h"\
+    "$(WGTHDIR)\G2CheckListBox\G2CheckListBox.h"\
+    "$(WGTHDIR)\ImageWidget\G2ImageWidget.h"\
+    "$(WGTHDIR)\richeditgrid\CellRange.h"\
+    "$(WGTHDIR)\richeditgrid\GridCell.h"\
+    "$(WGTHDIR)\richeditgrid\GridCellBase.h"\
+    "$(WGTHDIR)\richeditgrid\GridCtrl.h"\
+    "$(WGTHDIR)\richeditgrid\GridDropTarget.h"\
+    "$(WGTHDIR)\richeditgrid\GridExtras.h"\
+    "$(WGTHDIR)\richeditgrid\TitleTip.h"\
+    "$(WGTHDIR)\SpinWidget\SpinnerTwng.h"
+
+$(CDIR)\DynamicTabsDlg.cpp : \
+    "$(EXTHDIR)\TypeSafeMsgMap.h"\
+    "$(EXTHDIR)\dyndlgs.h"\
+    "$(EXTHDIR)\lispicp.h"\
+    "$(EXTHDIR)\resizer.h"\
+    "$(CDIR)\DynamicBaseDlg.h"\
+    "$(CDIR)\DynamicTabsDlg.h"
+
+$(CDIR)\DynamicBaseDlg.cpp : \
+    "$(EXTHDIR)\dyndlgs.h"\
+    "$(EXTHDIR)\lispicp.h"\
+    "$(EXTHDIR)\resizer.h"\
+    "$(CDIR)\DynamicBaseDlg.h"
+
+$(CDIR)\PropertyDlg.cpp : \
+    "$(CDIR)\PropertyDlg.h"
+	
+$(CDIR)\Editor.cpp : \
+    "$(EXTHDIR)\TypeSafeMsgMap.h"\
+    "$(SCINHDIR)\scintilla.h"\
+    "$(CDIR)\ChildFrm.h"\
+    "$(CDIR)\Editor.h"\
+    "$(CDIR)\EditorFrame.h"\
+    "$(CDIR)\MainFrm.h"\
+    "$(CDIR)\ScintillaWnd.h"\
+    "$(CDIR)\Twng.h"
+
+$(CDIR)\EditorFrame.cpp : \
+    "$(EXTHDIR)\TypeSafeMsgMap.h"\
+    "$(SCINHDIR)\scintilla.h"\
+    "$(CDIR)\ChildFrm.h"\
+    "$(CDIR)\Editor.h"\
+    "$(CDIR)\EditorFrame.h"\
+    "$(CDIR)\MainFrm.h"\
+    "$(CDIR)\ScintillaWnd.h"\
+    "$(CDIR)\Twng.h"
+
+$(CDIR)\HtmlView.cpp : \
+    "$(EXTHDIR)\TypeSafeMsgMap.h"\
+    "$(CDIR)\ChildFrm.h"\
+    "$(CDIR)\HtmlView.h"\
+    "$(CDIR)\MainFrm.h"\
+    "$(CDIR)\Twng.h"
+
+$(CDIR)\ListBar.cpp : \
+    "$(EXTHDIR)\TypeSafeMsgMap.h"\
+    "$(CDIR)\ListBar.h"\
+    "$(CDIR)\MainFrm.h"\
+    "$(CDIR)\ShortcutBar.h"\
+    "$(CDIR)\Twng.h"
+
+$(CDIR)\LogBook.cpp : \
+    "$(EXTHDIR)\TypeSafeMsgMap.h"\
+    "$(SCINHDIR)\scintilla.h"\
+    "$(CDIR)\LogBook.h"\
+    "$(CDIR)\MainFrm.h"\
+    "$(CDIR)\Twng.h"
+
+$(CDIR)\MainFrm.cpp : \
+    "$(EXTHDIR)\TypeSafeMsgMap.h"\
+    "$(CDIR)\ChildFrm.h"\
+    "$(CDIR)\ListBar.h"\
+    "$(CDIR)\MainFrm.h"\
+    "$(CDIR)\NativeView.h"\
+    "$(CDIR)\PropGrid.h"\
+    "$(CDIR)\ShortcutBar.h"\
+    "$(CDIR)\TreeView.h"\
+    "$(CDIR)\Twng.h"\
+    "$(CDIR)\WorkspaceView.h"
+
+$(CDIR)\ModalEdit.cpp : \
+    "$(EXTHDIR)\TypeSafeMsgMap.h"\
+    "$(SCINHDIR)\scintilla.h"\
+    "$(CDIR)\Editor.h"\
+	"$(CDIR)\ModalEdit.h"\
+    "$(CDIR)\MainFrm.h"\
+    "$(CDIR)\ScintillaWnd.h"\
+    "$(CDIR)\Twng.h"
+	
+$(CDIR)\PropGrid.cpp : \
+    "$(EXTHDIR)\TypeSafeMsgMap.h"\
+    "$(CDIR)\MainFrm.h"\
+    "$(CDIR)\PropGrid.h"\
+    "$(CDIR)\Twng.h"
+
+$(CDIR)\ScintillaWnd.cpp : \
+    "$(EXTHDIR)\TypeSafeMsgMap.h"\
+    "$(SCINHDIR)\scintilla.h"\
+    "$(CDIR)\ScintillaWnd.h"\
+    "$(CDIR)\Twng.h"
+
+$(CDIR)\ShortcutBar.cpp : \
+    "$(EXTHDIR)\TypeSafeMsgMap.h"\
+    "$(CDIR)\ListBar.h"\
+    "$(CDIR)\MainFrm.h"\
+    "$(CDIR)\ShortcutBar.h"\
+    "$(CDIR)\Twng.h"
+
+$(CDIR)\StatusBar.cpp : \
+    "$(EXTHDIR)\TypeSafeMsgMap.h"\
+    "$(CDIR)\MainFrm.h"\
+    "$(CDIR)\StatusBar.h"\
+    "$(CDIR)\Twng.h"
+
+$(CDIR)\StdAfx.cpp : \
+    "$(CDIR)\StdAfx.h"\
+    "$(EXTHDIR)\TypeSafeMsgMap.h"\
+    "$(CJ)\Source\Common\XTPVersion.h"
+
+$(CDIR)\TabularView.cpp : \
+    "$(EXTHDIR)\TypeSafeMsgMap.h"\
+    "$(CDIR)\MainFrm.h"\
+    "$(CDIR)\TabularView.h"\
+    "$(CDIR)\Twng.h"
+
+$(CDIR)\TreeView.cpp : \
+    "$(EXTHDIR)\TypeSafeMsgMap.h"\
+    "$(CDIR)\MainFrm.h"\
+    "$(CDIR)\NativeView.h"\
+    "$(CDIR)\TreeView.h"\
+    "$(CDIR)\Twng.h"
+
+$(CDIR)\Twng.cpp : \
+    "$(EXTHDIR)\TypeSafeMsgMap.h"\
+    "$(CDIR)\ChildFrm.h"\
+    "$(CDIR)\HtmlView.h"\
+    "$(CDIR)\MainFrm.h"\
+    "$(CDIR)\NativeView.h"\
+    "$(CDIR)\ShortcutBar.h"\
+    "$(CDIR)\TreeView.h"\
+    "$(CDIR)\Twng.h"\
+    "$(CDIR)\WorkspaceView.h"
+
+$(CDIR)\WorkspaceView.cpp : \
+    "$(EXTHDIR)\TypeSafeMsgMap.h"\
+    "$(CDIR)\MainFrm.h"\
+    "$(CDIR)\Twng.h"\
+    "$(CDIR)\WorkspaceView.h"
+
+$(CDIR)\ControlIniter.cpp : \
+    "$(CDIR)\ControlIniter.h"\
+    "$(CDIR)\IControlIniter.h"
+
+$(CDIR)\RGTreeCtrl.cpp : \
+    "$(CDIR)\RGTreeCtrl.h"\
+    "$(CDIR)\RGTreeT.h" 
+
+$(CDIR)\ConfirmExitDlg.cpp : \
+    "$(CDIR)\ConfirmExitDlg.h"\
+    "$(CDIR)\Resource.h"
