@@ -1,0 +1,147 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_trouble_report.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+Measurements Show No Coverage
+</h1>
+<p>
+If you successfully build and run a program with BullseyeCoverage, but
+the coverage reports all show 0% coverage, BullseyeCoverage encountered
+a problem saving measurements to the coverage file.
+<p>
+The coverage file does not grow in size when
+it is updated. To determine whether the coverage file has been
+updated, view a coverage report.
+<H2>Diagnosing the Problem</H2>
+<p>
+Make sure the environment variable <CODE>COVFILE</CODE> points
+to the intended coverage file.
+<P>
+You can determine whether a BullseyeCoverage run-time error prevents coverage
+from saving by setting environment variable
+<a href="ref_environment.html#COVERR">COVERR</a>
+to the name of a error log file, then run your program again.
+When <CODE>COVERR</CODE> is set, BullseyeCoverage appends run-time error
+messages to the file named. BullseyeCoverage automatically creates the
+file if it does not exist.
+<P>
+You can also diagnose reasons for coverage not saving by explicitly
+calling <a href=ref_cov_write.html>cov_write</a>
+at various locations in your program. Examine the return code
+from <a href=ref_cov_write.html>cov_write</a>
+to determine why coverage is not saving. Error codes are listed
+in <a href=error_runTime.html>Run-Time Errors</a>.
+Some examples of how to call
+<a href=ref_cov_write.html>cov_write</a>
+and display the return code are below.
+<ul>
+<li>Display BullseyeCoverage status in a text-mode program
+<pre>
+#include &lt;stdio.h&gt;
+...
+fprintf(stderr, &quot;cov_write %d\n&quot;, cov_write());
+</pre>
+<li>Display BullseyeCoverage status in a Win32 graphical program
+<pre>
+#include &lt;windows.h&gt;
+...
+{
+    char buf[99];
+    wsprintf(buf, &quot;cov_write %d\n&quot;, cov_write());
+    MessageBox(0, buf, 0, 0);
+}
+</pre>
+<li>Append BullseyeCoverage status to file in any program
+<pre>
+#include &lt;stdio.h&gt;
+...
+{
+    FILE * f = fopen(&quot;logfile&quot;, &quot;a&quot;);
+    fprintf(f, &quot;cov_write %d\n&quot;, cov_write());
+    fclose(f);
+}
+</pre>
+<li>Write BullseyeCoverage status with Linux kernel message
+<pre>
+printk(KERN_INFO "BullseyeCoverage: cov_check=%d\n", cov_check());
+</pre>
+<li>Write BullseyeCoverage status from Windows kernel mode
+<pre>
+DbgPrint("BullseyeCoverage: cov_write=%d\n", cov_write());
+</pre>
+<li>Write BullseyeCoverage status from Windows graphical mode
+<pre>
+void debugPrint(const char* format, ...)
+{
+    va_list ap;
+    va_start(ap, format);
+    EngDebugPrint(STANDARD_DEBUG_PREFIX, format, ap);
+    va_end(ap);
+}
+...
+debugPrint("BullseyeCoverage: cov_write=%d\n", cov_write());
+</pre>
+
+</ul>
+<h2>Program Termination on Unix</h2>
+<p>
+Test programs must terminate by either returning from their entry
+function <code>main</code> or by calling one of the functions listed
+below from within a source file built with BullseyeCoverage.
+<PRE>
+abort
+execl, execle, execlp, execv, execve, execvp
+exit, _Exit, _exit
+</PRE>
+<P>
+If your program terminates via one of the functions listed above
+but the call occurs from a source file not processed by <a href=ref_covc.html>covc</a>,
+you lose measurements in memory. If your program terminates via
+a function not mentioned above, you lose measurements in memory.
+<P>
+BullseyeCoverage does not save coverage when a thread terminates; only
+when the process terminates. Thread termination is irrelevant
+since a thread cannot outlive its process.
+<p>
+You can solve this problem by one the methods below.
+<ul>
+<li>
+Modify your program to terminate via one of the functions listed above, within an instrumented source file.
+<li>
+Add a call to <a href=ref_cov_write.html>cov_write</a> to your program at a point you know to be executed after the coverage you are interested in.
+</ul>
+<p style="font-size:xx-small">
+Last reviewed: 9 Sep 2009
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
