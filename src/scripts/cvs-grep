@@ -1,0 +1,69 @@
+#!/bin/sh
+
+# todo:
+#   This script is mostly used to answer the question: "when did this function
+# first appear or first disappear?"  To that end, maybe we should do a binary
+# search over the revisions of the file, to find the "zero-crossing".
+#   It would be nice to include the date of the versions in the printout.
+
+if [ -z "$1" ]; then
+ echo "Usage: cvs-grep [-kcv] pattern file-1 ... file-n"
+ echo " Search all versions of files for pattern."
+ echo "  -k     Keep around the version files."
+# echo "  -c     Show context around match."
+ echo "  -v     Verbose."
+ exit 1
+fi
+
+Keep=
+Context=
+Verbose=
+
+if [ "$1" = "-k" ];then
+ Keep=1
+ shift
+fi
+
+# Context greps are only supported in GNU grep, so comment out for now.
+# if [ "$1" = "-c" ];then
+# Context="-9"
+# shift
+# fi
+
+if [ "$1" = "-v" ];then
+ Verbose=1
+ shift
+fi
+
+
+Pattern=$1
+shift
+
+if [ -z "$Keep" ]; then
+  trap 'rm -f $tem; exit 1' 1 2 3 13 15
+fi
+
+for filename
+do
+  Versions=`cvs log $filename | grep "revision " | awk '{printf("%s\n", $2);}'`
+#  Dates=`cvs log $filename | grep "date: " | awk '{printf("%s\n", $2);}'`
+
+  for version in $Versions
+  do
+    tem=${filename}.${version}
+    cvs -n update -p -r $version $filename 2>/dev/null  > $tem
+    if [ "$Verbose" ]; then
+       echo --------- Version $version ---------
+    fi
+
+    # The following used to be /gensym/bin/gnu-grep
+    grep -n $Context "$Pattern" $tem /dev/null    # Only gnu-grep has the context option.
+    if [ $? -eq 1 ]; then
+      echo "${filename}.${version}: no matches"
+    fi
+
+    if [ ! "$Keep" ]; then
+      rm $tem
+    fi
+  done
+done
