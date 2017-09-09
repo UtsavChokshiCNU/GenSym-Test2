@@ -1,0 +1,93 @@
+<html><head><title>Introduction</title></head>
+<body bgcolor="#ffffff">
+<a href="introdu3.htm"><h5>| Prev </a> <a href="introdu5.htm">| Next </a> <a href="introduc.htm">| Start of Chapter </a> <a href="introdu6.htm">| End of Chapter </a> <a href="booktoc.htm">| Contents </a> <a href="bookix.htm">| Index |</a> (5 out of 7)</h5> <br>
+
+
+<a name="2695">
+<h1> Using G2 WebLink as an HTTP Server </h1>
+</a><a name="2696">
+To enable G2 to provide resources to HTTP clients the G2 must ask G2 WebLink to 
+establish a listener for server requests. The procedure <a href="proced10.htm#3205">gw-start-http-server()</a> is 
+used to do this. 
+<p>
+</a><a name="2699">
+You may need to direct your users to configure their Web browsers to use this 
+server.
+<p>
+</a><a name="3774">
+Requests from those clients are then fulfilled in the following ways:
+<p>
+</a><ul><a name="2700">
+<li>Resources are obtained from a file system that is visible to the computer that G2 WebLink is running on. 
+<p></a><a name="2701">
+<li>Resources are obtained from G2. 
+<p></a></ul><a name="3851">
+<h2> Identifying Resources </h2>
+</a><a name="3853">
+A Universal Resource Locator (URL) is a pointer to a resource in the Internet. 
+Each URL contains enough information to enable that resource to be located and 
+retrieved. 
+<p>
+</a><a name="3854">
+HTTP clients use URLs to identify resources in G2. In the interface between G2 
+and G2 WebLink, URLs are represented as <code>Text</code>. 
+<p>
+</a><a name="3856">
+Each URL has three parts: 
+<p>
+</a><ul><a name="3857">
+<li>The name of the protocol used to access the resource, followed by a colon (:). 
+<p></a><a name="3858">
+<li>A double slash (//), followed by the name of the Internet server where the resource can be retrieved. 
+<p></a><a name="3859">
+<li>A single slash (/) followed by a path to the resource. Interpretation of the path is entirely up to the server.
+<p></a></ul><a name="3860">
+The following examples illustrate the format of URLs: 
+<p>
+</a><ul><a name=3861">
+<pre>ftp://www.ai.mit.edu/<br>
+http://tycho.usno.navy.mil/time.html<br>
+http://www.gensym.com/<br>
+gopher://weather.service.net/ma/boston/current-conditions
+</pre>
+</a></ul><a name="3862">
+In the last example, the protocol is <code>gopher</code>, the server is 
+<code>weather.service.net</code>, and the path to the resource on that server is 
+<code>/ma/boston/current-conditions</code>. 
+<p>
+</a><a name="3863">
+For more information about URLs, see the Internet standards documentation.
+<p>
+</a><a name="3864">
+The HTTP server established by G2 WebLink provides resources to its clients 
+named by URLs, such as the following:
+<p>
+</a><ul><a name=3865">
+<pre>http://<em>server</em>:<em>port-number</em>/path/to/resource.html
+</pre>
+</a></ul><a name="3866">
+where <em>server</em> is the machine name of the machine that your server is running on, 
+and<a href="configu1.htm#2558"> </a>port-number is the number of the port on which the server is listening for 
+requests. 
+<p>
+</a><a name="3877">
+<h2> Serving Resources </h2>
+</a><a name="3878">
+After launching the server, you must configure the server to specify the resources 
+that G2 can provide to Internet clients. To do this, call the procedure <code>gw-tender-
+resources()</code>. 
+<p>
+</a><a name="3880">
+G2 configures G2 WebLink to directly serve resources by installing patterns that 
+G2 WebLink then matches against the requested URLs. The procedure <a href="proced11.htm#3253">gw-tender-
+resources()</a> installs a pattern for a resource that G2 WebLink can provide.
+<p>
+</a><a name="3882">
+You can install patterns to provide resources stored in files visible to G2 WebLink, 
+or by calling back to G2. 
+<p>
+</a>
+
+<a href="introdu3.htm"><h5>| Prev </a> <a href="introdu5.htm">| Next </a> <a href="introduc.htm">| Start of Chapter </a> <a href="introdu6.htm">| End of Chapter </a> <a href="booktoc.htm">| Contents </a> <a href="bookix.htm">| Index |</a> (5 out of 7)</h5> <br>
+<A HREF="titlepa1.htm"><h6>Copyright &#169; 1996, Gensym Corporation, Inc.</h6></A>
+</body></html>
