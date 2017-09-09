@@ -1,0 +1,58 @@
+#!/bin/csh -f
+
+# Make-directories-writable
+
+# Copyright (c) 1986 - 2017 Gensym Corporation.
+# All rights reserved.
+
+# Jim Allard
+
+# This C-shell script takes a single argument that names a directory.  This
+# script makes that directory, and all subdirectories of that directory
+# writable.
+
+# Set the following for testing this script recursively from elsewhere
+set tools_dir = $SRCBOX/tools
+
+goto main
+
+usage:
+
+echo "Usage: make-directories-writable <directory>"
+exit 1
+
+failed:
+
+echo "Error: the last command failed with status ${last_status}."
+exit $last_status
+
+main:
+
+alias check_status 'set last_status = $status ; if ($last_status != 0) goto failed'
+
+if ($#argv != 1) then
+  echo "Error: 1 argument is required, $#argv were supplied."
+  goto usage
+endif
+
+set dir = $1
+
+if ( -d $dir ) then
+  echo "chmod u+w $dir" | csh -vf
+  check_status
+  set subfiles=`echo "ls $dir" | csh -f`
+  check_status
+  while ($#subfiles > 0)
+    set subfile = $subfiles[1]
+    if (-d ${dir}/$subfile) then
+      echo "$tools_dir/auxtools/make-directories-writable ${dir}/$subfile" | csh -f
+      check_status
+    endif
+    shift subfiles
+  end
+else
+  echo "Error: $dir was not a directory."
+  goto usage
+endif
+
+exit 0
