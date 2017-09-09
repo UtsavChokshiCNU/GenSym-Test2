@@ -1,0 +1,74 @@
+<project name="g2" default="build_32_std">
+	<property name="module.name" value="g2"/>
+	<property name="${module.name}.basedir" value=".."/> 
+	<property file="${g2.basedir}/ant/build.properties"/>
+ 
+	<!-- Build section -->
+	<target name="clean-build">
+		<delete dir="${g2.basedir}/../dst/${module.name}"/>    
+	</target>
+
+	<target name="clean-results">
+		<delete dir="${result.dir}/${module.name}"/>    
+	</target>
+
+	<target name="build_32_std">
+		<ant dir="${g2.basedir}/ant" target="vstudio" inheritAll="false">
+			<property name="type" value="Release|Win32"/>
+			<property name="module" value="g2"/>
+		</ant>
+		<ant dir="${g2.basedir}/ant" target="vstudio" inheritAll="false">
+			<property name="type" value="Release|Win32"/>
+			<property name="module" value="g2"/>
+			<property name="solution" value="utilities"/>
+		</ant>
+	</target>
+
+	<target name="build_64_ent">
+		<ant dir="${g2.basedir}/ant" target="vstudio" inheritAll="false">
+			<property name="type" value="Release - Enterprise|x64"/>
+			<property name="module" value="g2"/>
+		</ant>
+		<ant dir="${g2.basedir}/ant" target="vstudio" inheritAll="false">
+			<property name="type" value="Release|Win32"/>
+			<property name="module" value="g2"/>
+			<property name="solution" value="utilities"/>
+		</ant>
+	</target>
+
+	<target name="build_64_ent_wout_32" depends="build_64_ent" />
+
+	<target name="translate">
+		<ant dir="${g2.basedir}/ant" target="sbcl" inheritAll="false">
+			<property name="translator" value="trans-sbcl"/>
+			<property name="type" value="3rpmx"/>
+			<property name="module" value="g2"/>
+		</ant>
+	</target>
+	<!-- End of Build section -->
+  
+	<!-- Tests section -->
+	<target name="api-tests">
+		<mkdir dir="${result.dir}/g2"/>
+	</target>
+	<!-- End of Tests section -->
+  
+	<!-- Checks section -->
+	<target name="check-coverage">
+		<ant dir="${g2.basedir}/ant" target="check-c-coverage"/>
+	</target>
+  
+	<target name="check-static-metrics" depends="check-findbugs, check-cpd"/>
+  
+	<target name="check-findbugs">
+		<property name="c.findbugs.srcfolder" value="${g2.basedir}/${module.name}/c2"/>
+		<ant dir="${g2.basedir}/ant" target="check-c-findbugs"/>
+	</target>
+
+	<target name="check-cpd">
+		<property name="c.cpd.srcfolder" value="${g2.basedir}/${module.name}/c2"/>
+		<ant dir="${g2.basedir}/ant" target="check-c-cpd"/>
+	</target>
+	<!-- End of Checks section -->
+  
+</project>
