@@ -1,0 +1,44 @@
+#!/bin/csh
+# See the following file for documentation.
+source auxtools/wtape-init.csh
+
+set source_root = /home/vax-mount/gensym/st/ab/iship
+set target_root = /home/ftp/private/shipping
+set target_path = $target_root/$product/$software_platform
+set target_file = ${product}${release}
+
+set q = '$'
+set saveset = ${product}-${release}.bck
+set fdlsrc = ".${q}fdl${q}${saveset}"
+if ( ! ( -e ${source_root}/$saveset  && -e ${source_root}/$fdlsrc ) ) then
+  echo "ERROR: Backup save set not found for ${product}-$release"
+  exit 1
+endif
+
+if ( ! -e $target_root/$product ) then
+   mkdir $target_root/$product
+   chmod 751 $target_root/$product
+endif
+
+if ( ! -e $target_path ) then
+   mkdir $target_path
+   chmod 751 $target_path
+endif
+
+if ( -e $target_path/${target_file}.a && -e $target_path/${target_file}.afdl) then
+   touch $target_path/${target_file}.a
+   touch $target_path/${target_file}.afdl
+   exit 0 
+endif
+
+
+# Move the actual saveset and fdl, 
+#    e.g. gw-10b2-b13.bck and .$fdl$gw-10b2-b13.bck
+#     to:      123456.a and  123456.afdl
+cp ${source_root}/$saveset ${target_path}/${target_file}.a
+cp ${source_root}/$fdlsrc  ${target_path}/${target_file}.afdl
+
+set result = $status
+
+exit $result
+
