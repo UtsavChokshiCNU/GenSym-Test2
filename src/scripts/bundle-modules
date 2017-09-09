@@ -1,0 +1,52 @@
+#!/bin/sh
+
+# bundle-modules <bundle-installation> [varsfile]
+
+# Determine a module search path for bundle installation at directory
+# bundle-installation.  Place contents into file varsfile or echo to 
+# standard output.
+
+if [ $# = 0 ]; then
+  echo "Error: Wrong number of arguments, $# supplied, at least 1 required"
+  echo "Usage: $progname bundle-installation [varsfile]"
+  echo "Suggested bundle locations:  look in /gensym/bundles/installs"
+  exit 1
+fi
+
+
+# from promote/startserver, to obtain module search path for bundle.  Further
+# modified to handle older versions which had kbs in multiple different locations.
+
+HM=$1
+CMDLINE_PATH=""
+G2_PATH=""
+
+# find bundled kbs for our module search path
+for dir in ${HM}/g2i/kbs ${HM}/jmail/kbs ${HM}/g2/kbs/utils ${HM}/gda/kbs ${HM}/gda ${HM}/gda-4.5r1/kbs ${HM}/oracle/kbs ${HM}/oracle ${HM}/sybase/kbs ${HM}/sybase ${HM}/protools/kbs ${HM}/corbalink/kbs ${HM}/activexlink/kbs ${HM}/activexlink ${HM}/javalink/kbs ${HM}/tw2/kbs ${HM}/sockman/kbs ${HM}/optegrity/kbs ${HM}/nol/kbs ${HM}/nol ${HM}/integrity/kbs ${HM}/rethink/kbs ${HM}/escor/kbs ${HM}/opclink/KBs ${HM}/opclink/kbs ${HM}/opcclient/kbs ${HM}/jms/kbs ${HM}/pi/kbs ${HM}/pi ${HM}/kbs ${HM}/gw/kbs ${HM}/hla/kbs
+  do
+  if [ -d ${dir} ]; then
+    CMDLINE_PATH="${CMDLINE_PATH} ${dir}/"
+    if [ "${G2_PATH}" = "" ]; then 
+      G2_PATH="\"${dir}\""
+    else
+      G2_PATH="${G2_PATH},\"${dir}\""
+    fi
+  fi
+done
+
+if [ $# = 1 ]; then
+  echo Use the following for module search path on commandline to obtain kbs in bundle installation $1:
+  echo
+  echo ${CMDLINE_PATH}
+  echo
+  echo Use the following in a G2 Server Parameters dialog:
+  echo
+  echo ${G2_PATH}
+  echo
+else
+  echo ${CMDLINE_PATH} > $2
+  echo G2 modules determined for bundle installation in $1 and stored in $2
+  echo use
+  echo -module-search-path \"\`cat $2\`\"
+  echo when starting your G2.
+fi
