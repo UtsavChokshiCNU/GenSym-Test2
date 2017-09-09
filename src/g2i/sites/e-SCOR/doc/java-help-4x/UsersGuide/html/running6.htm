@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="02/06/02 18:47:53">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Problems that Can Occur When Running a Simulation</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="running5.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="running7.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+      <div align="center"><b>e-SCOR User's Guide</b></div>
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/e-SCOR/OnlineHelpFiles/UsersGuide/html/runningm.htm">  
+        Running the Simulation  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Problems that Can Occur When Running a Simulation
+</h2>
+<p>The most common mistakes you can make when configuring a model are:<a name="244634"></a></p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">You do not label each role with a unique name, when multiple roles of the same type exist.<a name="264582"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">You fail to connect roles together correctly, using input and output paths.<a name="264592"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">You forget to assign product specifications to roles.<a name="244635"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">You forget to assign resources to Base Manufacturer and Manufacturer roles.<a name="244637"></a></td>  </tr></table><p>These configuration errors cause the simulation to generate an error, then stop.<a name="218249"></a></p>
+<p>This table describes errors 	that e-SCOR can generate, when they occur, and how to correct the problem:<a name="180925"></a></p>
+<p >
+  <a name="180926"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="180967"><div >Errors</a></div></th>
+    <th><a name="180969"><div >When It Can Occur</a></div></th>
+    <th><a name="180971"><div >Solution</a></div></th>
+  </tr>
+  <tr>
+    <td><p>Invalid path<a name="180973"></a></p>
+</td>
+    <td><p>When you first start the simulation and after resetting<a name="180975"></a></p>
+</td>
+    <td><p>Disconnect and reconnect the yellow path.<a name="180977"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>No upstream supplier for &lt;product&gt;<a name="181028"></a></p>
+</td>
+    <td><p>When the simulation begins initializing<a name="181030"></a></p>
+</td>
+    <td><p>Ensure that you have assigned product specifications to roles correctly, and ensure that you have connected all paths between roles and through routers correctly.<a name="181032"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Incompatible combination of pull and push for &lt;role&gt;<a name="181270"></a></p>
+</td>
+    <td><p>When the simulation begins initializing<a name="181272"></a></p>
+</td>
+    <td><p>Ensure that the Source Type and Delivery Type of each role is compatible.<a name="181274"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>No award exists for &lt;product&gt;<a name="181382"></a></p>
+</td>
+    <td><p>When the simulation begins processing orders<a name="181378"></a></p>
+</td>
+    <td><p>Ensure that you have connected all paths correctly.<a name="181466"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Invalid order for &lt;product&gt;<a name="181652"></a></p>
+</td>
+    <td><p>When the simulation begins delivering product shipments<a name="181632"></a></p>
+</td>
+    <td><p>Ensure that all orders have an order size greater than zero. <a name="181730"></a></p>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<p>Other things to note when a simulation is running are:<a name="264623"></a></p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">The simulation does not compute all metrics immediately. For example, it does not compute financiafSl metrics for roles until one or two financial cycles have completed, due to the time lag in payments.<a name="264624"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">If the simulation does not compute financial or asset metrics for a role after several financial periods have completed, then you must configure the Net Selling Price parameter of the delivery products for the role. For a Base Manufacturer role, you must configure the Purchase Cost parameter for delivery products, located on the Source tab to compute outgoing financial metrics for the role.<a name="264715"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Occasionally, when you pause the simulation, certain metrics that should add up do not add up. This situation only occurs between clock ticks; it does not occur while the model is running.<a name="264625"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Because the Role Verification process takes 2 seconds of simulation time to complete, you should configure all timing initialization parameters to begin <i>after</i> 2 seconds from the start time of the simulation. These parameters are Initial Plan Delay and Initial Contract Delay. Neither of these parameters should have a value of less than <code>2 seconds</code>.<a name="264626"></a></td>  </tr></table><p><b>Related topics:</b><a name="1019905"></a></p>
+<p><a href="level114.htm#63495">Creating and Connecting Roles</a><a name="1019909"></a></p>
+<p><a href="level119.htm#119472">Assigning Product Specifications to Roles</a><a name="1019913"></a></p>
+<p><a href="level118.htm#7822">Configuring the Products a Role Sources and Delivers</a><a name="1019917"></a></p>
+<p><a href="level128.htm#9137">Configuring the Planning Mode for Roles</a><a name="1019921"></a></p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="running5.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="running7.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
