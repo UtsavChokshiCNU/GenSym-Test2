@@ -1,0 +1,57 @@
+#!/bin/csh
+
+# This script to do corbalink staging depends upon the prior version (first
+# argument), to copy the demos etc. Instead, we should know how to build the
+# examples, but since corbalink is going to be phased out, we're not worrying
+# very much about it
+
+# There's a bit of hair, to do with the fact that linux is a new platform for
+# corbalink, but might eventually have prior versions.
+
+# This script is fairly stupid, and does not do error checking.  Files which
+# have been changed are specifically called out within this file (e.g. the kbs
+# which were recompiled recently)
+
+
+setenv priorversion $1
+
+foreach platform (hp9000s700 intelnt linux rs6000 sparcsol)
+
+  rm -rf $SRCBOX/stage/corba/$platform
+  mkdir -p $SRCBOX/stage/corba/$platform
+
+  if ("$platform" == "linux" && ! -d /gensym/st/ab/eship/dep/linux/corbalink-$priorversion/test) then
+    setenv sourceplat sparcsol
+  else
+    setenv sourceplat $platform
+  endif
+
+  cd /gensym/st/ab/eship/dep/$sourceplat/corbalink-$priorversion/test
+
+  tar cf - . | (cd $SRCBOX/stage/corba/$platform ; tar xf -)
+
+  cd $SRCBOX/stage/corba/$platform
+
+  rm -f contents.txt README.htm 
+
+  if ("$platform" != "intelnt") then
+    rm -f example_clients/cpp/gridclient.exe example_clients/cpp/itgsl220.dll example_clients/cpp/itosl220.dll example_clients/cpp/msvcirt.dll
+  endif
+
+
+  foreach file (g2idl.kb g2orb.kb)
+    cp -p $SRCBOX/corba/kbs/$file $SRCBOX/stage/corba/$platform/kbs
+  end
+
+  foreach file (feature.kb publish.kb g2orb-util.kb)
+    cp -p $SRCBOX/corba/as-is/common/kbs/$file $SRCBOX/stage/corba/$platform/kbs
+  end
+
+
+  if ("$platform" == "intelnt") then
+    cp -p $SRCBOX/dst/$platform/corbalink/opt/g2-corba.exe $SRCBOX/stage/corba/$platform
+  else
+    cp -p $SRCBOX/dst/$platform/corbalink/opt/g2-corba $SRCBOX/stage/corba/$platform
+  endif
+
+end
