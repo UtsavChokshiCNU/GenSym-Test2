@@ -1,0 +1,790 @@
+#!/bin/csh -f
+#-----------------------------------------------------------------
+# make-gensym-tape
+#
+# Copyright (c) 1996
+#          Gensym Corporation.
+#          125 CambridgePark Drive, Cambridge MA 02140
+#          All Rights Reserved.
+#
+# Dependencies:
+#     products.dat:    The products database
+#     platforms.dat:   A list of promotable/shippable platforms
+#     media.dat:       Media type database
+#
+# Modifications:
+#     8/05/96, mpc: File commenting and formatting. Added ability
+#                   to generate single-archive tapes.
+#-----------------------------------------------------------------
+
+goto main
+
+usage:
+echo "usage:"
+echo "   make-gensym-tape [-p <product>] -r <release> -c <platform>"
+echo "                     -m <media> [-g -i -t <pathname> -th <target-host> -h]"
+echo "     -p <product>  -- default g2"
+echo "     -i  -- Internal: look for the release in the internal release directories."
+echo "     -g  -- This is for a gensym user, so include additional OK files."
+echo "     -t <target-pathname>  -- where to put the result"
+echo "     -th <target-hostname> -- host containing the target"
+echo "     -h  help"
+echo "   Multiple sets of -p, -r, and -c arguments may be used to put more than one product"
+echo "   in a distribution, when the media is a form of tape.  In this mode, if only one"
+echo "   -c is given, then it is used for all products.  The last -c will always be used to"
+echo "   determine distribution media type."
+set fail=1
+goto exit
+
+main:
+
+#-----------------------------------------------------------------
+# Directories Needed
+#-----------------------------------------------------------------
+set gensym_tools   = "/gensym/tools"
+set aux_tools      = "$gensym_tools/auxtools"
+set data_home      = "$gensym_tools/datafiles"
+set installers_dir = "$gensym_tools/installers"
+set product_tree   = "/st/ab"
+set staging_area   = "/tmp"
+
+
+#-----------------------------------------------------------------
+# Debugging substitutions.
+#     When working on this script, swap the above locations for
+#     some test dirs of your own. Uncomment these lines and
+#     comment the counterparts above. DO NOT check in until
+#     switching them back!
+#-----------------------------------------------------------------
+# set data_home = "/bt/jra/tools/datafiles"
+# set aux_tools = "/bt/jra/tools/auxtools"
+# set installers_dir = "/bt/jra/tools/installers"
+# set staging_area = "/home/jra/tmp"
+# set product_tree = "/home/jra/tmp/products"
+
+
+#-----------------------------------------------------------------
+# Defaults for optional and listed arguments
+#-----------------------------------------------------------------
+set products = ""
+set release_ids = ""
+set platforms = ""
+set internal_user = 0
+set internal_release = 0
+set single_tarfile = 0
+set target_host = SELF
+set platformlist = ""
+set contentlist = ""
+
+#-----------------------------------------------------------------
+# Locals
+#-----------------------------------------------------------------
+set fail=0
+
+#-----------------------------------------------------------------
+# Process the command line and set appropriate variables
+#-----------------------------------------------------------------
+#echo "LOG: Parsing Arguments."
+while ($#argv > 0)
+
+  switch ($1)
+
+      case "-p" : 
+          set products = ($products "$2")
+          shift
+          breaksw
+      case "-r" :
+          set release_ids = ($release_ids "$2")
+          shift
+          breaksw
+      case "-c" :
+          set platforms = ($platforms "$2")
+          set media_platform = $2
+          shift
+          breaksw
+      case "-m" :
+          if ($?media) then
+            echo "ERROR: only one -m <media> is allowed, more than one received."
+            set fail = 1
+          endif
+          set media = "$2"
+          shift
+          breaksw
+      case "-g" :
+          set internal_user=1
+          breaksw
+      case "-i" :
+          set internal_release=1
+          breaksw
+      case "-t" :
+          set target_pathname = "$2"
+          shift
+          breaksw
+      case "-th" :
+          set target_host = "$2"
+          shift
+          breaksw
+      case "-onetar" :
+          set single_tarfile=1
+          breaksw
+      case "-1" :
+          set single_tarfile=1
+          breaksw
+      case "-help" :
+      case "-h" :
+	  goto usage
+          breaksw
+      default :
+	  echo ""
+          echo "Invalid switch: $1"
+	  echo ""
+          goto usage
+  endsw
+  shift
+
+end  # while ($#argv > 0)
+
+# If no products were given, supply the optional G2.
+if ($#products == 0) set products = g2
+
+#echo "LOG: Validating Arguments."
+
+if ($#products == 0) then
+    echo "ERROR: a -p <product> is required."
+    set fail=1
+endif
+
+if ($#release_ids == 0) then
+    echo "ERROR: a -r <release_id> is required."
+    set fail
+else if ($#release_ids != $#products) then
+    echo -n "ERROR: number of -r and -p switches must match, "
+    echo    "$#products -p(s), $#release_ids -r(s)."
+    set fail=1
+endif
+
+if ($#platforms == 0) then
+    echo "ERROR: a -c <platform> is required."
+    set fail=1
+else if (($#platforms != 1) && ($#platforms != ($#products + 1))) then
+    echo -n "ERROR: either 1 -c, or 1 more -c than -p switch is required, "
+    echo    "$#products -p(s), $#platforms -c(s)."
+    set fail=1
+endif
+
+if (! $?media) then
+    echo "ERROR: a -m <media> is required."
+    set fail=1
+endif
+
+if (! $?media_platform) then
+    echo "ERROR: a -c <platform> argument is required."
+    set fail=1
+endif
+
+if ($fail != 0) goto usage
+
+#-----------------------------------------------------------------
+#echo "LOG: Validating Media Platform."
+#-----------------------------------------------------------------
+
+set platform_name = `grep "^$media_platform" $data_home/platforms.dat`
+if ("$platform_name" != "$media_platform") then
+    #-----------------------------------------------------------------
+    # If machine database contains no entry for given machine, display
+    # error and list of valid platforms.
+    #-----------------------------------------------------------------
+    echo "ERROR: Unknown kind of platform ($media_platform), must be one of:"
+    cat $data_home/platforms.dat
+    goto usage
+endif
+
+#-----------------------------------------------------------------
+#echo "LOG: Validating Media."
+#-----------------------------------------------------------------
+set media_info=`grep "media $media " $data_home/media.dat`
+
+# i.e. : media vms-directory        pathname disabled no-commands
+
+if ( $#media_info < 5 ) then
+    echo "Unknown kind of media ($media), must be one of:"
+    sed -e 's/media \([^ ]*\).*$/   \1/' $data_home/media.dat
+    goto usage
+else
+    switch($media_info[3])
+    case "pathname" :
+        set pathname_required=1
+        breaksw
+    case "no-pathname" :
+        set pathname_required=0
+        breaksw
+    default:
+        echo -n "ERROR: malformed media data file entry: pathname? "
+        echo "was $media_info[3]"
+        breaksw
+    endsw
+    switch($media_info[4])
+    case "disabled" :
+        set media_disabled_p=1
+        breaksw
+    case "enabled" :
+        set media_disabled_p=0
+          breaksw
+    default:
+        echo -n "ERROR: malformed media data file entry: enabled? "
+        echo "was $media_info[4]"
+        breaksw
+    endsw
+    switch($media_info[5])
+    case "tape-commands" :
+        set tape_commands = 1
+        breaksw
+    case "no-commands" :
+        set tape_commands = 0
+        breaksw
+    default:
+        echo -n "ERROR: malformed media data file entry: tape_commands? "
+        echo "was $media_info[5]"
+        breaksw
+    endsw
+    if ($media_disabled_p) then
+        echo "ERROR: This media is not currenting enabled."
+        goto usage
+    endif
+    if ( $pathname_required ) then
+      if  ( ! $?target_pathname ) then
+          echo -n "ERROR: This media ($media) requires a -t <target-pathname> "
+          echo "argument."
+          goto usage
+      endif
+      if ( $target_host == SELF && -e $target_pathname ) then
+          echo -n "ERROR: the target ($target_pathname) file or directory"
+          echo "already exists, it shouldn't."
+          set fail = 1
+          goto exit
+      endif
+    endif
+
+    set media_map = `grep " $media " $data_home/media-map.dat | grep " $media_platform "`
+    if ( $#media_map < 1 ) then
+        echo -n "ERROR: Tape making for $media on $media_platform is not"
+        echo "implemented."
+        set fail = 1
+        goto exit
+    endif
+    set tape_script = $media_map[1]
+
+    if ( ! -e $aux_tools/$tape_script ) then
+        echo "INTERNAL-ERROR: no tape writing tool: $aux_tools/$tape_script"
+        set fail=1
+        goto exit
+    else if ( ! $fail && ! -x $aux_tools/$tape_script ) then
+        echo -n "INTERNAL-ERROR: tape writing tool isn't executable:"
+        echo " $aux_tools/$tape_script"
+        set fail=1
+        goto exit
+    endif
+
+endif
+
+#-----------------------------------------------------------------
+# If we are making multiple products, the script must take tape commands.
+#-----------------------------------------------------------------
+
+if (($#products > 1) && ($tape_commands != 1) && (! $single_tarfile)) then
+    echo "ERROR: Cannot place multiple products onto $media distributions."
+    set fail=1
+    goto exit
+endif
+
+#-----------------------------------------------------------------
+# If it's a tool that takes tape commands, put the device online and rewind the
+# tape before starting to write products.
+#-----------------------------------------------------------------
+
+if ($tape_commands != 0) then
+    $aux_tools/$tape_script online $media $media_platform
+    set fail = $status
+    if ($fail != 0) goto exit
+    $aux_tools/$tape_script rewind $media $media_platform
+    set fail = $status
+    if ($fail != 0) goto exit
+endif
+
+#-----------------------------------------------------------------
+# Loop over Products for this Distribution
+#-----------------------------------------------------------------
+
+while ($#products > 0)
+    set product = $products[1]
+    shift products
+    set release_id = $release_ids[1]
+    shift release_ids
+    # If only one platform is given it is used for all products, else it is
+    # shifted with the other arguments.
+    set platform = $platforms[1]
+    if ($#platforms > 1) then
+        shift platforms
+    endif
+
+    #-----------------------------------------------------------------
+    #echo "LOG: Validating Product."
+    #-----------------------------------------------------------------
+    set product_info=`grep  "product $product " $data_home/products.dat`
+    if ( $#product_info < 4 ) then
+        echo "Unknown kind of product ($product), must be one of:"
+        sed -e 's/product \([^ ]*\).*$/   \1/' $data_home/products.dat
+        goto usage
+    else
+        set indep_info=$product_info[3]
+        set shipping_info=$product_info[4]
+        switch ( $shipping_info )
+        case "shipping" :
+            breaksw
+        case "not-shipping" :
+           echo "Warning $product, is not a shipping product."
+           breaksw
+        default :
+           echo -n "ERROR: malformed product information entry, shipping? "
+           echo "was $shipping_info"
+           breaksw
+        endsw
+        switch ($indep_info)
+        case "indep" :
+            set indep=1
+            set dep_kind = 'indep'
+            breaksw
+        case "dep" :
+            set indep=0
+            set dep_kind = 'dep'
+            breaksw
+        default :
+            echo -n "ERROR: malformed product information entry, indep? "
+            echo "was $indep_info"
+            goto usage
+            breaksw
+        endsw
+    endif
+
+    #-----------------------------------------------------------------
+    #echo "LOG: Validating Platform."
+    #-----------------------------------------------------------------
+
+    if ($indep == 0) then
+        set platform_name = `grep "^$platform" $data_home/platforms.dat`
+        if ("$platform_name" != "$platform") then
+            echo "ERROR: Unknown kind of platform ($platform), must be one of:"
+            cat $data_home/platforms.dat
+            goto usage
+        endif
+    endif
+
+    #echo "LOG: Validating Release-id."
+    if ($internal_release) then
+        set ship_kind=iship
+    else
+        set ship_kind=eship
+    endif
+
+    set ship_directory = "$product_tree/$ship_kind/$dep_kind"
+
+    #-----------------------------------------------------------------
+    # If only one -c switch was given for multiple products and this
+    # product is platform independent then, in order that it goes 
+    # under the right directory on the media (i.e. indep/$product)
+    # make the platform variable "indep". Before changing the value
+    # of platform variable, store its original value in variable 
+    # originalplatform. Once we are finished copying this product 
+    # the value of platform variable is restored to its original 
+    # value.
+    #-----------------------------------------------------------------
+
+    if ($indep == 1) then
+        set originalplatform=$platform
+        set platform="indep"
+    endif
+
+    #-----------------------------------------------------------------
+    #Summarize what we are about to make.
+    #-----------------------------------------------------------------
+
+    echo "LOG: Product requested:"
+    if (  $internal_user) echo "    user category: gensym employee "
+    if (! $internal_user) echo "    user category: gensym customer "
+    echo "    product:       $product"
+    echo "    release-id:    $release_id"
+    echo "    platform:      $platform"
+    if ( $internal_release && ! $internal_user) then
+        echo  "Warning: this release was not intended for gensym customers."
+    endif
+
+    if ( $indep ) then
+        set release_directory = "$ship_directory/${product}-${release_id}/tape"
+    else
+        set release_directory = "$ship_directory/$platform/${product}-${release_id}/tape"
+    endif
+
+    if ( "$platform" == "vax" && "$ship_kind" == "iship" ) then
+        set release_directory = "/home/vax-mount/gensym/st/ab/iship"
+    endif
+
+    if ( ! -e $release_directory ) then
+        echo "ERROR: There is no product release directory for that product."
+        set fail=1
+    endif
+    if ($fail) goto exit
+
+    #-----------------------------------------------------------------
+    echo "LOG: Verifing the release directory."
+    echo -n "    "
+    #-----------------------------------------------------------------
+
+    if ( "$platform" == "vax") then
+        #-----------------------------------------------------------------
+        # VMS product promotions consist of a backup save set and
+        # "fiddle" file.  VMS currently only goes through this facility for
+        # ftp distribution.
+        #-----------------------------------------------------------------
+        if ( ! -e $release_directory/$product-$release_id.bck ) then
+            echo "ERROR: Cannot locate backup save set for product."
+            set fail=1
+        endif
+        if ( ! -e $release_directory/'.$fdl$'$product-$release_id.bck ) then
+           echo "ERROR: Cannot locate fdl file for product."
+           set fail=1
+        endif
+
+    else
+        #-----------------------------------------------------------------
+        # The "old format" promotion created a directory of files and a
+        # parts.list file.  Each distributable file listed in the parts
+        # list file is verified.
+        #-----------------------------------------------------------------
+       set process = $$
+       if ( ! -e $release_directory/$product-$release_id.tar ) then
+          set parts_list = $release_directory/parts.list
+          set tape_parts = "/tmp/parts-list.$process"
+          rm -f $tape_parts
+          touch $tape_parts
+        #-----------------------------------------------------------------
+        # Backquote notation has trouble with returning too many items.
+        # Empirically, the limit seems to be around 1700.  Just to be
+        # safe, we'll break the parts list up into 500 line chunks.
+        #-----------------------------------------------------------------
+          split -500 $parts_list ${staging_area}/t${process}
+          foreach part_info0 ( /${staging_area}/t${process}* )
+              # For each line in parts_list.
+              foreach part_info1 ( " `cat $part_info0 | tr '\\' '/' | tr -d '\015'`" ) 
+                  set part_info = ( $part_info1 )
+                  if ( $#part_info > 0 ) then
+                     echo -n '#'
+                     set part_name = $part_info[1]
+                     set distribution = 0
+                     set executable_p = 0
+                     set text_p = 0
+                     set c_source_p = 0
+                     set archive_p = 0
+                     set kb_file_p = 0
+                     set directory_p = 0
+                     set binary_p = 0
+                     set optional_part = 0
+                     set subsystem = unknown
+                     shift part_info
+                     @ index = 0
+                     while ( $index < $#part_info)
+                         @ index++
+                         switch ($part_info[$index])
+                         # Pick out the distribution
+                         case "distribute-to-all" : 
+                             set distribution = 1
+                             breaksw
+                         case "distribute-to-gensym" :
+                             set distribution = 2
+                             breaksw
+                         case "internal-distribution" :
+                             set distribution = 2
+                             breaksw
+                         # Pick out mixin types
+                         case "executable" : 
+                             set executable_p = 1
+                             breaksw
+                         case "text" : 
+                             set text_p = 1
+                             breaksw
+                         case "c-source" : 
+                             set c_source_p = 1
+                             breaksw
+                         case "h-source" : 
+                             set c_source_p = 1
+                             breaksw
+                         case "archive" : 
+                             set archive_p = 1
+                             breaksw
+                         case "binary" : 
+                             set binary_p = 1
+                             breaksw
+                         case "kb-file" :
+                             set kb_file_p = 1
+                             breaksw
+                         case "directory" : 
+                             set directory_p = 1
+                             breaksw
+                         case "optional-part" : 
+                             set optional_part = 1
+                             breaksw
+                         # Type mixin indictors that we currently ignore.
+                         case "object" :
+                             breaksw
+                         case "makefile" :
+                             breaksw
+                         case "kl-file" :
+                             breaksw
+                         case "doc-file" :
+                             breaksw
+                         case "kanji-file" :
+                             breaksw
+                         case "ok-file" :
+                             breaksw
+                         case "data" :
+                             breaksw
+                         # Note subsystem indicators
+                         case "g2-file" :
+                             set subsystem = g2
+                             breaksw
+                         case "tw-file" :
+                             set subsystem = tw
+                             breaksw
+                         case "ext-file" :
+                             set subsystem = ext
+                             breaksw
+                         case "gsi-file" :
+                             set subsystem = gsi
+                             breaksw
+                         case "gspan-file" :
+                             set subsystem = gspan
+                             breaksw
+                         case "forgn-file" :
+                             set subsystem = forgn
+                             breaksw
+                         case "release-kb" :
+                             set subsystem = release_kb
+                             breaksw
+                         case "kfep-file" :
+                             set subsystem = kfep
+                             breaksw
+                         default :
+                             echo '.'
+                             echo -n "ERROR: The parts list is malformed:"
+                             echo " $part_info1 $#part_info"
+                             set fail = 1
+                             breaksw
+                         endsw 
+                     end   # while ($#part_info>0)
+                     set file_name = "$release_directory/$part_name"
+                     if ( ! $optional_part && ! -e $file_name ) then
+                         set fail=1
+                         echo "."
+                         echo "ERROR: Part of the release is missing: $part_name"
+                     else
+                         if ( -e $file_name ) then
+                             if ( $directory_p && ! -d $file_name ) then
+                                 set fail=1
+                                 echo '.'
+                                 echo "ERROR: Expected a directory: $part_name"
+                             endif
+                             if ( $part_name != 'tw.ok'  && -z $file_name ) then
+                                set fail=1
+                                echo '.'
+                                echo "ERROR: Zero length file: $part_name"
+                             endif
+                             if ( $executable_p && ! -x $file_name ) then
+                                 set fail=1
+                                 echo '.'
+                                 echo "ERROR: Expected an executable: $part_name"
+                             endif
+                         endif
+                     endif
+                     if ( $distribution - 1 <= $internal_user ) then
+                         if ( -e $file_name || ! $optional_part ) then
+                             echo $part_info1 >> $tape_parts
+                         endif
+                     endif
+                 endif # $#part_info>0
+              end # foreach part_info1
+          /bin/rm -f $part_info0  # remove temporary "split" file
+	  end # foreach part_info0
+          cp $tape_parts /tmp/latest_parts.list    # for debugging.
+       endif # ! exists product-release.tar
+    endif  # platform != vax
+
+    #-----------------------------------------------------------------
+    echo "."
+    echo "LOG: Creating the shadow directory."
+    #-----------------------------------------------------------------
+    set shadow_directory = "$staging_area/shadow.$process"
+    if ( ! -e $shadow_directory ) then
+        mkdir $shadow_directory
+    endif
+    if ( $single_tarfile ) then 
+        set top_shadow_dir = "$shadow_directory"
+        if ( ! -e $shadow_directory/$platform ) then
+            mkdir $shadow_directory/$platform
+        endif
+        set shadow_directory = "$top_shadow_dir/$platform/$product"
+        mkdir $shadow_directory
+        #-------------------------------------------------------
+        # Create list of products (per platform) in this archive
+        # List is embedded into installer.
+        #-------------------------------------------------------
+        set contentlist="$contentlist $platform $product"
+    endif
+    if ( "$platform" == "vax") then
+        #-----------------------------------------------------------------
+        # For VMS, create a link to the backup and fiddle file for ftp.
+        #-----------------------------------------------------------------
+        ln -s $release_directory/$product-$release_id.bck $shadow_directory/$product-$release_id.bck
+        ln -s $release_directory/'.$fdl$'$product-$release_id.bck $shadow_directory/'.$fdl$'$product-$release_id.bck
+     set tape_parts = foobar
+    else
+        if ( -e $release_directory/$product-$release_id.tar ) then
+            #-----------------------------------------------------------------
+            # Newer promotions consist solely of a tar archive which
+            # must be unpacked into the staging area before production.
+            #-----------------------------------------------------------------
+            set tape_parts = foobar
+            ( cd $shadow_directory ;\
+             tar xf  $release_directory/$product-$release_id.tar $platform/$product ;\
+             mv $platform/$product/* . ;\
+             rm -rf $platform )
+        else
+            #-----------------------------------------------------------------
+            # Older promotions consist of actual files and a parts.list
+            # Here we traverse the parts.list file, creating links to all
+            # shippable files and dirs.
+            #-----------------------------------------------------------------
+           awk '/directory/{print $1}' $tape_parts |\
+             sed -e "s%^%mkdir $shadow_directory/%" |\
+             sh
+           grep -v directory $tape_parts |\
+              awk '/./{print $1}' |\
+              sed -e "s%\(.*\)%ln -s $release_directory/\1 $shadow_directory/\1%" |\
+              sh
+        endif
+    endif
+
+    #-----------------------------------------------------------------
+    # If we're producing an "older" format (multi-tar) tape, call
+    # the tape script once per product.
+    #-----------------------------------------------------------------
+    if ( ! $single_tarfile ) then
+        if ( ! $fail ) then
+            if ( $pathname_required ) then
+                $aux_tools/$tape_script write $media $media_platform $platform \
+		$product $release_id $tape_parts $shadow_directory $target_host \
+                $target_pathname
+                set fail = $status
+            else
+                $aux_tools/$tape_script write $media $media_platform $platform \
+		$product $release_id $tape_parts $shadow_directory
+                set fail = $status
+            endif  
+        endif
+    endif
+
+    if ($fail != 0) goto exit
+
+    if (   $?shadow_directory && ! $single_tarfile) then
+        rm -rf $shadow_directory
+    endif
+
+    if (  $?tape_parts ) then
+        rm -f $tape_parts
+    endif
+
+    if ( $fail && $?target_pathname && $target_host == SELF) then
+        rm -rf $?target_pathname
+    endif
+
+    #---------------------------------------------------------------
+    # Set the platform variable back to the one specified after 
+    # installing a platform independent product.
+    #---------------------------------------------------------------
+    
+    if ($indep == 1) then
+        set platform=$originalplatform
+    endif
+
+end # while products
+
+#-----------------------------------------------------------------
+# To create a newer format (single archive) tape, call the 
+# tape script ONCE, after *all* products have been built
+# in the staging area.
+#-----------------------------------------------------------------
+
+if ( $single_tarfile ) then
+    set shadow_directory = "$top_shadow_dir"
+    #--------------------------------------------------------------
+    # Embed the platforms/products lists into the installer for use
+    # during the install process.
+    # Copy the install and validation scripts to the staging area.
+    #
+    # Note that the range 10,50 below restricts the substitutions made
+    # for CONTENT-LIST.  If the range were not restricted, other occurrences
+    # might be (incorrectly) replaced.
+    #--------------------------------------------------------------
+    sed -e "10,50s/CONTENT-LIST/$contentlist/" $installers_dir/unixinst > $shadow_directory/UNIXINST
+    chmod +x $shadow_directory/UNIXINST
+    cp $installers_dir/validate $shadow_directory
+    if ( ! $fail ) then
+        if ( $pathname_required ) then
+          $aux_tools/$tape_script write $media $media_platform $platform \
+          $product $release_id $tape_parts $shadow_directory $target_host \
+          $target_pathname
+          set fail = $status
+        else
+          $aux_tools/$tape_script write $media $media_platform $platform \
+          $product $release_id $tape_parts $shadow_directory
+          set fail = $status
+        endif  
+    endif
+endif
+
+
+#-----------------------------------------------------------------
+# Rewind and Offline Tapes, if possible
+#-----------------------------------------------------------------
+
+if ($tape_commands != 0) then
+    $aux_tools/$tape_script rewind $media $media_platform
+    set fail = $status
+    if ($fail == 0) then
+        $aux_tools/$tape_script offline $media $media_platform
+        set fail = $status
+    endif
+endif
+
+
+exit:
+
+if ( $?shadow_directory ) then
+    rm -rf $shadow_directory
+endif
+
+if ( $?tape_parts ) then
+    rm -f $tape_parts
+endif
+
+if ( $fail && $?target_pathname && $target_host == SELF) then
+    rm -rf $?target_pathname
+endif
+
+if ($fail) then
+    echo "ERROR: $0 failed: $fail"
+else
+    echo "LOG: $0 succeeded."
+endif
+
+exit $fail
+
+#EOF
