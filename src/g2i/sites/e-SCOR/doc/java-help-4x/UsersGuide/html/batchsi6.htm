@@ -1,0 +1,47 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="02/06/02 18:48:39">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Determining Optimal Replenishment Levels</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="batchsi5.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="batchsi7.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+      <div align="center"><b>e-SCOR User's Guide</b></div>
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/e-SCOR/OnlineHelpFiles/UsersGuide/html/batchsim.htm">  
+        Using the Scenario Manager  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Determining Optimal Replenishment Levels
+</h2>
+<p>Suppose you want to determine the optimal value for the Replenishment Threshold parameter for the delivery product of a Distributor role. At the same time, you want to ensure that the <b>Supplier On-Time Performance (%)</b> metric of the downstream Consumer role never falls below 100%. <a name="1007113"></a></p>
+<p>You could create a Simulation Manager that runs a number of simulations, using different values for Replenishment Threshold, as this script shows:<a name="1007114"></a></p>
+<blockquote>  <a name="1007115"><code>select-scenario(scenario-1)<br>set-replenishment-threshold-parameter(site a,product,1800,0)<br>set-replenishment-threshold-parameter(site b,product,4000,0)<br>set-replenishment-threshold-parameter(site c,product,1200,0)<br>set-replenishment-threshold-parameter(central distributor,<br>   product,7000,0)<br>start-simulation(45 weeks)<br>wait-simulation<br>set-file-reporting(level 2 output,true,<br>   Level 2 Output Report 1.csv)<br>save-report(level 2 output)<br>set-replenishment-threshold-parameter(site a,product,2000,0)<br>set-replenishment-threshold-parameter(site b,product,5000,0)<br>set-replenishment-threshold-parameter(site c,product,1400,0)<br>set-replenishment-threshold-parameter(central distributor,<br>   product,8300,0)<br>start-simulation(45 weeks)<br>wait-simulation<br>set-file-reporting(level 2 output,true,<br>   Level 2 Output Report 2.csv)<br>save-report(level 2 output)<br>set-replenishment-threshold-parameter(site a,product,2250,0)<br>set-replenishment-threshold-parameter(site b,product,6000,0)<br>set-replenishment-threshold-parameter(site c,product,1500,0)<br>set-replenishment-threshold-parameter(central distributor,<br>   product,9750,0)<br>start-simulation(45 weeks)<br>wait-simulation<br>set-file-reporting(level 2 output,true,<br>   Level 2 Output Report 3.csv)<br>save-report(level 2 output)</code></a></blockquote> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="batchsi5.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="batchsi7.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
