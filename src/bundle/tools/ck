@@ -1,0 +1,70 @@
+#!/bin/sh
+# usage: generate-family-files <scriptname> <stage-dir> <famfilename>
+#    where <scriptname> is the file name to give the script
+#    where <stage-dir> a pathname to a directory in which the bundle directory
+#      trees will be placed
+#    where <famfilename> is the name of the G2.fam file
+#
+#   Examples:
+#     % generate-family-files   make-sparcsol-g2fam-stage.sh   /bt/mhd5/junk   g2.fam
+
+# A subdirectory "sbin" is needed to hold the binaries, so first create one if
+# it doesn't exist
+if [ ! -d "sbin" ]; then mkdir sbin; fi
+
+sunos="/home/lucid/lucid41/lisp-clos-411 -no-init-file"
+solaris="/home/lucid/liquid50/lisp-clos-50 -no-init-file"
+sbcl="/usr/bin/sbcl --no-userinit"
+  
+if [ "$MACHINE" = "sparcsol" ]; then
+  lisp=$solaris
+  fi
+
+if [ "$MACHINE" = "sun4" ]; then
+  lisp=$sunos
+fi
+
+if [ "$MACHINE" = "linux" -o "$MACHINE" = "linux64" ]; then
+    lisp=$sbcl
+fi
+
+if [ -z "$lisp" ]; then
+    echo "Warning: unknown architecture: $MACHINE"
+    echo "Trying $sbcl."
+    exit 1
+fi
+
+echo
+echo Running Lisp FIRST Pass
+echo
+echo
+
+$lisp <<EOS
+(load "fam-script-loader.lisp")
+(bundle::fam-script-loader 'g2)
+(quit)
+EOS
+
+echo
+echo
+echo Running Lisp SECOND Pass
+echo
+echo
+
+$lisp <<EOS
+#+sbcl
+(load "package")
+(load "createkey")
+#+lucid
+(lucid::disksave "sbin/key" :full-gc nil :restart-function 'run-createkey-dialog)
+#+sbcl
+(sb-ext:save-lisp-and-die "sbin/key" :executable t :toplevel #'bundle::run-createkey-dialog)
+(quit)
+EOS
+
+echo
+echo
+echo DONE.
+echo
+echo
+
