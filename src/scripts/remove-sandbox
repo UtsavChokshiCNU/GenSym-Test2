@@ -1,0 +1,217 @@
+#!/bin/sh
+
+# Module remove-sandbox
+
+# Copyright (c) 1986 - 2017 Gensym Corporation.
+# All Rights Reserved.
+
+# Jim Allard, John Valente
+
+# This shell script is used to remove sandboxes.
+
+# This script takes two arguments, the sandbox name and the sandbox location.
+# The sandbox location must one of tmp, sandboxes, or a directory which
+# contains the sandbox in a subdirectory.
+
+# This script iterates through each file found in the sandbox, and removes it
+# using cvs release where possible, or else removes it with an rm -rf.
+
+# By default, this script prompts before removing any files.
+
+# jv, 5/14/99.   Changed this to a Bourne shell script, and added the
+# -no-confirm option.  Added /home/alpha-mount and /home/vax-mount as
+# locations where links are deleted.  I don't know how to do prompting
+# in sh, so I'm invoking the csh script safe-rmdir where prompting
+# is needed.
+
+usage () {
+  echo ""
+  echo "Usage: remove-sandbox <sandbox-name> <location> [-no-confirm]"
+  echo "  location = sandboxes, tmp, or a directory"
+  exit 1
+}
+
+
+failed () {
+  echo "Error: the last command failed with status ${last_status}."
+  exit $last_status
+}
+
+if [ -z "$2" ]
+then
+  echo "Error: at least 2 arguments required."
+  usage
+fi
+
+name=$1
+location=$2
+confirm=1
+bt=/bt/$name
+scriptsdir=/home/development/scripts
+
+if [ "$3" = "-no-confirm" ]
+then
+  confirm=0
+fi
+
+if [ -f ${bt} ]
+then
+  echo "Error: the link $bt does not exist, cannot continue."
+  usage
+fi
+
+
+if [ $location = sandboxes ]
+then
+  dir_location=0
+elif [ $location = tmp ]
+then
+  dir_location=1
+elif [ -d $location ]
+then
+  dir_location=1
+else
+  echo "Error: $location is an unrecognized location."
+  usage
+fi
+
+if [ $dir_location -ne 0 ]
+then
+  if [ $location = tmp ]
+  then
+    host=`hostname`
+    sandbox_dir=/tmp/${host}-sandbox-${name}
+  else
+    sandbox_dir=${location}/$name
+  fi
+else
+  sandbox_dir=/gensym/${location}/${name}
+fi
+
+if [ ! -d ${sandbox_dir} ]
+then
+  echo "Error: directory $sandbox_dir does not exist.  Is the location correct?"
+  usage
+fi
+
+if [ ! -d ${bt}/. ]
+then
+  echo "Error: the directory $bt does not exist, cannot continue."
+  usage
+fi
+
+# Go to the sandbox and see if we need to remove anything.  The only things we
+# should find are directories.  If we find a non-directory file, complain and
+# exit.  If we find a directory that we know cvs release can work on, call that
+# program.  Note that cvs will prompt the user before removing any files.  If
+# the file is a directory not in the approved list, offer to remove it and its
+# contents.  If they decline, we also exit, since the end of this script would
+# remove it anyway.
+
+echo "cd $bt"
+cd $bt
+last_status=$?
+if [ $last_status -ne 0 ]
+then
+  failed
+fi
+
+
+# Test for dstbox being a pointer off to dstboxes Oddly, you can't check for a
+# link, you have to crawl around in the depths of ls.  Plus, it actually knows
+# whether the link is to a file or a directory, so you have to know which of -f
+# or -d to use in test, or, just use both, as below.
+
+if [ -f ./dst -o -d ./dst ]
+then
+  lsoutput=`/bin/ls -l dst`
+  case $lsoutput in
+    l*)
+       target=`echo $lsoutput | awk '{print $NF}'`
+       echo removing DSTBOX target $target
+       rm -rf $target
+	;;
+  esac
+fi
+
+contents=`ls .`
+
+if [ $#contents != 0 ]
+then
+  for file in $contents
+  do
+    if [ -d $file ]
+    then
+      if [ $confirm = 1 ]
+      then
+	if [ -d ${CVSROOT}/$file ]
+	then
+	  echo "cvs release -d $file"
+	  cvs release -d $file
+	  last_status=$?
+	  if [ $last_status -ne 0 ]
+	  then
+	    failed
+	  fi
+	elif [ -x ${scriptsdir}/safe-rmdir ]
+	then
+	  ${scriptsdir}/safe-rmdir ${bt}/${file}
+	else
+	  echo "Warning: cannot remove ${bt}/${file}; continuing"
+	fi
+      else
+	echo "rm -rf ${bt}/${file}"
+	/bin/rm -rf ${bt}/${file}
+      fi
+    else
+      if [ $confirm = 1 ]
+      then
+	echo "Error: ${bt}/${file} is not a directory, you must remove it by hand."
+	exit 2
+      else
+	echo "rm -f ${bt}/${file}"
+	/bin/rm -f ${bt}/${file}
+      fi
+    fi
+  done
+fi
+
+# Remove the directory.
+
+cd /bt
+
+/bin/rmdir $sandbox_dir
+last_status=$?
+if [ $last_status -ne 0 ]
+then
+  failed
+fi
+
+# Remove the link.
+
+/bin/rm $bt
+last_status=$?
+if [ $last_status -ne 0 ]
+then
+  failed
+fi
+
+for bt_dir in /home/intelnt-mount /home/alphant-mount /home/vax-mount /home/alpha-mount
+do
+  bt_link=${bt_dir}/bt/$name
+  if [ -h $bt_link ]
+  then
+    echo "Removing link in $bt_dir"
+    /bin/rm $bt_link
+    last_status=$?
+    if [ $last_status -ne 0 ]
+    then
+      failed
+    fi
+  fi
+done
+
+# Congratulate the user on a job well done.
+
+echo "Remove-sandbox successfully completed.  Have a nice day."
+exit 0
