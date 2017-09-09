@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="02/06/02 18:48:31">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Configuring the Role to Use Alternative Planning Strategies</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="plannin6.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="plannin8.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+      <div align="center"><b>e-SCOR User's Guide</b></div>
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/e-SCOR/OnlineHelpFiles/UsersGuide/html/planning.htm">  
+        Using Alternative Planning Strategies  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Configuring the Role to Use Alternative Planning Strategies
+</h2>
+<p>You configure the detail of a Distributor or Manufacturer role to use alternative planning strategies by adding process categories to the role detail. You must add categories to the role detail; you cannot replace existing categories.<a name="6378"></a></p>
+<p>To determine which category the role uses for sourcing, making, and delivering its products, you configure the Order Type parameter of the source and delivery products for the role. The category routers send orders, product shipments, invoices, and payments to the appropriate categories, based on the Order Type.<a name="15173"></a></p>
+<h6><b>Note: </b>Adding categories to the role detail without configuring the Order Type 
+parameter has no effect; you must configure the Order Type to correspond to the 
+categories on the role detail whose planning strategy you want to use.
+<a name="20820"></a></h6><p>To add process categories to a role, you connect input and output paths of the new category to the category routers on either side of the existing category and using a junction.<a name="21075"></a></p>
+<p>By adding Level 2 categories to the role detail, you can switch between alternative planning strategies by editing the Order Type parameter of the role's source and/or delivery products. <a name="18858"></a></p>
+<p>By default, the category you add applies to all product composites with the same Order Type. You can also configure the role detail to use different categories for product composites with the same Order Type by configuring the Product Selection parameters for the category. For details, see <a href="roledeta.htm#7695">Configuring Role Details for Multiple Products</a>.<a name="52663"></a></p>
+<h6><b>Caution: </b>Whenever you add categories to the role detail, you should click the Upgrade 
+option for the role "off;" otherwise, when you install a new version of e-SCOR, 
+the new version will overwrite your changes to the role detail and use the default 
+role template.
+<a name="36910"></a></h6><h4 >	 To configure the role detail to use alternative planning strategies:<a name="14797"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>1	</b></td>    <td valign="top" width="580">Display the e-SCOR toolbar and click the desired category tab, depending on the category you want to add.<a name="14798"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>2	</b></td>    <td valign="top" width="580">Select a category from the toolbar and place it on the role detail just above the process category of the same type.<a name="14800"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>3	</b></td>    <td valign="top" width="580">Connect the upstream input path (blue) of the new category to the Category Router on the left side of the existing category.<a name="25441"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>4	</b></td>    <td valign="top" width="580">Connect the downstream input path (magenta) of the new category to the Category Router on the right side of the existing category.<a name="25455"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>5	</b></td>    <td valign="top" width="580">Connect the upstream (magenta) and downstream (blue) output paths of the new category to the corresponding paths, using a junction.<a name="14802"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>6	</b></td>    <td valign="top" width="580">Configure the Order Type of the source and delivery products to be <code>Stock</code>, <code>Made-to-order</code>, or <code>Engineered-to-order</code> to determine the planning strategy the role uses for sourcing, making, and/or delivering products.<a name="15221"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>7	</b></td>    <td valign="top" width="580">If the Order Type is <code>Engineered-to-order</code>, configure the additional Level 2 SCOR parameters for the M3: Engineer-to-Order category.<a name="52457"></a></td>  </tr></table><blockquote>  <a name="52475">For details, see <a href="plannin2.htm#19600">Using an Engineer-to-Order Planning Strategy</a>.</a></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>8	</b></td>    <td valign="top" width="580">Select the shaded box surrounding the categories and drag the top handle up to accommodate the new category, as needed.<a name="36947"></a></td>  </tr></table><p>The following figure shows the detail of a Distributor role that sources and delivers a product family, using a stock or make-to-order planning strategy: <a name="14596"></a></p>
+<p >
+  <a name="75936"> </a>
+<p><div align="left"><img src="images/plannia5.gif" border="0" hspace="0" vspace="0">
+</div><a name="75935"></a></p>
+
+
+
+</p>
+<p><b>Related topics:</b><a name="79327"></a></p>
+<p><a href="plannin2.htm#19600">Using an Engineer-to-Order Planning Strategy</a><a name="79331"></a></p>
+<p><a href="plannin3.htm#19619">Using a Make-to-Order Planning Strategy</a><a name="79335"></a></p>
+<p><a href="stockpla.htm#192">Using Stock Planning Strategies</a><a name="79339"></a></p>
+<p><a href="plannin4.htm#11178">Understanding the Required Process Categories for Each Role</a><a name="79343"></a></p>
+<p><a href="plannin8.htm#14328">Analyzing the Performance of a Model that Uses Alternative Planning Strategies</a><a name="79347"></a></p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="plannin6.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="plannin8.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
