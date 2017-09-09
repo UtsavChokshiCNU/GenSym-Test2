@@ -1,0 +1,86 @@
+#!/bin/csh
+# update-ok-file -i | -e <product-name> <release-name> <source-ok-file> <target-ok-file-name>
+#
+# Jim Allard 9/24/92
+
+# This script updates normal files to test directories in either
+# the external or internal ship areas (depending on the -e or -i) argument.  The
+# product name should be g2 or tw, the release name should be the release
+# identifier (such as "30r0" or "0723"), the source-ok-file is an absolute
+# pathname to the source ok file e.g. "/home/mhd/g2.ok", and the
+# target-ok-file-name is the ok-file name as it should appear in the test
+# directory, e.g. "g2.ok" or "g2j.ok"
+
+# set echo
+goto main
+
+usage:
+
+echo "Usage:   update-ok-file  -ie  <product>  <release>  <source>         <target>"
+echo "Example: update-ok-file  -e   g2         30r0       /home/mhd/g2.ok  g2.ok"
+
+exit 1
+
+main:
+
+if ($#argv != 5) then
+  echo "Error: wrong number of arguments"
+  goto usage
+endif
+
+if ("$1" == "-i") then
+  set ship_dir = iship
+else if ("$1" == "-e") then
+  set ship_dir = eship
+else
+  echo "Error: bad argument $1"
+  goto usage
+endif
+
+set product = $2
+
+if (($product != g2) && ($product != tw)) then
+  echo "Error: bad argument $2"
+  goto usage
+endif
+
+set release_name = $3
+
+# What diagnostics can I run here?
+
+set source_file = $4
+
+if (! -e $source_file) then
+  echo "Error: $source_file does not exist"
+  goto usage
+endif
+
+set target = $5
+
+# What diagnostics on the target file?
+
+set pattern = /st/ab/${ship_dir}/dep/*/${product}-${release_name}/test
+
+echo "# Pipe this to csh to do it"
+
+foreach dir ( $pattern )
+  if (! -d $dir) then
+    echo "# Warning: $dir showed in pattern, but is not a directory, skipping it"
+  else
+    set target_file = ${dir}/$target
+# commented out maintenence of a backup -- using ~'s -- per JRA's
+# suggestion that this wasn't worth the bother. -mhd, 9/15/93
+#    if ( -e $target_file) then
+#      echo "chmod a+w $target_file"
+#      if (-e ${target_file}~) then
+#        echo "chmod a+w ${target_file}~"
+#      endif
+#      echo "mv $target_file ${target_file}~"
+#      echo "chmod a-w ${target_file}~"
+#    endif
+   endif
+   echo "cp $source_file $target_file"
+   echo "chmod a-w $target_file"
+end
+
+    
