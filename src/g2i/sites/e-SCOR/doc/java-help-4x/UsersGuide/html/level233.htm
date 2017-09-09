@@ -1,0 +1,124 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="02/06/02 18:47:45">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Plan Category Parameters</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="level232.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="level234.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+      <div align="center"><b>e-SCOR User's Guide</b></div>
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/e-SCOR/OnlineHelpFiles/UsersGuide/html/level2.htm">  
+        Configuring Level 2 SCOR  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Plan Category Parameters
+</h2>
+<p >
+  <a name="437234"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="185031"><div >Group/<br>Parameter</a></div></th>
+    <th><a name="185033"><div ><br>Tab</a></div></th>
+    <th><a name="185035"><div ><br>Description</a></div></th>
+  </tr>
+  <tr>
+    <td><p>General<a name="1002741"></a></p>
+<blockquote>  <a name="1002743">Label</a></blockquote>
+</td>
+    <td><p>Planning<a name="1002745"></a></p>
+</td>
+    <td><p>The label to display with the category. In general, the Label does not have to be unique. <a name="1002747"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Planning<a name="185043"></a></p>
+<blockquote>  <a name="185044">Plan Type</a></blockquote>
+</td>
+    <td><p>Planning<a name="185046"></a></p>
+</td>
+    <td><p>For the P3: Plan Make category of a Base Manufacturer or Manufacturer role, whether to compute build order size for stock delivery products by using a <code>Replenishment</code> or <code>Customer Forecast</code> planning strategy. The default is <code>Replenishment</code>.<a name="185048"></a></p>
+<p>For the P2: Plan Source category of a Distributor role, Plan Type determines the planning strategy to use to compute replenishment order size for stock source products. <a name="205023"></a></p>
+<p>For more information on using each of these planning strategies, see <a href="stockpla.htm#192">Using Stock Planning Strategies.</a><a name="185049"></a></p>
+<p>For specific information on configuring the Plan Type for each role, see <a href="stockpl2.htm#6252">Configuring the Stock Planning Strategy</a>.<a name="221791"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Planning<a name="185054"></a></p>
+<blockquote>  <a name="185055">Planning Period</a></blockquote>
+</td>
+    <td><p>Planning<a name="185057"></a></p>
+</td>
+    <td><p>The time interval between executing plans. For the P3: Plan Make category, each time a plan executes, the Plan category sends build orders to the Make category, which manufactures delivery products to satisfy current build orders. For the P2: Plan Source category, each time a plan executes, the Plan category sends replenishment orders to the Source category, which places orders for source products with upstream suppliers.<a name="358147"></a></p>
+<p>The default value is <code>1 week</code>.<a name="358138"></a></p>
+<p><b>Note</b>: You only need to configure the Planning Period for the P3 category when the upstream Make category uses a stock or make-to-order planning strategy. If the upstream Make category uses an engineer-to-order planning strategy, the Make category initiates its make planning process as soon as it can, based on available components. <a name="260644"></a></p>
+<p>For details, see:<a name="185134"></a></p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580"><a href="thread17.htm#251378">Make Planning Process</a>.<a name="514519"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580"><a href="thread18.htm#139218">Source Planning Process</a>.<a name="514551"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580"><a href="plannin2.htm#19600">Using an Engineer-to-Order Planning Strategy</a>.<a name="514591"></a></td>  </tr></table></td>
+  </tr>
+  <tr>
+    <td><p>Planning<a name="185076"></a></p>
+<blockquote>  <a name="185077">Initial Plan Delay</a></blockquote>
+</td>
+    <td><p>Planning<a name="185079"></a></p>
+</td>
+    <td><p>The initial delay from the start time of the simulation to the time at which the first plan goes into effect. By default, planning occurs every Planning Period, thereafter. The default value is <code>2 days</code>.<a name="185081"></a></p>
+<p>You configure this parameter to coordinate source and make planning when the model contains Manufacturer roles. <a name="185082"></a></p>
+<p>To avoid startup problems, the value should be greater than <code>2 seconds</code>.<a name="201629"></a></p>
+<p>For details, see <a href="manufac7.htm#11928">Coordinating Source and Make Planning</a>.<a name="185085"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Planning<a name="286134"></a></p>
+<blockquote>  <a name="286142">Replenishment<br>Planning</a></blockquote>
+</td>
+    <td><p>Planning<a name="286136"></a></p>
+</td>
+    <td><p>Whether the role uses demand-based planning, in addition to cyclical planning. The default value is "off," which means the role uses cyclical planning only, based on the Planning Period.<a name="286162"></a></p>
+<p>When Replenishment Planning is enabled, in addition to its normal cyclical planning, the role initiates a plan whenever the downstream category creates an order. The type of planning depends on the role and the Plan category, as follows:<a name="358174"></a></p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">For the P2 category of a Distributor role, source planning initiates whenever a downstream buyer role creates a replenishment order for the role's delivery products. <a name="286185"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">For the P2 category of a Manufacturer role, source planning initiates whenever the downstream Make category creates a build order for the role's delivery products.<a name="286319"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">For the P3 category of a Manufacturer role, make planning initiates whenever a downstream buyer role creates a replenishment order for the role's delivery products.<a name="286683"></a></td>  </tr></table><p>To use demand-based planning only, configure the Planning Period to be a very large number so it never gets invoked.<a name="286699"></a></p>
+<p>For more information, see <a href="stockpl2.htm#6252">Configuring the Stock Planning Strategy</a>.<a name="308129"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Planning<a name="1061100"></a></p>
+<blockquote>  <a name="1061103">Compensate for Yield</a></blockquote>
+</td>
+    <td><p>Planning<a name="1061105"></a></p>
+</td>
+    <td><p>Whether the role takes into account the Yield parameter of the finished goods product composite during the make planning process. When Compensate for Yield is enabled, the P3 category increases the number of products it plans to make, due to expected loss. For compatibility with previous versions of e-SCOR, this option is disabled, by default; however, we recommend that you enable this option so e-SCOR proactively orders more raw materials to compensate for the yield.<a name="1061090"></a></p>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="level232.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="level234.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
