@@ -1,0 +1,93 @@
+#!/bin/sh 
+
+# Usage: post-process g2|tw|gsi|gw [-synchronize]
+# If the -synchronize argument is present, the generated makefiles and C
+# sources are committed.
+
+# This script is used as a post-processing step for the files produced by a
+# Chestnut 3.2 or later translation of a Lisp product. It should be run on
+# the machine on which translations are performed. It carries out the 
+# following actions:
+# +  Process command-line arguments.
+# +  Generate the product makefiles.
+# +  Compute a fresh TAGS file, so individual developers don't have to.
+# +  CVS commit the followings:
+#        new TAGS and <product>-symbols.log files in the lisp directory'
+#        c sources produced by lisp translation,
+#        the generated product makefiles.
+
+#-------------------------------------------------------
+# Banner
+echo "LOG: post-process start `date`"
+
+#------------------------------------------------------
+# +  Process command-line arguments.
+
+SYNCHRONIZE=0
+USAGE="Usage: post-process g2 | tw  | gsi | gw [-synchronize]"
+SCRIPTS=/home/development/scripts
+LISP_DIR=$SRCBOX/lisp
+export LISP_DIR
+
+if [ "$1" = "" ]; then
+  echo "$USAGE"
+  exit 1
+fi
+
+if [ $1 = tw -o $1 = g2 -o $1 = gsi -o $1 = gw ]; then
+  PRODUCT=$1
+else
+  echo "$USAGE"
+  exit 1
+fi
+
+if [ "$2" = "-synchronize" ]; then
+  SYNCHRONIZE=1
+fi
+
+#--------------------------------------------------------
+# +  Generate the makefiles needed to build the product.
+
+echo "LOG: post-process generate $PRODUCT makefiles"
+cd $SRCBOX/gen/mfgen
+echo "generate-makefiles $PRODUCT " | sh -v
+
+#--------------------------------------------------------
+# +  Compute a fresh TAGS file. Use the xemacs version of etags, 
+#    if available. The other one does not find def-class, for example.
+
+echo "LOG: post-process start etags lisp/TAGS at `date`."
+$SCRIPTS/make-tags
+echo "LOG: post-process finish etags lisp/TAGS at `date`."
+
+#--------------------------------------------------------
+# +  CVS commit the followings:
+#       TAGS and <product>-symbols.log in the lisp directory,
+#       C sources produced by translation;
+#       the generated makefiles
+
+if [ "$SYNCHRONIZE" != 0 ]; then
+  echo "LOG: Post-process commit a few generated things in lisp"
+  cd $SRCBOX/lisp
+  msg="Post-process $PRODUCT committing translator output as of `date`."
+  cvs commit -m "$msg" $PRODUCT-symbols.log TAGS files-in-order.dat
+  # gsi-symbols.log gets generated when translating gw.  We don't want to commit
+  # it, but we also don't want to have conflicts next time we cvs up.
+  # So, remove it
+  if [ "$PRODUCT" = "gw" ]; then
+    rm gsi-symbols.log
+  fi
+
+  echo "LOG: Post-process commit the C for $PRODUCT"
+  cd $SRCBOX/$PRODUCT/c
+  cvs commit -m "Post-process $PRODUCT committing translator output as of `date`."
+
+  echo "LOG: Post-process commit the makefiles for $PRODUCT"
+  cd $SRCBOX/gen/mfiles
+  cvs commit -m "Post-process commit generated $PRODUCT makefiles."
+fi
+
+#--------------------------------------------------------
+# Ending banner.
+
+echo "LOG: post-process finish all at `date`."
