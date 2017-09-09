@@ -1,0 +1,104 @@
+cflags = /AS /Ox /G2 /DINCL_WHITE=0 -c -DMSDOS -DPROC_TRUETYPE=0 -DPROC_PCL=0 -DPROC_TYPE1=0
+
+4d = ../4demo
+type1 = ../type1
+
+inc = -I$(4d) -I$(type1)
+
+
+all: nsample.exe
+
+speedo.h :useropt.h
+
+spdo_prv.h: speedo.h
+
+nsample.obj : nsample.c \
+	speedo.h \
+	useropt.h \
+	keys.h
+	cl $(cflags) $(inc) nsample.c
+
+reset.obj : reset.c  \
+	spdo_prv.h  \
+	speedo.h  \
+	useropt.h \
+	$(4d)/fino.h \
+	keys.h
+	cl $(cflags) $(inc) reset.c
+
+set_spcs.obj : set_spcs.c \
+	spdo_prv.h \
+	speedo.h  \
+	useropt.h \
+	$(4d)/fino.h
+	cl $(cflags) $(inc) set_spcs.c
+
+do_char.obj : do_char.c \
+	spdo_prv.h \
+	speedo.h  \
+	useropt.h \
+	$(4d)/fino.h
+	cl $(cflags) $(inc) do_char.c
+
+do_trns.obj : do_trns.c \
+	spdo_prv.h \
+	speedo.h  \
+	$(4d)/fino.h
+	cl $(cflags) $(inc) do_trns.c
+
+out_blk.obj : out_blk.c \
+	spdo_prv.h \
+	speedo.h  \
+	useropt.h \
+	$(4d)/fino.h
+	cl $(cflags) $(inc) out_blk.c
+
+out_scrn.obj : out_scrn.c \
+	spdo_prv.h \
+	speedo.h  \
+	useropt.h \
+	$(4d)/fino.h
+	cl $(cflags) $(inc) out_scrn.c
+
+out_outl.obj : out_outl.c \
+	spdo_prv.h \
+	speedo.h  \
+	useropt.h \
+	$(4d)/fino.h
+	cl $(cflags) $(inc) out_outl.c
+
+out_util.obj : out_util.c \
+	spdo_prv.h \
+	speedo.h  \
+	useropt.h \
+	$(4d)/fino.h
+	cl $(cflags) $(inc) out_util.c
+
+out_bl2d.obj : out_bl2d.c \
+	spdo_prv.h \
+	speedo.h  \
+	useropt.h \
+	$(4d)/fino.h
+	cl $(cflags) $(inc) out_bl2d.c
+
+set_trns.obj : set_trns.c \
+	spdo_prv.h \
+	speedo.h  \
+	useropt.h \
+	$(4d)/fino.h
+	cl $(cflags) $(inc) set_trns.c
+
+set_keys.obj: set_keys.c \
+	$(type1)/stdef.h \
+	speedo.h \
+	useropt.h \
+	$(4d)/fino.h
+	cl $(cflags) $(inc) set_keys.c
+
+nsample.exe : nsample.obj reset.obj set_spcs.obj do_char.obj \
+              do_trns.obj out_blk.obj out_scrn.obj out_outl.obj \
+              out_util.obj out_bl2d.obj set_trns.obj set_keys.obj
+	link /STACK:6144 @mknsamp.lnk
+
+clean:
+	del *.obj
