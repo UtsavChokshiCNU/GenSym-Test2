@@ -1,0 +1,234 @@
+SHELL = /bin/sh
+PRODUCT = ext
+ODIR = o-mt
+PLATFORM = sparcsol
+CDIR = $(SRCBOX)/$(PRODUCT)/c
+HELPERDIR = /home/development/helpers
+JPEGCDIR = $(SRCBOX)/jpeg/c
+MFDIR = $(DSTBOX)/$(PRODUCT)/$(ODIR)
+SCRIPTSDIR = /home/development/scripts
+SPFCDIR = $(SRCBOX)/specific/$(PLATFORM)
+CC_FLAGS = -Dsparcsol -Wimplicit
+
+all : _mfenter g2libs backtrac.o lucidsrv.o nsleep.o g2passwd hostlookup overlay _mfexit
+
+g2libs : libcprim.a libforgn.a libgsec.a libnogsec.a libtcp.a
+
+_mfenter : 
+	@- $(SCRIPTSDIR)/errsweep -init
+
+_mfexit : 
+	@- $(SCRIPTSDIR)/errsweep -finish
+
+libcprim.a : $(SPFCDIR)/backtrac.o $(SPFCDIR)/nsleep.o clipboard.o \
+  cprim.o cprocess.o cstreams.o ctime.o dtoa.o event.o events.o g2ptrs.o \
+  g2signal.o g_fmt.o graphics.o icmp.o images.o keypress.o md5_all.o \
+  networks.o process.o sckevent.o ssl.o tcp.o trace.o windows.o xwindows.o
+	@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)
+	@- if [ -f libcprim.a ] ; then rm -f libcprim.a ; fi
+	ar qc libcprim.a  cprim.o cprocess.o cstreams.o ctime.o \
+  dtoa.o events.o event.o g2ptrs.o g2signal.o g_fmt.o graphics.o clipboard.o \
+  images.o md5_all.o networks.o ssl.o trace.o process.o tcp.o icmp.o \
+  windows.o sckevent.o keypress.o xwindows.o $(SPFCDIR)/backtrac.o \
+  $(SPFCDIR)/nsleep.o
+
+libforgn.a : $(SPFCDIR)/backtrac.o cprim.o cprocess.o ctime.o event.o \
+  extensn.o fgnevent.o foreign.o g2ptrs.o icp.o netstubs.o networks.o pools.o \
+  sckevent.o sslnoop.o tcp.o trace.o
+	@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)
+	@- if [ -f libforgn.a ] ; then rm -f libforgn.a ; fi
+	ar qc libforgn.a  cprim.o cprocess.o ctime.o extensn.o \
+  foreign.o g2ptrs.o icp.o networks.o trace.o pools.o fgnevent.o tcp.o \
+  sslnoop.o netstubs.o event.o sckevent.o $(SPFCDIR)/backtrac.o
+
+libgsec.a : ssl.o
+	@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)
+	@- if [ -f libgsec.a ] ; then rm -f libgsec.a ; fi
+	ar qc libgsec.a  ssl.o
+
+libnogsec.a : sslnoop.o
+	@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)
+	@- if [ -f libnogsec.a ] ; then rm -f libnogsec.a ; fi
+	ar qc libnogsec.a  sslnoop.o
+
+libtcp.a : $(SPFCDIR)/backtrac.o cprim.o cprocess.o cstreams.o \
+  ctime.o event.o g2ptrs.o g2signal.o netstubs.o networks.o sckevent.o tcp.o \
+  trace.o
+	@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)
+	@- if [ -f libtcp.a ] ; then rm -f libtcp.a ; fi
+	ar qc libtcp.a  cprim.o cprocess.o cstreams.o ctime.o \
+  event.o g2ptrs.o g2signal.o networks.o trace.o tcp.o netstubs.o sckevent.o \
+  $(SPFCDIR)/backtrac.o
+
+g2passwd : g2passwd.o g2pwaux.o md5_all.o
+	@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)
+	@- if [ -f g2passwd ] ; then rm -f g2passwd ; fi
+	gcc -o g2passwd -Xlinker -R -Xlinker /usr/openwin/lib  g2passwd.o g2pwaux.o md5_all.o -lm -lsocket -lintl -ldl -lnsl
+
+hostlookup : hostlookup.o
+	@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)
+	@- if [ -f hostlookup ] ; then rm -f hostlookup ; fi
+	gcc -o hostlookup -Xlinker -R -Xlinker /usr/openwin/lib  hostlookup.o -lm -lsocket -lintl -ldl -lnsl
+
+overlay : overlay.o
+	@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)
+	@- if [ -f overlay ] ; then rm -f overlay ; fi
+	gcc -o overlay -Xlinker -R -Xlinker /usr/openwin/lib  overlay.o -lm -lsocket -lintl -ldl -lnsl
+
+backtrac.o : $(CDIR)/backtrac.c 
+	@- if [ -f backtrac.o ] ; then rm -f backtrac.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g -D_REENTRANT $(CC_FLAGS)  $(CDIR)/backtrac.c
+
+clipboard.o : $(CDIR)/clipboard.c $(CDIR)/cprim.h $(CDIR)/graphics.h
+	@- if [ -f clipboard.o ] ; then rm -f clipboard.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g -D_REENTRANT $(CC_FLAGS)  $(CDIR)/clipboard.c
+
+cprim.o : $(CDIR)/cprim.c $(CDIR)/cprim.h $(CDIR)/trace.h
+	@- if [ -f cprim.o ] ; then rm -f cprim.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g -D_REENTRANT $(CC_FLAGS)  $(CDIR)/cprim.c
+
+cprocess.o : $(CDIR)/cprocess.c $(CDIR)/cprim.h
+	@- if [ -f cprocess.o ] ; then rm -f cprocess.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g -D_REENTRANT $(CC_FLAGS)  $(CDIR)/cprocess.c
+
+cstreams.o : $(CDIR)/cstreams.c $(CDIR)/cprim.h
+	@- if [ -f cstreams.o ] ; then rm -f cstreams.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g -D_REENTRANT $(CC_FLAGS)  $(CDIR)/cstreams.c
+
+ctime.o : $(CDIR)/ctime.c $(CDIR)/cprim.h
+	@- if [ -f ctime.o ] ; then rm -f ctime.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g -D_REENTRANT $(CC_FLAGS)  $(CDIR)/ctime.c
+
+dtoa.o : $(CDIR)/dtoa.c $(CDIR)/dtoa.h
+	@- if [ -f dtoa.o ] ; then rm -f dtoa.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g -D_REENTRANT -Dsparcsol -Wimplicit -mv8  $(CDIR)/dtoa.c
+
+event.o : $(CDIR)/event.c $(CDIR)/cprim.h $(CDIR)/eventfns.h $(CDIR)/netevent.h $(CDIR)/networks.h
+	@- if [ -f event.o ] ; then rm -f event.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g -D_REENTRANT $(CC_FLAGS)  $(CDIR)/event.c
+
+events.o : $(CDIR)/events.c $(CDIR)/cprim.h $(CDIR)/graphics.h $(CDIR)/networks.h
+	@- if [ -f events.o ] ; then rm -f events.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g -D_REENTRANT $(CC_FLAGS) -I/usr/openwin/include $(CDIR)/events.c
+
+extensn.o : $(CDIR)/extensn.c $(CDIR)/cprim.h $(CDIR)/gensym-features.h $(CDIR)/icp.h $(CDIR)/icp_pvt.h $(CDIR)/networks.h
+	@- if [ -f extensn.o ] ; then rm -f extensn.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g -D_REENTRANT $(CC_FLAGS)  $(CDIR)/extensn.c
+
+fgnevent.o : $(CDIR)/fgnevent.c $(CDIR)/cprim.h $(CDIR)/eventfns.h $(CDIR)/foreign.h $(CDIR)/gensym-features.h $(CDIR)/icp_pvt.h $(CDIR)/netevent.h $(CDIR)/networks.h
+	@- if [ -f fgnevent.o ] ; then rm -f fgnevent.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g -D_REENTRANT $(CC_FLAGS)  $(CDIR)/fgnevent.c
+
+foreign.o : $(CDIR)/foreign.c $(CDIR)/ffe_pvt.h $(CDIR)/foreign.h $(CDIR)/gensym-features.h $(CDIR)/icp_pvt.h
+	@- if [ -f foreign.o ] ; then rm -f foreign.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g -D_REENTRANT $(CC_FLAGS)  $(CDIR)/foreign.c
+
+g2passwd.o : $(CDIR)/g2passwd.c $(CDIR)/cprim.h $(CDIR)/md5_all.h
+	@- if [ -f g2passwd.o ] ; then rm -f g2passwd.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g -D_REENTRANT $(CC_FLAGS)  $(CDIR)/g2passwd.c
+
+g2ptrs.o : $(CDIR)/g2ptrs.c $(CDIR)/cprim.h
+	@- if [ -f g2ptrs.o ] ; then rm -f g2ptrs.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g -D_REENTRANT $(CC_FLAGS)  $(CDIR)/g2ptrs.c
+
+g2pwaux.o : $(CDIR)/g2pwaux.c $(CDIR)/cprim.h $(CDIR)/md5_all.h
+	@- if [ -f g2pwaux.o ] ; then rm -f g2pwaux.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g -D_REENTRANT $(CC_FLAGS)  $(CDIR)/g2pwaux.c
+
+g2signal.o : $(CDIR)/g2signal.c $(CDIR)/cprim.h
+	@- if [ -f g2signal.o ] ; then rm -f g2signal.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g -D_REENTRANT $(CC_FLAGS)  $(CDIR)/g2signal.c
+
+g_fmt.o : $(CDIR)/g_fmt.c $(CDIR)/dtoa.h
+	@- if [ -f g_fmt.o ] ; then rm -f g_fmt.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g -D_REENTRANT $(CC_FLAGS)  $(CDIR)/g_fmt.c
+
+graphics.o : $(CDIR)/graphics.c $(CDIR)/cprim.h $(CDIR)/graphics.h
+	@- if [ -f graphics.o ] ; then rm -f graphics.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g -D_REENTRANT $(CC_FLAGS) -I/usr/openwin/include $(CDIR)/graphics.c
+
+hostlookup.o : $(CDIR)/hostlookup.c 
+	@- if [ -f hostlookup.o ] ; then rm -f hostlookup.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g -D_REENTRANT $(CC_FLAGS)  $(CDIR)/hostlookup.c
+
+icmp.o : $(CDIR)/icmp.c $(CDIR)/cprim.h $(CDIR)/netevent.h $(CDIR)/networks.h
+	@- if [ -f icmp.o ] ; then rm -f icmp.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g -D_REENTRANT $(CC_FLAGS)  $(CDIR)/icmp.c
+
+icp.o : $(CDIR)/icp.c $(CDIR)/gensym-features.h $(CDIR)/icp.h $(CDIR)/icp_pvt.h
+	@- if [ -f icp.o ] ; then rm -f icp.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g -D_REENTRANT $(CC_FLAGS)  $(CDIR)/icp.c
+
+images.o : $(CDIR)/images.c $(CDIR)/cprim.h $(CDIR)/graphics.h
+	@- if [ -f images.o ] ; then rm -f images.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g -D_REENTRANT $(CC_FLAGS) -I/usr/openwin/include -I$(JPEGCDIR) $(CDIR)/images.c
+
+keypress.o : $(CDIR)/keypress.c $(CDIR)/cprim.h $(CDIR)/graphics.h
+	@- if [ -f keypress.o ] ; then rm -f keypress.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g -D_REENTRANT $(CC_FLAGS) -I/usr/openwin/include $(CDIR)/keypress.c
+
+lucidsrv.o : $(CDIR)/lucidsrv.c 
+	@- if [ -f lucidsrv.o ] ; then rm -f lucidsrv.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g -D_REENTRANT $(CC_FLAGS)  $(CDIR)/lucidsrv.c
+
+md5_all.o : $(CDIR)/md5_all.c $(CDIR)/md5_all.h
+	@- if [ -f md5_all.o ] ; then rm -f md5_all.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g -D_REENTRANT $(CC_FLAGS)  $(CDIR)/md5_all.c
+
+netstubs.o : $(CDIR)/netstubs.c 
+	@- if [ -f netstubs.o ] ; then rm -f netstubs.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g -D_REENTRANT $(CC_FLAGS)  $(CDIR)/netstubs.c
+
+networks.o : $(CDIR)/networks.c $(CDIR)/cprim.h $(CDIR)/eventfns.h $(CDIR)/netevent.h $(CDIR)/networks.h $(CDIR)/trace.h
+	@- if [ -f networks.o ] ; then rm -f networks.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g -D_REENTRANT $(CC_FLAGS)  $(CDIR)/networks.c
+
+nsleep.o : $(CDIR)/nsleep.c 
+	@- if [ -f nsleep.o ] ; then rm -f nsleep.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g -D_REENTRANT $(CC_FLAGS)  $(CDIR)/nsleep.c
+
+overlay.o : $(CDIR)/overlay.c 
+	@- if [ -f overlay.o ] ; then rm -f overlay.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g -D_REENTRANT $(CC_FLAGS)  $(CDIR)/overlay.c
+
+pools.o : $(CDIR)/pools.c $(CDIR)/gensym-features.h $(CDIR)/icp.h $(CDIR)/icp_pvt.h $(CDIR)/pools.h
+	@- if [ -f pools.o ] ; then rm -f pools.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g -D_REENTRANT $(CC_FLAGS)  $(CDIR)/pools.c
+
+process.o : $(CDIR)/process.c $(CDIR)/cprim.h $(CDIR)/netevent.h $(CDIR)/networks.h
+	@- if [ -f process.o ] ; then rm -f process.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g -D_REENTRANT $(CC_FLAGS)  $(CDIR)/process.c
+
+sckevent.o : $(CDIR)/sckevent.c $(CDIR)/cprim.h $(CDIR)/netevent.h $(CDIR)/networks.h $(CDIR)/trace.h
+	@- if [ -f sckevent.o ] ; then rm -f sckevent.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g -D_REENTRANT $(CC_FLAGS)  $(CDIR)/sckevent.c
+
+ssl.o : $(CDIR)/ssl.c 
+	@- if [ -f ssl.o ] ; then rm -f ssl.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g -D_REENTRANT $(CC_FLAGS) -I$(SPFCDIR) $(CDIR)/ssl.c
+
+sslnoop.o : $(CDIR)/sslnoop.c 
+	@- if [ -f sslnoop.o ] ; then rm -f sslnoop.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g -D_REENTRANT $(CC_FLAGS)  $(CDIR)/sslnoop.c
+
+tcp.o : $(CDIR)/tcp.c $(CDIR)/cprim.h $(CDIR)/netevent.h $(CDIR)/networks.h
+	@- if [ -f tcp.o ] ; then rm -f tcp.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g -D_REENTRANT $(CC_FLAGS)  $(CDIR)/tcp.c
+
+trace.o : $(CDIR)/trace.c $(CDIR)/cprim.h $(CDIR)/networks.h $(CDIR)/trace.h
+	@- if [ -f trace.o ] ; then rm -f trace.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g -D_REENTRANT $(CC_FLAGS)  $(CDIR)/trace.c
+
+windows.o : $(CDIR)/windows.c $(CDIR)/cprim.h $(CDIR)/graphics.h
+	@- if [ -f windows.o ] ; then rm -f windows.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g -D_REENTRANT $(CC_FLAGS) -I/usr/openwin/include $(CDIR)/windows.c
+
+xwindows.o : $(CDIR)/xwindows.c $(CDIR)/cprim.h $(CDIR)/graphics.h
+	@- if [ -f xwindows.o ] ; then rm -f xwindows.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g -D_REENTRANT $(CC_FLAGS)  $(CDIR)/xwindows.c
+
+clean : 
+	- rm -f *.[oa]
+	- rm -f g2passwd
+	- rm -f hostlookup
+	- rm -f overlay
