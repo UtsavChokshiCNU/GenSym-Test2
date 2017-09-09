@@ -1,0 +1,197 @@
+/* buffer.h -- Header File for buffer.c
+ * Copyright (c) 1986 - 2017 Gensym Corporation.  All Rights Reserved.
+ */
+
+
+/* Symbol Definitions */
+extern Object Qinteger;
+extern Object Qstring;
+extern Object Qsymbol;
+
+extern Object Pclos;
+extern Object Pclos_run;
+extern Object Pclosx;
+extern Object Pcl;
+extern Object Pcl_user;
+extern Object Pkeyword;
+extern Object Ptrun;
+extern Object Ptx;
+
+/* function declarations */
+
+#ifdef USE_PROTOTYPES
+
+extern Object g2int_characters_available_for_parsing(void);
+extern Object g2int_copy_resource_plist_value(Object);
+extern Object g2int_copy_text_between_marks(Object,Object);
+extern Object g2int_copy_text_string(Object);
+extern Object g2int_delete_gensym_element_1(Object,Object);
+extern Object g2int_direct_structure_method(Object,Object);
+extern Object g2int_gensym_cons_1(Object,Object);
+extern Object g2int_get_property_of_buffer(Object,Object);
+extern Object g2int_get_simple_text_from_last_scan(void);
+extern Object g2int_gsi_web_intern(Object);
+extern Object g2int_insert_character_at_mark(Object,Object);
+extern Object g2int_insert_subtext_at_mark(Object,Object,Object,Object);
+extern Object g2int_insert_subtext_by_spliting_fragment(Object,Object,Object,Object);
+extern Object g2int_insert_subtext_into_roomy_fragment(Object,Object,Object,Object);
+extern Object g2int_insert_text_at_mark(Object,Object);
+extern Object g2int_load_and_initialize_type_description(Object,Object);
+extern Object g2int_make_mark_at_start(Object);
+extern Object g2int_make_mark_into_new_empty_resource_buffer(void);
+extern Object g2int_make_permanent_r_buffer_structure_internal(void);
+extern Object g2int_make_permanent_rb_fragment_structure_internal(void);
+extern Object g2int_make_permanent_rb_mark_structure_internal(void);
+extern Object g2int_make_r_buffer_1(void);
+extern Object g2int_make_rb_fragment_1(void);
+extern Object g2int_make_rb_mark_1(void);
+extern Object g2int_mark_copy(Object);
+extern Object g2int_mark_direction(Object,Object);
+extern Object g2int_mark_eq(Object,Object);
+extern Object g2int_mark_get_byte(Object);
+extern Object g2int_mark_get_character(Object);
+extern Object g2int_mark_kill(Object);
+extern Object g2int_mark_move(Object,Object);
+extern Object g2int_mark_move_to_end(Object);
+extern Object g2int_mark_peek_byte(Object);
+extern Object g2int_mark_peek_character(Object);
+extern Object g2int_mark_set(Object,Object);
+extern Object g2int_mark_tab(Object,Object);
+extern Object g2int_mutate_global_property(Object,Object,Object);
+extern Object g2int_n_characters_availableqm(Object,Object,Object);
+extern Object g2int_obtain_simple_gensym_string(Object);
+extern Object g2int_point_max(Object);
+extern Object g2int_point_min(Object);
+extern Object g2int_position_of_mark(Object);
+extern Object g2int_reclaim_gensym_cons_1(Object);
+extern Object g2int_reclaim_gensym_list_1(Object);
+extern Object g2int_reclaim_gensym_string(Object);
+extern Object g2int_reclaim_list_of_marks_1(Object);
+extern Object g2int_reclaim_plist_of_resource_buffer(Object);
+extern Object g2int_reclaim_plist_tree_of_resource_buffer(Object);
+extern Object g2int_reclaim_r_buffer_1(Object);
+extern Object g2int_reclaim_rb_fragment_1(Object);
+extern Object g2int_reclaim_rb_fragment_if_any(Object);
+extern Object g2int_reclaim_rb_mark_1(Object);
+extern Object g2int_reclaim_resource_buffer_of_mark(Object);
+extern Object g2int_reclaim_wide_string(Object);
+extern Object g2int_record_direct_structure_method(Object,Object,Object);
+extern Object g2int_record_system_variable(Object,Object,Object,Object,Object,Object,Object);
+extern Object g2int_regenerate_optimized_constant(Object);
+extern Object g2int_scan_blank_line(void);
+extern Object g2int_scan_integer(void);
+extern Object g2int_scan_line_termination(void);
+extern Object g2int_scan_move(Object);
+extern Object g2int_scan_one_or_more_spaces_and_tabs(void);
+extern Object g2int_scan_over_filename(void);
+extern Object g2int_scan_symbol(void);
+extern Object g2int_scan_text(Object);
+extern Object g2int_scan_to_beginning_of_next_line(void);
+extern Object g2int_scan_to_end_of_line(void);
+extern Object g2int_scan_upto_character(Object);
+extern Object g2int_scan_upto_end(void);
+extern Object g2int_scan_upto_member_of_bag(Object);
+extern Object g2int_scan_zero_or_more_spaces_and_tabs(void);
+extern Object g2int_set_property_of_buffer(Object,Object,Object);
+extern Object g2int_split_fragment(Object);
+extern Object g2int_string_member(Object,Object);
+extern Object g2int_undo_last_scan(void);
+
+#else
+
+extern Object g2int_characters_available_for_parsing();
+extern Object g2int_copy_resource_plist_value();
+extern Object g2int_copy_text_between_marks();
+extern Object g2int_copy_text_string();
+extern Object g2int_delete_gensym_element_1();
+extern Object g2int_direct_structure_method();
+extern Object g2int_gensym_cons_1();
+extern Object g2int_get_property_of_buffer();
+extern Object g2int_get_simple_text_from_last_scan();
+extern Object g2int_gsi_web_intern();
+extern Object g2int_insert_character_at_mark();
+extern Object g2int_insert_subtext_at_mark();
+extern Object g2int_insert_subtext_by_spliting_fragment();
+extern Object g2int_insert_subtext_into_roomy_fragment();
+extern Object g2int_insert_text_at_mark();
+extern Object g2int_load_and_initialize_type_description();
+extern Object g2int_make_mark_at_start();
+extern Object g2int_make_mark_into_new_empty_resource_buffer();
+extern Object g2int_make_permanent_r_buffer_structure_internal();
+extern Object g2int_make_permanent_rb_fragment_structure_internal();
+extern Object g2int_make_permanent_rb_mark_structure_internal();
+extern Object g2int_make_r_buffer_1();
+extern Object g2int_make_rb_fragment_1();
+extern Object g2int_make_rb_mark_1();
+extern Object g2int_mark_copy();
+extern Object g2int_mark_direction();
+extern Object g2int_mark_eq();
+extern Object g2int_mark_get_byte();
+extern Object g2int_mark_get_character();
+extern Object g2int_mark_kill();
+extern Object g2int_mark_move();
+extern Object g2int_mark_move_to_end();
+extern Object g2int_mark_peek_byte();
+extern Object g2int_mark_peek_character();
+extern Object g2int_mark_set();
+extern Object g2int_mark_tab();
+extern Object g2int_mutate_global_property();
+extern Object g2int_n_characters_availableqm();
+extern Object g2int_obtain_simple_gensym_string();
+extern Object g2int_point_max();
+extern Object g2int_point_min();
+extern Object g2int_position_of_mark();
+extern Object g2int_reclaim_gensym_cons_1();
+extern Object g2int_reclaim_gensym_list_1();
+extern Object g2int_reclaim_gensym_string();
+extern Object g2int_reclaim_list_of_marks_1();
+extern Object g2int_reclaim_plist_of_resource_buffer();
+extern Object g2int_reclaim_plist_tree_of_resource_buffer();
+extern Object g2int_reclaim_r_buffer_1();
+extern Object g2int_reclaim_rb_fragment_1();
+extern Object g2int_reclaim_rb_fragment_if_any();
+extern Object g2int_reclaim_rb_mark_1();
+extern Object g2int_reclaim_resource_buffer_of_mark();
+extern Object g2int_reclaim_wide_string();
+extern Object g2int_record_direct_structure_method();
+extern Object g2int_record_system_variable();
+extern Object g2int_regenerate_optimized_constant();
+extern Object g2int_scan_blank_line();
+extern Object g2int_scan_integer();
+extern Object g2int_scan_line_termination();
+extern Object g2int_scan_move();
+extern Object g2int_scan_one_or_more_spaces_and_tabs();
+extern Object g2int_scan_over_filename();
+extern Object g2int_scan_symbol();
+extern Object g2int_scan_text();
+extern Object g2int_scan_to_beginning_of_next_line();
+extern Object g2int_scan_to_end_of_line();
+extern Object g2int_scan_upto_character();
+extern Object g2int_scan_upto_end();
+extern Object g2int_scan_upto_member_of_bag();
+extern Object g2int_scan_zero_or_more_spaces_and_tabs();
+extern Object g2int_set_property_of_buffer();
+extern Object g2int_split_fragment();
+extern Object g2int_string_member();
+extern Object g2int_undo_last_scan();
+
+#endif
+
+/* variables/constants */
+extern Object G2int_ab_package_1;
+extern Object G2int_binding_cliches_prop;
+extern Object G2int_chain_of_available_r_buffers;
+extern Object G2int_chain_of_available_rb_fragments;
+extern Object G2int_chain_of_available_rb_marks;
+extern Object G2int_current_left_of_parsing;
+extern Object G2int_current_right_of_parsing;
+extern Object G2int_default_fragment_bit_size;
+extern Object G2int_default_fragment_max;
+extern Object G2int_prefered_line_terminator;
+extern Object G2int_r_buffer_count;
+extern Object G2int_rb_fragment_count;
+extern Object G2int_rb_mark_count;
+extern Object G2int_structure_being_reclaimed;
+extern Object G2int_the_type_description_of_r_buffer;
+extern Object G2int_the_type_description_of_rb_fragment;
+extern Object G2int_the_type_description_of_rb_mark;
