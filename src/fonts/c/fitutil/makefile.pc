@@ -1,0 +1,53 @@
+#################################################################
+#		PC Makefile for building FIT utility and test programs
+#
+# $Log: not supported by cvs2svn $
+# Revision 1.1.1.1  1993/04/15 20:14:25  mhd
+# Initial checkin of Version 2.1 of 4-in-1 from Bitstream.  -jra & mpc
+#
+#  Revision 1.13  93/03/15  12:41:44  roberte
+#  Release
+#  
+#  Revision 1.8  93/03/09  15:31:54  roberte
+#  Fall back to large model, add -DMSDOS
+#  
+#  Revision 1.7  93/03/09  11:18:27  weili
+#  Change memory model to huge to match memory model of 4demo package.
+#  
+#  Revision 1.6  93/02/12  15:18:48  roberte
+#  Arrgh!
+#  
+#  Revision 1.5  93/02/12  14:59:52  roberte
+#  Corrected RCS checkin error caused by this makefile listed
+#  as "c" file type in  project.lst
+#  
+#  Revision 1.4  93/02/02  14:57:37  roberte
+#  Added comment header and RCS log string. Changed "utils_dir" 
+#  to ../type1.  Removed /W3 warning option from command line.
+#  
+#
+
+all: fitutil finfotes
+
+
+CFLAGS = /Ox -c /AL /G2 -DMSDOS -DINTEL=1
+
+utils_dir = ../type1
+
+#
+incl = -I$(utils_dir)
+
+fitutil : finfotbl.obj
+	link finfotbl.obj,fitutil.exe,,;
+
+# general rule for making objects:
+
+finfotbl.obj : finfotbl.c pclhdrs.h
+	cl $(CFLAGS) $(incl) $*.c
+ 
+#test program target:
+finfotes : finfotes.obj
+	link finfotest.obj, finfotes.exe,,,;
+
+finfotes.obj : finfotes.c pclhdrs.h
+	cl $(CFLAGS) $(incl) $*.c
