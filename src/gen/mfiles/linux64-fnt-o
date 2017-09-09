@@ -1,0 +1,209 @@
+SHELL = /bin/sh
+PRODUCT = fnt
+ODIR = o
+PLATFORM = linux64
+CDIR = $(SRCBOX)/$(PRODUCT)/c
+MFDIR = $(DSTBOX)/$(PRODUCT)/$(ODIR)
+SCRIPTSDIR = $(SRCBOX)/scripts
+CC_FLAGS = -g -Wimplicit -fPIC -I$(SRCBOX)/common/c/include -DPACKAGING_G2_ENTERPRISE
+FNTHFILES = $(CDIR)/errcodes.h $(CDIR)/finfotbl.h $(CDIR)/fino.h \
+  $(CDIR)/fixed.h $(CDIR)/fnt.h $(CDIR)/fnt_a.h $(CDIR)/font3004.h \
+  $(CDIR)/font3008.h $(CDIR)/fontmath.h $(CDIR)/fontscal.h $(CDIR)/fscdefs.h \
+  $(CDIR)/fserror.h $(CDIR)/fsglue.h $(CDIR)/hp_readr.h $(CDIR)/hpf.h \
+  $(CDIR)/keys.h $(CDIR)/mapstrng.h $(CDIR)/pcl5fnt.h $(CDIR)/pclhdrs.h \
+  $(CDIR)/privfosc.h $(CDIR)/privsfnt.h $(CDIR)/sc.h $(CDIR)/sfnt.h \
+  $(CDIR)/sfntenum.h $(CDIR)/slavic.h $(CDIR)/spdo_prv.h $(CDIR)/speedo.h \
+  $(CDIR)/stdef.h $(CDIR)/tr_fdata.h $(CDIR)/truetype.h $(CDIR)/type1.h \
+  $(CDIR)/ufe.h $(CDIR)/useropt.h
+
+all : _mfenter libfnt.a _mfexit
+
+_mfenter : 
+	@- $(SCRIPTSDIR)/errsweep -init
+
+_mfexit : 
+	@- $(SCRIPTSDIR)/errsweep -finish
+
+libfnt.a : cmt.o cmtglob.o do_char.o do_trns.o fixed_pt.o fnt.o \
+  fontrip.o fontscal.o frontend.o fsglue.o mapstrng.o msl.o msst.o msstglob.o \
+  newscan.o out_bl2d.o out_blk.o out_outl.o out_scrn.o out_util.o out_wht.o \
+  reset.o set_keys.o set_spcs.o set_trns.o sfntd.o tt_iface.o tt_specs.o
+	@- if [ -f libfnt.a ] ; then rm -f libfnt.a ; fi
+	@- $(SCRIPTSDIR)/errsweep libfnt.a
+	ar qc libfnt.a  cmt.o do_char.o do_trns.o cmtglob.o \
+  fixed_pt.o fnt.o fontrip.o fontscal.o frontend.o fsglue.o mapstrng.o msl.o \
+  msst.o msstglob.o newscan.o out_bl2d.o out_blk.o out_outl.o out_scrn.o \
+  out_util.o out_wht.o reset.o set_keys.o set_spcs.o set_trns.o sfntd.o \
+  tt_iface.o tt_specs.o
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+cmt.o : $(CDIR)/cmt.c $(FNTHFILES)
+	@- if [ -f cmt.o ] ; then rm -f cmt.o ; fi
+	@- $(SCRIPTSDIR)/errsweep cmt.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/cmt.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+cmtglob.o : $(CDIR)/cmtglob.c $(FNTHFILES)
+	@- if [ -f cmtglob.o ] ; then rm -f cmtglob.o ; fi
+	@- $(SCRIPTSDIR)/errsweep cmtglob.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/cmtglob.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+do_char.o : $(CDIR)/do_char.c $(FNTHFILES)
+	@- if [ -f do_char.o ] ; then rm -f do_char.o ; fi
+	@- $(SCRIPTSDIR)/errsweep do_char.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/do_char.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+do_trns.o : $(CDIR)/do_trns.c $(FNTHFILES)
+	@- if [ -f do_trns.o ] ; then rm -f do_trns.o ; fi
+	@- $(SCRIPTSDIR)/errsweep do_trns.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/do_trns.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+fixed_pt.o : $(CDIR)/fixed_pt.c $(FNTHFILES)
+	@- if [ -f fixed_pt.o ] ; then rm -f fixed_pt.o ; fi
+	@- $(SCRIPTSDIR)/errsweep fixed_pt.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/fixed_pt.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+fnt.o : $(CDIR)/fnt.c $(FNTHFILES)
+	@- if [ -f fnt.o ] ; then rm -f fnt.o ; fi
+	@- $(SCRIPTSDIR)/errsweep fnt.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/fnt.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+fontrip.o : $(CDIR)/fontrip.c $(FNTHFILES)
+	@- if [ -f fontrip.o ] ; then rm -f fontrip.o ; fi
+	@- $(SCRIPTSDIR)/errsweep fontrip.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/fontrip.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+fontscal.o : $(CDIR)/fontscal.c $(FNTHFILES)
+	@- if [ -f fontscal.o ] ; then rm -f fontscal.o ; fi
+	@- $(SCRIPTSDIR)/errsweep fontscal.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/fontscal.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+frontend.o : $(CDIR)/frontend.c $(FNTHFILES)
+	@- if [ -f frontend.o ] ; then rm -f frontend.o ; fi
+	@- $(SCRIPTSDIR)/errsweep frontend.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/frontend.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+fsglue.o : $(CDIR)/fsglue.c $(FNTHFILES)
+	@- if [ -f fsglue.o ] ; then rm -f fsglue.o ; fi
+	@- $(SCRIPTSDIR)/errsweep fsglue.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/fsglue.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+mapstrng.o : $(CDIR)/mapstrng.c $(FNTHFILES)
+	@- if [ -f mapstrng.o ] ; then rm -f mapstrng.o ; fi
+	@- $(SCRIPTSDIR)/errsweep mapstrng.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/mapstrng.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+msl.o : $(CDIR)/msl.c $(FNTHFILES)
+	@- if [ -f msl.o ] ; then rm -f msl.o ; fi
+	@- $(SCRIPTSDIR)/errsweep msl.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/msl.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+msst.o : $(CDIR)/msst.c $(FNTHFILES)
+	@- if [ -f msst.o ] ; then rm -f msst.o ; fi
+	@- $(SCRIPTSDIR)/errsweep msst.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/msst.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+msstglob.o : $(CDIR)/msstglob.c $(FNTHFILES)
+	@- if [ -f msstglob.o ] ; then rm -f msstglob.o ; fi
+	@- $(SCRIPTSDIR)/errsweep msstglob.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/msstglob.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+newscan.o : $(CDIR)/newscan.c $(FNTHFILES)
+	@- if [ -f newscan.o ] ; then rm -f newscan.o ; fi
+	@- $(SCRIPTSDIR)/errsweep newscan.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/newscan.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+out_bl2d.o : $(CDIR)/out_bl2d.c $(FNTHFILES)
+	@- if [ -f out_bl2d.o ] ; then rm -f out_bl2d.o ; fi
+	@- $(SCRIPTSDIR)/errsweep out_bl2d.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/out_bl2d.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+out_blk.o : $(CDIR)/out_blk.c $(FNTHFILES)
+	@- if [ -f out_blk.o ] ; then rm -f out_blk.o ; fi
+	@- $(SCRIPTSDIR)/errsweep out_blk.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/out_blk.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+out_outl.o : $(CDIR)/out_outl.c $(FNTHFILES)
+	@- if [ -f out_outl.o ] ; then rm -f out_outl.o ; fi
+	@- $(SCRIPTSDIR)/errsweep out_outl.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/out_outl.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+out_scrn.o : $(CDIR)/out_scrn.c $(FNTHFILES)
+	@- if [ -f out_scrn.o ] ; then rm -f out_scrn.o ; fi
+	@- $(SCRIPTSDIR)/errsweep out_scrn.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/out_scrn.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+out_util.o : $(CDIR)/out_util.c $(FNTHFILES)
+	@- if [ -f out_util.o ] ; then rm -f out_util.o ; fi
+	@- $(SCRIPTSDIR)/errsweep out_util.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/out_util.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+out_wht.o : $(CDIR)/out_wht.c $(FNTHFILES)
+	@- if [ -f out_wht.o ] ; then rm -f out_wht.o ; fi
+	@- $(SCRIPTSDIR)/errsweep out_wht.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/out_wht.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+reset.o : $(CDIR)/reset.c $(FNTHFILES)
+	@- if [ -f reset.o ] ; then rm -f reset.o ; fi
+	@- $(SCRIPTSDIR)/errsweep reset.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/reset.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+set_keys.o : $(CDIR)/set_keys.c $(FNTHFILES)
+	@- if [ -f set_keys.o ] ; then rm -f set_keys.o ; fi
+	@- $(SCRIPTSDIR)/errsweep set_keys.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/set_keys.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+set_spcs.o : $(CDIR)/set_spcs.c $(FNTHFILES)
+	@- if [ -f set_spcs.o ] ; then rm -f set_spcs.o ; fi
+	@- $(SCRIPTSDIR)/errsweep set_spcs.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/set_spcs.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+set_trns.o : $(CDIR)/set_trns.c $(FNTHFILES)
+	@- if [ -f set_trns.o ] ; then rm -f set_trns.o ; fi
+	@- $(SCRIPTSDIR)/errsweep set_trns.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/set_trns.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+sfntd.o : $(CDIR)/sfntd.c $(FNTHFILES)
+	@- if [ -f sfntd.o ] ; then rm -f sfntd.o ; fi
+	@- $(SCRIPTSDIR)/errsweep sfntd.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/sfntd.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+tt_iface.o : $(CDIR)/tt_iface.c $(FNTHFILES)
+	@- if [ -f tt_iface.o ] ; then rm -f tt_iface.o ; fi
+	@- $(SCRIPTSDIR)/errsweep tt_iface.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/tt_iface.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+tt_specs.o : $(CDIR)/tt_specs.c $(FNTHFILES)
+	@- if [ -f tt_specs.o ] ; then rm -f tt_specs.o ; fi
+	@- $(SCRIPTSDIR)/errsweep tt_specs.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/tt_specs.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+clean : 
+	- rm -f *.[oa]
