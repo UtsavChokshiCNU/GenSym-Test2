@@ -1,0 +1,27 @@
+HKCR
+{
+	G2Com.G2Item.4 = s 'G2Item Class'
+	{
+		CLSID = s '{65DA1F96-DA11-47FE-B3EF-1CE21CDB0ED0}'
+	}
+	G2Com.G2Item = s 'G2Item Class'
+	{
+		CLSID = s '{65DA1F96-DA11-47FE-B3EF-1CE21CDB0ED0}'
+		CurVer = s 'G2Com.G2Item.4'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {65DA1F96-DA11-47FE-B3EF-1CE21CDB0ED0} = s 'G2Item Class'
+		{
+			ProgID = s 'G2Com.G2Item.4'
+			VersionIndependentProgID = s 'G2Com.G2Item'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{AC4C85D1-B16C-11d1-A718-006008C5F933}'
+			'Version' = s '2.0'
+		}
+	}
+}
