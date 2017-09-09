@@ -1,0 +1,102 @@
+== Procedures
+
+=== GENERATE-NAMES-FOR-PROXY
+
+==== Synopsis
+
+`GENERATE-NAMES-FOR-PROXY`(`_SHAR_`: CLASS ITEM, `_WS_`: CLASS KB-WORKSPACE) -> `_RET0_`: SYMBOL,`_RET1_`: SYMBOL
+
+|===
+|Argument|Description
+
+|`_SHAR_`|
+|`_WS_`|
+|===
+
+|===
+|Return Value|Description
+
+|`_RET0_`|
+|`_RET1_`|
+|===
+
+
+=== CREATE-A-PROXY-FOR-SHARED-ITEM
+
+==== Synopsis
+
+`CREATE-A-PROXY-FOR-SHARED-ITEM`(`_SHAR_`: CLASS ITEM, `_WS_`: CLASS KB-WORKSPACE)
+
+|===
+|Argument|Description
+
+|`_SHAR_`|The item to create a proxy for
+|`_WS_`|A workspace to create the proxy on
+|===
+
+It has no return value.
+
+==== Description
+
+This procedure creates a proxy (an instance of same class as SHAR with the same name) on the supplied workspace, along with the proxy setter (a procedure with single argument and no return values, on proxy's subworkspace) and the rule to invoke the setter (on item's subworkspace). 
+Whenever the original item receives a value, the rule is invoked and spawns the setter with that value as an argument, concluding the proxy to the same value as the original.
+If SHAR is not shared, or SHAR and WS live on the same faction, or either proxy or setter already exists on the target faction, an error is signalled.
+
+
+=== CREATE-PROXY-AND-SETTER
+
+==== Synopsis
+
+`CREATE-PROXY-AND-SETTER`(`_SHAR_`: CLASS ITEM, `_WS_`: CLASS KB-WORKSPACE, `_INAME_`: SYMBOL, `_SNAME_`: SYMBOL)
+
+|===
+|Argument|Description
+
+|`_SHAR_`|
+|`_WS_`|
+|`_INAME_`|
+|`_SNAME_`|
+|===
+
+It has no return value.
+
+
+=== CHECK-ARGS-FOR-PROXY
+
+==== Synopsis
+
+`CHECK-ARGS-FOR-PROXY`(`_SHAR_`: CLASS ITEM, `_WS_`: CLASS KB-WORKSPACE, `_INAME_`: SYMBOL, `_SNAME_`: SYMBOL)
+
+|===
+|Argument|Description
+
+|`_SHAR_`|
+|`_WS_`|
+|`_INAME_`|
+|`_SNAME_`|
+|===
+
+It has no return value.
+
+
+=== CREATE-RULE-FOR-PROXY
+
+==== Synopsis
+
+`CREATE-RULE-FOR-PROXY`(`_SHAR_`: CLASS ITEM, `_INAME_`: SYMBOL, `_SNAME_`: SYMBOL)
+
+|===
+|Argument|Description
+
+|`_SHAR_`|
+|`_INAME_`|
+|`_SNAME_`|
+|===
+
+It has no return value.
+
+
+== Classes
+
+== Methods
+
