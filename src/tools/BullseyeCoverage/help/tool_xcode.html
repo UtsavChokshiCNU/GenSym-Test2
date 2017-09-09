@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_platform.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>Apple Xcode</h1>
+<h2>Clear Precompiled Headers Cache</h2>
+<p>
+Clear the
+Precompiled Headers Cache
+before building with BullseyeCoverage.
+To do this, use the Xcode menu command <code>Xcode Empty Caches</code>, or use the command shown below.
+Entries made to this cache when BullseyeCoverage is not enabled are incompatible with BullseyeCoverage.
+<pre>
+rm -r `getconf DARWIN_USER_CACHE_DIR`/com.apple.Xcode.$UID/SharedPrecompiledHeaders
+</pre>
+<h2>Configuring Xcode</h2>
+<p>
+To build an Xcode project with BullseyeCoverage requires a few
+<a href="http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/EnvironmentVars.html">environment variable</a>
+settings.
+To set these environment variables,
+create a file named <code>~/.MacOSX/environment.plist</code> with contents shown like below.
+Log out and then log in for the settings to take effect.
+<pre>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;
+&lt;plist version="1.0"&gt;
+&lt;dict&gt;
+	&lt;key&gt;CC&lt;/key&gt;         &lt;string&gt;/Applications/BullseyeCoverage/bin/gcc&lt;/string&gt;
+	&lt;key&gt;LD&lt;/key&gt;         &lt;string&gt;/Applications/BullseyeCoverage/bin/gcc&lt;/string&gt;
+	&lt;key&gt;CPLUSPLUS&lt;/key&gt;  &lt;string&gt;/Applications/BullseyeCoverage/bin/g++&lt;/string&gt;
+	&lt;key&gt;LDPLUSPLUS&lt;/key&gt; &lt;string&gt;/Applications/BullseyeCoverage/bin/g++&lt;/string&gt;
+	&lt;key&gt;COVFILE&lt;/key&gt;    &lt;string&gt;<i><span style=background-color:yellow>path</span></i>&lt;/string&gt;
+&lt;/dict&gt;
+&lt;/plist&gt;
+</pre>
+<p>
+These settings assume you installed BullseyeCoverage into the <code>/Applications</code> directory.
+If you installed to a different directory, adjust the settings accordingly.
+The setting <i><span style=background-color:yellow>path</span></i> represents an absolute file name of your choice.
+<p>
+These settings use the default compiler version.
+If your project requires a specific version, substitute the version specific gcc or g++ command.
+For example, instead of <code>gcc</code> and <code>g++</code>, you might use <code>gcc-4.0</code> and <code>g++-4.0</code>.
+<p>
+Use the <a href=coverageBrowser.html>Coverage Browser</a> to 
+enable coverage build and then build as usual. 
+<h2>Configuring xcodebuild</h2>
+<p>
+With <code>bash</code> or <code>ksh</code> use the <code>export</code> command to set the environment variables.
+For example, add the commands below to <code>~/.bash_profile</code> (<code>bash</code>)
+or <code>~/.profile</code> (<code>ksh</code>).
+Restart the <code>Terminal</code> application after changing this file.
+<pre>
+export PATH=/Applications/BullseyeCoverage/bin:$PATH
+export CC=/Applications/BullseyeCoverage/bin/gcc
+export LD=/Applications/BullseyeCoverage/bin/gcc
+export CPLUSPLUS=/Applications/BullseyeCoverage/bin/g++
+export LDPLUSPLUS=/Applications/BullseyeCoverage/bin/g++
+export COVFILE=~/test.cov
+</pre>
+<p>
+With <code>csh</code> or <code>tcsh</code>, use the <code>setenv</code> command to set the environment variables.
+For example, add the commands below to <code>~/.tcshrc</code>.
+Restart the <code>Terminal</code> application after changing this file.
+<pre>
+setenv PATH       /Applications/BullseyeCoverage/bin:$PATH
+setenv CC         /Applications/BullseyeCoverage/bin/gcc
+setenv LD         /Applications/BullseyeCoverage/bin/gcc
+setenv CPLUSPLUS  /Applications/BullseyeCoverage/bin/g++
+setenv LDPLUSPLUS /Applications/BullseyeCoverage/bin/g++
+setenv COVFILE    ~/test.cov
+</pre>
+<p>
+These settings use the default compiler version.
+If your project requires a specific version, substitute the version specific gcc or g++ command.
+For example, instead of <code>gcc</code> and <code>g++</code>, you might use <code>gcc-4.0</code> and <code>g++-4.0</code>.
+<p>
+Enable coverage build and invoke <code>xcodebuild</code> as usual.
+<p>
+<pre>
+cov01 -1
+xcodebuild <i>...</i> clean <i>...</i>
+xcodebuild <i>...</i> build <i>...</i>
+</pre>
+<p style="font-size:xx-small">
+Last reviewed: 20 Nov 2009 with Xcode 3.2.1
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
