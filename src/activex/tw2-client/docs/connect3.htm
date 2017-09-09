@@ -1,0 +1,58 @@
+<html><head><title>Connecting to G2</title></head>
+<body bgcolor="#ffffff">
+<h5><a href="connect2.htm">| Prev </a> 
+  | Next
+  <a href="connecti.htm">| Start of Chapter </a>
+ <a href="__apitoc.htm">| Next Chapter </a> <a href="booktoc.htm">| Contents </a> <a href="glossary.htm">| Glossary </a> <a href="bookix.htm">| Index </a>  <a href="mailto:docs@gensym.com">| Comments | </a> (4 out of 4) </h5> <br>
+
+<a name="15255">
+<h1> Making a Connection to G2</h1>
+</a><a name="49785">
+You can build a form in Visual Basic quickly. Just as you did with the Telewindows2 Toolkit control, you can create instances of buttons, text boxes, and other controls on the form. The following figure shows the working version of the form from the demonstration project shipped with Telewindows2 Toolkit. The Telewindows2 Toolkit control is selected.<p>
+</a><a name="49793">
+<table border="3">
+<caption></caption>
+<tr><td valign="middle"><img src="connecta.gif"><br>
+
+</table>
+
+<table>
+<tr><td>
+</table>
+<p>
+</a><a name="49795">
+For more information on building a form in Visual Basic, refer to the documentation on Visual Basic 5.0 or one of the numerous books on learning and using Visual &#32;Basic.<p>
+</a><a name="15256">
+Making a connection to G2 (or "G2 &#32;server") is automatic when you open a Visual Basic program. You can connect to any G2 &#32;server running anywhere in your TCP/IP network. <p>
+</a><a name="43791">
+You can also explicitly call the <code>Connect()</code> method to establish a connection.<p>
+</a><a name="43745">
+If it is not already connected, G2 by itself cannot connect with a container application by using Telewindows2 Toolkit.<p>
+</a><a name="38102">
+When G2 responds to the Telewindows2 Toolkit connection request, the control raises the <code>G2Connected</code> event to Visual Basic, which you can program to respond appropriately. <p>
+</a><a name="29594">
+<h2> Connecting with G2 on Startup</h2>
+</a><a name="29595">
+By setting the Connect property, you can connect to G2 as soon as you run the Visual Basic form. This way of connecting saves time when you click a button to make your first remote procedure call.<p>
+</a><a name="49556">
+<hr><strong>Note:</strong> Each G2UiGateway object can connect to the same G2 &#32;server or to a different G2 &#32;server, if it is authorized to run Telewindows2 Toolkit. For example, you could connect to more than one G2 &#32;server by using a different instance of the G2UiGateway class for different G2 &#32;servers. <hr>
+<p></a><a name="29596">
+<h2> Programming a Connection</h2>
+</a><a name="49383">
+You can program an application to establish a connection on startup by placing the <code>Connect()</code> method in the application's startup procedure. For example, the following procedure in Visual Basic attempts to make a connection to G2 when you click the Connect button:<p>
+</a><a name="49738">
+<pre>Private Sub ConnectButton_Click()<br>&#32;&#32;&#32;G2Connector.G2Location = HostText.Text &amp; ":" &amp; PortText.Text<br>&#32;&#32;&#32;Call G2Connector.Connect<br>&#32;&#32;&#32;Unload Me<br>End Sub</pre>
+</a><a name="49853">
+For a description of the <code>Connect()</code> method, see <a href="g2twcon3.htm#1001542">Connect()</a>.<p>
+</a><a name="49735">
+<hr><strong>Note:</strong> To explicitly disconnect from G2 when you close a Visual Basic form, you can place the <code>Disconnect()</code> call in the <code>Form_Unload()</code> function.<hr>
+<p></a><a name="49861">
+<p>
+</a>
+
+<h5><a href="connect2.htm">| Prev </a> 
+  | Next
+  <a href="connecti.htm">| Start of Chapter </a>
+ <a href="__apitoc.htm">| Next Chapter </a> <a href="booktoc.htm">| Contents </a> <a href="glossary.htm">| Glossary </a> <a href="bookix.htm">| Index </a>  <a href="mailto:docs@gensym.com">| Comments | </a> (4 out of 4) </h5> <br>
+<A HREF="http://www.gensym.com"><IMG ALIGN = BOTTOM SRC = "logo.gif" height=51 width=162><A HREF="http://www.gensym.com"><h6>Gensym Corporation, Inc.</h6></A>
+<A HREF="titlepa1.htm"><h6>Copyright &#169; 1998 Gensym Corporation, Inc.</h6></A>
