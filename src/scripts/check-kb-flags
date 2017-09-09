@@ -1,0 +1,66 @@
+#!/bin/csh -f
+
+# check-kb-flags
+
+# Richard Harris 9/18/99
+
+# This C shell script is used by CVS when commiting kb files into the AB source
+# repository, and other spinoffs from AB taken after 9/99.  This script is
+# called as a pre-commit check because of an entry in the commitinfo file, and
+# it is also called directly by changelog, the other script that can be called
+# from a commitinfo entry.
+
+set repos = $argv[1]
+set files = ($argv[2-])
+
+if ('sparcsol' != `/usr/local/bin/machine`) exit 0
+
+foreach file ($files)
+  if ("xkb" == "x$file:e" || "xkl" == "x$file:e") then
+    set filename = $file:h
+    set directory = $file:t/
+    if ("x$directory" == "x$filename"/) set directory =
+    set entries = ${directory}CVS/Entries
+    set stab = `grep '^/'$filename'/.*/.*/.*/' $entries | sed -e 's%^/.*/.*/.*/.*\(/.*\)$%\1%'`
+    if ("x$stab" == x'') then
+        echo "the file $file is not checked out"
+        exit 1
+    endif
+    if ("x$stab" == x'/') then
+       set branch = 'main'
+    else
+       set type = `echo $stab | sed -e 's%^/\(.\).*$%\1%'`
+       if ("x$type" != x'T') then
+          # we don't handle type == 'D', or anything else except 'T'
+          exit 0
+       endif
+       set branch = `echo $stab | sed -e 's%^/.\(.*\)$%\1%'`
+    endif
+    set kb_flags_table = $CVSROOT/CVSROOT/cvs-branch-tag-to-kb-flags-value
+    set desired_kb_flags = `grep '^'$branch' ' $kb_flags_table | sed -e 's%^.* \(..*\)$%\1%'`
+    if ($desired_kb_flags == '') then
+      echo "The branch $branch was not found in $kb_flags_table.  (see rh)"
+      echo "Allowing the commit anyway"
+      exit 0
+    endif
+    if ( -f $file ) then
+      set actual_kb_flags = `cat $file | /gensym/bin/read-kb-flags`
+      if ($actual_kb_flags == '') then
+        echo "Could not determine the version of G2 used to save $file, because it does not seem to be a kb file."
+        echo "(see rh)"
+        exit 1
+      endif
+      if ($actual_kb_flags != $desired_kb_flags) then
+        echo "File $file was not saved by the version of G2 required for branch $branch"
+        echo "($file has the version $actual_kb_flags, but should have the version $desired_kb_flags)"
+        echo "(see rh)"
+        exit 1
+      endif
+    else
+      echo "File $file does not exist."
+    endif
+#   echo "File=$filename, Desired= $desired_kb_flags, Found= $actual_kb_flags"
+  endif
+end
+
+exit 0
