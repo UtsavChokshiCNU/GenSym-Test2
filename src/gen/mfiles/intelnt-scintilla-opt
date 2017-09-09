@@ -1,0 +1,157 @@
+# -*- Mode: Makefile -*-
+
+# The Scintilla editor library
+# Derived from scintilla/win32/scintilla_vc6.mak, which is
+# Copyright 1998-2002 by Neil Hodgson <neilh@scintilla.org>
+
+PRODUCT = scintilla
+ODIR = opt
+PLATFORM = intelnt
+CDIR = $(SRCBOX)\$(PRODUCT)\src
+IDIR = $(SRCBOX)\$(PRODUCT)\include
+WDIR = $(SRCBOX)\$(PRODUCT)\win32
+
+QUIET=1
+
+.SUFFIXES: .cxx
+
+!IFNDEF CC
+CC=cl
+LD=link
+!ENDIF
+
+RC=rc
+AR=lib
+
+#-Zc:forScope -Zc:wchar_t
+CXXFLAGS=-Zi -TP -W4
+# For something scary:-Wp64
+CXXDEBUG=-Od -MTd -DDEBUG
+CXXNDEBUG=-O1 -MT -DNDEBUG
+NAME=-Fo
+
+LDFLAGS=-OPT:NOWIN98 -OPT:REF
+LDDEBUG=
+ARFLAGS=
+LIBS=KERNEL32.lib USER32.lib GDI32.lib IMM32.lib OLE32.LIB
+NOLOGO=-nologo
+
+!IFDEF QUIET
+CC=@$(CC)
+CXXFLAGS=$(CXXFLAGS) $(NOLOGO)
+LDFLAGS=$(LDFLAGS) $(NOLOGO)
+!ENDIF
+
+!IFDEF DEBUG
+CXXFLAGS=$(CXXFLAGS) $(CXXDEBUG)
+LDFLAGS=$(LDDEBUG) $(LDFLAGS)
+!ELSE
+CXXFLAGS=$(CXXFLAGS) $(CXXNDEBUG)
+!ENDIF
+
+INCLUDEDIRS=-I$(IDIR) -I$(CDIR)
+CXXFLAGS=$(CXXFLAGS) $(INCLUDEDIRS)
+
+ALL:	scintilla.lib
+
+clean:
+	-del /q *.obj *.pdb scintilla.dll *.res *.map *.exp *.pdb *.lib
+
+SOBJS=\
+	AutoComplete.obj \
+	CallTip.obj \
+	CellBuffer.obj \
+	CharClassify.obj \
+	ContractionState.obj \
+	Document.obj \
+	Editor.obj \
+	Indicator.obj \
+	KeyMap.obj \
+	LineMarker.obj \
+	PlatWin.obj \
+	PropSet.obj \
+	RESearch.obj \
+	ScintillaBase.obj \
+	Style.obj \
+	UniConversion.obj \
+	ViewStyle.obj \
+	XPM.obj
+
+ScintRes.res : $(WDIR)/ScintRes.rc
+	$(RC) -fo$@ $**
+
+scintilla.lib: $(SOBJS) ScintillaWinS.obj
+	$(AR) $(ARFLAGS) -OUT:$@ $**
+
+scintilla.dll: $(SOBJS) ScintillaWin.obj ScintRes.res
+	$(LD) $(LDFLAGS) -DEF:$(WDIR)/Scintilla.def -DLL -OUT:$@ $** $(LIBS)
+
+# Define how to build all the objects and what they depend on
+
+# Most of the source is in $(CDIR) with a couple in $(WDIR)
+{$(CDIR)}.cxx{}.obj:
+	$(CC) $(CXXFLAGS) -c $(NAME)$@ $<
+{$(WDIR)}.cxx{}.obj:
+	$(CC) $(CXXFLAGS) -c $(NAME)$@ $<
+
+# Some source files are compiled into more than one object because of different
+# conditional compilation
+
+ScintillaBaseL.obj: $(CDIR)\ScintillaBase.cxx
+	$(CC) $(CXXFLAGS) -DSCI_LEXER -c $(NAME)$@ $(CDIR)\ScintillaBase.cxx
+
+ScintillaWinL.obj: $(WDIR)\ScintillaWin.cxx
+	$(CC) $(CXXFLAGS) -DSCI_LEXER -c $(NAME)$@ $(WDIR)\ScintillaWin.cxx
+
+ScintillaWinS.obj: $(WDIR)\ScintillaWin.cxx
+	$(CC) $(CXXFLAGS) -DSTATIC_BUILD -c $(NAME)$@ $(WDIR)\ScintillaWin.cxx
+
+# Dependencies
+
+LineMarker.obj: $(CDIR)/LineMarker.cxx $(IDIR)/Platform.h \
+ $(IDIR)/Scintilla.h $(CDIR)/LineMarker.h $(CDIR)/XPM.h
+PlatWin.obj: $(WDIR)/PlatWin.cxx $(IDIR)/Platform.h $(WDIR)/PlatformRes.h \
+ $(CDIR)/UniConversion.h  $(CDIR)/XPM.h
+PropSet.obj: $(CDIR)/PropSet.cxx $(IDIR)/Platform.h \
+ $(IDIR)/PropSet.h $(IDIR)/SString.h
+RESearch.obj: $(CDIR)/RESearch.cxx $(CDIR)/RESearch.h
+ScintillaBase.obj: $(CDIR)/ScintillaBase.cxx $(IDIR)/Platform.h \
+ $(IDIR)/Scintilla.h $(IDIR)/PropSet.h $(IDIR)/SString.h \
+ $(CDIR)/ContractionState.h $(CDIR)/SVector.h $(CDIR)/CellBuffer.h \
+ $(CDIR)/CallTip.h $(CDIR)/KeyMap.h $(CDIR)/Indicator.h \
+ $(CDIR)/LineMarker.h $(CDIR)/Style.h $(CDIR)/ViewStyle.h \
+ $(CDIR)/AutoComplete.h $(CDIR)/Document.h $(CDIR)/Editor.h \
+ $(CDIR)/ScintillaBase.h $(CDIR)/XPM.h
+ScintillaBaseL.obj: $(CDIR)\ScintillaBase.cxx $(IDIR)\Platform.h $(IDIR)\Scintilla.h $(IDIR)\SciLexer.h \
+ $(CDIR)\ContractionState.h $(CDIR)\CellBuffer.h $(CDIR)\CallTip.h $(CDIR)\KeyMap.h $(CDIR)\Indicator.h \
+ $(CDIR)\LineMarker.h $(CDIR)\Style.h $(CDIR)\AutoComplete.h $(CDIR)\ViewStyle.h $(CDIR)\Document.h $(CDIR)\Editor.h \
+ $(CDIR)\ScintillaBase.h $(IDIR)\PropSet.h $(IDIR)\SString.h $(IDIR)\Accessor.h \
+ $(CDIR)\DocumentAccessor.h $(IDIR)\KeyWords.h $(CDIR)/XPM.h
+ScintillaWin.obj:  $(WDIR)\ScintillaWin.cxx $(IDIR)/Platform.h \
+ $(IDIR)/Scintilla.h $(IDIR)/SString.h $(CDIR)/ContractionState.h \
+ $(CDIR)/SVector.h $(CDIR)/CellBuffer.h $(CDIR)/CallTip.h $(CDIR)/KeyMap.h \
+ $(CDIR)/Indicator.h $(CDIR)/LineMarker.h $(CDIR)/Style.h \
+ $(CDIR)/AutoComplete.h $(CDIR)/ViewStyle.h $(CDIR)/Document.h \
+ $(CDIR)/Editor.h $(CDIR)/ScintillaBase.h $(CDIR)/UniConversion.h $(CDIR)/XPM.h
+ScintillaWinL.obj:  $(WDIR)\ScintillaWin.cxx $(IDIR)\Platform.h $(IDIR)\Scintilla.h $(IDIR)\SciLexer.h \
+ $(CDIR)\ContractionState.h $(CDIR)\CellBuffer.h $(CDIR)\CallTip.h $(CDIR)\KeyMap.h $(CDIR)\Indicator.h \
+ $(CDIR)\LineMarker.h $(CDIR)\Style.h $(CDIR)\AutoComplete.h $(CDIR)\ViewStyle.h $(CDIR)\Document.h $(CDIR)\Editor.h \
+ $(CDIR)\ScintillaBase.h $(IDIR)\PropSet.h \
+ $(IDIR)\SString.h $(IDIR)\Accessor.h $(IDIR)\KeyWords.h $(CDIR)\UniConversion.h $(CDIR)/XPM.h
+ScintillaWinS.obj:  $(WDIR)\ScintillaWin.cxx $(IDIR)\Platform.h $(IDIR)\Scintilla.h \
+ $(CDIR)\ContractionState.h $(CDIR)\CellBuffer.h $(CDIR)\CallTip.h $(CDIR)\KeyMap.h $(CDIR)\Indicator.h \
+ $(CDIR)\LineMarker.h $(CDIR)\Style.h $(CDIR)\AutoComplete.h $(CDIR)\ViewStyle.h $(CDIR)\Document.h $(CDIR)\Editor.h \
+ $(CDIR)\ScintillaBase.h $(CDIR)\UniConversion.h
+Style.obj: $(CDIR)/Style.cxx $(IDIR)/Platform.h $(IDIR)/Scintilla.h \
+ $(CDIR)/Style.h
+StyleContext.obj: $(CDIR)/StyleContext.cxx $(IDIR)/Platform.h \
+ $(IDIR)/PropSet.h $(IDIR)/SString.h $(IDIR)/Accessor.h \
+ $(CDIR)/StyleContext.h
+UniConversion.obj: $(CDIR)/UniConversion.cxx $(CDIR)/UniConversion.h
+ViewStyle.obj: $(CDIR)/ViewStyle.cxx $(IDIR)/Platform.h \
+ $(IDIR)/Scintilla.h $(CDIR)/Indicator.h $(CDIR)/LineMarker.h \
+ $(CDIR)/Style.h $(CDIR)/ViewStyle.h $(CDIR)/XPM.h
+WindowAccessor.obj: $(CDIR)/WindowAccessor.cxx $(IDIR)/Platform.h \
+ $(IDIR)/PropSet.h $(IDIR)/SString.h $(IDIR)/Accessor.h \
+ $(IDIR)/WindowAccessor.h $(IDIR)/Scintilla.h
+XPM.obj: $(CDIR)/XPM.cxx $(IDIR)/Platform.h $(CDIR)/XPM.h
