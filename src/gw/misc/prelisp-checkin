@@ -1,0 +1,52 @@
+#!/bin/csh -f
+
+### Emit doc, if invoked with no args.
+
+if ( $1 != -please || $#argv != 1 ) then
+cat <<EOF
+$0 -please
+Move back into gw/lisp, from lisp, those files that have been modified.
+EOF
+exit -1
+endif
+
+set files = ( \
+  bootstrap \
+  bridge \
+  gwutil-1 \
+  buffer \
+  glbasics \
+  gsi-patches \
+  htmlgen \
+  load \
+  server \
+  streams \
+  systems \
+  thread \
+  utilities1 \
+  utilities3 \
+  web-gsi \
+  web \
+  translate )
+
+set src = $SRCBOX/lisp
+set dst = $SRCBOX/gw/lisp
+set update = ()
+foreach file ( $files )
+  cmp -s $src/$file.lisp $dst/$file.lisp
+  if ( $status ) then
+     echo "CHANGED: $file.lisp"
+     set update = ( $update $file.lisp )
+  endif
+end
+if ( $#update ) then
+ rm -rf /tmp/lisp.diff
+ foreach i ( $update )
+   diff -c1 $dst/$i $src/$i >> /tmp/lisp.diff
+ end
+ echo "# see /tmp/lisp.diff"
+ echo "(cd $src; cp $update $dst)"
+else
+ echo "# No updates."
+endif
+
