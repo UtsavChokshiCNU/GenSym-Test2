@@ -1,0 +1,184 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_trouble_run.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+Test Program Crash, Hang or Behavior Change
+</h1>
+<P>
+In the unlikely event a test program crashes, hangs or changes behavior
+when built with
+BullseyeCoverage, you can diagnose the problem by one of the methods listed
+below.
+<ol>
+<li>
+Disable <a href=ref_environment.html#COVAUTOSAVE>auto-save</a>.
+If the symptom changes or goes away, the problem might relate to the creation of
+the auto-save thread.
+Contact
+<a href="http://www.bullseye.com/support.html">Technical Support</a>.
+<br>
+<br>
+<li>
+Attempt to reproduce the
+problem with an absolute minimum of code instrumented by
+BullseyeCoverage. By
+successively preparing different sections of the program, you
+can narrow down the problematic area. Begin by testing the program
+with only one source file instrumented by
+BullseyeCoverage. Test with half
+the source files instrumented and then again with the other half instrumented.
+After identifying a subset of the project where the problem occurs,
+continue splitting the set in half until you narrow down the problematic
+source file. In a similar fashion, use the directive
+<CODE>#pragma BullseyeCoverage off</CODE>
+to narrow down the problematic function and
+then the statement. For more information on selecting code to
+include or exclude, see <a href=build_exclude.html>Excluding Code from Measurement</a>.
+A debugger may help locate the line of code where a crash occurs.
+<br>
+<br>
+<li>
+Determine the exact
+statement where the crash occurs using debugging print statements
+at various points in the program. By repeatedly running the program,
+seeing how far the program gets, and moving the print statements,
+you can narrow down the statement which causes the crash. The
+following code examples show how to display the source location
+with a debugging statement.
+<PRE>
+/* Display source location in a text-mode program */
+#include &lt;stdio.h&gt;
+...
+fprintf(stderr, &quot;%s %u\n&quot;, __FILE__, __LINE__);
+
+
+/* Display source location in a Windows program */
+#include &lt;windows.h&gt;
+...
+{
+    char buf[99];
+    wsprintf(buf, &quot;%s %u\n&quot;, __FILE__, __LINE__);
+    MessageBox(0, buf, 0, 0);
+}
+
+
+/* Append source location to file in any program */
+#include &lt;stdio.h&gt;
+...
+{
+    FILE * f = fopen(&quot;logfile&quot;, &quot;a&quot;);
+    fprintf(stderr, &quot;%s %u\n&quot;, __FILE__, __LINE__);
+    fclose(f);
+}
+</PRE>
+<li>
+Create the smallest
+program possible which reproduces the problem. To do this, make
+a copy of your whole test program, including any static libraries,
+or shared libraries. Then, remove large portions of the program,
+building and checking for the symptom after each deletion.
+Continue removing portions until the symptom stops happening. Then
+undo your last change.
+<br><br>
+<li>
+The BullseyeCoverage run-time makes a call to the C run-time library function
+<code>atexit</code> immediately when execution begins,
+except on Windows with Microsoft C++, Freescale CodeWarrior, and Intel C++.
+If <code>atexit</code> is not in good working order, a crash may occur.
+<p>
+If the symptom occurs at the beginning of program execution, you can
+diagnose the problem by temporarily adding a call to
+<code>atexit</code> as the first executable statement in the program,
+Windows DLL, or shared library where the crash is occurring.
+If a crash occurs after rebuilding with Coverage Build disabled, then
+<code>atexit</code> is the culprit.
+<p>
+If the crash occurs in a Windows DLL, add the call to
+<code>atexit</code> as the first statement in the entry point function
+(<code>DllMain</code>).
+<p>
+In a C++ program, add the call with a static constructor at the top of
+any source file.
+The example code below does this.
+<pre>
+#include &lt;stdlib.h&gt;
+class CheckAtexit {
+public:
+    static void f() { }
+    CheckAtexit() { atexit(f); }
+};
+static CheckAtexit checkAtexit;
+</pre>
+<p>
+After confirming that your <code>atexit</code> is broken, you can use
+the implementation of <code>atexit</code> and <code>exit</code> below.
+<pre>
+#if _WIN32
+    #include &lt;windows.h&gt;
+    typedef void (__cdecl* Function)(void);
+#else
+    typedef void (* Function)(void);
+#endif
+
+static Function atexit_array[32];
+static unsigned atexit_n = 0;
+
+int atexit(Function function)
+{
+    int status = 1;
+    if (atexit_n &lt; sizeof(atexit_array) / sizeof(atexit_array[0])) {
+        atexit_array[atexit_n] = function;
+        atexit_n++;
+        status = 0;
+    }
+    return status;
+}
+
+void exit(int status)
+{
+    while (atexit_n != 0) {
+        atexit_n--;
+        atexit_array[atexit_n]();
+    }
+#if WINVER
+    ExitProcess(status);
+#endif
+}
+</pre>
+</ol>
+
+<p style="font-size:xx-small">
+Last reviewed: 22 May 2006
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
