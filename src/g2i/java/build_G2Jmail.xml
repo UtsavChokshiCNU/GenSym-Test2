@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<!--
+ Copyright (C) Unpublished Trilogy Software, Inc. All rights reserved.
+ Trilogy Software, Inc., Confidential and Proprietary. Unless otherwise
+ explicitly stated in writing, this software may not be used by or
+ disclosed to any third party. This software is subject to copyright
+ protection under the laws of the United States and other countries.
+ Unless otherwise explicitly stated, this software is provided
+ by Trilogy "AS IS".
+-->
+
+<!-- Gensym-004 project -->
+
+<project name="Gensym-004" default="" basedir=".">
+    <property file="./res/build_G2Jmail.properties"/>
+    <property name="src.java.dir" value="../java/com/gensym/jmail"/>
+    <property name="src.test.dir" value="./test/com/gensym/jmail"/>
+    <property name="test.classes.dir" value="./test/classes"/>
+    <property name="classes.dir" value="../java/com/gensym/jmail"/>
+	<path id="check.classes">
+		<pathelement path="${checkcoverage.threshold.check.class.dir}"/>
+		<pathelement location="${checkcoverage.threshold.check.dir}/jdom.jar"/>
+		<pathelement location="${checkcoverage.threshold.check.dir}/sax.jar"/>
+		<pathelement location="${checkcoverage.threshold.check.dir}/sax2.jar"/>
+		<pathelement location="${checkcoverage.threshold.check.dir}/saxpath.jar"/>
+		<pathelement location="${checkcoverage.threshold.check.dir}/xerces.jar"/>
+    </path>
+    <path id="emma.lib">
+	   <pathelement location="${checkcoverage.emma.dir}/emma.jar"/>
+	   <pathelement location="${checkcoverage.emma.dir}/emma_ant.jar"/>
+    </path>
+    <taskdef resource="emma_ant.properties" classpathref="emma.lib"/>
+
+	<!-- Target for compile Source code -->
+	<target name="compile">
+		<exec executable="../bin/compile.bat" />	
+	</target>
+
+	<!-- Target for compile test case -->
+	<target name="compile-src.test">
+		<mkdir dir="${test.classes.dir}" />
+		<javac destdir="${test.classes.dir}" debug="on">
+			<src path="${src.test.dir}" />
+			<classpath location="${src.java.dir}" />
+		</javac>
+	</target>
+
+	<!-- Target for check style -->
+    <target name="check-style" depends="compile" description="Generates a report of code convention violations.">
+        <taskdef resource="checkstyletask.properties" classpath="${checkstyle.jar}"/>
+        <mkdir dir="${checkstyle.report.dir}"/>
+        <checkstyle config="${checkstyle.config}"
+                    failOnViolation="warningsFound"
+                    classpath="${checkstyle.jar}">
+            <formatter type="plain" tofile="${checkstyle.report.file}"/>
+            <fileset dir="${src.java.dir}" includes="**/*.java"/>
+        </checkstyle>
+		<fail if="warningsFound" message="Bugs are found! Please refer to	
+			${checkstyle.report.dir}/checkstyle_report.xml"/>
+    </target>
+
+    <!-- Target for find bugs -->
+    <target name="check-findbugs" depends="compile" >
+        <taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask"			
+				 classpath="${findbugs.home}/lib/findbugs-ant.jar"/>
+        <mkdir dir="${findbugs.report.dir}"/>
+        <findbugs home="${findbugs.home}" output="xml:withMessages"
+                  projectName="${ant.project.name}" warningsProperty="warningsFound"
+                  outputFile="${findbugs.report.file}" jvmargs="-Xmx256m"
+                  failonerror="true">
+            <class location="${classes.dir}"/>
+            <sourcePath path="${basedir}"/>
+        </findbugs>
+    </target>
+
+    <!-- Target for checkcoverage -->
+	<target name="check-coverage" depends="compile,compile-src.test">
+		<path id="config.classes">
+			<pathelement location="${classes.dir}"/>			
+		</path>
+
+        <delete dir="${checkcoverage.report.dir}"/>
+        <mkdir dir="${checkcoverage.report.dir}"/>
+
+		<emma enabled="${coverage.enabled}">
+		  <instr instrpathref="config.classes" destdir="${checkcoverage.config.instr.dir}" metadatafile="${checkcoverage.config.meta.dir}/metadata.emma" merge="true">
+		  </instr>
+		</emma>	
+
+		<!--JUnit test is to get the coverage.emma file for the emma report -->
+		<junit printsummary="on" fork="yes"  >
+			<jvmarg value="-Demma.coverage.out.file=${checkcoverage.config.meta.dir}/coverage.emma"/>
+			<jvmarg value="-Demma.coverage.out.merge=true"/>
+			<classpath location="${checkcoverage.instr.dir}" />
+			<classpath location="${test.classes.dir}" />
+			<classpath refid="emma.lib" />
+
+			<formatter type="xml" />
+			<batchtest  haltonfailure="no">
+				<fileset dir="${test.classes.dir}">
+					<include name="com/gensym/jmail/*Test.class" />
+				</fileset>
+			</batchtest>
+		</junit>
+
+		<emma enabled="${coverage.enabled}">
+		  <report sourcepath="./java">
+			<fileset dir="${checkcoverage.config.meta.dir}">
+			  <include name="*.emma"/>
+			</fileset>
+			<html outfile="${checkcoverage.report.dir}/coverage.html" depth="method" encoding="utf-8" columns="name,class,method,block,line" />
+			<xml outfile="${checkcoverage.report.dir}/coverage.xml" depth="package" />
+			<txt outfile="${checkcoverage.report.dir}/coverage.txt" depth="package" />
+		  </report>
+		</emma>
+
+		<java classname="com.suzsoft.emma.ManageEmma" classpathref="check.classes" failonerror="true">
+			<arg value="${checkcoverage.report.dir}/" />
+			<arg value="./res/threshold_G2Jmail.properties" />
+		</java>
+	</target>
+
+</project>
