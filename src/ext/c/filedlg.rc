@@ -1,0 +1,75 @@
+// Custom file dialog resources
+
+#include <windows.h>
+//Cage add 2009/8/13
+#include "..\..\ext\c\ddrsc.h"
+//add 2012/2/27
+#include "..\..\ext\c\messagebox.h"
+
+//Cage__
+UpDown BITMAP "../../ext/c/updown.bmp"
+Locked ICON   "../../ext/c/Locked.ico" // Used by SSL
+ELLIPSIS ICON "../../ext/c/SmallEllipsis.ico" //Used by RichEditGrid ellipsis button
+Empty ICON "../../ext/c/Empty.ico"     // Blank icon, used for MDI child windows
+
+//User icons for custom dialogs
+IDI_MBU_ERROR		ICON	"../../ext/c/Error.ico" 
+IDI_MBU_INFO		ICON	"../../ext/c/Info.ico"
+IDI_MBU_QUESTION	ICON	"../../ext/c/Question.ico"
+IDI_MBU_WARNING		ICON	"../../ext/c/Warning.ico"
+
+IDD_FILEDLG DIALOGEX 0, 0, 372, 222
+STYLE DS_3DLOOK | DS_FIXEDSYS | DS_CENTER | WS_POPUP | 
+      WS_VISIBLE | WS_CLIPCHILDREN | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+EXSTYLE WS_EX_DLGMODALFRAME | WS_EX_WINDOWEDGE
+CAPTION "Open"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "Look &in:",stc4,4,7,57,8,SS_NOTIFY,WS_EX_RIGHT
+    CONTROL         "",cmb2,"ComboBoxEx32",CBS_DROPDOWNLIST | 
+                    CBS_SORT | WS_VSCROLL | WS_TABSTOP,66,4,174,300
+
+    CONTROL         "",lst1,"SysListView32",LVS_REPORT | 
+                    LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | 
+                    LVS_ALIGNTOP | WS_BORDER | WS_TABSTOP, 66,22,300,156,
+                    WS_EX_CLIENTEDGE
+
+    LTEXT           "File &name:",stc3,67,187,58,8
+    EDITTEXT        edt1,130,184,164,12, ES_AUTOHSCROLL | WS_TABSTOP
+
+    LTEXT           "Files of &type:",stc2,67,203,58,8
+    COMBOBOX        cmb1,130,204,164,100,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP
+
+    DEFPUSHBUTTON   "&Open",IDOK,316,184,50,14,WS_GROUP
+    PUSHBUTTON      "Cancel",IDCANCEL,316,202,50,14,WS_GROUP
+
+END
+
+IDD_MODULES DIALOGEX 0, 0, 209, 117
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_CLIPCHILDREN | WS_THICKFRAME
+CAPTION "Save Modules"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,46,96,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,112,96,50,14
+    CONTROL         "",IDC_LIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | 
+                    WS_BORDER | WS_TABSTOP,8,25,193,63,WS_EX_CLIENTEDGE
+    ICON            "G2",IDC_MYICON,10,5,20,20
+    LTEXT           "Save Modules as Shown?",IDC_LABEL,41,7,160,16,
+                    SS_NOPREFIX
+END
+
+IDD_DIRDLG DIALOGEX 0, 0, 217, 188
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_CLIPCHILDREN | WS_THICKFRAME
+CAPTION "Browse for Folder"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,92,166,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,153,166,50,14
+    LTEXT           "Static",IDC_STATIC,6,7,198,16
+    CONTROL         "Tree1",IDC_TREE1,"SysTreeView32",TVS_HASBUTTONS | 
+                    TVS_HASLINES | TVS_LINESATROOT | TVS_DISABLEDRAGDROP | 
+                    WS_BORDER | WS_GROUP | WS_TABSTOP,6,28,198,130,
+                    WS_EX_CLIENTEDGE
+END
