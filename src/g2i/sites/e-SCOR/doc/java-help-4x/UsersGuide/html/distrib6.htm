@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="02/06/02 18:48:25">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Configuring Order Selection Parameters</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="distrib5.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="distrib7.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+      <div align="center"><b>e-SCOR User's Guide</b></div>
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/e-SCOR/OnlineHelpFiles/UsersGuide/html/distribu.htm">  
+        Modeling a Distribution Process  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Configuring Order Selection Parameters
+</h2>
+<p >
+  <a name="120122"> </a>
+<p><div align="left"><img src="images/d1-no-st.gif" border="0" hspace="0" vspace="0">
+</div><a name="120121"></a></p>
+
+
+
+</p>
+<p>You can control how a Distributor role sorts and selects orders for delivery, based on a set of order-selection criteria. You do this to describe how your current distribution process works or to experiment with alternative techniques to enhance the performance of the delivery phase of your distribution process.<a name="26881"></a></p>
+<p>For example, if two product shipments are waiting to be delivered, you can configure the Deliver category to deliver the highest cost orders first, the oldest orders first (FIFO), orders that are within a certain size of the maximum or minimum order first, or orders "just in time" to meet the buyer's desired order fulfillment lead time.<a name="31606"></a></p>
+<h6><b>Note: </b>The Order Selection parameters are relevant for the D1: Deliver Stocked Product 
+category only, which appears in the detail of a Base Manufacturer, Distributor, 
+and Manufacturer role.
+<a name="31596"></a></h6><p>e-SCOR uses an exclusion strategy to identify the orders to fill. The Deliver category places all orders in the Orders pool into a list, then applies the first set of sort criteria to the orders in the list. If an order does not meet the sort criteria, the Deliver category removes the order from the list. If two orders have the same value for the set of sort criteria, the Deliver category applies the second set of criteria, and so on. You can configure the Deliver category to sort orders, based on up to four sets of sort criteria. <a name="51964"></a></p>
+<p>Each set of sort criteria specifies the direction of the sort (smallest or biggest) and cutoff parameters, which are relative to the selected property of an order. You can sort orders, based on numeric and time-based property values of an order. For example, if the property to sort by is the time at which the order was placed and the sort direction is smallest, the Deliver category sorts orders, based on a first-in, first-out (FIFO) basis.<a name="51953"></a></p>
+<p>You can also configure the Deliver category to use a cutoff value, which lets you further restrict the orders that are candidates for delivery. For example, if you choose to deliver the biggest orders first, based on orders size, small orders will accumulate in the Orders pool. To avoid this situation, you can configure a maximum delta acceptable cutoff to ensure that small orders also get delivered, but only after big orders.<a name="52061"></a></p>
+<p>The following figure shows the Order tab of the properties dialog for a D1: Deliver Stocked Product category that sorts orders on a first-in first-out (FIFO) basis:<a name="54415"></a></p>
+<p >
+  <a name="120153"> </a>
+<p><div align="left"><img src="images/d1-orde3.gif" border="0" hspace="0" vspace="0">
+</div><a name="120152"></a></p>
+
+
+
+</p>
+<p>To sort orders for delivery, you configure the following order selection parameters for the Deliver category:<a name="27413"></a></p>
+<p >
+  <a name="26913"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="26929"><div >Parameter</a></div></th>
+    <th><a name="26931"><div >Description</a></div></th>
+  </tr>
+  <tr>
+    <td><p>Sort Direction<a name="26933"></a></p>
+</td>
+    <td><p>Determines whether to sort orders, based on the <code>Smallest</code> or <code>Biggest</code> value. You can also sort orders, based on a <code>Random</code> value, which chooses an order at random, based on the specified criteria. The default value is <code>Smallest</code>.<a name="26999"></a></p>
+<p>For examples, see <a href="distrib7.htm#27482">Sorting Orders with No Cutoff</a>.<a name="59178"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Sort By<a name="26950"></a></p>
+</td>
+    <td><p>Determines the value the Deliver category uses to sort orders. The options include numeric and time-based properties of an order. The default value is <code>Internal Order Number</code>.<a name="27029"></a></p>
+<p>The numeric options are: <code>Cost</code>, <code>Internal Order Number</code>, <code>Product Preference, Customer Preference, Order Lead Time, Order Placed Time, </code>and <code>Order Size</code>.<a name="27452"></a></p>
+<p>The time-based options are: <code>Order Lead Time</code>, and <code>Order Placed Time</code>.<a name="59208"></a></p>
+<p>For examples, see <a href="distrib7.htm#27482">Sorting Orders with No Cutoff</a>.<a name="59234"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Cutoff<a name="26958"></a></p>
+</td>
+    <td><p>Determines whether the Deliver category includes all orders in its sort (<code>None</code>) or whether it includes only those orders that meet an acceptable cutoff. <a name="27052"></a></p>
+<p>If Sort By is a numeric value, the options for Cutoff are: <code>Minimum Acceptable</code>, <code>Maximum Acceptable</code>, and <code>Maximum Delta Acceptable</code>. <a name="27276"></a></p>
+<p>If Sort By is a time-based value, the options are: <code>Time Delta Acceptable</code> and <code>Current Time Delta Acceptable</code>. <a name="27281"></a></p>
+<p>If Cutoff is <code>Maximum Delta Acceptable</code> or <code>Time Delta Acceptable</code>, Sort Direction must be <code>Smallest</code> or <code>Biggest</code>. <a name="52081"></a></p>
+<p>If Cutoff is <code>Current Time Delta Acceptable</code>, Sort Direction must be <code>Random</code> and Sort By must be <code>Order Lead Time</code>.<a name="52157"></a></p>
+<p>For examples, see <a href="distrib8.htm#27428">Restricting the Orders to Sort Based on a Numeric Cutoff</a> and <a href="distrib9.htm#28877">Restricting the Orders to Sort Based on a Time Cutoff</a>.<a name="28945"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Cutoff Value<a name="26966"></a></p>
+</td>
+    <td><p>When Cutoff is a value other than <code>None</code> and when Sort By is a numeric value, specifies the value that determines whether an order is excluded from the sort. If the specified value of an order does not meet the cutoff criteria, the Deliver category does not fill the order.<a name="26968"></a></p>
+<p>For examples, see <a href="distrib8.htm#27428">Restricting the Orders to Sort Based on a Numeric Cutoff</a>.<a name="59261"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Cutoff Duration<a name="26974"></a></p>
+</td>
+    <td><p>When Cutoff is a value other than <code>None</code> and Sort By is a time-based value, specifies the value that determines whether an order is excluded from the sort. If the specified time of an order does not meet the cutoff criteria, the Deliver category does not fill the order.<a name="27358"></a></p>
+<p>For examples, see <a href="distrib9.htm#28877">Restricting the Orders to Sort Based on a Time Cutoff</a>.<a name="59340"></a></p>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<h4 >	 To configure order selection criteria:<a name="28085"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>1	</b></td>    <td valign="top" width="580">Display the properties dialog for the D1: Deliver Stocked Product category and click the Order tab.<a name="28091"></a></td>  </tr></table><blockquote>  <a name="28102">The parameters to configure appear within the Order Selection group. The Order Selection group has four tab pages, one for each set of order selection criteria.</a></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>2	</b></td>    <td valign="top" width="580">Configure the parameters in the table above on the First tab to configure the basic parameters that the Deliver category uses to sort orders.<a name="28103"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>3	</b></td>    <td valign="top" width="580">Click the Second tab to configure a second set of parameters, which the Deliver category applies after the first set of criteria.<a name="28128"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>4	</b></td>    <td valign="top" width="580">Repeat Step 3 for the Third and Fourth tab, as needed, to configure up to four sets of criteria, which the Deliver category applies after the previous sets of criteria.<a name="28147"></a></td>  </tr></table><p><b>Related topics:</b><a name="120181"></a></p>
+<p><a href="distrib7.htm#27482">Sorting Orders with No Cutoff</a><a name="120185"></a></p>
+<p><a href="distrib8.htm#27428">Restricting the Orders to Sort Based on a Numeric Cutoff</a><a name="120189"></a></p>
+<p><a href="distrib9.htm#28877">Restricting the Orders to Sort Based on a Time Cutoff</a><a name="120193"></a></p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="distrib5.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="distrib7.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
