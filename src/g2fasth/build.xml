@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<project name="G2FASTH" default="build_32_std">
+  <property name="main.basedir" value="${basedir}/.." />
+  <target name="build_32_std">
+    <delete dir="${basedir}/build"/>
+    <mkdir dir="build" />
+    <exec executable="cmake" dir="build" failonerror="true">
+      <arg line="../" />
+    </exec>
+    <exec executable="cmake" dir="build" failonerror="true">
+      <arg line="--build . --config Release" />
+    </exec>
+  </target>
+  <target name="build_64_ent_wout_32">
+    <delete dir="${basedir}/build"/>
+    <mkdir dir="build" />
+    <exec executable="cmake" dir="build" osfamily="windows" failonerror="true">
+      <arg line="-G 'Visual Studio 10 2010 Win64' ../" />
+    </exec>
+    <exec executable="cmake" dir="build" osfamily="unix" failonerror="true">
+      <arg line="../" />
+    </exec>
+    <exec executable="cmake" dir="build" failonerror="true">
+      <arg line="--build . --config Release" />
+    </exec>
+  </target>
+  <target name="build_64_ent" depends="build_64_ent_wout_32" />
+  <target name="clean">
+    <delete dir="${basedir}/bin"/>
+    <delete dir="${basedir}/lib"/>
+    <exec executable="cmake" dir="build" failonerror="true">
+      <arg line="--build . --target 'clean'" />
+    </exec>
+  </target>
+  <target name="print-version">
+    <echo>Java/JVM version: ${ant.java.version}</echo>
+    <echo>Java/JVM detail version: ${java.version}</echo>
+    <echo>Base directory: ${basedir}</echo>
+    <echo>Main base dir: ${main.basedir}</echo>
+  </target>
+ <target name="unit-tests" depends="print-version">
+    <exec executable="${basedir}\bin\Release\testg2fasth.exe" osfamily="windows" failonerror="true">
+      <arg line = "-r junit -o ${basedir}/../../results/api-tests/c/api_tests_junit_g2fasth.xml" />
+    </exec>
+    <exec executable="${basedir}/bin/testg2fasth" osfamily="unix" failonerror="true">
+      <arg line = "-r junit -o ${basedir}/../../results/g2fasth_unit_tests.xml" />
+    </exec>
+  </target> 
+</project>
