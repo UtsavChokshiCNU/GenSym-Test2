@@ -1,0 +1,25 @@
+# -*- Mode: Makefile -*-
+
+# The Codejock eXtreme Toolkit Pro library
+# Rebuild from locally-modified sources using VC 6.0 project files.
+
+PRODUCT = xtp
+ODIR = o
+MYDIR = $(DSTBOX)\$(PRODUCT)\$(ODIR)
+OUTDIR = $(SRCBOX)\xtp\lib\vc60
+VCWKSP = $(SRCBOX)\xtp\workspace\ToolkitPro\ToolkitPro_vc60.dsw
+MSDEV = msdev.exe
+
+CFG = "Codejock.ToolkitPro.Static - Win32 Dynamic Unicode Debug"
+
+default :
+	$(MSDEV) $(VCWKSP) /MAKE $(CFG)
+	copy $(OUTDIR)\*UD.lib $(MYDIR)
+
+clean : 
+	$(MSDEV) $(VCWKSP) /MAKE $(CFG) /CLEAN
+	-@erase $(MYDIR)\*UD.lib
+
+all:
+	$(MSDEV) $(VCWKSP) /MAKE $(CFG)
+	copy $(OUTDIR)\*UD.lib $(MYDIR)
