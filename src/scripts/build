@@ -1,0 +1,439 @@
+#!/bin/sh
+
+# Usage: build [ options ] <product>
+#   options:
+#	-o	 compile a debuggable version
+#	-opt	 compile an optimized version
+#	+x	 don't attempt a translate
+#                default is to translate Lisp files into C
+#       -no-delete dont't delete files when done
+#	-v	 verbose mode, repeat for more verbosity
+#	-h, --help print help text
+#       -x <trans>   Use <trans> as translator program
+#       -bx      build translator from sandbox and use that
+#   <product>	g2 | tw | gsi | gw
+#
+# This script is the interface to translating, compiling (and linking)
+# executables for Gensym products in your sandbox, including G2, Telewindows,
+# GSI, and WebLink.  It should be run in an environment in which your SRCBOX
+# and related environment variables are set up. 
+#
+# See trail/0168-build-script.txt for the man page/spec.  
+# Mark H. David, 1/5/00: Initial Commit.
+
+progname=$0
+
+ultra_trans="/home/development/chestnut/trans-32b3c"
+
+LIBSUF=".a"
+OBJSUF=".o"
+EXESUF=""
+
+usage () {
+  echo "Usage: $progname [-o] [-opt] [o-mt] [o-pg] [-no-delete] [+x] [-bx] [-x <trans>] [-v] [-h|--help] <product>"
+  echo " product = g2 | tw | gsi | gw | twng"
+  echo " -o          compile debuggable"
+  echo " -opt        compile optimized"
+  echo " +x          skip translate"
+  echo " -x <trans>  Use <trans> as translator program"
+  echo " -no-delete  keep useless macro object files"
+  echo " -v          be more verbose"
+  echo " -h|--help   display this message"
+  echo " -bx         build translator from sandbox and use that"
+
+  exit 1
+}
+
+# Process and check the arguments
+
+if [ $# = 0 ]; then
+  echo "Error: Wrong number of arguments, $# supplied, at least 1 required"
+  usage
+fi
+
+# Cool helper function.  Used to be much cooler until runmake started finally
+# taking care of this itself.  Also, 'mkdir -p' would work, except not on really
+# ancient platforms, and does not have a verbose mode.
+
+mkdir_if_necessary ()
+{
+  if [ ! -d "$1" ]
+  then
+    if [ $verbose -ge 1 ]
+    then
+      echo "Making directory $1"
+    fi
+    mkdir $1
+  fi
+}
+
+# Verify environment very closely
+
+if [ -z "$FROM_SPIN" ]
+then
+  echo "You must first set FROM_SPIN (presumably with 'sandbox')"
+  exit 1
+fi
+
+if [ -z "$SRCBOX" ]
+then
+  echo "You must first set SRCBOX (presumably with 'sandbox')"
+  exit 1
+fi
+if [ ! -d ${SRCBOX} ]
+then
+  echo "Error: SRCBOX ${SRCBOX} does not exist"
+  exit 1
+fi
+
+if [ -z "$DSTBOX" ]
+then
+  echo "You must first set DSTBOX (presumably with 'sandbox')"
+  exit 1
+fi
+if [ ! -d ${DSTBOX} ]
+then
+  echo "Error: DSTBOX ${DSTBOX} does not exist"
+  exit 1
+fi
+
+if [ -z "$SANDBOX" ]
+then
+  echo "You must first set SANDBOX (presumably with 'sandbox')"
+  exit 1
+fi
+if [ ! -d ${SANDBOX} ]
+then
+  echo "Error: SANDBOX ${SANDBOX} does not exist"
+  exit 1
+fi
+
+# Environment ok, set up variables for either a translate, a compile, or both
+
+machine=`machine`
+if [ "$machine" = "intelnt" ]
+then
+  LIBSUF=".lib"
+  OBJSUF=".obj"
+  EXESUF=".exe"
+fi
+
+verbose=0
+translate=1
+build_trans=0
+compile_opt=0
+compile_debug=0
+compile_mt=0
+compile_prof=0
+product=g2
+target=
+extlib=libcprim${LIBSUF}
+done_args=0
+delete_files=1
+
+if [ ${FROM_SPIN} = "ab-9oct95" ]
+then
+  fntdir=ext
+else
+  fntdir=fnt
+fi
+
+# Parse arguments
+while [ $done_args = 0 ]
+do
+  case $1 in
+    -o)
+	compile_debug=1
+	shift
+	;;
+    -opt)
+	  compile_opt=1
+	  shift
+	  ;;
+    -o-mt)
+	   compile_mt=1
+	   shift
+	   ;;
+    -o-pg)
+	   compile_prof=1
+	   shift
+	   ;;
+    +x)
+	translate=0
+	shift
+	;;
+    -bx)
+	translate=1
+	build_trans=1
+	ultra_trans=$SRCBOX/chestnut/trans-32b3c
+	echo "Building translator from sandbox as $ultra_trans and then using it"
+	shift
+	;;
+    -x)
+	translate=1
+	shift
+	ultra_trans=$1
+	echo "Using translator $ultra_trans"
+	shift
+	;;
+    -no-delete)
+	    delete_files=0
+	    shift
+	    ;;
+    -v)
+	verbose=`expr $verbose + 1`
+	shift
+	;;
+    -h|--help)
+		 usage
+		 shift		# can't get here
+		 ;;
+    -*)
+	echo "Warning: unrecognized argument $1"
+	shift
+	;;
+    *)
+       product=$*
+       done_args=1
+       ;;
+  esac
+done
+
+# Make sure product is specified correctly
+if [ -z "$product" ]
+then
+  echo "Must specify <product>"
+  usage
+fi
+
+case $product in
+  g2|tw|twng)
+	 target=$product${EXESUF}
+	 ;;
+  gsi)
+       target=libgsi${LIBSUF}
+       if [ "${machine}" = "sun4" -o "${machine}" = "alphaosf" ]
+       then
+	 extlib=libnet${LIBSUF}
+       else
+	 extlib=libtcp${LIBSUF}
+       fi
+       ;;
+  gw)
+      target=gw${EXESUF}
+      if [ "${machine}" = "sun4" -o "${machine}" = "alphaosf" ]
+      then
+	extlib=libnet${LIBSUF}
+      else
+	extlib=libtcp${LIBSUF}
+      fi
+      ;;
+  *)
+    echo "Unknown product: $product"
+    usage
+    ;;
+esac
+
+echo product is $product
+
+
+
+# Set up sandbox for a translate, compile, or both
+mkdir_if_necessary ${SANDBOX}/logs
+
+# possibly build translator
+if [ "$build_trans" = 1 ]
+then
+  if [ ! -d ${SRCBOX}/chestnut ]
+  then
+    echo "Error: ${SRCBOX}/chestnut does not exist.  Cannot build translator."
+    exit 1
+  fi
+  if [ -f ${SRCBOX}/scripts/build-translator ]
+  then
+    ${SRCBOX}/scripts/build-translator
+  else
+    /home/development/scripts/build-translator
+  fi
+fi
+  
+
+# Do translate, if requested
+if [ "$translate" = 1 ]
+then
+  if [ ! -d ${SRCBOX}/lisp ]
+  then
+    echo "Error: ${SRCBOX}/lisp does not exist.  Cannot continue."
+    exit 1
+  fi
+
+  if [ "${product}" = "tw"  -o "${product}" = "twng" ]
+  then
+    trans_flags=3trpcmx
+    echo "TW Translate"
+  elif [ "${product}" = "gsi" -o "${product}" = "gw" ]
+  then
+    trans_flags=3grpcmx
+    echo "GSI/GW Translate"
+  else
+    # else assume G2:
+    trans_flags=3rpcmx
+    echo "G2 Translate"
+  fi
+  trans=" ${trans_flags}"
+  refsrcbox=/bt/ab/src
+  logfile=${SANDBOX}/logs/${product}-trans-tc.log
+
+  mkdir_if_necessary ${SANDBOX}/logs/calls
+  mkdir_if_necessary ${SRCBOX}/${product}
+  mkdir_if_necessary ${SRCBOX}/${product}/c
+  mkdir_if_necessary ${DSTBOX}/lisp/macro
+
+  if [ "${product}" = "g2" -o "${product}" = "tw" -o "${product}" = "twng" ]
+  then
+    echo "Copying non-generated files from ${refsrcbox}"
+    /bin/cp ${refsrcbox}/${product}/c/main.h ${SRCBOX}/${product}/c/
+    /bin/cp ${refsrcbox}/${product}/c/symtab.h ${SRCBOX}/${product}/c/
+    /bin/cp ${refsrcbox}/${product}/c/userinit.h ${SRCBOX}/${product}/c/
+    /bin/cp ${refsrcbox}/${product}/c/usersyms.h ${SRCBOX}/${product}/c/
+  fi
+
+  # Bring Lisp libraries up to date. They are required for the translate.
+  echo "Bringing libraries up to date."
+  if [ "${product}" = "g2" ]
+  then
+    runmake xml opt liblsxml${LIBSUF}
+  fi
+
+  if [ "${product}" = "g2" -o "${product}" = "tw" -o "${product}" = "twng" ]
+  then
+    runmake ${fntdir} opt libfnt${LIBSUF}
+    runmake jpeg opt libjpeg${LIBSUF}
+  fi
+
+  runmake ext opt ${extlib}
+  runmake ext opt libnogsec${LIBSUF}
+
+  cd ${SRCBOX}/lisp
+
+  if [ "$machine" = "sparcsol" ]
+  then
+    if [ "$SPARC_TYPE" = "ultra" ]
+    then
+      trans="${ultra_trans} ${trans_flags}"
+    else
+      echo "Unsupported Solaris architecture \"$SPARC_TYPE\"."
+      echo "The translator only runs on Ultras."
+      exit 1
+    fi
+    echo "Beginning translate on Solaris machine `uname -n`"
+  else
+    echo "Unsupported architecture for translate: $machine"
+    echo "No translate being attempted."
+    exit 1
+  fi
+
+  # If verbosity is high, tee the translate output to the terminal.
+  if [ $verbose -ge 2 ]; then
+    echo ${trans} '< 123.lisp | tee' $logfile
+    ${trans} < 123.lisp | tee $logfile
+  else
+    echo ${trans} '< 123.lisp >' $logfile
+    ${trans} < 123.lisp > $logfile
+  fi
+
+  result=$?
+
+  if [ $delete_files = 1 ]
+  then
+    /bin/rm ${DSTBOX}/lisp/macro/*b
+  fi
+
+  echo -n "Translate finished.  Please see \""
+  echo -n $logfile
+  echo "\" f""or details"
+
+  (echo "Translate of ${product} finished `date`"; grep ERROR-TRAPPED ${logfile}) |\
+     mail -s "build script results" `whoami`@gensym.com
+fi
+
+# if [ "$result" -ne 0 ]
+# then
+#   exit $result
+# fi
+
+
+compile_product ()
+{
+  if [ -z "$1" ]
+  then
+    echo "Internal script error!  No compile-type specified."
+    exit 1
+  fi
+  ctype=$1
+  if [ "${ctype}" = "opt" -o "${ctype}" = "o" -o "${ctype}" = "o-mt" -o "${ctype}" = "o-pg" ]
+  then
+    echo "Compiling ${product} with compile type ${ctype}"
+  else
+    echo "Internal script error!  Unknown compile-type ${ctype} specified."
+    exit 1
+  fi
+  
+  if [ "${product}" = "g2" ]
+  then
+    runmake xml ${ctype} liblsxml${LIBSUF}
+  fi
+
+  if [ "${product}" = "g2" -o "${product}" = "gw" ]
+  then
+    runmake gsi ${ctype} gsiannex${OBJSUF} gsiannex${LIBSUF}
+  fi
+
+  if [ "${product}" = "g2" -o "${product}" = "tw" ]
+  then
+    runmake ${fntdir} ${ctype} libfnt${LIBSUF}
+    runmake jpeg ${ctype} libjpeg${LIBSUF}
+  fi
+
+  if [ "${product}" = "g2" -o "${product}" = "tw" -o "${product}" = "gsi" -o "${product}" = "gw" ]
+  then
+    runmake ext ${ctype} ${extlib}
+    runmake rtl ${ctype} librtl${LIBSUF}
+    runmake ${product} ${ctype} ${target}
+  fi
+
+  if [ "${product}" = "twng" ]
+  then
+    runmake xtp ${ctype}
+    runmake scintilla ${ctype}
+    runmake widgets ${ctype}
+    runmake twng ${ctype}
+  fi
+
+}
+
+# Do optimized compile, if requested
+if [ "$compile_opt" = 1 ]
+then
+  compile_product opt
+fi
+
+# Do debuggable compile, if requested
+if [ "$compile_debug" = 1 ]
+then
+  compile_product o
+fi
+
+# Do multi-threaded compile, if requested
+if [ "$compile_mt" = 1 ]
+then
+  compile_product o-mt
+fi
+
+# Do profiling compile, if requested
+if [ "$compile_prof" = 1 ]
+then
+  compile_product o-pg
+fi
+
+exit $result
