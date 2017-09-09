@@ -1,0 +1,143 @@
+#!/usr/local/bin/perl
+
+# update-rc-files -- Edit Windows .rc files given on command line in-place,
+#                    using version info from $SRCBOX/lisp/delta.lisp.
+# -fmw, 10/10/03
+
+# Fields which are updated in the resource files:
+#	FILEVERSION
+#       PRODUCTVERSION
+#       Build ID
+#       Comments
+
+if(!@ARGV) {
+    print "Usage: $0 [-n] file.rc ... file.rc\n";
+    print " Edit given Windows .rc files in-place, using version info from delta.lisp\n";
+    print " -n  Print debug info, and don't actually change any files\n";
+    exit;
+}
+
+if($ARGV[0] =~ /-n/) {
+    $test=1;
+    shift;
+}
+
+die "SRCBOX is not set" unless $ENV{SRCBOX};
+$tmp="/tmp/prcfs$$";
+
+
+# -------------------------------------------------
+# Gather version info from def* forms in delta.lisp
+# -------------------------------------------------
+
+$delta="$ENV{SRCBOX}/lisp/delta.lisp";
+
+print "** Reading $delta **\n\n" if $test;
+
+open(IN,$delta) || die "Can't read \"$delta\"";
+while(<IN>) {
+    $major=$1       if /^\s*\(def.*major-version-number-of.*\s0*([0-9]+)/i;
+    $minor=$1       if /^\s*\(def.*minor-version-number-of.*\s0*([0-9]+)/i;
+    $release="\u$1" if /^\s*\(def.*release-quality-of.*\s(.*-release)-quality/i;
+    $rev=$1         if /^\s*\(def.*revision-number-of.*\s0*([0-9]+)/i;
+    $patch=$2       if /^\s*\(def.*patch-number-of.*\s(nil|0*([0-9]+))/i;
+    $build=$1       if /^\s*\(def.*build-identification.*\"([A-Z0-9]+)\"/i;
+    $comments=$2    if /^\s*\(def.*build-comment-string.*\s(nil|\"(.*)\")/i;
+    $productid=$rev*100+$patch;
+}
+close(IN);
+
+
+# --------------------------------------------
+# Reformat the version info a bit.
+# --------------------------------------------
+
+# Convert {whatever}-release to whatever.
+$quality=$release;
+$quality =~ s/-release//;
+
+# Compute numeric value for the release quality.
+# See activex/control/src/resources.rc
+
+$numeric_quality="0";
+if($quality =~ /prototype/i) {    # TW_AX_CONTROL_PRERELEASE
+    $numeric_quality = 8;	
+
+} elsif($quality =~ /alpha/i) {   # TW_AX_CONTROL_ALPHA
+    $numeric_quality = 16;	
+
+} elsif($quality =~ /beta/i) {    # TW_AX_CONTROL_BETA
+    $numeric_quality = 32;	
+
+} elsif($quality =~ /patch/i) {   # TW_AX_CONTROL_PATCH ?What determines a patch quality release?
+    $numeric_quality = 64;	
+
+} elsif($quality == "") {	  # TW_AX_CONTROL_CRELEASE
+    $numeric_quality = 128;	
+}
+
+# Although delta.lisp permits two digits in the minor version number, we seem to
+# use only the first digit in the Windows version, hence $minor/10 here.
+$version="$major," . ($minor/10) . ",$numeric_quality,$productid";
+
+# Reformat as hundredths, without trailing zeroes.
+$minor = sprintf("%02d",$minor);
+$minor =~ s/(.)0*$/\1/;
+$pretty ="$major.$minor " . ($quality?"$quality ":"") . "Rev. $rev";
+
+# Put patch number into the pretty version. Maybe it should go in the
+# SpecialBuild field instead?
+$pretty .= " Patch $patch" if $patch;
+
+# Add comment about quality unless one was already given.
+$comments ||= "This is prototype software." if $numeric_quality == 8;
+$comments ||= "This is alpha software." if $numeric_quality == 16;
+$comments ||= "This is beta software." if $numeric_quality == 32;
+$comments ||= "This software is a patch." if $numeric_quality == 64;
+
+# Compute year from build date.
+$year = 1998 + ord($build) - ord("A");
+
+if($test) {
+    print "Version=$version build=\"$build\" comments=\"$comments\" patch=\"$patch\"\n";
+    print "Pretty version: $pretty\n";
+    print "Year=$year\n";
+}
+
+
+# --------------------------------------------
+# Finally, edit the resource files.
+# --------------------------------------------
+
+foreach $rcfile (@ARGV) {
+    print "\n** Editing $rcfile **\n\n" if $test;
+    open(IN,$rcfile)  || die "Can't read \"$rcfile\"";
+    open(OUT,">$tmp") || die "Can't write \"$tmp\"";
+    while(<IN>) {
+	$out=$_;
+	if(/^( *(FILE|PRODUCT)VERSION\s+)/i) {
+	    $out = "$1$version\n";
+
+	} elsif (! /^\s*VALUE/i) {
+
+	} elsif(/^(.*\"Build ID\"[^\"]*)\"/i) {  # VALUE "Build ID","FH16\0"
+            $out = "$1\"$build\\0\"\n";
+
+	} elsif(/^(.*\"Comments\"[^\"]*)\"/i)  { # VALUE "Comments","blah\0"
+            $out = "$1\"$comments\\0\"\n";
+
+	} elsif(/^(.*\"(FILE|PRODUCT)VERSION\"[^\"]*)\"/i)  { # VALUE "FileVersion","7.1 Rev 0\0"
+            $out = "$1\"$pretty\\0\"\n";
+
+	} elsif(/^(.*\"LegalCopyright\".*)[0-9][0-9][0-9][0-9]\\0\"/i) {
+            $out = "$1$year\\0\"\n";
+	}
+	print OUT $out;
+	print "Old: ${_}New: $out\n" if($test && $out ne $_);
+    }
+    close(OUT);
+    close(IN);
+
+    system("/bin/cp $tmp $rcfile") unless $test;
+}
+unlink($tmp);
