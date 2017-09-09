@@ -1,0 +1,3282 @@
+# Automatically Generated File -- Please Do Not Edit
+
+index: 15
+
+family file syntax version: 10
+
+family: Integrity
+directory name: integrity-3.7b0
+splash screen: integrity-setup.bmp
+guid: 6EFADBB0-1B39-437e-BD35-6E52C3D3F79C
+  bundle: integrity-reasoner-development
+    id: 1
+    version: 3.7r0
+      component: G2 JavaLink
+        index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: jvl
+            sourcedir: jvl-12r6
+            destdir: javalink
+            on all but:  nt
+          part: jvl-intelnt
+            sourcedir:  jvl-12r6 components
+            destdir: javalink
+            only on:  nt
+            postinstall code: replace_rootdir("javalink"^"bin", "envvars.bat");
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: G2 JavaLink
+                application display name: Download Interfaces
+                application directory: javalink\bin
+                target name: Downloadinterfaces.bat
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: G2 JavaLink
+                application display name: Install Properties
+                application directory: javalink\bin
+                target name: InstallProperties.bat
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: G2 JavaLink
+                application display name: G2 Bean Builder
+                application directory: javalink\bin
+                target name: G2BeanBuilder.bat
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: G2 JavaLink
+                application display name: Examples Readme
+                application directory: javalink
+                target name: ExamplesReadme.html
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: G2 JavaLink
+                application display name: Known Problems
+                application directory: javalink
+                target name: KnownProblems.html
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: G2 JavaLink
+                application display name: Readme for G2 JavaLink
+                application directory: javalink
+                target name: readme-javalink.html
+          part: jvl-com-gensym-properties-intelnt
+            sourcedir: /home/development/installers/release-files
+            destdir: javalink/classes
+            filename: .com.gensym.properties
+            only on:  nt
+            postinstall code: FixupPropertiesFile(TARGETDIR^"javalink"^"bin", ".com.gensym.properties", TARGETDIR^"javalink", "classes", ".com.gensym.properties");
+          part: jvl-javadoc
+            sourcedir: jvl-javadoc-12r6
+            destdir: doc/javalink
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: G2 JavaLink
+                application display name: API Documentation
+                application directory: doc\javalink\docs\api
+                target name: index.html
+      component: Integrity Client
+        index: 2
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-client-intelnt
+            sourcedir: opex-client-37r0-B03E12
+            destdir: client
+            only on:  nt
+            postinstall code: integrityPostInstall("Integrity");
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                application display name: Integrity Client
+                application directory: client\bin
+                target name: integrity.bat
+          part: integrity-client-sparcsol
+            sourcedir: opex-client-37r0-B03E12
+            destdir: client
+            only on:  sparcsol
+      component: Ping Manager
+        index: 3
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: ping-manager
+            sourcedir: pingmgr-37r0-B03E12
+            destdir: bin
+            only on:  nt sparcsol hpux
+      component: Remote OS Agent
+        index: 4
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: remote-os-agent
+            sourcedir: rosa-37r0-B03E12
+            destdir: remote-os
+            only on:  nt sparcsol
+      component: Java Generic SNMP Bridge
+        index: 5
+        only on:  nt sparcsol
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: java-snmp
+            sourcedir: g2snmpgn-37r0-B03E12
+            destdir: jsnmp
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                application display name: SNMP Trap Receiver
+                application directory: jsnmp\bin
+                target name: receiver.bat
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                application display name: SNMP Set Requests
+                application directory: jsnmp\bin
+                target name: requests.bat
+      component: G2 SNMP HPOV Bridge
+        index: 6
+        only on:  sparcsol hpux
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: g2-snmp-hpov-bridge
+            sourcedir: g2snmpov-37r0-B03E12
+            destdir: g2snmpov
+            only on:  hpux sparcsol
+      component: g2-snmp-netview
+        index: 7
+        only on:  aix
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: g2-snmp-netview
+            sourcedir: g2snmpnv-37r0-B03E12
+            destdir: g2snmpnv
+            only on:  aix
+      component: Integrity Documentation
+        index: 8
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-doc
+            sourcedir: opexdoc-37r0-B03E12
+            destdir: doc/integrity
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Integrity
+                application display name: Integrity User's Guide
+                application directory: doc/integrity
+                target name: IntUsersGuide.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Integrity
+                application display name: Integrity Reference Manual
+                application directory: doc/integrity
+                target name: IntRefManual.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Integrity
+                application display name: Integrity Utilities Guide
+                application directory: doc/integrity
+                target name: IntUtilGuide.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Integrity
+                application display name: Integrity Socket Manager User's Guide
+                application directory: doc/integrity
+                target name: IntJSockManGuide.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Integrity
+                application display name: Integrity G2-SNMP User's Guide
+                application directory: doc/integrity
+                target name: IntSNMPUsersGuide.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Integrity
+                application display name: Integrity Java G2-SNMP User's Guide
+                application directory: doc/integrity
+                target name: IntJSNMPUsersGuide.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Integrity
+                application display name: Integrity 3.7b0 Release Notes
+                application directory: doc/integrity
+                target name: IntRelNotes.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Integrity
+                application display name: Integrity Demo Guide
+                application directory: doc/integrity
+                target name: IntDemoGuide.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Integrity
+                application display name: Integrity DXI3DB Primer
+                application directory: doc/integrity
+                target name: DXI3DB-Primer.pdf
+      component: Socket Manager
+        index: 9
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: socket-manager
+            sourcedir: sockman-37r0-B03E12
+            destdir: sockman
+            only on:  nt sparcsol
+      component: MIB Parser
+        index: 10
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-mib-parser
+            sourcedir: g2mibparser-37r0-B03E12
+            destdir: g2mibparser
+            only on:  nt sparcsol
+      component: G2i Modules
+        index: 11
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-g2i-modules
+            sourcedir:  g2i-10r0-B03E12 kbs
+            destdir: g2i/kbs
+            filename: gvad.kb
+            filename: gtad.kb
+            filename: gndo.kb
+            filename: gtrap.kb
+            filename: gmib.kb
+            filename: gerr.kb
+            filename: grtl.kb
+            filename: cdg.kb
+            filename: cdggrlb.kb
+            filename: gens.kb
+            filename: glf.kb
+            filename: gqs.kb
+            filename: gqsui.kb
+            filename: gqsviews.kb
+            filename: grlb.kb
+            filename: resources-english.txt
+            filename: config.txt
+      component: G2 Full Documentation (PDF)
+        index: 12
+        typical: false
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: g2doc-g2tutorials-pdf
+            sourcedir:  g2doc-70r0 g2tutorials
+            destdir: doc/g2/g2tutorials
+            filename: g2tutorials.pdf
+          part: g2doc-g2refman-pdf
+            sourcedir:  g2doc-70r0 g2refman
+            destdir: doc/g2/g2refman
+            filename: g2refman.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                application display name: G2 Bundle Release Notes
+                application directory: doc
+                target name: g2relnotes.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: G2
+                application display name: G2 Reference Manual
+                application directory: doc\g2\g2refman
+                target name: g2refman.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: G2
+                application display name: G2 Language Reference Card
+                application directory: doc\g2\g2langrefcard
+                target name: g2langrefcard.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: G2
+                application display name: G2 System Procedures Reference Manual
+                application directory: doc\g2\g2sysprocs
+                target name: g2sysprocs.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: G2
+                application display name: Getting Started with G2 Tutorials
+                application directory: doc\g2\g2tutorials
+                target name: g2tutorials.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: G2
+                application display name: G2 Class Reference Manual
+                application directory: doc\g2\g2classref
+                target name: g2classref.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: G2
+                application display name: G2 Developer's Guide
+                application directory: doc\g2\g2devguide
+                target name: g2devguide.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 Dynamic Displays User's Guide
+                application directory: doc\utilities\gdd
+                target name: gdd.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 Developer's Interface User's Guide
+                application directory: doc\utilities\gdi
+                target name: gdi.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 Foundation Resources User's Guide
+                application directory: doc\utilities\gfr
+                target name: gfr.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 Menu System User's Guide
+                application directory: doc\utilities\gms
+                target name: gms.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 Online Documentation Developer's Guide
+                application directory: doc\utilities\golddev
+                target name: golddev.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 Online Documentation User's Guide
+                application directory: doc\utilities\goldui
+                target name: goldui.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 GUIDE UIL Procedures Reference Manual
+                application directory: doc\utilities\guideprocref
+                target name: guideprocref.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 GUIDE User's Guide
+                application directory: doc\utilities\guideuserguide
+                target name: guideuserguide.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 XL Spreadsheet User's Guide
+                application directory: doc\utilities\gxl
+                target name: gxl.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: GDA
+                application display name: GDA User's Guide
+                application directory: doc\gda\gdaugrm
+                target name: gdaug.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: GDA
+                application display name: GDA Reference Manual
+                application directory: doc\gda\gdaugrm
+                target name: gdarefman.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: GDA
+                application display name: GDA API Reference Manual
+                application directory: doc\gda\gdaapi
+                target name: gdaapi.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 ProTools User's Guide
+                application directory: doc\utilities\g2protools
+                target name: g2protools.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: G2
+                application display name: G2 Gateway Bridge Developer's Guide
+                application directory: doc\g2\g2gateway
+                target name: g2gateway.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2 Database Bridge User's Guide
+                application directory: doc\bridges\db
+                target name: g2databasebridge.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2 OPCLink User's Guide
+                application directory: doc\bridges\opclink
+                target name: g2opclink.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2 CORBALink User's Guide
+                application directory: doc\bridges\corbalink
+                target name: g2corbalink.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2-ODBC Bridge Release Notes
+                application directory: doc\bridges\odbc
+                target name: g2odbcbridge.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2-Oracle Bridge Release Notes
+                application directory: doc\bridges\oracle
+                target name: g2oraclebridge.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2-Sybase Bridge Release Notes
+                application directory: doc\bridges\sybase
+                target name: g2sybasebridge.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2-PI Bridge User's Guide
+                application directory: doc\bridges\pi
+                target name: g2pibridge.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: G2
+                application display name: Telewindows User's Guide
+                application directory: doc\g2\telewindows
+                target name: telewindows.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: G2 JavaLink
+                application display name: G2 DownloadInterfaces User's Guide
+                application directory: doc\javalink\docs\guides\g2downloadinterfaces
+                target name: g2downloadinterfaces.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: G2 JavaLink
+                application display name: G2 Bean Builder User's Guide
+                application directory: doc\javalink\docs\guides\g2beanbuilder
+                target name: g2beanbuilder.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: G2 JavaLink
+                application display name: G2 JavaLink User's Guide
+                application directory: doc\javalink\docs\guides\g2javalink
+                target name: g2javalink.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2 ActiveXLink User's Guide
+                application directory: doc\bridges\activexlink
+                target name: g2activexlink.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2 WebLink User's Guide
+                application directory: doc\bridges\weblink
+                target name: g2weblink.pdf
+          part: g2doc-g2gateway-pdf
+            sourcedir:  g2doc-70r0 g2gateway
+            destdir: doc/g2/g2gateway
+            filename: g2gateway.pdf
+          part: g2doc-g2classref-pdf
+            sourcedir:  g2doc-70r0 g2classref
+            destdir: doc/g2/g2classref
+            filename: g2classref.pdf
+          part: g2doc-telewindows-pdf
+            sourcedir:  g2doc-70r0 telewindows
+            destdir: doc/g2/telewindows
+            filename: telewindows.pdf
+          part: g2doc-g2sysprocs-pdf
+            sourcedir:  g2doc-70r0 g2sysprocs
+            destdir: doc/g2/g2sysprocs
+            filename: g2sysprocs.pdf
+          part: g2doc-g2langrefcard-pdf
+            sourcedir:  g2doc-70r0 g2langrefcard
+            destdir: doc/g2/g2langrefcard
+            filename: g2langrefcard.pdf
+          part: g2doc-g2devguide-pdf
+            sourcedir:  g2doc-70r0 g2devguide
+            destdir: doc/g2/g2devguide
+            filename: g2devguide.pdf
+          part: g2utldoc-gdi-pdf
+            sourcedir:  g2utldoc-70r0 gdi
+            destdir: doc/utilities/gdi
+            filename: gdi.pdf
+          part: g2utldoc-gms-pdf
+            sourcedir:  g2utldoc-70r0 gms
+            destdir: doc/utilities/gms
+            filename: gms.pdf
+          part: g2utldoc-goldui-pdf
+            sourcedir:  g2utldoc-70r0 goldui
+            destdir: doc/utilities/goldui
+            filename: goldui.pdf
+          part: g2utldoc-guideuserguide-pdf
+            sourcedir:  g2utldoc-70r0 guideuserguide
+            destdir: doc/utilities/guideuserguide
+            filename: guideuserguide.pdf
+          part: g2utldoc-gdd-pdf
+            sourcedir:  g2utldoc-70r0 gdd
+            destdir: doc/utilities/gdd
+            filename: gdd.pdf
+          part: g2utldoc-gfr-pdf
+            sourcedir:  g2utldoc-70r0 gfr
+            destdir: doc/utilities/gfr
+            filename: gfr.pdf
+          part: g2utldoc-golddev-pdf
+            sourcedir:  g2utldoc-70r0 golddev
+            destdir: doc/utilities/golddev
+            filename: golddev.pdf
+          part: g2utldoc-guideprocref-pdf
+            sourcedir:  g2utldoc-70r0 guideprocref
+            destdir: doc/utilities/guideprocref
+            filename: guideprocref.pdf
+          part: g2utldoc-gxl-pdf
+            sourcedir:  g2utldoc-70r0 gxl
+            destdir: doc/utilities/gxl
+            filename: gxl.pdf
+          part: jvldoc-javalink-pdf
+            sourcedir:  jvldoc-12r5-FC07 docs/guides/g2javalink
+            destdir: doc/javalink/docs/guides/g2javalink
+            filename: g2javalink.pdf
+          part: jvldoc-di-pdf
+            sourcedir:  jvldoc-12r5-FC07 docs/guides/g2downloadinterfaces
+            destdir: doc/javalink/docs/guides/g2downloadinterfaces
+            filename: g2downloadinterfaces.pdf
+          part: jvldoc-bb-pdf
+            sourcedir:  jvldoc-12r5-FC07 docs/guides/g2beanbuilder
+            destdir: doc/javalink/docs/guides/g2beanbuilder
+            filename: g2beanbuilder.pdf
+          part: axldoc
+            sourcedir:  axldoc-10r5-FC07 activexlink
+            destdir: doc/bridges/activexlink
+            filename: g2activexlink.pdf
+            only on:  nt
+          part: corbalinkdoc
+            sourcedir:  corbalinkdoc-10r2-FC07 corbalink
+            destdir: doc/bridges/corbalink
+            filename: g2corbalink.pdf
+          part: g2classicrn
+            sourcedir: g2classicrn-70r1
+            destdir: doc
+            filename: g2relnotes.pdf
+          part: g2oradoc
+            sourcedir:  g2oradoc-60r9-FC07 oracle
+            destdir: doc/bridges/oracle
+            filename: g2oraclebridge.pdf
+          part: g2sybdoc
+            sourcedir:  g2sybdoc-60r9-FC07 sybase
+            destdir: doc/bridges/sybase
+            filename: g2sybasebridge.pdf
+          part: opclinkdoc
+            sourcedir:  opclinkdoc-21r0-FC07 opclink
+            destdir: doc/bridges/opclink
+            filename: g2opclink.pdf
+          part: g2pidoc
+            sourcedir:  g2pidoc-50r0 pi
+            destdir: doc/bridges/pi
+            filename: g2pibridge.pdf
+          part: g2odbcdoc
+            sourcedir:  g2odbcdoc-60r9-FC07 odbc
+            destdir: doc/bridges/odbc
+            filename: g2odbcbridge.pdf
+          part: g2dbdoc
+            sourcedir:  g2dbdoc-60r9-FC07 db
+            destdir: doc/bridges/db
+            filename: g2databasebridge.pdf
+          part: protoolsdoc
+            sourcedir:  protoolsdoc-70r0-FD24 g2protools
+            destdir: doc/utilities/g2protools
+            filename: g2protools.pdf
+          part: weblinkdoc
+            sourcedir:  weblinkdoc-10r5-FC07 weblink
+            destdir: doc/bridges/weblink
+            filename: g2weblink.pdf
+          part: gdadoc-api-pdf
+            sourcedir:  gdadoc-42r0-FD24 gda/gdaapi
+            destdir: doc/gda/gdaapi
+            filename: gdaapi.pdf
+          part: gdadoc-ug-pdf
+            sourcedir:  gdadoc-42r0-FD24 gda/gdaugrm
+            destdir: doc/gda/gdaugrm
+            filename: gdarefman.pdf
+            filename: gdaug.pdf
+      component: G2 Full Documentation (HTML/Gold)
+        index: 13
+        typical: false
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: g2doc-g2refman-html
+            sourcedir:  g2doc-70r0 g2refman/html
+            destdir: doc/g2/g2refman/html
+          part: g2doc-g2tutorials-html
+            sourcedir:  g2doc-70r0 g2tutorials/html
+            destdir: doc/g2/g2tutorials/html
+          part: g2doc-g2gateway-html
+            sourcedir:  g2doc-70r0 g2gateway/html
+            destdir: doc/g2/g2gateway/html
+          part: g2doc-g2classref-html
+            sourcedir:  g2doc-70r0 g2classref/html
+            destdir: doc/g2/g2classref/html
+          part: g2doc-telewindows-html
+            sourcedir:  g2doc-70r0 telewindows/html
+            destdir: doc/g2/telewindows/html
+          part: g2doc-g2sysprocs-html
+            sourcedir:  g2doc-70r0 g2sysprocs/html
+            destdir: doc/g2/g2sysprocs/html
+          part: g2doc-g2langrefcard-html
+            sourcedir:  g2doc-70r0 g2langrefcard/html
+            destdir: doc/g2/g2langrefcard/html
+          part: g2doc-g2devguide-html
+            sourcedir:  g2doc-70r0 g2devguide/html
+            destdir: doc/g2/g2devguide/html
+          part: g2utldoc-gdi-html
+            sourcedir:  g2utldoc-70r0 gdi/html
+            destdir: doc/utilities/gdi/html
+          part: g2utldoc-gms-html
+            sourcedir:  g2utldoc-70r0 gms/html
+            destdir: doc/utilities/gms/html
+          part: g2utldoc-goldui-html
+            sourcedir:  g2utldoc-70r0 goldui/html
+            destdir: doc/utilities/goldui/html
+          part: g2utldoc-guideuserguide-html
+            sourcedir:  g2utldoc-70r0 guideuserguide/html
+            destdir: doc/utilities/guideuserguide/html
+          part: g2utldoc-gdd-html
+            sourcedir:  g2utldoc-70r0 gdd/html
+            destdir: doc/utilities/gdd/html
+          part: g2utldoc-gfr-html
+            sourcedir:  g2utldoc-70r0 gfr/html
+            destdir: doc/utilities/gfr/html
+          part: g2utldoc-golddev-html
+            sourcedir:  g2utldoc-70r0 golddev/html
+            destdir: doc/utilities/golddev/html
+          part: g2utldoc-guideprocref-html
+            sourcedir:  g2utldoc-70r0 guideprocref/html
+            destdir: doc/utilities/guideprocref/html
+          part: g2utldoc-gxl-html
+            sourcedir:  g2utldoc-70r0 gxl/html
+            destdir: doc/utilities/gxl/html
+          part: jvldoc-javalink-html
+            sourcedir:  jvldoc-12r5-FC07 docs/guides/g2javalink/html
+            destdir: doc/javalink/docs/guides/g2javalink/html
+          part: jvldoc-di-html
+            sourcedir:  jvldoc-12r5-FC07 docs/guides/g2downloadinterfaces/html
+            destdir: doc/javalink/docs/guides/g2downloadinterfaces/html
+          part: jvldoc-bb-html
+            sourcedir:  jvldoc-12r5-FC07 docs/guides/g2beanbuilder/html
+            destdir: doc/javalink/docs/guides/g2beanbuilder/html
+          part: axldoc-html
+            sourcedir:  axldoc-10r5-FC07 activexlink/html
+            destdir: doc/bridges/activexlink/html
+            only on:  nt
+          part: corbalinkdoc-html
+            sourcedir:  corbalinkdoc-10r2-FC07 corbalink/html
+            destdir: doc/bridges/corbalink/html
+          part: g2oradoc-html
+            sourcedir:  g2oradoc-60r9-FC07 oracle/html
+            destdir: doc/bridges/oracle/html
+          part: g2sybdoc-html
+            sourcedir:  g2sybdoc-60r9-FC07 sybase/html
+            destdir: doc/bridges/sybase/html
+          part: opclinkdoc-html
+            sourcedir:  opclinkdoc-21r0-FC07 opclink/html
+            destdir: doc/bridges/opclink/html
+          part: g2pidoc-html
+            sourcedir:  g2pidoc-50r0 pi/html
+            destdir: doc/bridges/pi/html
+          part: g2odbcdoc-html
+            sourcedir:  g2odbcdoc-60r9-FC07 odbc/html
+            destdir: doc/bridges/odbc/html
+          part: g2dbdoc-html
+            sourcedir:  g2dbdoc-60r9-FC07 db/html
+            destdir: doc/bridges/db/html
+          part: protoolsdoc-html
+            sourcedir:  protoolsdoc-70r0-FD24 g2protools/html
+            destdir: doc/utilities/g2protools/html
+          part: weblinkdoc-html
+            sourcedir:  weblinkdoc-10r5-FC07 weblink/html
+            destdir: doc/bridges/weblink/html
+          part: gdadoc-api-html
+            sourcedir:  gdadoc-42r0-FD24 gda/gdaapi/html
+            destdir: doc/gda/gdaapi/html
+          part: gdadoc-ug-html
+            sourcedir:  gdadoc-42r0-FD24 gda/gdaugrm/html
+            destdir: doc/gda/gdaugrm/html
+      component: G2 Core Documentation (Windows Help)
+        index: 14
+        only on:  nt
+        typical: true
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: doc-chm
+            sourcedir: g2winhelp-70r0
+            destdir: g2
+            filename: G2BundleReleaseNotesHelp.chm
+            filename: G2ClassReferenceHelp.chm
+            filename: G2Core.html
+            filename: G2DevelopersGuideHelp.chm
+            filename: G2LanguageReferenceHelp.chm
+            filename: G2ProToolsHelp.chm
+            filename: G2ReferenceManualHelp.chm
+            filename: G2SystemProceduresHelp.chm
+            filename: G2Utilities.html
+            filename: GDDHelp.chm
+            filename: GDIHelp.chm
+            filename: GFRHelp.chm
+            filename: GMSHelp.chm
+            filename: GOLDDevelopersGuideHelp.chm
+            filename: GOLDHelp.chm
+            filename: GUIDEHelp.chm
+            filename: GUIDEUILHelp.chm
+            filename: GXLHelp.chm
+            filename: GettingStarted.html
+            filename: GettingStartedWithG2Help.chm
+            filename: Master.CHM
+            filename: Master.html
+            filename: Master2.html
+            filename: Master3.html
+            filename: TelewindowsHelp.chm
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                application display name: Windows Help G2 Documentation
+                application directory: g2
+                target name: Master.CHM
+      component: G2 ProTools
+        index: 15
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: protools
+            sourcedir: protools-70r1
+            destdir: protools/kbs
+            filename: protools.kb
+            filename: ptroot.kb
+          part: profiler
+            sourcedir: protools-70r1
+            destdir: g2/kbs/utils
+            filename: profiler.kb
+            filename: profroot.kb
+      component: G2 ActiveXLink
+        index: 16
+        only on:  nt
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: axl
+            sourcedir: axl-10r6
+            destdir: activexlink
+            filename: gsi.dll
+            filename: ReadMe.htm
+            filename: g2com.kb
+            filename: runme.bat
+            filename: regsvr32.exe
+            only on:  nt
+          part: axl-g2com-dll
+            sourcedir: axl-10r6
+            destdir: activexlink
+            filename: G2Com.dll
+            only on:  nt
+            register: yes
+          part: axl-demos
+            sourcedir:  axl-10r6 demos
+            destdir: activexlink/demos
+            only on:  nt
+      component: G2 WebLink
+        index: 17
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: gw
+            sourcedir: gw-10r5
+            destdir: gw
+          part: gsi-gw-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: gw
+            filename: gw-gsi.ok
+            new filename: gsi.ok
+            obfuscate: true
+          part: run-gw-template-batfile
+            sourcedir: /home/development/installers/release-files
+            destdir: gw
+            filename: run-gw.bat
+            only on:  nt
+            postinstall code: replace_rootdir("gw", "run-gw.bat");
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                application display name: G2 WebLink
+                application directory: gw
+                target name: run-gw.bat
+          part: gsi-gw-blank-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: gw
+            filename: gsi.ok
+            only on:  nt
+      component: Telewindows2 Toolkit Runtime
+        index: 18
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: tw2-jars-only-unix
+            sourcedir:  tw2-12r6 classes
+            destdir: tw2/classes
+            filename: antlr.jar
+            filename: ax2jbeans.jar
+            filename: coreui.jar
+            filename: sequoia.jar
+            on all but:  nt
+          part: tw2-jars-only-intelnt
+            sourcedir:  tw2-12r6 components/classes
+            destdir: tw2/classes
+            filename: antlr.jar
+            filename: ax2jbeans.jar
+            filename: coreui.jar
+            filename: sequoia.jar
+            only on:  nt
+      component: Telewindows
+        index: 19
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: TW Windows Executable
+            sourcedir: tw-70r1
+            destdir: g2
+            filename: tw.exe
+            filename: nptwplug.dll
+            filename: tw.map
+            only on:  nt
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                application display name: Telewindows
+                application directory: g2
+                target name: tw.exe
+          part: TW Unix Executable
+            sourcedir: tw-70r1
+            destdir: g2
+            filename: tw
+            filename: nptwplug.so
+            on all but:  nt
+          part: twax
+            sourcedir: twax-70r1
+            destdir: g2
+            filename: TwControl.cab
+            filename: unregisterTwControl.bat
+            filename: TwControl.ocx
+            filename: install.html
+            filename: registerTwControl.bat
+            only on:  nt
+          part: twax-examples
+            sourcedir:  twax-70r1 examples
+            destdir: g2/examples
+            only on:  nt
+          part: fonts
+            sourcedir: fonts-70r1
+            destdir: g2/fonts
+      component: G2 (and utilities)
+        index: 20
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: G2 Windows Executable
+            sourcedir: g2-70r1
+            destdir: g2
+            filename: g2.exe
+            filename: g2passwd.exe
+            filename: g2.map
+            only on:  nt
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                application display name: G2
+                application directory: g2
+                target name: g2.exe
+                parameters: -module-search-path ..\g2i\kbs kbs\utils ..\integrity\kbs ..\integrity\demos ..\odbc ..\opclink\kbs ..\protools\kbs ..\gw ..\corbalink\kbs ..\javalink\kbs ..\tw2\kbs ..\gda ..\activexlink ..\oracle ..\sybase -ok ..\g2\g2.ok
+          part: G2 Unix Executable
+            sourcedir: g2-70r1
+            destdir: g2
+            filename: g2
+            filename: g2passwd
+            on all but:  nt
+          part: Kanji dictionary files
+            sourcedir: g2-70r1
+            destdir: g2
+            filename: index.dic
+            filename: kojin.dic
+            filename: main.dic
+          part: G2 EXT Directory
+            sourcedir:  g2-70r1 ext
+            destdir: g2/ext
+          part: Sample G2 OK file
+            sourcedir: g2-70r1
+            destdir: g2
+            filename: g2.ok
+            only on:  nt
+          part: kbs
+            sourcedir: kbs-70r1
+            destdir: g2/kbs
+          part: fonts
+            sourcedir: fonts-70r1
+            destdir: g2/fonts
+      component: G2 Gateway (GSI)
+        index: 21
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: gsi
+            sourcedir: gsi-70r1
+            destdir: gsi
+      component: G2 Readme
+        index: 22
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: g2-readme
+            sourcedir: g2pkgreadme-70r1
+            filename: readme-g2.html
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                application display name: Readme for G2 Bundle
+                application directory: 
+                target name: readme-g2.html
+      component: G2 Diagnostic Assistant (GDA)
+        index: 23
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: gda
+            sourcedir: gda-42r0-FB24
+            destdir: gda
+      component: Java Runtime Environment
+        index: 24
+        only on:  nt
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: jre
+            sourcedir: jre-13r1_01
+            destdir: jre
+            only on:  nt
+      component: Integrity KBs
+        index: 25
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-kbs
+            sourcedir: intereas-37r0-B03E12
+            destdir: integrity
+            postinstall code: replace_rootdir("integrity"^"bin", "StartServer.bat");
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                application display name: Start Integrity
+                application directory: integrity\bin
+                target name: StartServer.bat
+                icon file: Integrity.ico
+                icon index: 0
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Integrity
+                application display name: SymCure Users Guide
+                application directory: doc/integrity
+                target name: SymCureUsersGuide.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Examples
+                subsubfolder name: Integrity
+                application display name: Doc Tutorial
+                application directory: integrity\bin
+                target name: StartServer.bat
+                parameters: ..\demos\doc_demo.kb
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Examples
+                subsubfolder name: Integrity
+                application display name: Message Parsing Engine Tutorial
+                application directory: integrity\bin
+                target name: StartServer.bat
+                parameters: ..\demos\mpe-demo.kb
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Examples
+                subsubfolder name: Integrity
+                application display name: OPerator ACtions Tutorial
+                application directory: integrity\bin
+                target name: StartServer.bat
+                parameters: ..\demos\opacdemo.kb
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Examples
+                subsubfolder name: Integrity
+                application display name: Integrity Tutorial
+                application directory: integrity\bin
+                target name: StartServer.bat
+                parameters: ..\demos\opx_demo.kb
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Examples
+                subsubfolder name: Integrity
+                application display name: OXS Java Tutorial
+                application directory: integrity\bin
+                target name: StartServer.bat
+                parameters: ..\demos\oxsjdemo.kb
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Examples
+                subsubfolder name: Integrity
+                application display name: Socket Manager Tutorial
+                application directory: integrity\bin
+                target name: StartServer.bat
+                parameters: ..\demos\sockdemo.kb
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Examples
+                subsubfolder name: Integrity
+                application display name: SymCure Service Level Tutorial
+                application directory: integrity\bin
+                target name: StartServer.bat
+                parameters: ..\demos\svcmdemo.kb
+      component: G2 CORBALink
+        index: 26
+        on all but:  alphaosf
+        optional: true
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: corbalink
+            sourcedir: corbalink-10r2-FF02
+            destdir: corbalink
+            on all but:  alphaosf linux
+      component: G2 OPCLink Bridge
+        index: 27
+        only on:  nt
+        optional: true
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: opclink
+            sourcedir: opclink-21r0-FC06
+            destdir: opclink
+          part: gsi-opclink-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: opclink
+            filename: opclink-gsi.ok
+            new filename: gsi.ok
+            obfuscate: true
+          part: run-g2opc-template-batfile
+            sourcedir: /home/development/installers/release-files
+            destdir: opclink
+            filename: run-G2Opc.bat
+            only on:  nt
+            postinstall code: replace_rootdir("opclink", "run-G2Opc.bat");
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Bridges
+                application display name: G2 OPCLink Bridge
+                application directory: opclink
+                target name: run-G2Opc.bat
+          part: gsi-opclink-blank-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: opclink
+            filename: gsi.ok
+            only on:  nt
+      component: G2 Oracle Bridge
+        index: 28
+        optional: true
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: oraclebridge
+            sourcedir: g2oracle-60r9-FB27
+            destdir: oracle
+          part: gsi-oracle-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: oracle
+            filename: oracle-gsi.ok
+            new filename: gsi.ok
+            obfuscate: true
+          part: run-g2-ora7-template-batfile
+            sourcedir: /home/development/installers/release-files
+            destdir: oracle
+            filename: run-g2-ora7.bat
+            only on:  nt
+            postinstall code: replace_rootdir("oracle", "run-g2-ora7.bat");
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Bridges
+                application display name: G2 Oracle 7 Bridge
+                application directory: oracle
+                target name: run-g2-ora7.bat
+          part: run-g2-ora80-template-batfile
+            sourcedir: /home/development/installers/release-files
+            destdir: oracle
+            filename: run-g2-ora80.bat
+            only on:  nt
+            postinstall code: replace_rootdir("oracle", "run-g2-ora80.bat");
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Bridges
+                application display name: G2 Oracle 8.0 Bridge
+                application directory: oracle
+                target name: run-g2-ora80.bat
+          part: run-g2-ora81-template-batfile
+            sourcedir: /home/development/installers/release-files
+            destdir: oracle
+            filename: run-g2-ora81.bat
+            only on:  nt
+            postinstall code: replace_rootdir("oracle", "run-g2-ora81.bat");
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Bridges
+                application display name: G2 Oracle 8.1 Bridge
+                application directory: oracle
+                target name: run-g2-ora81.bat
+          part: run-g2-ora9i-template-batfile
+            sourcedir: /home/development/installers/release-files
+            destdir: oracle
+            filename: run-g2-ora9i.bat
+            only on:  nt
+            postinstall code: replace_rootdir("oracle", "run-g2-ora9i.bat");
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Bridges
+                application display name: G2 Oracle 9i Bridge
+                application directory: oracle
+                target name: run-g2-ora9i.bat
+          part: gsi-oracle-blank-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: oracle
+            filename: gsi.ok
+            only on:  nt
+      component: G2 Sybase Bridge
+        index: 29
+        on all but:  linux
+        optional: true
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: sybasebridge
+            sourcedir: g2sybase-60r9-FB27
+            destdir: sybase
+            on all but:  linux
+          part: gsi-sybase-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: sybase
+            filename: sybase-gsi.ok
+            new filename: gsi.ok
+            obfuscate: true
+          part: run-g2-sybase-template-batfile
+            sourcedir: /home/development/installers/release-files
+            destdir: sybase
+            filename: run-g2-sybase.bat
+            only on:  nt
+            postinstall code: replace_rootdir("sybase", "run-g2-sybase.bat");
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Bridges
+                application display name: G2 Sybase Bridge
+                application directory: sybase
+                target name: run-g2-sybase.bat
+          part: gsi-sybase-blank-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: sybase
+            filename: gsi.ok
+            only on:  nt
+      component: G2 ODBC Bridge
+        index: 30
+        only on:  nt
+        optional: true
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: odbcbridge
+            sourcedir: g2odbc-60r9-FB27
+            destdir: odbc
+            only on:  nt
+          part: gsi-odbc-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: odbc
+            filename: odbc-gsi.ok
+            new filename: gsi.ok
+            obfuscate: true
+          part: run-g2-odbc-template-batfile
+            sourcedir: /home/development/installers/release-files
+            destdir: odbc
+            filename: run-g2-odbc.bat
+            only on:  nt
+            postinstall code: replace_rootdir("odbc", "run-g2-odbc.bat");
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Bridges
+                application display name: G2 ODBC Bridge
+                application directory: odbc
+                target name: run-g2-odbc.bat
+          part: gsi-odbc-blank-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: odbc
+            filename: gsi.ok
+            only on:  nt
+      component: GService Startup Service
+        index: 31
+        only on:  nt
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: gservice
+            sourcedir: gservice-70r1
+            destdir: g2
+            filename: gservice.exe
+            only on:  nt
+      component: 1-Client Integrity Development OK
+        index: 32
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-1-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-1-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 2-Client Integrity Development OK
+        index: 33
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-2-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-2-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 3-Client Integrity Development OK
+        index: 34
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-3-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-3-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 4-Client Integrity Development OK
+        index: 35
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-4-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-4-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 5-Client Integrity Development OK
+        index: 36
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-5-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-5-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 6-Client Integrity Development OK
+        index: 37
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-6-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-6-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 7-Client Integrity Development OK
+        index: 38
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-7-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-7-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 8-Client Integrity Development OK
+        index: 39
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-8-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-8-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 9-Client Integrity Development OK
+        index: 40
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-9-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-9-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 10-Client Integrity Development OK
+        index: 41
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-10-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-10-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 12-Client Integrity Development OK
+        index: 42
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-12-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-12-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 16-Client Integrity Development OK
+        index: 43
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-16-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-16-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 20-Client Integrity Development OK
+        index: 44
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-20-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-20-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 24-Client Integrity Development OK
+        index: 45
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-24-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-24-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 28-Client Integrity Development OK
+        index: 46
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-28-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-28-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 32-Client Integrity Development OK
+        index: 47
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-32-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-32-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: dec25-2002 1-Client Integrity Development OK
+        index: 48
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-1-dec25-2002-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-1-v5-dec25-2002.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: jan25-2003 1-Client Integrity Development OK
+        index: 49
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-1-jan25-2003-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-1-v5-jan25-2003.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: feb25-2003 1-Client Integrity Development OK
+        index: 50
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-1-feb25-2003-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-1-v5-feb25-2003.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: mar25-2003 1-Client Integrity Development OK
+        index: 51
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-1-mar25-2003-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-1-v5-mar25-2003.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: apr25-2003 1-Client Integrity Development OK
+        index: 52
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-1-apr25-2003-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-1-v5-apr25-2003.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: may25-2003 1-Client Integrity Development OK
+        index: 53
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-1-may25-2003-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-1-v5-may25-2003.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: jun25-2003 1-Client Integrity Development OK
+        index: 54
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-1-jun25-2003-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-1-v5-jun25-2003.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: jul25-2003 1-Client Integrity Development OK
+        index: 55
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-1-jul25-2003-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-1-v5-jul25-2003.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: aug25-2003 1-Client Integrity Development OK
+        index: 56
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-1-aug25-2003-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-1-v5-aug25-2003.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: sep25-2003 1-Client Integrity Development OK
+        index: 57
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-1-sep25-2003-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-1-v5-sep25-2003.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: oct25-2003 1-Client Integrity Development OK
+        index: 58
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-1-oct25-2003-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-1-v5-oct25-2003.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: nov25-2003 1-Client Integrity Development OK
+        index: 59
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-1-nov25-2003-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-1-v5-nov25-2003.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: dec25-2003 1-Client Integrity Development OK
+        index: 60
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-1-dec25-2003-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-1-v5-dec25-2003.ok
+            new filename: g2.ok
+            obfuscate: true
+  bundle: integrity-reasoner-deployment
+    id: 2
+    version: 3.7r0
+      component: G2 JavaLink
+        index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: jvl
+            sourcedir: jvl-12r6
+            destdir: javalink
+            on all but:  nt
+          part: jvl-intelnt
+            sourcedir:  jvl-12r6 components
+            destdir: javalink
+            only on:  nt
+            postinstall code: replace_rootdir("javalink"^"bin", "envvars.bat");
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: G2 JavaLink
+                application display name: Download Interfaces
+                application directory: javalink\bin
+                target name: Downloadinterfaces.bat
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: G2 JavaLink
+                application display name: Install Properties
+                application directory: javalink\bin
+                target name: InstallProperties.bat
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: G2 JavaLink
+                application display name: G2 Bean Builder
+                application directory: javalink\bin
+                target name: G2BeanBuilder.bat
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: G2 JavaLink
+                application display name: Examples Readme
+                application directory: javalink
+                target name: ExamplesReadme.html
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: G2 JavaLink
+                application display name: Known Problems
+                application directory: javalink
+                target name: KnownProblems.html
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: G2 JavaLink
+                application display name: Readme for G2 JavaLink
+                application directory: javalink
+                target name: readme-javalink.html
+          part: jvl-com-gensym-properties-intelnt
+            sourcedir: /home/development/installers/release-files
+            destdir: javalink/classes
+            filename: .com.gensym.properties
+            only on:  nt
+            postinstall code: FixupPropertiesFile(TARGETDIR^"javalink"^"bin", ".com.gensym.properties", TARGETDIR^"javalink", "classes", ".com.gensym.properties");
+          part: jvl-javadoc
+            sourcedir: jvl-javadoc-12r6
+            destdir: doc/javalink
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: G2 JavaLink
+                application display name: API Documentation
+                application directory: doc\javalink\docs\api
+                target name: index.html
+      component: Integrity Client
+        index: 2
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-client-intelnt
+            sourcedir: opex-client-37r0-B03E12
+            destdir: client
+            only on:  nt
+            postinstall code: integrityPostInstall("Integrity");
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                application display name: Integrity Client
+                application directory: client\bin
+                target name: integrity.bat
+          part: integrity-client-sparcsol
+            sourcedir: opex-client-37r0-B03E12
+            destdir: client
+            only on:  sparcsol
+      component: Ping Manager
+        index: 3
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: ping-manager
+            sourcedir: pingmgr-37r0-B03E12
+            destdir: bin
+            only on:  nt sparcsol hpux
+      component: Remote OS Agent
+        index: 4
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: remote-os-agent
+            sourcedir: rosa-37r0-B03E12
+            destdir: remote-os
+            only on:  nt sparcsol
+      component: Java Generic SNMP Bridge
+        index: 5
+        only on:  nt sparcsol
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: java-snmp
+            sourcedir: g2snmpgn-37r0-B03E12
+            destdir: jsnmp
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                application display name: SNMP Trap Receiver
+                application directory: jsnmp\bin
+                target name: receiver.bat
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                application display name: SNMP Set Requests
+                application directory: jsnmp\bin
+                target name: requests.bat
+      component: G2 SNMP HPOV Bridge
+        index: 6
+        only on:  sparcsol hpux
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: g2-snmp-hpov-bridge
+            sourcedir: g2snmpov-37r0-B03E12
+            destdir: g2snmpov
+            only on:  hpux sparcsol
+      component: g2-snmp-netview
+        index: 7
+        only on:  aix
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: g2-snmp-netview
+            sourcedir: g2snmpnv-37r0-B03E12
+            destdir: g2snmpnv
+            only on:  aix
+      component: Integrity Documentation
+        index: 8
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-doc
+            sourcedir: opexdoc-37r0-B03E12
+            destdir: doc/integrity
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Integrity
+                application display name: Integrity User's Guide
+                application directory: doc/integrity
+                target name: IntUsersGuide.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Integrity
+                application display name: Integrity Reference Manual
+                application directory: doc/integrity
+                target name: IntRefManual.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Integrity
+                application display name: Integrity Utilities Guide
+                application directory: doc/integrity
+                target name: IntUtilGuide.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Integrity
+                application display name: Integrity Socket Manager User's Guide
+                application directory: doc/integrity
+                target name: IntJSockManGuide.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Integrity
+                application display name: Integrity G2-SNMP User's Guide
+                application directory: doc/integrity
+                target name: IntSNMPUsersGuide.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Integrity
+                application display name: Integrity Java G2-SNMP User's Guide
+                application directory: doc/integrity
+                target name: IntJSNMPUsersGuide.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Integrity
+                application display name: Integrity 3.7b0 Release Notes
+                application directory: doc/integrity
+                target name: IntRelNotes.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Integrity
+                application display name: Integrity Demo Guide
+                application directory: doc/integrity
+                target name: IntDemoGuide.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Integrity
+                application display name: Integrity DXI3DB Primer
+                application directory: doc/integrity
+                target name: DXI3DB-Primer.pdf
+      component: Socket Manager
+        index: 9
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: socket-manager
+            sourcedir: sockman-37r0-B03E12
+            destdir: sockman
+            only on:  nt sparcsol
+      component: MIB Parser
+        index: 10
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-mib-parser
+            sourcedir: g2mibparser-37r0-B03E12
+            destdir: g2mibparser
+            only on:  nt sparcsol
+      component: G2i Modules
+        index: 11
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-g2i-modules
+            sourcedir:  g2i-10r0-B03E12 kbs
+            destdir: g2i/kbs
+            filename: gvad.kb
+            filename: gtad.kb
+            filename: gndo.kb
+            filename: gtrap.kb
+            filename: gmib.kb
+            filename: gerr.kb
+            filename: grtl.kb
+            filename: cdg.kb
+            filename: cdggrlb.kb
+            filename: gens.kb
+            filename: glf.kb
+            filename: gqs.kb
+            filename: gqsui.kb
+            filename: gqsviews.kb
+            filename: grlb.kb
+            filename: resources-english.txt
+            filename: config.txt
+      component: G2 Full Documentation (PDF)
+        index: 12
+        typical: false
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: g2doc-g2tutorials-pdf
+            sourcedir:  g2doc-70r0 g2tutorials
+            destdir: doc/g2/g2tutorials
+            filename: g2tutorials.pdf
+          part: g2doc-g2refman-pdf
+            sourcedir:  g2doc-70r0 g2refman
+            destdir: doc/g2/g2refman
+            filename: g2refman.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                application display name: G2 Bundle Release Notes
+                application directory: doc
+                target name: g2relnotes.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: G2
+                application display name: G2 Reference Manual
+                application directory: doc\g2\g2refman
+                target name: g2refman.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: G2
+                application display name: G2 Language Reference Card
+                application directory: doc\g2\g2langrefcard
+                target name: g2langrefcard.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: G2
+                application display name: G2 System Procedures Reference Manual
+                application directory: doc\g2\g2sysprocs
+                target name: g2sysprocs.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: G2
+                application display name: Getting Started with G2 Tutorials
+                application directory: doc\g2\g2tutorials
+                target name: g2tutorials.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: G2
+                application display name: G2 Class Reference Manual
+                application directory: doc\g2\g2classref
+                target name: g2classref.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: G2
+                application display name: G2 Developer's Guide
+                application directory: doc\g2\g2devguide
+                target name: g2devguide.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 Dynamic Displays User's Guide
+                application directory: doc\utilities\gdd
+                target name: gdd.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 Developer's Interface User's Guide
+                application directory: doc\utilities\gdi
+                target name: gdi.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 Foundation Resources User's Guide
+                application directory: doc\utilities\gfr
+                target name: gfr.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 Menu System User's Guide
+                application directory: doc\utilities\gms
+                target name: gms.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 Online Documentation Developer's Guide
+                application directory: doc\utilities\golddev
+                target name: golddev.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 Online Documentation User's Guide
+                application directory: doc\utilities\goldui
+                target name: goldui.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 GUIDE UIL Procedures Reference Manual
+                application directory: doc\utilities\guideprocref
+                target name: guideprocref.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 GUIDE User's Guide
+                application directory: doc\utilities\guideuserguide
+                target name: guideuserguide.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 XL Spreadsheet User's Guide
+                application directory: doc\utilities\gxl
+                target name: gxl.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: GDA
+                application display name: GDA User's Guide
+                application directory: doc\gda\gdaugrm
+                target name: gdaug.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: GDA
+                application display name: GDA Reference Manual
+                application directory: doc\gda\gdaugrm
+                target name: gdarefman.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: GDA
+                application display name: GDA API Reference Manual
+                application directory: doc\gda\gdaapi
+                target name: gdaapi.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 ProTools User's Guide
+                application directory: doc\utilities\g2protools
+                target name: g2protools.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: G2
+                application display name: G2 Gateway Bridge Developer's Guide
+                application directory: doc\g2\g2gateway
+                target name: g2gateway.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2 Database Bridge User's Guide
+                application directory: doc\bridges\db
+                target name: g2databasebridge.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2 OPCLink User's Guide
+                application directory: doc\bridges\opclink
+                target name: g2opclink.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2 CORBALink User's Guide
+                application directory: doc\bridges\corbalink
+                target name: g2corbalink.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2-ODBC Bridge Release Notes
+                application directory: doc\bridges\odbc
+                target name: g2odbcbridge.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2-Oracle Bridge Release Notes
+                application directory: doc\bridges\oracle
+                target name: g2oraclebridge.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2-Sybase Bridge Release Notes
+                application directory: doc\bridges\sybase
+                target name: g2sybasebridge.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2-PI Bridge User's Guide
+                application directory: doc\bridges\pi
+                target name: g2pibridge.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: G2
+                application display name: Telewindows User's Guide
+                application directory: doc\g2\telewindows
+                target name: telewindows.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: G2 JavaLink
+                application display name: G2 DownloadInterfaces User's Guide
+                application directory: doc\javalink\docs\guides\g2downloadinterfaces
+                target name: g2downloadinterfaces.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: G2 JavaLink
+                application display name: G2 Bean Builder User's Guide
+                application directory: doc\javalink\docs\guides\g2beanbuilder
+                target name: g2beanbuilder.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: G2 JavaLink
+                application display name: G2 JavaLink User's Guide
+                application directory: doc\javalink\docs\guides\g2javalink
+                target name: g2javalink.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2 ActiveXLink User's Guide
+                application directory: doc\bridges\activexlink
+                target name: g2activexlink.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2 WebLink User's Guide
+                application directory: doc\bridges\weblink
+                target name: g2weblink.pdf
+          part: g2doc-g2gateway-pdf
+            sourcedir:  g2doc-70r0 g2gateway
+            destdir: doc/g2/g2gateway
+            filename: g2gateway.pdf
+          part: g2doc-g2classref-pdf
+            sourcedir:  g2doc-70r0 g2classref
+            destdir: doc/g2/g2classref
+            filename: g2classref.pdf
+          part: g2doc-telewindows-pdf
+            sourcedir:  g2doc-70r0 telewindows
+            destdir: doc/g2/telewindows
+            filename: telewindows.pdf
+          part: g2doc-g2sysprocs-pdf
+            sourcedir:  g2doc-70r0 g2sysprocs
+            destdir: doc/g2/g2sysprocs
+            filename: g2sysprocs.pdf
+          part: g2doc-g2langrefcard-pdf
+            sourcedir:  g2doc-70r0 g2langrefcard
+            destdir: doc/g2/g2langrefcard
+            filename: g2langrefcard.pdf
+          part: g2doc-g2devguide-pdf
+            sourcedir:  g2doc-70r0 g2devguide
+            destdir: doc/g2/g2devguide
+            filename: g2devguide.pdf
+          part: g2utldoc-gdi-pdf
+            sourcedir:  g2utldoc-70r0 gdi
+            destdir: doc/utilities/gdi
+            filename: gdi.pdf
+          part: g2utldoc-gms-pdf
+            sourcedir:  g2utldoc-70r0 gms
+            destdir: doc/utilities/gms
+            filename: gms.pdf
+          part: g2utldoc-goldui-pdf
+            sourcedir:  g2utldoc-70r0 goldui
+            destdir: doc/utilities/goldui
+            filename: goldui.pdf
+          part: g2utldoc-guideuserguide-pdf
+            sourcedir:  g2utldoc-70r0 guideuserguide
+            destdir: doc/utilities/guideuserguide
+            filename: guideuserguide.pdf
+          part: g2utldoc-gdd-pdf
+            sourcedir:  g2utldoc-70r0 gdd
+            destdir: doc/utilities/gdd
+            filename: gdd.pdf
+          part: g2utldoc-gfr-pdf
+            sourcedir:  g2utldoc-70r0 gfr
+            destdir: doc/utilities/gfr
+            filename: gfr.pdf
+          part: g2utldoc-golddev-pdf
+            sourcedir:  g2utldoc-70r0 golddev
+            destdir: doc/utilities/golddev
+            filename: golddev.pdf
+          part: g2utldoc-guideprocref-pdf
+            sourcedir:  g2utldoc-70r0 guideprocref
+            destdir: doc/utilities/guideprocref
+            filename: guideprocref.pdf
+          part: g2utldoc-gxl-pdf
+            sourcedir:  g2utldoc-70r0 gxl
+            destdir: doc/utilities/gxl
+            filename: gxl.pdf
+          part: jvldoc-javalink-pdf
+            sourcedir:  jvldoc-12r5-FC07 docs/guides/g2javalink
+            destdir: doc/javalink/docs/guides/g2javalink
+            filename: g2javalink.pdf
+          part: jvldoc-di-pdf
+            sourcedir:  jvldoc-12r5-FC07 docs/guides/g2downloadinterfaces
+            destdir: doc/javalink/docs/guides/g2downloadinterfaces
+            filename: g2downloadinterfaces.pdf
+          part: jvldoc-bb-pdf
+            sourcedir:  jvldoc-12r5-FC07 docs/guides/g2beanbuilder
+            destdir: doc/javalink/docs/guides/g2beanbuilder
+            filename: g2beanbuilder.pdf
+          part: axldoc
+            sourcedir:  axldoc-10r5-FC07 activexlink
+            destdir: doc/bridges/activexlink
+            filename: g2activexlink.pdf
+            only on:  nt
+          part: corbalinkdoc
+            sourcedir:  corbalinkdoc-10r2-FC07 corbalink
+            destdir: doc/bridges/corbalink
+            filename: g2corbalink.pdf
+          part: g2classicrn
+            sourcedir: g2classicrn-70r1
+            destdir: doc
+            filename: g2relnotes.pdf
+          part: g2oradoc
+            sourcedir:  g2oradoc-60r9-FC07 oracle
+            destdir: doc/bridges/oracle
+            filename: g2oraclebridge.pdf
+          part: g2sybdoc
+            sourcedir:  g2sybdoc-60r9-FC07 sybase
+            destdir: doc/bridges/sybase
+            filename: g2sybasebridge.pdf
+          part: opclinkdoc
+            sourcedir:  opclinkdoc-21r0-FC07 opclink
+            destdir: doc/bridges/opclink
+            filename: g2opclink.pdf
+          part: g2pidoc
+            sourcedir:  g2pidoc-50r0 pi
+            destdir: doc/bridges/pi
+            filename: g2pibridge.pdf
+          part: g2odbcdoc
+            sourcedir:  g2odbcdoc-60r9-FC07 odbc
+            destdir: doc/bridges/odbc
+            filename: g2odbcbridge.pdf
+          part: g2dbdoc
+            sourcedir:  g2dbdoc-60r9-FC07 db
+            destdir: doc/bridges/db
+            filename: g2databasebridge.pdf
+          part: protoolsdoc
+            sourcedir:  protoolsdoc-70r0-FD24 g2protools
+            destdir: doc/utilities/g2protools
+            filename: g2protools.pdf
+          part: weblinkdoc
+            sourcedir:  weblinkdoc-10r5-FC07 weblink
+            destdir: doc/bridges/weblink
+            filename: g2weblink.pdf
+          part: gdadoc-api-pdf
+            sourcedir:  gdadoc-42r0-FD24 gda/gdaapi
+            destdir: doc/gda/gdaapi
+            filename: gdaapi.pdf
+          part: gdadoc-ug-pdf
+            sourcedir:  gdadoc-42r0-FD24 gda/gdaugrm
+            destdir: doc/gda/gdaugrm
+            filename: gdarefman.pdf
+            filename: gdaug.pdf
+      component: G2 Full Documentation (HTML/Gold)
+        index: 13
+        typical: false
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: g2doc-g2refman-html
+            sourcedir:  g2doc-70r0 g2refman/html
+            destdir: doc/g2/g2refman/html
+          part: g2doc-g2tutorials-html
+            sourcedir:  g2doc-70r0 g2tutorials/html
+            destdir: doc/g2/g2tutorials/html
+          part: g2doc-g2gateway-html
+            sourcedir:  g2doc-70r0 g2gateway/html
+            destdir: doc/g2/g2gateway/html
+          part: g2doc-g2classref-html
+            sourcedir:  g2doc-70r0 g2classref/html
+            destdir: doc/g2/g2classref/html
+          part: g2doc-telewindows-html
+            sourcedir:  g2doc-70r0 telewindows/html
+            destdir: doc/g2/telewindows/html
+          part: g2doc-g2sysprocs-html
+            sourcedir:  g2doc-70r0 g2sysprocs/html
+            destdir: doc/g2/g2sysprocs/html
+          part: g2doc-g2langrefcard-html
+            sourcedir:  g2doc-70r0 g2langrefcard/html
+            destdir: doc/g2/g2langrefcard/html
+          part: g2doc-g2devguide-html
+            sourcedir:  g2doc-70r0 g2devguide/html
+            destdir: doc/g2/g2devguide/html
+          part: g2utldoc-gdi-html
+            sourcedir:  g2utldoc-70r0 gdi/html
+            destdir: doc/utilities/gdi/html
+          part: g2utldoc-gms-html
+            sourcedir:  g2utldoc-70r0 gms/html
+            destdir: doc/utilities/gms/html
+          part: g2utldoc-goldui-html
+            sourcedir:  g2utldoc-70r0 goldui/html
+            destdir: doc/utilities/goldui/html
+          part: g2utldoc-guideuserguide-html
+            sourcedir:  g2utldoc-70r0 guideuserguide/html
+            destdir: doc/utilities/guideuserguide/html
+          part: g2utldoc-gdd-html
+            sourcedir:  g2utldoc-70r0 gdd/html
+            destdir: doc/utilities/gdd/html
+          part: g2utldoc-gfr-html
+            sourcedir:  g2utldoc-70r0 gfr/html
+            destdir: doc/utilities/gfr/html
+          part: g2utldoc-golddev-html
+            sourcedir:  g2utldoc-70r0 golddev/html
+            destdir: doc/utilities/golddev/html
+          part: g2utldoc-guideprocref-html
+            sourcedir:  g2utldoc-70r0 guideprocref/html
+            destdir: doc/utilities/guideprocref/html
+          part: g2utldoc-gxl-html
+            sourcedir:  g2utldoc-70r0 gxl/html
+            destdir: doc/utilities/gxl/html
+          part: jvldoc-javalink-html
+            sourcedir:  jvldoc-12r5-FC07 docs/guides/g2javalink/html
+            destdir: doc/javalink/docs/guides/g2javalink/html
+          part: jvldoc-di-html
+            sourcedir:  jvldoc-12r5-FC07 docs/guides/g2downloadinterfaces/html
+            destdir: doc/javalink/docs/guides/g2downloadinterfaces/html
+          part: jvldoc-bb-html
+            sourcedir:  jvldoc-12r5-FC07 docs/guides/g2beanbuilder/html
+            destdir: doc/javalink/docs/guides/g2beanbuilder/html
+          part: axldoc-html
+            sourcedir:  axldoc-10r5-FC07 activexlink/html
+            destdir: doc/bridges/activexlink/html
+            only on:  nt
+          part: corbalinkdoc-html
+            sourcedir:  corbalinkdoc-10r2-FC07 corbalink/html
+            destdir: doc/bridges/corbalink/html
+          part: g2oradoc-html
+            sourcedir:  g2oradoc-60r9-FC07 oracle/html
+            destdir: doc/bridges/oracle/html
+          part: g2sybdoc-html
+            sourcedir:  g2sybdoc-60r9-FC07 sybase/html
+            destdir: doc/bridges/sybase/html
+          part: opclinkdoc-html
+            sourcedir:  opclinkdoc-21r0-FC07 opclink/html
+            destdir: doc/bridges/opclink/html
+          part: g2pidoc-html
+            sourcedir:  g2pidoc-50r0 pi/html
+            destdir: doc/bridges/pi/html
+          part: g2odbcdoc-html
+            sourcedir:  g2odbcdoc-60r9-FC07 odbc/html
+            destdir: doc/bridges/odbc/html
+          part: g2dbdoc-html
+            sourcedir:  g2dbdoc-60r9-FC07 db/html
+            destdir: doc/bridges/db/html
+          part: protoolsdoc-html
+            sourcedir:  protoolsdoc-70r0-FD24 g2protools/html
+            destdir: doc/utilities/g2protools/html
+          part: weblinkdoc-html
+            sourcedir:  weblinkdoc-10r5-FC07 weblink/html
+            destdir: doc/bridges/weblink/html
+          part: gdadoc-api-html
+            sourcedir:  gdadoc-42r0-FD24 gda/gdaapi/html
+            destdir: doc/gda/gdaapi/html
+          part: gdadoc-ug-html
+            sourcedir:  gdadoc-42r0-FD24 gda/gdaugrm/html
+            destdir: doc/gda/gdaugrm/html
+      component: G2 Core Documentation (Windows Help)
+        index: 14
+        only on:  nt
+        typical: true
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: doc-chm
+            sourcedir: g2winhelp-70r0
+            destdir: g2
+            filename: G2BundleReleaseNotesHelp.chm
+            filename: G2ClassReferenceHelp.chm
+            filename: G2Core.html
+            filename: G2DevelopersGuideHelp.chm
+            filename: G2LanguageReferenceHelp.chm
+            filename: G2ProToolsHelp.chm
+            filename: G2ReferenceManualHelp.chm
+            filename: G2SystemProceduresHelp.chm
+            filename: G2Utilities.html
+            filename: GDDHelp.chm
+            filename: GDIHelp.chm
+            filename: GFRHelp.chm
+            filename: GMSHelp.chm
+            filename: GOLDDevelopersGuideHelp.chm
+            filename: GOLDHelp.chm
+            filename: GUIDEHelp.chm
+            filename: GUIDEUILHelp.chm
+            filename: GXLHelp.chm
+            filename: GettingStarted.html
+            filename: GettingStartedWithG2Help.chm
+            filename: Master.CHM
+            filename: Master.html
+            filename: Master2.html
+            filename: Master3.html
+            filename: TelewindowsHelp.chm
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                application display name: Windows Help G2 Documentation
+                application directory: g2
+                target name: Master.CHM
+      component: G2 ProTools
+        index: 15
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: protools
+            sourcedir: protools-70r1
+            destdir: protools/kbs
+            filename: protools.kb
+            filename: ptroot.kb
+          part: profiler
+            sourcedir: protools-70r1
+            destdir: g2/kbs/utils
+            filename: profiler.kb
+            filename: profroot.kb
+      component: G2 ActiveXLink
+        index: 16
+        only on:  nt
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: axl
+            sourcedir: axl-10r6
+            destdir: activexlink
+            filename: gsi.dll
+            filename: ReadMe.htm
+            filename: g2com.kb
+            filename: runme.bat
+            filename: regsvr32.exe
+            only on:  nt
+          part: axl-g2com-dll
+            sourcedir: axl-10r6
+            destdir: activexlink
+            filename: G2Com.dll
+            only on:  nt
+            register: yes
+          part: axl-demos
+            sourcedir:  axl-10r6 demos
+            destdir: activexlink/demos
+            only on:  nt
+      component: G2 WebLink
+        index: 17
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: gw
+            sourcedir: gw-10r5
+            destdir: gw
+          part: gsi-gw-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: gw
+            filename: gw-gsi.ok
+            new filename: gsi.ok
+            obfuscate: true
+          part: run-gw-template-batfile
+            sourcedir: /home/development/installers/release-files
+            destdir: gw
+            filename: run-gw.bat
+            only on:  nt
+            postinstall code: replace_rootdir("gw", "run-gw.bat");
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                application display name: G2 WebLink
+                application directory: gw
+                target name: run-gw.bat
+          part: gsi-gw-blank-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: gw
+            filename: gsi.ok
+            only on:  nt
+      component: Telewindows2 Toolkit Runtime
+        index: 18
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: tw2-jars-only-unix
+            sourcedir:  tw2-12r6 classes
+            destdir: tw2/classes
+            filename: antlr.jar
+            filename: ax2jbeans.jar
+            filename: coreui.jar
+            filename: sequoia.jar
+            on all but:  nt
+          part: tw2-jars-only-intelnt
+            sourcedir:  tw2-12r6 components/classes
+            destdir: tw2/classes
+            filename: antlr.jar
+            filename: ax2jbeans.jar
+            filename: coreui.jar
+            filename: sequoia.jar
+            only on:  nt
+      component: Telewindows
+        index: 19
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: TW Windows Executable
+            sourcedir: tw-70r1
+            destdir: g2
+            filename: tw.exe
+            filename: nptwplug.dll
+            filename: tw.map
+            only on:  nt
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                application display name: Telewindows
+                application directory: g2
+                target name: tw.exe
+          part: TW Unix Executable
+            sourcedir: tw-70r1
+            destdir: g2
+            filename: tw
+            filename: nptwplug.so
+            on all but:  nt
+          part: twax
+            sourcedir: twax-70r1
+            destdir: g2
+            filename: TwControl.cab
+            filename: unregisterTwControl.bat
+            filename: TwControl.ocx
+            filename: install.html
+            filename: registerTwControl.bat
+            only on:  nt
+          part: twax-examples
+            sourcedir:  twax-70r1 examples
+            destdir: g2/examples
+            only on:  nt
+          part: fonts
+            sourcedir: fonts-70r1
+            destdir: g2/fonts
+      component: G2 (and utilities)
+        index: 20
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: G2 Windows Executable
+            sourcedir: g2-70r1
+            destdir: g2
+            filename: g2.exe
+            filename: g2passwd.exe
+            filename: g2.map
+            only on:  nt
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                application display name: G2
+                application directory: g2
+                target name: g2.exe
+                parameters: -module-search-path ..\g2i\kbs kbs\utils ..\integrity\kbs ..\integrity\demos ..\odbc ..\opclink\kbs ..\protools\kbs ..\gw ..\corbalink\kbs ..\javalink\kbs ..\tw2\kbs ..\gda ..\activexlink ..\oracle ..\sybase -ok ..\g2\g2.ok
+          part: G2 Unix Executable
+            sourcedir: g2-70r1
+            destdir: g2
+            filename: g2
+            filename: g2passwd
+            on all but:  nt
+          part: Kanji dictionary files
+            sourcedir: g2-70r1
+            destdir: g2
+            filename: index.dic
+            filename: kojin.dic
+            filename: main.dic
+          part: G2 EXT Directory
+            sourcedir:  g2-70r1 ext
+            destdir: g2/ext
+          part: Sample G2 OK file
+            sourcedir: g2-70r1
+            destdir: g2
+            filename: g2.ok
+            only on:  nt
+          part: kbs
+            sourcedir: kbs-70r1
+            destdir: g2/kbs
+          part: fonts
+            sourcedir: fonts-70r1
+            destdir: g2/fonts
+      component: G2 Gateway (GSI)
+        index: 21
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: gsi
+            sourcedir: gsi-70r1
+            destdir: gsi
+      component: G2 Readme
+        index: 22
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: g2-readme
+            sourcedir: g2pkgreadme-70r1
+            filename: readme-g2.html
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                application display name: Readme for G2 Bundle
+                application directory: 
+                target name: readme-g2.html
+      component: G2 Diagnostic Assistant (GDA)
+        index: 23
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: gda
+            sourcedir: gda-42r0-FB24
+            destdir: gda
+      component: Java Runtime Environment
+        index: 24
+        only on:  nt
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: jre
+            sourcedir: jre-13r1_01
+            destdir: jre
+            only on:  nt
+      component: Integrity KBs
+        index: 25
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-kbs
+            sourcedir: intereas-37r0-B03E12
+            destdir: integrity
+            postinstall code: replace_rootdir("integrity"^"bin", "StartServer.bat");
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                application display name: Start Integrity
+                application directory: integrity\bin
+                target name: StartServer.bat
+                icon file: Integrity.ico
+                icon index: 0
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Documentation
+                subsubfolder name: Integrity
+                application display name: SymCure Users Guide
+                application directory: doc/integrity
+                target name: SymCureUsersGuide.pdf
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Examples
+                subsubfolder name: Integrity
+                application display name: Doc Tutorial
+                application directory: integrity\bin
+                target name: StartServer.bat
+                parameters: ..\demos\doc_demo.kb
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Examples
+                subsubfolder name: Integrity
+                application display name: Message Parsing Engine Tutorial
+                application directory: integrity\bin
+                target name: StartServer.bat
+                parameters: ..\demos\mpe-demo.kb
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Examples
+                subsubfolder name: Integrity
+                application display name: OPerator ACtions Tutorial
+                application directory: integrity\bin
+                target name: StartServer.bat
+                parameters: ..\demos\opacdemo.kb
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Examples
+                subsubfolder name: Integrity
+                application display name: Integrity Tutorial
+                application directory: integrity\bin
+                target name: StartServer.bat
+                parameters: ..\demos\opx_demo.kb
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Examples
+                subsubfolder name: Integrity
+                application display name: OXS Java Tutorial
+                application directory: integrity\bin
+                target name: StartServer.bat
+                parameters: ..\demos\oxsjdemo.kb
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Examples
+                subsubfolder name: Integrity
+                application display name: Socket Manager Tutorial
+                application directory: integrity\bin
+                target name: StartServer.bat
+                parameters: ..\demos\sockdemo.kb
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Examples
+                subsubfolder name: Integrity
+                application display name: SymCure Service Level Tutorial
+                application directory: integrity\bin
+                target name: StartServer.bat
+                parameters: ..\demos\svcmdemo.kb
+      component: G2 CORBALink
+        index: 26
+        on all but:  alphaosf
+        optional: true
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: corbalink
+            sourcedir: corbalink-10r2-FF02
+            destdir: corbalink
+            on all but:  alphaosf linux
+      component: G2 OPCLink Bridge
+        index: 27
+        only on:  nt
+        optional: true
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: opclink
+            sourcedir: opclink-21r0-FC06
+            destdir: opclink
+          part: gsi-opclink-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: opclink
+            filename: opclink-gsi.ok
+            new filename: gsi.ok
+            obfuscate: true
+          part: run-g2opc-template-batfile
+            sourcedir: /home/development/installers/release-files
+            destdir: opclink
+            filename: run-G2Opc.bat
+            only on:  nt
+            postinstall code: replace_rootdir("opclink", "run-G2Opc.bat");
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Bridges
+                application display name: G2 OPCLink Bridge
+                application directory: opclink
+                target name: run-G2Opc.bat
+          part: gsi-opclink-blank-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: opclink
+            filename: gsi.ok
+            only on:  nt
+      component: G2 Oracle Bridge
+        index: 28
+        optional: true
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: oraclebridge
+            sourcedir: g2oracle-60r9-FB27
+            destdir: oracle
+          part: gsi-oracle-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: oracle
+            filename: oracle-gsi.ok
+            new filename: gsi.ok
+            obfuscate: true
+          part: run-g2-ora7-template-batfile
+            sourcedir: /home/development/installers/release-files
+            destdir: oracle
+            filename: run-g2-ora7.bat
+            only on:  nt
+            postinstall code: replace_rootdir("oracle", "run-g2-ora7.bat");
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Bridges
+                application display name: G2 Oracle 7 Bridge
+                application directory: oracle
+                target name: run-g2-ora7.bat
+          part: run-g2-ora80-template-batfile
+            sourcedir: /home/development/installers/release-files
+            destdir: oracle
+            filename: run-g2-ora80.bat
+            only on:  nt
+            postinstall code: replace_rootdir("oracle", "run-g2-ora80.bat");
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Bridges
+                application display name: G2 Oracle 8.0 Bridge
+                application directory: oracle
+                target name: run-g2-ora80.bat
+          part: run-g2-ora81-template-batfile
+            sourcedir: /home/development/installers/release-files
+            destdir: oracle
+            filename: run-g2-ora81.bat
+            only on:  nt
+            postinstall code: replace_rootdir("oracle", "run-g2-ora81.bat");
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Bridges
+                application display name: G2 Oracle 8.1 Bridge
+                application directory: oracle
+                target name: run-g2-ora81.bat
+          part: run-g2-ora9i-template-batfile
+            sourcedir: /home/development/installers/release-files
+            destdir: oracle
+            filename: run-g2-ora9i.bat
+            only on:  nt
+            postinstall code: replace_rootdir("oracle", "run-g2-ora9i.bat");
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Bridges
+                application display name: G2 Oracle 9i Bridge
+                application directory: oracle
+                target name: run-g2-ora9i.bat
+          part: gsi-oracle-blank-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: oracle
+            filename: gsi.ok
+            only on:  nt
+      component: G2 Sybase Bridge
+        index: 29
+        on all but:  linux
+        optional: true
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: sybasebridge
+            sourcedir: g2sybase-60r9-FB27
+            destdir: sybase
+            on all but:  linux
+          part: gsi-sybase-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: sybase
+            filename: sybase-gsi.ok
+            new filename: gsi.ok
+            obfuscate: true
+          part: run-g2-sybase-template-batfile
+            sourcedir: /home/development/installers/release-files
+            destdir: sybase
+            filename: run-g2-sybase.bat
+            only on:  nt
+            postinstall code: replace_rootdir("sybase", "run-g2-sybase.bat");
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Bridges
+                application display name: G2 Sybase Bridge
+                application directory: sybase
+                target name: run-g2-sybase.bat
+          part: gsi-sybase-blank-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: sybase
+            filename: gsi.ok
+            only on:  nt
+      component: G2 ODBC Bridge
+        index: 30
+        only on:  nt
+        optional: true
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: odbcbridge
+            sourcedir: g2odbc-60r9-FB27
+            destdir: odbc
+            only on:  nt
+          part: gsi-odbc-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: odbc
+            filename: odbc-gsi.ok
+            new filename: gsi.ok
+            obfuscate: true
+          part: run-g2-odbc-template-batfile
+            sourcedir: /home/development/installers/release-files
+            destdir: odbc
+            filename: run-g2-odbc.bat
+            only on:  nt
+            postinstall code: replace_rootdir("odbc", "run-g2-odbc.bat");
+              shortcut: 
+                folder name: Gensym Integrity 3.7b0
+                subfolder name: Bridges
+                application display name: G2 ODBC Bridge
+                application directory: odbc
+                target name: run-g2-odbc.bat
+          part: gsi-odbc-blank-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: odbc
+            filename: gsi.ok
+            only on:  nt
+      component: GService Startup Service
+        index: 31
+        only on:  nt
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: gservice
+            sourcedir: gservice-70r1
+            destdir: g2
+            filename: gservice.exe
+            only on:  nt
+      component: 4-Client Integrity Deployment OK
+        index: 32
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-deployment-4-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-deployment-4-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 8-Client Integrity Deployment OK
+        index: 33
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-deployment-8-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-deployment-8-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 16-Client Integrity Deployment OK
+        index: 34
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-deployment-16-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-deployment-16-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 20-Client Integrity Deployment OK
+        index: 35
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-deployment-20-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-deployment-20-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 24-Client Integrity Deployment OK
+        index: 36
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-deployment-24-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-deployment-24-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 28-Client Integrity Deployment OK
+        index: 37
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-deployment-28-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-deployment-28-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 32-Client Integrity Deployment OK
+        index: 38
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-deployment-32-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-deployment-32-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: dec25-2002 1-Client Integrity Deployment OK
+        index: 39
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-deployment-1-dec25-2002-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-deployment-1-v5-dec25-2002.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: jan25-2003 1-Client Integrity Deployment OK
+        index: 40
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-deployment-1-jan25-2003-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-deployment-1-v5-jan25-2003.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: feb25-2003 1-Client Integrity Deployment OK
+        index: 41
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-deployment-1-feb25-2003-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-deployment-1-v5-feb25-2003.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: mar25-2003 1-Client Integrity Deployment OK
+        index: 42
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-deployment-1-mar25-2003-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-deployment-1-v5-mar25-2003.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: apr25-2003 1-Client Integrity Deployment OK
+        index: 43
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-deployment-1-apr25-2003-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-deployment-1-v5-apr25-2003.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: may25-2003 1-Client Integrity Deployment OK
+        index: 44
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-deployment-1-may25-2003-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-deployment-1-v5-may25-2003.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: jun25-2003 1-Client Integrity Deployment OK
+        index: 45
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-deployment-1-jun25-2003-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-deployment-1-v5-jun25-2003.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: jul25-2003 1-Client Integrity Deployment OK
+        index: 46
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-deployment-1-jul25-2003-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-deployment-1-v5-jul25-2003.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: aug25-2003 1-Client Integrity Deployment OK
+        index: 47
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-deployment-1-aug25-2003-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-deployment-1-v5-aug25-2003.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: sep25-2003 1-Client Integrity Deployment OK
+        index: 48
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-deployment-1-sep25-2003-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-deployment-1-v5-sep25-2003.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: oct25-2003 1-Client Integrity Deployment OK
+        index: 49
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-deployment-1-oct25-2003-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-deployment-1-v5-oct25-2003.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: nov25-2003 1-Client Integrity Deployment OK
+        index: 50
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-deployment-1-nov25-2003-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-deployment-1-v5-nov25-2003.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: dec25-2003 1-Client Integrity Deployment OK
+        index: 51
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-deployment-1-dec25-2003-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-deployment-1-v5-dec25-2003.ok
+            new filename: g2.ok
+            obfuscate: true
