@@ -1,0 +1,31 @@
+#!/bin/csh
+#Promote eship for UNIX and NT platforms.
+
+if ($#argv != 2) then
+  echo "Error: Wrong number of arguments, $#argv supplied, 2 required (iship ver, eship ver)."
+  exit 1
+endif
+
+# Set buildid to the proper build id for your release.
+set ishipid = $1
+set eshipid = $2
+
+set platforms = (intelnt sparcsol hp9000s700 rs6000 alphaosf linux)
+foreach i ($platforms)
+  /gensym/tools/promote-product -noconfirm -e g2 ${i} ${ishipid} ${eshipid}
+  /gensym/tools/promote-product -noconfirm -e tw ${i} ${ishipid} ${eshipid}
+  /gensym/tools/promote-product -noconfirm -e gsi ${i} ${ishipid} ${eshipid}
+end
+
+# Following lines are for promoting fonts, kbs, and protools.
+
+
+/gensym/tools/promote-product -noconfirm -e tw intelnt ${ishipid}-NG ${eshipid}-NG
+/gensym/tools/promote-product -noconfirm -e fonts ${ishipid} ${eshipid}
+/gensym/tools/promote-product -noconfirm -e kbs ${ishipid} ${eshipid}
+/gensym/tools/promote-product -noconfirm -e protools ${ishipid} ${eshipid}
+/gensym/tools/promote-product -noconfirm -e demos ${ishipid} ${eshipid}
+/gensym/tools/promote-product -noconfirm -e gservice intelnt ${ishipid} ${eshipid}
+/gensym/tools/promote-product -noconfirm -e g2pi intelnt ${ishipid} ${eshipid}
+/gensym/tools/promote-product -noconfirm -e twax intelnt ${ishipid} ${eshipid}
+/gensym/tools/promote-product -noconfirm -e workspace-view intelnt ${ishipid} ${eshipid}
