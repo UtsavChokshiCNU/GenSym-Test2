@@ -1,0 +1,32 @@
+#!/bin/sh
+# Builder for keygui.jar
+# Mark David, 5/11/01
+
+# This shell script builds a new keygui.jar file
+# in the bundle/java/com/gensym/bundle directory.
+
+# How to build and distribute: run this shell
+# script (or execute its parts by hand).
+# Then put the keygui.jar in the license
+# server folder (replacing the previously
+# existing one).
+#
+# It is expected that the distribution is to
+# machine with a previously installed license generator.
+# The launcher should be a bat file consisting of
+# just this command (or one substantially similar):
+#
+#   java -Dlogs="c:/LicenseServer/logs" -Djava.class.path=c:\LicenseServer\keygui.jar  LicenseKey c:\LicenseServer\data
+#
+# To create a new distribution zip, unzip
+# bundle/java/license-server.zip
+# to a staging directory, replace the keygui.jar
+# file, then rezip the staging directory.
+
+
+echo Building keygui.jar . . .
+
+javac *.java
+jar -cfvm ../../../keygui.jar manifest.stub *.class
+
+echo DONE.
