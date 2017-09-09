@@ -1,0 +1,40 @@
+#!/bin/sh
+#
+#  Generate the macro definitions for BUILD_CODE and GSIDIR
+#
+if [ "$MACHINE" = rs6000 -o "$MACHINE" = hp9000s700 ]
+then echo BLDCOD=`date "+%y %m %d" | awk '{ printf("%c%c%02d", $1+67, $2+64, $3) } '`"\c"
+else echo -n BLDCOD=`date "+%y %m %d" | awk '{ printf("%c%c%02d", $1+67, $2+64, $3) } '`
+fi
+
+if [ "$GSIDIR" = "" ]
+    then if [ -d $DSTBOX/gsi/opt ]
+        then echo -n " GSIDIR=$DSTBOX/gsi/opt"
+    else \
+        echo -n " GSIDIR=/g2/dst/gsi/opt"
+    fi
+fi
+
+if [ "$GSICDIR" = "" ]
+    then if [ -d $SRCBOX/gsi/c ]
+        then echo -n " GSICDIR=$SRCBOX/gsi/c"
+    else \
+        echo -n " GSICDIR=/g2/src/gsi/c"
+    fi
+fi
+
+if [ "$EXTDIR" = "" ]
+    then if [ -d $DSTBOX/ext/opt ]
+        then echo -n " EXTDIR=$DSTBOX/ext/opt"
+    else \
+        echo -n " EXTDIR=/g2/dst/ext/opt"
+    fi
+fi
+
+if [ "$RTLDIR" = "" ]
+    then if [ -d $DSTBOX/rtl/opt ]
+        then echo " RTLDIR=$DSTBOX/rtl/opt"
+    else \
+        echo " RTLDIR=/g2/dst/rtl/opt"
+    fi
+fi
