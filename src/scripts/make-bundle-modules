@@ -1,0 +1,30 @@
+#!/bin/csh
+
+# create the structure of the bundle, but without most of the files (e.g. the
+# executables) so that it can be used to load in kbs from a bundle into a G2
+# that is not consistent with that bundle (e.g. a development G2).  In addition
+# to kbs, we are taking the .txt files and .gif files.
+
+if ($#argv < 2) then
+    echo Usage: make-bundle-modules bundlename version
+    echo e.g. make-bundle-modules g2 81r0
+    exit 1
+endif
+
+if ($#argv == 3) then
+   set tree = $3
+else
+   set tree = /gensym/bundles/$1/$2/tree/intelnt-$1
+endif
+
+if (! -d $tree) then
+    echo directory $tree does not exist
+    exit 1
+endif
+
+set installation = /gensym/bundles/installs/$1-$2
+mkdir -p $installation
+
+cd $tree
+
+find . \( -name \*.kb -o  -name \*.txt -o  -name \*.gif \) -exec $0-copyfile {} $installation \; 
