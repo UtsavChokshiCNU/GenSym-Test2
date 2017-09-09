@@ -1,0 +1,316 @@
+SHELL = /bin/sh
+PRODUCT = jpeg
+ODIR = o
+PLATFORM = linux
+CDIR = $(SRCBOX)/$(PRODUCT)/c
+MFDIR = $(DSTBOX)/$(PRODUCT)/$(ODIR)
+SCRIPTSDIR = $(SRCBOX)/scripts
+CC_FLAGS = -g -Wimplicit -I$(SRCBOX)/common/c/include -fPIC
+JPEGHFILES = $(CDIR)/cderror.h $(CDIR)/jchuff.h $(CDIR)/jconfig.h \
+  $(CDIR)/jdct.h $(CDIR)/jdhuff.h $(CDIR)/jerror.h $(CDIR)/jinclude.h \
+  $(CDIR)/jmemsys.h $(CDIR)/jmorecfg.h $(CDIR)/jpegint.h
+
+all : _mfenter libjpeg.a _mfexit
+
+_mfenter : 
+	@- $(SCRIPTSDIR)/errsweep -init
+
+_mfexit : 
+	@- $(SCRIPTSDIR)/errsweep -finish
+
+libjpeg.a : jcapimin.o jcapistd.o jccoefct.o jccolor.o jcdctmgr.o \
+  jchuff.o jcinit.o jcmainct.o jcmarker.o jcmaster.o jcomapi.o jcparam.o \
+  jcphuff.o jcprepct.o jcsample.o jctrans.o jdapimin.o jdapistd.o jdatadst.o \
+  jdatasrc.o jdcoefct.o jdcolor.o jddctmgr.o jdhuff.o jdinput.o jdmainct.o \
+  jdmarker.o jdmaster.o jdmerge.o jdphuff.o jdpostct.o jdsample.o jdtrans.o \
+  jerror.o jfdctflt.o jfdctfst.o jfdctint.o jidctflt.o jidctfst.o jidctint.o \
+  jidctred.o jmemmgr.o jmemnobs.o jquant1.o jquant2.o jutils.o
+	@- if [ -f libjpeg.a ] ; then rm -f libjpeg.a ; fi
+	@- $(SCRIPTSDIR)/errsweep libjpeg.a
+	ar qc libjpeg.a  jcapimin.o jcapistd.o jccoefct.o jccolor.o \
+  jcdctmgr.o jchuff.o jcinit.o jcmainct.o jcmarker.o jcmaster.o jcomapi.o \
+  jcparam.o jcphuff.o jcprepct.o jcsample.o jctrans.o jdapimin.o jdapistd.o \
+  jdatadst.o jdatasrc.o jdcoefct.o jdcolor.o jddctmgr.o jdhuff.o jdinput.o \
+  jdmainct.o jdmarker.o jdmaster.o jdmerge.o jdphuff.o jdpostct.o jdsample.o \
+  jdtrans.o jerror.o jfdctflt.o jfdctfst.o jfdctint.o jidctflt.o jidctfst.o \
+  jidctint.o jidctred.o jquant1.o jquant2.o jutils.o jmemmgr.o jmemnobs.o
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jcapimin.o : $(CDIR)/jcapimin.c $(JPEGHFILES)
+	@- if [ -f jcapimin.o ] ; then rm -f jcapimin.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jcapimin.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jcapimin.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jcapistd.o : $(CDIR)/jcapistd.c $(JPEGHFILES)
+	@- if [ -f jcapistd.o ] ; then rm -f jcapistd.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jcapistd.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jcapistd.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jccoefct.o : $(CDIR)/jccoefct.c $(JPEGHFILES)
+	@- if [ -f jccoefct.o ] ; then rm -f jccoefct.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jccoefct.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jccoefct.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jccolor.o : $(CDIR)/jccolor.c $(JPEGHFILES)
+	@- if [ -f jccolor.o ] ; then rm -f jccolor.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jccolor.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jccolor.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jcdctmgr.o : $(CDIR)/jcdctmgr.c $(JPEGHFILES)
+	@- if [ -f jcdctmgr.o ] ; then rm -f jcdctmgr.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jcdctmgr.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jcdctmgr.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jchuff.o : $(CDIR)/jchuff.c $(JPEGHFILES)
+	@- if [ -f jchuff.o ] ; then rm -f jchuff.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jchuff.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jchuff.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jcinit.o : $(CDIR)/jcinit.c $(JPEGHFILES)
+	@- if [ -f jcinit.o ] ; then rm -f jcinit.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jcinit.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jcinit.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jcmainct.o : $(CDIR)/jcmainct.c $(JPEGHFILES)
+	@- if [ -f jcmainct.o ] ; then rm -f jcmainct.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jcmainct.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jcmainct.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jcmarker.o : $(CDIR)/jcmarker.c $(JPEGHFILES)
+	@- if [ -f jcmarker.o ] ; then rm -f jcmarker.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jcmarker.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jcmarker.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jcmaster.o : $(CDIR)/jcmaster.c $(JPEGHFILES)
+	@- if [ -f jcmaster.o ] ; then rm -f jcmaster.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jcmaster.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jcmaster.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jcomapi.o : $(CDIR)/jcomapi.c $(JPEGHFILES)
+	@- if [ -f jcomapi.o ] ; then rm -f jcomapi.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jcomapi.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jcomapi.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jcparam.o : $(CDIR)/jcparam.c $(JPEGHFILES)
+	@- if [ -f jcparam.o ] ; then rm -f jcparam.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jcparam.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jcparam.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jcphuff.o : $(CDIR)/jcphuff.c $(JPEGHFILES)
+	@- if [ -f jcphuff.o ] ; then rm -f jcphuff.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jcphuff.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jcphuff.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jcprepct.o : $(CDIR)/jcprepct.c $(JPEGHFILES)
+	@- if [ -f jcprepct.o ] ; then rm -f jcprepct.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jcprepct.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jcprepct.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jcsample.o : $(CDIR)/jcsample.c $(JPEGHFILES)
+	@- if [ -f jcsample.o ] ; then rm -f jcsample.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jcsample.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jcsample.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jctrans.o : $(CDIR)/jctrans.c $(JPEGHFILES)
+	@- if [ -f jctrans.o ] ; then rm -f jctrans.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jctrans.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jctrans.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jdapimin.o : $(CDIR)/jdapimin.c $(JPEGHFILES)
+	@- if [ -f jdapimin.o ] ; then rm -f jdapimin.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jdapimin.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jdapimin.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jdapistd.o : $(CDIR)/jdapistd.c $(JPEGHFILES)
+	@- if [ -f jdapistd.o ] ; then rm -f jdapistd.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jdapistd.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jdapistd.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jdatadst.o : $(CDIR)/jdatadst.c $(JPEGHFILES)
+	@- if [ -f jdatadst.o ] ; then rm -f jdatadst.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jdatadst.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jdatadst.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jdatasrc.o : $(CDIR)/jdatasrc.c $(JPEGHFILES)
+	@- if [ -f jdatasrc.o ] ; then rm -f jdatasrc.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jdatasrc.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jdatasrc.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jdcoefct.o : $(CDIR)/jdcoefct.c $(JPEGHFILES)
+	@- if [ -f jdcoefct.o ] ; then rm -f jdcoefct.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jdcoefct.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jdcoefct.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jdcolor.o : $(CDIR)/jdcolor.c $(JPEGHFILES)
+	@- if [ -f jdcolor.o ] ; then rm -f jdcolor.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jdcolor.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jdcolor.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jddctmgr.o : $(CDIR)/jddctmgr.c $(JPEGHFILES)
+	@- if [ -f jddctmgr.o ] ; then rm -f jddctmgr.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jddctmgr.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jddctmgr.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jdhuff.o : $(CDIR)/jdhuff.c $(JPEGHFILES)
+	@- if [ -f jdhuff.o ] ; then rm -f jdhuff.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jdhuff.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jdhuff.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jdinput.o : $(CDIR)/jdinput.c $(JPEGHFILES)
+	@- if [ -f jdinput.o ] ; then rm -f jdinput.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jdinput.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jdinput.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jdmainct.o : $(CDIR)/jdmainct.c $(JPEGHFILES)
+	@- if [ -f jdmainct.o ] ; then rm -f jdmainct.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jdmainct.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jdmainct.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jdmarker.o : $(CDIR)/jdmarker.c $(JPEGHFILES)
+	@- if [ -f jdmarker.o ] ; then rm -f jdmarker.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jdmarker.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jdmarker.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jdmaster.o : $(CDIR)/jdmaster.c $(JPEGHFILES)
+	@- if [ -f jdmaster.o ] ; then rm -f jdmaster.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jdmaster.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jdmaster.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jdmerge.o : $(CDIR)/jdmerge.c $(JPEGHFILES)
+	@- if [ -f jdmerge.o ] ; then rm -f jdmerge.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jdmerge.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jdmerge.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jdphuff.o : $(CDIR)/jdphuff.c $(JPEGHFILES)
+	@- if [ -f jdphuff.o ] ; then rm -f jdphuff.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jdphuff.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jdphuff.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jdpostct.o : $(CDIR)/jdpostct.c $(JPEGHFILES)
+	@- if [ -f jdpostct.o ] ; then rm -f jdpostct.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jdpostct.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jdpostct.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jdsample.o : $(CDIR)/jdsample.c $(JPEGHFILES)
+	@- if [ -f jdsample.o ] ; then rm -f jdsample.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jdsample.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jdsample.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jdtrans.o : $(CDIR)/jdtrans.c $(JPEGHFILES)
+	@- if [ -f jdtrans.o ] ; then rm -f jdtrans.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jdtrans.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jdtrans.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jerror.o : $(CDIR)/jerror.c $(JPEGHFILES)
+	@- if [ -f jerror.o ] ; then rm -f jerror.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jerror.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jerror.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jfdctflt.o : $(CDIR)/jfdctflt.c $(JPEGHFILES)
+	@- if [ -f jfdctflt.o ] ; then rm -f jfdctflt.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jfdctflt.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jfdctflt.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jfdctfst.o : $(CDIR)/jfdctfst.c $(JPEGHFILES)
+	@- if [ -f jfdctfst.o ] ; then rm -f jfdctfst.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jfdctfst.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jfdctfst.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jfdctint.o : $(CDIR)/jfdctint.c $(JPEGHFILES)
+	@- if [ -f jfdctint.o ] ; then rm -f jfdctint.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jfdctint.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jfdctint.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jidctflt.o : $(CDIR)/jidctflt.c $(JPEGHFILES)
+	@- if [ -f jidctflt.o ] ; then rm -f jidctflt.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jidctflt.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jidctflt.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jidctfst.o : $(CDIR)/jidctfst.c $(JPEGHFILES)
+	@- if [ -f jidctfst.o ] ; then rm -f jidctfst.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jidctfst.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jidctfst.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jidctint.o : $(CDIR)/jidctint.c $(JPEGHFILES)
+	@- if [ -f jidctint.o ] ; then rm -f jidctint.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jidctint.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jidctint.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jidctred.o : $(CDIR)/jidctred.c $(JPEGHFILES)
+	@- if [ -f jidctred.o ] ; then rm -f jidctred.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jidctred.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jidctred.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jmemmgr.o : $(CDIR)/jmemmgr.c $(JPEGHFILES)
+	@- if [ -f jmemmgr.o ] ; then rm -f jmemmgr.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jmemmgr.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jmemmgr.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jmemnobs.o : $(CDIR)/jmemnobs.c $(JPEGHFILES)
+	@- if [ -f jmemnobs.o ] ; then rm -f jmemnobs.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jmemnobs.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jmemnobs.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jquant1.o : $(CDIR)/jquant1.c $(JPEGHFILES)
+	@- if [ -f jquant1.o ] ; then rm -f jquant1.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jquant1.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jquant1.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jquant2.o : $(CDIR)/jquant2.c $(JPEGHFILES)
+	@- if [ -f jquant2.o ] ; then rm -f jquant2.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jquant2.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jquant2.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jutils.o : $(CDIR)/jutils.c $(JPEGHFILES)
+	@- if [ -f jutils.o ] ; then rm -f jutils.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jutils.o
+	$(CC) -c $(CC_FLAGS)  $(CDIR)/jutils.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+clean : 
+	- rm -f *.[oa]
