@@ -1,0 +1,228 @@
+PRODUCT = fnt
+ODIR = opt
+PLATFORM = intelnt
+CDIR = $(SRCBOX)\$(PRODUCT)\c
+MFDIR = $(DSTBOX)\$(PRODUCT)\$(ODIR)
+NODEBUG = 1
+SCRIPTSDIR = $(SCRIPTSBOX)\scripts\nt
+CC_FLAGS = $(cflags) $(cvarsmt) -D_CTYPE_DISABLE_MACROS
+
+# The include file ntwin32.mak defines macros to provide independence
+# macro      Intel NT             Alpha NT      Definition
+# =====      ========             ========      ===========
+# $(cc)      cl                   claxp         compiler
+# $(ccommon) -c -W3               same          standard compiler flags
+# $(cdebug)  -Od -Zi              -Od -Zi -Zh   standard debug flags*
+# $(cflags)  $(ccommon) -D_X86_=1 -c -DALPHA=1  to identify platform
+# $(cvarsdll) -DWIN32 $(noansi)    same          to identify o.s.
+# $(link)    link32               same          linker
+# $(ldebug)  -debug:full          same          linker debug flags*
+#            -debugtype:cv              
+# $(guilflags) -subsystem:windows same          GUI link flags
+#             -entry:WinMainCRTStartup  
+#
+# (*) A NODEBUG option or macro turns off debugging and specifies
+#    full optimization.
+
+!include <ntwin32.mak>
+
+FNTHFILES = $(CDIR)\errcodes.h $(CDIR)\finfotbl.h $(CDIR)\fino.h \
+  $(CDIR)\fixed.h $(CDIR)\fnt.h $(CDIR)\fnt_a.h $(CDIR)\font3004.h \
+  $(CDIR)\font3008.h $(CDIR)\fontmath.h $(CDIR)\fontscal.h $(CDIR)\fscdefs.h \
+  $(CDIR)\fserror.h $(CDIR)\fsglue.h $(CDIR)\hp_readr.h $(CDIR)\hpf.h \
+  $(CDIR)\keys.h $(CDIR)\mapstrng.h $(CDIR)\pcl5fnt.h $(CDIR)\pclhdrs.h \
+  $(CDIR)\privfosc.h $(CDIR)\privsfnt.h $(CDIR)\sc.h $(CDIR)\sfnt.h \
+  $(CDIR)\sfntenum.h $(CDIR)\slavic.h $(CDIR)\spdo_prv.h $(CDIR)\speedo.h \
+  $(CDIR)\stdef.h $(CDIR)\tr_fdata.h $(CDIR)\truetype.h $(CDIR)\type1.h \
+  $(CDIR)\ufe.h $(CDIR)\useropt.h
+
+all : _mfenter libfnt.lib _mfexit
+
+_mfenter : 
+	@- $(SCRIPTSDIR)\errsweep.bat -init
+
+_mfexit : 
+	@- $(SCRIPTSDIR)\errsweep.bat -finish
+
+libfnt.lib : cmt.obj cmtglob.obj do_char.obj do_trns.obj fixed_pt.obj \
+  fnt.obj fontrip.obj fontscal.obj frontend.obj fsglue.obj mapstrng.obj \
+  msl.obj msst.obj msstglob.obj newscan.obj out_bl2d.obj out_blk.obj \
+  out_outl.obj out_scrn.obj out_util.obj out_wht.obj reset.obj set_keys.obj \
+  set_spcs.obj set_trns.obj sfntd.obj tt_iface.obj tt_specs.obj
+	- del libfnt.lib
+	@- $(SCRIPTSDIR)\errsweep.bat libfnt.lib
+	$(implib) /out:libfnt.lib   cmt.obj do_char.obj do_trns.obj cmtglob.obj fixed_pt.obj fnt.obj fontrip.obj fontscal.obj frontend.obj fsglue.obj mapstrng.obj msl.obj msst.obj msstglob.obj newscan.obj out_bl2d.obj out_blk.obj out_outl.obj out_scrn.obj out_util.obj out_wht.obj reset.obj set_keys.obj set_spcs.obj set_trns.obj sfntd.obj tt_iface.obj tt_specs.obj
+	@- del current.bat
+
+cmt.obj : $(CDIR)\cmt.c $(FNTHFILES)
+	- del cmt.obj
+	@- $(SCRIPTSDIR)\errsweep.bat cmt.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\cmt.c
+	@- del current.bat
+
+cmtglob.obj : $(CDIR)\cmtglob.c $(FNTHFILES)
+	- del cmtglob.obj
+	@- $(SCRIPTSDIR)\errsweep.bat cmtglob.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\cmtglob.c
+	@- del current.bat
+
+do_char.obj : $(CDIR)\do_char.c $(FNTHFILES)
+	- del do_char.obj
+	@- $(SCRIPTSDIR)\errsweep.bat do_char.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\do_char.c
+	@- del current.bat
+
+do_trns.obj : $(CDIR)\do_trns.c $(FNTHFILES)
+	- del do_trns.obj
+	@- $(SCRIPTSDIR)\errsweep.bat do_trns.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\do_trns.c
+	@- del current.bat
+
+fixed_pt.obj : $(CDIR)\fixed_pt.c $(FNTHFILES)
+	- del fixed_pt.obj
+	@- $(SCRIPTSDIR)\errsweep.bat fixed_pt.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\fixed_pt.c
+	@- del current.bat
+
+fnt.obj : $(CDIR)\fnt.c $(FNTHFILES)
+	- del fnt.obj
+	@- $(SCRIPTSDIR)\errsweep.bat fnt.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\fnt.c
+	@- del current.bat
+
+fontrip.obj : $(CDIR)\fontrip.c $(FNTHFILES)
+	- del fontrip.obj
+	@- $(SCRIPTSDIR)\errsweep.bat fontrip.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\fontrip.c
+	@- del current.bat
+
+fontscal.obj : $(CDIR)\fontscal.c $(FNTHFILES)
+	- del fontscal.obj
+	@- $(SCRIPTSDIR)\errsweep.bat fontscal.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\fontscal.c
+	@- del current.bat
+
+frontend.obj : $(CDIR)\frontend.c $(FNTHFILES)
+	- del frontend.obj
+	@- $(SCRIPTSDIR)\errsweep.bat frontend.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\frontend.c
+	@- del current.bat
+
+fsglue.obj : $(CDIR)\fsglue.c $(FNTHFILES)
+	- del fsglue.obj
+	@- $(SCRIPTSDIR)\errsweep.bat fsglue.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\fsglue.c
+	@- del current.bat
+
+mapstrng.obj : $(CDIR)\mapstrng.c $(FNTHFILES)
+	- del mapstrng.obj
+	@- $(SCRIPTSDIR)\errsweep.bat mapstrng.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\mapstrng.c
+	@- del current.bat
+
+msl.obj : $(CDIR)\msl.c $(FNTHFILES)
+	- del msl.obj
+	@- $(SCRIPTSDIR)\errsweep.bat msl.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\msl.c
+	@- del current.bat
+
+msst.obj : $(CDIR)\msst.c $(FNTHFILES)
+	- del msst.obj
+	@- $(SCRIPTSDIR)\errsweep.bat msst.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\msst.c
+	@- del current.bat
+
+msstglob.obj : $(CDIR)\msstglob.c $(FNTHFILES)
+	- del msstglob.obj
+	@- $(SCRIPTSDIR)\errsweep.bat msstglob.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\msstglob.c
+	@- del current.bat
+
+newscan.obj : $(CDIR)\newscan.c $(FNTHFILES)
+	- del newscan.obj
+	@- $(SCRIPTSDIR)\errsweep.bat newscan.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\newscan.c
+	@- del current.bat
+
+out_bl2d.obj : $(CDIR)\out_bl2d.c $(FNTHFILES)
+	- del out_bl2d.obj
+	@- $(SCRIPTSDIR)\errsweep.bat out_bl2d.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\out_bl2d.c
+	@- del current.bat
+
+out_blk.obj : $(CDIR)\out_blk.c $(FNTHFILES)
+	- del out_blk.obj
+	@- $(SCRIPTSDIR)\errsweep.bat out_blk.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\out_blk.c
+	@- del current.bat
+
+out_outl.obj : $(CDIR)\out_outl.c $(FNTHFILES)
+	- del out_outl.obj
+	@- $(SCRIPTSDIR)\errsweep.bat out_outl.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\out_outl.c
+	@- del current.bat
+
+out_scrn.obj : $(CDIR)\out_scrn.c $(FNTHFILES)
+	- del out_scrn.obj
+	@- $(SCRIPTSDIR)\errsweep.bat out_scrn.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\out_scrn.c
+	@- del current.bat
+
+out_util.obj : $(CDIR)\out_util.c $(FNTHFILES)
+	- del out_util.obj
+	@- $(SCRIPTSDIR)\errsweep.bat out_util.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\out_util.c
+	@- del current.bat
+
+out_wht.obj : $(CDIR)\out_wht.c $(FNTHFILES)
+	- del out_wht.obj
+	@- $(SCRIPTSDIR)\errsweep.bat out_wht.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\out_wht.c
+	@- del current.bat
+
+reset.obj : $(CDIR)\reset.c $(FNTHFILES)
+	- del reset.obj
+	@- $(SCRIPTSDIR)\errsweep.bat reset.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\reset.c
+	@- del current.bat
+
+set_keys.obj : $(CDIR)\set_keys.c $(FNTHFILES)
+	- del set_keys.obj
+	@- $(SCRIPTSDIR)\errsweep.bat set_keys.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\set_keys.c
+	@- del current.bat
+
+set_spcs.obj : $(CDIR)\set_spcs.c $(FNTHFILES)
+	- del set_spcs.obj
+	@- $(SCRIPTSDIR)\errsweep.bat set_spcs.obj
+	$(cc) -Od $(CC_FLAGS)  $(CDIR)\set_spcs.c
+	@- del current.bat
+
+set_trns.obj : $(CDIR)\set_trns.c $(FNTHFILES)
+	- del set_trns.obj
+	@- $(SCRIPTSDIR)\errsweep.bat set_trns.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\set_trns.c
+	@- del current.bat
+
+sfntd.obj : $(CDIR)\sfntd.c $(FNTHFILES)
+	- del sfntd.obj
+	@- $(SCRIPTSDIR)\errsweep.bat sfntd.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\sfntd.c
+	@- del current.bat
+
+tt_iface.obj : $(CDIR)\tt_iface.c $(FNTHFILES)
+	- del tt_iface.obj
+	@- $(SCRIPTSDIR)\errsweep.bat tt_iface.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\tt_iface.c
+	@- del current.bat
+
+tt_specs.obj : $(CDIR)\tt_specs.c $(FNTHFILES)
+	- del tt_specs.obj
+	@- $(SCRIPTSDIR)\errsweep.bat tt_specs.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\tt_specs.c
+	@- del current.bat
+
+clean : 
+	- del *.obj
+	- del *.lib
+	- del *.exe
