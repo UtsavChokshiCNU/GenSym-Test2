@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="02/06/02 18:48:29">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Configuring Product Composites for Replenishment Planning</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="stockpl3.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="stockpl5.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+      <div align="center"><b>e-SCOR User's Guide</b></div>
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/e-SCOR/OnlineHelpFiles/UsersGuide/html/stockpla.htm">  
+        Using Stock Planning Strategies  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Configuring Product Composites for Replenishment Planning
+</h2>
+<p >
+  <a name="76919"> </a>
+<p><div align="left"><img src="images/product.gif" border="0" hspace="0" vspace="0">
+</div><a name="76918"></a></p>
+
+
+
+</p>
+<p>When the Plan Type is <code>Replenishment</code>, the default, a role computes the size of each replenishment order for source products and each build order for delivery products, based on these parameters, which you configure for both source and delivery products:<a name="5688"></a></p>
+<p >
+  <a name="9288"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="9273"><div >Parameter</a></div></th>
+    <th><a name="9275"><div >Description</a></div></th>
+  </tr>
+  <tr>
+    <td><p>Replenishment<br>Threshold<a name="9277"></a></p>
+</td>
+    <td><p>The minimum number of products the role needs to maintain in inventory before reordering. <a name="9279"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Minimum Reorder <br>Quantity<a name="9281"></a></p>
+</td>
+    <td><p>The minimum number of products for which the role creates orders, when the inventory dips below the Replenishment Threshold. If necessary, the role can create orders for more than this quantity.<a name="9283"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Maximum Threshold<a name="9285"></a></p>
+</td>
+    <td><p>The maximum number of products the role tries to maintain in inventory. When planning how many products to order, the role plans to have no more than this maximum in inventory. <a name="9287"></a></p>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<p>If the Inventory Level metric of the source or delivery product falls below the Replenishment Threshold parameter, the role determines the size of the replenishment or build order, respectively, based on the Minimum Reorder Quantity parameter and the number of current orders. During its source or make planning cycle, the role creates orders such that the Inventory Level does not exceed the Maximum Threshold. If the role requires additional inventory such that the Inventory Level would exceeds this maximum, the role adds the excess amount to the order to the next planning cycle. <a name="9619"></a></p>
+<p>You must configure the Maximum Threshold to be less than the Inventory Maximum.<a name="9643"></a></p>
+<p>A Consumer role determines order size and frequency, based on order demand parameters that you configure in the Sc: Source Consumer category on the role detail; it does not use source planning. Also, a Consumer role does not keep an inventory; therefore, you do not configure these parameters for the source products of a Consumer role.<a name="5691"></a></p>
+<h4 >	 To configure a role to use a stock/replenishment planning strategy:<a name="5715"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>1	</b></td>    <td valign="top" width="580">Show the detail of each Base Manufacturer, Distributor, and Manufacturer role that you configured to use a stock/replenishment planning strategy.<a name="5716"></a></td>  </tr></table><blockquote>  <a name="48449">For details, see <a href="stockpl2.htm#6252">Configuring the Stock Planning Strategy</a>.</a></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>2	</b></td>    <td valign="top" width="580">Show the detail of the Products pool for each role to show its source and delivery products.<a name="5717"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>3	</b></td>    <td valign="top" width="580">Display the properties dialog for each source and delivery product, click the Planning tab and configure the parameters described in the table above.<a name="5718"></a></td>  </tr></table><p><b>Related topics:</b><a name="76940"></a></p>
+<p><a href="stockpl5.htm#42412">Understanding How the Role Computes Orders Size for Replenishment Planning</a><a name="76944"></a></p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="stockpl3.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="stockpl5.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
