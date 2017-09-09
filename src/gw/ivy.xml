@@ -1,0 +1,43 @@
+<ivy-module version="1.0">
+    
+    <info organisation="gensym" module="gw"/>
+
+    <configurations>
+        <conf name="ic-lib" description="ic libary"/>
+        <conf name="vc-lib" description="vc libary"/>
+    </configurations>
+
+    <publications>
+        <artifact name="gw" type="${sftp.vc.type}" ext="lib"/>
+        <artifact name="gw" type="${sftp.ic.type}" ext="lib"/> 
+    </publications>
+
+    <dependencies>
+	    <dependency org="gensym" name="libgsec" rev="${libgsec.revision}" conf="ic-lib->*">
+            <artifact name="libgsec" type="ic-lib" ext="lib"/>
+        </dependency>
+        <dependency org="gensym" name="libgsec" rev="${libgsec.revision}" conf="vc-lib->*">
+            <artifact name="libgsec" type="vc-lib" ext="lib"/>
+        </dependency>
+        <dependency org="gensym" name="librtl" rev="${librtl.revision}" conf="ic-lib->*">
+            <artifact name="librtl" type="ic-lib" ext="lib"/>
+        </dependency>
+        <dependency org="gensym" name="librtl" rev="${librtl.revision}" conf="vc-lib->*">
+            <artifact name="librtl" type="vc-lib" ext="lib"/>
+        </dependency>
+        <dependency org="gensym" name="libtcp" rev="${libtcp.revision}" conf="ic-lib->*">
+            <artifact name="libtcp" type="ic-lib" ext="lib"/>
+        </dependency>
+        <dependency org="gensym" name="libtcp" rev="${libtcp.revision}" conf="vc-lib->*">
+            <artifact name="libtcp" type="vc-lib" ext="lib"/>
+        </dependency>
+		<dependency org="gensym" name="libgsi" rev="${gsiannex.revision}" conf="vc-lib->*">
+            <artifact name="gsiannex" type="vc-lib" ext="obj"/>
+        </dependency>
+		<dependency org="gensym" name="libgsi" rev="${gsiannex.revision}" conf="ic-lib->*">
+            <artifact name="gsiannex" type="ic-lib" ext="obj"/>
+        </dependency>
+    </dependencies>
+
+</ivy-module>
+
