@@ -1,0 +1,140 @@
+#!/bin/sh
+# Set-Dev-Links
+# John Valente
+
+# This script sets up the /gensym/ut/dev/<product>-<linkname> links to the
+# specified version.  It is hardcoded to work with only g2, tw, gsi, kbs and
+# fonts. Perhaps lisp_products should also be a command line parameter?
+
+# We don't verify the link names.  If the user specifies a link which
+# does not exist, it will be created.  I'm relying on the user to not
+# create new links arbitrarily.  But since it's easy enough to do so
+# without the script, I'm not going to worry about trying to prevent
+# it here.
+
+# Usage:
+#   set-dev-links <internal-id> <link-name> [<other-link-names>]
+
+# Sanity Checks
+
+builduser="ab"
+mounted_st_root="/st/ab"
+
+if [ `whoami` != $builduser ]
+then
+  echo "ERROR: Only $builduser can run this script."
+  exit 2
+fi
+
+if [ ! -d /st ]
+then
+  echo "ERROR: This must be done on a machine with a spin tree."
+  echo " "
+  exit 3
+fi
+
+
+# Parse Arguments
+
+if [ $# -lt 2 ]
+then
+  echo " "
+  echo "usage: set-dev-links <internal-id> <link-name> [<other-link-names>]"
+  echo " e.g.: set-dev-links 50r1-E29 best latest"
+  echo " "
+  echo "Creates links for g2, tw, gsi, kbs and fonts in /gensym/ut/dev, "
+  echo "on all platforms."
+  echo " "
+  exit 1
+fi
+
+# Initialization
+
+base_iship="${mounted_st_root}/skeletons/mt-skel/iut-skel-"
+nfs_platforms=`ls ${mounted_st_root}/iship/dep`
+symlink="/bin/ln -s"
+delete="/bin/rm -f"
+lisp_products="g2 tw gsi kbs fonts"
+newlinkp="yes"
+
+if [ $1 = "-remove" ]
+then
+  newlinkp=""
+else
+  lisp_ver=$1
+fi
+shift
+
+links=$*
+
+# Begin creating links
+# Link to gsi-*est is the Lisp GSI, so we do not need to bother with c_products.
+
+# Update <product>-<link> for NFS platforms
+# VMS does not have links.
+
+for platform in ${nfs_platforms}
+do
+  arch_dir=${base_iship}${platform}
+  for product in ${lisp_products}
+  do
+    for lnk in ${links}
+    do
+      link_name="${product}-${lnk}"
+      echo -n "${platform}  "
+      if [ -z "${newlinkp}" ]
+      then
+	echo "removing ${link_name}"
+	${delete} ${arch_dir}/${link_name}
+      else
+	link_points_to="${product}-${lisp_ver}"
+	cd ${arch_dir}
+	if [ -d ${arch_dir}/${link_points_to} ]
+	then
+	  ${delete} ${arch_dir}/${link_name}
+	  ${symlink} ${link_points_to} ${arch_dir}/${link_name}
+	  echo "${link_name} --> ${link_points_to}"
+	else
+	  echo -n "No ${link_points_to} found "
+	  echo -n "for platform ${platform}. "
+	  if [ -d ${arch_dir}/${link_name} ]
+	  then
+	    echo " Leaving ${link_name} intact."
+	  else
+	    if [ -h ${arch_dir}/${link_name} ]
+	    then
+	      echo "Deleting ${link_name}."
+	    else
+	      echo "No old link exists."
+	    fi
+	    ${delete} ${arch_dir}/${link_name}
+	  fi
+	fi
+      fi
+    done
+  done
+  echo " "
+done
+
+
+# The above loop has several options:
+#  a) If the target exists, the script removes the old link (using the -f
+#     option so we don't hear about it if the link never existed), and
+#     creates the link.
+#  b) If the target does not exist, and the old link is still good, the
+#     link is not modified.  We check that the link is still good by
+#     testing if it is a directory or not.  If the shell says it's a
+#     directory, then the link is probably good.
+#  c) If the link is not a directory, but is a file, then it points
+#     to something nonexistent.  Delete it.
+#  d) If the link doesn't exist either, inform the user.
+#
+# Actually, I delete the link if it's not a directory, whether it 
+# exists or not.  That's because I don't completely trust the
+# Bourne shell command 'test -h file'.  The Bourne shell test 
+# command lacks an option to simply tell whether a file exists or
+# not.  Test returns false on bad symbolic link for both -f and
+# -d.  Also, the -h option was not carried forward into the Korn
+# or Born-Again shells.  Some systems, notably Linux, substitute
+# bash for /bin/sh.  So, since rm -f "works" on files which don't
+# exist, I prefer to just delete it whether or not I find it.
