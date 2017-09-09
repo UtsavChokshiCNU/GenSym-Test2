@@ -1,0 +1,78 @@
+// WorkspaceView.odl : type library source for Workspace View ActiveX Control
+
+// This file will be processed by the Make Type Library (mktyplib) tool to
+// produce the type library (WorkspaceView.tlb) that will become a resource in
+// WorkspaceView.ocx.
+
+#include <olectl.h>
+#include <idispids.h>
+
+[ uuid(D03BCBA5-8C30-4fd6-A02E-9F7BE412FA3F), version(2011),
+  helpstring("Gensym Workspace View"),
+  control ]
+library WSVLib
+{
+	importlib(STDOLE_TLB);
+	importlib(STDTYPE_TLB);
+
+	//  Primary dispatch interface for CWorkspaceView
+
+	[ uuid(3068339E-6BE7-4bbd-853F-8492F150D2A4),
+	  helpstring("Dispatch interface for Gensym Workspace View"), hidden ]
+	dispinterface _DWorkspaceView
+	{
+		properties:
+			// NOTE - ClassWizard will maintain property information here.
+			//    Use extreme caution when editing this section.
+			//{{AFX_ODL_PROP(CWorkspaceView)
+			[id(1)] BSTR TwLocation;
+			[id(2)] BSTR WorkspaceName;
+			[id(3)] BSTR WorkspaceUUID;
+			[id(4)] BSTR LaunchUserName;
+			[id(5)] BSTR LaunchUserMode;
+			[id(6)] BSTR LaunchPassword;
+			[id(7)] BSTR LaunchWindow;
+			[id(8)] IUnknown *G2Gateway;
+			[id(9)] boolean Reconnect;
+			//}}AFX_ODL_PROP
+
+		methods:
+			// NOTE - ClassWizard will maintain method information here.
+			//    Use extreme caution when editing this section.
+			//{{AFX_ODL_METHOD(CWorkspaceView)
+			[id(10)] HRESULT ConnectToG2Gateway(IUnknown *gateway_object);
+			[id(11)] HRESULT ShowWorkspaceWithName(BSTR workspace_name);
+			[id(12)] HRESULT ShowWorkspaceWithUUID(BSTR workspace_uuid);
+			//}}AFX_ODL_METHOD
+	};
+
+	//  Event dispatch interface for CWorkspaceView
+
+	[ uuid(50985B9F-47E6-4e26-B041-DFA123CFFBBA),
+	  helpstring("Event interface for Gensym Workspace View") ]
+	dispinterface _DWorkspaceViewEvents
+	{
+		properties:
+			//  Event interface has no properties
+
+		methods:
+			// NOTE - ClassWizard will maintain event information here.
+			//    Use extreme caution when editing this section.
+			//{{AFX_ODL_EVENT(CWorkspaceView)
+			[id(13), hidden] void Drop(VARIANT* dataObj, long dropEffect, short cx, short cy);
+			//}}AFX_ODL_EVENT
+	};
+
+	//  Class information for CWorkspaceView
+
+	[ uuid(A02C8A0F-46E9-450f-B173-FBC85F1F5E91),
+	  helpstring("Gensym Workspace View"), control ]
+	coclass WorkspaceView
+	{
+		[default] dispinterface _DWorkspaceView;
+		[default, source] dispinterface _DWorkspaceViewEvents;
+	};
+
+	//{{AFX_APPEND_ODL}}
+	//}}AFX_APPEND_ODL}}
+};
