@@ -1,0 +1,69 @@
+;;; -*- Mode: LISP; Syntax: Common-Lisp; Base: 10; Package: USER -*-
+(in-package "USER")
+
+;;;; Makefile generator relational database: tw-dependencies.rel
+
+;;; Copyright (c) 1986-2017 Gensym Corporation.
+;;; All Rights Reserved.
+
+;;; author: Mark E. Staknis
+
+;;; This file contains the relation that maintains the dependencies
+;;; for the creation and installation of Telewindows.  Most local
+;;; dependencies are in the tw subdirectories.  During makefile generation,
+;;; the dependencies in this relation are augmented by dependencies
+;;; created from file roots listed in tw/c/twfiles.txt, which is
+;;; generated during tw translation.  For each root in twfiles.txt,
+;;; a row of form
+;;;    (tw            exe  _all        <root>        obj  y     )
+;;; is generated.
+
+(setq tw-dependency-relation
+ '(( target-group  type-group
+                        platform-group
+                                    dependency    dependency-type
+                                                       local )
+;;   ------------  ---- ----------- ------------  ---- -----
+   ((all           dum  _all        tw            exe  y     )
+    (all           dum  _all        libtw         lib  y     )
+    ; nonlocal libs are unsorted in the link line and appear in the order here
+    (tw            exe  _all        libtw         lib  y     )
+    (tw            exe  _all        libfnt        lib  n     )
+    (tw            exe  _all        libcprim      lib  n     )
+    (tw            exe  _all        libjpeg       lib  n     )
+    (tw            exe  _all        librtl        lib  n     )
+    (tw            exe  intelnt     tw            res  y     )
+    (tw            exe  intelnt     winmain       obj  y     )
+    (libtw         lib  _all        main          obj  y     )
+    (tw            res  intelnt     tw            rc   y     )
+    (_all          obj  _all        rthfiles      var  y     )
+    (rthfiles      var  _all        librtl        h    n     )
+    (rthfiles      var  _all        c-ifuns       h    n     )
+    (rthfiles      var  _all        c-sdefs       h    n     )
+    (rthfiles      var  _all        config        h    n     )
+    (rthfiles      var  _all        core          h    n     )
+    (rthfiles      var  _all        externs       h    n     )
+    (rthfiles      var  _all        ffi           h    n     )
+    (rthfiles      var  _all        gensym        h    n     )
+    (rthfiles      var  _all        ifuns         h    n     )
+    (rthfiles      var  _all        initvars      h    n     )
+    (rthfiles      var  _all        inline        h    n     )
+    (rthfiles      var  _all        instance      h    n     )
+    (rthfiles      var  _all        kernel        h    n     )
+    (rthfiles      var  _all        lisplib       h    n     )
+    (rthfiles      var  _all        longname      h    n     )
+    (rthfiles      var  _all        object        h    n     )
+    (rthfiles      var  _all        smcompat      h    n     )
+    (rthfiles      var  _all        specific      h    n     )
+    (rthfiles      var  _all        svarargs      h    n     )
+    (rthfiles      var  _all        uconfig       h    n     )
+    (rthfiles      var  _all        values        h    n     )
+    (rthfiles      var  _all        varkey        h    n     )
+    (install       dum  intelnt     pegrp32g      dll  n     )
+    (install       dum  intelnt     gdiplus       dll  n     )
+    (install       dum  intelnt     nptwplug      dll  n     )
+    (install       dum  unix        nptwplug      dso  n     )
+    (install       dum  _all        tw            exe  y     )
+    (install       dum  intelnt     tw            map  y     )
+    (install       dum  _all        tw            ok   y     )
+ )))
