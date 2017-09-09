@@ -1,0 +1,327 @@
+<html><head><title>G2Item</title></head>
+<body bgcolor="#ffffff">
+<h5><a href="g2item2.htm">| Prev </a> 
+  | Next
+  <a href="g2item.htm">| Start of Chapter </a>
+ <a href="g2itemho.htm">| Next Chapter </a> <a href="booktoc.htm">| Contents </a> <a href="glossary.htm">| Glossary </a> <a href="bookix.htm">| Index </a>  <a href="mailto:docs@gensym.com">| Comments | </a> (4 out of 4) </h5> <br>
+
+<a name="1000875">
+<h1> Methods</h1>
+</a><a name="996906">
+<h2> CallMethod()</h2>
+</a><a name="996909">
+The <code>CallMethod()</code> method calls a procedure in G2 and waits for the G2 procedure to complete.<p>
+</a><a name="996910">
+<h3> Syntax</h3>
+</a><ul><a name=996911">
+<pre><code>Call</code><code>Method</code><code>(</code><code><em>MethodName</code></em><code> As String,<br>&#32;&#32;&#32;[</code><code><em>ParamArray InputArguments()</code></em><code> As &#32;Variant]) <br></code><code><em>&#32;&#32;&#32;ReturnArguments</code></em><code> As &#32;Variant</code></pre>
+</a><a name="996927">
+<table border="3">
+<caption></caption>
+<tr><th align="left" valign="middle"><a name="996916">
+<strong>Arguments </strong>
+</a><th align="left" valign="middle"><a name="996918">
+<strong>Description </strong>
+</a>
+<tr><td valign="middle"><a name="996920">
+<code><code><em>MethodName </code></em><code>As String</code></code>
+</a><br><td valign="middle"><a name="996922">
+The name of the method you are calling.
+</a><br>
+<tr><td valign="middle"><a name="996924">
+<code><code><em>ParamArray</code></em><code><em> InputArguments()<br></code></em><code>As Variant</code></code>
+</a><br><td valign="middle"><a name="996926">
+Any of zero or more arguments to be passed to the method. 
+</a><br>
+
+</table>
+
+<table>
+<tr><td>
+</table>
+<p>
+</a><a name="996937">
+<table border="3">
+<caption></caption>
+<tr><th align="left" valign="middle"><a name="996930">
+<strong>Return Values</strong>
+</a><th align="left" valign="middle"><a name="996932">
+<strong>Description </strong>
+</a>
+<tr><td valign="middle"><a name="996934">
+<code><code><em>ReturnArguments </code></em><code>As Variant</code></code>
+</a><br><td valign="middle"><a name="996936">
+Any of zero or more arguments to be returned from the method. If a method returns more than one value, Visual Basic can access the return values by using array subscripting, such as Ret(1), Ret(2), and so on. If only one value is returned, the array subscript is not necessary.
+</a><br>
+
+</table>
+
+<table>
+<tr><td>
+</table>
+<p>
+</a></ul><a name="999209">
+<h3> Description</h3>
+</a><a name="999210">
+The <code>CallMethod()</code> method waits until the G2 procedure completes and returns values before executing the next statement following the call.<p>
+</a><a name="999211">
+<hr><strong>Note:</strong> The container application can pass any number of arguments to G2 and G2 can return any number of arguments.<hr>
+<p></a><a name="999213">
+Telewindows2 Toolkit returns an exception to the caller under one of the following conditions:<p>
+</a><ul><a name="999214">
+<li>If G2 does not respond within the time specified by the <code>CallTimeout</code> property.
+<p></a><a name="999215">
+<li>If an error with the call is detected by Telewindows2 Toolkit.
+<p></a><a name="999216">
+<li>If the G2 procedure signals an error.
+<p></a></ul><a name="999217">
+<h3> Example</h3>
+</a><a name="999218">
+Visual Basic calls the G2 procedure and passes three values: an <code>integer</code>, a <code>string</code>, and a <code>boolean</code>. The call waits for a return value. G2 displays these values on the message board and returns a string to Visual Basic.<p>
+</a><a name="999219">
+<h3> Visual Basic </h3>
+</a><ul><a name=999220">
+<pre>Private Sub Form_Load()<br>&#32;&#32;&#32;Ret = G2Item1.Call<code>Method</code>("my-proc", <br>&#32;&#32;&#32;&#32;&#32;&#32;1, "Hello G2", True)<br>&#32;&#32;&#32;MsgBox Ret<br>End Sub</pre>
+</a></ul><a name="999221">
+<h3> G2 </h3>
+</a><ul><a name="999222">
+<pre>my-proc(arg1: value, arg2: value, arg3: value) = value</pre>
+</a><a name="999223">
+<pre>begin<br>&#32;&#32;&#32;inform the operator that "Value1:[arg1], Value2:[arg2], Value3:[arg3]";<br>&#32;&#32;&#32;return "Hello COM";<br>end</pre>
+</a></ul><a name="1001879">
+<h2> Disable()</h2>
+</a><a name="1001884">
+The <code>Disable()</code> method disables the item in <code>G2Item</code> in G2.<p>
+</a><a name="1001948">
+<h3> Syntax</h3>
+</a><ul><a name=1001949">
+<pre><code>Disable()</code></pre>
+</a></ul><a name="1001889">
+<h2> DropToBottom()</h2>
+</a><a name="1001990">
+The <code>DropToBottom()</code> method drops the item in <code>G2Item</code> to the bottom of the Z order of its parent workspace item.<p>
+</a><a name="1001953">
+<h3> Syntax</h3>
+</a><ul><a name=1001954">
+<pre><code>DropToBottom()</code></pre>
+</a></ul><a name="1001913">
+<h2> Enable()</h2>
+</a><a name="1002008">
+The <code>Enable()</code> method enables the item in <code>G2Item</code> in G2.<p>
+</a><a name="1001960">
+<h3> Syntax</h3>
+</a><ul><a name=1001961">
+<pre><code>Enable()</code></pre>
+</a></ul><a name="1001175">
+<h2> IsInstanceOfClass()</h2>
+</a><a name="1001176">
+The <code>IsInstanceOfClass()</code> method tests to see if the current item is a member of the specified class.<p>
+</a><a name="1001177">
+<h3> Syntax</h3>
+</a><ul><a name=1001178">
+<pre><code>IsInstanceOfClass</code><code>(</code><code><em>ClassName</code></em><code> As String) As Boolean</code></pre>
+</a><a name="1001188">
+<table border="3">
+<caption></caption>
+<tr><th align="left" valign="middle"><a name="1001181">
+<strong>Argument </strong>
+</a><th align="left" valign="middle"><a name="1001183">
+<strong>Description </strong>
+</a>
+<tr><td valign="middle"><a name="1001185">
+<code><code><em>ClassName</code></em><code><em> </code></em><code>As String</code></code>
+</a><br><td valign="middle"><a name="1001187">
+The name of the class that is being checked to see if the current item is a member of the specified class.
+</a><br>
+
+</table>
+
+<table>
+<tr><td>
+</table>
+<p>
+</a></ul><a name="1001941">
+<h2> LiftToTop()</h2>
+</a><a name="1002018">
+The <code>LiftToTop()</code> method lifts the item in <code>G2Item</code> to the top of the Z order of its parent workspace item.<p>
+</a><a name="1001976">
+<h3> Syntax</h3>
+</a><ul><a name=1001977">
+<pre><code>LiftToTop()</code></pre>
+</a></ul><a name="1002032">
+<h2> MakePermanent()</h2>
+</a><a name="1002033">
+The <code>MakePermanent()</code> method makes the item in <code>G2Item</code> permanent.<p>
+</a><a name="1002034">
+<h3> Syntax</h3>
+</a><ul><a name=1002035">
+<pre><code>MakePermanent()</code></pre>
+</a></ul><a name="1002045">
+<h2> MakeTransient()</h2>
+</a><a name="1002046">
+The Make<code>Transient()</code> method makes the item in <code>G2Item</code> transient.<p>
+</a><a name="1002047">
+<h3> Syntax</h3>
+</a><ul><a name=1002048">
+<pre><code>MakeTransient()</code></pre>
+</a></ul><a name="1002054">
+<h2> RestoreNormalSize()</h2>
+</a><a name="1002055">
+The <code>RestoreNormalSize()</code> method redraws the item in <code>G2Item</code> to its original size in G2.<p>
+</a><a name="1002056">
+<h3> Syntax</h3>
+</a><ul><a name=1002057">
+<pre><code>RestoreNormalSize()</code></pre>
+</a></ul><a name="997250">
+<h2> StartMethod()</h2>
+</a><a name="997251">
+The <code>StartMethod()</code> method starts a procedure in G2. The effects of starting the procedure are reflected back into your Visual Basic container.<p>
+</a><a name="997267">
+<h3> Syntax</h3>
+</a><ul><a name=997268">
+<pre><code>Start</code><code>Method</code><code>(</code><code><em>MethodName</code></em><code> As String,<br>&#32;&#32;&#32;[</code><code><em>ParamArray InputArguments()</code></em><code> As &#32;Variant]) <br></code><code><em>&#32;&#32;&#32;ReturnArguments</code></em><code> As &#32;Variant</code></pre>
+</a><a name="997282">
+<table border="3">
+<caption></caption>
+<tr><th align="left" valign="middle"><a name="997271">
+<strong>Arguments </strong>
+</a><th align="left" valign="middle"><a name="997273">
+<strong>Description </strong>
+</a>
+<tr><td valign="middle"><a name="997275">
+<code><code><em>MethodName </code></em><code>As String</code></code>
+</a><br><td valign="middle"><a name="997277">
+The name of the method you are calling.
+</a><br>
+<tr><td valign="middle"><a name="997279">
+<code><code><em>ParamArray</code></em><code><em> InputArguments()<br></code></em><code>As Variant</code></code>
+</a><br><td valign="middle"><a name="997281">
+Any of zero or more arguments to be passed to the method. 
+</a><br>
+
+</table>
+
+<table>
+<tr><td>
+</table>
+<p>
+</a><a name="997292">
+<table border="3">
+<caption></caption>
+<tr><th align="left" valign="middle"><a name="997285">
+<strong>Return Values</strong>
+</a><th align="left" valign="middle"><a name="997287">
+<strong>Description </strong>
+</a>
+<tr><td valign="middle"><a name="997289">
+<code><code><em>ReturnArguments </code></em><code>As Variant</code></code>
+</a><br><td valign="middle"><a name="997291">
+Any of zero or more arguments to be returned from the method. If a method returns more than one value, Visual Basic can access the return values by using array subscripting, such as Ret(1), Ret(2), and so on. If only one value is returned, the array subscript is not necessary.
+</a><br>
+
+</table>
+
+<table>
+<tr><td>
+</table>
+<p>
+</a></ul><a name="997254">
+<h3> Description</h3>
+</a><a name="997255">
+The started G2 procedure cannot return values to the container application. If Telewindows2 Toolkit is not already connected with G2, the <code>StartMethod()</code> method makes the connection.<p>
+</a><a name="999100">
+<hr><strong>Note:</strong> The container application can pass any number of arguments to G2.<hr>
+<p></a><a name="1000717">
+<h2> String()</h2>
+</a><a name="1000718">
+The <code>String()</code> method converts a G2 item name to a string.<p>
+</a><a name="1000719">
+<h3> Syntax</h3>
+</a><ul><a name=1000720">
+<pre><code>String() As String</code></pre>
+</a></ul><a name="999114">
+<h2> Structure()</h2>
+</a><a name="1001416">
+The <code>Structure()</code> method creates a G2 structure from an array of name-value pairs. <code>Structure()</code> serves as a constructor for creating a G2 structure, removing the need to use the Visual Basic keyword <code>new</code> to create a structure by using the <code>G2Structure</code> object (see <a href="mapping3.htm#35262">Passing a G2 Structure</a>).<p>
+</a><a name="999116">
+<h3> Syntax</h3>
+</a><a name="999117">
+<pre><code>Structure([ParamArray </code><code><em>NameValuePairs()</code></em><code> As Variant]) As G2Structure</code></pre>
+</a><a name="999127">
+<table border="3">
+<caption></caption>
+<tr><th align="left" valign="middle"><a name="999120">
+<strong>Argument </strong>
+</a><th align="left" valign="middle"><a name="999122">
+<strong>Description </strong>
+</a>
+<tr><td valign="middle"><a name="999124">
+<code><code><em>NameValue<br>Pairs()</code></em><code> </code>A<code>s Variant</code></code>
+</a><br><td valign="middle"><a name="999126">
+An array of name-value pairs out of which a G2 structure is created. You can send the structure to G2.
+</a><br>
+
+</table>
+
+<table>
+<tr><td>
+</table>
+<p>
+</a><a name="1001421">
+<h3> Example</h3>
+</a><a name="1001422">
+The following line of code shows how you can call a G2 procedure and pass it arguments in the form of a G2 structure.<p>
+</a><ul><a name=1001423">
+<pre>Call G2Item1.call("Times", <br>&#32;&#32;&#32;G2Item1.Structure("start", 800, "stop", 900))</pre>
+</a></ul><a name="999187">
+<h2> Symbol()</h2>
+</a><a name="1001411">
+The <code>Symbol()</code> method creates a G2 symbol from a text string. <code>Symbol()</code> serves as a constructor for creating a G2 symbol, removing the need to use the Visual Basic keyword <code>new</code> to create a symbol (see <a href="mapping2.htm#34016">Passing a G2 Symbol</a>).<p>
+</a><a name="999189">
+<h3> Syntax</h3>
+</a><ul><a name=999190">
+<pre><code>Symbol(</code><code><em>SymbolName</code></em><code> As String) As G2Symbol</code></pre>
+</a><a name="999200">
+<table border="3">
+<caption></caption>
+<tr><th align="left" valign="middle"><a name="999193">
+<strong>Argument </strong>
+</a><th align="left" valign="middle"><a name="999195">
+<strong>Description </strong>
+</a>
+<tr><td valign="middle"><a name="999197">
+<code><code><em>SymbolName</code></em><code> </code>A<code>s String</code></code>
+</a><br><td valign="middle"><a name="999199">
+A text string out of which a G2 symbol is created, which can be sent to G2.
+</a><br>
+
+</table>
+
+<table>
+<tr><td>
+</table>
+<p>
+</a></ul><a name="1001374">
+<h3> Example</h3>
+</a><a name="1001375">
+The following line of code shows how you can set the value of a G2 attribute that requires the G2 symbol data type.<p>
+</a><ul><a name=1001376">
+<pre>Call G2Item1.call("Status", G2Item1.Symbol("On-line"))</pre>
+</a></ul><a name="1002092">
+<h2> TransferOff()</h2>
+</a><a name="1002093">
+The <code>TransferOff()</code> method makes the item in <code>G2Item</code> have no parent workspace.<p>
+</a><a name="1002094">
+<h3> Syntax</h3>
+</a><ul><a name=1002095">
+<pre><code>TransferOff()</code></pre>
+</a></ul><a name="997699">
+<p>
+</a>
+
+<h5><a href="g2item2.htm">| Prev </a> 
+  | Next
+  <a href="g2item.htm">| Start of Chapter </a>
+ <a href="g2itemho.htm">| Next Chapter </a> <a href="booktoc.htm">| Contents </a> <a href="glossary.htm">| Glossary </a> <a href="bookix.htm">| Index </a>  <a href="mailto:docs@gensym.com">| Comments | </a> (4 out of 4) </h5> <br>
+<A HREF="http://www.gensym.com"><IMG ALIGN = BOTTOM SRC = "logo.gif" height=51 width=162><A HREF="http://www.gensym.com"><h6>Gensym Corporation, Inc.</h6></A>
+<A HREF="titlepa1.htm"><h6>Copyright &#169; 1998 Gensym Corporation, Inc.</h6></A>
