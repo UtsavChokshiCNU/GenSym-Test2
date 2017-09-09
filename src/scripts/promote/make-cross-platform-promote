@@ -1,0 +1,47 @@
+#!/bin/csh -f
+
+# This is an auxiliary script for java products, which creates the 
+# "platform independent" version (where just the platform dependent
+# bits are separated out and the jar files etc are common).  Products
+# are jvlx and tw2x.
+
+# intelnt is currently different from the other platforms
+# because it has everyting in the components directory and the others
+# do not (yet)
+
+setenv PLATFORMS "sparcsol rs6000 hp9000s700 intelnt linux hpia64"
+
+setenv STAGING ${SRCBOX}/staging
+
+setenv usage "make-cross-platform-promote product-name"
+
+setenv PRODUCT $1
+
+# make the cross-platform source for the promote
+
+setenv XPLATFORM ${SRCBOX}/cross-platform/${PRODUCT}
+
+echo "Removing old directory $XPLATFORM"
+rm -rf $XPLATFORM
+
+echo "making new directory $XPLATFORM"
+mkdir -p $XPLATFORM
+
+echo "Copying ${STAGING}/${PRODUCT}/intelnt to $XPLATFORM"
+cp -r ${STAGING}/${PRODUCT}/intelnt/* $XPLATFORM
+
+rm ${XPLATFORM}/bin/*
+
+# intelnt done specially (not anymore!!)
+#setenv i intelnt
+#setenv BIN ${XPLATFORM}/bin/$i
+#mkdir $BIN
+#echo "Copying bin directory for $i"
+#cp ${STAGING}/${PRODUCT}/$i/components/bin/* $BIN
+
+foreach i ($PLATFORMS)
+	setenv BIN ${XPLATFORM}/bin/$i
+	mkdir $BIN
+	echo "Copying bin directory for $i"
+	cp ${STAGING}/${PRODUCT}/$i/bin/* $BIN
+end
