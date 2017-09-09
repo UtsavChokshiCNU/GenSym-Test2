@@ -1,0 +1,274 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="02/06/02 18:38:56">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Optimizing Replenishment Levels for the Worst Case Scenario</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="vmidemb2.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="vmidemb4.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+      <div align="center"><b>e-SCOR Tutorials</b></div>
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/e-SCOR/OnlineHelpFiles/Tutorials/html/vmidemoo.htm">  
+        Optimizing the Central Distributor Model  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Optimizing Replenishment Levels for the Worst Case Scenario
+</h2>
+<p>First, you will optimize replenishment levels by simulating the worst case scenario.<a name="292006"></a></p>
+<h4 >	 To optimize replenishment levels for the worst case scenario:<a name="283995"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>1	</b></td>    <td valign="top" width="580">In Excel, open the file named <code>Tutorial-VMI-Summary-Reports.xls</code> located in the <code>kbs</code> directory.<a name="283999"></a></td>  </tr></table><blockquote><h6><b>Tip: </b>Remember, you can open this report from the Start menu.<a name="317422"></a></h6></blockquote><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>2	</b></td>    <td valign="top" width="580">Use the Model Parameters summary table to configure the Order Min, Mode, and Max to be the maximum value for each of the three Consumer roles, as follows:<a name="314556"></a></td>  </tr></table><p >
+  <a name="287311"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="287327"><div >Consumer</a></div></th>
+    <th><a name="287329"><div >Site A</a></div></th>
+    <th><a name="287331"><div >Site B</a></div></th>
+    <th><a name="287333"><div >Site C</a></div></th>
+  </tr>
+  <tr>
+    <td><p>Order Min<a name="287335"></a></p>
+</td>
+    <td><p>150<a name="287337"></a></p>
+</td>
+    <td><p>400<a name="287339"></a></p>
+</td>
+    <td><p>100<a name="287341"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Order Mode<a name="287371"></a></p>
+</td>
+    <td><p>150<a name="287395"></a></p>
+</td>
+    <td><p>400<a name="287407"></a></p>
+</td>
+    <td><p>100<a name="287415"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Order Max<a name="287383"></a></p>
+</td>
+    <td><p>150<a name="287397"></a></p>
+</td>
+    <td><p>400<a name="287409"></a></p>
+</td>
+    <td><p>100<a name="287417"></a></p>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>3	</b></td>    <td valign="top" width="580">As a starting point, increase the initial estimate for the Replenishment Level for each of the three distribution sites by the amount of the maximum order size, as follows:<a name="287558"></a></td>  </tr></table><p >
+  <a name="314843"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="314828"><div >Sites</a></div></th>
+    <th><a name="314830"><div >A</a></div></th>
+    <th><a name="314832"><div >B</a></div></th>
+    <th><a name="314834"><div >C</a></div></th>
+  </tr>
+  <tr>
+    <td><p>Replenishment<br>Level<a name="314836"></a></p>
+</td>
+    <td><p>900<br>(750 + 150)<a name="314838"></a></p>
+</td>
+    <td><p>2000<br>(1600 + 400)<a name="314840"></a></p>
+</td>
+    <td><p>800<br>(700 + 100)<a name="314842"></a></p>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>4	</b></td>    <td valign="top" width="580">Configure the Delivery Time Min to be the same as the Delivery Time Max, as follows:<a name="272085"></a></td>  </tr></table><p >
+  <a name="287642"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="287691"><div >Distributor</a></div></th>
+    <th><a name="287693"><div ><br></a></div></th>
+  </tr>
+  <tr>
+    <td><p>Delivery Time Min<a name="287730"></a></p>
+</td>
+    <td><p>9<a name="287732"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Delivery Time Max<a name="287745"></a></p>
+</td>
+    <td><p>9<a name="287747"></a></p>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<blockquote>  <a name="287827">Your Model Summary table should look like this:</a></blockquote>
+<p >
+  <a name="287289"> </a>
+<p><div align="left"><img src="images/vmidemoa.gif" border="0" hspace="0" vspace="0">
+</div><a name="287288"></a></p>
+
+
+
+</p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>5	</b></td>    <td valign="top" width="580">Click the Apply to Model button on the Model Parameters table to apply the new parameter values to the model.<a name="287230"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>6	</b></td>    <td valign="top" width="580">Run the simulation until it stops.<a name="287907"></a></td>  </tr></table><blockquote>  <a name="288320">Is the increase in replenishment level enough to compensate for the worst case scenario in terms of order size and deliver times? No, the on-time performance is still nowhere near 100% for the three consumers.</a></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>7	</b></td>    <td valign="top" width="580">Continue increasing the replenishment levels and running the simulation until you obtain a 90% or greater on-time performance for each of the three consumers.<a name="287892"></a></td>  </tr></table><blockquote>  <a name="288470">For example, you might experiment with the following sets of values for replenishment level for the three distribution sites and the central distributor until you obtain close to 100% on-time performance: </a></blockquote>
+<p >
+  <a name="288498"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="315457"><div ><br></a></div></th>
+    <th><a name="315459"><div ><br>Site A</a></div></th>
+    <th><a name="315461"><div ><br>Site B</a></div></th>
+    <th><a name="315463"><div ><br>Site C</a></div></th>
+    <th><a name="315465"><div >Central<br>Distributor</a></div></th>
+  </tr>
+  <tr>
+    <td><p>Replenishment<br>Level<a name="315467"></a></p>
+</td>
+    <td><p>(900)<a name="315469"></a></p>
+</td>
+    <td><p>(2000)<a name="315471"></a></p>
+</td>
+    <td><p>(800)<a name="315473"></a></p>
+</td>
+    <td><p>(8400)<a name="315475"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Replenishment<br>Level<a name="315517"></a></p>
+</td>
+    <td><p>1800<a name="315479"></a></p>
+</td>
+    <td><p>4000<a name="315481"></a></p>
+</td>
+    <td><p>1200<a name="315483"></a></p>
+</td>
+    <td><p>8600<a name="315485"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Replenishment<br>Level<a name="315519"></a></p>
+</td>
+    <td><p>2000<a name="315489"></a></p>
+</td>
+    <td><p>5000<a name="315491"></a></p>
+</td>
+    <td><p>1400<a name="315493"></a></p>
+</td>
+    <td><p>8800<a name="315495"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Replenishment<br>Level<a name="315521"></a></p>
+</td>
+    <td><p>2200<a name="315499"></a></p>
+</td>
+    <td><p>6000<a name="315501"></a></p>
+</td>
+    <td><p>1600<a name="315503"></a></p>
+</td>
+    <td><p>9000<a name="315505"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Replenishment<br>Level<a name="315523"></a></p>
+</td>
+    <td><p>2200<a name="315509"></a></p>
+</td>
+    <td><p>6500<a name="315511"></a></p>
+</td>
+    <td><p>1600<a name="315513"></a></p>
+</td>
+    <td><p>9000<a name="315515"></a></p>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<blockquote>  <a name="289188">You should achieve approximately 90% or greater on-time performance for all three distribution sites with replenishment levels approximately equal to those listed in the last row of the table above. At the same time, the inventory days of supply should be relatively low. </a></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>8	</b></td>    <td valign="top" width="580">Set the Delivery Time Min back to its original value, which is 6 days.<a name="310807"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>9	</b></td>    <td valign="top" width="580">Set the Order Min, Mode, and Max to their original values, as follows:<a name="309336"></a></td>  </tr></table><p >
+  <a name="289060"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="289029"><div >Consumer</a></div></th>
+    <th><a name="289031"><div >A</a></div></th>
+    <th><a name="289033"><div >B</a></div></th>
+    <th><a name="289035"><div >C</a></div></th>
+  </tr>
+  <tr>
+    <td><p>Order Min<a name="289037"></a></p>
+</td>
+    <td><p>50<a name="289039"></a></p>
+</td>
+    <td><p>100<a name="289041"></a></p>
+</td>
+    <td><p>100<a name="289043"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Order Mode<a name="289045"></a></p>
+</td>
+    <td><p>100<a name="289047"></a></p>
+</td>
+    <td><p>200<a name="289049"></a></p>
+</td>
+    <td><p>100<a name="289051"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Order Max<a name="289053"></a></p>
+</td>
+    <td><p>150<a name="289055"></a></p>
+</td>
+    <td><p>400<a name="289057"></a></p>
+</td>
+    <td><p>100<a name="289059"></a></p>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>10	</b></td>    <td valign="top" width="580">Run the simulation again to determine inventory days of supply, given normal order sizes and delivery times.<a name="289081"></a></td>  </tr></table><p>The sites should each have 100% on-time performance and the inventory days of supply should be somewhat higher than in the worst case scenario.<a name="289333"></a></p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="vmidemb2.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="vmidemb4.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
