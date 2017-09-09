@@ -1,0 +1,57 @@
+#!/bin/csh -f
+
+onintr cleanup
+
+
+### Emit doc, if invoked with bad args.
+
+if ( $1 != -please || $#argv != 1 ) then
+cat <<EOF
+$0 -please
+Generate HTML from Text files for the gw module.
+EOF
+exit -1
+endif
+
+
+
+
+### Locals variables
+
+set result = -1
+set module = $SRCBOX/gw
+set misc = $module/misc
+set doc = $module/doc
+set in = $doc
+set out = $doc
+
+
+
+
+### Local functions.
+
+alias txt2html $misc/txt2html --prewhite 3 --prebegin 1 -scribe --title 
+
+
+
+
+### Conversion.
+
+txt2html "GSI Web"\
+     < $in/home.txt > $out/home.htm
+
+txt2html "GSI Web User Manual" \
+     < $in/userman.txt > $out/userman.htm
+
+txt2html "GSI Web Release Notes" \
+     < $in/relnotes.txt > $out/relnotes.htm
+
+txt2html "GSI Web Known Bugs" \
+     < $in/bugs.txt > $out/bugs.htm
+
+txt2html "GSI Web Application Stories" \
+     < $in/stories.txt > $out/stories.htm
+
+set result = 0
+cleanup:
+ exit $result
