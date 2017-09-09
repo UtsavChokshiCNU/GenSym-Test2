@@ -1,0 +1,83 @@
+
+
+interface grid {
+	readonly attribute short height;  // height of the grid
+	readonly attribute short width;   // width of the grid
+
+	// IDL operations
+
+	// set the element [n,m] of the grid, to value:
+	void set(in short n, in short m, in long value);
+
+	// return element [n,m] of the grid:
+	long get(in short n, in short m);
+
+
+	enum footypes {foo, bar, foobar};
+
+	struct substruct {
+		long mem;
+		Object objectRef;
+	};
+
+	struct astruct {
+		long along;
+		string astring;
+		float afloat;
+		footypes aenum;
+		substruct subobj;
+	};
+
+	union aunion switch (short) {
+		case 5: short shortMem;
+		case 6: long  longMem;
+		default: char defMem;
+	};
+
+	typedef short anArray[10]; 
+	typedef sequence <string> aSeq;
+
+	void complex(in astruct mystruct, in footypes myenum, in aunion myunion, 
+			in anArray myarray, in aSeq myseq, in boolean mybool);
+	void add_one(inout long longArg); 
+};
+
+
+//
+// a simple description of a bank account
+//
+ interface account {
+
+    readonly attribute float balance;
+
+    void makeLodgement (in float f);
+    void makeWithdrawal (in float f);
+
+ };
+
+//
+// a simple description of a bank current account
+//
+ interface currentAccount : account {
+
+    readonly attribute float overdraftLimit;
+
+ };
+
+//
+// a bank simply manufactures accounts
+//
+//  bank::reject is raised if a duplicate account name
+//  is seen
+//
+ interface bank {
+
+    exception reject {string reason;};
+
+    account newAccount (in string name) raises (reject);
+    currentAccount newCurrentAccount (in string name, in float limit) 
+							raises (reject);
+    void deleteAccount (in account a);
+
+ };
+
