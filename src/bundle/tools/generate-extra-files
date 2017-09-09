@@ -1,0 +1,77 @@
+#!/bin/sh
+# usage: generate-extra-files family [contents-file] [validate-file]
+#    where contents-file is the location to put contents information
+#               (default family-contents-platform)
+#    and validate-file is the location to put the script to validate the contents
+#    of the installed product against eship and (default family-validate.sh)
+#   Examples:
+#     % generate-extra-files g2-52r1
+#     % generate-extra-files g2-52r1 G2.contents G2-validate.sh
+#
+# Copyright (c) 1986-2017 Gensym Corporation
+# All Rights Reserved.
+#
+# By Mark David and Judy Anderson, Gensym Corporation
+
+# A subdirectory "sbin" is needed to hold the binaries, so first create one if
+# it doesn't exist
+if [ ! -d "sbin" ]; then mkdir sbin; fi
+
+if [ -z "$1" ]
+then
+  echo "usage: $0 family [contents-file] [validate-file]"
+  exit 1
+fi
+  
+sunos="/home/lucid/lucid41/lisp-clos-411 -no-init-file"
+solaris="/home/lucid/liquid50/lisp-clos-50 -no-init-file"
+sbcl="/usr/bin/sbcl --no-userinit"
+
+if [ "$MACHINE" = "sparcsol" ]; then
+  lisp=$solaris
+fi
+
+if [ "$MACHINE" = "sun4" ]; then
+    lisp=$sunos
+fi
+
+if [ "$MACHINE" = "linux" -o "$MACHINE" = "linux64" ]; then
+    lisp=$sbcl
+fi
+
+if [ -z "$lisp" ]; then
+    echo "Warning: unknown architecture: $MACHINE"
+    echo "Trying $sbcl."
+  exit 1
+fi
+
+family=$1
+if [ -z "$2" ]
+then
+  contents=$family-contents
+else
+  contents=$2
+fi
+
+if [ -z "$3" ]
+then
+  validate=$family-validate.sh
+else
+  validate=$3
+fi
+
+$lisp > $family-extra.log <<EOS
+(load "fam-script-loader.lisp")
+(in-package "BUNDLE")
+(new-fam-script-loader '$family)
+(make-difference-file '$family "$validate")
+(make-contents-file '$family "$contents")
+(quit)
+EOS
+
+chmod a+x $validate
+echo
+echo
+echo created validation script $validate and family file contents $contents-\*.
+echo log file in $family-extra.log
+echo ALLDONE
