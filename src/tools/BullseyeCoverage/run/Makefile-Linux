@@ -1,0 +1,17 @@
+# $Revision: 8741 $ $Date: 2008-04-24 13:45:19 -0700 (Thu, 24 Apr 2008) $
+# Copyright (c) Bullseye Testing Technology
+# This source file contains confidential proprietary information.
+
+CC=gcc -D_REENTRANT -fPIC -O3
+
+build: ../lib/libcov.a ../lib/libcov-noThread.a
+
+../lib/libcov.a: libcov.o
+	ar -rc $@ $?
+../lib/libcov-noThread.a: libcov-noThread.o
+	ar -rc $@ $?
+
+libcov.o: libcov-posix.c
+	$(CC) -c -o $@ libcov-posix.c
+libcov-noThread.o: libcov-posix.c
+	$(CC) -c -o $@ -DLibcov_noAutoSave libcov-posix.c
