@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_reference.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+covmgr - Coverage File Manager
+</h1>
+<PRE>
+covmgr -h|--help
+covmgr -l|--list [<i>options</i>] [<i>substring</i> ...]
+covmgr -m|--compact [<i>options</i>]
+covmgr -n|--version [<i>options</i>]
+covmgr -r|--remove [<i>options</i>] <i>source</i> ...
+covmgr -s|--rmsub [<i>options</i>]
+</PRE>
+<H2>DESCRIPTION</H2>
+<P>
+<CODE>covmgr</CODE> stores, removes or displays information in
+the coverage file.
+<p>
+Action <code>-b</code> (<code>--build-id</code>) displays a line of text that
+identifies the last change made to the coverage file as a result of building.
+This information includes the time of the last change.
+<P>
+Action <CODE>-h</CODE> (<CODE>--help</CODE>) displays a summary
+of options.
+<P>
+Action <CODE>-l</CODE> (<CODE>--list</CODE>) displays a list of
+the filenames stored in the coverage file, one per line. The list
+shows each object file followed by its constituent header and
+source files. Option <CODE>-v</CODE> (<CODE>--verbose</CODE>)
+shows column headings and the following additional information.
+For objects, the internal identifier number and the compile time
+are shown. For sources, the number of probes and the file modification
+time are shown.
+File paths are not adjusted for the location of the coverage file.
+<P>
+Action <CODE>-m</CODE> (<CODE>--compact</CODE>) reads and rewrites the
+coverage file to remove unused space and convert the file to the latest
+format.
+This action also repairs some of the data file structure.
+<p>
+Action <code>-n</code> (<code>--version</code>) prints the startup
+banner only, regardless of options.
+<P>
+Action <CODE>-r</CODE> (<CODE>--remove</CODE>) deletes each source
+file entry source.c. Use this action when you remove a source
+file from your test programs. When you specify a <CODE>#include</CODE>
+source file, <CODE>covmgr</CODE> deletes the entries of all the
+source files which include the specified source file.
+Specified adjusted file paths, as produced by <a href=ref_summary.html>covsrc</a>.
+<p>
+Action <code>-s<code> (<code>--rmsub</code>) removes from the coverage file
+any directory substitutions introduced by the Coverage Browser command
+<code>Region Locate Source</code>.
+
+<H2>OPTIONS</H2>
+<TABLE CELLSPACING=12 summary="">
+<colgroup><col span=2 style=white-space:nowrap></colgroup>
+<tr><td><code>-c</code><td><code>--create</code>
+<td>Create the coverage file if it does not exist.
+
+<tr><td><code>-d</CODE><i>Dir</i><td><code>--srcdir</CODE> <i>Dir</i>
+<td>Source file names are relative to <i>Dir</i> rather than relative to the directory where the coverage file is located.
+
+<tr><td><code>-f</CODE><i>Path</i><td><code>--file</CODE> <i>Path</i>
+<td>The result coverage file is specified by <i>Path</i>. The default is <CODE>test.cov</CODE>.
+
+<tr><td><code>-q</code><td><code>--quiet</code>
+<td>Suppress warnings and the copyright message.
+
+<tr><td><code>-v</code><td><code>--verbose</code>
+<td>Show informational messages.
+<tr><td><code>--no-banner</code><td>
+<td>
+Suppress startup banner
+
+</TABLE>
+<H2>EXAMPLES</H2>
+<TABLE CELLSPACING=12 summary="">
+<tr><td><code>covmgr -l -v</code><td>List source file information.
+
+<tr><td><code>covmgr -r s1.c s2.c</code><td>Delete source files s1.c and s2.c.
+
+</TABLE>
+<H2>ENVIRONMENT VARIABLES</H2>
+<TABLE CELLSPACING=12 summary="">
+<tr><td><code>COVFILE</code><td>The coverage file. Option <CODE>-f</CODE> (<CODE>--file</CODE>) overrides this setting.
+
+<tr><td><code>COVSRCDIR</code><td>The source file directory. Option <CODE>-d</CODE> (<CODE>--srcdir</CODE>) overrides this setting.
+
+<tr><td><code>COVMGRCFG</code><td>Configuration file. See FILES.
+
+<tr><td><code>TZ</code><td>The local time zone and difference from UTC (Unix).
+
+</TABLE>
+<H2>FILES</H2>
+<p>
+If the files listed below exist, they contain initial options separated by white space.
+<p>
+<i>BullseyeCoverage</i><code>/bin/covmgr.cfg</code><br>
+<i>home-directory</i><code>/covmgr.cfg</code>
+
+<p style="font-size:xx-small">
+Last reviewed: 20 Oct 2009
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
