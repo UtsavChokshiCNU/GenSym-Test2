@@ -1,0 +1,85 @@
+Change Log for the Java SNMP Generic Bridge
+
+-------------------------------------------------------------------------------------------------
+WSM 1.26.2007
+
+TypeConverter.java (1.2)
+- Bug HQ-5441189: Added a call to pdu.setDNSLookup passing a false value.  Without this call
+  DNS lookup was taking approximately 5 seconds.
+
+JsnmpBridge.java (1.2)
+- Modified the version to 4.0r1 B07A27 for the patch release.
+
+Transactor.java (1.3)
+- Removed debug statements
+-------------------------------------------------------------------------------------------------
+WSM 7.13.2007 - 7.17.2007
+
+Upgrade project from AdventNet SNMP APIv3 to AdventNet SNMP APIv4
+
+Transactor.java (1.4)
+- changed init_v3_params to init_v3_parameters
+- Now using UDPProtocolOptions.setReportPort instead of SnmpPDU.setRemotePort.
+- Now using UDPProtocolOptions.getRemoteHost instead of SnmpSession.getPeername.
+- Now using UDPProtocolOptions.setRemoteHost instead of SnmpSession.setPeername.
+- Now using UDPProtocolOptions.setRemotePort instead of SnmpSession.setRemotePort.
+
+TypeConverter.java (1.3)
+- Now using UDPProtocolOptions.getRemoteHost instead of SnmpPDU.getAddress.
+- Now using UDPProtocolOptions.getRemoteHost instead of SnmpPDU.getRemoteHost.
+- Now using UDPProtocolOptions.setRemoteAddress instead of SnmpPDU.setAddress.
+- No longer calling SnmpPDU.setDNSLookup
+- Now using UDPProtocolOptions.setReportPort instead of SnmpPDU.setRemotePort.
+
+LogFile.java (1.2)
+- Now using UDPProtocolOptions.getRemoteHost instead of SnmpPDU.getAddress.
+- Now using UDPProtocolOptions.getRemoteHost instead of SnmpPDU.getRemoteHost.
+
+TrapBuffer.java (1.2)
+- Now using UDPProtocolOptions.getRemoteHost instead of SnmpPDU.getAddress.
+- Now using UDPProtocolOptions.getRemoteHost instead of SnmpPDU.getRemoteHost.
+- Now using UDPProtocolOptions.getRemotePort instead of SnmpPDU.getRemotePort.
+- Now using UDPProtocolOptions.setRemoteAddress instead of SnmpPDU.setAddress.
+- Now using UDPProtocolOptions.setRemoteHost instead of SnmpPDU.setRemoteHost.
+- Now using UDPProtocolOptions.setReportPort instead of SnmpPDU.setRemotePort.
+
+TrapFilter.java (1.2)
+- Now using UDPProtocolOptions.getRemoteHost instead of SnmpPDU.getAddress.
+
+TrapDaemon.java (1.2)
+- Now using UDPProtocolOptions.getRemoteHost instead of SnmpPDU.getRemoteHost.
+- Now using UDPProtocolOptions.getRemotePort instead of SnmpPDU.getRemotePort.
+- Now using UDPProtocolOptions.getLocalAddresses instead of SnmpSession.getLocalAddresses.
+- Now using UDPProtocolOptions.getLocalPort instead of SnmpSession.getLocalPort.
+- Now using UDPProtocolOptions.getRemoteHost instead of SnmpSession.getPeername.
+- Now using UDPProtocolOptions.getRemotePort instead of SnmpSession.getRemotePort.
+- Now using UDPProtocolOptions.setLocalPort instead of SnmpSession.setLocalPort.
+- Now using UDPProtocolOptions.setRemoteHost instead of SnmpSession.setPeername.
+- Within the constructor had to create a new UDPProtocolOptions for the current snmpSession.  This
+  has to be done before any communications can occurr.
+
+TrapForwarder.java (1.2)
+- Now using UDPProtocolOptions.getRemoteHost instead of SnmpPDU.getRemoteHost.
+
+Task.java (1.2)
+- Updates related to upgrade of AdventNet SNMP API 4.x
+-------------------------------------------------------------------------------------------------
+WSM 8.21.2007
+
+JsnmpBridge.java (1.3)
+- Updated the version from 4.0r1 to 5.0r0.
+-------------------------------------------------------------------------------------------------
+WSM 8.23.2007
+
+Added the following for the AdventNet SNMP APIv4:
+- g2i/java/classes/AdventNetLogging.jar (1.1)
+
+Updated the following jar files to support AdventNet SNMP APIv4:
+- g2i/java/classes/AdventNetSnmp.jar (1.2)
+- g2i/java/classes/MibBrowser.jar (1.2)
+
+jc.bat (1.16)
+- Removed old AdventNet libraries and replaced with new ones:
+  - Removed AdventNetSnmpHLAPI.jar and AdventNetSnmpLLAPI.jar
+  - Added AdventNetLogging.jar
+-------------------------------------------------------------------------------------------------
