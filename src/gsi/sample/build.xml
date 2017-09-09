@@ -1,0 +1,57 @@
+<!-- The purpose of this file is to generate shipped files of gsi_msvc -->
+<project name="gsi_sample" default="setup">
+
+	<!-- setup section -->
+	<target name="setup">
+          <!-- copy related files to this directory -->
+          <copy file="../c/gsi_main.h" todir="."/>
+          <copy file="../c/gsi_misc.h" todir="."/>
+          <copy file="../c/alarmer.c" todir="."/>
+          <copy file="../c/filetest.c" todir="."/>
+          <copy file="../c/gsimmain.c" todir="."/>
+          <copy file="../c/gsi_main.c" todir="."/>
+          <copy file="../c/gsi_misc.c" todir="."/>
+          <copy file="../c/itemtest.c" todir="."/>
+          <copy file="../c/mapchar.c" todir="."/>
+          <copy file="../c/matrix.c" todir="."/>
+          <copy file="../c/pub_subscribe.c" todir="."/>
+          <copy file="../c/reposit.c" todir="."/>
+          <copy file="../c/rpcfuncs.c" todir="."/>
+          <copy file="../c/skeleton.c" todir="."/>
+          <copy file="../c/typetest.c" todir="."/>
+          <!-- GENSYMCID-1364: Re: GSI: Module was built without symbols -->
+          <!--
+          <copy file="../../vstudio/libgsi/alarmer.vcxproj" todir="."/>
+          <copy file="../../vstudio/libgsi/filetest.vcxproj" todir="."/>
+          <copy file="../../vstudio/libgsi/itemtest.vcxproj" todir="."/>
+          <copy file="../../vstudio/libgsi/mapchar.vcxproj" todir="."/>
+          <copy file="../../vstudio/libgsi/matrix.vcxproj" todir="."/>
+          <copy file="../../vstudio/libgsi/reposit.vcxproj" todir="."/>
+          <copy file="../../vstudio/libgsi/skeleton.vcxproj" todir="."/>
+          <copy file="../../vstudio/libgsi/typetest.vcxproj" todir="."/>
+          <copy file="../../vstudio/libgsi/bridges.sln" todir="."/>
+          -->
+
+          <!-- modify vcxproj file to fit with shipped file structure -->
+          <replaceregexp match='..\\..\\gsi\\c\\' replace='' flags="g" byline="true">
+            <fileset dir=".">
+              <include name="*.vcxproj"/>
+            </fileset>
+          </replaceregexp>
+          <replaceregexp match='..\\..\\..\\dst\\gsi\\opt\\' replace='' flags="g" byline="true">
+            <fileset dir=".">
+              <include name="*.vcxproj"/>
+            </fileset>
+          </replaceregexp>
+          <replaceregexp match='\.\\.*?___x64_.*?\\(.*?).exe' replace='x64\\$1.exe' flags="g" byline="true">
+            <fileset dir=".">
+              <include name="*.vcxproj"/>
+            </fileset>
+          </replaceregexp>
+          <replaceregexp match='\.\\.*?___Win32_.*?\\(.*?).exe' replace='\1.exe' flags="g" byline="true">
+            <fileset dir=".">
+              <include name="*.vcxproj"/>
+            </fileset>
+          </replaceregexp>
+	</target>
+</project>
