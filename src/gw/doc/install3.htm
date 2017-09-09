@@ -1,0 +1,171 @@
+<html><head><title>Installing and Running G2 WebLink</title></head>
+<body bgcolor="#ffffff">
+<a href="install2.htm"><h5>| Prev </a> <a href="install4.htm">| Next </a> <a href="installi.htm">| Start of Chapter </a> <a href="install6.htm">| End of Chapter </a> <a href="booktoc.htm">| Contents </a> <a href="bookix.htm">| Index |</a> (4 out of 7)</h5> <br>
+
+
+<a name="3313">
+<h1> Loading G2 WebLink from the Distribution Medium</h1>
+</a><a name="3315">
+<h2> On UNIX Systems</h2>
+</a><a name="3316">
+To load G2 WebLink software from the distribution medium:
+<p>
+</a><ol><a name="3317">
+<li>Create a directory.<p>
+</a><a name="3318">
+<li>Make that directory the current working directory (or specify the logical name for the directory).<p>
+</a><a name="3319">
+<li>Use the tar utility to transfer files from the distribution medium. <p>
+</a><a name="3660">
+The following code sequence is a sample installation for UNIX operating systems. In this example, the pound sign symbol (#) is the shell prompt.
+<p></a><a name="3656">
+For a directory named <code>g2-weblink</code> and a tape device named /dev/rmt/0m:
+<p></a><a name=3657">
+<pre><code>#mkdir g2-weblink
+</code></pre>
+</a><a name=3658">
+<pre><code>#cd g2-weblink
+</code></pre>
+</a><a name=3659">
+<pre><code>#tar -xvf /dev/rmt/0m</code> 
+</pre>
+</a><a name="3422">
+<hr><strong>Note:</strong> If you do not know the tape device name, see your system administrator.
+<hr>
+</a></ol><a name="3327">
+<h2> On OpenVMS Systems</h2>
+</a><a name="3328">
+To install G2 WebLink software, use the VMSINSTAL utility. 
+<p>
+</a><a name="3329">
+To load software using VMSINSTAL:
+<p>
+</a><ol><a name="3330">
+<li>Login as system.<p>
+</a><a name="3331">
+<li>Enter the commands:<p>
+</a><a name=3661">
+<pre><code>$set def sys$update
+</code></pre>
+</a><a name=3662">
+<pre><code>$@vmsinstal
+</code></pre>
+</a><a name="3334">
+<li>If prompted, reply yes to the following:<p>
+</a><a name=3663">
+<pre><code>Do you want to continue anyway? y
+</code></pre>
+</a><a name=3664">
+<pre><code>Are you satisfied with the backup of your system 
+disk[yes]?</code> y
+</pre>
+</a><a name="3425">
+<li>To specify where you want the distribution volume mounted, enter the name of the device, for example:<p>
+</a><a name=3665">
+<pre><code>Where will the distribution volume be mounted?</code> mka500
+</pre>
+</a><a name=3668">
+<pre>If you do not know which device to use, see your system 
+administrator.
+</pre>
+</a><a name="3669">
+<li>Type in the name of the product at the next prompt.<p>
+</a><a name=3672">
+<pre><code>Enter the products to be processed from the first 
+distribution set. 
+</code></pre>
+</a><a name=3673">
+<pre><code>* Products: G2WebLink
+</code></pre>
+</a><a name="3674">
+where <code>G2WebLink</code> is the product name of the bridge, with a suffix giving the major version (2 digits) and minor version (1 digit). 
+<p></a><a name="3344">
+<li>Accept the default installation options by pressing the Return key.<p>
+</a><a name=3675">
+<pre><code>Enter the installation options you wish to use [none]</code>:
+</pre>
+</a><a name="3346">
+<li>If you are using a tape device, mount the tape in the drive and respond to the readiness prompt.<p>
+</a><a name=3676">
+<pre><code>Please mount the first volume of the set in MKA500</code>.
+</pre>
+</a><a name=3677">
+<pre><code>Are you ready? </code>y
+</pre>
+</a><a name=3678">
+<pre><code>The following products will be processed:
+</code></pre>
+</a><a name=3679">
+<pre><code>G2-WebLink
+</code></pre>
+</a><a name="3680">
+where <code>G2-WebLink</code> is the product name of the bridge, with a suffix giving the major version (2 digits) and the minor version (1 digit).
+<p></a><a name="3352">
+<li>The install program determines whether a prior version of the product exists. For example:<p>
+</a><a name=3681">
+<pre><code>* Prior</code> <code>G2WebLink found - replace [N]?
+</code></pre>
+</a><a name=3682">
+<pre>If you reply n or if this is a first-time installation, 
+the install program will prompt for the name of another 
+directory.
+</pre>
+</a><a name=3683">
+<pre><code>g2weblink directory<br>
+[BOSTON$DUA1:[G2.GSI30R1.G2WebLink]]:
+</code></pre>
+</a><a name=3684">
+<pre>To accept the default directory, press the Return key. 
+Otherwise, enter the name of the directory where you 
+want the install program to store the files.
+</pre>
+</a><a name="3357">
+<li>The install program prompts for the location to place the specific bridge start-up command procedure:<p>
+</a><a name=3685">
+<pre><code>Place startup call in G2WebLink.COM [Y]</code>:
+</pre>
+</a><a name=3686">
+<pre>To accept the default, press the Return key. If you do 
+not want to include the bridge start-up command 
+procedure in GSI-STARTUP.COM, you must invoke: 
+sys$startup:G2WebLink-startup.com from some other location 
+before you can run the bridge.
+</pre>
+</a><a name="3360">
+<li>Press the Return key at the Products prompt to leave VMSINSTAL.<p>
+</a><a name=3687">
+<pre><code>Enter the products to be processed from the next 
+distribution volume set</code>.
+</pre>
+</a><a name=3688">
+<pre><code>* Products:
+</code></pre>
+</a><a name=3689">
+<pre><code>VMSINSTAL procedure done at [time]
+</code></pre>
+</a></ol><a name="3364">
+<h2> On Windows NT Systems</h2>
+</a><a name="3365">
+To install the G2 WebLink software under Windows NT, you must use the 
+Gensym Bridge Installer. To use the Bridge Installer, follow these steps:
+<p>
+</a><ol><a name="3366">
+<li>Select Run from the File pulldown menu of the Program Manager or File Manager.<p>
+</a><a name="3367">
+<li>Enter &lt;drive-letter&gt;:setup where &lt;drive-letter&gt; is the drive containing the distribution medium, and click on OK. For example:<p>
+</a><a name=3694">
+<pre><code>a:setup</code> 
+</pre>
+</a><a name="3369">
+<li>Read the instructions provided in the dialog boxes and respond to any questions. If you need help, click on the ? icon at the lower right of the dialog box for context-sensitive help.<p>
+</a><a name="3370">
+<li>Refer to the release notes installed by the Gensym Bridge Installer for any post-installation instructions by clicking on the release notes icon.<p>
+</a></ol><a name="3371">
+If you choose to authorize the bridge with the Gensym Bridge Installer, you can 
+skip the section <a href="install5.htm#2942">"Authorizing G2 WebLink"</a> below.
+<p>
+</a>
+
+<a href="install2.htm"><h5>| Prev </a> <a href="install4.htm">| Next </a> <a href="installi.htm">| Start of Chapter </a> <a href="install6.htm">| End of Chapter </a> <a href="booktoc.htm">| Contents </a> <a href="bookix.htm">| Index |</a> (4 out of 7)</h5> <br>
+<A HREF="titlepa1.htm"><h6>Copyright &#169; 1996, Gensym Corporation, Inc.</h6></A>
+</body></html>
