@@ -1,0 +1,38 @@
+diff --git a/bundle/tools/buildipr_x64.bat b/bundle/tools/buildipr_x64.bat
+index 0f7f5e1..c8ae062 100644
+--- a/bundle/tools/buildipr_x64.bat
++++ b/bundle/tools/buildipr_x64.bat
+@@ -146,16 +146,16 @@ echo Deleting %STAGE_DIR%\%INSTALLPROJECT_DIR_NAME% with rmdir /s /q %STAGE_DIR%
+ 
+ rmdir /s /q %STAGE_DIR%\%INSTALLPROJECT_DIR_NAME%
+ 
+-rem xcopy "%SRCBOX%\bundle\ishield\isproj" "%STAGE_DIR%\%INSTALLPROJECT_DIR_NAME%\" /S /E /Y
+-if "%2" == "std" xcopy "%SRCBOX%\bundle\ishield\isproj-g2-2015-std" "%STAGE_DIR%\%INSTALLPROJECT_DIR_NAME%\" /S /E /Y
+-if "%2" == "ent" xcopy "%SRCBOX%\bundle\ishield\isproj-g2-2015-ent" "%STAGE_DIR%\%INSTALLPROJECT_DIR_NAME%\" /S /E /Y
++xcopy "%SRCBOX%\bundle\ishield\isproj" "%STAGE_DIR%\%INSTALLPROJECT_DIR_NAME%\" /S /E /Y
++rem if "%2" == "std" xcopy "%SRCBOX%\bundle\ishield\isproj-g2-2015-std" "%STAGE_DIR%\%INSTALLPROJECT_DIR_NAME%\" /S /E /Y
++rem if "%2" == "ent" xcopy "%SRCBOX%\bundle\ishield\isproj-g2-2015-ent" "%STAGE_DIR%\%INSTALLPROJECT_DIR_NAME%\" /S /E /Y
+ 
+ echo Building the Install Generator (%C_DIR%\InstallGenerator.exe)
+ 
+ msbuild %C_DIR%\InstallGenerator.sln /m /t:Rebuild /p:Configuration=Release
+ 
+ echo Running install generator
+-rem %C_DIR%\Release\InstallGenerator "%FAMILY_FILE%" "%INSTALLPROJECT%" "%TREE_DIR%" %2
++%C_DIR%\Release\InstallGenerator "%FAMILY_FILE%" "%INSTALLPROJECT%" "%TREE_DIR%" %2
+ 
+ goto end
+ 
+diff --git a/bundle/tools/make_bundle_installer.bat b/bundle/tools/make_bundle_installer.bat
+index 4df06cd..d23b05d 100644
+--- a/bundle/tools/make_bundle_installer.bat
++++ b/bundle/tools/make_bundle_installer.bat
+@@ -41,7 +41,7 @@ call buildipr_x64 %G2_VER% %1
+ 
+ if exist %SRCBOX%\bundle\stage\isproj-g2-%G2_VER%_bak1 rd /S /Q %SRCBOX%\bundle\stage\isproj-g2-%G2_VER%_bak1
+ 
+-rem goto end
++goto end
+ 
+ pushd ..\stage\isproj-g2-%G2_VER%
+ 
