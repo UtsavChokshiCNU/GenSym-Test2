@@ -1,0 +1,64 @@
+#!/bin/csh -f
+# See the following file for documentation.
+source auxtools/wtape-init.csh
+
+set drive_name=ERROR
+set drive_host=ERROR
+
+switch ( $media )
+
+  case 'quarter-inch-hp':
+     set drive_name=/dev/update.src
+     set drive_host=wy
+     breaksw
+endsw
+
+if ($drive_name == ERROR) then
+  echo "ERROR: Unable to find tape drive for this media type, $media, and machine type, $platform."
+  exit 1
+endif
+
+if ($drive_host == ERROR) then
+  echo "ERROR: Unable to find drive host for this media type, $media, and machine type, $platform."
+  exit 1
+endif
+
+set this_host = `hostname`
+if ($this_host == $drive_host) then
+  echo "    tape drive:    $drive_host (local):${drive_name}"
+  switch ($command)
+    case "write":
+      cd $release_directory
+      tar -chlf $drive_name *
+      set result = $status
+      breaksw
+    default :
+      echo "ERROR: unknown command $command"
+      set result = 1
+      breaksw
+  endsw
+else
+  echo "    tape drive:    ${drive_host}:${drive_name}"
+  switch ($command)
+    case "write":
+      cd $release_directory
+      tar -chlfb - 20 * | rsh $drive_host dd of=$drive_name obs=20b conv=sync
+      set result = $status
+      breaksw
+    default :
+      echo "ERROR: unknown command $command"
+      set result = 1
+      breaksw
+  endsw
+endif
+
+# Insert verification code here!
+
+if ($result) then
+  echo "ERROR: Failed to execute this command\!"
+  echo "ERROR: DO NOT DISTRIBUTE this tape\!"
+else
+  echo "LOG: $command successful for ${drive_host}:${drive_name}."
+endif
+
+exit $result
