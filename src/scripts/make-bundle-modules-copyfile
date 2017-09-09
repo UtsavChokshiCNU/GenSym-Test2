@@ -1,0 +1,15 @@
+#!/bin/csh
+
+# This needs to be a separate little piece, because it is invoked by find.
+# So it will get args like 
+#         ./g2/kbs/utils/sys-mod.kb /gensym/bundles/installs/g2-82r1
+# and need to create the file
+#         /gensym/bundles/installs/g2-82r1/g2/kbs/utils/sys-mod.kb
+
+set file = $2/$1
+
+set dir = $file:h
+
+mkdir -p $dir
+
+cp -p $1 $file
