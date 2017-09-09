@@ -1,0 +1,24 @@
+1- Run local mosquitto broker
+From command line cd to mosquito bin directory then run
+mosquitto -v
+
+2- Connect to the local Broker using mosquitto client
+
+mosquitto_sub -h localhost -t "test/mqtt-ahmed" -v
+
+This will subscribe to test/mqtt-ahmed topic on the broker
+
+3- Publish message on local broker
+
+mosquitto_pub -t "test/mqtt-ahmed" -m "hello world"
+This will publish Hello World message and you can see it in subscriber window and verbos log of the Brocker
+
+4- Connect to cloud DIoTy broker
+
+Ant script downloads DIoTy certificate automaticlly and puts it in the bin directory from https://github.com/wardv/DIoTY-ca_cert.git
+
+mosquitto_sub -h mqtt.dioty.co -p 8883 -u ahmed.korany@devfactory.com -P b4e79ce1 -t "/ahmed.korany@devfactory.com/test/mqtt-dioty01" -q 1 --cafile dioty_ca.crt
+
+From command line send message using publisher module as follows
+
+mosquitto_pub -h mqtt.dioty.co -p 8883 -u ahmed.korany@devfactory.com -P b4e79ce1 -t "/ahmed.korany@devfactory.com/test/mqtt-dioty01" -m "Hello world" -r --cafile dioty_ca.crt
