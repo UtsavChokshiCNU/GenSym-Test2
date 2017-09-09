@@ -1,0 +1,201 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_reference.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+covclass, covdir, covfn, covsrc - Summarize Coverage
+</h1>
+<PRE>
+covclass [<i>options</i>] [<i>region</i> ...]
+covdir [<i>options</i>] [<i>region</i> ...]
+covfn [<i>options</i>] [<i>region</i> ...]
+covsrc [<i>options</i>] [<i>region</i> ...]
+</PRE>
+<H2>DESCRIPTION</H2>
+<P>
+These commands produce a coverage report summarizing measurements
+grouped by C++ class or namespace (<CODE>covclass</CODE>),
+by source file directory
+(<CODE>covdir</CODE>), by function (<CODE>covfn</CODE>), or by
+source file (<CODE>covsrc</CODE>). With no arguments, the commands
+display measurements for all analyzed source. Otherwise, they
+report measurements in each source <i>region</i>. For more information,
+see <a href=ref_regions.html>Regions</a>.
+<P>
+<CODE>covfn</CODE> shows the information listed below under the
+indicated heading names.
+<ul>
+<li><code>Function</code> - function name
+<li><code>Source</code> - source filename, relative to the current directory
+<li><code>Line</code> - line number within the source file
+<li><code>FnCov</code> - function coverage, indicating whether the
+function was invoked or not
+<li><code>C/D Coverage</code> - condition/decision coverage for the function
+</ul>
+<p>
+The other commands show the information listed below under the
+indicated heading names.
+<ul>
+<li><code>Directory</code> - directory filename, relative to the current directory
+<li><code>Source</code> - source filename, relative to the current directory
+<li><code>Class</code> - C++ class or namespace identifier
+<li><code>Function Coverage</code> - function coverage for the region
+<li><code>C/D Coverage</code> - condition/decision coverage for the region
+</ul>
+<p>
+By default, the programs sort the report so that the least covered
+groups appear first.
+They sort first by function coverage then by the condition/decision
+coverage.
+<p>
+You can take command line arguments from a file using the syntax
+<code>@</code><i>filename</i>.
+<H2>OPTIONS</H2>
+<TABLE CELLSPACING=12 summary="">
+<colgroup><col span=2 style=white-space:nowrap></colgroup>
+<tr><td><code>-b</code><td><code>--base</code><td>
+Show the file basename rather than full path.
+This removes the directory component of filenames shown.
+Use this option to reduce the width of the report.
+(<code>covfn</code> and <code>covsrc</code> only.)
+<tr><td><code>-c</code><td><code>--csv</CODE>
+<td>Output comma separated values. Use this option to export coverage measurements into another program such as a spreadsheet. The report width has no effect with this option.
+
+<tr><td><code>-d</CODE><i>Dir</i><td><code>--srcdir</CODE> <i>Dir</i>
+<td>Display source files names relative to directory <i>Dir</i> rather than relative to the directory where the coverage file is located.
+You can display the source file names the same way they appear in the Coverage
+Browser using "<code>-d.</code>".
+
+<tr><td><code>-f</CODE><i>Path</i><td><code>--file</CODE> <i>Path</i>
+<td>The coverage file is specified by <i>Path</i>. The default is <CODE>test.cov</CODE>.
+
+<tr><td><code>-h</code><td><code>--help</CODE>
+<td>Display a summary of options.
+<tr><td><code>-k</code><td><code>--no-head</CODE>
+<td>Suppress column headings and totals.
+
+<tr><td><code>-m</code><td><code>--by-name</CODE>
+<td>Sort by C++ class or namespace (<CODE>covclass</CODE>), by directory (<CODE>covdir</CODE>), by function name (<CODE>covfn</CODE>), or by source file name (<CODE>covsrc</CODE>).
+
+<tr><td><code>-n</code><td><code>--no-source</code><td>
+Suppress the source file and line number columns.
+Use this option to reduce the width of the report.
+(<code>covfn</code> only.)
+<tr><td><code>-p</code><td><code>--by-pcnt</CODE>
+<td>Sort by the condition/decision coverage percentage. This is the default sorting method.
+
+<tr><td><code>-q</code><td><code>--quiet</CODE>
+<td>Suppress warnings and the copyright message.
+
+<tr><td><code>-r</code><td><code>--reverse</CODE>
+<td>Reverse sort.
+<tr><td><code>-s</code><td><code>--by-source</CODE>
+<td>Sort by source filename and line (<CODE>covfn</CODE> only).
+
+<tr><td><code>-u</code><td><code>--by-uncov</CODE>
+<td>Sort by number of uncovered functions and conditions/decisions.
+
+<tr><td><code>-v</code><td><code>--verbose</CODE>
+<td>Show informational messages.
+<tr><td><code>-w</CODE><i>N</i><td><code>--width</CODE> <i>N</i>
+<td>The maximum report width is <i>N</i> columns.
+BullseyeCoverage may produce a report wider than the specified maximum width if
+the specified width is too small to show minimal information.
+If the standard output is to a console or terminal, the default width is the width of the console, otherwise 80.
+However, if the environment variable <CODE>COLUMNS</CODE> is set, the default is <CODE>COLUMNS</CODE>.
+
+<tr><td><code>--checkmin <i>N</i>,<i>M</i></code><td>
+<td>
+If function coverage is less than <i>N</i>% or condition/decision coverage is less than <i>M</i>%, exit with error status.
+No report is output.
+This option is recognized by <code>covdir</code> only.
+
+<tr><td><code>--decision</code><td>
+<td>
+Show decision coverage (branch coverage) rather than condition/decision
+coverage.
+This option is not recommended; decision coverage may report uncovered
+code as covered.
+Use this option only to compare results with other projects or other tools
+which cannot provide condition/decision coverage.
+
+<tr><td><code>--html</code><td>
+<td>
+Output in HTML format
+
+<tr><td><code>--no-banner</code><td>
+<td>
+Suppress startup banner
+
+</TABLE>
+<H2>ENVIRONMENT VARIABLES</H2>
+<TABLE CELLSPACING=12 summary="">
+<tr><td><code>COLUMNS</code><td>The display device width. Option <CODE>-w</CODE> (<CODE>--width</CODE>) overrides this setting.
+
+<tr><td><code>COVFILE</code><td>The coverage file. Option <CODE>-f</CODE> (<CODE>--file</CODE>) overrides this setting.
+
+<tr><td><code>COVSRCDIR</code><td>The source file directory. Option <CODE>-d</CODE> (<CODE>--srcdir</CODE>) overrides this setting.
+
+<tr><td><code>COVCLASSCFG</code><td>Configuration file. See FILES.
+<tr><td><code>COVDIRCFG</code><td>Configuration file. See FILES.
+<tr><td><code>COVFNCFG</code><td>Configuration file. See FILES.
+<tr><td><code>COVSRCCFG</code><td>Configuration file. See FILES.
+
+</TABLE>
+<H2>FILES</H2>
+<p>
+If the files listed below exist, they contain initial options separated by white space.
+<p>
+<i>BullseyeCoverage</i><code>/bin/covclass.cfg</code><br>
+<i>BullseyeCoverage</i><code>/bin/covdir.cfg</code><br>
+<i>BullseyeCoverage</i><code>/bin/covfn.cfg</code><br>
+<i>BullseyeCoverage</i><code>/bin/covsrc.cfg</code><br>
+<i>home-directory</i><code>/covclass.cfg</code><br>
+<i>home-directory</i><code>/covdir.cfg</code><br>
+<i>home-directory</i><code>/covfn.cfg</code><br>
+<i>home-directory</i><code>/covsrc.cfg</code>
+
+<H2>NOTES</H2>
+<P>
+If you do not specify option <CODE>-c</CODE> (<CODE>--csv</CODE>),
+some names in the report may be shortened to fit the report width.
+File names are shortened by replacing initial characters with
+&quot;<CODE>...</CODE>&quot; and function names are shortened
+by replacing middle characters with &quot;<CODE>...</CODE>&quot;.
+For example <CODE>longfilename.c</CODE> might become <CODE>...ename.c</CODE>
+and <CODE>longfunction</CODE> might become <CODE>lon...tion</CODE>.
+
+<p style="font-size:xx-small">
+Last reviewed: 3 Sep 2009
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
