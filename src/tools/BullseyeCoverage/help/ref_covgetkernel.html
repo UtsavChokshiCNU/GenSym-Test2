@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_reference.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+covgetkernel - Save Unix Kernel Measurements
+</h1>
+<pre>
+covgetkernel [<i>options</i>]
+</pre>
+<h2>DESCRIPTION</h2>
+<p>
+The <code>covgetkernel</code> command retrieves coverage measurements
+collected by instrumentation inside the operating system kernel and
+saves them to the coverage file named by environment variable
+<code>COVFILE</code>.
+You must be the super-user to run this command.
+<p>
+To accommodate for variations in hardware such as 32-bit versus 64-bit,
+we provide more than one command named <code>covgetkernel</code><i>suffix</i>,
+where the suffix might <code>32</code> or <code>64</code>, for example.
+<p>
+On Linux x86 and Linux x64, the directory
+<i>BullseyeCoverage</i><code>/bin-embeddedLinuxKernel/</code> contains versions
+of this program for popular embedded Linux architectures.
+
+<h2>OPTIONS</h2>
+<table cellspacing=12>
+<colgroup><col span=2 style=white-space:nowrap></colgroup>
+
+<tr><td><code>-d</code><td><code>--debug</code>
+<td>Output diagnostic information for technical support.
+
+<tr><td><code>-f</code><i>Path</i><td><code>--file</code> <i>Path</i>
+<td>The coverage file is specified by <i>Path</i>. The default is <CODE>test.cov</CODE>.
+
+<tr><td><code>-r</code><td><code>--reset</code>
+<td>Reset the kernel measurements in memory to zero.
+After this user mode program resets the measurements,
+the action of the kernel unloading the <code>covgetkernel</code> program
+might immediately causes some measurements.
+This option is provided only on AIX, Linux, HP-UX, Solaris, and Tru64.
+</table>
+
+<p style=font-size:xx-small>
+Last reviewed: 7 Nov 2008
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
