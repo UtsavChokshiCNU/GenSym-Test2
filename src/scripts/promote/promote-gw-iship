@@ -1,0 +1,17 @@
+#!/bin/csh
+set platforms = ( hp9000s700 rs6000 sparcsol intelnt linux alphaosf hpia64)
+
+if ($#argv != 1) then
+  echo "Error: Wrong number of arguments, $#argv supplied, 1 required (buildid)."
+  exit 1
+endif
+
+set buildid = $1
+
+foreach i ($platforms)
+  /gensym/tools/promote-product -noconfirm -i gw  ${i} /bt/ab-gw/dst/${i}/gw/tape $buildid
+end
+
+# to promote to eship is similar (I did it by hand).
+# the command is:
+#  /gensym/tools/promote-product -noconfirm -i gw ${i} $buildid <some eship version number>
