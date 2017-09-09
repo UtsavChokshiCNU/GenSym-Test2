@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_reference.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+covmerge - Merge Measurements
+</h1>
+<PRE>
+covmerge [<i>options</i>] <i>input.cov</i> ...
+</PRE>
+<H2>DESCRIPTION</H2>
+<P>
+<CODE>covmerge</CODE> combines measurements in each of the coverage
+files <i>input.cov</i> into a result coverage file. You can
+use this command to combine measurements obtained when testing
+a program on separate computers.
+It is not recommended to merge files that resulted from compiling different source file versions.
+When <code>covmerge</code> encounters more than one version of the same source file (by file time stamp),
+<code>covmerge</code> discards measurements for the older versions.
+<p>
+You can specify multiple coverage files separated by commas.
+This allows specifying the value of the <code>COVFILELIST</code>
+environment variable directly on the command line.
+<H2>OPTIONS</H2>
+<TABLE CELLSPACING=12 summary="">
+<colgroup><col span=2 style=white-space:nowrap></colgroup>
+<tr><td><code>-c</code><td><code>--create</CODE>
+<td>Create a new result coverage file rather than merging with the existing result coverage file.
+
+<tr><td><code>-f</CODE><i>Path</i><td><code>--file</CODE> <i>Path</i>
+<td>The coverage file is specified by <i>Path</i>. The default is <CODE>test.cov</CODE>.
+
+<tr><td><code>-h</code><td><code>--help</CODE>
+<td>Display a summary of options.
+<tr><td><code>-q</code><td><code>--quiet</CODE>
+<td>Suppress warnings and the copyright message.
+
+<tr><td><code>-v</code><td><code>--verbose</CODE>
+<td>Show informational messages. This option displays the status of merging each input file.
+
+<tr><td><code>--no-banner</code><td>
+<td>
+Suppress startup banner
+
+</TABLE>
+<H2>EXAMPLES</H2>
+<P>
+The command below combines measurements obtained by two different
+testers into a new a coverage file.
+<PRE>
+covmerge -c -ftotal.cov cathy.cov paul.cov
+</PRE>
+<p>
+The commands below show how you can merge all the files specified by
+<code>COVFILELIST</code>, in Korn shell syntax.
+<pre>
+export COVFILELIST=file1.cov,file2.cov,file3.cov
+covmerge -c -ftotal $COVFILELIST
+</pre>
+<H2>ENVIRONMENT VARIABLES</H2>
+<TABLE CELLSPACING=12 summary="">
+<tr><td><code>COVFILE</code><td>The coverage file. Option <CODE>-f</CODE> (<CODE>--file</CODE>) overrides this setting.
+<tr><td><code>COVMERGECFG</code><td>Configuration file. See FILES.
+
+</TABLE>
+<H2>FILES</H2>
+<p>
+If the files listed below exist, they contain initial options separated by white space.
+<p>
+<i>BullseyeCoverage</i><code>/bin/covmerge.cfg</code><br>
+<i>home-directory</i><code>/covmerge.cfg</code>
+
+<H2>NOTES</H2>
+<P>
+If <CODE>covmerge</CODE> encounters measurements from the same
+source file with two different modification times, <code>covmerge</code>
+discards the older measurements.
+<p style="font-size:xx-small">
+Last reviewed: 1 Jun 2009
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
