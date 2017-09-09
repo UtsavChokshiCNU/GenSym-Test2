@@ -1,0 +1,26 @@
+#!/bin/csh -f
+
+if ( $1 != -please || $#argv != 1 ) then
+cat <<EOF
+$0 -please
+   Build fresh tags tables for the C and Lisp sources.
+EOF
+exit -1
+endif
+
+## This was derived from /home/ab/scripts/make-tags
+## That's why I use the long pathname to the etags program.
+## Why he does it I don't know.
+
+## Local Variables.
+set module = $SRCBOX/gw
+alias etags /usr/local/bin/etags
+
+
+## Lisp tags -- Not that this directory isn't checked in.
+cd $REF_SBOX/lisp
+etags `cat $REF_SBOX/gw/misc/files-in-order.all`
+
+## The C files tags.
+cd $module/c
+etags *.c 
