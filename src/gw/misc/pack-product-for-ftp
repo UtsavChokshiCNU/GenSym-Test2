@@ -1,0 +1,205 @@
+#!/bin/csh
+
+#### Locals
+
+set product = ()
+set release_id = ()
+set platform = ()
+set internal_release = 0
+set fail = 0
+set tmpfile = /bt/ab/junk/ppf$$
+
+#### Usage Info
+goto main
+
+usage:
+cat <<EOF
+$0 -p <product> [-i] -r <release> -c <platform>
+  Creates single file and places it were the users outside
+  the firewall may obtain it.  The file is packed in a format
+  approprate to the platform given.  This stands ontop of
+  $UTIL_DIR/make-gensym-tape, except on the vax.
+
+  These are placed in: /home/ftp/private/<product>/<file>
+  which makes them accessible via ftp ala:
+    ftp://ftp.gensym.com/private/<private>/<file>
+  The <file> is a random integer.
+  A file in: /home/ftp/private/<product>/ is maintained
+  to recored what is in which files.
+
+  On the vax we place the backup save set along with an "fdl"
+  file on the server.
+
+EOF
+exit $fail
+
+
+main:
+
+## Example use:
+## pack-product-for-ftp -p gw -i -r 10b2 -c vax
+
+
+#### Collect Arguments
+
+while ($#argv > 0)
+  switch ($1)
+      case "-p" : 
+          set product = "$2"
+          shift
+          breaksw
+      case "-r" :
+          set release_id = "$2"
+          shift
+          breaksw
+      case "-c" :
+          set platform = $2
+          set media_platform = $2
+          shift
+          breaksw
+      case "-i" :
+          set internal_release=1
+          breaksw
+      default :
+	  echo ""
+          echo "Invalid switch: $1"
+	  echo ""
+          goto usage
+  endsw
+  shift
+
+end  # while ($#argv > 0)
+
+
+#### Validate Arguments
+
+if ($#product == 0) then
+  echo "ERROR: a -p <product> is required."
+  set fail=1
+endif
+
+if ($#release_id == 0) then
+  echo "ERROR: a -r <release_id> is required."
+  set fail
+endif
+
+if ($#platform == 0) then
+  echo "ERROR: a -c <platform> is required."
+  set fail=1
+endif
+
+if ( -d /home/ftp/private/$product ) then
+  set tape = /home/ftp/private/$product/$$
+  set usertape = "ftp://ftp.gensym.com/private/$product/$$"
+else
+  echo "# ERROR: The product's private ftp directory doesn't exist."
+  set fail=1
+endif
+
+if ( ! $?UTIL_DIR ) then
+  echo "# ERROR: You must be using a sandbox, probably ab"
+  set fail=1
+endif
+
+if ( $user != ab ) then
+  echo "ERROR: You must be running as Mr. AB"
+  set fail=1
+endif
+
+
+if ($fail) goto exit
+
+
+#### Package up file/tape.
+
+set tmp = 'an external release'
+if ( $internal_release ) set tmp = 'an internal release'
+echo "# Packing up ${product}-$release_id ($tmp) for $platform"
+
+### Can we use make gensym tape?
+if ( $platform == vax ) goto vaxman
+
+### Infer the right media for this platform
+set media = unix-tar-file
+if ( $platform == intelnt ) set media = zip-file
+switch ( $media )
+case unix-tar-file: 
+  set ext = tar
+  breaksw
+case zip-file
+  set ext = zip
+  breaksw
+endsw
+
+set tmp = ()
+if ( $internal_release ) set tmp = ( -i )
+
+cd $UTIL_DIR
+make-gensym-tape \
+   -m $media \
+   -th localhost -t $tmpfile \
+   -c $platform \
+   -p $product -r $release_id $tmp
+if ( $status ) then
+  set fail=1
+  goto exit
+endif
+set tape = ${tape}.$ext
+set usertape = ${usertape}.$ext
+cp $tmpfile $tape
+goto wrapup
+
+
+#### Make Ones for the VAX is just weird.
+vaxman:
+cd /home/vax-mount/gensym/st/ab/iship
+set q = '$'
+set saveset = ${product}-$release_id.bck
+set fdlsrc = ".${q}fdl${q}${saveset}"
+if ( ! ( -e $saveset  && -e $fdlsrc ) ) then
+  echo "ERROR: Backup save set not found for ${product}-$release_id"
+  set fail = 1
+endif
+
+# Move the actual saveset and fdl, 
+#    e.g. gw-10b2-b13.bck and .$fdl$gw-10b2-b13.bck
+#     to:      123456.bck and  123456.bckfdl
+cp $saveset $tape.bck
+cp $fdlsrc  $tape.bckfdl
+
+# Bind the names for logging, et. al.
+set tape = ${tape}.bck
+set usertape = ${usertape}.bck
+goto wrapup
+
+
+#### Epilog.
+wrapup:
+chmod a+r $tape
+echo "packed ${product}-$release_id $platform $tape `date`" >> /home/ftp/private/$product/post.log
+echo "### The tape is in $tape"
+echo "### The user should fetch:"
+echo "###    $usertape"
+goto exit
+
+
+
+exit:
+  rm -rf $tmpfile
+  if ($fail) then
+    echo "ERROR: failed."
+    goto usage
+  else
+    echo "Succeeded."
+  endif
+
+exit $fail
+
+
+
+
+
+
+
+
+
