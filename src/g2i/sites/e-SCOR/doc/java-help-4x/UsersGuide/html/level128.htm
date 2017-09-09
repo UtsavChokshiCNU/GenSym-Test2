@@ -1,0 +1,173 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="02/06/02 18:47:40">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Configuring the Planning Mode for Roles</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="level127.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="level129.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+      <div align="center"><b>e-SCOR User's Guide</b></div>
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/e-SCOR/OnlineHelpFiles/UsersGuide/html/level1.htm">  
+        Creating a Supply-Chain Model  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Configuring the Planning Mode for Roles
+</h2>
+<p>In general, roles have a source phase, in which a downstream buyer sources products from an upstream supplier, and a delivery phase, in which an upstream supplier delivers products to a downstream buyer. The exception is a Base Manufacturer role, which has just a delivery phase, and a Consumer role, which has just a source phase.<a name="69788"></a></p>
+<p>Each role can use a different <b>planning mode</b> for sourcing and delivering its products, as follows:<a name="69830"></a></p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580"><b>Pull planning mode</b> - A buyer sources products from suppliers by placing orders, and a supplier delivers products to buyers, based on orders. <a name="176084"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580"><b>Push planning mode</b> - A supplier pushes a fixed number of products onto buyers, and a buyer simply receives those products from suppliers when the supplier pushes them.<a name="69831"></a></td>  </tr></table><p>You specify the planning mode of a role by configuring these parameters for the role:<a name="176001"></a></p>
+<p >
+  <a name="176329"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="176363"><div >Parameter</a></div></th>
+    <th><a name="176365"><div >Description</a></div></th>
+  </tr>
+  <tr>
+    <td><p>Source Type<a name="176367"></a></p>
+</td>
+    <td><p>Determines whether the role places orders for its source products with suppliers (<code>Pull</code>) or whether it simply receives sources products when a supplier pushes them downstream (<code>Push</code>).<a name="176369"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Delivery Type<a name="176389"></a></p>
+</td>
+    <td><p>Determines whether the role delivers products to buyers, based on orders (<code>Pull</code>) or whether it pushes a fixed number of delivery products onto downstream buyers (<code>Push</code>).<a name="176391"></a></p>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<p>The Source Type of a Base Manufacturer role is grayed out, because a Base Manufacturer role does not source products. Similarly, the Delivery Type of a Consumer role is grayed out, because a Consumer role does not deliver products.<a name="176338"></a></p>
+<p>When configuring the planning mode for each role in the model, you must coordinate pull and push planning appropriately across roles so that the Source Type and Delivery Type are compatible.<a name="177259"></a></p>
+<p>By default, all roles use pull mode for sourcing and delivering products; therefore, by default, a downstream buyer role controls the amount of product that an upstream supplier role delivers, by placing orders. This diagram represents the default case, where both downstream Source processes place orders for source products with the upstream Deliver processes, using pull mode:<a name="176918"></a></p>
+<p >
+  <a name="376828"> </a>
+<p><div align="left"><img src="images/level1a9.gif" border="0" hspace="0" vspace="0">
+</div><a name="376827"></a></p>
+
+
+
+</p>
+<p>You can configure the Delivery Type of an upstream supplier role to use push mode and the Source Type of the downstream buyer role to use pull mode. In this case, the Delivery Type of the upstream role, which is push, takes precedence over the Source Type of the downstream role, which is pull, as the following diagram illustrates:<a name="73233"></a></p>
+<p >
+  <a name="377281"> </a>
+<p><div align="left"><img src="images/level144.gif" border="0" hspace="0" vspace="0">
+</div><a name="377280"></a></p>
+
+
+
+</p>
+<p>You cannot configure the Delivery Type of an upstream role to use pull mode and the Source Type of the downstream role to use push mode, as this diagram illustrates:<a name="73289"></a></p>
+<p >
+  <a name="377726"> </a>
+<p><div align="left"><img src="images/level1a5.gif" border="0" hspace="0" vspace="0">
+</div><a name="377725"></a></p>
+
+
+
+</p>
+<p>Individual roles can also specify a different Source Type and Delivery Type. For example, a Manufacturer role might obtain components from upstream supplier roles by using pull mode and deliver finished products to downstream buyer roles by using push mode. Typically, you model this by configuring the Delivery Type of the upstream role to correspond to the Source Type of the downstream role. <a name="104548"></a></p>
+<p>The following diagram illustrates the situation where the Source process of the middle role controls the amount of components it receives from its upstream supplier by placing orders, and the Deliver process of the middle role controls the amount of finished product it delivers to its downstream buyer by specifying the amount to push.<a name="73384"></a></p>
+<p >
+  <a name="378051"> </a>
+<p><div align="left"><img src="images/levela30.gif" border="0" hspace="0" vspace="0">
+</div><a name="378050"></a></p>
+
+
+
+</p>
+<p>This table summarizes the resulting planning mode given each possible combination of pull and push across roles:<a name="70708"></a></p>
+<p >
+  <a name="70740"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="70711"><div >Delivery Type<br>(supplier role)</a></div></th>
+    <th><a name="70713"><div >Source Type<br>(buyer role)</a></div></th>
+    <th><a name="70715"><div ><br>Planning Mode</a></div></th>
+  </tr>
+  <tr>
+    <td><code>pull<a name="70717"> </a></code></blockquote></td>
+    <td><code>pull<a name="70719"> </a></code></blockquote></td>
+    <td><p>Pull mode (default)<a name="70721"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><code>push<a name="70723"> </a></code></blockquote></td>
+    <td><code>push<a name="70725"> </a></code></blockquote></td>
+    <td><p>Push mode<a name="70727"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><code>push<a name="70729"> </a></code></blockquote></td>
+    <td><code>pull<a name="70731"> </a></code></blockquote></td>
+    <td><p>Push mode<a name="70733"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><code>pull<a name="70735"> </a></code></blockquote></td>
+    <td><code>push<a name="70737"> </a></code></blockquote></td>
+    <td><p>Illegal<a name="70739"></a></p>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<h6><b>Note: </b>The Source Type of a Base Manufacturer role is always pull. If a role has multiple 
+upstream suppliers, the Delivery Type of each supplier must be the same.
+<a name="74503"></a></h6><p>When you first run a simulation, e-SCOR verifies that the model uses valid combinations of pull and push across roles. <a name="73742"></a></p>
+<h6><b>Caution: </b>If you specify an incompatible combination of Source Type and Delivery Type, 
+the model generates a warning when you run the model.
+<a name="73743"></a></h6><h4 >	 To configure the source and delivery type of a role:<a name="99444"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td valign="top" width="20"><img src="images/arrow1.gif"></td>
+    <td valign="top" width="580">Display the properties dialog for a role, click the Roles tab, and configure the Source Type and Delivery Type to be either <code>pull</code> or <code>push</code>, according to the table above.<a name="9902"></a></td>
+  </tr>
+</table><p>This figure shows the default planning mode parameters on the General tab of the role dialog for a Manufacturer role:<a name="325429"></a></p>
+<p >
+  <a name="373262"> </a>
+<p><div align="left"><img src="images/level1a2.gif" border="0" hspace="0" vspace="0">
+</div><a name="373261"></a></p>
+
+
+
+</p>
+<p><b>Related topics:</b><a name="1054333"></a></p>
+<p><a href="level126.htm#110540">Configuring General Parameters for Roles</a><a name="1054337"></a></p>
+<p><a href="level127.htm#227599">Configuring Financial Parameters for Roles</a><a name="1054341"></a></p>
+<p><a href="pushplan.htm#173216">Using Pull and Push Planning Modes</a><a name="1054345"></a></p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="level127.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="level129.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
