@@ -1,0 +1,140 @@
+;;; -*- Mode: LISP; Syntax: Common-Lisp; Base: 10; Package: USER -*-
+(in-package "USER")
+
+;;;; Makefile generator relational database: jpeg-dependencies.rel
+
+;;; Copyright (c) 1986-2017 Gensym Corporation.
+;;; All Rights Reserved.
+
+;;; author: Mark E. Staknis
+
+;;; This file contains the relation that maintains the dependencies
+;;; for creation of the JPEG library in the jpeg directory.
+
+;;; Created by hand from the JPEG distribution makefile, found in
+;;; jpeg/c/Makefile.  I'm not responsible for the lisp style herein.
+;;; -fmw, 1/21/02
+
+;;; Adjusted indentation using awk.  I guess now I'm responsible for the lisp
+;;; style.  -jv, 11/06/03
+
+
+(setq jpeg-dependency-relation
+ '(( target-group  type-group
+			platform-group
+				    dependency	  dependency-type
+						       local )
+;;   ------------  ---- ----------- ------------  ---- -----
+   ((all           dum  _all        libjpeg       lib  y     )
+    (jpeghfiles    var  _all        cderror       h    y     )
+    (jpeghfiles    var  _all        jchuff        h    y     )
+    (jpeghfiles    var  _all        jconfig       h    y     )
+    (jpeghfiles    var  _all        jdct          h    y     )
+    (jpeghfiles    var  _all        jdhuff        h    y     )
+    (jpeghfiles    var  _all        jerror        h    y     )
+    (jpeghfiles    var  _all        jinclude      h    y     )
+    (jpeghfiles    var  _all        jmemsys       h    y     )
+    (jpeghfiles    var  _all        jmorecfg      h    y     )
+    (jpeghfiles    var  _all        jpegint       h    y     )
+
+    (_all          obj  _all        jpeghfiles    var  y     )
+
+    (libjpeg       lib  _all        jcapimin      obj  y     )
+    (libjpeg       lib  _all        jcapistd      obj  y     )
+    (libjpeg       lib  _all        jccoefct      obj  y     )
+    (libjpeg       lib  _all        jccolor       obj  y     )
+    (libjpeg       lib  _all        jcdctmgr      obj  y     )
+    (libjpeg       lib  _all        jchuff        obj  y     )
+    (libjpeg       lib  _all        jcinit        obj  y     )
+    (libjpeg       lib  _all        jcmainct      obj  y     )
+    (libjpeg       lib  _all        jcmarker      obj  y     )
+    (libjpeg       lib  _all        jcmaster      obj  y     )
+    (libjpeg       lib  _all        jcomapi       obj  y     )
+    (libjpeg       lib  _all        jcparam       obj  y     )
+    (libjpeg       lib  _all        jcphuff       obj  y     )
+    (libjpeg       lib  _all        jcprepct      obj  y     )
+    (libjpeg       lib  _all        jcsample      obj  y     )
+    (libjpeg       lib  _all        jctrans       obj  y     )
+    (libjpeg       lib  _all        jdapimin      obj  y     )
+    (libjpeg       lib  _all        jdapistd      obj  y     )
+    (libjpeg       lib  _all        jdatadst      obj  y     )
+    (libjpeg       lib  _all        jdatasrc      obj  y     )
+    (libjpeg       lib  _all        jdcoefct      obj  y     )
+    (libjpeg       lib  _all        jdcolor       obj  y     )
+    (libjpeg       lib  _all        jddctmgr      obj  y     )
+    (libjpeg       lib  _all        jdhuff        obj  y     )
+    (libjpeg       lib  _all        jdinput       obj  y     )
+    (libjpeg       lib  _all        jdmainct      obj  y     )
+    (libjpeg       lib  _all        jdmarker      obj  y     )
+    (libjpeg       lib  _all        jdmaster      obj  y     )
+    (libjpeg       lib  _all        jdmerge       obj  y     )
+    (libjpeg       lib  _all        jdphuff       obj  y     )
+    (libjpeg       lib  _all        jdpostct      obj  y     )
+    (libjpeg       lib  _all        jdsample      obj  y     )
+    (libjpeg       lib  _all        jdtrans       obj  y     )
+    (libjpeg       lib  _all        jerror        obj  y     )
+    (libjpeg       lib  _all        jfdctflt      obj  y     )
+    (libjpeg       lib  _all        jfdctfst      obj  y     )
+    (libjpeg       lib  _all        jfdctint      obj  y     )
+    (libjpeg       lib  _all        jidctflt      obj  y     )
+    (libjpeg       lib  _all        jidctfst      obj  y     )
+    (libjpeg       lib  _all        jidctint      obj  y     )
+    (libjpeg       lib  _all        jidctred      obj  y     )
+    (libjpeg       lib  _all        jquant1       obj  y     )
+    (libjpeg       lib  _all        jquant2       obj  y     )
+    (libjpeg       lib  _all        jutils        obj  y     )
+    (libjpeg       lib  _all        jmemmgr       obj  y     )
+
+    ;; The memory manager. We choose the generic malloc-based one.
+    ;; See libjpeg.doc for more information.
+    (libjpeg       lib  _all        jmemnobs      obj  y     )
+
+    (libjpeg       dso  _all        jcapimin      obj  y     )
+    (libjpeg       dso  _all        jcapistd      obj  y     )
+    (libjpeg       dso  _all        jccoefct      obj  y     )
+    (libjpeg       dso  _all        jccolor       obj  y     )
+    (libjpeg       dso  _all        jcdctmgr      obj  y     )
+    (libjpeg       dso  _all        jchuff        obj  y     )
+    (libjpeg       dso  _all        jcinit        obj  y     )
+    (libjpeg       dso  _all        jcmainct      obj  y     )
+    (libjpeg       dso  _all        jcmarker      obj  y     )
+    (libjpeg       dso  _all        jcmaster      obj  y     )
+    (libjpeg       dso  _all        jcomapi       obj  y     )
+    (libjpeg       dso  _all        jcparam       obj  y     )
+    (libjpeg       dso  _all        jcphuff       obj  y     )
+    (libjpeg       dso  _all        jcprepct      obj  y     )
+    (libjpeg       dso  _all        jcsample      obj  y     )
+    (libjpeg       dso  _all        jctrans       obj  y     )
+    (libjpeg       dso  _all        jdapimin      obj  y     )
+    (libjpeg       dso  _all        jdapistd      obj  y     )
+    (libjpeg       dso  _all        jdatadst      obj  y     )
+    (libjpeg       dso  _all        jdatasrc      obj  y     )
+    (libjpeg       dso  _all        jdcoefct      obj  y     )
+    (libjpeg       dso  _all        jdcolor       obj  y     )
+    (libjpeg       dso  _all        jddctmgr      obj  y     )
+    (libjpeg       dso  _all        jdhuff        obj  y     )
+    (libjpeg       dso  _all        jdinput       obj  y     )
+    (libjpeg       dso  _all        jdmainct      obj  y     )
+    (libjpeg       dso  _all        jdmarker      obj  y     )
+    (libjpeg       dso  _all        jdmaster      obj  y     )
+    (libjpeg       dso  _all        jdmerge       obj  y     )
+    (libjpeg       dso  _all        jdphuff       obj  y     )
+    (libjpeg       dso  _all        jdpostct      obj  y     )
+    (libjpeg       dso  _all        jdsample      obj  y     )
+    (libjpeg       dso  _all        jdtrans       obj  y     )
+    (libjpeg       dso  _all        jerror        obj  y     )
+    (libjpeg       dso  _all        jfdctflt      obj  y     )
+    (libjpeg       dso  _all        jfdctfst      obj  y     )
+    (libjpeg       dso  _all        jfdctint      obj  y     )
+    (libjpeg       dso  _all        jidctflt      obj  y     )
+    (libjpeg       dso  _all        jidctfst      obj  y     )
+    (libjpeg       dso  _all        jidctint      obj  y     )
+    (libjpeg       dso  _all        jidctred      obj  y     )
+    (libjpeg       dso  _all        jquant1       obj  y     )
+    (libjpeg       dso  _all        jquant2       obj  y     )
+    (libjpeg       dso  _all        jutils        obj  y     )
+    (libjpeg       dso  _all        jmemmgr       obj  y     )
+    (libjpeg       dso  _all        jmemnobs      obj  y     )
+
+
+    )))
