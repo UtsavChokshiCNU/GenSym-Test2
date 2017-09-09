@@ -1,0 +1,82 @@
+#include <olectl.h>
+// wraptest.idl : IDL source for wraptest.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (wraptest.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+	
+
+	[
+		object,
+		uuid(76233210-FC87-11D1-867C-00008618F471),
+		dual,
+		helpstring("Iwrap Interface"),
+		pointer_default(unique)
+	]
+	interface Iwrap : IDispatch
+	{
+		[propput, id(DISPID_ENABLED)]
+		HRESULT Enabled([in]VARIANT_BOOL vbool);
+		[propget, id(DISPID_ENABLED)]
+		HRESULT Enabled([out,retval]VARIANT_BOOL* pbool);
+		[propget, id(DISPID_HWND)]
+		HRESULT Window([out, retval]long* phwnd);
+		[id(1), helpstring("My operation - Disable control")] HRESULT op1();
+		[propget, id(2), helpstring("my property")] HRESULT prop1([out, retval] long *pVal);
+		[propput, id(2), helpstring("my property")] HRESULT prop1([in] long newVal);
+	};
+	[
+		object,
+		uuid(0C3435A4-0206-11D2-868D-00008618F471),
+		dual,
+		helpstring("ISink Interface"),
+		pointer_default(unique)
+	]
+	interface ISink : IDispatch
+	{
+	};
+[
+	uuid(76233201-FC87-11D1-867C-00008618F471),
+	version(1.0),
+	helpstring("wraptest 1.0 Type Library")
+]
+library WRAPTESTLib
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+	[
+		uuid(F1A30110-0207-11d2-868D-00008618F471),
+		helpstring("Event interface for Wraptest")
+	]
+
+	dispinterface _WrapEvents
+	{
+		properties:
+		methods:
+		[id(3)] void MyFire([in] long x);
+	};
+
+
+	[
+		uuid(76233211-FC87-11D1-867C-00008618F471),
+		helpstring("wrap Class")
+	]
+	coclass wrap
+	{
+		[default] interface Iwrap;
+		[default, source] dispinterface _WrapEvents;
+	};
+	[
+		uuid(0C3435A5-0206-11D2-868D-00008618F471),
+		helpstring("Sink Class")
+	]
+	coclass Sink
+	{
+		[default] interface ISink;
+	};
+};
