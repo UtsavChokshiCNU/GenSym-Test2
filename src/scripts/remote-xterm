@@ -1,0 +1,35 @@
+#!/usr/local/bin/tcsh
+
+# This simple script is intended to be used to get an xterm while working
+# remotely (through the VPN).  I haven't found another easy way to know what the
+# IP address is.  The VPN client machine is fairly taciturn about divulging that
+# information, as far as I've found.  You can find out who you are by, say,
+# telnetting to a Unix machine and running "w", but that's pretty clumsy.  The
+# shell doesn't seem to want to tell you who you are in any simple way either.
+
+# However, that's only true for the standard C-shell.  If you run tcsh with rsh,
+# it automatically sets a variable called REMOTEHOST to where you are connecting
+# from.  You can use that variable easily to connect back to the X server on the
+# VPN client machine.
+
+# So, this is a /usr/local/bin/tcsh script which just puts up an xterm on
+# ${REMOTEHOST}:0.0.  It takes the liberty of also setting the title of the
+# xterm to the name of the host.  It doesn't customize the xterm any further,
+# but allows individuals to do so by adding options to the environment variable
+# PERSONAL_XTERM_OPTIONS.
+
+# I can't guarantee the results of running this script... it may not work
+# properly.  We probably have some Unix machines that don't have tcsh installed,
+# or not installed in /usr/local/bin, or built without the rh flag that is
+# necessary to get the shell to set REMOTEHOST.  Nevertheless, most of the time
+# this should display an xterm on the X server of the machine that issues an rsh
+# command to execute it.
+
+# I've only tested this with rsh.  I assume it would work with ssh as well, but
+# I haven't checked that.  - jv, 4/12/02
+
+if !($?PERSONAL_XTERM_OPTIONS) then
+  setenv PERSONAL_XTERM_OPTIONS ""
+endif
+
+xterm -T `hostname` -display "${REMOTEHOST}:0.0" ${PERSONAL_XTERM_OPTIONS}
