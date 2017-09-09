@@ -1,0 +1,65 @@
+PRODUCT = twplug
+ODIR = o
+PLATFORM = intelnt
+AUTODIR = $(DSTBOX)\auto
+CDIR = $(SRCBOX)\$(PRODUCT)\c
+MFDIR = $(DSTBOX)\$(PRODUCT)\$(ODIR)
+NPDIR = $(SRCBOX)\$(PRODUCT)\support
+RSC=rc.exe
+SCRIPTSDIR = $(SCRIPTSBOX)\scripts\nt
+CC_FLAGS = $(cflags) $(cvarsmt)
+
+# The include file ntwin32.mak defines macros to provide independence
+# macro      Intel NT             Alpha NT      Definition
+# =====      ========             ========      ===========
+# $(cc)      cl                   claxp         compiler
+# $(ccommon) -c -W3               same          standard compiler flags
+# $(cdebug)  -Od -Zi              -Od -Zi -Zh   standard debug flags*
+# $(cflags)  $(ccommon) -D_X86_=1 -c -DALPHA=1  to identify platform
+# $(cvarsdll) -DWIN32 $(noansi)    same          to identify o.s.
+# $(link)    link32               same          linker
+# $(ldebug)  -debug:full          same          linker debug flags*
+#            -debugtype:cv              
+# $(guilflags) -subsystem:windows same          GUI link flags
+#             -entry:WinMainCRTStartup  
+#
+# (*) A NODEBUG option or macro turns off debugging and specifies
+#    full optimization.
+
+!include <ntwin32.mak>
+
+all : _mfenter nptwplug.lib _mfexit
+
+_mfenter : 
+	@- $(SCRIPTSDIR)\errsweep.bat -init
+
+_mfexit : 
+	@- $(SCRIPTSDIR)\errsweep.bat -finish
+
+nptwplug.lib : twnpshell.obj npwin.obj twplugin.res $(CDIR)\NpTwplugin.def
+	- del nptwplug.lib
+	@- $(SCRIPTSDIR)\errsweep.bat nptwplug.lib
+	$(link) /out:nptwplug.dll /def:$(CDIR)\NpTwplugin.def $(ldebug) $(dlllflags) twplugin.res npwin.obj twnpshell.obj $(guilibsmt) wsock32.lib netapi32.lib odbc32.lib rpcrt4.lib version.lib odbccp32.lib oleaut32.lib ole32.lib uuid.lib
+	@- del current.bat
+
+twnpshell.obj : $(CDIR)\twnpshell.c $(CDIR)\gensym-np.h
+	- del twnpshell.obj
+	@- $(SCRIPTSDIR)\errsweep.bat twnpshell.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(NPDIR) $(CDIR)\twnpshell.c
+	@- del current.bat
+
+npwin.obj : $(NPDIR)\npwin.cpp
+	- del npwin.obj
+	@- $(SCRIPTSDIR)\errsweep.bat npwin.obj
+	$(cc) $(cdebug) $(CC_FLAGS) -I$(NPDIR) $(NPDIR)\npwin.cpp
+	@- del current.bat
+
+twplugin.res : $(CDIR)\twplugin.rc
+	$(RSC) /l 0x409 /fotwplugin.res /i $(CDIR) $(CDIR)\twplugin.rc
+
+clean : 
+	- del *.obj
+	- del *.lib
+	- del *.exp
+	- del *.dll
+	- del *.res
