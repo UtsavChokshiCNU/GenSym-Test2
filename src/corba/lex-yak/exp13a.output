@@ -1,0 +1,3615 @@
+
+
+Terminals which are not used:
+
+   xINOUT
+   OPERATOR
+   PUNCTUATOR
+   LITERAL
+   IDENTIFIER
+   KEYWORD
+   LITERAL_DECINT
+   LITERAL_HEXINT
+   LITERAL_OCTINT
+   LITERAL_FP
+   LITERAL_CHAR
+   LITERAL_CHARHEX
+   LITERAL_CHAROCT
+   LITERAL_STRING
+   NEG
+
+
+
+
+token types:
+ type -1 is $
+ type 37 is '%'
+ type 38 is '&'
+ type 40 is '('
+ type 41 is ')'
+ type 42 is '*'
+ type 43 is '+'
+ type 44 is ','
+ type 45 is '-'
+ type 47 is '/'
+ type 58 is ':'
+ type 59 is ';'
+ type 60 is '<'
+ type 61 is '='
+ type 62 is '>'
+ type 91 is '['
+ type 93 is ']'
+ type 94 is '^'
+ type 123 is '{'
+ type 124 is '|'
+ type 125 is '}'
+ type 126 is '~'
+ type 256 is error
+ type 258 is xANY
+ type 259 is xATTRIBUTE
+ type 260 is xBOOLEAN
+ type 261 is xCASE
+ type 262 is xCHAR
+ type 263 is xCONST
+ type 264 is xCONTEXT
+ type 265 is xDEFAULT
+ type 266 is xDOUBLE
+ type 267 is xENUM
+ type 268 is xEXCEPTION
+ type 269 is xFALSE
+ type 270 is xFLOAT
+ type 271 is xIN
+ type 272 is xINOUT
+ type 273 is xINTERFACE
+ type 274 is xLONG
+ type 275 is xMODULE
+ type 276 is xOBJECT
+ type 277 is xOCTET
+ type 278 is xONEWAY
+ type 279 is xOUT
+ type 280 is xRAISES
+ type 281 is xREADONLY
+ type 282 is xSEQUENCE
+ type 283 is xSHORT
+ type 284 is xSTRING
+ type 285 is xSTRUCT
+ type 286 is xSWITCH
+ type 287 is xTRUE
+ type 288 is xTYPEDEF
+ type 289 is xUNSIGNED
+ type 290 is xUNION
+ type 291 is xVOID
+ type 292 is OPERATOR
+ type 293 is PUNCTUATOR
+ type 294 is LITERAL
+ type 295 is IDENTIFIER
+ type 296 is KEYWORD
+ type 297 is LITERAL_DECINT
+ type 298 is LITERAL_HEXINT
+ type 299 is LITERAL_OCTINT
+ type 300 is LITERAL_FP
+ type 301 is LITERAL_CHAR
+ type 302 is LITERAL_CHARHEX
+ type 303 is LITERAL_CHAROCT
+ type 304 is LITERAL_STRING
+ type 305 is DOUBLE_COLON
+ type 306 is DOUBLE_LT
+ type 307 is DOUBLE_GT
+ type 308 is FLOATING_PT_LITERAL
+ type 309 is CHARACTER_LITERAL
+ type 310 is STRING_LITERAL
+ type 311 is INTEGER_LITERAL
+ type 312 is xIDENTIFIER
+ type 313 is NEG
+
+
+state 0
+
+    xCONST	shift, and go to state 1
+    xENUM	shift, and go to state 2
+    xEXCEPTION	shift, and go to state 3
+    xINTERFACE	shift, and go to state 4
+    xMODULE	shift, and go to state 5
+    xSTRUCT	shift, and go to state 6
+    xTYPEDEF	shift, and go to state 7
+    xUNION	shift, and go to state 8
+
+    specification	go to state 9
+    definition	go to state 10
+    module	go to state 11
+    interface	go to state 12
+    interface_dcl	go to state 13
+    forward_dcl	go to state 14
+    interface_header	go to state 15
+    const_dcl	go to state 16
+    type_dcl	go to state 17
+    struct_type	go to state 18
+    union_type	go to state 19
+    enum_type	go to state 20
+    except_dcl	go to state 21
+
+
+
+state 1
+
+    const_dcl  ->  xCONST . const_type xIDENTIFIER '=' const_exp   (rule 30)
+
+    xBOOLEAN	shift, and go to state 22
+    xCHAR	shift, and go to state 23
+    xDOUBLE	shift, and go to state 24
+    xFLOAT	shift, and go to state 25
+    xLONG	shift, and go to state 26
+    xSHORT	shift, and go to state 27
+    xSTRING	shift, and go to state 28
+    xUNSIGNED	shift, and go to state 29
+    DOUBLE_COLON	shift, and go to state 30
+    xIDENTIFIER	shift, and go to state 31
+
+    scoped_name	go to state 32
+    const_type	go to state 33
+    floating_pt_type	go to state 34
+    integer_type	go to state 35
+    signed_int	go to state 36
+    signed_long_int	go to state 37
+    signed_short_int	go to state 38
+    unsigned_int	go to state 39
+    unsigned_long_int	go to state 40
+    unsigned_short_int	go to state 41
+    char_type	go to state 42
+    boolean_type	go to state 43
+    string_type	go to state 44
+
+
+
+state 2
+
+    enum_type  ->  xENUM . xIDENTIFIER '{' aux_4 '}'   (rule 134)
+
+    xIDENTIFIER	shift, and go to state 45
+
+
+
+state 3
+
+    except_dcl  ->  xEXCEPTION . xIDENTIFIER '{' '}'   (rule 150)
+    except_dcl  ->  xEXCEPTION . xIDENTIFIER '{' member_list '}'   (rule 151)
+
+    xIDENTIFIER	shift, and go to state 46
+
+
+
+state 4
+
+    forward_dcl  ->  xINTERFACE . xIDENTIFIER   (rule 14)
+    interface_header  ->  xINTERFACE . xIDENTIFIER   (rule 15)
+    interface_header  ->  xINTERFACE . xIDENTIFIER inheritance_spec   (rule 16)
+
+    xIDENTIFIER	shift, and go to state 47
+
+
+
+state 5
+
+    module  ->  xMODULE . xIDENTIFIER '{' aux_11 '}'   (rule 8)
+
+    xIDENTIFIER	shift, and go to state 48
+
+
+
+state 6
+
+    struct_type  ->  xSTRUCT . xIDENTIFIER '{' member_list '}'   (rule 116)
+
+    xIDENTIFIER	shift, and go to state 49
+
+
+
+state 7
+
+    type_dcl  ->  xTYPEDEF . type_declarator   (rule 70)
+
+    xANY	shift, and go to state 50
+    xBOOLEAN	shift, and go to state 22
+    xCHAR	shift, and go to state 23
+    xDOUBLE	shift, and go to state 24
+    xENUM	shift, and go to state 2
+    xFLOAT	shift, and go to state 25
+    xLONG	shift, and go to state 26
+    xOBJECT	shift, and go to state 51
+    xOCTET	shift, and go to state 52
+    xSEQUENCE	shift, and go to state 53
+    xSHORT	shift, and go to state 27
+    xSTRING	shift, and go to state 28
+    xSTRUCT	shift, and go to state 6
+    xUNSIGNED	shift, and go to state 29
+    xUNION	shift, and go to state 8
+    DOUBLE_COLON	shift, and go to state 30
+    xIDENTIFIER	shift, and go to state 31
+
+    scoped_name	go to state 54
+    type_declarator	go to state 55
+    type_spec	go to state 56
+    simple_type_spec	go to state 57
+    base_type_spec	go to state 58
+    template_type_spec	go to state 59
+    constr_type_spec	go to state 60
+    floating_pt_type	go to state 61
+    integer_type	go to state 62
+    signed_int	go to state 36
+    signed_long_int	go to state 37
+    signed_short_int	go to state 38
+    unsigned_int	go to state 39
+    unsigned_long_int	go to state 40
+    unsigned_short_int	go to state 41
+    char_type	go to state 63
+    boolean_type	go to state 64
+    octet_type	go to state 65
+    any_type	go to state 66
+    object_type	go to state 67
+    struct_type	go to state 68
+    union_type	go to state 69
+    enum_type	go to state 70
+    sequence_type	go to state 71
+    string_type	go to state 72
+
+
+
+state 8
+
+    union_type  ->  xUNION . xIDENTIFIER xSWITCH '(' switch_type_spec ')' '{' switch_body '}'   (rule 120)
+
+    xIDENTIFIER	shift, and go to state 73
+
+
+
+state 9
+
+    specification  ->  specification . definition   (rule 2)
+
+    $   	shift, and go to state 284
+    xCONST	shift, and go to state 1
+    xENUM	shift, and go to state 2
+    xEXCEPTION	shift, and go to state 3
+    xINTERFACE	shift, and go to state 4
+    xMODULE	shift, and go to state 5
+    xSTRUCT	shift, and go to state 6
+    xTYPEDEF	shift, and go to state 7
+    xUNION	shift, and go to state 8
+
+    definition	go to state 74
+    module	go to state 11
+    interface	go to state 12
+    interface_dcl	go to state 13
+    forward_dcl	go to state 14
+    interface_header	go to state 15
+    const_dcl	go to state 16
+    type_dcl	go to state 17
+    struct_type	go to state 18
+    union_type	go to state 19
+    enum_type	go to state 20
+    except_dcl	go to state 21
+
+
+
+state 10
+
+    specification  ->  definition .   (rule 1)
+
+    $default	reduce using rule 1 (specification)
+
+
+
+state 11
+
+    definition  ->  module . ';'   (rule 7)
+
+    ';' 	shift, and go to state 75
+
+
+
+state 12
+
+    definition  ->  interface . ';'   (rule 6)
+
+    ';' 	shift, and go to state 76
+
+
+
+state 13
+
+    interface  ->  interface_dcl .   (rule 11)
+
+    $default	reduce using rule 11 (interface)
+
+
+
+state 14
+
+    interface  ->  forward_dcl .   (rule 12)
+
+    $default	reduce using rule 12 (interface)
+
+
+
+state 15
+
+    interface_dcl  ->  interface_header . '{' interface_body '}'   (rule 13)
+
+    '{' 	shift, and go to state 77
+
+
+
+state 16
+
+    definition  ->  const_dcl . ';'   (rule 4)
+
+    ';' 	shift, and go to state 78
+
+
+
+state 17
+
+    definition  ->  type_dcl . ';'   (rule 3)
+
+    ';' 	shift, and go to state 79
+
+
+
+state 18
+
+    type_dcl  ->  struct_type .   (rule 71)
+
+    $default	reduce using rule 71 (type_dcl)
+
+
+
+state 19
+
+    type_dcl  ->  union_type .   (rule 72)
+
+    $default	reduce using rule 72 (type_dcl)
+
+
+
+state 20
+
+    type_dcl  ->  enum_type .   (rule 73)
+
+    $default	reduce using rule 73 (type_dcl)
+
+
+
+state 21
+
+    definition  ->  except_dcl . ';'   (rule 5)
+
+    ';' 	shift, and go to state 80
+
+
+
+state 22
+
+    boolean_type  ->  xBOOLEAN .   (rule 112)
+
+    $default	reduce using rule 112 (boolean_type)
+
+
+
+state 23
+
+    char_type  ->  xCHAR .   (rule 111)
+
+    $default	reduce using rule 111 (char_type)
+
+
+
+state 24
+
+    floating_pt_type  ->  xDOUBLE .   (rule 100)
+
+    $default	reduce using rule 100 (floating_pt_type)
+
+
+
+state 25
+
+    floating_pt_type  ->  xFLOAT .   (rule 99)
+
+    $default	reduce using rule 99 (floating_pt_type)
+
+
+
+state 26
+
+    signed_long_int  ->  xLONG .   (rule 105)
+
+    $default	reduce using rule 105 (signed_long_int)
+
+
+
+state 27
+
+    signed_short_int  ->  xSHORT .   (rule 106)
+
+    $default	reduce using rule 106 (signed_short_int)
+
+
+
+state 28
+
+    string_type  ->  xSTRING . '<' positive_int_const '>'   (rule 140)
+    string_type  ->  xSTRING .   (rule 141)
+
+    '<' 	shift, and go to state 81
+
+    $default	reduce using rule 141 (string_type)
+
+
+
+state 29
+
+    unsigned_long_int  ->  xUNSIGNED . xLONG   (rule 109)
+    unsigned_short_int  ->  xUNSIGNED . xSHORT   (rule 110)
+
+    xLONG	shift, and go to state 82
+    xSHORT	shift, and go to state 83
+
+
+
+state 30
+
+    scoped_name  ->  DOUBLE_COLON . xIDENTIFIER   (rule 28)
+
+    xIDENTIFIER	shift, and go to state 84
+
+
+
+state 31
+
+    scoped_name  ->  xIDENTIFIER .   (rule 27)
+
+    $default	reduce using rule 27 (scoped_name)
+
+
+
+state 32
+
+    scoped_name  ->  scoped_name . DOUBLE_COLON xIDENTIFIER   (rule 29)
+    const_type  ->  scoped_name .   (rule 36)
+
+    DOUBLE_COLON	shift, and go to state 85
+
+    $default	reduce using rule 36 (const_type)
+
+
+
+state 33
+
+    const_dcl  ->  xCONST const_type . xIDENTIFIER '=' const_exp   (rule 30)
+
+    xIDENTIFIER	shift, and go to state 86
+
+
+
+state 34
+
+    const_type  ->  floating_pt_type .   (rule 34)
+
+    $default	reduce using rule 34 (const_type)
+
+
+
+state 35
+
+    const_type  ->  integer_type .   (rule 31)
+
+    $default	reduce using rule 31 (const_type)
+
+
+
+state 36
+
+    integer_type  ->  signed_int .   (rule 101)
+
+    $default	reduce using rule 101 (integer_type)
+
+
+
+state 37
+
+    signed_int  ->  signed_long_int .   (rule 103)
+
+    $default	reduce using rule 103 (signed_int)
+
+
+
+state 38
+
+    signed_int  ->  signed_short_int .   (rule 104)
+
+    $default	reduce using rule 104 (signed_int)
+
+
+
+state 39
+
+    integer_type  ->  unsigned_int .   (rule 102)
+
+    $default	reduce using rule 102 (integer_type)
+
+
+
+state 40
+
+    unsigned_int  ->  unsigned_long_int .   (rule 107)
+
+    $default	reduce using rule 107 (unsigned_int)
+
+
+
+state 41
+
+    unsigned_int  ->  unsigned_short_int .   (rule 108)
+
+    $default	reduce using rule 108 (unsigned_int)
+
+
+
+state 42
+
+    const_type  ->  char_type .   (rule 32)
+
+    $default	reduce using rule 32 (const_type)
+
+
+
+state 43
+
+    const_type  ->  boolean_type .   (rule 33)
+
+    $default	reduce using rule 33 (const_type)
+
+
+
+state 44
+
+    const_type  ->  string_type .   (rule 35)
+
+    $default	reduce using rule 35 (const_type)
+
+
+
+state 45
+
+    enum_type  ->  xENUM xIDENTIFIER . '{' aux_4 '}'   (rule 134)
+
+    '{' 	shift, and go to state 87
+
+
+
+state 46
+
+    except_dcl  ->  xEXCEPTION xIDENTIFIER . '{' '}'   (rule 150)
+    except_dcl  ->  xEXCEPTION xIDENTIFIER . '{' member_list '}'   (rule 151)
+
+    '{' 	shift, and go to state 88
+
+
+
+state 47
+
+    forward_dcl  ->  xINTERFACE xIDENTIFIER .   (rule 14)
+    interface_header  ->  xINTERFACE xIDENTIFIER .   (rule 15)
+    interface_header  ->  xINTERFACE xIDENTIFIER . inheritance_spec   (rule 16)
+
+    ':' 	shift, and go to state 89
+
+    '{' 	reduce using rule 15 (interface_header)
+    $default	reduce using rule 14 (forward_dcl)
+
+    inheritance_spec	go to state 90
+
+
+
+state 48
+
+    module  ->  xMODULE xIDENTIFIER . '{' aux_11 '}'   (rule 8)
+
+    '{' 	shift, and go to state 91
+
+
+
+state 49
+
+    struct_type  ->  xSTRUCT xIDENTIFIER . '{' member_list '}'   (rule 116)
+
+    '{' 	shift, and go to state 92
+
+
+
+state 50
+
+    any_type  ->  xANY .   (rule 114)
+
+    $default	reduce using rule 114 (any_type)
+
+
+
+state 51
+
+    object_type  ->  xOBJECT .   (rule 115)
+
+    $default	reduce using rule 115 (object_type)
+
+
+
+state 52
+
+    octet_type  ->  xOCTET .   (rule 113)
+
+    $default	reduce using rule 113 (octet_type)
+
+
+
+state 53
+
+    sequence_type  ->  xSEQUENCE . '<' simple_type_spec ',' positive_int_const '>'   (rule 138)
+    sequence_type  ->  xSEQUENCE . '<' simple_type_spec '>'   (rule 139)
+
+    '<' 	shift, and go to state 93
+
+
+
+state 54
+
+    scoped_name  ->  scoped_name . DOUBLE_COLON xIDENTIFIER   (rule 29)
+    simple_type_spec  ->  scoped_name .   (rule 79)
+
+    DOUBLE_COLON	shift, and go to state 85
+
+    $default	reduce using rule 79 (simple_type_spec)
+
+
+
+state 55
+
+    type_dcl  ->  xTYPEDEF type_declarator .   (rule 70)
+
+    $default	reduce using rule 70 (type_dcl)
+
+
+
+state 56
+
+    type_declarator  ->  type_spec . declarators   (rule 74)
+
+    xIDENTIFIER	shift, and go to state 94
+
+    declarators	go to state 95
+    aux_2	go to state 96
+    declarator	go to state 97
+    simple_declarator	go to state 98
+    complex_declarator	go to state 99
+    array_declarator	go to state 100
+
+
+
+state 57
+
+    type_spec  ->  simple_type_spec .   (rule 75)
+
+    $default	reduce using rule 75 (type_spec)
+
+
+
+state 58
+
+    simple_type_spec  ->  base_type_spec .   (rule 77)
+
+    $default	reduce using rule 77 (simple_type_spec)
+
+
+
+state 59
+
+    simple_type_spec  ->  template_type_spec .   (rule 78)
+
+    $default	reduce using rule 78 (simple_type_spec)
+
+
+
+state 60
+
+    type_spec  ->  constr_type_spec .   (rule 76)
+
+    $default	reduce using rule 76 (type_spec)
+
+
+
+state 61
+
+    base_type_spec  ->  floating_pt_type .   (rule 80)
+
+    $default	reduce using rule 80 (base_type_spec)
+
+
+
+state 62
+
+    base_type_spec  ->  integer_type .   (rule 81)
+
+    $default	reduce using rule 81 (base_type_spec)
+
+
+
+state 63
+
+    base_type_spec  ->  char_type .   (rule 82)
+
+    $default	reduce using rule 82 (base_type_spec)
+
+
+
+state 64
+
+    base_type_spec  ->  boolean_type .   (rule 83)
+
+    $default	reduce using rule 83 (base_type_spec)
+
+
+
+state 65
+
+    base_type_spec  ->  octet_type .   (rule 84)
+
+    $default	reduce using rule 84 (base_type_spec)
+
+
+
+state 66
+
+    base_type_spec  ->  any_type .   (rule 85)
+
+    $default	reduce using rule 85 (base_type_spec)
+
+
+
+state 67
+
+    base_type_spec  ->  object_type .   (rule 86)
+
+    $default	reduce using rule 86 (base_type_spec)
+
+
+
+state 68
+
+    constr_type_spec  ->  struct_type .   (rule 89)
+
+    $default	reduce using rule 89 (constr_type_spec)
+
+
+
+state 69
+
+    constr_type_spec  ->  union_type .   (rule 90)
+
+    $default	reduce using rule 90 (constr_type_spec)
+
+
+
+state 70
+
+    constr_type_spec  ->  enum_type .   (rule 91)
+
+    $default	reduce using rule 91 (constr_type_spec)
+
+
+
+state 71
+
+    template_type_spec  ->  sequence_type .   (rule 87)
+
+    $default	reduce using rule 87 (template_type_spec)
+
+
+
+state 72
+
+    template_type_spec  ->  string_type .   (rule 88)
+
+    $default	reduce using rule 88 (template_type_spec)
+
+
+
+state 73
+
+    union_type  ->  xUNION xIDENTIFIER . xSWITCH '(' switch_type_spec ')' '{' switch_body '}'   (rule 120)
+
+    xSWITCH	shift, and go to state 101
+
+
+
+state 74
+
+    specification  ->  specification definition .   (rule 2)
+
+    $default	reduce using rule 2 (specification)
+
+
+
+state 75
+
+    definition  ->  module ';' .   (rule 7)
+
+    $default	reduce using rule 7 (definition)
+
+
+
+state 76
+
+    definition  ->  interface ';' .   (rule 6)
+
+    $default	reduce using rule 6 (definition)
+
+
+
+state 77
+
+    interface_dcl  ->  interface_header '{' . interface_body '}'   (rule 13)
+
+    $default	reduce using rule 17 (interface_body)
+
+    interface_body	go to state 102
+
+
+
+state 78
+
+    definition  ->  const_dcl ';' .   (rule 4)
+
+    $default	reduce using rule 4 (definition)
+
+
+
+state 79
+
+    definition  ->  type_dcl ';' .   (rule 3)
+
+    $default	reduce using rule 3 (definition)
+
+
+
+state 80
+
+    definition  ->  except_dcl ';' .   (rule 5)
+
+    $default	reduce using rule 5 (definition)
+
+
+
+state 81
+
+    string_type  ->  xSTRING '<' . positive_int_const '>'   (rule 140)
+
+    xFALSE	shift, and go to state 103
+    xTRUE	shift, and go to state 104
+    DOUBLE_COLON	shift, and go to state 30
+    FLOATING_PT_LITERAL	shift, and go to state 105
+    CHARACTER_LITERAL	shift, and go to state 106
+    STRING_LITERAL	shift, and go to state 107
+    INTEGER_LITERAL	shift, and go to state 108
+    xIDENTIFIER	shift, and go to state 31
+    '-' 	shift, and go to state 109
+    '+' 	shift, and go to state 110
+    '~' 	shift, and go to state 111
+    '(' 	shift, and go to state 112
+
+    scoped_name	go to state 113
+    const_exp	go to state 114
+    or_expr	go to state 115
+    xor_expr	go to state 116
+    and_expr	go to state 117
+    shift_expr	go to state 118
+    add_expr	go to state 119
+    mult_expr	go to state 120
+    unary_expr	go to state 121
+    unary_operator	go to state 122
+    primary_expr	go to state 123
+    literal	go to state 124
+    boolean_literal	go to state 125
+    positive_int_const	go to state 126
+
+
+
+state 82
+
+    unsigned_long_int  ->  xUNSIGNED xLONG .   (rule 109)
+
+    $default	reduce using rule 109 (unsigned_long_int)
+
+
+
+state 83
+
+    unsigned_short_int  ->  xUNSIGNED xSHORT .   (rule 110)
+
+    $default	reduce using rule 110 (unsigned_short_int)
+
+
+
+state 84
+
+    scoped_name  ->  DOUBLE_COLON xIDENTIFIER .   (rule 28)
+
+    $default	reduce using rule 28 (scoped_name)
+
+
+
+state 85
+
+    scoped_name  ->  scoped_name DOUBLE_COLON . xIDENTIFIER   (rule 29)
+
+    xIDENTIFIER	shift, and go to state 127
+
+
+
+state 86
+
+    const_dcl  ->  xCONST const_type xIDENTIFIER . '=' const_exp   (rule 30)
+
+    '=' 	shift, and go to state 128
+
+
+
+state 87
+
+    enum_type  ->  xENUM xIDENTIFIER '{' . aux_4 '}'   (rule 134)
+
+    xIDENTIFIER	shift, and go to state 129
+
+    aux_4	go to state 130
+    enumerator	go to state 131
+
+
+
+state 88
+
+    except_dcl  ->  xEXCEPTION xIDENTIFIER '{' . '}'   (rule 150)
+    except_dcl  ->  xEXCEPTION xIDENTIFIER '{' . member_list '}'   (rule 151)
+
+    xANY	shift, and go to state 50
+    xBOOLEAN	shift, and go to state 22
+    xCHAR	shift, and go to state 23
+    xDOUBLE	shift, and go to state 24
+    xENUM	shift, and go to state 2
+    xFLOAT	shift, and go to state 25
+    xLONG	shift, and go to state 26
+    xOBJECT	shift, and go to state 51
+    xOCTET	shift, and go to state 52
+    xSEQUENCE	shift, and go to state 53
+    xSHORT	shift, and go to state 27
+    xSTRING	shift, and go to state 28
+    xSTRUCT	shift, and go to state 6
+    xUNSIGNED	shift, and go to state 29
+    xUNION	shift, and go to state 8
+    DOUBLE_COLON	shift, and go to state 30
+    xIDENTIFIER	shift, and go to state 31
+    '}' 	shift, and go to state 132
+
+    scoped_name	go to state 54
+    type_spec	go to state 133
+    simple_type_spec	go to state 57
+    base_type_spec	go to state 58
+    template_type_spec	go to state 59
+    constr_type_spec	go to state 60
+    floating_pt_type	go to state 61
+    integer_type	go to state 62
+    signed_int	go to state 36
+    signed_long_int	go to state 37
+    signed_short_int	go to state 38
+    unsigned_int	go to state 39
+    unsigned_long_int	go to state 40
+    unsigned_short_int	go to state 41
+    char_type	go to state 63
+    boolean_type	go to state 64
+    octet_type	go to state 65
+    any_type	go to state 66
+    object_type	go to state 67
+    struct_type	go to state 68
+    member_list	go to state 134
+    member	go to state 135
+    union_type	go to state 69
+    enum_type	go to state 70
+    sequence_type	go to state 71
+    string_type	go to state 72
+
+
+
+state 89
+
+    inheritance_spec  ->  ':' . aux_1   (rule 24)
+
+    DOUBLE_COLON	shift, and go to state 30
+    xIDENTIFIER	shift, and go to state 31
+
+    aux_1	go to state 136
+    scoped_name	go to state 137
+
+
+
+state 90
+
+    interface_header  ->  xINTERFACE xIDENTIFIER inheritance_spec .   (rule 16)
+
+    $default	reduce using rule 16 (interface_header)
+
+
+
+state 91
+
+    module  ->  xMODULE xIDENTIFIER '{' . aux_11 '}'   (rule 8)
+
+    xCONST	shift, and go to state 1
+    xENUM	shift, and go to state 2
+    xEXCEPTION	shift, and go to state 3
+    xINTERFACE	shift, and go to state 4
+    xMODULE	shift, and go to state 5
+    xSTRUCT	shift, and go to state 6
+    xTYPEDEF	shift, and go to state 7
+    xUNION	shift, and go to state 8
+
+    definition	go to state 138
+    module	go to state 11
+    aux_11	go to state 139
+    interface	go to state 12
+    interface_dcl	go to state 13
+    forward_dcl	go to state 14
+    interface_header	go to state 15
+    const_dcl	go to state 16
+    type_dcl	go to state 17
+    struct_type	go to state 18
+    union_type	go to state 19
+    enum_type	go to state 20
+    except_dcl	go to state 21
+
+
+
+state 92
+
+    struct_type  ->  xSTRUCT xIDENTIFIER '{' . member_list '}'   (rule 116)
+
+    xANY	shift, and go to state 50
+    xBOOLEAN	shift, and go to state 22
+    xCHAR	shift, and go to state 23
+    xDOUBLE	shift, and go to state 24
+    xENUM	shift, and go to state 2
+    xFLOAT	shift, and go to state 25
+    xLONG	shift, and go to state 26
+    xOBJECT	shift, and go to state 51
+    xOCTET	shift, and go to state 52
+    xSEQUENCE	shift, and go to state 53
+    xSHORT	shift, and go to state 27
+    xSTRING	shift, and go to state 28
+    xSTRUCT	shift, and go to state 6
+    xUNSIGNED	shift, and go to state 29
+    xUNION	shift, and go to state 8
+    DOUBLE_COLON	shift, and go to state 30
+    xIDENTIFIER	shift, and go to state 31
+
+    scoped_name	go to state 54
+    type_spec	go to state 133
+    simple_type_spec	go to state 57
+    base_type_spec	go to state 58
+    template_type_spec	go to state 59
+    constr_type_spec	go to state 60
+    floating_pt_type	go to state 61
+    integer_type	go to state 62
+    signed_int	go to state 36
+    signed_long_int	go to state 37
+    signed_short_int	go to state 38
+    unsigned_int	go to state 39
+    unsigned_long_int	go to state 40
+    unsigned_short_int	go to state 41
+    char_type	go to state 63
+    boolean_type	go to state 64
+    octet_type	go to state 65
+    any_type	go to state 66
+    object_type	go to state 67
+    struct_type	go to state 68
+    member_list	go to state 140
+    member	go to state 135
+    union_type	go to state 69
+    enum_type	go to state 70
+    sequence_type	go to state 71
+    string_type	go to state 72
+
+
+
+state 93
+
+    sequence_type  ->  xSEQUENCE '<' . simple_type_spec ',' positive_int_const '>'   (rule 138)
+    sequence_type  ->  xSEQUENCE '<' . simple_type_spec '>'   (rule 139)
+
+    xANY	shift, and go to state 50
+    xBOOLEAN	shift, and go to state 22
+    xCHAR	shift, and go to state 23
+    xDOUBLE	shift, and go to state 24
+    xFLOAT	shift, and go to state 25
+    xLONG	shift, and go to state 26
+    xOBJECT	shift, and go to state 51
+    xOCTET	shift, and go to state 52
+    xSEQUENCE	shift, and go to state 53
+    xSHORT	shift, and go to state 27
+    xSTRING	shift, and go to state 28
+    xUNSIGNED	shift, and go to state 29
+    DOUBLE_COLON	shift, and go to state 30
+    xIDENTIFIER	shift, and go to state 31
+
+    scoped_name	go to state 54
+    simple_type_spec	go to state 141
+    base_type_spec	go to state 58
+    template_type_spec	go to state 59
+    floating_pt_type	go to state 61
+    integer_type	go to state 62
+    signed_int	go to state 36
+    signed_long_int	go to state 37
+    signed_short_int	go to state 38
+    unsigned_int	go to state 39
+    unsigned_long_int	go to state 40
+    unsigned_short_int	go to state 41
+    char_type	go to state 63
+    boolean_type	go to state 64
+    octet_type	go to state 65
+    any_type	go to state 66
+    object_type	go to state 67
+    sequence_type	go to state 71
+    string_type	go to state 72
+
+
+
+state 94
+
+    simple_declarator  ->  xIDENTIFIER .   (rule 97)
+    array_declarator  ->  xIDENTIFIER . aux_5   (rule 142)
+
+    '[' 	shift, and go to state 142
+
+    $default	reduce using rule 97 (simple_declarator)
+
+    aux_5	go to state 143
+    fixed_array_size	go to state 144
+
+
+
+state 95
+
+    type_declarator  ->  type_spec declarators .   (rule 74)
+
+    $default	reduce using rule 74 (type_declarator)
+
+
+
+state 96
+
+    declarators  ->  aux_2 .   (rule 92)
+    aux_2  ->  aux_2 . ',' declarator   (rule 94)
+
+    ',' 	shift, and go to state 145
+
+    $default	reduce using rule 92 (declarators)
+
+
+
+state 97
+
+    aux_2  ->  declarator .   (rule 93)
+
+    $default	reduce using rule 93 (aux_2)
+
+
+
+state 98
+
+    declarator  ->  simple_declarator .   (rule 95)
+
+    $default	reduce using rule 95 (declarator)
+
+
+
+state 99
+
+    declarator  ->  complex_declarator .   (rule 96)
+
+    $default	reduce using rule 96 (declarator)
+
+
+
+state 100
+
+    complex_declarator  ->  array_declarator .   (rule 98)
+
+    $default	reduce using rule 98 (complex_declarator)
+
+
+
+state 101
+
+    union_type  ->  xUNION xIDENTIFIER xSWITCH . '(' switch_type_spec ')' '{' switch_body '}'   (rule 120)
+
+    '(' 	shift, and go to state 146
+
+
+
+state 102
+
+    interface_dcl  ->  interface_header '{' interface_body . '}'   (rule 13)
+    interface_body  ->  interface_body . export   (rule 18)
+
+    xANY	shift, and go to state 50
+    xATTRIBUTE	shift, and go to state 147
+    xBOOLEAN	shift, and go to state 22
+    xCHAR	shift, and go to state 23
+    xCONST	shift, and go to state 1
+    xDOUBLE	shift, and go to state 24
+    xENUM	shift, and go to state 2
+    xEXCEPTION	shift, and go to state 3
+    xFLOAT	shift, and go to state 25
+    xLONG	shift, and go to state 26
+    xOBJECT	shift, and go to state 51
+    xOCTET	shift, and go to state 52
+    xONEWAY	shift, and go to state 148
+    xREADONLY	shift, and go to state 149
+    xSHORT	shift, and go to state 27
+    xSTRING	shift, and go to state 28
+    xSTRUCT	shift, and go to state 6
+    xTYPEDEF	shift, and go to state 7
+    xUNSIGNED	shift, and go to state 29
+    xUNION	shift, and go to state 8
+    xVOID	shift, and go to state 150
+    DOUBLE_COLON	shift, and go to state 30
+    xIDENTIFIER	shift, and go to state 31
+    '}' 	shift, and go to state 151
+
+    export	go to state 152
+    scoped_name	go to state 153
+    const_dcl	go to state 154
+    type_dcl	go to state 155
+    base_type_spec	go to state 156
+    floating_pt_type	go to state 61
+    integer_type	go to state 62
+    signed_int	go to state 36
+    signed_long_int	go to state 37
+    signed_short_int	go to state 38
+    unsigned_int	go to state 39
+    unsigned_long_int	go to state 40
+    unsigned_short_int	go to state 41
+    char_type	go to state 63
+    boolean_type	go to state 64
+    octet_type	go to state 65
+    any_type	go to state 66
+    object_type	go to state 67
+    struct_type	go to state 18
+    union_type	go to state 19
+    enum_type	go to state 20
+    string_type	go to state 157
+    attr_dcl	go to state 158
+    except_dcl	go to state 159
+    op_dcl	go to state 160
+    op_attribute	go to state 161
+    op_type_spec	go to state 162
+    param_type_spec	go to state 163
+
+
+
+state 103
+
+    boolean_literal  ->  xFALSE .   (rule 68)
+
+    $default	reduce using rule 68 (boolean_literal)
+
+
+
+state 104
+
+    boolean_literal  ->  xTRUE .   (rule 67)
+
+    $default	reduce using rule 67 (boolean_literal)
+
+
+
+state 105
+
+    literal  ->  FLOATING_PT_LITERAL .   (rule 65)
+
+    $default	reduce using rule 65 (literal)
+
+
+
+state 106
+
+    literal  ->  CHARACTER_LITERAL .   (rule 64)
+
+    $default	reduce using rule 64 (literal)
+
+
+
+state 107
+
+    literal  ->  STRING_LITERAL .   (rule 63)
+
+    $default	reduce using rule 63 (literal)
+
+
+
+state 108
+
+    literal  ->  INTEGER_LITERAL .   (rule 62)
+
+    $default	reduce using rule 62 (literal)
+
+
+
+state 109
+
+    unary_operator  ->  '-' .   (rule 56)
+
+    $default	reduce using rule 56 (unary_operator)
+
+
+
+state 110
+
+    unary_operator  ->  '+' .   (rule 57)
+
+    $default	reduce using rule 57 (unary_operator)
+
+
+
+state 111
+
+    unary_operator  ->  '~' .   (rule 58)
+
+    $default	reduce using rule 58 (unary_operator)
+
+
+
+state 112
+
+    primary_expr  ->  '(' . const_exp ')'   (rule 61)
+
+    xFALSE	shift, and go to state 103
+    xTRUE	shift, and go to state 104
+    DOUBLE_COLON	shift, and go to state 30
+    FLOATING_PT_LITERAL	shift, and go to state 105
+    CHARACTER_LITERAL	shift, and go to state 106
+    STRING_LITERAL	shift, and go to state 107
+    INTEGER_LITERAL	shift, and go to state 108
+    xIDENTIFIER	shift, and go to state 31
+    '-' 	shift, and go to state 109
+    '+' 	shift, and go to state 110
+    '~' 	shift, and go to state 111
+    '(' 	shift, and go to state 112
+
+    scoped_name	go to state 113
+    const_exp	go to state 164
+    or_expr	go to state 115
+    xor_expr	go to state 116
+    and_expr	go to state 117
+    shift_expr	go to state 118
+    add_expr	go to state 119
+    mult_expr	go to state 120
+    unary_expr	go to state 121
+    unary_operator	go to state 122
+    primary_expr	go to state 123
+    literal	go to state 124
+    boolean_literal	go to state 125
+
+
+
+state 113
+
+    scoped_name  ->  scoped_name . DOUBLE_COLON xIDENTIFIER   (rule 29)
+    primary_expr  ->  scoped_name .   (rule 59)
+
+    DOUBLE_COLON	shift, and go to state 85
+
+    $default	reduce using rule 59 (primary_expr)
+
+
+
+state 114
+
+    positive_int_const  ->  const_exp .   (rule 69)
+
+    $default	reduce using rule 69 (positive_int_const)
+
+
+
+state 115
+
+    const_exp  ->  or_expr .   (rule 37)
+    or_expr  ->  or_expr . '|' xor_expr   (rule 39)
+
+    '|' 	shift, and go to state 165
+
+    $default	reduce using rule 37 (const_exp)
+
+
+
+state 116
+
+    or_expr  ->  xor_expr .   (rule 38)
+    xor_expr  ->  xor_expr . '^' and_expr   (rule 41)
+
+    '^' 	shift, and go to state 166
+
+    $default	reduce using rule 38 (or_expr)
+
+
+
+state 117
+
+    xor_expr  ->  and_expr .   (rule 40)
+    and_expr  ->  and_expr . '&' shift_expr   (rule 43)
+
+    '&' 	shift, and go to state 167
+
+    $default	reduce using rule 40 (xor_expr)
+
+
+
+state 118
+
+    and_expr  ->  shift_expr .   (rule 42)
+    shift_expr  ->  shift_expr . DOUBLE_GT add_expr   (rule 45)
+    shift_expr  ->  shift_expr . DOUBLE_LT add_expr   (rule 46)
+
+    DOUBLE_LT	shift, and go to state 168
+    DOUBLE_GT	shift, and go to state 169
+
+    $default	reduce using rule 42 (and_expr)
+
+
+
+state 119
+
+    shift_expr  ->  add_expr .   (rule 44)
+    add_expr  ->  add_expr . '+' mult_expr   (rule 48)
+    add_expr  ->  add_expr . '-' mult_expr   (rule 49)
+
+    '-' 	shift, and go to state 170
+    '+' 	shift, and go to state 171
+
+    $default	reduce using rule 44 (shift_expr)
+
+
+
+state 120
+
+    add_expr  ->  mult_expr .   (rule 47)
+    mult_expr  ->  mult_expr . '*' unary_expr   (rule 51)
+    mult_expr  ->  mult_expr . '/' unary_expr   (rule 52)
+    mult_expr  ->  mult_expr . '%' unary_expr   (rule 53)
+
+    '*' 	shift, and go to state 172
+    '/' 	shift, and go to state 173
+    '%' 	shift, and go to state 174
+
+    $default	reduce using rule 47 (add_expr)
+
+
+
+state 121
+
+    mult_expr  ->  unary_expr .   (rule 50)
+
+    $default	reduce using rule 50 (mult_expr)
+
+
+
+state 122
+
+    unary_expr  ->  unary_operator . primary_expr   (rule 54)
+
+    xFALSE	shift, and go to state 103
+    xTRUE	shift, and go to state 104
+    DOUBLE_COLON	shift, and go to state 30
+    FLOATING_PT_LITERAL	shift, and go to state 105
+    CHARACTER_LITERAL	shift, and go to state 106
+    STRING_LITERAL	shift, and go to state 107
+    INTEGER_LITERAL	shift, and go to state 108
+    xIDENTIFIER	shift, and go to state 31
+    '(' 	shift, and go to state 112
+
+    scoped_name	go to state 113
+    primary_expr	go to state 175
+    literal	go to state 124
+    boolean_literal	go to state 125
+
+
+
+state 123
+
+    unary_expr  ->  primary_expr .   (rule 55)
+
+    $default	reduce using rule 55 (unary_expr)
+
+
+
+state 124
+
+    primary_expr  ->  literal .   (rule 60)
+
+    $default	reduce using rule 60 (primary_expr)
+
+
+
+state 125
+
+    literal  ->  boolean_literal .   (rule 66)
+
+    $default	reduce using rule 66 (literal)
+
+
+
+state 126
+
+    string_type  ->  xSTRING '<' positive_int_const . '>'   (rule 140)
+
+    '>' 	shift, and go to state 176
+
+
+
+state 127
+
+    scoped_name  ->  scoped_name DOUBLE_COLON xIDENTIFIER .   (rule 29)
+
+    $default	reduce using rule 29 (scoped_name)
+
+
+
+state 128
+
+    const_dcl  ->  xCONST const_type xIDENTIFIER '=' . const_exp   (rule 30)
+
+    xFALSE	shift, and go to state 103
+    xTRUE	shift, and go to state 104
+    DOUBLE_COLON	shift, and go to state 30
+    FLOATING_PT_LITERAL	shift, and go to state 105
+    CHARACTER_LITERAL	shift, and go to state 106
+    STRING_LITERAL	shift, and go to state 107
+    INTEGER_LITERAL	shift, and go to state 108
+    xIDENTIFIER	shift, and go to state 31
+    '-' 	shift, and go to state 109
+    '+' 	shift, and go to state 110
+    '~' 	shift, and go to state 111
+    '(' 	shift, and go to state 112
+
+    scoped_name	go to state 113
+    const_exp	go to state 177
+    or_expr	go to state 115
+    xor_expr	go to state 116
+    and_expr	go to state 117
+    shift_expr	go to state 118
+    add_expr	go to state 119
+    mult_expr	go to state 120
+    unary_expr	go to state 121
+    unary_operator	go to state 122
+    primary_expr	go to state 123
+    literal	go to state 124
+    boolean_literal	go to state 125
+
+
+
+state 129
+
+    enumerator  ->  xIDENTIFIER .   (rule 137)
+
+    $default	reduce using rule 137 (enumerator)
+
+
+
+state 130
+
+    enum_type  ->  xENUM xIDENTIFIER '{' aux_4 . '}'   (rule 134)
+    aux_4  ->  aux_4 . ',' enumerator   (rule 136)
+
+    '}' 	shift, and go to state 178
+    ',' 	shift, and go to state 179
+
+
+
+state 131
+
+    aux_4  ->  enumerator .   (rule 135)
+
+    $default	reduce using rule 135 (aux_4)
+
+
+
+state 132
+
+    except_dcl  ->  xEXCEPTION xIDENTIFIER '{' '}' .   (rule 150)
+
+    $default	reduce using rule 150 (except_dcl)
+
+
+
+state 133
+
+    member  ->  type_spec . declarators ';'   (rule 119)
+
+    xIDENTIFIER	shift, and go to state 94
+
+    declarators	go to state 180
+    aux_2	go to state 96
+    declarator	go to state 97
+    simple_declarator	go to state 98
+    complex_declarator	go to state 99
+    array_declarator	go to state 100
+
+
+
+state 134
+
+    member_list  ->  member_list . member   (rule 118)
+    except_dcl  ->  xEXCEPTION xIDENTIFIER '{' member_list . '}'   (rule 151)
+
+    xANY	shift, and go to state 50
+    xBOOLEAN	shift, and go to state 22
+    xCHAR	shift, and go to state 23
+    xDOUBLE	shift, and go to state 24
+    xENUM	shift, and go to state 2
+    xFLOAT	shift, and go to state 25
+    xLONG	shift, and go to state 26
+    xOBJECT	shift, and go to state 51
+    xOCTET	shift, and go to state 52
+    xSEQUENCE	shift, and go to state 53
+    xSHORT	shift, and go to state 27
+    xSTRING	shift, and go to state 28
+    xSTRUCT	shift, and go to state 6
+    xUNSIGNED	shift, and go to state 29
+    xUNION	shift, and go to state 8
+    DOUBLE_COLON	shift, and go to state 30
+    xIDENTIFIER	shift, and go to state 31
+    '}' 	shift, and go to state 181
+
+    scoped_name	go to state 54
+    type_spec	go to state 133
+    simple_type_spec	go to state 57
+    base_type_spec	go to state 58
+    template_type_spec	go to state 59
+    constr_type_spec	go to state 60
+    floating_pt_type	go to state 61
+    integer_type	go to state 62
+    signed_int	go to state 36
+    signed_long_int	go to state 37
+    signed_short_int	go to state 38
+    unsigned_int	go to state 39
+    unsigned_long_int	go to state 40
+    unsigned_short_int	go to state 41
+    char_type	go to state 63
+    boolean_type	go to state 64
+    octet_type	go to state 65
+    any_type	go to state 66
+    object_type	go to state 67
+    struct_type	go to state 68
+    member	go to state 182
+    union_type	go to state 69
+    enum_type	go to state 70
+    sequence_type	go to state 71
+    string_type	go to state 72
+
+
+
+state 135
+
+    member_list  ->  member .   (rule 117)
+
+    $default	reduce using rule 117 (member_list)
+
+
+
+state 136
+
+    inheritance_spec  ->  ':' aux_1 .   (rule 24)
+    aux_1  ->  aux_1 . ',' scoped_name   (rule 26)
+
+    ',' 	shift, and go to state 183
+
+    $default	reduce using rule 24 (inheritance_spec)
+
+
+
+state 137
+
+    aux_1  ->  scoped_name .   (rule 25)
+    scoped_name  ->  scoped_name . DOUBLE_COLON xIDENTIFIER   (rule 29)
+
+    DOUBLE_COLON	shift, and go to state 85
+
+    $default	reduce using rule 25 (aux_1)
+
+
+
+state 138
+
+    aux_11  ->  definition .   (rule 9)
+
+    $default	reduce using rule 9 (aux_11)
+
+
+
+state 139
+
+    module  ->  xMODULE xIDENTIFIER '{' aux_11 . '}'   (rule 8)
+    aux_11  ->  aux_11 . definition   (rule 10)
+
+    xCONST	shift, and go to state 1
+    xENUM	shift, and go to state 2
+    xEXCEPTION	shift, and go to state 3
+    xINTERFACE	shift, and go to state 4
+    xMODULE	shift, and go to state 5
+    xSTRUCT	shift, and go to state 6
+    xTYPEDEF	shift, and go to state 7
+    xUNION	shift, and go to state 8
+    '}' 	shift, and go to state 184
+
+    definition	go to state 185
+    module	go to state 11
+    interface	go to state 12
+    interface_dcl	go to state 13
+    forward_dcl	go to state 14
+    interface_header	go to state 15
+    const_dcl	go to state 16
+    type_dcl	go to state 17
+    struct_type	go to state 18
+    union_type	go to state 19
+    enum_type	go to state 20
+    except_dcl	go to state 21
+
+
+
+state 140
+
+    struct_type  ->  xSTRUCT xIDENTIFIER '{' member_list . '}'   (rule 116)
+    member_list  ->  member_list . member   (rule 118)
+
+    xANY	shift, and go to state 50
+    xBOOLEAN	shift, and go to state 22
+    xCHAR	shift, and go to state 23
+    xDOUBLE	shift, and go to state 24
+    xENUM	shift, and go to state 2
+    xFLOAT	shift, and go to state 25
+    xLONG	shift, and go to state 26
+    xOBJECT	shift, and go to state 51
+    xOCTET	shift, and go to state 52
+    xSEQUENCE	shift, and go to state 53
+    xSHORT	shift, and go to state 27
+    xSTRING	shift, and go to state 28
+    xSTRUCT	shift, and go to state 6
+    xUNSIGNED	shift, and go to state 29
+    xUNION	shift, and go to state 8
+    DOUBLE_COLON	shift, and go to state 30
+    xIDENTIFIER	shift, and go to state 31
+    '}' 	shift, and go to state 186
+
+    scoped_name	go to state 54
+    type_spec	go to state 133
+    simple_type_spec	go to state 57
+    base_type_spec	go to state 58
+    template_type_spec	go to state 59
+    constr_type_spec	go to state 60
+    floating_pt_type	go to state 61
+    integer_type	go to state 62
+    signed_int	go to state 36
+    signed_long_int	go to state 37
+    signed_short_int	go to state 38
+    unsigned_int	go to state 39
+    unsigned_long_int	go to state 40
+    unsigned_short_int	go to state 41
+    char_type	go to state 63
+    boolean_type	go to state 64
+    octet_type	go to state 65
+    any_type	go to state 66
+    object_type	go to state 67
+    struct_type	go to state 68
+    member	go to state 182
+    union_type	go to state 69
+    enum_type	go to state 70
+    sequence_type	go to state 71
+    string_type	go to state 72
+
+
+
+state 141
+
+    sequence_type  ->  xSEQUENCE '<' simple_type_spec . ',' positive_int_const '>'   (rule 138)
+    sequence_type  ->  xSEQUENCE '<' simple_type_spec . '>'   (rule 139)
+
+    ',' 	shift, and go to state 187
+    '>' 	shift, and go to state 188
+
+
+
+state 142
+
+    fixed_array_size  ->  '[' . positive_int_const ']'   (rule 145)
+
+    xFALSE	shift, and go to state 103
+    xTRUE	shift, and go to state 104
+    DOUBLE_COLON	shift, and go to state 30
+    FLOATING_PT_LITERAL	shift, and go to state 105
+    CHARACTER_LITERAL	shift, and go to state 106
+    STRING_LITERAL	shift, and go to state 107
+    INTEGER_LITERAL	shift, and go to state 108
+    xIDENTIFIER	shift, and go to state 31
+    '-' 	shift, and go to state 109
+    '+' 	shift, and go to state 110
+    '~' 	shift, and go to state 111
+    '(' 	shift, and go to state 112
+
+    scoped_name	go to state 113
+    const_exp	go to state 114
+    or_expr	go to state 115
+    xor_expr	go to state 116
+    and_expr	go to state 117
+    shift_expr	go to state 118
+    add_expr	go to state 119
+    mult_expr	go to state 120
+    unary_expr	go to state 121
+    unary_operator	go to state 122
+    primary_expr	go to state 123
+    literal	go to state 124
+    boolean_literal	go to state 125
+    positive_int_const	go to state 189
+
+
+
+state 143
+
+    array_declarator  ->  xIDENTIFIER aux_5 .   (rule 142)
+    aux_5  ->  aux_5 . fixed_array_size   (rule 144)
+
+    '[' 	shift, and go to state 142
+
+    $default	reduce using rule 142 (array_declarator)
+
+    fixed_array_size	go to state 190
+
+
+
+state 144
+
+    aux_5  ->  fixed_array_size .   (rule 143)
+
+    $default	reduce using rule 143 (aux_5)
+
+
+
+state 145
+
+    aux_2  ->  aux_2 ',' . declarator   (rule 94)
+
+    xIDENTIFIER	shift, and go to state 94
+
+    declarator	go to state 191
+    simple_declarator	go to state 98
+    complex_declarator	go to state 99
+    array_declarator	go to state 100
+
+
+
+state 146
+
+    union_type  ->  xUNION xIDENTIFIER xSWITCH '(' . switch_type_spec ')' '{' switch_body '}'   (rule 120)
+
+    xBOOLEAN	shift, and go to state 22
+    xCHAR	shift, and go to state 23
+    xENUM	shift, and go to state 2
+    xLONG	shift, and go to state 26
+    xSHORT	shift, and go to state 27
+    xUNSIGNED	shift, and go to state 29
+    DOUBLE_COLON	shift, and go to state 30
+    xIDENTIFIER	shift, and go to state 31
+
+    scoped_name	go to state 192
+    integer_type	go to state 193
+    signed_int	go to state 36
+    signed_long_int	go to state 37
+    signed_short_int	go to state 38
+    unsigned_int	go to state 39
+    unsigned_long_int	go to state 40
+    unsigned_short_int	go to state 41
+    char_type	go to state 194
+    boolean_type	go to state 195
+    switch_type_spec	go to state 196
+    enum_type	go to state 197
+
+
+
+state 147
+
+    attr_dcl  ->  xATTRIBUTE . param_type_spec aux_6   (rule 146)
+
+    xANY	shift, and go to state 50
+    xBOOLEAN	shift, and go to state 22
+    xCHAR	shift, and go to state 23
+    xDOUBLE	shift, and go to state 24
+    xFLOAT	shift, and go to state 25
+    xLONG	shift, and go to state 26
+    xOBJECT	shift, and go to state 51
+    xOCTET	shift, and go to state 52
+    xSHORT	shift, and go to state 27
+    xSTRING	shift, and go to state 28
+    xUNSIGNED	shift, and go to state 29
+    DOUBLE_COLON	shift, and go to state 30
+    xIDENTIFIER	shift, and go to state 31
+
+    scoped_name	go to state 153
+    base_type_spec	go to state 156
+    floating_pt_type	go to state 61
+    integer_type	go to state 62
+    signed_int	go to state 36
+    signed_long_int	go to state 37
+    signed_short_int	go to state 38
+    unsigned_int	go to state 39
+    unsigned_long_int	go to state 40
+    unsigned_short_int	go to state 41
+    char_type	go to state 63
+    boolean_type	go to state 64
+    octet_type	go to state 65
+    any_type	go to state 66
+    object_type	go to state 67
+    string_type	go to state 157
+    param_type_spec	go to state 198
+
+
+
+state 148
+
+    op_attribute  ->  xONEWAY .   (rule 160)
+
+    $default	reduce using rule 160 (op_attribute)
+
+
+
+state 149
+
+    attr_dcl  ->  xREADONLY . xATTRIBUTE param_type_spec aux_6   (rule 147)
+
+    xATTRIBUTE	shift, and go to state 199
+
+
+
+state 150
+
+    op_type_spec  ->  xVOID .   (rule 162)
+
+    $default	reduce using rule 162 (op_type_spec)
+
+
+
+state 151
+
+    interface_dcl  ->  interface_header '{' interface_body '}' .   (rule 13)
+
+    $default	reduce using rule 13 (interface_dcl)
+
+
+
+state 152
+
+    interface_body  ->  interface_body export .   (rule 18)
+
+    $default	reduce using rule 18 (interface_body)
+
+
+
+state 153
+
+    scoped_name  ->  scoped_name . DOUBLE_COLON xIDENTIFIER   (rule 29)
+    param_type_spec  ->  scoped_name .   (rule 178)
+
+    DOUBLE_COLON	shift, and go to state 85
+
+    $default	reduce using rule 178 (param_type_spec)
+
+
+
+state 154
+
+    export  ->  const_dcl . ';'   (rule 20)
+
+    ';' 	shift, and go to state 200
+
+
+
+state 155
+
+    export  ->  type_dcl . ';'   (rule 19)
+
+    ';' 	shift, and go to state 201
+
+
+
+state 156
+
+    param_type_spec  ->  base_type_spec .   (rule 176)
+
+    $default	reduce using rule 176 (param_type_spec)
+
+
+
+state 157
+
+    param_type_spec  ->  string_type .   (rule 177)
+
+    $default	reduce using rule 177 (param_type_spec)
+
+
+
+state 158
+
+    export  ->  attr_dcl . ';'   (rule 22)
+
+    ';' 	shift, and go to state 202
+
+
+
+state 159
+
+    export  ->  except_dcl . ';'   (rule 21)
+
+    ';' 	shift, and go to state 203
+
+
+
+state 160
+
+    export  ->  op_dcl . ';'   (rule 23)
+
+    ';' 	shift, and go to state 204
+
+
+
+state 161
+
+    op_dcl  ->  op_attribute . op_type_spec xIDENTIFIER parameter_dcls   (rule 156)
+    op_dcl  ->  op_attribute . op_type_spec xIDENTIFIER parameter_dcls raises_expr   (rule 157)
+    op_dcl  ->  op_attribute . op_type_spec xIDENTIFIER parameter_dcls context_expr   (rule 158)
+    op_dcl  ->  op_attribute . op_type_spec xIDENTIFIER parameter_dcls raises_expr context_expr   (rule 159)
+
+    xANY	shift, and go to state 50
+    xBOOLEAN	shift, and go to state 22
+    xCHAR	shift, and go to state 23
+    xDOUBLE	shift, and go to state 24
+    xFLOAT	shift, and go to state 25
+    xLONG	shift, and go to state 26
+    xOBJECT	shift, and go to state 51
+    xOCTET	shift, and go to state 52
+    xSHORT	shift, and go to state 27
+    xSTRING	shift, and go to state 28
+    xUNSIGNED	shift, and go to state 29
+    xVOID	shift, and go to state 150
+    DOUBLE_COLON	shift, and go to state 30
+    xIDENTIFIER	shift, and go to state 31
+
+    scoped_name	go to state 153
+    base_type_spec	go to state 156
+    floating_pt_type	go to state 61
+    integer_type	go to state 62
+    signed_int	go to state 36
+    signed_long_int	go to state 37
+    signed_short_int	go to state 38
+    unsigned_int	go to state 39
+    unsigned_long_int	go to state 40
+    unsigned_short_int	go to state 41
+    char_type	go to state 63
+    boolean_type	go to state 64
+    octet_type	go to state 65
+    any_type	go to state 66
+    object_type	go to state 67
+    string_type	go to state 157
+    op_type_spec	go to state 205
+    param_type_spec	go to state 163
+
+
+
+state 162
+
+    op_dcl  ->  op_type_spec . xIDENTIFIER parameter_dcls   (rule 152)
+    op_dcl  ->  op_type_spec . xIDENTIFIER parameter_dcls raises_expr   (rule 153)
+    op_dcl  ->  op_type_spec . xIDENTIFIER parameter_dcls context_expr   (rule 154)
+    op_dcl  ->  op_type_spec . xIDENTIFIER parameter_dcls raises_expr context_expr   (rule 155)
+
+    xIDENTIFIER	shift, and go to state 206
+
+
+
+state 163
+
+    op_type_spec  ->  param_type_spec .   (rule 161)
+
+    $default	reduce using rule 161 (op_type_spec)
+
+
+
+state 164
+
+    primary_expr  ->  '(' const_exp . ')'   (rule 61)
+
+    ')' 	shift, and go to state 207
+
+
+
+state 165
+
+    or_expr  ->  or_expr '|' . xor_expr   (rule 39)
+
+    xFALSE	shift, and go to state 103
+    xTRUE	shift, and go to state 104
+    DOUBLE_COLON	shift, and go to state 30
+    FLOATING_PT_LITERAL	shift, and go to state 105
+    CHARACTER_LITERAL	shift, and go to state 106
+    STRING_LITERAL	shift, and go to state 107
+    INTEGER_LITERAL	shift, and go to state 108
+    xIDENTIFIER	shift, and go to state 31
+    '-' 	shift, and go to state 109
+    '+' 	shift, and go to state 110
+    '~' 	shift, and go to state 111
+    '(' 	shift, and go to state 112
+
+    scoped_name	go to state 113
+    xor_expr	go to state 208
+    and_expr	go to state 117
+    shift_expr	go to state 118
+    add_expr	go to state 119
+    mult_expr	go to state 120
+    unary_expr	go to state 121
+    unary_operator	go to state 122
+    primary_expr	go to state 123
+    literal	go to state 124
+    boolean_literal	go to state 125
+
+
+
+state 166
+
+    xor_expr  ->  xor_expr '^' . and_expr   (rule 41)
+
+    xFALSE	shift, and go to state 103
+    xTRUE	shift, and go to state 104
+    DOUBLE_COLON	shift, and go to state 30
+    FLOATING_PT_LITERAL	shift, and go to state 105
+    CHARACTER_LITERAL	shift, and go to state 106
+    STRING_LITERAL	shift, and go to state 107
+    INTEGER_LITERAL	shift, and go to state 108
+    xIDENTIFIER	shift, and go to state 31
+    '-' 	shift, and go to state 109
+    '+' 	shift, and go to state 110
+    '~' 	shift, and go to state 111
+    '(' 	shift, and go to state 112
+
+    scoped_name	go to state 113
+    and_expr	go to state 209
+    shift_expr	go to state 118
+    add_expr	go to state 119
+    mult_expr	go to state 120
+    unary_expr	go to state 121
+    unary_operator	go to state 122
+    primary_expr	go to state 123
+    literal	go to state 124
+    boolean_literal	go to state 125
+
+
+
+state 167
+
+    and_expr  ->  and_expr '&' . shift_expr   (rule 43)
+
+    xFALSE	shift, and go to state 103
+    xTRUE	shift, and go to state 104
+    DOUBLE_COLON	shift, and go to state 30
+    FLOATING_PT_LITERAL	shift, and go to state 105
+    CHARACTER_LITERAL	shift, and go to state 106
+    STRING_LITERAL	shift, and go to state 107
+    INTEGER_LITERAL	shift, and go to state 108
+    xIDENTIFIER	shift, and go to state 31
+    '-' 	shift, and go to state 109
+    '+' 	shift, and go to state 110
+    '~' 	shift, and go to state 111
+    '(' 	shift, and go to state 112
+
+    scoped_name	go to state 113
+    shift_expr	go to state 210
+    add_expr	go to state 119
+    mult_expr	go to state 120
+    unary_expr	go to state 121
+    unary_operator	go to state 122
+    primary_expr	go to state 123
+    literal	go to state 124
+    boolean_literal	go to state 125
+
+
+
+state 168
+
+    shift_expr  ->  shift_expr DOUBLE_LT . add_expr   (rule 46)
+
+    xFALSE	shift, and go to state 103
+    xTRUE	shift, and go to state 104
+    DOUBLE_COLON	shift, and go to state 30
+    FLOATING_PT_LITERAL	shift, and go to state 105
+    CHARACTER_LITERAL	shift, and go to state 106
+    STRING_LITERAL	shift, and go to state 107
+    INTEGER_LITERAL	shift, and go to state 108
+    xIDENTIFIER	shift, and go to state 31
+    '-' 	shift, and go to state 109
+    '+' 	shift, and go to state 110
+    '~' 	shift, and go to state 111
+    '(' 	shift, and go to state 112
+
+    scoped_name	go to state 113
+    add_expr	go to state 211
+    mult_expr	go to state 120
+    unary_expr	go to state 121
+    unary_operator	go to state 122
+    primary_expr	go to state 123
+    literal	go to state 124
+    boolean_literal	go to state 125
+
+
+
+state 169
+
+    shift_expr  ->  shift_expr DOUBLE_GT . add_expr   (rule 45)
+
+    xFALSE	shift, and go to state 103
+    xTRUE	shift, and go to state 104
+    DOUBLE_COLON	shift, and go to state 30
+    FLOATING_PT_LITERAL	shift, and go to state 105
+    CHARACTER_LITERAL	shift, and go to state 106
+    STRING_LITERAL	shift, and go to state 107
+    INTEGER_LITERAL	shift, and go to state 108
+    xIDENTIFIER	shift, and go to state 31
+    '-' 	shift, and go to state 109
+    '+' 	shift, and go to state 110
+    '~' 	shift, and go to state 111
+    '(' 	shift, and go to state 112
+
+    scoped_name	go to state 113
+    add_expr	go to state 212
+    mult_expr	go to state 120
+    unary_expr	go to state 121
+    unary_operator	go to state 122
+    primary_expr	go to state 123
+    literal	go to state 124
+    boolean_literal	go to state 125
+
+
+
+state 170
+
+    add_expr  ->  add_expr '-' . mult_expr   (rule 49)
+
+    xFALSE	shift, and go to state 103
+    xTRUE	shift, and go to state 104
+    DOUBLE_COLON	shift, and go to state 30
+    FLOATING_PT_LITERAL	shift, and go to state 105
+    CHARACTER_LITERAL	shift, and go to state 106
+    STRING_LITERAL	shift, and go to state 107
+    INTEGER_LITERAL	shift, and go to state 108
+    xIDENTIFIER	shift, and go to state 31
+    '-' 	shift, and go to state 109
+    '+' 	shift, and go to state 110
+    '~' 	shift, and go to state 111
+    '(' 	shift, and go to state 112
+
+    scoped_name	go to state 113
+    mult_expr	go to state 213
+    unary_expr	go to state 121
+    unary_operator	go to state 122
+    primary_expr	go to state 123
+    literal	go to state 124
+    boolean_literal	go to state 125
+
+
+
+state 171
+
+    add_expr  ->  add_expr '+' . mult_expr   (rule 48)
+
+    xFALSE	shift, and go to state 103
+    xTRUE	shift, and go to state 104
+    DOUBLE_COLON	shift, and go to state 30
+    FLOATING_PT_LITERAL	shift, and go to state 105
+    CHARACTER_LITERAL	shift, and go to state 106
+    STRING_LITERAL	shift, and go to state 107
+    INTEGER_LITERAL	shift, and go to state 108
+    xIDENTIFIER	shift, and go to state 31
+    '-' 	shift, and go to state 109
+    '+' 	shift, and go to state 110
+    '~' 	shift, and go to state 111
+    '(' 	shift, and go to state 112
+
+    scoped_name	go to state 113
+    mult_expr	go to state 214
+    unary_expr	go to state 121
+    unary_operator	go to state 122
+    primary_expr	go to state 123
+    literal	go to state 124
+    boolean_literal	go to state 125
+
+
+
+state 172
+
+    mult_expr  ->  mult_expr '*' . unary_expr   (rule 51)
+
+    xFALSE	shift, and go to state 103
+    xTRUE	shift, and go to state 104
+    DOUBLE_COLON	shift, and go to state 30
+    FLOATING_PT_LITERAL	shift, and go to state 105
+    CHARACTER_LITERAL	shift, and go to state 106
+    STRING_LITERAL	shift, and go to state 107
+    INTEGER_LITERAL	shift, and go to state 108
+    xIDENTIFIER	shift, and go to state 31
+    '-' 	shift, and go to state 109
+    '+' 	shift, and go to state 110
+    '~' 	shift, and go to state 111
+    '(' 	shift, and go to state 112
+
+    scoped_name	go to state 113
+    unary_expr	go to state 215
+    unary_operator	go to state 122
+    primary_expr	go to state 123
+    literal	go to state 124
+    boolean_literal	go to state 125
+
+
+
+state 173
+
+    mult_expr  ->  mult_expr '/' . unary_expr   (rule 52)
+
+    xFALSE	shift, and go to state 103
+    xTRUE	shift, and go to state 104
+    DOUBLE_COLON	shift, and go to state 30
+    FLOATING_PT_LITERAL	shift, and go to state 105
+    CHARACTER_LITERAL	shift, and go to state 106
+    STRING_LITERAL	shift, and go to state 107
+    INTEGER_LITERAL	shift, and go to state 108
+    xIDENTIFIER	shift, and go to state 31
+    '-' 	shift, and go to state 109
+    '+' 	shift, and go to state 110
+    '~' 	shift, and go to state 111
+    '(' 	shift, and go to state 112
+
+    scoped_name	go to state 113
+    unary_expr	go to state 216
+    unary_operator	go to state 122
+    primary_expr	go to state 123
+    literal	go to state 124
+    boolean_literal	go to state 125
+
+
+
+state 174
+
+    mult_expr  ->  mult_expr '%' . unary_expr   (rule 53)
+
+    xFALSE	shift, and go to state 103
+    xTRUE	shift, and go to state 104
+    DOUBLE_COLON	shift, and go to state 30
+    FLOATING_PT_LITERAL	shift, and go to state 105
+    CHARACTER_LITERAL	shift, and go to state 106
+    STRING_LITERAL	shift, and go to state 107
+    INTEGER_LITERAL	shift, and go to state 108
+    xIDENTIFIER	shift, and go to state 31
+    '-' 	shift, and go to state 109
+    '+' 	shift, and go to state 110
+    '~' 	shift, and go to state 111
+    '(' 	shift, and go to state 112
+
+    scoped_name	go to state 113
+    unary_expr	go to state 217
+    unary_operator	go to state 122
+    primary_expr	go to state 123
+    literal	go to state 124
+    boolean_literal	go to state 125
+
+
+
+state 175
+
+    unary_expr  ->  unary_operator primary_expr .   (rule 54)
+
+    $default	reduce using rule 54 (unary_expr)
+
+
+
+state 176
+
+    string_type  ->  xSTRING '<' positive_int_const '>' .   (rule 140)
+
+    $default	reduce using rule 140 (string_type)
+
+
+
+state 177
+
+    const_dcl  ->  xCONST const_type xIDENTIFIER '=' const_exp .   (rule 30)
+
+    $default	reduce using rule 30 (const_dcl)
+
+
+
+state 178
+
+    enum_type  ->  xENUM xIDENTIFIER '{' aux_4 '}' .   (rule 134)
+
+    $default	reduce using rule 134 (enum_type)
+
+
+
+state 179
+
+    aux_4  ->  aux_4 ',' . enumerator   (rule 136)
+
+    xIDENTIFIER	shift, and go to state 129
+
+    enumerator	go to state 218
+
+
+
+state 180
+
+    member  ->  type_spec declarators . ';'   (rule 119)
+
+    ';' 	shift, and go to state 219
+
+
+
+state 181
+
+    except_dcl  ->  xEXCEPTION xIDENTIFIER '{' member_list '}' .   (rule 151)
+
+    $default	reduce using rule 151 (except_dcl)
+
+
+
+state 182
+
+    member_list  ->  member_list member .   (rule 118)
+
+    $default	reduce using rule 118 (member_list)
+
+
+
+state 183
+
+    aux_1  ->  aux_1 ',' . scoped_name   (rule 26)
+
+    DOUBLE_COLON	shift, and go to state 30
+    xIDENTIFIER	shift, and go to state 31
+
+    scoped_name	go to state 220
+
+
+
+state 184
+
+    module  ->  xMODULE xIDENTIFIER '{' aux_11 '}' .   (rule 8)
+
+    $default	reduce using rule 8 (module)
+
+
+
+state 185
+
+    aux_11  ->  aux_11 definition .   (rule 10)
+
+    $default	reduce using rule 10 (aux_11)
+
+
+
+state 186
+
+    struct_type  ->  xSTRUCT xIDENTIFIER '{' member_list '}' .   (rule 116)
+
+    $default	reduce using rule 116 (struct_type)
+
+
+
+state 187
+
+    sequence_type  ->  xSEQUENCE '<' simple_type_spec ',' . positive_int_const '>'   (rule 138)
+
+    xFALSE	shift, and go to state 103
+    xTRUE	shift, and go to state 104
+    DOUBLE_COLON	shift, and go to state 30
+    FLOATING_PT_LITERAL	shift, and go to state 105
+    CHARACTER_LITERAL	shift, and go to state 106
+    STRING_LITERAL	shift, and go to state 107
+    INTEGER_LITERAL	shift, and go to state 108
+    xIDENTIFIER	shift, and go to state 31
+    '-' 	shift, and go to state 109
+    '+' 	shift, and go to state 110
+    '~' 	shift, and go to state 111
+    '(' 	shift, and go to state 112
+
+    scoped_name	go to state 113
+    const_exp	go to state 114
+    or_expr	go to state 115
+    xor_expr	go to state 116
+    and_expr	go to state 117
+    shift_expr	go to state 118
+    add_expr	go to state 119
+    mult_expr	go to state 120
+    unary_expr	go to state 121
+    unary_operator	go to state 122
+    primary_expr	go to state 123
+    literal	go to state 124
+    boolean_literal	go to state 125
+    positive_int_const	go to state 221
+
+
+
+state 188
+
+    sequence_type  ->  xSEQUENCE '<' simple_type_spec '>' .   (rule 139)
+
+    $default	reduce using rule 139 (sequence_type)
+
+
+
+state 189
+
+    fixed_array_size  ->  '[' positive_int_const . ']'   (rule 145)
+
+    ']' 	shift, and go to state 222
+
+
+
+state 190
+
+    aux_5  ->  aux_5 fixed_array_size .   (rule 144)
+
+    $default	reduce using rule 144 (aux_5)
+
+
+
+state 191
+
+    aux_2  ->  aux_2 ',' declarator .   (rule 94)
+
+    $default	reduce using rule 94 (aux_2)
+
+
+
+state 192
+
+    scoped_name  ->  scoped_name . DOUBLE_COLON xIDENTIFIER   (rule 29)
+    switch_type_spec  ->  scoped_name .   (rule 125)
+
+    DOUBLE_COLON	shift, and go to state 85
+
+    $default	reduce using rule 125 (switch_type_spec)
+
+
+
+state 193
+
+    switch_type_spec  ->  integer_type .   (rule 121)
+
+    $default	reduce using rule 121 (switch_type_spec)
+
+
+
+state 194
+
+    switch_type_spec  ->  char_type .   (rule 122)
+
+    $default	reduce using rule 122 (switch_type_spec)
+
+
+
+state 195
+
+    switch_type_spec  ->  boolean_type .   (rule 123)
+
+    $default	reduce using rule 123 (switch_type_spec)
+
+
+
+state 196
+
+    union_type  ->  xUNION xIDENTIFIER xSWITCH '(' switch_type_spec . ')' '{' switch_body '}'   (rule 120)
+
+    ')' 	shift, and go to state 223
+
+
+
+state 197
+
+    switch_type_spec  ->  enum_type .   (rule 124)
+
+    $default	reduce using rule 124 (switch_type_spec)
+
+
+
+state 198
+
+    attr_dcl  ->  xATTRIBUTE param_type_spec . aux_6   (rule 146)
+
+    xIDENTIFIER	shift, and go to state 224
+
+    simple_declarator	go to state 225
+    aux_6	go to state 226
+
+
+
+state 199
+
+    attr_dcl  ->  xREADONLY xATTRIBUTE . param_type_spec aux_6   (rule 147)
+
+    xANY	shift, and go to state 50
+    xBOOLEAN	shift, and go to state 22
+    xCHAR	shift, and go to state 23
+    xDOUBLE	shift, and go to state 24
+    xFLOAT	shift, and go to state 25
+    xLONG	shift, and go to state 26
+    xOBJECT	shift, and go to state 51
+    xOCTET	shift, and go to state 52
+    xSHORT	shift, and go to state 27
+    xSTRING	shift, and go to state 28
+    xUNSIGNED	shift, and go to state 29
+    DOUBLE_COLON	shift, and go to state 30
+    xIDENTIFIER	shift, and go to state 31
+
+    scoped_name	go to state 153
+    base_type_spec	go to state 156
+    floating_pt_type	go to state 61
+    integer_type	go to state 62
+    signed_int	go to state 36
+    signed_long_int	go to state 37
+    signed_short_int	go to state 38
+    unsigned_int	go to state 39
+    unsigned_long_int	go to state 40
+    unsigned_short_int	go to state 41
+    char_type	go to state 63
+    boolean_type	go to state 64
+    octet_type	go to state 65
+    any_type	go to state 66
+    object_type	go to state 67
+    string_type	go to state 157
+    param_type_spec	go to state 227
+
+
+
+state 200
+
+    export  ->  const_dcl ';' .   (rule 20)
+
+    $default	reduce using rule 20 (export)
+
+
+
+state 201
+
+    export  ->  type_dcl ';' .   (rule 19)
+
+    $default	reduce using rule 19 (export)
+
+
+
+state 202
+
+    export  ->  attr_dcl ';' .   (rule 22)
+
+    $default	reduce using rule 22 (export)
+
+
+
+state 203
+
+    export  ->  except_dcl ';' .   (rule 21)
+
+    $default	reduce using rule 21 (export)
+
+
+
+state 204
+
+    export  ->  op_dcl ';' .   (rule 23)
+
+    $default	reduce using rule 23 (export)
+
+
+
+state 205
+
+    op_dcl  ->  op_attribute op_type_spec . xIDENTIFIER parameter_dcls   (rule 156)
+    op_dcl  ->  op_attribute op_type_spec . xIDENTIFIER parameter_dcls raises_expr   (rule 157)
+    op_dcl  ->  op_attribute op_type_spec . xIDENTIFIER parameter_dcls context_expr   (rule 158)
+    op_dcl  ->  op_attribute op_type_spec . xIDENTIFIER parameter_dcls raises_expr context_expr   (rule 159)
+
+    xIDENTIFIER	shift, and go to state 228
+
+
+
+state 206
+
+    op_dcl  ->  op_type_spec xIDENTIFIER . parameter_dcls   (rule 152)
+    op_dcl  ->  op_type_spec xIDENTIFIER . parameter_dcls raises_expr   (rule 153)
+    op_dcl  ->  op_type_spec xIDENTIFIER . parameter_dcls context_expr   (rule 154)
+    op_dcl  ->  op_type_spec xIDENTIFIER . parameter_dcls raises_expr context_expr   (rule 155)
+
+    '(' 	shift, and go to state 229
+
+    parameter_dcls	go to state 230
+
+
+
+state 207
+
+    primary_expr  ->  '(' const_exp ')' .   (rule 61)
+
+    $default	reduce using rule 61 (primary_expr)
+
+
+
+state 208
+
+    or_expr  ->  or_expr '|' xor_expr .   (rule 39)
+    xor_expr  ->  xor_expr . '^' and_expr   (rule 41)
+
+    '^' 	shift, and go to state 166
+
+    $default	reduce using rule 39 (or_expr)
+
+
+
+state 209
+
+    xor_expr  ->  xor_expr '^' and_expr .   (rule 41)
+    and_expr  ->  and_expr . '&' shift_expr   (rule 43)
+
+    '&' 	shift, and go to state 167
+
+    $default	reduce using rule 41 (xor_expr)
+
+
+
+state 210
+
+    and_expr  ->  and_expr '&' shift_expr .   (rule 43)
+    shift_expr  ->  shift_expr . DOUBLE_GT add_expr   (rule 45)
+    shift_expr  ->  shift_expr . DOUBLE_LT add_expr   (rule 46)
+
+    DOUBLE_LT	shift, and go to state 168
+    DOUBLE_GT	shift, and go to state 169
+
+    $default	reduce using rule 43 (and_expr)
+
+
+
+state 211
+
+    shift_expr  ->  shift_expr DOUBLE_LT add_expr .   (rule 46)
+    add_expr  ->  add_expr . '+' mult_expr   (rule 48)
+    add_expr  ->  add_expr . '-' mult_expr   (rule 49)
+
+    '-' 	shift, and go to state 170
+    '+' 	shift, and go to state 171
+
+    $default	reduce using rule 46 (shift_expr)
+
+
+
+state 212
+
+    shift_expr  ->  shift_expr DOUBLE_GT add_expr .   (rule 45)
+    add_expr  ->  add_expr . '+' mult_expr   (rule 48)
+    add_expr  ->  add_expr . '-' mult_expr   (rule 49)
+
+    '-' 	shift, and go to state 170
+    '+' 	shift, and go to state 171
+
+    $default	reduce using rule 45 (shift_expr)
+
+
+
+state 213
+
+    add_expr  ->  add_expr '-' mult_expr .   (rule 49)
+    mult_expr  ->  mult_expr . '*' unary_expr   (rule 51)
+    mult_expr  ->  mult_expr . '/' unary_expr   (rule 52)
+    mult_expr  ->  mult_expr . '%' unary_expr   (rule 53)
+
+    '*' 	shift, and go to state 172
+    '/' 	shift, and go to state 173
+    '%' 	shift, and go to state 174
+
+    $default	reduce using rule 49 (add_expr)
+
+
+
+state 214
+
+    add_expr  ->  add_expr '+' mult_expr .   (rule 48)
+    mult_expr  ->  mult_expr . '*' unary_expr   (rule 51)
+    mult_expr  ->  mult_expr . '/' unary_expr   (rule 52)
+    mult_expr  ->  mult_expr . '%' unary_expr   (rule 53)
+
+    '*' 	shift, and go to state 172
+    '/' 	shift, and go to state 173
+    '%' 	shift, and go to state 174
+
+    $default	reduce using rule 48 (add_expr)
+
+
+
+state 215
+
+    mult_expr  ->  mult_expr '*' unary_expr .   (rule 51)
+
+    $default	reduce using rule 51 (mult_expr)
+
+
+
+state 216
+
+    mult_expr  ->  mult_expr '/' unary_expr .   (rule 52)
+
+    $default	reduce using rule 52 (mult_expr)
+
+
+
+state 217
+
+    mult_expr  ->  mult_expr '%' unary_expr .   (rule 53)
+
+    $default	reduce using rule 53 (mult_expr)
+
+
+
+state 218
+
+    aux_4  ->  aux_4 ',' enumerator .   (rule 136)
+
+    $default	reduce using rule 136 (aux_4)
+
+
+
+state 219
+
+    member  ->  type_spec declarators ';' .   (rule 119)
+
+    $default	reduce using rule 119 (member)
+
+
+
+state 220
+
+    aux_1  ->  aux_1 ',' scoped_name .   (rule 26)
+    scoped_name  ->  scoped_name . DOUBLE_COLON xIDENTIFIER   (rule 29)
+
+    DOUBLE_COLON	shift, and go to state 85
+
+    $default	reduce using rule 26 (aux_1)
+
+
+
+state 221
+
+    sequence_type  ->  xSEQUENCE '<' simple_type_spec ',' positive_int_const . '>'   (rule 138)
+
+    '>' 	shift, and go to state 231
+
+
+
+state 222
+
+    fixed_array_size  ->  '[' positive_int_const ']' .   (rule 145)
+
+    $default	reduce using rule 145 (fixed_array_size)
+
+
+
+state 223
+
+    union_type  ->  xUNION xIDENTIFIER xSWITCH '(' switch_type_spec ')' . '{' switch_body '}'   (rule 120)
+
+    '{' 	shift, and go to state 232
+
+
+
+state 224
+
+    simple_declarator  ->  xIDENTIFIER .   (rule 97)
+
+    $default	reduce using rule 97 (simple_declarator)
+
+
+
+state 225
+
+    aux_6  ->  simple_declarator .   (rule 148)
+
+    $default	reduce using rule 148 (aux_6)
+
+
+
+state 226
+
+    attr_dcl  ->  xATTRIBUTE param_type_spec aux_6 .   (rule 146)
+    aux_6  ->  aux_6 . ',' simple_declarator   (rule 149)
+
+    ',' 	shift, and go to state 233
+
+    $default	reduce using rule 146 (attr_dcl)
+
+
+
+state 227
+
+    attr_dcl  ->  xREADONLY xATTRIBUTE param_type_spec . aux_6   (rule 147)
+
+    xIDENTIFIER	shift, and go to state 224
+
+    simple_declarator	go to state 225
+    aux_6	go to state 234
+
+
+
+state 228
+
+    op_dcl  ->  op_attribute op_type_spec xIDENTIFIER . parameter_dcls   (rule 156)
+    op_dcl  ->  op_attribute op_type_spec xIDENTIFIER . parameter_dcls raises_expr   (rule 157)
+    op_dcl  ->  op_attribute op_type_spec xIDENTIFIER . parameter_dcls context_expr   (rule 158)
+    op_dcl  ->  op_attribute op_type_spec xIDENTIFIER . parameter_dcls raises_expr context_expr   (rule 159)
+
+    '(' 	shift, and go to state 229
+
+    parameter_dcls	go to state 235
+
+
+
+state 229
+
+    parameter_dcls  ->  '(' . aux_8 ')'   (rule 163)
+    parameter_dcls  ->  '(' . ')'   (rule 164)
+
+    xIN 	shift, and go to state 236
+    xOUT	shift, and go to state 237
+    ')' 	shift, and go to state 238
+
+    aux_8	go to state 239
+    param_dcl	go to state 240
+    param_attribute	go to state 241
+
+
+
+state 230
+
+    op_dcl  ->  op_type_spec xIDENTIFIER parameter_dcls .   (rule 152)
+    op_dcl  ->  op_type_spec xIDENTIFIER parameter_dcls . raises_expr   (rule 153)
+    op_dcl  ->  op_type_spec xIDENTIFIER parameter_dcls . context_expr   (rule 154)
+    op_dcl  ->  op_type_spec xIDENTIFIER parameter_dcls . raises_expr context_expr   (rule 155)
+
+    xCONTEXT	shift, and go to state 242
+    xRAISES	shift, and go to state 243
+
+    $default	reduce using rule 152 (op_dcl)
+
+    raises_expr	go to state 244
+    context_expr	go to state 245
+
+
+
+state 231
+
+    sequence_type  ->  xSEQUENCE '<' simple_type_spec ',' positive_int_const '>' .   (rule 138)
+
+    $default	reduce using rule 138 (sequence_type)
+
+
+
+state 232
+
+    union_type  ->  xUNION xIDENTIFIER xSWITCH '(' switch_type_spec ')' '{' . switch_body '}'   (rule 120)
+
+    xCASE	shift, and go to state 246
+    xDEFAULT	shift, and go to state 247
+
+    switch_body	go to state 248
+    case	go to state 249
+    aux_3	go to state 250
+    case_label	go to state 251
+
+
+
+state 233
+
+    aux_6  ->  aux_6 ',' . simple_declarator   (rule 149)
+
+    xIDENTIFIER	shift, and go to state 224
+
+    simple_declarator	go to state 252
+
+
+
+state 234
+
+    attr_dcl  ->  xREADONLY xATTRIBUTE param_type_spec aux_6 .   (rule 147)
+    aux_6  ->  aux_6 . ',' simple_declarator   (rule 149)
+
+    ',' 	shift, and go to state 233
+
+    $default	reduce using rule 147 (attr_dcl)
+
+
+
+state 235
+
+    op_dcl  ->  op_attribute op_type_spec xIDENTIFIER parameter_dcls .   (rule 156)
+    op_dcl  ->  op_attribute op_type_spec xIDENTIFIER parameter_dcls . raises_expr   (rule 157)
+    op_dcl  ->  op_attribute op_type_spec xIDENTIFIER parameter_dcls . context_expr   (rule 158)
+    op_dcl  ->  op_attribute op_type_spec xIDENTIFIER parameter_dcls . raises_expr context_expr   (rule 159)
+
+    xCONTEXT	shift, and go to state 242
+    xRAISES	shift, and go to state 243
+
+    $default	reduce using rule 156 (op_dcl)
+
+    raises_expr	go to state 253
+    context_expr	go to state 254
+
+
+
+state 236
+
+    param_attribute  ->  xIN .   (rule 168)
+
+    $default	reduce using rule 168 (param_attribute)
+
+
+
+state 237
+
+    param_attribute  ->  xOUT .   (rule 169)
+
+    $default	reduce using rule 169 (param_attribute)
+
+
+
+state 238
+
+    parameter_dcls  ->  '(' ')' .   (rule 164)
+
+    $default	reduce using rule 164 (parameter_dcls)
+
+
+
+state 239
+
+    parameter_dcls  ->  '(' aux_8 . ')'   (rule 163)
+    aux_8  ->  aux_8 . ',' param_dcl   (rule 166)
+
+    ',' 	shift, and go to state 255
+    ')' 	shift, and go to state 256
+
+
+
+state 240
+
+    aux_8  ->  param_dcl .   (rule 165)
+
+    $default	reduce using rule 165 (aux_8)
+
+
+
+state 241
+
+    param_dcl  ->  param_attribute . param_type_spec simple_declarator   (rule 167)
+
+    xANY	shift, and go to state 50
+    xBOOLEAN	shift, and go to state 22
+    xCHAR	shift, and go to state 23
+    xDOUBLE	shift, and go to state 24
+    xFLOAT	shift, and go to state 25
+    xLONG	shift, and go to state 26
+    xOBJECT	shift, and go to state 51
+    xOCTET	shift, and go to state 52
+    xSHORT	shift, and go to state 27
+    xSTRING	shift, and go to state 28
+    xUNSIGNED	shift, and go to state 29
+    DOUBLE_COLON	shift, and go to state 30
+    xIDENTIFIER	shift, and go to state 31
+
+    scoped_name	go to state 153
+    base_type_spec	go to state 156
+    floating_pt_type	go to state 61
+    integer_type	go to state 62
+    signed_int	go to state 36
+    signed_long_int	go to state 37
+    signed_short_int	go to state 38
+    unsigned_int	go to state 39
+    unsigned_long_int	go to state 40
+    unsigned_short_int	go to state 41
+    char_type	go to state 63
+    boolean_type	go to state 64
+    octet_type	go to state 65
+    any_type	go to state 66
+    object_type	go to state 67
+    string_type	go to state 157
+    param_type_spec	go to state 257
+
+
+
+state 242
+
+    context_expr  ->  xCONTEXT . '(' aux_10 ')'   (rule 173)
+
+    '(' 	shift, and go to state 258
+
+
+
+state 243
+
+    raises_expr  ->  xRAISES . '(' aux_9 ')'   (rule 170)
+
+    '(' 	shift, and go to state 259
+
+
+
+state 244
+
+    op_dcl  ->  op_type_spec xIDENTIFIER parameter_dcls raises_expr .   (rule 153)
+    op_dcl  ->  op_type_spec xIDENTIFIER parameter_dcls raises_expr . context_expr   (rule 155)
+
+    xCONTEXT	shift, and go to state 242
+
+    $default	reduce using rule 153 (op_dcl)
+
+    context_expr	go to state 260
+
+
+
+state 245
+
+    op_dcl  ->  op_type_spec xIDENTIFIER parameter_dcls context_expr .   (rule 154)
+
+    $default	reduce using rule 154 (op_dcl)
+
+
+
+state 246
+
+    case_label  ->  xCASE . const_exp ':'   (rule 131)
+
+    xFALSE	shift, and go to state 103
+    xTRUE	shift, and go to state 104
+    DOUBLE_COLON	shift, and go to state 30
+    FLOATING_PT_LITERAL	shift, and go to state 105
+    CHARACTER_LITERAL	shift, and go to state 106
+    STRING_LITERAL	shift, and go to state 107
+    INTEGER_LITERAL	shift, and go to state 108
+    xIDENTIFIER	shift, and go to state 31
+    '-' 	shift, and go to state 109
+    '+' 	shift, and go to state 110
+    '~' 	shift, and go to state 111
+    '(' 	shift, and go to state 112
+
+    scoped_name	go to state 113
+    const_exp	go to state 261
+    or_expr	go to state 115
+    xor_expr	go to state 116
+    and_expr	go to state 117
+    shift_expr	go to state 118
+    add_expr	go to state 119
+    mult_expr	go to state 120
+    unary_expr	go to state 121
+    unary_operator	go to state 122
+    primary_expr	go to state 123
+    literal	go to state 124
+    boolean_literal	go to state 125
+
+
+
+state 247
+
+    case_label  ->  xDEFAULT . ':'   (rule 132)
+
+    ':' 	shift, and go to state 262
+
+
+
+state 248
+
+    union_type  ->  xUNION xIDENTIFIER xSWITCH '(' switch_type_spec ')' '{' switch_body . '}'   (rule 120)
+    switch_body  ->  switch_body . case   (rule 127)
+
+    xCASE	shift, and go to state 246
+    xDEFAULT	shift, and go to state 247
+    '}' 	shift, and go to state 263
+
+    case	go to state 264
+    aux_3	go to state 250
+    case_label	go to state 251
+
+
+
+state 249
+
+    switch_body  ->  case .   (rule 126)
+
+    $default	reduce using rule 126 (switch_body)
+
+
+
+state 250
+
+    case  ->  aux_3 . element_spec ';'   (rule 128)
+    aux_3  ->  aux_3 . case_label   (rule 130)
+
+    xANY	shift, and go to state 50
+    xBOOLEAN	shift, and go to state 22
+    xCASE	shift, and go to state 246
+    xCHAR	shift, and go to state 23
+    xDEFAULT	shift, and go to state 247
+    xDOUBLE	shift, and go to state 24
+    xENUM	shift, and go to state 2
+    xFLOAT	shift, and go to state 25
+    xLONG	shift, and go to state 26
+    xOBJECT	shift, and go to state 51
+    xOCTET	shift, and go to state 52
+    xSEQUENCE	shift, and go to state 53
+    xSHORT	shift, and go to state 27
+    xSTRING	shift, and go to state 28
+    xSTRUCT	shift, and go to state 6
+    xUNSIGNED	shift, and go to state 29
+    xUNION	shift, and go to state 8
+    DOUBLE_COLON	shift, and go to state 30
+    xIDENTIFIER	shift, and go to state 31
+
+    scoped_name	go to state 54
+    type_spec	go to state 265
+    simple_type_spec	go to state 57
+    base_type_spec	go to state 58
+    template_type_spec	go to state 59
+    constr_type_spec	go to state 60
+    floating_pt_type	go to state 61
+    integer_type	go to state 62
+    signed_int	go to state 36
+    signed_long_int	go to state 37
+    signed_short_int	go to state 38
+    unsigned_int	go to state 39
+    unsigned_long_int	go to state 40
+    unsigned_short_int	go to state 41
+    char_type	go to state 63
+    boolean_type	go to state 64
+    octet_type	go to state 65
+    any_type	go to state 66
+    object_type	go to state 67
+    struct_type	go to state 68
+    union_type	go to state 69
+    case_label	go to state 266
+    element_spec	go to state 267
+    enum_type	go to state 70
+    sequence_type	go to state 71
+    string_type	go to state 72
+
+
+
+state 251
+
+    aux_3  ->  case_label .   (rule 129)
+
+    $default	reduce using rule 129 (aux_3)
+
+
+
+state 252
+
+    aux_6  ->  aux_6 ',' simple_declarator .   (rule 149)
+
+    $default	reduce using rule 149 (aux_6)
+
+
+
+state 253
+
+    op_dcl  ->  op_attribute op_type_spec xIDENTIFIER parameter_dcls raises_expr .   (rule 157)
+    op_dcl  ->  op_attribute op_type_spec xIDENTIFIER parameter_dcls raises_expr . context_expr   (rule 159)
+
+    xCONTEXT	shift, and go to state 242
+
+    $default	reduce using rule 157 (op_dcl)
+
+    context_expr	go to state 268
+
+
+
+state 254
+
+    op_dcl  ->  op_attribute op_type_spec xIDENTIFIER parameter_dcls context_expr .   (rule 158)
+
+    $default	reduce using rule 158 (op_dcl)
+
+
+
+state 255
+
+    aux_8  ->  aux_8 ',' . param_dcl   (rule 166)
+
+    xIN 	shift, and go to state 236
+    xOUT	shift, and go to state 237
+
+    param_dcl	go to state 269
+    param_attribute	go to state 241
+
+
+
+state 256
+
+    parameter_dcls  ->  '(' aux_8 ')' .   (rule 163)
+
+    $default	reduce using rule 163 (parameter_dcls)
+
+
+
+state 257
+
+    param_dcl  ->  param_attribute param_type_spec . simple_declarator   (rule 167)
+
+    xIDENTIFIER	shift, and go to state 224
+
+    simple_declarator	go to state 270
+
+
+
+state 258
+
+    context_expr  ->  xCONTEXT '(' . aux_10 ')'   (rule 173)
+
+    STRING_LITERAL	shift, and go to state 271
+
+    aux_10	go to state 272
+
+
+
+state 259
+
+    raises_expr  ->  xRAISES '(' . aux_9 ')'   (rule 170)
+
+    DOUBLE_COLON	shift, and go to state 30
+    xIDENTIFIER	shift, and go to state 31
+
+    scoped_name	go to state 273
+    aux_9	go to state 274
+
+
+
+state 260
+
+    op_dcl  ->  op_type_spec xIDENTIFIER parameter_dcls raises_expr context_expr .   (rule 155)
+
+    $default	reduce using rule 155 (op_dcl)
+
+
+
+state 261
+
+    case_label  ->  xCASE const_exp . ':'   (rule 131)
+
+    ':' 	shift, and go to state 275
+
+
+
+state 262
+
+    case_label  ->  xDEFAULT ':' .   (rule 132)
+
+    $default	reduce using rule 132 (case_label)
+
+
+
+state 263
+
+    union_type  ->  xUNION xIDENTIFIER xSWITCH '(' switch_type_spec ')' '{' switch_body '}' .   (rule 120)
+
+    $default	reduce using rule 120 (union_type)
+
+
+
+state 264
+
+    switch_body  ->  switch_body case .   (rule 127)
+
+    $default	reduce using rule 127 (switch_body)
+
+
+
+state 265
+
+    element_spec  ->  type_spec . declarator   (rule 133)
+
+    xIDENTIFIER	shift, and go to state 94
+
+    declarator	go to state 276
+    simple_declarator	go to state 98
+    complex_declarator	go to state 99
+    array_declarator	go to state 100
+
+
+
+state 266
+
+    aux_3  ->  aux_3 case_label .   (rule 130)
+
+    $default	reduce using rule 130 (aux_3)
+
+
+
+state 267
+
+    case  ->  aux_3 element_spec . ';'   (rule 128)
+
+    ';' 	shift, and go to state 277
+
+
+
+state 268
+
+    op_dcl  ->  op_attribute op_type_spec xIDENTIFIER parameter_dcls raises_expr context_expr .   (rule 159)
+
+    $default	reduce using rule 159 (op_dcl)
+
+
+
+state 269
+
+    aux_8  ->  aux_8 ',' param_dcl .   (rule 166)
+
+    $default	reduce using rule 166 (aux_8)
+
+
+
+state 270
+
+    param_dcl  ->  param_attribute param_type_spec simple_declarator .   (rule 167)
+
+    $default	reduce using rule 167 (param_dcl)
+
+
+
+state 271
+
+    aux_10  ->  STRING_LITERAL .   (rule 174)
+
+    $default	reduce using rule 174 (aux_10)
+
+
+
+state 272
+
+    context_expr  ->  xCONTEXT '(' aux_10 . ')'   (rule 173)
+    aux_10  ->  aux_10 . ',' STRING_LITERAL   (rule 175)
+
+    ',' 	shift, and go to state 278
+    ')' 	shift, and go to state 279
+
+
+
+state 273
+
+    scoped_name  ->  scoped_name . DOUBLE_COLON xIDENTIFIER   (rule 29)
+    aux_9  ->  scoped_name .   (rule 171)
+
+    DOUBLE_COLON	shift, and go to state 85
+
+    $default	reduce using rule 171 (aux_9)
+
+
+
+state 274
+
+    raises_expr  ->  xRAISES '(' aux_9 . ')'   (rule 170)
+    aux_9  ->  aux_9 . ',' scoped_name   (rule 172)
+
+    ',' 	shift, and go to state 280
+    ')' 	shift, and go to state 281
+
+
+
+state 275
+
+    case_label  ->  xCASE const_exp ':' .   (rule 131)
+
+    $default	reduce using rule 131 (case_label)
+
+
+
+state 276
+
+    element_spec  ->  type_spec declarator .   (rule 133)
+
+    $default	reduce using rule 133 (element_spec)
+
+
+
+state 277
+
+    case  ->  aux_3 element_spec ';' .   (rule 128)
+
+    $default	reduce using rule 128 (case)
+
+
+
+state 278
+
+    aux_10  ->  aux_10 ',' . STRING_LITERAL   (rule 175)
+
+    STRING_LITERAL	shift, and go to state 282
+
+
+
+state 279
+
+    context_expr  ->  xCONTEXT '(' aux_10 ')' .   (rule 173)
+
+    $default	reduce using rule 173 (context_expr)
+
+
+
+state 280
+
+    aux_9  ->  aux_9 ',' . scoped_name   (rule 172)
+
+    DOUBLE_COLON	shift, and go to state 30
+    xIDENTIFIER	shift, and go to state 31
+
+    scoped_name	go to state 283
+
+
+
+state 281
+
+    raises_expr  ->  xRAISES '(' aux_9 ')' .   (rule 170)
+
+    $default	reduce using rule 170 (raises_expr)
+
+
+
+state 282
+
+    aux_10  ->  aux_10 ',' STRING_LITERAL .   (rule 175)
+
+    $default	reduce using rule 175 (aux_10)
+
+
+
+state 283
+
+    scoped_name  ->  scoped_name . DOUBLE_COLON xIDENTIFIER   (rule 29)
+    aux_9  ->  aux_9 ',' scoped_name .   (rule 172)
+
+    DOUBLE_COLON	shift, and go to state 85
+
+    $default	reduce using rule 172 (aux_9)
+
+
+
+state 284
+
+    $   	shift, and go to state 285
+
+
+
+state 285
+
+    NO ACTIONS
