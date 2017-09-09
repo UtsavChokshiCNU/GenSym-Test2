@@ -1,0 +1,39 @@
+ interface mapping {
+
+    void callShort(in short val);
+    void callLong(in long val);
+    void callUShort(in unsigned short val);
+    void callULong(in unsigned long val);
+    void callOctet(in octet val);
+    void callChar(in char val);
+    void callString(in string val);
+    void callFloat(in float val);
+    void callDouble(in double val);
+    void callBoolean(in boolean val);
+    void callRef(in Object val);
+    
+    struct myStruct {
+      long val1;
+      string val2;
+      double val3;
+    };
+
+    void callStruct(in myStruct val);
+    
+    enum myEnum {optiona, optionb, optionc};
+    void callEnum(in myEnum val);
+
+    typedef sequence <string> mySeq;
+    void callSequence(in mySeq val);
+    
+    typedef short myArray[10];
+    void callArray(in myArray val);
+
+    struct complexStruct {
+      myStruct sub;
+      myEnum   symbol;
+    };
+
+    typedef sequence <complexStruct> complexSeq;
+    void callComplex(in complexSeq val);
+  };
