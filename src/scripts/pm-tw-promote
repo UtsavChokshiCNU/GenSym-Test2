@@ -1,0 +1,18 @@
+#!/bin/sh
+
+# pm-tw-promote -- poor man's G2 promote
+
+TWBOX=${DSTBOX}/tw/tape
+ODIR=opt
+
+mkdir -p ${TWBOX}
+
+### tw-2011
+cp -p ${DSTBOX}/tw/${ODIR}/tw ${TWBOX}
+
+BUILDID=`$SRCBOX/build/build-date`
+
+$SRCBOX/tools/remove-product -noconfirm -i tw ${G2_VERSION}-$BUILDID $MACHINE
+$SRCBOX/tools/promote-product -noconfirm -i tw $MACHINE $TWBOX ${G2_VERSION}-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e tw ${G2_VERSION} $MACHINE
+$SRCBOX/tools/promote-product -noconfirm -e tw $MACHINE ${G2_VERSION}-$BUILDID ${G2_VERSION}
