@@ -1,0 +1,26 @@
+GSI 4.0 Benchmarks
+- cpm, 10/27/95
+
+Files: gsi-4-0.kb
+       gsi_bench.c (currently in gsi/c directory)
+
+
+Note that the GSI 4.0 benchmark bridge, gsi_bench.c, is in the gsi/c/ directory
+and is compiled as part of the builds in gsi/opt/.
+
+Note that there are also GSI 3.2 benchmarks (gsi_bench.c) and GSI 3.0
+benchmarks (gsi_benchmark.c) in ext/c and a copy in tests/bench/gsi-3-0/.
+The GSI 3.2 benchmark is compiled, as part of builds, in ext/opt.
+
+The following is a sample make-file for gsi_bench.  Note that the make file
+dependencies for this benchmark will now be included in the AB make files for
+GSI.
+
+--------------------------------------------------
+gsi_bench: gsi_bench.o
+	gcc -o gsi_bench -s gsi_bench.o /bt/ab/gsi/opt/libgsi.a
+/bt/ab/ext/opt/libtcp.a /bt/ab/rtl/opt/librtl.a -lm -lc
+
+gsi_bench.o: gsi_bench.c gsi_main.h
+	gcc -c -O -I/bt/ab/gsi/c/ gsi_bench.c
+--------------------------------------------------
