@@ -1,0 +1,700 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<!-- saved from url=(0052)http://www.creativyst.com/Doc/Articles/CSV/CSV01.htm -->
+<!-- Creativyst Documents: Creativyst.com  --><HTML><HEAD><TITLE>CSV Comma Separated Value File Format (How To) - Creativyst, Inc. Design, Software, Services</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=iso-8859-1"><!-- This page is (c) Copyright 2002 - 2003, Creativyst, Inc. -->
+<META content="John Repici" name=Author>
+<META content="(C) Copyright 2002 - 2003 Creativyst, Inc." name=Copyright>
+<META content="MSHTML 6.00.2800.1226" name=GENERATOR>
+<META 
+content="Comma Separated Values (CSV) File format - Creativyst, Inc. Docs - How to: parse and convert CSV files to XML." 
+name=description>
+<META 
+content="comma separated values, file format, CSV to XML converter, programming, database administration, article, documents, docs, creativyst, web site design, software development" 
+name=keywords><LINK href="http://www.creativyst.com/favicon.ico" 
+type=imag/x-icon rel="shortcut icon"><LINK 
+href="http://www.creativyst.com/favicon.ico" type=imag/x-icon rel=icon><LINK 
+media=screen href="csv file format_files/Base.css" type=text/css rel=StyleSheet>
+<STYLE type=text/css>.MultilineExample {
+	BORDER-RIGHT: #9999cc 1px solid; BORDER-TOP: #9999cc 1px solid; FONT-SIZE: 9pt; BORDER-LEFT: #9999cc 1px solid; WIDTH: 70%; BORDER-BOTTOM: #9999cc 1px solid; BACKGROUND-COLOR: #ccccdd; TEXT-ALIGN: left
+}
+</STYLE>
+
+<SCRIPT language=JavaScript src="csv file format_files/CSV01.js" 
+type=text/javascript></SCRIPT>
+
+<SCRIPT language=JAVASCRIPT src="csv file format_files/SideMen.js" 
+type=text/javascript>
+    </SCRIPT>
+<!--
+<BODY BGColor="#F0F0FF"  
+      BGPROPERTIES="FIXED" 
+      LEFTMARGIN="0" TOPMARGIN="0" MARGINWIDTH="0" MARGINHEIGHT="0">
+--></HEAD>
+<BODY class=BasicPage>
+<DIV><A name=Top></A>
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+  <TBODY>
+  <TR><!-- <TD VALIGN="TOP" WIDTH="17%" ALIGN="CENTER">  -->
+    <TD vAlign=top width="17%">&nbsp; <A 
+      href="http://www.creativyst.com/"><IMG alt="Visit Our Home Page" 
+      src="csv file format_files/Td125x50.gif" border=0></A> </TD>
+    <TD vAlign=bottom align=right width="83%">
+      <TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+        <TBODY>
+        <TR>
+          <TD vAlign=top width="65%">
+            <TABLE width="100%">
+              <TBODY>
+              <TR>
+                <TD align=middle width="100%"><!-- BEGIN LINKEXCHANGE CODE Glossary --><!--     hspace=0 vspace=0 frameborder=0 scrolling=no -->
+                  <CENTER><IFRAME marginWidth=0 marginHeight=0 
+                  src="csv file format_files/showiframe.htm" frameBorder=0 
+                  width=468 scrolling=no 
+                  height=60>
+<a href="http://leader.linkexchange.com/X1703421/clickle"
+     target="_top"
+     ><img width=468 height=60 border=0 ismap alt=""
+         src="http://leader.linkexchange.com/X1703421/showle?"
+         ></a></IFRAME><BR><A 
+                  href="http://leader.linkexchange.com/X1703421/clicklogo" 
+                  target=_top><IMG height=16 alt="" isMap 
+                  src="csv file format_files/lelogo.gif" width=468 
+                  border=0></A><BR></CENTER><!-- END LINKEXCHANGE CODE --></TD></TR></TBODY></TABLE></TD>
+          <TD vAlign=bottom align=right><BR><BR><FONT face="Arial, sans-serif" 
+            size=5>Creativyst&nbsp;Docs&nbsp;<BR></FONT><FONT 
+            face="Arial, sans-serif" size=3>Understanding CSV File Formats 
+            </FONT><!--
+        <br>
+        <br>
+        <font FACE="Arial, sans-serif" SIZE="4">
+
+        Creativyst Forums&nbsp;<br>
+        </font>
+        <font FACE="Arial, sans-serif" SIZE="3">
+        Support&nbsp;&amp;&nbsp;Discussion&nbsp;
+        </font>
+--></TD></TR></TBODY></TABLE><!-- Level 1 navigation bar     -->
+      <TABLE class=NavMenuTop cellSpacing=0 cellPadding=0 width="100%" 
+        border=0><TBODY>
+        <TR>
+          <TD vAlign=top width="10%">
+            <DIV><A class=Nav title="Return to our Home Page" 
+            href="http://www.creativyst.com/" target=_top>Home </A></DIV></TD>
+          <TD vAlign=top width="15%">
+            <DIV><A class=Nav title="Products &amp; Services" 
+            href="http://www.creativyst.com/Prod/ProdTop.htm" 
+            target=_top>Products </A></DIV></TD>
+          <TD vAlign=top width="15%">
+            <DIV><A class=Nav title="Customer Support, Papers, &amp; Downloads" 
+            href="http://www.creativyst.com/Support/SupTop.htm" 
+            target=_top>Support/Doc </A></DIV></TD>
+          <TD vAlign=top width="15%">
+            <DIV><A class=Nav 
+            title="Developer Resources and Forums (graphics designers too)" 
+            href="http://www.creativyst.com/Dev/DevTop.htm" 
+            target=_top>Developers </A></DIV></TD>
+          <TD vAlign=top width="15%">
+            <DIV><A class=Nav title="Talk with others" 
+            href="http://www.creativyst.com/cgi-bin/YaBB/os/YaBB3.pl" 
+            target=_top>Forums </A></DIV></TD>
+          <TD vAlign=top width="15%">
+            <DIV><A class=Nav title="Become a Creativyst Associate" 
+            href="http://www.creativyst.com/a/index.htm" target=_top>Associates 
+            </A></DIV></TD>
+          <TD vAlign=top width="15%">
+            <DIV><A class=Nav title="Coming soon" 
+            href="http://www.creativyst.com/Site/" target=_top>(?) 
+        </A></DIV></TD></TR></TBODY></TABLE><!--
+    <TABLE WIDTH="100%" CELLSPACING="0" CELLPADDING="0">
+    <TR><TD CLASS="TinySpc" WIDTH="99%">&nbsp;</TD></TR></TABLE>
+--><!-- Level 2 nav menu   -->
+      <TABLE cellSpacing=0 cellPadding=3 width="100%" border=0>
+        <TBODY>
+        <TR>
+          <TD vAlign=top align=right width="100%"><FONT 
+            face="Verdana, Arial, sans-serife" color=#000000 size=1><A class=m2 
+            title="Contact us" href="http://www.creativyst.com/Site/Contact.htm" 
+            target=_blank>Contact</A> | <A class=m2 
+            title="What's new at Creativyst, Inc." 
+            href="http://www.creativyst.com/Site/News/Cvst/News.htm" 
+            target=_top>News</A> | <A class=m2 title="Glossary of terms" 
+            style="CURSOR: help" 
+            href="http://www.creativyst.com/cgi-bin/M/Glos/st/GetTerm.pl?fsGetTerm=802.11b" 
+            target=_blank>Glossary</A> | <A class=m2 
+            title="Miscellaneous Information and Help" 
+            href="http://www.creativyst.com/Site/" target=_top>Site</A> &nbsp; 
+            </FONT></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+<TABLE width="100%">
+  <TBODY>
+  <TR>
+    <TD vAlign=top width="17%" bgColor=#f0f0ff><BR><BR>
+      <SCRIPT language=JavaScript type=text/javascript>
+        var msg;
+        msg = GetDocMenu();
+        document.write(msg);
+    </SCRIPT>
+<!-- The REST of the left pedestal  -->
+      <TABLE width="100%">
+        <TBODY>
+        <TR>
+          <TD class=PedHead width="100%">&nbsp; </TD></TR>
+        <TR>
+          <TD class=Ped width="100%"><BR><BR></TD></TR>
+        <TR>
+          <TD class=PedHead width="100%">&nbsp; <!-- Tools --></TD></TR>
+        <TR>
+          <TD class=Ped width="100%">&nbsp; 
+      </TD></TR></TBODY></TABLE><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR>&nbsp; 
+    </TD>
+    <TD width="2%">&nbsp; </TD>
+    <TD vAlign=top width="75%"><BR><BR>
+      <DIV class=TitleCategory>How To: </DIV>
+      <DIV class=TitleHead>The Comma Separated Value (CSV) File Format<BR></DIV>
+      <DIV class=TitleSubhead><I>Create or parse data in this popular 
+      pseudo-standard format</I> </DIV><!-- 
+   <SUP><FONT SIZE=2>(w/<A HREF="#SourceCode">source code</A>)</FONT></SUP>
+--><BR><BR><BR><BR><!--
+<CENTER>
+<TABLE WIDTH="80%" BORDER="1">
+<TR>
+<TD>
+<FONT FACE="Arial, sans-serif" SIZE="2">
+<B>Preliminary:</B><BR>
+</FONT>
+
+<FONT FACE="Arial, sans-serif" SIZE="1">
+I'm just getting started on this.  There will eventually be an article here 
+but for now the page is linked so that others may comment on, and contribute 
+to, the work in progress.
+  Thank you for your patience.
+
+<P>
+&nbsp; &nbsp; John Repici
+</FONT>
+
+</TD>
+</TR>
+</TABLE>
+</CENTER>
+-->
+      <HR>
+
+      <UL>
+        <LI>Contents 
+        <UL>
+          <LI><A class=tlab 
+          href="http://www.creativyst.com/Doc/Articles/CSV/CSV01.htm#Overview">Overview</A> 
+
+          <LI><A class=tlab 
+          href="http://www.creativyst.com/Doc/Articles/CSV/CSV01.htm#FileFormat">The 
+          CSV File Format</A> 
+          <LI><A class=tlab 
+          href="http://www.creativyst.com/Doc/Articles/CSV/CSV01.htm#ExampleData">More 
+          Example CSV Data</A> 
+          <LI><A class=tlab 
+          href="http://www.creativyst.com/Doc/Articles/CSV/CSV01.htm#CSVAndEncodings">CSV 
+          &amp; Unicode</A> 
+          <LI><A class=tlab 
+          href="http://www.creativyst.com/Doc/Articles/CSV/CSV01.htm#ProcForm"><B>CSV 
+          to XML Converter</B></A> 
+          <LI><A class=tlab 
+          href="http://www.creativyst.com/Doc/Articles/CSV/CSV01.htm#NewCSV">CSV 
+          in New Designs</A> 
+          <LI><A class=tlab 
+          href="http://www.creativyst.com/Doc/Articles/CSV/CSV01.htm#CSVariations">CSV 
+          Format Variations</A> 
+          <LI><A class=tlab 
+          href="http://www.creativyst.com/Doc/Articles/CSV/CSV01.htm#Permissions">Permissions</A> 
+<!--
+    <LI>
+        <A CLASS="tlab" HREF="#SourceCode">Source Code:</A>
+        <UL>
+        <LI>
+        <A CLASS="tlab" HREF="#CCode"
+            >In C</A>
+        <LI>
+        <A CLASS="tlab" HREF="#PerlCode"
+            >Perl</A>
+        <LI> 
+        <A CLASS="tlab" HREF="#Contribute"
+            >Contribute code to this article :)</A>
+        </UL>
+--></LI></UL></LI></UL><BR><BR>
+      <HR>
+      <A name=Overview></A><BR><BR>
+      <TABLE width="100%">
+        <TBODY>
+        <TR>
+          <TD align=right width="100%"><SUP><A 
+            href="http://www.creativyst.com/Doc/Articles/CSV/CSV01.htm#Top">[top]</A> 
+            </SUP></TD></TR></TBODY></TABLE>
+      <DIV class=SecHeader>Overview </DIV><BR>
+      <DIV class=SecBody>The CSV ("Comma Separated Value") file format is often 
+      used to exchange data between disparate applications. The file format, as 
+      it is used in Microsoft Excel, has become a pseudo standard throughout the 
+      industry, even among non-Microsoft platforms. 
+      <P>As is the case with most exchange formats since XML, CSV files have 
+      become somewhat of a <I>legacy</I> format. New applications that wish to 
+      include an export format will generally use XML today (though there may be 
+      <A 
+      href="http://www.creativyst.com/Doc/Articles/CSV/CSV01.htm#NewCSV">exceptions</A>). 
+      In legacy systems though (pre-XML), CSV files had indeed become a de facto 
+      industry standard. Just as there are still billions of lines of CoBOL code 
+      in use today that need to be maintained, support for a legacy standard 
+      such as CSV is likely to be required long after it has stopped being 
+      implemented in new designs. 
+      <P></P></DIV><BR><BR><A name=FileFormat></A><BR><BR>
+      <TABLE width="100%">
+        <TBODY>
+        <TR>
+          <TD align=right width="100%"><SUP><A 
+            href="http://www.creativyst.com/Doc/Articles/CSV/CSV01.htm#Top">[top]</A> 
+            </SUP></TD></TR></TBODY></TABLE>
+      <DIV class=SecHeader>The CSV File Format </DIV><BR>
+      <DIV class=SecBody>
+      <UL>
+        <LI><B>Each record is one line &nbsp; ...<U>but</U></B><BR>A record 
+        separator may consist of a line feed (ASCII/LF=0x0A), or a carriage 
+        return and line feed pair (ASCII/CRLF=0x0D 0x0A).<BR><B>...but:</B> 
+        fields may contain embedded line-breaks (see below) so a record 
+        <I>may</I> span <I>more</I> than one line. 
+        <P></P>
+        <LI><B>Fields are separated with commas.</B><BR>Example <I>John,Doe,120 
+        any st.,"Anytown, WW",08123</I> 
+        <P></P>
+        <LI><B>Leading and trailing space-characters adjacent to comma field 
+        separators are ignored.</B><BR>So <I>&nbsp;&nbsp;John&nbsp; , &nbsp; Doe 
+        &nbsp;,...</I> resolves to "John" and "Doe", etc. Space characters can 
+        be spaces, or tabs. 
+        <P></P>
+        <LI><B>Fields with embedded commas must be delimited with double-quote 
+        characters.</B><BR>In the above example. "Anytown, WW" had to be 
+        delimited in double quotes because it had an embedded comma. 
+        <P></P>
+        <LI><B>Fields that contain double quote characters must be surounded by 
+        double-quotes, and the embedded double-quotes must each be represented 
+        by a pair of consecutive double quotes.</B><BR>So, <I>John "Da Man" 
+        Doe</I> would convert to <I>"John ""Da Man""",Doe, 120 any st.,...</I> 
+        <P></P>
+        <LI><B>A field that contains embedded line-breaks must be surounded by 
+        double-quotes</B><BR>So:<BR>
+        <DIV align=center>
+        <DIV class=MultilineExample><B>&nbsp; Field 1:</B> Conference room 1 
+        &nbsp;<BR><B>&nbsp; Field 2:</B><BR>&nbsp; &nbsp; John,<BR>&nbsp; &nbsp; 
+        Please bring the M. Mathers file for review &nbsp;<BR>&nbsp; &nbsp; 
+        -J.L.<BR><B>&nbsp; Field 3:</B> 10/18/2002<BR>&nbsp; ... </DIV></DIV><!--
+    <TABLE WIDTH="100%">
+    <TR>
+    <TD WIDTH="10%">
+        &nbsp;
+    </TD>
+    <TD>
+        <TABLE>
+        <TR>
+        <TD BGColor="#BBBBFF">
+        <B>&nbsp; Field 1:</B> Conference room 1 &nbsp;<BR>
+        <B>&nbsp; Field 2:</B><BR>
+        &nbsp; &nbsp; John,<BR>
+        &nbsp; &nbsp; Please bring the M. Mathers file for review &nbsp;<BR>
+        &nbsp; &nbsp; -J.L.<BR>
+        <B>&nbsp; Field 3:</B> 10/18/2002<BR>
+        &nbsp; ...
+        </TD>
+        </TR>
+        </TABLE>
+    </TD>
+    </TR>
+    </TABLE>
+-->would 
+        convert to: 
+        <DIV align=center>
+        <DIV class=MultilineExample><I>&nbsp; Conference room 1, "John, 
+        &nbsp;<BR>&nbsp; Please bring the M. Mathers file for review 
+        &nbsp;<BR>&nbsp; -J.L.<BR>&nbsp; ",10/18/2002,...</I> </DIV></DIV><!--
+    <TABLE WIDTH="100%">
+    <TR>
+    <TD WIDTH="10%">
+        &nbsp;
+    </TD>
+    <TD>
+        <TABLE>
+        <TR>
+        <TD BGColor="#BBBBFF">
+        <I>&nbsp; Conference room 1,
+        &quot;John, &nbsp;<BR>
+        &nbsp; Please bring the M. Mathers file for review &nbsp;<BR>
+        &nbsp; -J.L.<BR>
+        &nbsp; &quot;,10/18/2002,...</I>
+        </TD>
+        </TR>
+        </TABLE>
+    </TD>
+    </TR>
+    </TABLE>
+-->Note 
+        that this is a <I>single</I> CSV record, even though it takes up more 
+        than one line in the CSV file. This works because the line breaks are 
+        embedded inside the double quotes of the field. 
+        <P></P>
+        <LI><B>Fields with leading or trailing spaces must be delimited with 
+        double-quote characters.</B><BR>So to preserve the leading and trailing 
+        spaces around the last name above: <I>John ," &nbsp; Doe &nbsp; 
+        ",...</I> 
+        <P></P>
+        <LI><B>Fields may always be delimited with double quotes.</B><BR>The 
+        delimiters will always be discarded. 
+        <UL>
+          <LI><FONT size=-1><I>Implementation note: When importing CSV, do not 
+          reach down a layer and try to use the quotes to impart type 
+          information to fields. Also, when exporting CSV, you may want to be 
+          defensive of apps that improperly try to do this. Though, to be 
+          honest, I have not found any examples of applications that try to do 
+          this. If you have encountered any apps that attempt to use the quotes 
+          to glean type information from CSV files (like assuming quoted fields 
+          are strings even if they are numeric), please <A title="Contact Me" 
+          style="CURSOR: help" href="http://www.creativyst.com/Site/Contact.htm" 
+          target=_blank>let me know</A> about it. </I></FONT></LI></UL>
+        <P></P>
+        <LI><B>The first record in a CSV file <I>may</I> be a header record 
+        containing column (field) names</B><BR>There is no mechanism for 
+        automatically discerning if the first record is a header row, so in the 
+        general case, this will have to be provided by an outside process (such 
+        as prompting the user). The header row is encoded just like any other 
+        CSV record in accordance with the rules above. A header row for the 
+        multi-line example above, might be:<BR>&nbsp; <I>Location, Notes, "Start 
+        Date", ...</I> 
+        <P></P></LI></UL></DIV><BR><A name=ExampleData></A><BR><BR>
+      <TABLE width="100%">
+        <TBODY>
+        <TR>
+          <TD align=right width="100%"><SUP><A 
+            href="http://www.creativyst.com/Doc/Articles/CSV/CSV01.htm#Top">[top]</A> 
+            </SUP></TD></TR></TBODY></TABLE>
+      <DIV class=SecHeader>Example Data </DIV><BR>
+      <DIV class=SecBody>Here is a small set of records that demonstrate some of 
+      the constructs discussed above. These can be pasted directly into the form 
+      provided in the next section to see how our conversion form works. 
+      <P>
+      <DIV class=McCenter>
+      <FORM action=javascript:null();><TEXTAREA rows=7 wrap=off cols=65>John,Doe,120 jefferson st.,Riverside, NJ, 08075
+Jack,McGinnis,220 hobo Av.,Phila, PA,09119
+"John ""Da Man""",Repici,120 Jefferson St.,Riverside, NJ,08075
+Stephen,Tyler,"7452 Terrace ""At the Plaza"" road",SomeTown,SD, 91234
+,Blankman,,SomeTown, SD, 00298
+"Joan ""the bone"", Anne",Jet,"9th, at Terrace plc",Desert City,CO,00123
+</TEXTAREA> </FORM></DIV><!-- CENTER -->These records show how the CSV 
+      format behaves under a variety of conditions, such as using quotes to 
+      delimit a field with embedded quotes and embedded commas; leaving some 
+      fields blank (Mr. Blankman for example has no First Name field); as well 
+      as combinations ('Joan, "the bone", Ann' for example, who's middle name is 
+      included along with her first name and nickname). </DIV><BR><BR><A 
+      name=CSVAndEncodings></A><BR><BR>
+      <TABLE width="100%">
+        <TBODY>
+        <TR>
+          <TD align=right width="100%"><SUP><A 
+            href="http://www.creativyst.com/Doc/Articles/CSV/CSV01.htm#Top">[top]</A> 
+            </SUP></TD></TR></TBODY></TABLE>
+      <DIV class=SecHeader>CSV &amp; Unicode </DIV><BR>
+      <DIV class=SecBody>Just to make the point, CSV using a simple ASCII 
+      character encoding is quite capable of enclosing pure binary data fields. 
+      In this case, as long as you don't have any presentation level software 
+      making assumptions about the data in those fields, CSV fields can safely 
+      contain all 256 binary octets as basic binary data. The binary data may 
+      represent utf-16 characters, or it may represent a photograph. CSV doesn't 
+      care. 
+      <P>So there is nothing inherently wrong with using CSV to maintain data 
+      written in alternate character encodings such as utf-8 and utf-16. CSV's 
+      syntax is durable enough to deal with these encoding schemes. Problems 
+      arise however in two areas when attempting to transport data of different 
+      encodings as plain binary. 
+      <P>First, complexity can arise from <B><I>mixed encoding</I></B> schemes. 
+      That is, the encodings of the three characters used by CSV (, " and 
+      line-feed) may be the same width as the elemental character widths used in 
+      the binary field data, or they may be different. For example, utf-8 or 
+      utf-16 may be embedded in the fields of any CSV file that uses normal 8 
+      bit characters for comma, quote, and line-feed. The CSV file may 
+      alternately use utf-16 for its commas, quotes, and line-feeds to enclose 
+      binary fields that contain utf-8 encoded characters. Such complexity must 
+      be dealt with deliberately somewhere by the applications that handle the 
+      data in those fields. 
+      <P>Problems also arise because the application or display system <!-- (technically the presentation layer) -->on which the 
+      <!-- utf-8 -->data is conveyed <!-- (read from or written to) -->may not 
+      be equipped to handle the encoding, or it may interpret it in unfamiliar 
+      ways. 
+      <P>The CSV to XML converter form used in this article for example, knows 
+      its output comes from an HTML form and goes to XML which must be displayed 
+      in a browser's HTML. To be compatible with this environment it 
+      intentionally converts many 8-bit characters to HTML entities (e.g. 
+      &amp;amp;, &amp;quot;, etc.). 
+      <P>This will cause all kinds of problems for character encodings other 
+      than the usual ISO-8859-x used for these pages. This isn't an 
+      incompatibility between CSV and utf-8, it is just an incompatibility 
+      between the character encodings used at the different presentation levels. 
+
+      <P>This issue arises in other areas as well. Spreadsheet programs will 
+      often assume all data in a CSV file is in the OEM's or system's default 
+      character encoding and attempt to interpret all characters accordingly. 
+      <P>The CSV to XML converter application used here can easily be configured 
+      to send output to a binary file with binary, un-cooked characters. In this 
+      case it will correctly produce the proper CSV for <I>any</I> 
+      character-encoding scheme including utf-8. The applications that will be 
+      asked to interpret those octets found in the CSV fields will have to know 
+      how to deal with them though. Also, this application will always use an 
+      8-bit encoding for its CSV delimiter characters, and so may cause 
+      <B><I>mixed encoding</I></B> confusion when used for wide characters. 
+      <P>For a wealth of introductory and advanced information regarding 
+      character encoding issues there is a great
+      <SCRIPT type=text/javascript>
+    CharacterCodeTutorial();
+ </SCRIPT>
+       on the web. You will find this and other helpful links listed on our <A 
+      href="http://www.creativyst.com/Site/Links.htm">Links We Like</A> page. 
+      </P></DIV><BR><BR><A name=ProcForm></A><BR><BR>
+      <TABLE width="100%">
+        <TBODY>
+        <TR>
+          <TD align=right width="100%"><SUP><A 
+            href="http://www.creativyst.com/Doc/Articles/CSV/CSV01.htm#Top">[top]</A> 
+            </SUP></TD></TR></TBODY></TABLE>
+      <DIV class=SecHeader>CSV to XML Converter Form </DIV><BR>
+      <DIV class=SecBody>The following form will convert your CSV formatted data 
+      into XML. Please go to our <A title="Convert your CSV to XML" 
+      style="CURSOR: help" 
+      href="http://www.creativyst.com/cgi-bin/Prod/15/eg/csv2xml.pl" 
+      target=_blank><B>CSV to XML Converter page</B></A>, though, to be sure you 
+      are using the most up-to-date version of this facillity. 
+      <P><B>Usage:</B> Simply paste your CSV file into the <B><I>Input</I></B> 
+      area and hit <B><I>Convert</I></B>. You may also specify the element names 
+      for the columns (fields) along with a name for the document element. If 
+      you don't specify column names or if you specify too few, those without 
+      names will be labeled "col<B>n</B>" where <B>n</B> is the column number 
+      within the record starting from zero. If you don't specify a document 
+      element name, the document element will be "document". When your file is 
+      finished the XML will display in the <B><I>Output</I></B> area. Hit the 
+      <B><I>Select</I></B> button to select it, then use your clipboard to cut 
+      and paste it wherever you'd like. 
+      <HR>
+
+      <FORM name=csv2xml 
+      action=http://www.creativyst.com/cgi-bin/Prod/15/eg/csv2xml.pl 
+method=post>
+      <TABLE width="99%">
+        <TBODY>
+        <TR>
+          <TD width="25%"><FONT face="Arial, sans-serif" size=1>Col IDs, 
+            1/line<BR>no spaces.<BR></FONT><TEXTAREA name=Columns rows=7 cols=10></TEXTAREA> 
+          </TD>
+          <TD width="75%"><FONT face="Arial, sans-serif" size=1>Input (CSV 
+            file):<BR></FONT><TEXTAREA name=InText rows=7 cols=55></TEXTAREA> 
+        </TD></TR>
+        <TR>
+          <TD><FONT face="Arial, sans-serif" size=1>DocID:<BR></FONT><INPUT 
+            size=10 value=document name=DocID> </TD>
+          <TD><FONT face="Arial, sans-serif" size=1>Output (XML 
+            file):<BR></FONT><TEXTAREA name=OutText rows=7 cols=55></TEXTAREA> 
+            <BR><FONT size=-1><INPUT type=submit value=Convert name=Convert> <INPUT type=submit value=Clear name=Clear> <INPUT onclick=this.form.OutText.select();this.form.OutText.focus(); type=button value=Select> 
+            <INPUT type=hidden value=1 name=LastDrop> 
+      </FONT></TD></TR></TBODY></TABLE></FORM>
+      <HR>
+      </DIV><BR><BR><A name=NewCSV></A><BR><BR>
+      <TABLE width="100%">
+        <TBODY>
+        <TR>
+          <TD align=right width="100%"><SUP><A 
+            href="http://www.creativyst.com/Doc/Articles/CSV/CSV01.htm#Top">[top]</A> 
+            </SUP></TD></TR></TBODY></TABLE>
+      <DIV class=SecHeader>CSV In New Designs </DIV><BR>
+      <DIV class=SecBody>CSV does have one advantage over XML for specification 
+      in new designs. CSV has much lower overhead, thereby using much less 
+      bandwidth and storage than XML. For new designs where overhead issues have 
+      high importance or criticality, CSV may be the better choice. 
+      <P>Especially in requirements that utilize high-cost bandwidth and where 
+      large amounts of data must be moved often, CSV may be better specified. 
+      Hybrid implementations that convert to and from CSV where bandwidth is 
+      critical may also be a workable solution in some designs. 
+      <P>At the absolute theoretical minimum (one letter element names in the 
+      XML and every field quoted in the CSV), XML's overhead will be slightly 
+      greater than 200% of CSV's. Typically though, XML's overhead will be 800% 
+      to over 8000% greater than CSV's. 
+      <P>This is an apples to apples comparison and so only assumes transfers of 
+      regular tables (all rows of a column are the same type). XML and CSV will 
+      both transfer column names. In this comparison XML and CSV would both 
+      require extra overhead to transfer type data. 
+      <P><B>Please note:</B> These numbers and analysis are for <B><I>overhead 
+      only</I></B> and do not attempt to measure or analyze the entire data file 
+      (overhead <I><B>plus</B></I> data). Because there is no <I>typical</I> 
+      data field size there is no typical ratio of overhead to data, so such an 
+      analysis would be meaningless for comparison purposes. 
+      <P>Lastly, when the data is very sparse, XML may be able to make up much 
+      of the overhead that CSV will use up in commas (though, this is being 
+      charitable). 
+      <P>
+      <TABLE cellSpacing=0 cellPadding=1 width="100%" border=0>
+        <TBODY>
+        <TR>
+          <TD width="2%">&nbsp;</TD>
+          <TD align=left width="93%" bgColor=#000000>
+            <TABLE cellSpacing=0 width="100%">
+              <TBODY>
+              <TR>
+                <TD align=left bgColor=#ddddee><B>A note about compression 
+                  performance:</B><BR>Neither CSV or XML specify compression, 
+                  they are presentation mechanisms in and of themselves. 
+                  However, since compression is often used to improve 
+                  performance on low bandwidth channels (precisely where such a 
+                  design issue might be considered), it is a good idea to do an 
+                  apples to apples comparison of how compressible <B><I>the 
+                  overhead</I></B> portion of each file type will be. 
+                  <P>We'll start by using the best case for XML which is a file 
+                  with one field per a record, and a column name that is one 
+                  character long. This is rather absurd but reduces the problem 
+                  to "onesies" to make comparison easy and unambiguous. 
+                  <P>In this case the overhead for XML will consist of four 
+                  characters ("&lt;, A, &gt;" and "/" - assuming the one field's 
+                  name is 'A'). The overhead for CSV on the other hand will 
+                  consist of only three characters: a comma (','), a new line 
+                  ('\n'), and the double quote character ("). That makes CSV's 
+                  overhead a third more redundant, and therefore a third more 
+                  compressible (theoretically) than XML. 
+                  <P>In this comparison XML is given the best case advantage, if 
+                  you add more fields, each with its own name being added to 
+                  XML's overhead, the comparison quickly gets much worse for 
+                  XML. 
+                  <P>This is purely a theoretical analysis of performance under 
+                  compression. If you would like to do the observational 
+                  analysis please write to me (include your email address so we 
+                  can discuss it). </P></TD></TR></TBODY></TABLE></TD>
+          <TD width="5%">&nbsp;</TD></TR></TBODY></TABLE></P></DIV><BR><BR><A 
+      name=CSVariations></A><BR><BR>
+      <TABLE width="100%">
+        <TBODY>
+        <TR>
+          <TD align=right width="100%"><SUP><A 
+            href="http://www.creativyst.com/Doc/Articles/CSV/CSV01.htm#Top">[top]</A> 
+            </SUP></TD></TR></TBODY></TABLE>
+      <DIV class=SecHeader>CSV Format Variations </DIV><BR>
+      <DIV class=SecBody>For the record <B><I>there is currently no such thing 
+      as a standard CSV format</I></B>. Fortunately for developers however, 
+      there is one CSV producing application with international usage that 
+      dwarfs all the other CSV producing applications combined. That is the 
+      format that's been detailed here. 
+      <P>The CSV format described in this article has been called the "800 pound 
+      gorilla of CSV". It is not the prettiest or most technically elegant 
+      method by any means. But it is the one supported and used by the world's 
+      largest software development company. For this reason it should be 
+      supported by anyone doing serious software development and looking for a 
+      universal import/export mechanism for data produced. 
+      <P>There are many other CSV formats besides the variation described here. 
+      For many software designs, companies use CSV to transfer data between a 
+      number of their own applications and never intend it to be written or read 
+      by others. In such cases, the variations are almost endless. 
+      <P>In other cases, software developers produce their own formats with the 
+      expectation that others will adapt. One reason for such a design choice, 
+      even in the face of the 800 pound gorilla, might be that a much more 
+      technically advanced format is not that hard to conceive of. While the 
+      temptation might be to go with a more technically proficient design, for 
+      those producing new designs, we don't recommend it. Why? Can you say 
+      "BetaMax"? 
+      <P>For those who are developing new designs we recommend following the big 
+      hairy one. However, taking some simple steps might help to improve how 
+      your design inter-operates with many of the non-Excel variations that are 
+      out there. 
+      <UL>
+        <LI>Considerations When <B>Exporting CSV</B><BR>The biggest differences 
+        are in how these three characters are handled. 
+        <P>
+        <UL>
+          <LI><I>Embedded double quotes in fields.</I><BR>An escape character is 
+          sometimes used to introduce a double quote, or in place of it. 
+          <LI><I>Embedded line-feeds in fields.</I><BR>This one is also escaped 
+          sometimes. Often like in C ("\n") 
+          <LI><I>Embedded commas in fields.</I><BR>Again, an escape character is 
+          sometimes used in place of the comma </LI></UL>
+        <P>Theoretically, if you could avoid exporting any fields that include 
+        these characters you would greatly improve the chances that your CSV 
+        file could be read by variations. 
+        <P>Is it worth reducing your application's functionality or convenience? 
+        <B>No.</B> But if the existence of these characters is entirely 
+        superfluous, you might consider taking them out. 
+        <P></P>
+        <LI>Considerations When <B>Importing CSV</B><BR>First you'd have to 
+        consider if extra import options would ever even be used or understood 
+        by your typical users. Second, you'd have to consider whether such 
+        extras would be used enough to merit adding the extra complexity to your 
+        application and to your development effort. If (and that's a big if) you 
+        get past these hurdles, there are some options you might consider 
+        including, such as. 
+        <UL>
+          <LI>[] Check if line feeds are \n 
+          <LI>[] Check if embedded double quotes are \" 
+          <LI>[] Check if ??? </LI></UL></LI></UL></DIV><BR><BR><A 
+      name=Permissions></A><BR><BR>
+      <TABLE width="100%">
+        <TBODY>
+        <TR>
+          <TD align=right width="100%"><SUP><A 
+            href="http://www.creativyst.com/Doc/Articles/CSV/CSV01.htm#Top">[top]</A> 
+            </SUP></TD></TR></TBODY></TABLE>
+      <DIV class=SecHeader>Permissions </DIV><BR>
+      <DIV class=SecBody>This article is © Copyright, Creativyst, Inc. 2002 - 
+      2003 ALL RIGHTS RESERVED. 
+      <P><B>Links to this article are always welcome.</B> 
+      <P>However, you may not copy, modify, or distribute this work without 
+      first obtaining express written permission from Creativyst, Inc. Those 
+      wishing to obtain permission to distribute this article or derivatives in 
+      any form should <A title="Email, write, or call and let me know" 
+      href="http://www.creativyst.com/Site/Contact.htm"><B>contact 
+      Creativyst</B></A>. 
+      <P>Permissions printed over any code, DTD, or schema files are supported 
+      as our permission statement for those constructs. 
+      </P></DIV><BR><BR><BR><BR><BR><!--
+
+
+<P>
+<CENTER>
+<TABLE WIDTH="70%" BORDER="1">
+<TR>
+<TD>
+<FONT FACE="Arial, sans-serif" SIZE="2">
+<B>Note, warning, preliminary:</B><BR>
+These functions are currently untested or have not been fully tested.
+if you've implemented these and have tested them (partially or fully)
+please let me know.
+
+</TD>
+</TR>
+</TABLE>
+</CENTER>
+
+
+
+<BR>
+<A NAME="Contribute"></A>
+<BR>
+<BR>
+<TABLE WIDTH="100%"><TR><TD WIDTH="100%" ALIGN="RIGHT">
+  <SUP>
+  <A HREF="#Top">[top]</A>
+  </SUP>
+</TD></TR></TABLE>
+
+<FONT SIZE="4" FACE="Arial, Verdana, sans-serif">
+Contribute
+</FONT>
+<BR>
+
+Help out with this article by adding insights, pointing out errors, or 
+critiquing recommendations.
+If you would like to share your knowledge 
+please <A 
+HREF="http://www.creativyst.com/Site/Contact.htm">contact me</A>.  If used, 
+your contributions will be attributed to you with a link to your site. 
+
+--><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR>
+      <HR>
+      <BR><BR><BR><BR><BR></TD>
+    <TD vAlign=top width="5%">&nbsp;</TD></TR></TBODY></TABLE><FONT 
+face="Verdana, Arial" color=#333399 size=2><I>© Copyright 2002 - 2003 
+Creativyst, Inc.<BR>ALL RIGHTS RESERVED<BR><BR>Written by John Repici</I> 
+<BR><BR>With contributions by:<BR></FONT><BR><BR><BR></DIV></BODY></HTML>
