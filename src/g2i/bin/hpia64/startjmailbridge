@@ -1,0 +1,43 @@
+#!/bin/csh
+echo JMail Bridge
+
+#
+#	This batch file launches the JMail Bridge
+#	You may supply up to one argument
+#	   - the port number the bridge is listening for G2 connections
+#
+
+
+setenv HM %ROOTDIR%
+
+if ( $?JAVA_HOME ) then
+  setenv JVM $JAVA_HOME
+else
+  setenv JVM ${HM}/jre
+endif
+
+if ( $?SHLIB_PATH ) then
+  setenv SHLIB_PATH ${HM}/javalink/bin:${SHLIB_PATH}
+else
+  setenv SHLIB_PATH ${HM}/javalink/bin
+endif
+
+if ($?LD_LIBRARY_PATH ) then
+  setenv LD_LIBRARY_PATH ${HM}/javalink/bin:${LD_LIBRARY_PATH}
+else
+  setenv LD_LIBRARY_PATH ${HM}/javalink/bin
+endif
+
+setenv CLASSPATH ${HM}/jmail/classes/G2JMail.jar:${HM}/jmail/classes/mail.jar:${HM}/jmail/classes/activation.jar:${HM}/javalink/classes/core.jar:${HM}/javalink/classes/classtools.jar:${HM}/javalink/classes/javalink.jar
+
+if ($#argv < 1) then
+  setenv port 22080
+  setenv debug "-debug 6"
+else
+  setenv port $1
+  setenv debug ""
+  shift
+endif
+
+echo Starting JMail Bridge at Port $port ...
+${JVM}/bin/java -cp ${CLASSPATH} com.gensym.jmail.JMailBridge -port $port $debug $*
