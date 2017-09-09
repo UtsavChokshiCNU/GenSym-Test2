@@ -1,0 +1,25 @@
+#!/bin/csh
+# See the following file for documentation.
+source auxtools/wtape-init.csh
+
+cd $release_directory
+if( $target_host == SELF ) then
+ echo "LOG: Creating the zip file $target_pathname"
+ zip -r $target_pathname *
+ set result = $status
+else
+ echo "LOG: Creating the zip file ${target_host}:${target_pathname}"
+ zip -r - * | rsh $target_host cat '>' $target_pathname
+ set result = "$status"
+endif
+
+# Verify
+
+if($result) then
+  echo "ERROR: zip failed."
+else
+  echo "LOG: Created the zip file $target_pathname"
+endif
+
+exit $result
+
