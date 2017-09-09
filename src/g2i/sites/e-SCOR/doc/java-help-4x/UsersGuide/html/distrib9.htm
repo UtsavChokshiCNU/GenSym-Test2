@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="02/06/02 18:48:25">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Restricting the Orders to Sort Based on a Time Cutoff</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="distrib8.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="distri10.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+      <div align="center"><b>e-SCOR User's Guide</b></div>
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/e-SCOR/OnlineHelpFiles/UsersGuide/html/distribu.htm">  
+        Modeling a Distribution Process  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Restricting the Orders to Sort Based on a Time Cutoff
+</h2>
+<p>You can configure time-based cutoff values to restrict the orders that the Deliver category considers for delivery. <a name="29669"></a></p>
+<p>You can configure the cutoff to be a maximum acceptable time delta to use for determining which orders the Deliver category can fill. If the current order meets the sort criteria but cannot be filled from the current inventory, the Deliver category considers all other orders that meet the sort criteria that fall within the delta time. You can use this configuration to model a FIFO delivery strategy in which orders are considered for delivery if they fall within a given delta time relative to the order-placed time. The <code>Time Delta Acceptable</code> cutoff for sorting orders, based on time-based properties of an order behaves in an identical manner to the <code>Maximum Delta Acceptable</code> cutoff for numeric properties of an order.<a name="29670"></a></p>
+<p>You can also configure the cutoff to implement a just-in-time (JIT) deliver strategy. To do this, you configure the cutoff to be <code>Current Time Delta Acceptable</code>, and you configure the Cutoff Duration to be the amount of time it takes to pick, pack, and ship an order. The Deliver category ships only those orders whose Order Lead Time is less than the current time plus the Cutoff Duration. The Order Lead Time contains a time in the future when the buyer expects to receive the order.<a name="29980"></a></p>
+<p>The following table describes two strategies for sorting orders, using a time-based sort criteria and a cutoff:<a name="29672"></a></p>
+<p >
+  <a name="70795"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="70776"><div >To deliver...</a></div></th>
+    <th><a name="70778"><div >Configure these parameters...</a></div></th>
+  </tr>
+  <tr>
+    <td><p>Oldest orders first, based on when the buyer placed the order. <a name="70780"></a></p>
+<p>The Deliver category considers equally all orders that meet the sort criteria that were placed within a day of the earliest order-placed time.<a name="70781"></a></p>
+</td>
+    <td><p>First tab:<a name="70783"></a></p>
+<blockquote>  <a name="70784">Sort Direction = <code>Smallest<br></code>Sort By = <code>Order Placed Time<br></code>Cutoff = <code>Time Delta Acceptable<br></code>Cutoff Duration = <code>1 day</code></a></blockquote>
+</td>
+  </tr>
+  <tr>
+    <td><p>Orders "just in time" to meet the buyer's desired order fulfillment lead time, where the time it takes to pick, pack, and ship an order is 2 days.<a name="70787"></a></p>
+<p>If two orders have the same lead time, then deliver the largest order first, based on current inventory. <a name="70788"></a></p>
+<p>If the current inventory is not sufficient to fill the chosen order, then deliver orders that are within 25% of the largest order.<a name="70789"></a></p>
+</td>
+    <td><p>First tab:<a name="70791"></a></p>
+<blockquote>  <a name="70792">Sort Direction = <code>Random<br></code>Sort By = <code>Order Fulfillment Lead Time<br></code>Cutoff = <code>Current Time Delta Acceptable<br></code>Cutoff Duration = <code>2 days</code></a></blockquote>
+<p>Second tab:<a name="70793"></a></p>
+<blockquote>  <a name="70794">Sort Direction = <code>Biggest<br></code>Sort By = <code>Order Size<br></code>Cutoff = <code>Maximum Delta Acceptable<br></code>Cutoff Value = <code>.25</code></a></blockquote>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<p><b>Related topics:</b><a name="120224"></a></p>
+<p><a href="distrib7.htm#27482">Sorting Orders with No Cutoff</a><a name="120228"></a></p>
+<p><a href="distrib8.htm#27428">Restricting the Orders to Sort Based on a Numeric Cutoff</a><a name="120232"></a></p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="distrib8.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="distri10.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
