@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="01/11/02 11:08:39">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>bpr-post</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="api20.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="api22.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/ReThink/custom-manual/stylesets/Customizing%20ReThink/Output/html/api.htm">  
+        Application Programmer's Interface   </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+bpr-post
+</h2>
+<p>Locates an output path of the correct type for a work object and sets the work object onto the path. This is called <b>posting</b> a work object to a path.<a name="15007"></a></p>
+<h3 >
+  <a name="15009">Synopsis</a>
+</h3>
+<code>bpr-post 
+	( <code>activity</code>: class bpr-activity, <code>object</code>: class bpr-object )<a name="15011"> </a></code></blockquote><p >
+  <a name="15025"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="15014"><div >Argument</a></div></th>
+    <th><a name="15016"><div >Description</a></div></th>
+  </tr>
+  <tr>
+    <td><code><code>activity</code><a name="15018"> </a></code></blockquote></td>
+    <td><p>The <code>bpr-activity </code>related to <code>object</code>.<a name="15020"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><code><code>object</code><a name="15022"> </a></code></blockquote></td>
+    <td><p>The<code> bpr-object</code> posted to the path.<a name="15024"></a></p>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<h3 >
+  <a name="15026">Description</a>
+</h3>
+<p>This procedure loops through all the output paths of a block to locate a path whose <code>type </code>matches the <code>object</code>, or whose type is a superior class of the <code>Class-name</code> of <code>object</code>. When it locates such a path, <code>bpr-post</code> calls <code>bpr-post-path </code>to set <code>object </code>onto that path. If <code>bpr-post </code>fails to locate a path with a matching <code>type</code>, it returns without calling <code>bpr-post-path</code>. <a name="15027"></a></p>
+<p>For information on <code>bpr-post-path</code>, see <a href="api22.htm#15044">bpr-post-path</a>.<a name="30254"></a></p>
+<p>The methods that define the default behavior for many of the blocks call <code>bpr-post</code> when the intended path has not yet been identified.<a name="15031"></a></p>
+<h3 >
+  <a name="15032">Example</a>
+</h3>
+<p>This method is <code>bpr-merge::bpr-stop-method</code>, the default stop method of a Merge block. The method loops through each input work object to the block and calls <code>bpr-post</code> to locate a path of the type that matches the class of the work object.<a name="15034"></a></p>
+<p >
+  <a name="73652"> </a>
+<div style="color: #000000;  font-size: 4pt; font-style: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: justify; text-decoration: none; text-indent: 0pt; text-transform: none; vertical-align: baseline">
+<a name="73651"> </a><div align="left"><img src="images/apia14.gif" border="0" hspace="0" vspace="0">
+</div><br>
+</div>
+
+
+
+</p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="api20.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="api22.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
