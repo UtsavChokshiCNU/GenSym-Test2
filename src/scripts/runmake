@@ -1,0 +1,190 @@
+#!/bin/csh -f
+
+# Runmake
+
+# Copyright (c) 1986 - 2017 Gensym Corporation.
+# All Rights Reserved.
+
+# Jim Allard
+
+# This C shell script is used to run makefiles generated with the makefile
+# generator.
+
+# The job of this script is to copy the appropriate premade makefile from the
+# $SRCBOX/$mfile_dir directory into the appropriate binary directory, cd into 
+# that directory, and then run make in that directory.  If there is a problem
+# preparing to run the makefile or if make returns a bad status, this script
+# exits with a non-zero status.
+
+# Note that the only environment variables required by this script are $SRCBOX
+# and $DSTBOX.  It may only depend on these.
+
+# This script does not require, but will respond to the envirnoment variable
+# NORUNMAKECP.  If this variable is set then this script will not copy the
+# makefile.  This is intended to be used when hand work is being done on the
+# makefiles, and the developer wants to ensure that his edits will not be
+# overwritten.
+
+# This script takes at least two arguments.  The first argument is the
+# target to make, and the second argument is the type of compile to perform on
+# that thing.  Any additional arguments are passed on to the invocation of make.
+
+# The values of the target-to-make argument are one of the top level 
+# directories in $DSTBOX that contain object files.
+
+# The values of the type-of-compile argument are either opt, o, o-mt, or o-pg.  These
+# correspond to directory holding binaries, and stand for optimized, debuggable,
+# debuggable multithreaded, and profiled compiles.
+
+# Check arguments and set up variables.  The variable target holds the first
+# argument to this script.  The variable compile_type holds the second argument.
+# The variable target_dir holds the binary directory targeted for the make.  The
+# format of the target directory is 
+
+#   $DSTBOX/$target_dir/$compile_type
+
+# The variable makefile holds the pathname of the generated makefile we expect
+# to find.  It has the following format.
+
+#   $SRCBOX/$mfile_dir/$MACHINE-$target-$compile_type
+
+if ($#argv < 2) then
+  goto usage
+endif
+
+if ( ! $?SRCBOX || ! $?DSTBOX ) then
+  echo "ERROR: Variables SRCBOX and DSTBOX are not set; you must run use-sandbox."
+  goto usage
+endif
+
+if !($?MACHINE) then
+  setenv MACHINE `/usr/local/bin/machine`
+endif
+
+setenv MAKEPRG make
+set mfile_dir = gen/mfiles
+
+set target = $1
+set compile_type = $2
+
+shift
+shift
+
+switch ($compile_type)
+  case opt:
+  case opt-mt:
+  case o:
+  case o-mt:
+  case o-pg:
+    breaksw
+  default:
+    echo "ERROR: Bad compile_type $compile_type."
+    goto usage
+endsw
+
+switch ($target)
+  case jgi:
+  case jgilib:
+    set target_dir = $DSTBOX/java/$compile_type
+    set mfile_dir = java/mkfiles
+    breaksw
+  default:
+    set target_dir = $DSTBOX/$target/$compile_type
+    breaksw
+endsw
+
+
+# Now we check to make sure there is a makefile, so that we can copy it into the
+# target directory and then run make on it.  If we do find a "source makefile",
+# we're going to use it.  We will check to see if $target_dir exists on the
+# filesystem.  If it doesn't, we'll try to create it.  (Note that the -p flag to
+# mkdir specifies to make any intervening directories necessary.)  The exception
+# is if the environment variable NORUNMAKECP is set.  In that case, there is no
+# "source makefile", but we also *do not* do a mkdir on the directory.  With
+# NORUNMAKECP, we require that the target directory be there ahead of time (and
+# will fail the next test if it is not).  If the directory doesn't exist, we can
+# be fairly certain that it doesn't contain a makefile, and that we would not be
+# able to run make in it.
+
+if !($?NORUNMAKECP) then
+  set makefile = $SRCBOX/$mfile_dir/$MACHINE-$target-$compile_type
+  if !(-f $makefile) then
+    echo "ERROR: The makefile $makefile does not exist, exiting."
+    goto usage
+  endif
+  if !(-d $target_dir) then
+    echo "runmake: mkdir -p $target_dir"
+    mkdir -p $target_dir
+  endif
+endif
+
+# Now in this test, the extra slash dot on the end of the pathname is to be sure
+# we are testing the directory, not a symbolic link.  It's perfectly ok for the
+# target_dir to be a symbolic link, as long as it points to an existing
+# directory, which is what this tests for.  If it's a bad symbolic link, or if
+# for some unknown reason $target_dir is a regular file, or doesn't exist at
+# all (meaning the above mkdir failed), we will simply give up.
+
+if !(-d $target_dir/.) then
+  echo "ERROR: cannot write into target directory $target_dir."
+  goto usage
+endif
+
+goto gooduse
+
+usage:
+echo 'usage: runmake target type [make args]'
+echo "  target: rtl, g2, tw, etc."
+echo "  type: opt, o, o-mt, o-pg"
+exit 1
+
+gooduse:
+
+# Copy the makefile to the target directory, if NORUNMAKECP was not set.
+
+if !($?NORUNMAKECP) then
+  echo "runmake: cp $makefile $target_dir/makefile"
+  cp $makefile $target_dir/makefile
+  set check = $status
+  if ($check != 0) then
+    echo "ERROR: cp of $makefile to $target_dir failed with status $check.  Exiting."
+    exit $check
+  endif
+else
+  echo "runmake: environment variable NORUNMAKECP set, not copying makefile"
+endif
+
+# Makefile copied (or requested not to be copied), run make.
+
+echo "runmake: cd $target_dir"
+cd $target_dir
+set check = $status
+if ($check != 0) then
+  echo "ERROR: The cd to $target_dir failed with status $check.  Exiting."
+  exit $check
+endif
+
+if ("$MACHINE" == "intelnt") then
+  setenv MAKEPRG NMAKE.EXE
+# For nmake to work, it wants regular Windows paths, with device letters and
+# backslashes.  SFU provides that functionality with posixpath2nt.
+# (The complement is ntpath2posix.)
+  if ("`uname`" == "Interix") then
+    setenv SRCBOX `posixpath2nt $SRCBOX`
+    setenv DSTBOX `posixpath2nt $DSTBOX`
+    setenv SCRIPTSBOX `posixpath2nt $SCRIPTSBOX`
+    setenv JAVA_HOME `posixpath2nt $JAVA_HOME`
+    setenv TMP `posixpath2nt $TMP`
+  else
+# Cygnus provides the functionality with cygpath.
+    setenv SRCBOX `cygpath -w $SRCBOX`
+    setenv DSTBOX `cygpath -w $DSTBOX`
+    setenv SCRIPTSBOX `cygpath -w $SCRIPTSBOX`
+    setenv JAVA_HOME `cygpath -w $JAVA_HOME`
+    setenv TMP `cygpath -w $TMP`
+  endif
+endif
+
+echo "runmake: $MAKEPRG -k $argv"
+$MAKEPRG -k $argv
+exit $status
