@@ -1,0 +1,81 @@
+#!/bin/sh
+#   This script is the error-reporting mechanism for use in conjunction with
+# the errsweep error-tracking script. It iterates over all active build
+# machines, all products, and all compile types searching object directories
+# for files named errors.log or current.{log,bat}. If found, their modification
+# date and contents are listed.
+#
+# Notes:
+#     This currently works exclusively with sandboxes that contain a full
+#   dst subdirectory hierarchy for all supported platforms.
+#     This is guaranteed to run only on a sun, although any Bourne shell with
+#   functions should be able to handle it.
+#     Does not report on sun4 or sparcsol, which does not run errsweep.
+#     NT machines produce current.bat, while others produce current.log.
+#     VMS machines produce current.log with a funky format, so "strings"
+#   is used to read it.
+
+#-----------------------------------------
+reportbody()
+    # Function to check for existence of error files and list contents
+    # in a readable format.
+    #   arguments: $1 full path to machine object directories
+    #              $2 product/compile-type
+    #              $3 error file
+{
+    fullpath=$1/$2
+    if [ -f $fullpath/$3 ]; then
+        dirline="`(cd $fullpath; ls -l $3)`"
+        echo -n "    $2 -- "
+        echo $dirline | (read j1 j2 j3 j4 rest; echo $rest)
+        $catcmd $fullpath/$3 | while read line
+            do
+                echo "        $line"
+            done
+    fi
+}
+#-----------------------------------------
+reportmachine()
+    # Function to report on a particular machine. Invokes reportbody() for
+    # each product/compilation-type
+    #   arguments: $1 full path to machine
+    #              $2 file suffix for current.{log,bat}  -- needed for NT
+{
+    for product in rtl ext fnt jpeg xml gsi tw g2
+    do
+        for comptype in opt o
+        do
+            reportbody $1 $product/$comptype errors.log
+            reportbody $1 $product/$comptype current.$2
+        done
+    done
+}
+#-----------------------------------------
+
+# catcmd is "cat" on all non-VMS machines.  VMS machines use "strings".
+catcmd=cat; export catcmd
+
+for machine in `$SRCBOX/build/build-machines -active`
+do
+    if [ $machine != "sun4" -a $machine != "sparcsol" ]; then
+        echo $machine:
+        reportmachine $SRCBOX/dst/$machine log
+    else
+        echo "$machine:  does not run errsweep"
+    fi
+done
+
+catcmd=strings; export catcmd
+for machine in `$SRCBOX/build/build-machines -vmstypes -active`
+do
+    echo $machine:
+    reportmachine $SRCBOX/dst/$machine log
+done
+
+catcmd=cat; export catcmd
+for machine in `$SRCBOX/build/build-machines -nttypes -active`
+do
+    echo $machine:
+    reportmachine $SRCBOX/dst/$machine bat
+done
+
