@@ -1,0 +1,75 @@
+#!/bin/csh -f
+
+onintr cleanup
+if ($1 != -please) then
+  echo "$0 -please"
+  echo "  Update the gw/c files from the gsi/c files"
+  echo "  in the the current sandbox, i.e. ($SPIN_ID)"
+  exit 1
+endif
+
+# C files from Lisp, these go into gsi/c (joining hand written files).
+  set files = ( {user,userstrs}.h )
+  set files = ( $files {symtab,userinit,usersyms}.c )
+  set files = ( $files {userfuns,load,btstrp,systm,delta,gspts}.{c,h} )
+  set files = ( $files {loop,lspfxs,glbscs,osfrgn,basics}.{c,h} )
+  set files = ( $files {ostme,os-set,os-mem,prmtvs,chars}.{c,h} )
+  set files = ( $files {utlts0,utlts1,utlts2,utlts3}.{c,h} )
+  set files = ( $files {osrrr,launch,ntwrks,int1}.{c,h} )
+  set files = ( $files {int2,int3,int4,gscmn,rpcmn1}.{c,h} )
+  set files = ( $files {rpcmn2,gsi,gsrpc1,gsrpc2}.{c,h} )
+  set files = ( $files {tran,pthnms,flprse}.{c,h} )
+  set files = ( $files {strms,bridge,gwtl1,buffer,htmlgn}.{c,h} )
+  set files = ( $files {server,thread,wbgsi,web}.{c,h} )
+
+
+set src = /bt/$TRANS_ID/gsi/c
+set dst = /bt/$SPIN_ID/gw/c
+echo "start synchronizing /bt/$SPIN_ID/$src with $dst"
+foreach file ( $files )
+  cmp -s $src/$file $dst/$file
+  if ($status) then
+    echo ''
+    echo "UPDATING:  $file"
+    cp $src/$file $dst/$file
+  else
+    echo -n '#'
+  endif
+end
+
+
+# We change the name of these files, as well as syncronize them.
+cd $dst
+set rfiles = ( gsi-files.txt gw-files.txt )
+while ( $#rfiles )
+  set from = $rfiles[1]
+  shift rfiles
+  set to = $rfiles[1]
+  shift rfiles
+  cmp -s $src/$from $dst/$to
+  if ($status) then
+    echo "UPDATING:  $from -> $to"
+    cp $src/$from $dst/$to
+  else
+    echo "unchanged: $file"
+  endif
+end
+
+# Keep gm_main.c newer than gw_main.c
+set mains = ( `ls -t g[wm]_main.c` )
+if ( $mains[1] == gw_main.c ) then
+ echo 'Modifying gm_main.c to keep it fresher than gw_main.c'
+ cp $dst/gm_main.c /tmp/$$
+ sed "/374049449275592253/s/@@@@.*@@@@/@@@@`date`@@@@/" \
+       /tmp/$$ > $dst/gm_main.c
+endif
+
+
+
+cleanup:
+echo "done synchronizing $src with $dst"
+
+
+
+
+
