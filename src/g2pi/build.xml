@@ -1,0 +1,20 @@
+<project name="g2pi" default="build">
+	<property name="module.name" value="g2pi"/>
+	<property name="${module.name}.basedir" value=".."/> 
+	<property file="${g2pi.basedir}/ant/build.properties"/>
+
+	<!-- Build section -->
+	<target name="clean">
+		<delete dir="${g2pi.basedir}/../dst/${module.name}"/>
+	</target>
+
+	<target name="build" depends="clean">
+        	<ant dir="${g2pi.basedir}/ant" target="vstudio" inheritAll="false">
+			<property name="type" value="Release|Win32"/>
+			<property name="module" value="pi"/>
+			<property name="solution" value="g2pi"/>
+		</ant>
+	</target>
+
+	<!-- End of Build section -->
+</project>
