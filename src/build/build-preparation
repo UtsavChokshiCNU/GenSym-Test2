@@ -1,0 +1,259 @@
+#!/bin/sh
+
+# Usage: build-preparation [-synchronize]
+# The arguments are optional.  If the -synchronize argument
+# is present, the generated files are commited.
+
+#   This script manages the first stage of the build. Its purpose is to obtain
+# and make available the latest versions of files.  In later stages, the files
+# are compiled, tested, etc. The script has a number of stages.
+#  +  Process the command-line arguments.
+#  +  CVS is used to bring the following platform independent modules up to 
+#     date. Prior to updating, unusual or modified files are identified and
+#     moved to special "trash" subdirectories.   The updates of the g2 and tw
+#     directories are needed to clean out trash and to bring any hand-created
+#     files (such as *main.[ch]) up to date.
+#       util    -- latest scripts, .dat files, etc.
+#       gen     -- latest makefile generator and generated makefiles
+#       lisp    -- latest lisp sources
+#       rtl     -- latest chestnut runtime system libraries
+#       ext     -- latest gsi extention sources.
+#       fnt     -- Bitstream font files for libfnt library 
+#       jpeg    -- JPEG library for image processing
+#       xml     -- XML library for SAX parsing
+#       twng    -- TeleWindows -- The Next Generation
+#       kbs     -- kbs to be released to customers
+#       g2      -- translated g2 sources
+#       tw      -- translated tw sources
+#       gsi     -- translated gsi sources
+#       gw      -- weblink
+#       tests   -- the master copy of regression testing kbs, and scripts
+#       promote -- misc files other than kbs that are shipped to customers
+#       specific -- unusual platform-specific files
+#       xtp     -- The Codejock eXtreme Toolkit Pro library
+#       scintilla -- The Scintilla editor library
+#       widgets -- various 3rd party software for native controls
+#       vstudio -- Microsoft Visual Studio project files for builds.
+#  +  Find and encode the current date which is used to identify the build.
+#  +  Update the build identification number for g2, tw, gsi. The change is
+#     commited to the CVS repository. CVS is also used to add a public
+#     announcement entry to the commitlog to indicate the date and revision
+#     of the build.
+#  +  Update G2 and TW Windows .rc files with current version info.
+#  +  Update the et lisp module for non-et builds.
+#  +  The script generate-dst-makefiles is run to generate makefiles to be
+#     distributed with GSI to customers.  In addition, makefiles for
+#     sample foreign images are generated.  The makefiles are committed to
+#     the CVS repository.
+#  +  The makefile generator is used to create makefiles for rtl, fnt, ext,
+#     jpeg, xml, and kbs, fonts, and these are then committed.
+
+#--------------------------------------------------------
+# Banner
+echo "LOG: build-preparation: start `date`"
+
+#--------------------------------------------------------
+# +  Process the command-line arguments.
+
+SYNCHRONIZE=0
+
+if [ "$1" = "-synchronize" ]; then
+  SYNCHRONIZE=1
+fi
+
+
+#--------------------------------------------------------
+# +  Set CVSROOT.  We have always assumed that SRCBOX/lisp/CVS exists, so we
+#    still don't bother to check for it.
+
+CVSROOT=`cat $SRCBOX/lisp/CVS/Root`
+export CVSROOT
+
+
+#--------------------------------------------------------
+# +  Use the update-cvs-dir script to recursively descend through the directory
+#   hierarchy. For each directory, CVS is used to identify unusual or modified
+#   files. These are reported and moved to a "trash" subdirectory. Then cvs is
+#   used to bring the directory up to date.
+
+for module in  build util kbs g2/c tw/c gsi/c tests rtl/c gen lisp jpeg/c \
+    ext/c fnt/c xml twng promote specific twplug g2pi gservice activex g2db \
+    gw xtp scintilla widgets vstudio
+do
+    echo "/home/development/scripts/update-cvs-dir -r $SRCBOX/$module" | sh -v
+done
+
+
+#--------------------------------------------------------
+# +  Update the build identification number for g2, tw and gsi in
+#    lisp/delta.lisp. Add an entry to the commitlog file to indicate the date
+#    and version of this build.  The version is extracted by sed from a
+#    special comment line in lisp/delta.lisp.  
+
+build_date=`$SRCBOX/build/build-date`
+
+cd $SRCBOX/lisp
+
+tmp_delta="/tmp/tmp-delta$$.lisp"
+
+if [ -f $tmp_delta ]; then
+    rm -f $tmp_delta
+fi
+
+  # Replace existing build date in delta.lisp with new date
+sed -e '/^(def.*build-identification-string.*)/s/"[A-Z0-9]*"/"'$build_date'"/' delta.lisp > $tmp_delta
+cp $tmp_delta delta.lisp
+rm -f $tmp_delta
+
+tmp_file="/tmp/delta-msg$$.txt"
+
+if [ -f $tmp_file ]; then
+    rm -f $tmp_file
+fi
+
+  # Extract version number from delta.lisp
+version=`sed -n 's/^;.*Version.*\(V[0-9].*[0-9]\)/\1/p' delta.lisp`
+
+if [ "$SYNCHRONIZE" != 0 ]; then
+  cvs commit -m "-------- $version - $build_date build started on `date`" -f delta.lisp
+fi
+
+#--------------------------------------------------------
+# +  Update version info in G2 and TW .rc files.
+#    The editing was painful enough to put into its own perl script.
+
+cd $SRCBOX
+
+rcfiles="g2/c/g2.rc tw/c/tw.rc gsi/c/gsi.rc twng/c/Twng.rc "
+for file in g2pi/c/g2pi.rc g2db/c/g2odbc.rc g2db/c/g2-ora7.rc g2db/c/g2-ora80.rc\
+ g2db/c/g2-ora81.rc g2db/c/g2-ora90.rc g2db/c/g2-ora92.rc g2db/c/g2-ora10.rc \
+ g2db/c/g2-syb11.rc g2db/c/g2-syb125.rc gservice/c/gservice.rc ext/c/g2pwd.rc
+do
+  if [ -f ${file} ]
+  then
+    rcfiles="${rcfiles} ${file}"
+  fi
+done
+
+if [ -x /usr/local/bin/perl ]; then
+  $SRCBOX/build/update-rc-files $rcfiles     # Updates files in-place.
+else
+  echo "LOG: ERROR: build-preparation: Can't update G2 and TW .rc files, no perl!"
+fi
+
+if [ "$SYNCHRONIZE" != 0 ]; then
+  cvs commit -m "Build preparation updating G2, TW, and related resource files" -f $rcfiles
+fi
+
+#--------------------------------------------------------
+# +  Update the build identification number for the TW ActiveX control in
+#    activex/control/src/defs-twax.h. Add an entry to the commitlog file to
+#    indicate the date and version of this build.  The version is extracted
+#    by sed from the #define in activex/control/src/defs-twax.h
+
+if [ -d $SRCBOX/activex/control/src ]; then
+
+  cd $SRCBOX/activex/control/src
+
+  tmp_axdefs="/tmp/tmp-axdefs$$.h"
+  if [ -f $tmp_axdefs ]; then
+      rm -f $tmp_axdefs
+  fi
+
+  # Replace existing build date in defs-twax.h with new date
+  sed -e '/BUILD_ID_STRING/s/"[A-Z0-9]*"/"'$build_date'"/' defs-twax.h > $tmp_axdefs
+  cp $tmp_axdefs defs-twax.h
+  rm -f $tmp_axdefs
+
+  # Now do equivalent file in wsview
+  cd $SRCBOX/activex/control/wsview
+
+  # Replace existing build date in defs-ws.h with new date
+  sed -e '/BUILD_ID_STRING/s/"[A-Z0-9]*"/"'$build_date'"/' defs-ws.h > $tmp_axdefs
+  cp $tmp_axdefs defs-ws.h
+  rm -f $tmp_axdefs
+
+  if [ "$SYNCHRONIZE" != 0 ]; then
+  # Commit the file, even if it is unchanged
+    cd ..
+    tmp_file="/tmp/axdefs-msg$$.txt"
+    if [ -f $tmp_file ]; then
+      rm -f $tmp_file
+    fi
+    echo 'Build preparation updating build date for ActiveX controls' > $tmp_file
+    cvs commit -F $tmp_file -f src/defs-twax.h wsview/defs-ws.h
+    rm -f $tmp_file
+  fi
+fi
+
+#--------------------------------------------------------
+# +  Update the build identification number for the Netscape plugin in
+#    twplug/c/gensym-np.h. Add an entry to the commitlog file to
+#    indicate the date and version of this build.  The version is extracted
+#    by sed from the #define in twplug/c/gensym-np.h
+
+if [ -d $SRCBOX/twplug/c ]; then
+
+  cd $SRCBOX/twplug/c
+
+  tmp_nph="/tmp/tmp-nph$$.h"
+  if [ -f $tmp_nph ]; then
+      rm -f $tmp_nph
+  fi
+
+  # Replace existing build date in gensym-np.h with new date
+  sed -e '/BUILD_ID_STRING/s/"[A-Z0-9]*"/"'$build_date'"/' gensym-np.h > $tmp_nph
+  cp $tmp_nph gensym-np.h
+  rm -f $tmp_nph
+
+  if [ "$SYNCHRONIZE" != 0 ]; then
+  # Commit the file, even if it is unchanged
+    tmp_file="/tmp/nph-msg$$.txt"
+    if [ -f $tmp_file ]; then
+      rm -f $tmp_file
+    fi
+    echo 'Build preparation updating build date for TW Netscape plugin' > $tmp_file
+    cvs commit -F $tmp_file -f gensym-np.h
+    rm -f $tmp_file
+  fi
+fi
+
+#--------------------------------------------------------
+# +  Create and commit the GSI and GSPAN makefiles that we distribute to
+#    customers.  Makefiles for both the translated Lisp version of
+#    GSI and foreign function makefiles are generated.
+
+echo "LOG: build-preparation: generate customer makefiles for fgn makefiles"
+echo "$SRCBOX/build/generate-dst-makefiles fgn" | sh -v
+if [ "$SYNCHRONIZE" != 0 ]; then
+  cd $SRCBOX/promote/cgsi
+  cvs commit -m "Build-preparation commit created customer fgn makefiles."
+fi
+
+echo "LOG: build-preparation: generate customer makefiles for gsi"
+echo "$SRCBOX/build/generate-dst-makefiles gsi40" | sh -v
+if [ "$SYNCHRONIZE" != 0 ]; then
+  cd $SRCBOX/promote/lspgsi
+  cvs commit -m "Build-preparation commit created customer gsi makefiles."
+fi
+
+#--------------------------------------------------------
+# +  Generate and commit the rtl, ext, jpeg, xml, fnt, kbs, and fonts makefiles for
+#    the build.
+
+echo "LOG: build-preparation: generate ext, fnt, jpeg, xml, and rtl makefiles"
+cd $SRCBOX/gen/mfgen
+
+NON_TRANS_PRODUCTS="ext rtl fnt jpeg xml"
+echo "generate-makefiles $NON_TRANS_PRODUCTS" | sh -v
+echo "generate-makefiles sparcsol fonts kbs optimize" | sh -v
+
+if [ "$SYNCHRONIZE" != 0 ]; then
+  cd $SRCBOX/gen/mfiles
+  cvs commit -m "Build-preparation commit generated ext, rtl, fnt, jpeg, xml, fonts and kbs makefiles."
+fi
+
+#--------------------------------------------------------
+# Ending banner.
+
+echo "LOG: build-preparation: finished all `date`"
