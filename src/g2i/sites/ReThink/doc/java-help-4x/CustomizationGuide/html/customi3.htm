@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="01/11/02 11:07:56">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Customizing the Default Behavior of a Block</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="customi2.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="customi4.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/ReThink/custom-manual/stylesets/Customizing%20ReThink/Output/html/customia.htm">  
+        Customizing Blocks  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Customizing the Default Behavior of a Block
+</h2>
+<p>To customize the default behavior of a block, you customize the <code>bpr-stop-method</code> or the <code>bpr-start-method</code>.<a name="14599"></a></p>
+<p>For general information about how to customize the default behavior of blocks, see <a href="how-to22.htm#15859">Customizing the Default Behavior of Blocks or Instruments</a>.<a name="14600"></a></p>
+<p>Building on the Meeting task example, suppose you want to customize the default operations of the block to inform the operator of the meeting time. <a name="14604"></a></p>
+<h4 >	 To customize the default behavior of a custom block:<a name="14605"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>1	</b></td>    <td valign="top" width="580">Display the Methods workspace, choose Block Definitions, then click the button next to the block whose behavior you want to customize.<a name="14606"></a></td>  </tr></table><blockquote>  <a name="97197">For example, here is the Task Block workspace:</a></blockquote>
+<p >
+  <a name="97578"> </a>
+<p><div align="left"><img src="images/meetinga.gif" border="0" hspace="0" vspace="0">
+</div><a name="97577"></a></p>
+
+
+
+</p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>2	</b></td>    <td valign="top" width="580">Copy the <code>bpr-stop-method </code>method for the block and place it on your customization workspace.<a name="14616"></a></td>  </tr></table><blockquote>  <a name="97621">In this example, you would copy <code>bpr-task::bpr-stop-method</code>.</a></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>3	</b></td>    <td valign="top" width="580">Edit the method by changing its first argument to be the name of your custom class, for example, <code>meeting-task</code>.<a name="14617"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>4	</b></td>    <td valign="top" width="580">Customize the method, as needed.<a name="14618"></a></td>  </tr></table><blockquote>  <a name="97161">For example, you might add an <code>inform </code>statement to inform the operator of the <code>meeting-time</code> of the task, as follows:</a></blockquote>
+<blockquote><blockquote><code>inform the operator that &quot;There is a meeting at [the meeting-time of task]&quot;<a name="14619"> </a></code></blockquote></blockquote><blockquote>  <a name="14620"><code>Meeting-time</code> is a custom attribute of the block, and <code>meeting-task</code> is the argument to the method that refers to the custom Task block class.</a></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>5	</b></td>    <td valign="top" width="580">Delete the default statements in the method.<a name="14621"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>6	</b></td>    <td valign="top" width="580">Add a <code>call next method</code> statement at the end of the method.<a name="14622"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>7	</b></td>    <td valign="top" width="580">Create an instance of the custom block.<a name="14623"></a></td>  </tr></table><p>The custom block uses the custom stop method.<a name="14624"></a></p>
+<p>This figure shows an example that uses the custom task block:<a name="88520"></a></p>
+<p >
+  <a name="88486"> </a>
+<div style="color: #000000;  font-size: 4pt; font-style: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: justify; text-decoration: none; text-indent: 0pt; text-transform: none; vertical-align: baseline">
+<a name="88485"> </a><div align="left"><img src="images/meeting-.gif" border="0" hspace="0" vspace="0">
+</div><br>
+</div>
+
+
+
+</p>
+<p>Here is the User Tab of the properties dialog for the custom task block:<a name="14625"></a></p>
+<p >
+  <a name="88793"> </a>
+<div style="color: #000000;  font-size: 4pt; font-style: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: justify; text-decoration: none; text-indent: 0pt; text-transform: none; vertical-align: baseline">
+<a name="88792"> </a><div align="left"><img src="images/meetingb.gif" border="0" hspace="0" vspace="0">
+</div><br>
+</div>
+
+
+
+</p>
+<p>Here is the class definition for the <code>meeting-task</code> and its custom stop procedure:<a name="88745"></a></p>
+<p >
+  <a name="85336"> </a>
+<div style="color: #000000;  font-size: 4pt; font-style: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: justify; text-decoration: none; text-indent: 0pt; text-transform: none; vertical-align: baseline">
+<a name="85335"> </a><div align="left"><img src="images/meetingc.gif" border="0" hspace="0" vspace="0">
+</div><br>
+</div>
+
+
+
+</p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="customi2.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="customi4.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
