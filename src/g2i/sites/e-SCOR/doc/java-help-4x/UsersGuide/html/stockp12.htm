@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="02/06/02 18:48:29">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Configuring Buyer Roles to Use Forecast Planning</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="stockp11.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="stockp13.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+      <div align="center"><b>e-SCOR User's Guide</b></div>
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/e-SCOR/OnlineHelpFiles/UsersGuide/html/stockpla.htm">  
+        Using Stock Planning Strategies  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Configuring Buyer Roles to Use Forecast Planning
+</h2>
+<p >
+  <a name="76993"> </a>
+<p><div align="left"><img src="images/product.gif" border="0" hspace="0" vspace="0">
+</div><a name="76992"></a></p>
+
+
+
+</p>
+<p>When the Plan Type of a role's Plan category is <code>Forecast Customer</code>, the role uses forecast planning to compute the size of replenishment orders for source products or the size of build orders for delivery products, depending on the role. <a name="5798"></a></p>
+<p>To use forecast planning, you configure contract parameters for the downstream buyer role. First, you configure the following contract parameters for the buyer role's Source category:<a name="47603"></a></p>
+<p >
+  <a name="10029"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="10022"><div >Parameter</a></div></th>
+    <th><a name="10024"><div >Description</a></div></th>
+  </tr>
+  <tr>
+    <td><p>Use Contracts<a name="10026"></a></p>
+</td>
+    <td><p>Set to <code>yes</code> when you want to use contracts to determine order size, based on forecasts.<a name="10028"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Initial Contract Delay<a name="47527"></a></p>
+</td>
+    <td><p>When contracts are in effect, the time from the start of the simulation until the buyer sends its first purchase request to upstream suppliers for source products.<a name="47529"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Contract Duration<a name="47517"></a></p>
+</td>
+    <td><p>The length of time during which the contract is valid.<a name="47519"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Contract Response Time<a name="47512"></a></p>
+</td>
+    <td><p>When contracts are in effect, the number of days a supplier has to respond to a purchase request with a purchase response.<a name="47514"></a></p>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<p>Then, you configure the following contract parameter for the buyer role's source product:<a name="10009"></a></p>
+<p >
+  <a name="5812"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="5801"><div >Parameter</a></div></th>
+    <th><a name="5803"><div >Description</a></div></th>
+  </tr>
+  <tr>
+    <td><p>Estimated Contract<br>Amount<a name="9694"></a></p>
+</td>
+    <td><p>The estimated number of products the role plans to order over the life of the contract.<a name="9696"></a></p>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<p>To guarantee the buyer always has a valid contract for its source products, use this formula when configuring these parameters:<a name="29981"></a></p>
+<blockquote><code>Initial Contract Delay + Contract Response Time &gt; Initial Order Delay Time<a name="29982"> </a></code></blockquote></blockquote><p>Similar to a stock/replenishment planning strategy, a stock/forecast planning strategy determines its maximum inventory, based on the source or delivery product's Maximum Threshold. This means the size of the order never causes the Inventory Level to exceed the Maximum Threshold. If the role requires additional inventory such that it exceeds this maximum, it creates a back order for the excess and adds it to the order for the next planning cycle. <a name="9787"></a></p>
+<p>You must configure the Maximum Threshold parameter to be less than the Inventory Maximum parameter.<a name="10064"></a></p>
+<h4 >	 To configure the model to use a stock/forecast planning strategy:<a name="6479"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>1	</b></td>    <td valign="top" width="580">Show the detail of each Distributor, Manufacturer, or Consumer role that is downstream of the supplier role that you configured to use a stock/forecast planning strategy.<a name="6480"></a></td>  </tr></table><blockquote>  <a name="48362">For details, see <a href="stockpl2.htm#6252">Configuring the Stock Planning Strategy</a>.</a></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>2	</b></td>    <td valign="top" width="580">Configure the contract parameters for the buyer role's Source category, as described in the first table above.<a name="6481"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>3	</b></td>    <td valign="top" width="580">Show the detail of the Products pool for each buyer role to show its source products.<a name="47886"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>4	</b></td>    <td valign="top" width="580">Configure the <a href="level262.htm#307760">Estimated Contract Amount</a> parameter, described in the second table above, for the source product of the buyer role.<a name="6483"></a></td>  </tr></table><p><b>Related topics:</b><a name="77014"></a></p>
+<p><a href="stockp13.htm#5814">Understanding How the Role Computes Order Size for Forecast Planning</a><a name="77018"></a></p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="stockp11.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="stockp13.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
