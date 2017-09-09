@@ -1,0 +1,237 @@
+;;; -*- Mode: LISP; Syntax: Common-Lisp; Base: 10; Package: USER -*-
+(in-package "USER")
+
+;;;; Makefile generator relational database: config.rel
+
+;;;; Copyright (c) 1986-2017 Gensym Corporation.
+;;;  All Rights Reserved.
+
+;;;; Author: Mark E. Staknis
+
+;;;; Description:
+;;;      This file contains relations that determine general aspects of
+;;;    makefile generation.  They determine which products are legal, the
+;;;    starting template for makefile generation, etc.  In some sense these
+;;;    relations provide meta-data that describe the high-level aspects
+;;;    of makefiles.
+
+;;;; File Organization:
+;;;     The relations in this file are grouped as follows.
+;;;
+;;;   Relations to specify products and associated relations
+;;;     platform-makefiles-relation: a table of active platforms and
+;;;       indicators of whether optimize, debug, or profile compilations
+;;;       should be done for each.
+;;;     products-relation: a table of products for which makefiles are
+;;;       to be created.
+;;;     template-meta-relation:  Specifies starting template for products
+;;;       and whether they have an install target.
+;;;     install-destination-meta-relation:  Specifies which install-
+;;;       destination relation to use.
+;;;     object-default-entry-relation: Used for pseudo-makefile entries for
+;;;       object targets.
+;;;
+;;;   Relations for use with dependency relations
+;;;     dependency-file-relation:  Specifies name of dependency relation.
+;;;     dependency-row-template-relation:  For translated products only,
+;;;       gives templates of rows to add for each name in <product>-files.txt
+;;;     translator-dependency-omit-relation:  For translated products only.
+
+
+
+
+;;; Relation: platform-makefiles-relation
+;;; Description:  Specifies which compilation-type makefiles are to be
+;;;   made for each platform.
+;;; Notes:
+;;;     This specifies on a per-platform basis which compilation
+;;;   categories of makefile can be generated.  This is used largely to
+;;;   prevent the creation of needless or meaningless makefiles (for
+;;;   only a few Unix platforms have useful profilers.
+
+(setq platform-makefiles-relation
+ '(( platform       optimize  debug  mt-debug  profile   optimize-intc  )
+;;   --------       --------  -----  --------  ------- 	 ------- 
+   ((alphaosf         y         y      y         n         n      )
+    (hp9000s700       y         y      y         y         n      )
+    (hpia64           y         y      y         n         n      )
+    (intelnt          y         y      n         n         y      )
+    (linux            y         y      n         y         n      )
+    (rs6000           y         y      n         y         n      )
+    (sparcsol         y         y      y         y         n      )
+ )))
+
+
+
+
+;;; Relation: products-relation
+;;; Description: This relation lists all legal products for which makefiles
+;;;   can be generated.
+;;; Notes:
+ 
+(setq products-relation
+ '(( product  )
+;;   ------- 
+   ((ext     )
+    (fnt     )
+    (fonts   )
+    (jpeg    )
+    (g2      )
+    (gsi     )
+    (gw      )
+    (kbs     )
+    (rtl     )
+    (tw      )
+    (xml     )
+ )))
+
+
+
+
+;;; Relation: template-meta-relation
+;;; Description: Determines starting template for makefile generation and
+;;;   whether the template creates and "install" target.
+;;; Notes:
+;;;     This names the first template to be processed for a given
+;;;   product and compilation category.  If the templates are viewed as a BNF
+;;;   grammar for a makefile, the template specified here is the start symbol
+;;;   for the expansion.
+;;;     During processing, the product and compile-category fields are searched
+;;;   first for a direct product/compile-category match, then for the
+;;;   _all/_all match, which serves as the default.  The _all/_all row must
+;;;   be present.
+
+(setq template-meta-relation
+ '(( product  compile-category  install-target
+                                           starting-template          )
+;;   -------  ----------------  ---------  -----------------
+   ((_all     _all              n          standard-makefile          )
+    (fonts    optimize          y          install-only-makefile      )     
+    (g2       optimize          y          standard-install-makefile  )     
+    (gsi      optimize          y          standard-install-makefile  )
+    (gw       optimize          y          standard-install-makefile  )
+    (kbs      optimize          y          install-only-makefile      )     
+    (tw       optimize          y          standard-install-makefile  )
+    (g2       optimize-intc     y          standard-install-makefile  )     
+    (gsi      optimize-intc     y          standard-install-makefile  )
+    (gw       optimize-intc     y          standard-install-makefile  )
+    (tw       optimize-intc     y          standard-install-makefile  )
+
+ )))
+
+
+
+
+;;; Relation: install-destination-meta-relation
+;;; Description:  Identifies products' destination relation for the
+;;;   install targets.
+;;; Notes:
+;;;     When creating the "install" target, default destinations for
+;;;   installation are contained in an "install destination relation".
+;;;   This relation names the destination relation for a given product.
+;;;   If the product is not named explicitly, the _all entry is used
+;;;   by default.
+;;;     This relation is used only if the "install-target" field of
+;;;   template-meta-relation is "y".
+
+(setq install-destination-meta-relation
+ '(( product  install-destination-relation-name)
+;;   -------  ---------------------------------
+   ((_all     default-install-destination-relation    )
+    (g2       g2-install-destination-relation         )
+    (tw       tw-install-destination-relation         )
+    (kbs      kbs-install-destination-relation        )
+    (gw       gw-install-destination-relation         )
+ )))
+
+
+
+
+;;; Relation: object-default-entry-relation
+;;; Description:  Used with pseudo-object entry creation.  Determines whether
+;;;   and where a pseudo entry is used.
+;;; Notes: This is used in conjunction with the mfgtf function that
+;;;   creates object entries.  When the default-replacement field is "entry",
+;;;   the entire entry is replaced, when it is "body", only the body of the
+;;;   entry is replaced, and if there is no row for the product, no default
+;;;   replacement is done.
+
+(setq object-default-entry-relation
+ '(( product  default-replacement )
+;;   -------  -------------------
+   ((ext      body                )
+    (fnt      entry               )
+    (jpeg     entry               )
+    (g2       entry               )
+    (gl       entry               )
+    (gsi      body                ) 
+    (gw       body                ) 
+    (rtl      entry               )
+    (tw       entry               )
+    (xml      entry               )
+ )))
+
+
+
+
+;;; Relation: dependency-file-relation
+;;; Description:  Identifies products' non-default dependency relation.
+;;; Notes:  Every product has a dependency relation called
+;;;   <product>-dependency-relation.  This relation gives the name of the
+;;;   file in which the file resides.  If the product name does not appear,
+;;;   the file "<product>-dependencies.rel" is used by default.
+
+(setq dependency-file-relation
+ '(( product  dependency-file         )
+;;   -------  ---------------
+   ((g2       "g2-dependencies.rel"   ) ; a redundant example
+ )))
+
+
+
+
+;;; Relation: dependency-row-template-relation
+;;; Description:  For translated products only, this provides the template
+;;;   for rows to be added for files in <product>-files.txt.
+;;; Notes: This is used in conjunction with the file
+;;;   <product>/c/<product>-files.txt.  If there are one or more templates
+;;;   present here,  the "name-from-file" entry in each is replaced by the
+;;;   filenames in the ...-files.txt file.  Each resulting row is added to
+;;;   the product dependency view.  The "omit-if-listed" field is used with
+;;;   translator-dependency-omit-relation to identify files for which entries
+;;;   should not be generated.
+
+(setq dependency-row-template-relation
+ '(( product  omit-if-listed
+                    row-template )
+;;   -------  ----  ------------
+   ((g2       n     (g2              exe  _all        name-from-file  obj  y ))
+    ;;
+    (gw       n     (gw              exe  _all        name-from-file  obj  y ))
+    (gw       y     (name-from-file  obj  _all        name-from-file  h    y ))
+    ;;
+    (gsi      n     (gsi             dlib intelnt     name-from-file  obj  y ))
+    (gsi      n     (gsi_ssl         dlib intelnt     name-from-file  obj  y ))
+    (gsi      n     (libgsi          lib  _all        name-from-file  obj  y ))
+    (gsi      n     (name-from-file  obj  _all        rthfiles        var  y ))
+    (gsi      y     (name-from-file  obj  _all        name-from-file  h    y ))
+    ;;
+    (tw       n     (libtw           lib  _all        name-from-file  obj  y ))
+ )))
+
+
+
+
+;;; Relation: translator-dependency-omit-relation
+;;; Description: This is used with the omit-if-listed field of
+;;;   dependency-row-template-relation.
+;;; Notes: See that relation for information.
+
+(setq translator-dependency-omit-relation
+ '(( file-to-omit )
+;;   ------------
+   ((main         )
+    (symtab       )
+    (userinit     )
+    (usersyms     )
+ )))
