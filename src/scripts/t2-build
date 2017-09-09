@@ -1,0 +1,84 @@
+#!/bin/sh
+
+usage () {
+  echo 'usage: t2-build [-clean | <anything>]'
+  echo "  -clean: remove class and other object files"
+  echo "  "
+  echo "The point of requiring an argument is you can type the name of the script"
+  echo "and get usage instead of having it compile a gazillion files for you."
+  exit 1
+}
+
+if [ -z "$1" ]
+then
+  usage
+fi
+
+if [ -z "$SRCBOX" ]
+then
+  echo "ERROR: Variable SRCBOX is not set; you must use 'sandbox'."
+  usage
+fi
+
+if [ -z "$MACHINE" ]
+then
+  if [ -x /usr/local/bin/machine ]
+  then
+    MACHINE=`/usr/local/bin/machine`
+  else
+    MACHINE=unknown
+  fi
+fi
+
+skip_g2studio=1
+JSRCBOX=$SRCBOX
+JMAKESRC=$JSRCBOX/java/com/gensym/devtools/JavaMake.java
+
+if [ "$MACHINE" = "intelnt" ]
+then
+  JSRCBOX=`cygpath -w $JSRCBOX`
+  JMAKESRC=`cygpath -w $JMAKESRC`
+fi
+
+if [ "$1" = "-clean" ]
+then
+  echo "Clean does not really work, because it deletes classes it later needs to"
+  echo "load in order to operate.  But we'll give it a shot."
+  cd ${SRCBOX}/java
+  echo Cleaning up class files.
+  java com.gensym.devtools.JavaMake -quiet -srcbox $JSRCBOX -root . -clean
+  exit 0
+fi
+
+if [ ! -f $SRCBOX/java/com/gensym/devtools/JavaMake.class ]
+then
+  echo Compiling $JMAKESRC
+  javac $JMAKESRC
+fi
+
+if [ ! -f $SRCBOX/java/com/gensym/devtools/JavaMake.class ]
+then
+  echo "ERROR: unsuccessful attempt to compile com/gensym/devtools/JavaMake."
+  echo "       Cannot continue."
+  usage
+fi
+
+cd ${SRCBOX}/java
+
+echo Building Devtools
+jmake com/gensym/devtools devtools
+
+echo Building Javalink classes
+jmake . javalink
+
+echo Building Sequoia
+jmake . sequoia
+
+if [ "$skip_g2studio" = "0" ]
+then
+  echo Building G2Studio
+  java -mx100m com.gensym.devtools.JavaMake -srcbox $JSRCBOX -root . \
+          -product g2studio -quiet
+fi
+
+echo "Finished building T2"
