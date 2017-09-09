@@ -1,0 +1,27 @@
+<?xml version="1.0" standalone="yes" ?>
+<xs:schema id="DSLSession" targetNamespace="http://www.tempuri.org/DSLSession.xsd" xmlns:mstns="http://www.tempuri.org/DSLSession.xsd"
+	xmlns="http://www.tempuri.org/DSLSession.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" attributeFormDefault="qualified" elementFormDefault="qualified">
+	<xs:element name="DSLSession" msdata:IsDataSet="true">
+		<xs:complexType>
+			<xs:choice maxOccurs="unbounded">
+				<xs:element name="TSessions">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="userId" type="xs:int" />
+							<xs:element name="sessionGuid" msdata:DataType="System.Guid, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
+								type="xs:string" />
+							<xs:element name="loginDate" type="xs:dateTime" />
+							<xs:element name="serverId" type="xs:int" minOccurs="0" />
+							<xs:element name="serverPortNo" type="xs:int" minOccurs="0" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:choice>
+		</xs:complexType>
+		<xs:unique name="Constraint1" msdata:PrimaryKey="true">
+			<xs:selector xpath=".//mstns:TSessions" />
+			<xs:field xpath="mstns:userId" />
+		</xs:unique>
+	</xs:element>
+</xs:schema>
