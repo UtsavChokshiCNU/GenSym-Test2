@@ -1,0 +1,24 @@
+#!/bin/csh
+
+foreach f ( $* )
+
+  if ( ! -f $f ) then
+     echo File $f does not exist!
+     exit 1
+  endif
+
+  if ( $f:e != "ok" ) then
+     echo $f is not a .ok file!
+     exit 1
+  endif
+
+end
+
+# All files were good, process.
+foreach f ( $* )
+
+  echo Obfuscating $f to $f:r.obf 
+
+  /g2/src/bundle/c/$MACHINE/obfuscator -k known_seed < $f > $f:r.obf 
+
+end
