@@ -1,0 +1,165 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_build.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+Excluding Code from Measurement
+</h1>
+<ul>
+<li><a href="#1">Selecting Regions with Coverage Browser</a>
+<li><a href="#2">Selecting Regions with covselect</a>
+<li><a href="#3">Selecting Regions with covc Options</a>
+<li><a href="#4">Embedding Directives in Source Code</a>
+</ul>
+<h2>
+<a name=1></a>
+Selecting Regions with Coverage Browser</h2>
+<p>
+After building all your source, you can easily exclude regions from both
+the reported results and from the subsequent builds using commands in the
+<a href=coverageBrowser.html>Coverage Browser</a>
+menu <code>Region</code>.
+Select a region, then choose either
+<code>Region Exclude</code> or <code>Region Include</code>.
+<h2>
+<a name=2></a>
+Selecting Regions with covselect</h2>
+<p>
+You can use the command <a href=ref_covselect.html>covselect</a> to
+exclude regions from the command line.
+This command modifies the same information stored in the coverage file
+as the Coverage Browser.
+To exclude <code>dir1/source1.c</code>, you can use the command below.
+<pre>
+covselect --add !dir1/source1.c
+</pre>
+<p>
+To see all the excluded regions, you can use the command below.
+<pre>
+covselect --list --verbose
+</pre>
+
+<h2>
+<a name=3></a>
+Selecting Regions with covc Options</h2>
+<p>
+You can specify <a href=ref_regions.html>regions</a> to
+include or exclude from measurement using covc option <CODE>-t</CODE>
+(<CODE>--select</CODE>).
+The argument to this option is a comma-separated list of <a
+href=ref_covc.html>region specifications</a>.
+Examples demonstrating the power and flexibility of selecting
+regions are below.
+<P>
+To analyze all source except <CODE>dir1/source1.c</CODE>, put
+the option below into <CODE>covc.cfg</CODE>.
+<PRE>
+-t!/prj/src/dir1/source1.c
+</PRE>
+<P>
+It is a good idea to use absolute paths (fully qualified filenames)
+with this option so that the results do not depend on the current
+working directory.
+<P>
+You can exclude large amounts of source by specifying only the
+region you want measured. The following setting measures only
+source files in directory <CODE>dir1</CODE>.
+<PRE>
+-t/prj/src/dir1/
+</PRE>
+<P>
+You can specify as many regions in combination as you wish. The
+following setting measures all source except functions named <CODE>f1</CODE>
+and <CODE>f2</CODE>.
+<PRE>
+-t!f1,!f2
+</PRE>
+<P>
+You can list regions of different scope together. The following
+setting measures all source except class <CODE>c1</CODE>
+and member functions <CODE>c2::f3</CODE> and <CODE>c2::f4</CODE>.
+<PRE>
+-t!c1::,!c2::f3,!c2::f4
+</PRE>
+<P>
+You can measure a region but exclude part of it. The following
+option measures all the functions in <code>source2.c</code> except
+function <CODE>f5</CODE>.
+<PRE>
+-tsource1.c,!source1.c:f5
+</PRE>
+<p>
+Do not write spaces in the argument to
+<a href=ref_covc.html>covc</a>
+option <code>-t</code> (<code>--select</code>).
+<h2>
+<a name=4></a>
+Embedding Directives in Source Code</h2>
+<p>
+You can prevent BullseyeCoverage from instrumenting specific statements
+using <code>#pragma</code> directives or string literals beginning with
+the text <code>BullseyeCoverage</code>.
+<p>
+The directive <code>#pragma BullseyeCoverage off</code> prevents instrumentation of code that follows, while
+code following <code>#pragma BullseyeCoverage on</code> is instrumented.
+For example,
+<pre>
+switch (n) {
+    case 1: one++; break;
+    case 2: two++; break;
+    case 3: three++; break;
+<span style=color:teal>#if _BullseyeCoverage
+    #pragma BullseyeCoverage off
+#endif</span>
+    default: abort();
+<span style=color:teal>#if _BullseyeCoverage
+    #pragma BullseyeCoverage on
+#endif</span>
+}
+</pre>
+<p>
+Since <code>#pragma</code> directives cannot be used in macro definitions,
+use directives in string literals,
+outside of comments.
+You can use the commands <code>save</code> and <code>restore</code> to exclude code in a macro
+without affecting the context where the macro is expanded.  For example:
+<pre>
+#define MYASSERT(cond) { "BullseyeCoverage save off"; if (!cond) ...; "BullseyeCoverage restore"; }
+</pre>
+<p>
+BullseyeCoverage excludes code in macros by default, so you generally do not
+need to use these directives inside macros.
+<p style="font-size:xx-small">
+Last reviewed: 17 Sep 2009
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
