@@ -1,0 +1,23 @@
+#!/bin/csh -f
+#
+#   Generate a list of the file contained in the specified
+#   directory and its subdirectories along with their checksums
+#
+    if ($#argv == 0) goto Usage
+    if ($#argv > 1) goto Usage
+    if -d $1 goto FilesFirst
+Usage:
+    echo 'Usage: gensum <directory>'
+    exit -1
+FilesFirst:
+    foreach f ($1/*)
+        if ! -d $f then
+            echo $f `sum $f`
+        endif
+    end
+    foreach f ($1/*)
+        if -d $f then
+            $0 $f
+        endif
+    end
+    exit 0
