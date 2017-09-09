@@ -1,0 +1,26 @@
+#!/bin/sh
+
+ultra_trans="/home/development/chestnut/trans-32b3c"
+
+machine=`/usr/local/bin/machine`
+if [ "$machine" = "sparcsol" ]
+then
+  if [ "$SPARC_TYPE" = "ultra" ]
+  then
+    trans="${ultra_trans}"
+  else
+    echo "Unsupported Solaris architecture \"$SPARC_TYPE\"."
+    echo "The translator only runs on Ultras."
+    exit 1
+  fi
+else
+  # Those extra two quotes are there just to help emacs a little bit.  In ksh
+  # mode, it always thinks "for" is a command, and wants to indent the next
+  # line accordingly.  Adding quotes in the middle pacifies it. -jv, 12/27/02
+  echo "Unsupported architecture fo""r translate: $machine"
+  echo "No translate being attempted."
+  exit 1
+fi
+
+echo Beginning chestnut translation on machine `uname -n`
+$trans $*
