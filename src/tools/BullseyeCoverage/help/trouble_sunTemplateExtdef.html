@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_trouble_build.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+Sun C++ Undefined Template Symbol
+</h1>
+<h2>SYMPTOMS</h2>
+<p>
+The linker reports an undefined symbol naming a template function.
+<pre>
+Undefined          first referenced
+ symbol                in file
+ ...
+ ld: fatal: Symbol referencing errors. No output written
+</pre>
+<h2>CAUSE</h2>
+<p>
+Your build commands use the definitions-separate template organization
+(the Sun compiler default), but BullseyeCoverage requires, and enables, the
+definitions-included template organization (<code>-template=no%extdef</code>).
+The default definitions-separate template organization is problematic for source
+code instrumentation because it implicitly compiles and links source files not
+mentioned in any compile or link command.
+These implicitly compiled sources contain the undefined symbols.
+<h2>RESOLUTION</h2>
+<p>
+You must define every template function in the same source file where you declare it.
+Move the template function definitions named in the linker error messages from their
+<code>.cc</code> files into their corresponding <code>.h</code> file.
+<p>
+We highly recommend adding <code>-template=no%extdef</code> to all
+your link commands so that you always use this compiler mode.
+By doing this, you avoid silently reintroducing this problem when Coverage Build is disabled.
+<p>
+If you use <a href="http://www.stlport.org/">STLport</a>, disable the
+<code>_STLP_LINK_TIME_INSTANTIATION</code> option.
+To do this, modify <code>stlport/config/stl_sunpro.h</code> to comment out the <code>#define</code> as shown below.
+<pre>
+// #  define _STLP_LINK_TIME_INSTANTIATION 1
+</pre>
+<h2>MORE INFORMATION</h2>
+<p>
+Sun recommends using <code>-template=no%extdef</code>.
+The
+<a href="http://docs.sun.com/source/819-3690/Compiling_Templates.html">
+Sun Studio 11 C++ User's Guide Chapter 7 Compiling Templates</a>
+states:
+<blockquote>
+<p>
+Definition searching is somewhat complex and prone to error.  Therefore,
+you should use the definitions-included template organization if
+possible.
+</blockquote>
+<p>
+Most compilers use the definitions-included template organization,
+including GCC and Microsoft C++.
+Using this template organization makes your code more portable.
+
+<p style="font-size:xx-small">
+Last reviewed: 12 Jun 2008
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
