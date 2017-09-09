@@ -1,0 +1,286 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.6 [en] (WinNT; I) [Netscape]">
+   <title>examples_readme</title>
+</head>
+<body>
+
+<h1>
+<u>Welcome to G2 JavaLink/Gateway Examples</u></h1>
+This release comes with an example KB that utilizes G2 JavaLink/Gateway;
+<p><b>JAVALINK_HOME\kbs\jgidemo.kb</b>
+<p>This KB contains tests that allow you to try out G2 JavaLink Gateway
+features; demonstrating Java-G2 data conversion, RPC calling, Multi threaded
+access, Java downloading from G2 and much more.
+<p>To startup the main G2 JavaLink/Gateway Example client:
+<dir>
+<dir>
+<li>
+1. From G2, load and start <b>jgidemo.kb</b></li>
+
+<li>
+2. Startup the main JavaLink example by typing <b>java com.gensym.demos.jgi.ExampleG2Gateway</b></li>
+
+<li>
+3. Follow the instructions in<b> jgidemo.kb</b></li>
+</dir>
+</dir>
+This KB can also be used with the other example G2 JavaLink/Gateway examples
+found in <b>com.gensym.demos.jgi</b>;
+<br>&nbsp;
+<table BORDER WIDTH="100%" >
+<tr>
+<td>
+<h4>
+&nbsp;Example File</h4>
+</td>
+
+<td>
+<h3>
+Description</h3>
+</td>
+</tr>
+
+<tr>
+<td>ExampleG2Gateway.java&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(Note1)</td>
+
+<td>This class demonstrates the use of Javalink as a means to communicate
+with a G2 server via RPC's to G2 from Java and G2 to Java Methods. It shows
+how complex and simple data and objects are mapped between the&nbsp; the
+two systems. It also demonstrates multiple thread accessing a&nbsp; G2
+connection.&nbsp;
+<br>To use:&nbsp;
+<ul>
+<li>
+1. make sure <b>jgidemo.kb </b>is loaded and started,</li>
+
+<li>
+2. run this class: <b>java com.gensym.demos.jgi.ExampleG2Gateway</b></li>
+
+<li>
+3. Press the connect button in G2</li>
+
+<li>
+4. Follow instructions in the G2 Kb</li>
+</ul>
+</td>
+</tr>
+
+<tr>
+<td>JavaCallingG2Methods.java (Note1)&nbsp;</td>
+
+<td>This Class simply demonstrates how <b>com.gensym.jgi.G2Gateway</b>
+can be used to connect to a G2 server and Call a G2 Method of a previously
+downloaded class.&nbsp; This class will call a method on generic-r-employee,
+an instance of a particular G2 class (generic-employee) in order to change
+an attribute of the instance.&nbsp;
+<br>To use: see (Note 1)</td>
+</tr>
+
+<tr>
+<td>JavaCallingG2Procedure.java&nbsp;&nbsp;&nbsp;&nbsp; (Note1)</td>
+
+<td>This Class simply demonstrates how <b>com.gensym.jgi.G2Gateway</b>
+can be used to connect to a G2 server and Call a G2 Procedure.&nbsp;
+<p>This method will call the G2 procedure "A-G2-PROCEDURE" across g2Connection
+and pass the following parameters to G2 via a Procedure call.&nbsp;
+<ul>
+<li>
+INTEGER parameter&nbsp;</li>
+
+<li>
+TEXT parameter (String converts to G2 TEXT)</li>
+
+<li>
+FLOAT paramter (double [and float] convert to G2 FLOAT)</li>
+
+<li>
+SYMBOL parameter (com.gensym.util.Symbol converts to G2 SYMBOL)</li>
+</ul>
+The G2 Procedure will inform display a message that it has received the
+parameters and return the current real time to Java., as a double.</td>
+</tr>
+
+<tr>
+<td>JavaThreadsCallingG2.java&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(Note1)</td>
+
+<td>This Class simply demonstrates how multiple Java threads can communicate
+with a G2 server.&nbsp;</td>
+</tr>
+
+<tr>
+<td>SendG2Message.java&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(Note1)</td>
+
+<td>This Class simply demonstrates how <b>com.gensym.jgi.G2Gateway</b>
+can be used to&nbsp;
+<br>connect to a G2 server and send a message to its message board.</td>
+</tr>
+
+<tr>
+<td>ConnectionEventListener.java&nbsp;&nbsp;&nbsp; (Note1)</td>
+
+<td>This Class demostrates how a class can listen for <b>G2ConnectionListener</b>
+events&nbsp; that may occur for a particular G2Connection.&nbsp;
+<br>A <b>G2ConnectionListener</b> is informed of the following;&nbsp;
+<ul>
+<li>
+&nbsp;That the connected G2 has resumed.</li>
+
+<li>
+&nbsp;That the connected G2 has paused.</li>
+
+<li>
+&nbsp;That the connected G2 has been reset.</li>
+
+<li>
+&nbsp;That the connected G2 has been started.</li>
+
+<li>
+&nbsp;That the connected G2 has send a message (VIA INFORM THE...)</li>
+
+<li>
+&nbsp;That the connection to G2 has been closed.</li>
+
+<li>
+&nbsp;That a connection to G2 has just been established.</li>
+
+<li>
+&nbsp;That a communicationError has occured while the connection to a G2
+is active.</li>
+
+<li>
+&nbsp;That the network cannot deliver data that Java is attempting to write
+to G2.</li>
+
+<li>
+&nbsp;That the network cannot deliver data that G2 is attempting to write
+to Java.</li>
+</ul>
+A <b>G2ConnectionListener</b> can register interest in these events by
+calling&nbsp;<b> G2Gateway.addG2ConnectionListener</b> and can remove interest
+by calling&nbsp; <b>G2Gateway.removeG2ConnectionListener</b></td>
+</tr>
+
+<tr>
+<td>UnsolicitedConnection.java&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(Note2)</td>
+
+<td>This Class demonstrates how G2 can initiate an unsolicited connection
+to a Java VM&nbsp; running JavaLink. A <b>G2ConnectionHandlerFactory</b>
+is registered to create a G2Connection to handle incomming network connections
+from G2 to Java.&nbsp;
+<br>&nbsp;To use:&nbsp;
+<ul>
+<li>
+1. make sure jgidemo.kb is loaded and started,</li>
+
+<li>
+2. run this class: <b>java com.gensym.demos.jgi.UnsolicitedConnection</b></li>
+
+<li>
+3. Press the connect button in G2</li>
+
+<li>
+4. A Message from Java will appear on the G2 message board</li>
+</ul>
+</td>
+</tr>
+
+<tr>
+<td>G2CallingJavaMethod.java&nbsp;&nbsp;&nbsp; (Note2)</td>
+
+<td>This Class demonstrates how a Java Method can be registered such that
+it can be called by G2 over a G2Connection. This example waits for G2 to
+initiate&nbsp; a network connection with the Java VM. Once connected G2
+can call the method receiveSend.&nbsp;
+<br>To use:&nbsp;
+<ul>
+<li>
+1. make sure <b>jgidemo.kb</b> is loaded and started,</li>
+
+<li>
+2. run this class: <b>java com.gensym.demos.jgi.G2CallingJavaMethod</b></li>
+
+<li>
+3. Press the connect button in G2</li>
+
+<li>
+4. Go to the SENDING-RECEIVING-DATA workspace</li>
+
+<li>
+5. Send data from G2 by pressing Send buttons</li>
+</ul>
+</td>
+</tr>
+
+<tr>
+<td>SimpleSubscription.java (Note 1)</td>
+
+<td>A simple class that demonstrates how to connect to a G2, obtain an
+Item by class and name, and subscribe to that Item&nbsp;
+<p>After the class is started, any change to a subscribable attribute on
+the named item will result in a printout to stdout showing the contents
+of the ItemEvent that was sent because of that change. This makes this
+class a useful tool in developing applications that depend on subscriptions,
+as it enables the developer to see the structure of&nbsp; the data that
+is sent for that subscription. Pay particular attention to the "new value"
+part of the printout.</td>
+</tr>
+
+<tr>
+<td>SimpleVariableSubscription.java (Note 1)</td>
+
+<td>A simple class that demonstrates how to connect to a G2, obtain a VARIABLE-OR-PARAMETER
+by class and name, and subscribe to updates in its LAST-RECORDED-VALUE
+attribute.&nbsp;
+<p>After the class is started, any change to the LAST-RECORDED-VALUE attribute
+on the named VARIABLE-OR-PARAMETER will result in a printout to stdout
+showing the contents of the VariableValueEvent that was sent because of
+that change. This makes this class a useful tool in developing applications
+that depend on subscriptions, as it enables the developer to see the structure
+of&nbsp; the data that is sent for that subscription. Pay particular attention
+to the "new value" part of the printout.</td>
+</tr>
+
+<tr>
+<td>ExampleDataService.java (Note 2)</td>
+
+<td>This example shows how Javalink can be used to provide a Gsi Data Service
+updates for a G2 connection.&nbsp;
+<br>To use: To use:
+<ul>
+<li>
+&nbsp;1. make sure jgidemo.kb is loaded and started,&nbsp;</li>
+
+<li>
+&nbsp;2. run this class: java com.gensym.demos.jgi.ExampleDataService</li>
+
+<li>
+&nbsp;3. follow the instructions found by pressing the GSI-DATA-SERVICE-EXAMPLE
+button in G2.</li>
+</ul>
+</td>
+</tr>
+</table>
+
+<p>Notes
+<br>1. usage : java com.gensym.demos.jgi.exampleclassname -g2host hostname
+[-g2port port])
+<br>&nbsp;&nbsp;&nbsp; e.g. java com.gensym.demos.jgi.ExampleG2Geteway
+-g2host localhost
+<br>2. usage; java com.gensym.demos.jgi.exampleclassname
+<br>&nbsp;&nbsp;&nbsp; e.g. java com.gensym.demos.jgi.UnsolictedConnection
+<br>&nbsp;
+<li>
+Please refer to the G2 JavaLink/Gateway user's guide for more information
+about these examples.</li>
+
+<br>&nbsp;
+<p>&nbsp;
+</body>
+</html>
