@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="02/06/02 18:38:40">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Configuring Delivery Product Parameters: Base Manufacturer</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="level2t9.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="level211.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+      <div align="center"><b>e-SCOR Tutorials</b></div>
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/e-SCOR/OnlineHelpFiles/Tutorials/html/level2tu.htm">  
+        Configuring Level 2 SCOR: Simplest Model  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Configuring Delivery Product Parameters: Base Manufacturer
+</h2>
+<p>You configure inventory and planning parameters for the delivery products of each supplier role in the model. You also configure parameters related to selling price, published lead time, batch size, and manufacturing yield.<a name="276146"></a></p>
+<p>The Order Type of the delivery product determines the planning strategy a role uses for making and delivery products-stock, make-to-order, or engineer-to-order. The role uses make planning to determine the size of each build order and when the role manufactures each build order.<a name="285352"></a></p>
+<p>Normally, the upstream suppliers' delivery product determines the price buyers must pay for their source products. However, because a Base Manufacturer role has no upstream suppliers, it determines the price it pays for its source products, based on the Purchase Cost parameter, which you configure on the Source tab of the delivery product. <a name="285353"></a></p>
+<h6><b>Note: </b>Normally, the Purchase Cost is a metric that the model computes for buyer roles 
+in the model; however, for a Base Manufacturer role only, Purchase Cost is a 
+parameter that you configure.
+<a name="285360"></a></h6><p>If the role manufactures multiple delivery products, you can configure the <a href="../../UsersGuide/html/level253.htm#405397">Product Preference</a> for each delivery product when choosing orders for shipment, based on preference. <a name="237504"></a></p>
+<p>If the role is one of multiple suppliers for the same delivery product to a single downstream buyer, you can configure the <a href="../../UsersGuide/html/level253.htm#405410">Supplier Preference</a> for each delivery product when choosing suppliers based on contracts. <a name="285296"></a></p>
+<p>If the role sources, makes, or delivers multiple products, you can configure various multipliers for each source and delivery product to model variation in timing parameters for each product. The simplest e-SCOR model sources and delivers a single product only; therefore, you do not need to configure these multipliers.<a name="285309"></a></p>
+<p>Configure the delivery product parameters on the following tabs for the Base Manufacturer role so that it:<a name="232282"></a></p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Product tab:<a name="232491"></a></td>  </tr></table><blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>-</b></td>    <td valign="top" width="560">Uses a stock planning strategy for making and delivering the product family, the default.<a name="231794"></a></td>  </tr></table></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Inventory tab:<a name="290427"></a></td>  </tr></table><blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>-</b></td>    <td valign="top" width="560">Has 100 units of the product family in inventory when the model starts.<a name="290428"></a></td>  </tr></table></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>-</b></td>    <td valign="top" width="560">Can hold a maximum of 1000 product families in inventory.<a name="290429"></a></td>  </tr></table></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Source tab:<a name="232244"></a></td>  </tr></table><blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>-</b></td>    <td valign="top" width="560">Costs $100 for raw materials to manufacture the product family.<a name="232833"></a></td>  </tr></table></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Manufacture tab:<a name="232827"></a></td>  </tr></table><blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>-</b></td>    <td valign="top" width="560">Manufactures delivery products with a maximum batch size of 50 units and a minimum batch size of 30 units.<a name="290473"></a></td>  </tr></table></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>-</b></td>    <td valign="top" width="560">Has a 95% yield during the manufacturing process.<a name="290496"></a></td>  </tr></table></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>-</b></td>    <td valign="top" width="560">Adjusts the Total Build Time of the Make category to be proportional to the size of the build order. <a name="312057"></a></td>  </tr></table></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Delivery tab:<a name="290460"></a></td>  </tr></table><blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>-</b></td>    <td valign="top" width="560">Manufactures complete finished products only (<code>Complete Only</code>), the default; does not assemble components into kits (<code>Assembled</code>) or outsource complete finished products (<code>Complete</code>).<a name="290461"></a></td>  </tr></table></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>-</b></td>    <td valign="top" width="560">Charges $250 as the net selling price for each product family it delivers to buyers.<a name="290462"></a></td>  </tr></table></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>-</b></td>    <td valign="top" width="560">Tells buyers that it can turn around orders for product families in 5 days.<a name="233132"></a></td>  </tr></table></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Planning tab:<a name="232831"></a></td>  </tr></table><blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>-</b></td>    <td valign="top" width="560">Creates replenishment orders for product families when the inventory level drops below 50 units, given current orders.<a name="232921"></a></td>  </tr></table></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>-</b></td>    <td valign="top" width="560">Creates build orders for a minimum of 10 units when creating replenishment orders.<a name="233390"></a></td>  </tr></table></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>-</b></td>    <td valign="top" width="560">Tries to maintain 500 units of product families in inventory when determining build order size, based on make planning.<a name="233907"></a></td>  </tr></table></blockquote>
+<h4 >	 To configure the delivery product for the Base Manufacturer role:<a name="150281"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td valign="top" width="20"><img src="images/arrow1.gif"></td>
+    <td valign="top" width="580">Configure these parameters for the product family delivery product in the Products pool on the Base Manufacturer role detail:<a name="150310"></a></td>
+  </tr>
+</table><p >
+  <a name="285458"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="285405"><div >Tab</a></div></th>
+    <th><p>Parameter<a name="285407"></a></p>
+</th>
+    <th><a name="285409"><div >Value</a></div></th>
+  </tr>
+  <tr>
+    <td><p>Product<a name="285508"></a></p>
+</td>
+    <td><p><a href="../../UsersGuide/html/level230.htm#514378">Order Type</a><a name="285511"></a></p>
+</td>
+    <td><p><code>stock (default)</code><a name="285416"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Inventory<a name="290510"></a></p>
+</td>
+    <td><p><a href="../../UsersGuide/html/level254.htm#301684">Starting Inventory<br></a><a href="../../UsersGuide/html/level254.htm#301691">Inventory Maximum</a><a name="290513"></a></p>
+</td>
+    <td><p><code>100<br>1000</code><a name="290515"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Source<a name="285516"></a></p>
+</td>
+    <td><p><a href="../../UsersGuide/html/level255.htm#303977">Purchase Cost</a><a name="285519"></a></p>
+</td>
+    <td><p><code>100</code><a name="285424"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Manufacture<a name="290530"></a></p>
+</td>
+    <td><p><a href="../../UsersGuide/html/level256.htm#327621">Maximum Batch Size<br></a><a href="../../UsersGuide/html/level256.htm#327621">Minimum Batch Size<br></a><b><a href="../../UsersGuide/html/level256.htm#327629">Yield<br></a></b><a href="../../UsersGuide/html/level256.htm#1062169">Build Time Dependent on Order Size</a><a name="290532"></a></p>
+</td>
+    <td><p><code>50<br>30<br>.95</code><a name="290534"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Delivery<a name="285521"></a></p>
+</td>
+    <td><p><a href="../../UsersGuide/html/level257.htm#285043">Completion Preference</a><a name="285524"></a></p>
+<p><a href="../../UsersGuide/html/level257.htm#285057">Net Selling Price<br></a><b><a href="../../UsersGuide/html/level257.htm#285070">Published Delivery Lead Time</a></b><a name="291694"></a></p>
+</td>
+    <td><p><code>Complete Only (default)<br>250<br>5 days</code><a name="285431"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Planning<a name="285534"></a></p>
+</td>
+    <td><p>Pull<br>   <a href="../../UsersGuide/html/level258.htm#161336">Replenishment Threshold<br></a>   <a href="../../UsersGuide/html/level258.htm#161346">Minimum Reorder Quantity<br></a>   <a href="../../UsersGuide/html/level258.htm#161356">Maximum Threshold</a><a name="285537"></a></p>
+</td>
+    <td><p><code><br>50<br>10<br>500</code><a name="285445"></a></p>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<p><b>Related help topics:</b><a name="314754"></a></p>
+<p><a href="../../UsersGuide/html/level252.htm#299182">Configuring Parameters for Delivery Products</a><a name="314758"></a></p>
+<p><a href="../../UsersGuide/html/level251.htm#119161">Configuring Multipliers for Timing Parameters</a><a name="314762"></a></p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="level2t9.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="level211.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
