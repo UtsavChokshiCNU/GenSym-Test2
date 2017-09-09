@@ -1,0 +1,27 @@
+#!/bin/sh
+# Promote eship for UNIX and NT platforms.
+# You must be AB on sdev4 to run this script
+# Platforms are:alphant hp9000s700 intelnt sparcsol linux alphaosf hpia64
+
+if [ $# != 2 ]; then
+  echo "Error: Wrong number of arguments, $#argv supplied, 2 required (iship ver, eship ver)."
+  exit 1
+fi
+
+
+# Variable declarations
+ISHIPVER=$1
+ESHIPVER=$2
+PLATFORMS="intelnt sparcsol rs6000 hp9000s700 linux alphaosf hpia64"
+PRODUCTS="jvl"
+#tw2
+# Promote the usual platforms to eship 
+for i in $PLATFORMS
+do
+  for j in $PRODUCTS
+  do
+    /gensym/tools/promote-product -noconfirm -e $j $i $ISHIPVER $ESHIPVER
+  done
+done
+
+/gensym/tools/promote-product -noconfirm -e jvl-javadoc $ISHIPVER $ESHIPVER
