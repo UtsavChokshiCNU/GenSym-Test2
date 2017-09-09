@@ -1,0 +1,53 @@
+HKCR
+{
+	ForceRemove G2UiGateway.G2UiGateway.2 = s 'G2UiGateway 2.0'
+	{
+		CLSID = s '{42B6C7E3-06C1-11d2-8698-00008618F471}'
+        'Insertable'
+	}
+	ForceRemove G2UiGateway.G2UiGateway.1 = s 'G2UiGateway 1.0'
+	{
+		CLSID = s '{42B6C7E3-06C1-11d2-8698-00008618F471}'
+        'NotInsertable'
+	}
+	ForceRemove G2UiGateway.G2UiGateway = s 'G2UiGateway'
+	{
+		CLSID = s '{42B6C7E3-06C1-11d2-8698-00008618F471}'
+		CurVer = s 'G2UiGateway.G2UiGateway.2'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {42B6C7E3-06C1-11d2-8698-00008618F471} = s 'G2UiGateway 2.0'
+		{
+			ProgID = s 'G2UiGateway.G2UiGateway.2'
+			VersionIndependentProgID = s 'G2UiGateway.G2UiGateway'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			ForceRemove 'Control'
+			ForceRemove 'Programmable'
+			ForceRemove 'Insertable'
+			ForceRemove 'ToolboxBitmap32' = s '%MODULE%, 204'
+			'MiscStatus' = s '0'
+			{
+			    '1' = s '132497'
+			}
+			'TypeLib' = s '{42B6C7E0-06C1-11d2-8698-00008618F471}'
+			'Version' = s '1.0'
+		}
+		Delete {37760295-1CC3-11D2-86C7-00008618F471}
+	}
+	Delete G2TwConnector.G2TwConnector.1
+	Delete G2TwConnector.G2TwConnector
+	Delete G2Item.G2Item.1
+	Delete G2Item.G2Item
+    NoRemove TypeLib
+    {
+        Delete {42B6C7E0-06C1-11d2-8698-00008618F471}
+    }
+    NoRemove Interface
+    {
+        Delete {0721D1D4-27C1-11D2-9914-00609703E60F}
+    }
+}
