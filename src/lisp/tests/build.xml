@@ -1,0 +1,146 @@
+<project name="Tests and Measurements Services" default="api-tests">
+	<property name="main.basedir" value="${basedir}/../.."/> 
+	<property file="${main.basedir}/ant/build.properties"/>
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+
+	<property file="mi.properties"/>
+	<property environment="env"/>
+
+	<property name="testResultsDir"		value="${main.basedir}/../results/api-tests/lisp"/>
+	<property name="miResultsDir"		value="${main.basedir}/../results/mi/lisp"/>
+	<property name="coverResultsDir"	value="${main.basedir}/../results/coverage/lisp"/>
+	<property name="lispfile"	value="run-tests.lisp"/>
+	<property name="dumpfile"	value="dump.txt"/>
+	<property name="miMain"		value="mi-main.lisp"/>
+	<property name="miDir"		value="${main.basedir}/lisp/mi"/>
+	<path id="coverResultsDirW">
+		<pathelement location="${coverResultsDir}"/>
+	</path>
+	<pathconvert targetos="unix" property="coverResultsDirU" refid="coverResultsDirW">
+	    <map from="${coverResultsDir}" to="${coverResultsDir.unix}"/>
+	    <map from="c:" to=""/>
+	</pathconvert>
+	<property name="eval-form" value="&apos;(progn (pushnew :coverage *features*) (setq *coverage-dir* \&quot;${coverResultsDirU}/\&quot;) (load \&quot;run-tests.lisp\&quot;))&apos;" />
+
+	<import file="${main.basedir}/ant/build-lisp.xml" />
+
+	<target name="clean">
+		<delete>
+			<fileset dir="."	includes="*.fasl" />
+			<fileset dir="."	includes="*.ofasl" />
+			<fileset dir="."	includes="*.64ofasl" />
+			<fileset dir=".."	includes="*.fasl" />
+			<fileset dir=".."	includes="*.ofasl" />
+			<fileset dir=".."	includes="*.64ofasl" />
+			<fileset dir=".."	includes="*.wx64fsl" />
+			<fileset dir="."	includes="*.log" />
+		</delete>
+		<delete dir="${testResultsDir}" />
+		<delete dir="${coverResultsDir}" />
+	</target>
+
+        <!-- Currently, this only executes tests on SBCL, but, in
+             general, it should execute tests on all CommonLisp
+             "platforms" that we "support".
+        -->
+        <target name="api-tests" depends="clean">
+            <mkdir dir="${testResultsDir}" />
+            <mkdir dir="${coverResultsDir}" />
+            <mkdir dir="${main.basedir}/../dst/lisp/g2/" />
+            <delete>
+                <fileset dir="${main.basedir}/../dst/lisp/g2/" includes="*.fasl" />
+                <fileset dir="${main.basedir}/../dst/lisp/g2/" includes="*.wx64fsl" />
+                <fileset dir="${main.basedir}/../dst/lisp/g2/" includes="*.64ofasl" />
+            </delete>
+        <if><os name="linux" /><then>
+				<sbcl-run load-file="${lispfile}" sbcl-home="/usr/lib/sbcl" eval-command="" logFile="${testResultsDir}/sbcl64.log" sbcl-platform="${sbcl64.linux}"/>
+            </then><else>
+                
+                <sbcl-run sbcl-platform="${sbcl64}" logFile="${coverResultsDir}/sbcl64.log"
+                      load-command="" sbcl-home="${main.basedir}/tools/lisp/sbcl-1.3.7" eval-form="${eval-form}" />
+            </else></if>
+            
+						<echo message="${main.basedir}"/>
+            <zip destfile="${main.basedir}/../results/coverage/lisp.zip" basedir="${coverResultsDir}" />
+            <delete dir="${coverResultsDir}" />
+        </target>
+
+        <!-- This runs unit tests on Lispworks, which needs a license,
+             so it can't be run "everywhere". -->
+        <target name="api-tests-lw" depends="clean">
+            <mkdir dir="${testResultsDir}" />
+            <mkdir dir="${main.basedir}/../dst/lisp/g2/" />
+            <delete>
+                <fileset dir="${main.basedir}/../dst/lisp/g2/" includes="*.fasl" />
+                <fileset dir="${main.basedir}/../dst/lisp/g2/" includes="*.wx64fsl" />
+                <fileset dir="${main.basedir}/../dst/lisp/g2/" includes="*.64ofasl" />
+            </delete>
+            <lw-run lw-platform="${lw64}" logFile="${testResultsDir}/lw64.log" eval-command="" load-file="${lispfile}" />
+        </target>
+
+	<!-- This runs unit tests on CCL, which we don't use in G2
+	     development at this time, but we use it for Chestnut, so
+	     we have some interest into how it behaves. -->
+	<target name="api-tests-ccl" depends="clean">
+	  <mkdir dir="${testResultsDir}" />
+	  <mkdir dir="${main.basedir}/../dst/lisp/g2/" />
+	  <delete>
+	    <fileset dir="${main.basedir}/../dst/lisp/g2/" includes="*.fasl" />
+	    <fileset dir="${main.basedir}/../dst/lisp/g2/" includes="*.wx64fsl" />
+	    <fileset dir="${main.basedir}/../dst/lisp/g2/" includes="*.64ofasl" />
+	  </delete>
+	  <if><os name="linux" />
+	  <then>
+	    <ccl-run ccl-platform="${ccl64.linux}" logFile="${testResultsDir}/ccl64.log" eval-command="" load-file="${lispfile}" />
+	  </then>
+	  <else>
+	    <ccl-run ccl-platform="${ccl64}" logFile="${testResultsDir}/ccl64.log" eval-command="" load-file="${lispfile}" />
+	  </else>
+	  </if>
+	</target>
+
+	<target name="api-tests-mtg2" depends="clean">
+	  <mkdir dir="${testResultsDir}" />
+	  <mkdir dir="${coverResultsDir}" />
+	  <mkdir dir="${main.basedir}/../dst/lisp/g2/" />
+	  <delete>
+	    <fileset dir="${main.basedir}/../dst/lisp/mtg2/" includes="*.fasl" />
+	    <fileset dir="${main.basedir}/../dst/lisp/mtg2/" includes="*.wx64fsl" />
+	    <fileset dir="${main.basedir}/../dst/lisp/mtg2/" includes="*.64ofasl" />
+	  </delete>
+	  <if><os name="linux" />
+	  <then>
+	    <parallel>
+	      <ccl-run ccl-platform="${ccl64.linux}" logFile="${testResultsDir}/ccl64.log" eval-form="&apos;(progn (pushnew :mtg2 *features*) (setq *dest-macro-directory-name* &quot;mtg2&quot;) (load &quot;run-tests.lisp&quot;))&apos;" load-command="" />
+	      <sbcl-run sbcl-platform="${sbcl64.linux}" sbcl-home="" sbcl-dynamic-space-size="2048" logFile="${testResultsDir}/sbcl64.log" eval-form="&apos;(progn (pushnew :mtg2 *features*) (setq *dest-macro-directory-name* &quot;mtg2&quot;) (load &quot;run-tests.lisp&quot;))&apos;" load-command="" />	    </parallel>
+	  </then>
+	  <else> <!-- On Windows CCL & SBCL sometimes doesn't quit when run from Ant :( -->
+	    <parallel timeout="1200000">
+	      <ccl-run ccl-platform="${ccl64}" logFile="${testResultsDir}/ccl64.log" eval-form="&apos;(progn (pushnew :mtg2 *features*) (setq *dest-macro-directory-name* \&quot;mtg2\&quot;) (load \&quot;run-tests.lisp\&quot;))&apos;" load-command="" />
+	      <sbcl-run sbcl-platform="${sbcl64}" sbcl-home="${main.basedir}/tools/lisp/sbcl-1.3.7" logFile="${testResultsDir}/sbcl64.log" eval-form="&apos;(progn (pushnew :mtg2 *features*) (setq *dest-macro-directory-name* \&quot;mtg2\&quot;) (load \&quot;run-tests.lisp\&quot;))&apos;" load-command="" />
+	      <lw-run lw-platform="${lw64}" logFile="${testResultsDir}/lw64.log" eval-form="&apos;(progn (pushnew :mtg2 *features*) (setq *dest-macro-directory-name* \&quot;mtg2\&quot;) (push (list \&quot;mtg2\&quot; () (lambda () (load \&quot;run-tests.lisp\&quot;))) mp:*initial-processes*))&apos;" load-command="" />
+	    </parallel>
+	  </else>
+	  </if>
+	</target>
+		
+	<!-- check-coverage target loads 7rpm inside so fasls are created anew.
+	     It'd be good idea to clean them again after calculating coverage, but I don't know how to do that -->
+	<!-- This target is reserved for only manually calling -->
+	<target name="check-coverage">
+	    <mkdir dir="${coverResultsDir}"/>
+	    <delete>
+		<fileset dir="${main.basedir}/../dst/lisp/g2/" includes="*.fasl" />
+		<fileset dir="${main.basedir}/../dst/lisp/g2/" includes="*.wx64fsl" />
+	    </delete>
+	    <parallel>
+		<sbcl-run sbcl-platform="${sbcl64}" logFile="${coverResultsDir}/sbcl64.log"
+			  load-command="" sbcl-home="${main.basedir}/tools/lisp/sbcl-1.3.7" eval-form="${eval-form}" />
+		<ccl-run ccl-platform="${ccl64}" logFile="${coverResultsDir}/ccl64.log"
+			 load-command="" eval-form="${eval-form}" />
+	    </parallel>
+	    <!-- compress coverage files and delete the original directory -->
+	    <zip destfile="${main.basedir}/../results/coverage/lisp.zip" basedir="${coverResultsDir}" />
+	    <delete dir="${coverResultsDir}" />
+	</target>
+</project>
