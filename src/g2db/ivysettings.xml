@@ -1,0 +1,22 @@
+
+<ivysettings>
+
+  <settings defaultResolver="libg2db"/>
+
+  <resolvers>
+	  <sftp  name="libg2db" user="${sftp.repository.user}"
+			 userPassword="${sftp.repository.password}" host="${sftp.repository.host}" 
+			 port="${sftp.repository.port}">
+          <artifact pattern="[organisation]/[module]/[type]/[artifact]-[revision].[ext]" />
+	  </sftp>
+  </resolvers>
+
+  <resolvers>
+	  <sftp  name="libg2dbvc" user="${sftp.repository.user}"
+			 userPassword="${sftp.repository.password}" host="${sftp.repository.host}"
+			 port="${sftp.repository.port}">
+          <artifact pattern="[organisation]/[module]/${sftp.vc.type}/[artifact]-[revision].[ext]" />
+	  </sftp>
+  </resolvers>
+
+</ivysettings>
