@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="01/11/02 11:08:18">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Choosing the Resource that has Worked the Shortest Amount of Time</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="customd3.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="customc5.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/ReThink/custom-manual/stylesets/Customizing%20ReThink/Output/html/customih.htm">  
+        Customizing Resources and Work Objects  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Choosing the Resource that has Worked the Shortest Amount of Time
+</h2>
+<p>You might want to choose the resource that has worked the shortest amount of time or the resource that has been allocated the fewest number times. <a name="14639"></a></p>
+<p>To customize which resource the model allocates to an activity, you customize the <code>choose-resource-procedure-name</code> of the Resource Manager. The following example shows how to customize the procedure that chooses resources from a pool to choose the resource whose <code>total-work-time</code> is the smallest number.<a name="14640"></a></p>
+<h4 >	 To choose the resource that has been worked the shortest amount of time:<a name="14641"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>1	</b></td>    <td valign="top" width="580">Copy the <code>bpr-lowest-cost-available-resource</code> procedure from the Resource Methods workspace.<a name="14643"></a></td>  </tr></table><blockquote>  <a name="17315">This procedure is the procedure that is most similar to the one you will create.</a></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>2	</b></td>    <td valign="top" width="580">Edit the procedure name to be <code>bpr-most-idle-resource</code>.<a name="14644"></a></td>  </tr></table><blockquote>  <a name="14645">The procedure takes three arguments: the activity that requires the resource, a usage object, and a resource. </a></blockquote>
+<blockquote>  <a name="14647">A <b>usage object</b> is an interim object that computes how much of a resource is used by an activity. The usage object is related to the Resource Manager in the same way that an activity is related to a block.</a></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>3	</b></td>    <td valign="top" width="580">Edit the procedure to choose the resource whose <code>total-work-time</code> is the smallest number.<a name="14648"></a></td>  </tr></table><p>Here is a sample procedure with comments:<a name="14649"></a></p>
+<p >
+  <a name="47851"> </a>
+<div style="color: #000000;  font-size: 4pt; font-style: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: justify; text-decoration: none; text-indent: 0pt; text-transform: none; vertical-align: baseline">
+<a name="47850"> </a><div align="left"><img src="images/customd5.gif" border="0" hspace="0" vspace="0">
+</div><br>
+</div>
+
+
+
+</p>
+<h4 >	 To test the model:<a name="14658"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>1	</b></td>    <td valign="top" width="580">Create a simple model with a Source block, a Task block, and a Sink block.<a name="14659"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>2	</b></td>    <td valign="top" width="580">Create a resource pool with three resources.<a name="14660"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>3	</b></td>    <td valign="top" width="580">Create a Resource Manager from the resource pool and attach it to the Task block.<a name="14661"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>4	</b></td>    <td valign="top" width="580">Display the properties dialog for the Resource Manager, click the Allocate tab, and configure Choose Resource to be <code>Custom</code>.<a name="14662"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>5	</b></td>    <td valign="top" width="580">Configure the Choose Resource Procedure Name to be <code>bpr-most-idle-resource</code>.<a name="49452"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>6	</b></td>    <td valign="top" width="580">Configure a duration of 1 hour for the Source block.<a name="14666"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>7	</b></td>    <td valign="top" width="580">Configure a duration of 1 hour with a deviation of 15 minutes for the Task block.<a name="14667"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>8	</b></td>    <td valign="top" width="580">Run the model in Step mode and observe how the Resource Manager allocates resources.<a name="14668"></a></td>  </tr></table><p>The manager chooses the available resource that has the shortest total work time for each activity. <a name="14669"></a></p>
+<p>This figure shows a running model, where the Task block allocates resources from a pool of three resources:<a name="14670"></a></p>
+<p >
+  <a name="47877"> </a>
+<p><div align="left"><img src="images/customc6.gif" border="0" hspace="0" vspace="0">
+</div><a name="47876"></a></p>
+
+
+
+</p>
+<p>This figure shows the result of taking one more step in the simulation. ReThink allocates the resources with the smallest <code>total-work-time</code>, which is the last resource in the pool.<a name="17451"></a></p>
+<p >
+  <a name="47947"> </a>
+<p><div align="left"><img src="images/customc7.gif" border="0" hspace="0" vspace="0">
+</div><a name="47946"></a></p>
+
+
+
+</p>
+<p>Here is the Allocate tab of the properties dialog for the Resource Manager that chooses resources from the pool, using the custom procedure:<a name="17421"></a></p>
+<p >
+  <a name="47962"> </a>
+<div style="color: #000000;  font-size: 4pt; font-style: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: justify; text-decoration: none; text-indent: 0pt; text-transform: none; vertical-align: baseline">
+<a name="47961"> </a><div align="left"><img src="images/customik.gif" border="0" hspace="0" vspace="0">
+</div><br>
+</div>
+
+
+
+</p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="customd3.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="customc5.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
