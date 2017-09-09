@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="01/11/02 11:07:56">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Creating a Custom Block Duration Procedure</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="customi8.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="custom10.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/ReThink/custom-manual/stylesets/Customizing%20ReThink/Output/html/customia.htm">  
+        Customizing Blocks  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Creating a Custom Block Duration Procedure
+</h2>
+<p>You might want to create a custom duration procedure for a block. For example, you might create a block that dynamically sets its duration based on an attribute of the work object, so that certain types of work objects take longer to process than others. For example, you might create a custom duration procedure that multiplies the duration by the number of line items in an order. <a name="34397"></a></p>
+<h6><b>Note: </b>This capability is available in Modeler mode by using the Time per Unit Attribute 
+attribute on the Duration tab of the properties dialog.
+<a name="74636"></a></h6><h4 >	 To create a custom block duration procedure:<a name="14826"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>1	</b></td>    <td valign="top" width="580">Create a custom procedure, based on one of the existing duration procedures, which obtains an attribute from a work object and multiplies the duration calculations by the value of the attribute.<a name="14827"></a></td>  </tr></table><blockquote>  <a name="37124">For example, you might create an attribute of a work object named <code>number-of-line-items</code>, which will impact the duration of the custom task. </a></blockquote>
+<blockquote>  <a name="37491">You would then create a custom procedure named <code>custom-per-line-item-duration</code>, for example. The procedure would obtain the value of <code>number-of-line-items</code> of each work object as it arrives at the block and compute the duration by using this attribute.</a></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>2	</b></td>    <td valign="top" width="580">Create a custom subclass of a block and create an instance of the class, or edit any existing ReThink block.<a name="36884"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>3	</b></td>    <td valign="top" width="580">Display the properties dialog for the custom task block and click the Duration tab.<a name="14828"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>4	</b></td>    <td valign="top" width="580">Edit the Procedure Name to be the custom procedure.<a name="14830"></a></td>  </tr></table><blockquote>  <a name="37366">For example, you would specify <code>custom-per-line-item-duration</code> as the procedure name.</a></blockquote>
+<p>This model uses a Change feed to supply random value into the <code>number-of-line-items</code> attribute of each order as it arrives at the Custom Task block. The custom block then computes the duration based on the value of the random attribute. The class definition declares <code>number-of-line-items</code> as an attribute of the order. <a name="14832"></a></p>
+<p >
+  <a name="37664"> </a>
+<p><div align="left"><img src="images/customic.gif" border="0" hspace="0" vspace="0">
+</div><a name="37663"></a></p>
+
+
+
+</p>
+<p>Here is the procedure that implements the customization of the task:<a name="39050"></a></p>
+<p >
+  <a name="38230"> </a>
+<p><div align="left"><img src="images/custom-p.gif" border="0" hspace="0" vspace="0">
+</div><a name="38229"></a></p>
+
+
+
+</p>
+<p>This code fragment obtains the value of the attribute of the work object:<a name="91601"></a></p>
+<p >
+  <a name="38969"> </a>
+<p><div align="left"><img src="images/customid.gif" border="0" hspace="0" vspace="0">
+</div><a name="38036"></a></p>
+
+
+
+</p>
+<p>These code fragments compute the duration, based on the attribute of the object:<a name="38942"></a></p>
+<p >
+  <a name="38972"> </a>
+<p><div align="left"><img src="images/customib.gif" border="0" hspace="0" vspace="0">
+</div><a name="38941"></a></p>
+
+
+
+</p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="customi8.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="custom10.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
