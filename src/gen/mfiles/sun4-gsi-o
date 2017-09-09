@@ -1,0 +1,563 @@
+SHELL = /bin/sh
+PRODUCT = gsi
+ODIR = o
+PLATFORM = sun4
+CDIR = $(SRCBOX)/$(PRODUCT)/c
+EXTCDIR = $(SRCBOX)/ext/c
+EXTDIR = $(DSTBOX)/ext/$(ODIR)
+HELPERDIR = /home/development/helpers
+MFDIR = $(DSTBOX)/$(PRODUCT)/$(ODIR)
+RTHDIR = $(SRCBOX)/rtl/c
+RTLDIR = $(DSTBOX)/rtl/$(ODIR)
+SCRIPTSDIR = /home/development/scripts
+SPFCDIR = $(SRCBOX)/specific/$(PLATFORM)
+CC_FLAGS = -DGSI_TRANS -Wimplicit
+RTHFILES = $(RTHDIR)/c-ifuns.h $(RTHDIR)/c-sdefs.h \
+  $(RTHDIR)/config.h $(RTHDIR)/core.h $(RTHDIR)/ffi.h $(RTHDIR)/gensym.h \
+  $(RTHDIR)/initvars.h $(RTHDIR)/inline.h $(RTHDIR)/instance.h \
+  $(RTHDIR)/kernel.h $(RTHDIR)/librtl.h $(RTHDIR)/lisplib.h \
+  $(RTHDIR)/longname.h $(RTHDIR)/object.h $(RTHDIR)/smcompat.h \
+  $(RTHDIR)/specific.h $(RTHDIR)/svarargs.h $(RTHDIR)/uconfig.h \
+  $(RTHDIR)/values.h
+
+all : _mfenter gsiapps gsitests libgsi.a _mfexit
+
+gsiapps : alarmer buildsh filetest itemtest mapchar matrix pingpong pub_subscribe reposit skeleton sysattrs typetest
+
+gsitests : context_1 float_1 float_2 gsi_bench gsi_client integer_1 item_1 rpc_1 toolkit_1 watchdog_1
+
+_mfenter : 
+	@- $(SCRIPTSDIR)/errsweep -init
+	@- if $(SCRIPTSDIR)/runmake ext $(ODIR) -q libcprim.a libtcp.a > /dev/null 2>&1; then junk=junk; else echo "WARNING: ext libs are out of date"; fi
+	@- if $(SCRIPTSDIR)/runmake rtl $(ODIR) -q librtl.a > /dev/null 2>&1; then junk=junk; else echo "WARNING: librtl is out of date"; fi
+
+_mfexit : 
+	@- $(SCRIPTSDIR)/errsweep -finish
+
+libgsi.a : basics.o btstrp.o chars.o chars2.o clocks.o delta.o \
+  gbmap.o gbmapr.o glbscs.o gscmn.o gsi.o gsiannex.o gspts.o gsrpc1.o \
+  gsrpc2.o int1.o int2.o int3a.o int3b.o int4.o is2022.o is8859.o jismap.o \
+  ksmap2.o launch.o load.o loop.o lttrs.o names.o ntrrr.o ntvnt.o ntwrks.o \
+  os-mem.o os-set.o osfrgn.o osrrr.o ostme.o prmtvs.o pthnms.o rpcmn1.o \
+  rpcmn2.o rpcmn3.o schdle.o stdcbs.o symtab.o systm.o times.o tran.o \
+  trnscd.o uncde.o userfuns.o userinit.o usersyms.o utlts0.o utlts1.o \
+  utlts2.o utlts3.o
+	@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)
+	@- if [ -f libgsi.a ] ; then rm -f libgsi.a ; fi
+	ar qc libgsi.a /usr/local/lib/gcc-lib/sparc-sun-sunos4.1.3/2.3.3/_varargs.o gsiannex.o stdcbs.o symtab.o userfuns.o \
+  userinit.o usersyms.o names.o load.o btstrp.o systm.o delta.o gspts.o \
+  loop.o glbscs.o osfrgn.o basics.o ostme.o os-set.o os-mem.o prmtvs.o \
+  chars.o jismap.o ksmap2.o gbmap.o gbmapr.o chars2.o utlts0.o utlts1.o \
+  utlts2.o lttrs.o uncde.o is2022.o trnscd.o is8859.o utlts3.o times.o \
+  osrrr.o launch.o pthnms.o schdle.o clocks.o ntwrks.o int1.o ntrrr.o ntvnt.o \
+  int2.o int3a.o int3b.o int4.o gscmn.o rpcmn1.o rpcmn2.o rpcmn3.o gsi.o \
+  gsrpc1.o gsrpc2.o tran.o
+	ranlib libgsi.a
+
+alarmer : $(EXTDIR)/libnogsec.a $(RTLDIR)/librtl.a \
+  $(EXTDIR)/libtcp.a alarmer.o gsi_main.o libgsi.a
+	@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)
+	@- if [ -f alarmer ] ; then rm -f alarmer ; fi
+	gcc -o alarmer   alarmer.o gsi_main.o libgsi.a \
+  $(EXTDIR)/libtcp.a $(RTLDIR)/librtl.a $(EXTDIR)/libnogsec.a -lm -lc -ldl
+
+buildsh : $(EXTDIR)/libcprim.a $(EXTDIR)/libnogsec.a \
+  $(RTLDIR)/librtl.a $(EXTDIR)/libtcp.a buildsh.o gsi_main.o libgsi.a
+	@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)
+	@- if [ -f buildsh ] ; then rm -f buildsh ; fi
+	gcc -o buildsh   buildsh.o gsi_main.o libgsi.a \
+  $(EXTDIR)/libtcp.a $(RTLDIR)/librtl.a $(EXTDIR)/libnogsec.a \
+  $(EXTDIR)/libcprim.a -lm -lc -ldl
+
+context_1 : $(EXTDIR)/libnogsec.a $(RTLDIR)/librtl.a \
+  $(EXTDIR)/libtcp.a context_1.o libgsi.a
+	@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)
+	@- if [ -f context_1 ] ; then rm -f context_1 ; fi
+	gcc -o context_1   context_1.o libgsi.a $(EXTDIR)/libtcp.a \
+  $(RTLDIR)/librtl.a $(EXTDIR)/libnogsec.a -lm -lc -ldl
+
+filetest : $(EXTDIR)/libnogsec.a $(RTLDIR)/librtl.a \
+  $(EXTDIR)/libtcp.a filetest.o rpcfuncs.o libgsi.a
+	@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)
+	@- if [ -f filetest ] ; then rm -f filetest ; fi
+	gcc -o filetest   filetest.o rpcfuncs.o libgsi.a \
+  $(EXTDIR)/libtcp.a $(RTLDIR)/librtl.a $(EXTDIR)/libnogsec.a -lm -lc -ldl
+
+float_1 : $(EXTDIR)/libnogsec.a $(RTLDIR)/librtl.a \
+  $(EXTDIR)/libtcp.a float_1.o libgsi.a
+	@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)
+	@- if [ -f float_1 ] ; then rm -f float_1 ; fi
+	gcc -o float_1   float_1.o libgsi.a $(EXTDIR)/libtcp.a \
+  $(RTLDIR)/librtl.a $(EXTDIR)/libnogsec.a -lm -lc -ldl
+
+float_2 : $(EXTDIR)/libnogsec.a $(RTLDIR)/librtl.a \
+  $(EXTDIR)/libtcp.a float_2.o libgsi.a
+	@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)
+	@- if [ -f float_2 ] ; then rm -f float_2 ; fi
+	gcc -o float_2   float_2.o libgsi.a $(EXTDIR)/libtcp.a \
+  $(RTLDIR)/librtl.a $(EXTDIR)/libnogsec.a -lm -lc -ldl
+
+gsi_bench : $(EXTDIR)/libnogsec.a $(RTLDIR)/librtl.a \
+  $(EXTDIR)/libtcp.a gsi_bench.o libgsi.a
+	@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)
+	@- if [ -f gsi_bench ] ; then rm -f gsi_bench ; fi
+	gcc -o gsi_bench   gsi_bench.o libgsi.a $(EXTDIR)/libtcp.a \
+  $(RTLDIR)/librtl.a $(EXTDIR)/libnogsec.a -lm -lc -ldl
+
+gsi_client : $(EXTDIR)/libnogsec.a $(RTLDIR)/librtl.a \
+  $(EXTDIR)/libtcp.a gsi_client.o gsi_misc.o libgsi.a
+	@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)
+	@- if [ -f gsi_client ] ; then rm -f gsi_client ; fi
+	gcc -o gsi_client   gsi_client.o gsi_misc.o libgsi.a \
+  $(EXTDIR)/libtcp.a $(RTLDIR)/librtl.a $(EXTDIR)/libnogsec.a -lm -lc -ldl
+
+integer_1 : $(EXTDIR)/libnogsec.a $(RTLDIR)/librtl.a \
+  $(EXTDIR)/libtcp.a integer_1.o libgsi.a
+	@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)
+	@- if [ -f integer_1 ] ; then rm -f integer_1 ; fi
+	gcc -o integer_1   integer_1.o libgsi.a $(EXTDIR)/libtcp.a \
+  $(RTLDIR)/librtl.a $(EXTDIR)/libnogsec.a -lm -lc -ldl
+
+item_1 : $(EXTDIR)/libnogsec.a $(RTLDIR)/librtl.a \
+  $(EXTDIR)/libtcp.a gsi_misc.o item_1.o libgsi.a
+	@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)
+	@- if [ -f item_1 ] ; then rm -f item_1 ; fi
+	gcc -o item_1   item_1.o gsi_misc.o libgsi.a \
+  $(EXTDIR)/libtcp.a $(RTLDIR)/librtl.a $(EXTDIR)/libnogsec.a -lm -lc -ldl
+
+itemtest : $(EXTDIR)/libnogsec.a $(RTLDIR)/librtl.a \
+  $(EXTDIR)/libtcp.a gsi_misc.o itemtest.o libgsi.a
+	@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)
+	@- if [ -f itemtest ] ; then rm -f itemtest ; fi
+	gcc -o itemtest   itemtest.o gsi_misc.o libgsi.a \
+  $(EXTDIR)/libtcp.a $(RTLDIR)/librtl.a $(EXTDIR)/libnogsec.a -lm -lc -ldl
+
+mapchar : $(EXTDIR)/libnogsec.a $(RTLDIR)/librtl.a \
+  $(EXTDIR)/libtcp.a gsi_main.o mapchar.o libgsi.a
+	@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)
+	@- if [ -f mapchar ] ; then rm -f mapchar ; fi
+	gcc -o mapchar   mapchar.o gsi_main.o libgsi.a \
+  $(EXTDIR)/libtcp.a $(RTLDIR)/librtl.a $(EXTDIR)/libnogsec.a -lm -lc -ldl
+
+matrix : $(EXTDIR)/libnogsec.a $(RTLDIR)/librtl.a \
+  $(EXTDIR)/libtcp.a gsi_main.o matrix.o libgsi.a
+	@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)
+	@- if [ -f matrix ] ; then rm -f matrix ; fi
+	gcc -o matrix   matrix.o gsi_main.o libgsi.a \
+  $(EXTDIR)/libtcp.a $(RTLDIR)/librtl.a $(EXTDIR)/libnogsec.a -lm -lc -ldl
+
+pingpong : $(EXTDIR)/libnogsec.a $(RTLDIR)/librtl.a \
+  $(EXTDIR)/libtcp.a pingpong.o libgsi.a
+	@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)
+	@- if [ -f pingpong ] ; then rm -f pingpong ; fi
+	gcc -o pingpong   pingpong.o libgsi.a $(EXTDIR)/libtcp.a \
+  $(RTLDIR)/librtl.a $(EXTDIR)/libnogsec.a -lm -lc -ldl
+
+pub_subscribe : $(EXTDIR)/libnogsec.a $(RTLDIR)/librtl.a \
+  $(EXTDIR)/libtcp.a gsi_main.o gsi_misc.o pub_subscribe.o libgsi.a
+	@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)
+	@- if [ -f pub_subscribe ] ; then rm -f pub_subscribe ; fi
+	gcc -o pub_subscribe   pub_subscribe.o gsi_main.o gsi_misc.o \
+  libgsi.a $(EXTDIR)/libtcp.a $(RTLDIR)/librtl.a $(EXTDIR)/libnogsec.a -lm -lc -ldl
+
+reposit : $(EXTDIR)/libnogsec.a $(RTLDIR)/librtl.a \
+  $(EXTDIR)/libtcp.a gsi_main.o gsi_misc.o reposit.o libgsi.a
+	@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)
+	@- if [ -f reposit ] ; then rm -f reposit ; fi
+	gcc -o reposit   reposit.o gsi_main.o gsi_misc.o libgsi.a \
+  $(EXTDIR)/libtcp.a $(RTLDIR)/librtl.a $(EXTDIR)/libnogsec.a -lm -lc -ldl
+
+rpc_1 : $(EXTDIR)/libnogsec.a $(RTLDIR)/librtl.a \
+  $(EXTDIR)/libtcp.a gsi_misc.o rpc_1.o libgsi.a
+	@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)
+	@- if [ -f rpc_1 ] ; then rm -f rpc_1 ; fi
+	gcc -o rpc_1   rpc_1.o gsi_misc.o libgsi.a \
+  $(EXTDIR)/libtcp.a $(RTLDIR)/librtl.a $(EXTDIR)/libnogsec.a -lm -lc -ldl
+
+skeleton : $(EXTDIR)/libnogsec.a $(RTLDIR)/librtl.a \
+  $(EXTDIR)/libtcp.a gsi_main.o skeleton.o libgsi.a
+	@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)
+	@- if [ -f skeleton ] ; then rm -f skeleton ; fi
+	gcc -o skeleton   skeleton.o gsi_main.o libgsi.a \
+  $(EXTDIR)/libtcp.a $(RTLDIR)/librtl.a $(EXTDIR)/libnogsec.a -lm -lc -ldl
+
+sysattrs : $(EXTDIR)/libnogsec.a $(RTLDIR)/librtl.a \
+  $(EXTDIR)/libtcp.a gsi_misc.o sysattrs.o libgsi.a
+	@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)
+	@- if [ -f sysattrs ] ; then rm -f sysattrs ; fi
+	gcc -o sysattrs   sysattrs.o gsi_misc.o libgsi.a \
+  $(EXTDIR)/libtcp.a $(RTLDIR)/librtl.a $(EXTDIR)/libnogsec.a -lm -lc -ldl
+
+toolkit_1 : $(EXTDIR)/libnogsec.a $(RTLDIR)/librtl.a \
+  $(EXTDIR)/libtcp.a toolkit_1.o libgsi.a
+	@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)
+	@- if [ -f toolkit_1 ] ; then rm -f toolkit_1 ; fi
+	gcc -o toolkit_1   toolkit_1.o libgsi.a $(EXTDIR)/libtcp.a \
+  $(RTLDIR)/librtl.a $(EXTDIR)/libnogsec.a -lm -lc -ldl
+
+typetest : $(EXTDIR)/libnogsec.a $(RTLDIR)/librtl.a \
+  $(EXTDIR)/libtcp.a gsi_main.o typetest.o libgsi.a
+	@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)
+	@- if [ -f typetest ] ; then rm -f typetest ; fi
+	gcc -o typetest   typetest.o gsi_main.o libgsi.a \
+  $(EXTDIR)/libtcp.a $(RTLDIR)/librtl.a $(EXTDIR)/libnogsec.a -lm -lc -ldl
+
+watchdog_1 : $(EXTDIR)/libnogsec.a $(RTLDIR)/librtl.a \
+  $(EXTDIR)/libtcp.a watchdog_1.o libgsi.a
+	@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)
+	@- if [ -f watchdog_1 ] ; then rm -f watchdog_1 ; fi
+	gcc -o watchdog_1   watchdog_1.o libgsi.a $(EXTDIR)/libtcp.a \
+  $(RTLDIR)/librtl.a $(EXTDIR)/libnogsec.a -lm -lc -ldl
+
+alarmer.o : $(CDIR)/alarmer.c $(CDIR)/gsi_main.h
+	@- if [ -f alarmer.o ] ; then rm -f alarmer.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/alarmer.c
+
+basics.o : $(CDIR)/basics.c $(RTHFILES) $(CDIR)/basics.h
+	@- if [ -f basics.o ] ; then rm -f basics.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/basics.c
+
+btstrp.o : $(CDIR)/btstrp.c $(RTHFILES) $(CDIR)/btstrp.h
+	@- if [ -f btstrp.o ] ; then rm -f btstrp.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/btstrp.c
+
+buildsh.o : $(CDIR)/buildsh.c $(CDIR)/gsi_main.h
+	@- if [ -f buildsh.o ] ; then rm -f buildsh.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/buildsh.c
+
+chars.o : $(CDIR)/chars.c $(RTHFILES) $(CDIR)/chars.h
+	@- if [ -f chars.o ] ; then rm -f chars.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/chars.c
+
+chars2.o : $(CDIR)/chars2.c $(RTHFILES) $(CDIR)/chars2.h
+	@- if [ -f chars2.o ] ; then rm -f chars2.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/chars2.c
+
+clocks.o : $(CDIR)/clocks.c $(RTHFILES) $(CDIR)/clocks.h
+	@- if [ -f clocks.o ] ; then rm -f clocks.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/clocks.c
+
+context_1.o : $(CDIR)/context_1.c $(CDIR)/gsi_main.h
+	@- if [ -f context_1.o ] ; then rm -f context_1.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/context_1.c
+
+delta.o : $(CDIR)/delta.c $(RTHFILES) $(CDIR)/delta.h
+	@- if [ -f delta.o ] ; then rm -f delta.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/delta.c
+
+filetest.o : $(CDIR)/filetest.c $(CDIR)/gsi_main.h
+	@- if [ -f filetest.o ] ; then rm -f filetest.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/filetest.c
+
+float_1.o : $(CDIR)/float_1.c $(CDIR)/gsi_main.h
+	@- if [ -f float_1.o ] ; then rm -f float_1.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/float_1.c
+
+float_2.o : $(CDIR)/float_2.c $(CDIR)/gsi_main.h
+	@- if [ -f float_2.o ] ; then rm -f float_2.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/float_2.c
+
+gbmap.o : $(CDIR)/gbmap.c $(RTHFILES) $(CDIR)/gbmap.h
+	@- if [ -f gbmap.o ] ; then rm -f gbmap.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/gbmap.c
+
+gbmapr.o : $(CDIR)/gbmapr.c $(RTHFILES) $(CDIR)/gbmapr.h
+	@- if [ -f gbmapr.o ] ; then rm -f gbmapr.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/gbmapr.c
+
+glbscs.o : $(CDIR)/glbscs.c $(RTHFILES) $(CDIR)/glbscs.h
+	@- if [ -f glbscs.o ] ; then rm -f glbscs.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/glbscs.c
+
+gscmn.o : $(CDIR)/gscmn.c $(RTHFILES) $(CDIR)/gscmn.h
+	@- if [ -f gscmn.o ] ; then rm -f gscmn.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/gscmn.c
+
+gsi.o : $(CDIR)/gsi.c $(RTHFILES) $(CDIR)/gsi.h
+	@- if [ -f gsi.o ] ; then rm -f gsi.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/gsi.c
+
+gsi_bench.o : $(CDIR)/gsi_bench.c $(CDIR)/gsi_main.h
+	@- if [ -f gsi_bench.o ] ; then rm -f gsi_bench.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/gsi_bench.c
+
+gsi_client.o : $(CDIR)/gsi_client.c $(CDIR)/gsi_main.h $(CDIR)/gsi_misc.h
+	@- if [ -f gsi_client.o ] ; then rm -f gsi_client.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/gsi_client.c
+
+gsi_main.o : $(CDIR)/gsi_main.c $(CDIR)/gsi_main.h
+	@- if [ -f gsi_main.o ] ; then rm -f gsi_main.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/gsi_main.c
+
+gsi_misc.o : $(CDIR)/gsi_misc.c $(CDIR)/gsi_main.h $(CDIR)/gsi_misc.h
+	@- if [ -f gsi_misc.o ] ; then rm -f gsi_misc.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/gsi_misc.c
+
+gsiannex.o : $(CDIR)/gsiannex.c $(CDIR)/gsi_main.h $(CDIR)/gsiannex.h $(EXTCDIR)/gensym-features.h
+	@- if [ -f gsiannex.o ] ; then rm -f gsiannex.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/gsiannex.c
+
+gspts.o : $(CDIR)/gspts.c $(RTHFILES) $(CDIR)/gspts.h
+	@- if [ -f gspts.o ] ; then rm -f gspts.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/gspts.c
+
+gsrpc1.o : $(CDIR)/gsrpc1.c $(RTHFILES) $(CDIR)/gsrpc1.h
+	@- if [ -f gsrpc1.o ] ; then rm -f gsrpc1.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/gsrpc1.c
+
+gsrpc2.o : $(CDIR)/gsrpc2.c $(RTHFILES) $(CDIR)/gsrpc2.h
+	@- if [ -f gsrpc2.o ] ; then rm -f gsrpc2.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/gsrpc2.c
+
+int1.o : $(CDIR)/int1.c $(RTHFILES) $(CDIR)/int1.h
+	@- if [ -f int1.o ] ; then rm -f int1.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/int1.c
+
+int2.o : $(CDIR)/int2.c $(RTHFILES) $(CDIR)/int2.h
+	@- if [ -f int2.o ] ; then rm -f int2.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/int2.c
+
+int3a.o : $(CDIR)/int3a.c $(RTHFILES) $(CDIR)/int3a.h
+	@- if [ -f int3a.o ] ; then rm -f int3a.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/int3a.c
+
+int3b.o : $(CDIR)/int3b.c $(RTHFILES) $(CDIR)/int3b.h
+	@- if [ -f int3b.o ] ; then rm -f int3b.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/int3b.c
+
+int4.o : $(CDIR)/int4.c $(RTHFILES) $(CDIR)/int4.h
+	@- if [ -f int4.o ] ; then rm -f int4.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/int4.c
+
+integer_1.o : $(CDIR)/integer_1.c $(CDIR)/gsi_main.h
+	@- if [ -f integer_1.o ] ; then rm -f integer_1.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/integer_1.c
+
+is2022.o : $(CDIR)/is2022.c $(RTHFILES) $(CDIR)/is2022.h
+	@- if [ -f is2022.o ] ; then rm -f is2022.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/is2022.c
+
+is8859.o : $(CDIR)/is8859.c $(RTHFILES) $(CDIR)/is8859.h
+	@- if [ -f is8859.o ] ; then rm -f is8859.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/is8859.c
+
+item_1.o : $(CDIR)/item_1.c $(CDIR)/gsi_main.h $(CDIR)/gsi_misc.h
+	@- if [ -f item_1.o ] ; then rm -f item_1.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/item_1.c
+
+itemtest.o : $(CDIR)/itemtest.c $(CDIR)/gsi_main.h $(CDIR)/gsi_misc.h
+	@- if [ -f itemtest.o ] ; then rm -f itemtest.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/itemtest.c
+
+jismap.o : $(CDIR)/jismap.c $(RTHFILES) $(CDIR)/jismap.h
+	@- if [ -f jismap.o ] ; then rm -f jismap.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/jismap.c
+
+ksmap2.o : $(CDIR)/ksmap2.c $(RTHFILES) $(CDIR)/ksmap2.h
+	@- if [ -f ksmap2.o ] ; then rm -f ksmap2.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/ksmap2.c
+
+launch.o : $(CDIR)/launch.c $(RTHFILES) $(CDIR)/launch.h
+	@- if [ -f launch.o ] ; then rm -f launch.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/launch.c
+
+load.o : $(CDIR)/load.c $(RTHFILES) $(CDIR)/load.h
+	@- if [ -f load.o ] ; then rm -f load.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/load.c
+
+loop.o : $(CDIR)/loop.c $(RTHFILES) $(CDIR)/loop.h
+	@- if [ -f loop.o ] ; then rm -f loop.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/loop.c
+
+lttrs.o : $(CDIR)/lttrs.c $(RTHFILES) $(CDIR)/lttrs.h
+	@- if [ -f lttrs.o ] ; then rm -f lttrs.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/lttrs.c
+
+mapchar.o : $(CDIR)/mapchar.c $(CDIR)/gsi_main.h
+	@- if [ -f mapchar.o ] ; then rm -f mapchar.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/mapchar.c
+
+matrix.o : $(CDIR)/matrix.c $(CDIR)/gsi_main.h
+	@- if [ -f matrix.o ] ; then rm -f matrix.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/matrix.c
+
+names.o : $(CDIR)/names.c $(RTHFILES) $(CDIR)/names.h
+	@- if [ -f names.o ] ; then rm -f names.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/names.c
+
+ntrrr.o : $(CDIR)/ntrrr.c $(RTHFILES) $(CDIR)/ntrrr.h
+	@- if [ -f ntrrr.o ] ; then rm -f ntrrr.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/ntrrr.c
+
+ntvnt.o : $(CDIR)/ntvnt.c $(RTHFILES) $(CDIR)/ntvnt.h
+	@- if [ -f ntvnt.o ] ; then rm -f ntvnt.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/ntvnt.c
+
+ntwrks.o : $(CDIR)/ntwrks.c $(RTHFILES) $(CDIR)/ntwrks.h
+	@- if [ -f ntwrks.o ] ; then rm -f ntwrks.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/ntwrks.c
+
+os-mem.o : $(CDIR)/os-mem.c $(RTHFILES) $(CDIR)/os-mem.h
+	@- if [ -f os-mem.o ] ; then rm -f os-mem.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/os-mem.c
+
+os-set.o : $(CDIR)/os-set.c $(RTHFILES) $(CDIR)/os-set.h
+	@- if [ -f os-set.o ] ; then rm -f os-set.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/os-set.c
+
+osfrgn.o : $(CDIR)/osfrgn.c $(RTHFILES) $(CDIR)/osfrgn.h
+	@- if [ -f osfrgn.o ] ; then rm -f osfrgn.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/osfrgn.c
+
+osrrr.o : $(CDIR)/osrrr.c $(RTHFILES) $(CDIR)/osrrr.h
+	@- if [ -f osrrr.o ] ; then rm -f osrrr.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/osrrr.c
+
+ostme.o : $(CDIR)/ostme.c $(RTHFILES) $(CDIR)/ostme.h
+	@- if [ -f ostme.o ] ; then rm -f ostme.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/ostme.c
+
+pingpong.o : $(CDIR)/pingpong.c $(CDIR)/gsi_main.h
+	@- if [ -f pingpong.o ] ; then rm -f pingpong.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/pingpong.c
+
+prmtvs.o : $(CDIR)/prmtvs.c $(RTHFILES) $(CDIR)/prmtvs.h
+	@- if [ -f prmtvs.o ] ; then rm -f prmtvs.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/prmtvs.c
+
+pthnms.o : $(CDIR)/pthnms.c $(RTHFILES) $(CDIR)/pthnms.h
+	@- if [ -f pthnms.o ] ; then rm -f pthnms.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/pthnms.c
+
+pub_subscribe.o : $(CDIR)/pub_subscribe.c $(CDIR)/gsi_main.h
+	@- if [ -f pub_subscribe.o ] ; then rm -f pub_subscribe.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/pub_subscribe.c
+
+reposit.o : $(CDIR)/reposit.c $(CDIR)/gsi_main.h
+	@- if [ -f reposit.o ] ; then rm -f reposit.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/reposit.c
+
+rpc_1.o : $(CDIR)/rpc_1.c $(CDIR)/gsi_main.h $(CDIR)/gsi_misc.h
+	@- if [ -f rpc_1.o ] ; then rm -f rpc_1.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/rpc_1.c
+
+rpcfuncs.o : $(CDIR)/rpcfuncs.c $(CDIR)/gsi_main.h
+	@- if [ -f rpcfuncs.o ] ; then rm -f rpcfuncs.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/rpcfuncs.c
+
+rpcmn1.o : $(CDIR)/rpcmn1.c $(RTHFILES) $(CDIR)/rpcmn1.h
+	@- if [ -f rpcmn1.o ] ; then rm -f rpcmn1.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/rpcmn1.c
+
+rpcmn2.o : $(CDIR)/rpcmn2.c $(RTHFILES) $(CDIR)/rpcmn2.h
+	@- if [ -f rpcmn2.o ] ; then rm -f rpcmn2.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/rpcmn2.c
+
+rpcmn3.o : $(CDIR)/rpcmn3.c $(RTHFILES) $(CDIR)/rpcmn3.h
+	@- if [ -f rpcmn3.o ] ; then rm -f rpcmn3.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/rpcmn3.c
+
+schdle.o : $(CDIR)/schdle.c $(RTHFILES) $(CDIR)/schdle.h
+	@- if [ -f schdle.o ] ; then rm -f schdle.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/schdle.c
+
+skeleton.o : $(CDIR)/skeleton.c $(CDIR)/gsi_main.h
+	@- if [ -f skeleton.o ] ; then rm -f skeleton.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/skeleton.c
+
+stdcbs.o : $(CDIR)/stdcbs.c $(CDIR)/gsi_main.h
+	@- if [ -f stdcbs.o ] ; then rm -f stdcbs.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/stdcbs.c
+
+symtab.o : $(CDIR)/symtab.c $(RTHFILES)
+	@- if [ -f symtab.o ] ; then rm -f symtab.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/symtab.c
+
+sysattrs.o : $(CDIR)/sysattrs.c $(CDIR)/gsi_main.h
+	@- if [ -f sysattrs.o ] ; then rm -f sysattrs.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/sysattrs.c
+
+systm.o : $(CDIR)/systm.c $(RTHFILES) $(CDIR)/systm.h
+	@- if [ -f systm.o ] ; then rm -f systm.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/systm.c
+
+times.o : $(CDIR)/times.c $(RTHFILES) $(CDIR)/times.h
+	@- if [ -f times.o ] ; then rm -f times.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/times.c
+
+toolkit_1.o : $(CDIR)/toolkit_1.c $(CDIR)/gsi_main.h
+	@- if [ -f toolkit_1.o ] ; then rm -f toolkit_1.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/toolkit_1.c
+
+tran.o : $(CDIR)/tran.c $(RTHFILES) $(CDIR)/tran.h
+	@- if [ -f tran.o ] ; then rm -f tran.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/tran.c
+
+trnscd.o : $(CDIR)/trnscd.c $(RTHFILES) $(CDIR)/trnscd.h
+	@- if [ -f trnscd.o ] ; then rm -f trnscd.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/trnscd.c
+
+typetest.o : $(CDIR)/typetest.c $(CDIR)/gsi_main.h
+	@- if [ -f typetest.o ] ; then rm -f typetest.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/typetest.c
+
+uncde.o : $(CDIR)/uncde.c $(RTHFILES) $(CDIR)/uncde.h
+	@- if [ -f uncde.o ] ; then rm -f uncde.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/uncde.c
+
+userfuns.o : $(CDIR)/userfuns.c $(RTHFILES) $(CDIR)/userfuns.h
+	@- if [ -f userfuns.o ] ; then rm -f userfuns.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/userfuns.c
+
+userinit.o : $(CDIR)/userinit.c $(RTHFILES)
+	@- if [ -f userinit.o ] ; then rm -f userinit.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/userinit.c
+
+usersyms.o : $(CDIR)/usersyms.c $(RTHFILES)
+	@- if [ -f usersyms.o ] ; then rm -f usersyms.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/usersyms.c
+
+utlts0.o : $(CDIR)/utlts0.c $(RTHFILES) $(CDIR)/utlts0.h
+	@- if [ -f utlts0.o ] ; then rm -f utlts0.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/utlts0.c
+
+utlts1.o : $(CDIR)/utlts1.c $(RTHFILES) $(CDIR)/utlts1.h
+	@- if [ -f utlts1.o ] ; then rm -f utlts1.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/utlts1.c
+
+utlts2.o : $(CDIR)/utlts2.c $(RTHFILES) $(CDIR)/utlts2.h
+	@- if [ -f utlts2.o ] ; then rm -f utlts2.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/utlts2.c
+
+utlts3.o : $(CDIR)/utlts3.c $(RTHFILES) $(CDIR)/utlts3.h
+	@- if [ -f utlts3.o ] ; then rm -f utlts3.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/utlts3.c
+
+watchdog_1.o : $(CDIR)/watchdog_1.c $(CDIR)/gsi_main.h
+	@- if [ -f watchdog_1.o ] ; then rm -f watchdog_1.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(CDIR)/watchdog_1.c
+
+clean : 
+	- rm -f *.[oa]
+	- rm -f alarmer
+	- rm -f buildsh
+	- rm -f context_1
+	- rm -f filetest
+	- rm -f float_1
+	- rm -f float_2
+	- rm -f gsi_bench
+	- rm -f gsi_client
+	- rm -f integer_1
+	- rm -f item_1
+	- rm -f itemtest
+	- rm -f mapchar
+	- rm -f matrix
+	- rm -f pingpong
+	- rm -f pub_subscribe
+	- rm -f reposit
+	- rm -f rpc_1
+	- rm -f skeleton
+	- rm -f sysattrs
+	- rm -f toolkit_1
+	- rm -f typetest
+	- rm -f watchdog_1
