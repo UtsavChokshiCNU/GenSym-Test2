@@ -1,0 +1,3641 @@
+# Automatically Generated File -- Please Do Not Edit
+
+index: 4
+
+family file syntax version: 10
+
+family: Integrity
+directory name: integrity
+splash screen: integrity-setup.bmp
+guid: 243D4BB3-9EE7-11D4-8111-00A02431D004
+  bundle: integrity-core-development
+    id: 1
+    version: 3.4r0
+      component: Integrity Client
+        index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-client-intelnt
+            sourcedir: opex-client-34r0-B01F22
+            destdir: client
+            only on:  nt
+              env variable: INTEGRITY_HOME
+                env value: <TARGETDIR>\\client
+                env effect: new
+            postinstall code: integrityPostInstall("Integrity");
+              shortcut: 
+                folder name: Integrity
+                application display name: Integrity Client
+                application directory: client\bin
+                target name: integrity.bat
+      component: G2
+        index: 2
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: G2 Windows Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2.exe
+            only on:  nt
+          part: G2 Unix Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2
+            only on:  sparcsol aix hpux linux
+          part: G2 Map
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2.map
+            only on:  nt
+          part: G2PASSWD Windows Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2passwd.exe
+            only on:  nt
+          part: G2PASSWD Unix Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2passwd
+            only on:  sparcsol aix hpux linux
+          part: Kanji index dictionary
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: index.dic
+          part: Kanji kojin dictionary
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: kojin.dic
+          part: Kanji main dictionary
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: main.dic
+          part: G2 EXT Directory
+            sourcedir:  g2-51r7 ext
+            destdir: g2/ext
+          part: Sample G2 OK file
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2.ok
+            only on:  nt
+      component: Ping Manager
+        index: 3
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: ping-manager
+            sourcedir: pingmgr-34r0-B01F22
+            destdir: bin
+            only on:  nt sparcsol hpux
+      component: Remote OS Agent
+        index: 4
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: remote-os-agent
+            sourcedir: rosa-34r0-B01F22
+            destdir: remote-os
+            only on:  nt sparcsol
+      component: Java Generic SNMP Bridge
+        index: 5
+        only on:  nt sparcsol
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: java-snmp
+            sourcedir: g2snmpgn-34r0-B01F22
+            destdir: jsnmp
+              shortcut: 
+                folder name: Integrity
+                application display name: SNMP Trap Receiver
+                application directory: jsnmp\bin
+                target name: jsnmp.bat -listenerport 22041
+              shortcut: 
+                folder name: Integrity
+                application display name: SNMP Set Requests
+                application directory: jsnmp\bin
+                target name: jsnmp.bat -listenerport 22044
+      component: G2 SNMP HPOV Bridge
+        index: 6
+        only on:  sparcsol hpux
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: g2-snmp-hpov-bridge
+            sourcedir: g2snmpov-34r0-B01F22
+            destdir: g2snmpov
+            only on:  hpux sparcsol
+      component: g2-snmp-netview
+        index: 7
+        only on:  aix
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: g2-snmp-netview
+            sourcedir: g2snmpnv-34r0-B01F22
+            destdir: g2snmpnv
+            only on:  aix
+      component: Integrity Documentation
+        index: 8
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-doc
+            sourcedir: opexdoc-34r0-B01F22
+            destdir: doc
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity User's Guide
+                application directory: doc
+                target name: IntUsersGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Reference Manual
+                application directory: doc
+                target name: IntRefManual.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Utilities Guide
+                application directory: doc
+                target name: IntUtilGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Socket Manager User's Guide
+                application directory: doc
+                target name: IntJSockManGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity G2-SNMP User's Guide
+                application directory: doc
+                target name: IntSNMPUsersGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Java G2-SNMP User's Guide
+                application directory: doc
+                target name: IntJSNMPUsersGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity 3.4r0 Release Notes
+                application directory: doc
+                target name: IntRelNotes.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Demo Guide
+                application directory: doc
+                target name: IntDemoGuide.pdf
+      component: Socket Manager
+        index: 9
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: socket-manager
+            sourcedir: sockman-34r0-B01F22
+            destdir: sockman
+            only on:  nt
+      component: Integrity KBs
+        index: 10
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-core-kbs
+            sourcedir: intecore-34r0-B01F22
+            destdir: core-kbs
+              shortcut: 
+                folder name: Integrity
+                application display name: Integrity Core
+                application directory: core-kbs
+                target name: core.bat
+      component: 1-Client Integrity Core Development OK
+        index: 11
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-core-development-1-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-core-development-1-v5.ok
+            new filename: g2.ok
+      component: 2-Client Integrity Core Development OK
+        index: 12
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-core-development-2-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-core-development-2-v5.ok
+            new filename: g2.ok
+      component: 3-Client Integrity Core Development OK
+        index: 13
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-core-development-3-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-core-development-3-v5.ok
+            new filename: g2.ok
+      component: 4-Client Integrity Core Development OK
+        index: 14
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-core-development-4-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-core-development-4-v5.ok
+            new filename: g2.ok
+      component: 5-Client Integrity Core Development OK
+        index: 15
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-core-development-5-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-core-development-5-v5.ok
+            new filename: g2.ok
+      component: 6-Client Integrity Core Development OK
+        index: 16
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-core-development-6-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-core-development-6-v5.ok
+            new filename: g2.ok
+      component: 7-Client Integrity Core Development OK
+        index: 17
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-core-development-7-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-core-development-7-v5.ok
+            new filename: g2.ok
+      component: 8-Client Integrity Core Development OK
+        index: 18
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-core-development-8-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-core-development-8-v5.ok
+            new filename: g2.ok
+      component: 9-Client Integrity Core Development OK
+        index: 19
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-core-development-9-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-core-development-9-v5.ok
+            new filename: g2.ok
+      component: 10-Client Integrity Core Development OK
+        index: 20
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-core-development-10-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-core-development-10-v5.ok
+            new filename: g2.ok
+      component: 12-Client Integrity Core Development OK
+        index: 21
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-core-development-12-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-core-development-12-v5.ok
+            new filename: g2.ok
+      component: 16-Client Integrity Core Development OK
+        index: 22
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-core-development-16-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-core-development-16-v5.ok
+            new filename: g2.ok
+      component: 20-Client Integrity Core Development OK
+        index: 23
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-core-development-20-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-core-development-20-v5.ok
+            new filename: g2.ok
+      component: 24-Client Integrity Core Development OK
+        index: 24
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-core-development-24-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-core-development-24-v5.ok
+            new filename: g2.ok
+      component: 28-Client Integrity Core Development OK
+        index: 25
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-core-development-28-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-core-development-28-v5.ok
+            new filename: g2.ok
+      component: 32-Client Integrity Core Development OK
+        index: 26
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-core-development-32-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-core-development-32-v5.ok
+            new filename: g2.ok
+  bundle: integrity-discovery-development
+    id: 2
+    version: 3.4r0
+      component: Integrity Client
+        index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-client-intelnt
+            sourcedir: opex-client-34r0-B01F22
+            destdir: client
+            only on:  nt
+              env variable: INTEGRITY_HOME
+                env value: <TARGETDIR>\\client
+                env effect: new
+            postinstall code: integrityPostInstall("Integrity");
+              shortcut: 
+                folder name: Integrity
+                application display name: Integrity Client
+                application directory: client\bin
+                target name: integrity.bat
+      component: G2
+        index: 2
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: G2 Windows Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2.exe
+            only on:  nt
+          part: G2 Unix Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2
+            only on:  sparcsol aix hpux linux
+          part: G2 Map
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2.map
+            only on:  nt
+          part: G2PASSWD Windows Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2passwd.exe
+            only on:  nt
+          part: G2PASSWD Unix Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2passwd
+            only on:  sparcsol aix hpux linux
+          part: Kanji index dictionary
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: index.dic
+          part: Kanji kojin dictionary
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: kojin.dic
+          part: Kanji main dictionary
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: main.dic
+          part: G2 EXT Directory
+            sourcedir:  g2-51r7 ext
+            destdir: g2/ext
+          part: Sample G2 OK file
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2.ok
+            only on:  nt
+      component: Ping Manager
+        index: 3
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: ping-manager
+            sourcedir: pingmgr-34r0-B01F22
+            destdir: bin
+            only on:  nt sparcsol hpux
+      component: Remote OS Agent
+        index: 4
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: remote-os-agent
+            sourcedir: rosa-34r0-B01F22
+            destdir: remote-os
+            only on:  nt sparcsol
+      component: Java Generic SNMP Bridge
+        index: 5
+        only on:  nt sparcsol
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: java-snmp
+            sourcedir: g2snmpgn-34r0-B01F22
+            destdir: jsnmp
+              shortcut: 
+                folder name: Integrity
+                application display name: SNMP Trap Receiver
+                application directory: jsnmp\bin
+                target name: jsnmp.bat -listenerport 22041
+              shortcut: 
+                folder name: Integrity
+                application display name: SNMP Set Requests
+                application directory: jsnmp\bin
+                target name: jsnmp.bat -listenerport 22044
+      component: G2 SNMP HPOV Bridge
+        index: 6
+        only on:  sparcsol hpux
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: g2-snmp-hpov-bridge
+            sourcedir: g2snmpov-34r0-B01F22
+            destdir: g2snmpov
+            only on:  hpux sparcsol
+      component: g2-snmp-netview
+        index: 7
+        only on:  aix
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: g2-snmp-netview
+            sourcedir: g2snmpnv-34r0-B01F22
+            destdir: g2snmpnv
+            only on:  aix
+      component: Integrity Documentation
+        index: 8
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-doc
+            sourcedir: opexdoc-34r0-B01F22
+            destdir: doc
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity User's Guide
+                application directory: doc
+                target name: IntUsersGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Reference Manual
+                application directory: doc
+                target name: IntRefManual.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Utilities Guide
+                application directory: doc
+                target name: IntUtilGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Socket Manager User's Guide
+                application directory: doc
+                target name: IntJSockManGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity G2-SNMP User's Guide
+                application directory: doc
+                target name: IntSNMPUsersGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Java G2-SNMP User's Guide
+                application directory: doc
+                target name: IntJSNMPUsersGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity 3.4r0 Release Notes
+                application directory: doc
+                target name: IntRelNotes.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Demo Guide
+                application directory: doc
+                target name: IntDemoGuide.pdf
+      component: Socket Manager
+        index: 9
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: socket-manager
+            sourcedir: sockman-34r0-B01F22
+            destdir: sockman
+            only on:  nt
+      component: Integrity KBs
+        index: 10
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-discovery-kbs
+            sourcedir: intedisc-34r0-B01F22
+            destdir: discovery-kbs
+              shortcut: 
+                folder name: Integrity
+                application display name: Integrity Discover
+                application directory: discovery-kbs
+                target name: discovery.bat
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity AutoDiscovery User's Guide
+                application directory: doc
+                target name: IntADUsersGuide.pdf
+      component: Auto Discovery
+        index: 11
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-discovery
+            sourcedir: integad-34r0-B01F22
+            destdir: discovery
+            only on:  nt
+              shortcut: 
+                folder name: Integrity
+                application display name: AutoDiscovery DHNS Startup
+                application directory: discovery\bin
+                target name: startup_dhns.bat
+              shortcut: 
+                folder name: Integrity
+                application display name: AutoDiscovery Server Startup
+                application directory: discovery\bin
+                target name: startup_server.bat
+              shortcut: 
+                folder name: Integrity
+                application display name: AutoDiscovery Client Startup
+                application directory: discovery\bin
+                target name: startup_client.bat
+      component: 1-Client Integrity Discovery Development OK
+        index: 12
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-discovery-development-1-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-discovery-development-1-v5.ok
+            new filename: g2.ok
+      component: 2-Client Integrity Discovery Development OK
+        index: 13
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-discovery-development-2-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-discovery-development-2-v5.ok
+            new filename: g2.ok
+      component: 3-Client Integrity Discovery Development OK
+        index: 14
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-discovery-development-3-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-discovery-development-3-v5.ok
+            new filename: g2.ok
+      component: 4-Client Integrity Discovery Development OK
+        index: 15
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-discovery-development-4-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-discovery-development-4-v5.ok
+            new filename: g2.ok
+      component: 5-Client Integrity Discovery Development OK
+        index: 16
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-discovery-development-5-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-discovery-development-5-v5.ok
+            new filename: g2.ok
+      component: 6-Client Integrity Discovery Development OK
+        index: 17
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-discovery-development-6-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-discovery-development-6-v5.ok
+            new filename: g2.ok
+      component: 7-Client Integrity Discovery Development OK
+        index: 18
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-discovery-development-7-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-discovery-development-7-v5.ok
+            new filename: g2.ok
+      component: 8-Client Integrity Discovery Development OK
+        index: 19
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-discovery-development-8-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-discovery-development-8-v5.ok
+            new filename: g2.ok
+      component: 9-Client Integrity Discovery Development OK
+        index: 20
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-discovery-development-9-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-discovery-development-9-v5.ok
+            new filename: g2.ok
+      component: 10-Client Integrity Discovery Development OK
+        index: 21
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-discovery-development-10-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-discovery-development-10-v5.ok
+            new filename: g2.ok
+      component: 12-Client Integrity Discovery Development OK
+        index: 22
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-discovery-development-12-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-discovery-development-12-v5.ok
+            new filename: g2.ok
+      component: 16-Client Integrity Discovery Development OK
+        index: 23
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-discovery-development-16-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-discovery-development-16-v5.ok
+            new filename: g2.ok
+      component: 20-Client Integrity Discovery Development OK
+        index: 24
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-discovery-development-20-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-discovery-development-20-v5.ok
+            new filename: g2.ok
+      component: 24-Client Integrity Discovery Development OK
+        index: 25
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-discovery-development-24-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-discovery-development-24-v5.ok
+            new filename: g2.ok
+      component: 28-Client Integrity Discovery Development OK
+        index: 26
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-discovery-development-28-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-discovery-development-28-v5.ok
+            new filename: g2.ok
+      component: 32-Client Integrity Discovery Development OK
+        index: 27
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-discovery-development-32-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-discovery-development-32-v5.ok
+            new filename: g2.ok
+  bundle: integrity-premium-development
+    id: 3
+    version: 3.4r0
+      component: Integrity Client
+        index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-client-intelnt
+            sourcedir: opex-client-34r0-B01F22
+            destdir: client
+            only on:  nt
+              env variable: INTEGRITY_HOME
+                env value: <TARGETDIR>\\client
+                env effect: new
+            postinstall code: integrityPostInstall("Integrity");
+              shortcut: 
+                folder name: Integrity
+                application display name: Integrity Client
+                application directory: client\bin
+                target name: integrity.bat
+      component: G2
+        index: 2
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: G2 Windows Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2.exe
+            only on:  nt
+          part: G2 Unix Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2
+            only on:  sparcsol aix hpux linux
+          part: G2 Map
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2.map
+            only on:  nt
+          part: G2PASSWD Windows Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2passwd.exe
+            only on:  nt
+          part: G2PASSWD Unix Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2passwd
+            only on:  sparcsol aix hpux linux
+          part: Kanji index dictionary
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: index.dic
+          part: Kanji kojin dictionary
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: kojin.dic
+          part: Kanji main dictionary
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: main.dic
+          part: G2 EXT Directory
+            sourcedir:  g2-51r7 ext
+            destdir: g2/ext
+          part: Sample G2 OK file
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2.ok
+            only on:  nt
+      component: Ping Manager
+        index: 3
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: ping-manager
+            sourcedir: pingmgr-34r0-B01F22
+            destdir: bin
+            only on:  nt sparcsol hpux
+      component: Remote OS Agent
+        index: 4
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: remote-os-agent
+            sourcedir: rosa-34r0-B01F22
+            destdir: remote-os
+            only on:  nt sparcsol
+      component: Java Generic SNMP Bridge
+        index: 5
+        only on:  nt sparcsol
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: java-snmp
+            sourcedir: g2snmpgn-34r0-B01F22
+            destdir: jsnmp
+              shortcut: 
+                folder name: Integrity
+                application display name: SNMP Trap Receiver
+                application directory: jsnmp\bin
+                target name: jsnmp.bat -listenerport 22041
+              shortcut: 
+                folder name: Integrity
+                application display name: SNMP Set Requests
+                application directory: jsnmp\bin
+                target name: jsnmp.bat -listenerport 22044
+      component: G2 SNMP HPOV Bridge
+        index: 6
+        only on:  sparcsol hpux
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: g2-snmp-hpov-bridge
+            sourcedir: g2snmpov-34r0-B01F22
+            destdir: g2snmpov
+            only on:  hpux sparcsol
+      component: g2-snmp-netview
+        index: 7
+        only on:  aix
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: g2-snmp-netview
+            sourcedir: g2snmpnv-34r0-B01F22
+            destdir: g2snmpnv
+            only on:  aix
+      component: Integrity Documentation
+        index: 8
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-doc
+            sourcedir: opexdoc-34r0-B01F22
+            destdir: doc
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity User's Guide
+                application directory: doc
+                target name: IntUsersGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Reference Manual
+                application directory: doc
+                target name: IntRefManual.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Utilities Guide
+                application directory: doc
+                target name: IntUtilGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Socket Manager User's Guide
+                application directory: doc
+                target name: IntJSockManGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity G2-SNMP User's Guide
+                application directory: doc
+                target name: IntSNMPUsersGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Java G2-SNMP User's Guide
+                application directory: doc
+                target name: IntJSNMPUsersGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity 3.4r0 Release Notes
+                application directory: doc
+                target name: IntRelNotes.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Demo Guide
+                application directory: doc
+                target name: IntDemoGuide.pdf
+      component: Socket Manager
+        index: 9
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: socket-manager
+            sourcedir: sockman-34r0-B01F22
+            destdir: sockman
+            only on:  nt
+      component: Integrity KBs
+        index: 10
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-premium-kbs
+            sourcedir: inteprem-34r0-B01F22
+            destdir: premium-kbs
+              shortcut: 
+                folder name: Integrity
+                application display name: Integrity Premium
+                application directory: premium-kbs
+                target name: premium.bat
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity SymCure Developers Guide
+                application directory: doc
+                target name: IntSymDevGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity SymCure Modeling Guide
+                application directory: doc
+                target name: IntSymModelingGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity AutoDiscovery User's Guide
+                application directory: doc
+                target name: IntADUsersGuide.pdf
+      component: Auto Discovery
+        index: 11
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-discovery
+            sourcedir: integad-34r0-B01F22
+            destdir: discovery
+            only on:  nt
+              shortcut: 
+                folder name: Integrity
+                application display name: AutoDiscovery DHNS Startup
+                application directory: discovery\bin
+                target name: startup_dhns.bat
+              shortcut: 
+                folder name: Integrity
+                application display name: AutoDiscovery Server Startup
+                application directory: discovery\bin
+                target name: startup_server.bat
+              shortcut: 
+                folder name: Integrity
+                application display name: AutoDiscovery Client Startup
+                application directory: discovery\bin
+                target name: startup_client.bat
+      component: 1-Client Integrity Premium Development OK
+        index: 12
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-premium-development-1-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-premium-development-1-v5.ok
+            new filename: g2.ok
+      component: 2-Client Integrity Premium Development OK
+        index: 13
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-premium-development-2-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-premium-development-2-v5.ok
+            new filename: g2.ok
+      component: 3-Client Integrity Premium Development OK
+        index: 14
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-premium-development-3-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-premium-development-3-v5.ok
+            new filename: g2.ok
+      component: 4-Client Integrity Premium Development OK
+        index: 15
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-premium-development-4-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-premium-development-4-v5.ok
+            new filename: g2.ok
+      component: 5-Client Integrity Premium Development OK
+        index: 16
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-premium-development-5-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-premium-development-5-v5.ok
+            new filename: g2.ok
+      component: 6-Client Integrity Premium Development OK
+        index: 17
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-premium-development-6-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-premium-development-6-v5.ok
+            new filename: g2.ok
+      component: 7-Client Integrity Premium Development OK
+        index: 18
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-premium-development-7-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-premium-development-7-v5.ok
+            new filename: g2.ok
+      component: 8-Client Integrity Premium Development OK
+        index: 19
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-premium-development-8-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-premium-development-8-v5.ok
+            new filename: g2.ok
+      component: 9-Client Integrity Premium Development OK
+        index: 20
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-premium-development-9-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-premium-development-9-v5.ok
+            new filename: g2.ok
+      component: 10-Client Integrity Premium Development OK
+        index: 21
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-premium-development-10-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-premium-development-10-v5.ok
+            new filename: g2.ok
+      component: 12-Client Integrity Premium Development OK
+        index: 22
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-premium-development-12-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-premium-development-12-v5.ok
+            new filename: g2.ok
+      component: 16-Client Integrity Premium Development OK
+        index: 23
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-premium-development-16-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-premium-development-16-v5.ok
+            new filename: g2.ok
+      component: 20-Client Integrity Premium Development OK
+        index: 24
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-premium-development-20-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-premium-development-20-v5.ok
+            new filename: g2.ok
+      component: 24-Client Integrity Premium Development OK
+        index: 25
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-premium-development-24-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-premium-development-24-v5.ok
+            new filename: g2.ok
+      component: 28-Client Integrity Premium Development OK
+        index: 26
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-premium-development-28-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-premium-development-28-v5.ok
+            new filename: g2.ok
+      component: 32-Client Integrity Premium Development OK
+        index: 27
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-premium-development-32-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-premium-development-32-v5.ok
+            new filename: g2.ok
+  bundle: integrity-reasoner-development
+    id: 4
+    version: 3.4r0
+      component: Integrity Client
+        index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-client-intelnt
+            sourcedir: opex-client-34r0-B01F22
+            destdir: client
+            only on:  nt
+              env variable: INTEGRITY_HOME
+                env value: <TARGETDIR>\\client
+                env effect: new
+            postinstall code: integrityPostInstall("Integrity");
+              shortcut: 
+                folder name: Integrity
+                application display name: Integrity Client
+                application directory: client\bin
+                target name: integrity.bat
+      component: G2
+        index: 2
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: G2 Windows Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2.exe
+            only on:  nt
+          part: G2 Unix Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2
+            only on:  sparcsol aix hpux linux
+          part: G2 Map
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2.map
+            only on:  nt
+          part: G2PASSWD Windows Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2passwd.exe
+            only on:  nt
+          part: G2PASSWD Unix Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2passwd
+            only on:  sparcsol aix hpux linux
+          part: Kanji index dictionary
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: index.dic
+          part: Kanji kojin dictionary
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: kojin.dic
+          part: Kanji main dictionary
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: main.dic
+          part: G2 EXT Directory
+            sourcedir:  g2-51r7 ext
+            destdir: g2/ext
+          part: Sample G2 OK file
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2.ok
+            only on:  nt
+      component: Ping Manager
+        index: 3
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: ping-manager
+            sourcedir: pingmgr-34r0-B01F22
+            destdir: bin
+            only on:  nt sparcsol hpux
+      component: Remote OS Agent
+        index: 4
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: remote-os-agent
+            sourcedir: rosa-34r0-B01F22
+            destdir: remote-os
+            only on:  nt sparcsol
+      component: Java Generic SNMP Bridge
+        index: 5
+        only on:  nt sparcsol
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: java-snmp
+            sourcedir: g2snmpgn-34r0-B01F22
+            destdir: jsnmp
+              shortcut: 
+                folder name: Integrity
+                application display name: SNMP Trap Receiver
+                application directory: jsnmp\bin
+                target name: jsnmp.bat -listenerport 22041
+              shortcut: 
+                folder name: Integrity
+                application display name: SNMP Set Requests
+                application directory: jsnmp\bin
+                target name: jsnmp.bat -listenerport 22044
+      component: G2 SNMP HPOV Bridge
+        index: 6
+        only on:  sparcsol hpux
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: g2-snmp-hpov-bridge
+            sourcedir: g2snmpov-34r0-B01F22
+            destdir: g2snmpov
+            only on:  hpux sparcsol
+      component: g2-snmp-netview
+        index: 7
+        only on:  aix
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: g2-snmp-netview
+            sourcedir: g2snmpnv-34r0-B01F22
+            destdir: g2snmpnv
+            only on:  aix
+      component: Integrity Documentation
+        index: 8
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-doc
+            sourcedir: opexdoc-34r0-B01F22
+            destdir: doc
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity User's Guide
+                application directory: doc
+                target name: IntUsersGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Reference Manual
+                application directory: doc
+                target name: IntRefManual.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Utilities Guide
+                application directory: doc
+                target name: IntUtilGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Socket Manager User's Guide
+                application directory: doc
+                target name: IntJSockManGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity G2-SNMP User's Guide
+                application directory: doc
+                target name: IntSNMPUsersGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Java G2-SNMP User's Guide
+                application directory: doc
+                target name: IntJSNMPUsersGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity 3.4r0 Release Notes
+                application directory: doc
+                target name: IntRelNotes.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Demo Guide
+                application directory: doc
+                target name: IntDemoGuide.pdf
+      component: Socket Manager
+        index: 9
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: socket-manager
+            sourcedir: sockman-34r0-B01F22
+            destdir: sockman
+            only on:  nt
+      component: Integrity KBs
+        index: 10
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-kbs
+            sourcedir: intereas-34r0-B01F22
+            destdir: reasoner-kbs
+              shortcut: 
+                folder name: Integrity
+                application display name: Integrity Reasoner
+                application directory: reasoner-kbs
+                target name: reasoner.bat
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: SymCure Developers Guide
+                application directory: doc
+                target name: IntSymDevGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: SymCure Modeling Guide
+                application directory: doc
+                target name: IntSymModelingGuide.pdf
+      component: 1-Client Integrity Reasoner Development OK
+        index: 11
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-1-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-1-v5.ok
+            new filename: g2.ok
+      component: 2-Client Integrity Reasoner Development OK
+        index: 12
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-2-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-2-v5.ok
+            new filename: g2.ok
+      component: 3-Client Integrity Reasoner Development OK
+        index: 13
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-3-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-3-v5.ok
+            new filename: g2.ok
+      component: 4-Client Integrity Reasoner Development OK
+        index: 14
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-4-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-4-v5.ok
+            new filename: g2.ok
+      component: 5-Client Integrity Reasoner Development OK
+        index: 15
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-5-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-5-v5.ok
+            new filename: g2.ok
+      component: 6-Client Integrity Reasoner Development OK
+        index: 16
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-6-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-6-v5.ok
+            new filename: g2.ok
+      component: 7-Client Integrity Reasoner Development OK
+        index: 17
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-7-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-7-v5.ok
+            new filename: g2.ok
+      component: 8-Client Integrity Reasoner Development OK
+        index: 18
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-8-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-8-v5.ok
+            new filename: g2.ok
+      component: 9-Client Integrity Reasoner Development OK
+        index: 19
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-9-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-9-v5.ok
+            new filename: g2.ok
+      component: 10-Client Integrity Reasoner Development OK
+        index: 20
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-10-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-10-v5.ok
+            new filename: g2.ok
+      component: 12-Client Integrity Reasoner Development OK
+        index: 21
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-12-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-12-v5.ok
+            new filename: g2.ok
+      component: 16-Client Integrity Reasoner Development OK
+        index: 22
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-16-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-16-v5.ok
+            new filename: g2.ok
+      component: 20-Client Integrity Reasoner Development OK
+        index: 23
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-20-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-20-v5.ok
+            new filename: g2.ok
+      component: 24-Client Integrity Reasoner Development OK
+        index: 24
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-24-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-24-v5.ok
+            new filename: g2.ok
+      component: 28-Client Integrity Reasoner Development OK
+        index: 25
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-28-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-28-v5.ok
+            new filename: g2.ok
+      component: 32-Client Integrity Reasoner Development OK
+        index: 26
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-32-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-32-v5.ok
+            new filename: g2.ok
+  bundle: integrity-core-deployment
+    id: 5
+    version: 3.4r0
+      component: Integrity Client
+        index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-client-intelnt
+            sourcedir: opex-client-34r0-B01F22
+            destdir: client
+            only on:  nt
+              env variable: INTEGRITY_HOME
+                env value: <TARGETDIR>\\client
+                env effect: new
+            postinstall code: integrityPostInstall("Integrity");
+              shortcut: 
+                folder name: Integrity
+                application display name: Integrity Client
+                application directory: client\bin
+                target name: integrity.bat
+      component: G2
+        index: 2
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: G2 Windows Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2.exe
+            only on:  nt
+          part: G2 Unix Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2
+            only on:  sparcsol aix hpux linux
+          part: G2 Map
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2.map
+            only on:  nt
+          part: G2PASSWD Windows Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2passwd.exe
+            only on:  nt
+          part: G2PASSWD Unix Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2passwd
+            only on:  sparcsol aix hpux linux
+          part: Kanji index dictionary
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: index.dic
+          part: Kanji kojin dictionary
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: kojin.dic
+          part: Kanji main dictionary
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: main.dic
+          part: G2 EXT Directory
+            sourcedir:  g2-51r7 ext
+            destdir: g2/ext
+          part: Sample G2 OK file
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2.ok
+            only on:  nt
+      component: Ping Manager
+        index: 3
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: ping-manager
+            sourcedir: pingmgr-34r0-B01F22
+            destdir: bin
+            only on:  nt sparcsol hpux
+      component: Remote OS Agent
+        index: 4
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: remote-os-agent
+            sourcedir: rosa-34r0-B01F22
+            destdir: remote-os
+            only on:  nt sparcsol
+      component: Java Generic SNMP Bridge
+        index: 5
+        only on:  nt sparcsol
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: java-snmp
+            sourcedir: g2snmpgn-34r0-B01F22
+            destdir: jsnmp
+              shortcut: 
+                folder name: Integrity
+                application display name: SNMP Trap Receiver
+                application directory: jsnmp\bin
+                target name: jsnmp.bat -listenerport 22041
+              shortcut: 
+                folder name: Integrity
+                application display name: SNMP Set Requests
+                application directory: jsnmp\bin
+                target name: jsnmp.bat -listenerport 22044
+      component: G2 SNMP HPOV Bridge
+        index: 6
+        only on:  sparcsol hpux
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: g2-snmp-hpov-bridge
+            sourcedir: g2snmpov-34r0-B01F22
+            destdir: g2snmpov
+            only on:  hpux sparcsol
+      component: g2-snmp-netview
+        index: 7
+        only on:  aix
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: g2-snmp-netview
+            sourcedir: g2snmpnv-34r0-B01F22
+            destdir: g2snmpnv
+            only on:  aix
+      component: Integrity Documentation
+        index: 8
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-doc
+            sourcedir: opexdoc-34r0-B01F22
+            destdir: doc
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity User's Guide
+                application directory: doc
+                target name: IntUsersGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Reference Manual
+                application directory: doc
+                target name: IntRefManual.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Utilities Guide
+                application directory: doc
+                target name: IntUtilGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Socket Manager User's Guide
+                application directory: doc
+                target name: IntJSockManGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity G2-SNMP User's Guide
+                application directory: doc
+                target name: IntSNMPUsersGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Java G2-SNMP User's Guide
+                application directory: doc
+                target name: IntJSNMPUsersGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity 3.4r0 Release Notes
+                application directory: doc
+                target name: IntRelNotes.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Demo Guide
+                application directory: doc
+                target name: IntDemoGuide.pdf
+      component: Socket Manager
+        index: 9
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: socket-manager
+            sourcedir: sockman-34r0-B01F22
+            destdir: sockman
+            only on:  nt
+      component: Integrity KBs
+        index: 10
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-core-kbs
+            sourcedir: intecore-34r0-B01F22
+            destdir: core-kbs
+              shortcut: 
+                folder name: Integrity
+                application display name: Integrity Core
+                application directory: core-kbs
+                target name: core.bat
+      component: 4-Client Integrity Core Deployment OK
+        index: 11
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-core-deployment-4-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-core-deployment-4-v5.ok
+            new filename: g2.ok
+      component: 8-Client Integrity Core Deployment OK
+        index: 12
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-core-deployment-8-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-core-deployment-8-v5.ok
+            new filename: g2.ok
+      component: 16-Client Integrity Core Deployment OK
+        index: 13
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-core-deployment-16-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-core-deployment-16-v5.ok
+            new filename: g2.ok
+      component: 20-Client Integrity Core Deployment OK
+        index: 14
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-core-deployment-20-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-core-deployment-20-v5.ok
+            new filename: g2.ok
+      component: 24-Client Integrity Core Deployment OK
+        index: 15
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-core-deployment-24-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-core-deployment-24-v5.ok
+            new filename: g2.ok
+      component: 28-Client Integrity Core Deployment OK
+        index: 16
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-core-deployment-28-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-core-deployment-28-v5.ok
+            new filename: g2.ok
+      component: 32-Client Integrity Core Deployment OK
+        index: 17
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-core-deployment-32-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-core-deployment-32-v5.ok
+            new filename: g2.ok
+  bundle: integrity-discovery-deployment
+    id: 6
+    version: 3.4r0
+      component: Integrity Client
+        index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-client-intelnt
+            sourcedir: opex-client-34r0-B01F22
+            destdir: client
+            only on:  nt
+              env variable: INTEGRITY_HOME
+                env value: <TARGETDIR>\\client
+                env effect: new
+            postinstall code: integrityPostInstall("Integrity");
+              shortcut: 
+                folder name: Integrity
+                application display name: Integrity Client
+                application directory: client\bin
+                target name: integrity.bat
+      component: G2
+        index: 2
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: G2 Windows Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2.exe
+            only on:  nt
+          part: G2 Unix Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2
+            only on:  sparcsol aix hpux linux
+          part: G2 Map
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2.map
+            only on:  nt
+          part: G2PASSWD Windows Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2passwd.exe
+            only on:  nt
+          part: G2PASSWD Unix Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2passwd
+            only on:  sparcsol aix hpux linux
+          part: Kanji index dictionary
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: index.dic
+          part: Kanji kojin dictionary
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: kojin.dic
+          part: Kanji main dictionary
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: main.dic
+          part: G2 EXT Directory
+            sourcedir:  g2-51r7 ext
+            destdir: g2/ext
+          part: Sample G2 OK file
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2.ok
+            only on:  nt
+      component: Ping Manager
+        index: 3
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: ping-manager
+            sourcedir: pingmgr-34r0-B01F22
+            destdir: bin
+            only on:  nt sparcsol hpux
+      component: Remote OS Agent
+        index: 4
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: remote-os-agent
+            sourcedir: rosa-34r0-B01F22
+            destdir: remote-os
+            only on:  nt sparcsol
+      component: Java Generic SNMP Bridge
+        index: 5
+        only on:  nt sparcsol
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: java-snmp
+            sourcedir: g2snmpgn-34r0-B01F22
+            destdir: jsnmp
+              shortcut: 
+                folder name: Integrity
+                application display name: SNMP Trap Receiver
+                application directory: jsnmp\bin
+                target name: jsnmp.bat -listenerport 22041
+              shortcut: 
+                folder name: Integrity
+                application display name: SNMP Set Requests
+                application directory: jsnmp\bin
+                target name: jsnmp.bat -listenerport 22044
+      component: G2 SNMP HPOV Bridge
+        index: 6
+        only on:  sparcsol hpux
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: g2-snmp-hpov-bridge
+            sourcedir: g2snmpov-34r0-B01F22
+            destdir: g2snmpov
+            only on:  hpux sparcsol
+      component: g2-snmp-netview
+        index: 7
+        only on:  aix
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: g2-snmp-netview
+            sourcedir: g2snmpnv-34r0-B01F22
+            destdir: g2snmpnv
+            only on:  aix
+      component: Integrity Documentation
+        index: 8
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-doc
+            sourcedir: opexdoc-34r0-B01F22
+            destdir: doc
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity User's Guide
+                application directory: doc
+                target name: IntUsersGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Reference Manual
+                application directory: doc
+                target name: IntRefManual.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Utilities Guide
+                application directory: doc
+                target name: IntUtilGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Socket Manager User's Guide
+                application directory: doc
+                target name: IntJSockManGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity G2-SNMP User's Guide
+                application directory: doc
+                target name: IntSNMPUsersGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Java G2-SNMP User's Guide
+                application directory: doc
+                target name: IntJSNMPUsersGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity 3.4r0 Release Notes
+                application directory: doc
+                target name: IntRelNotes.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Demo Guide
+                application directory: doc
+                target name: IntDemoGuide.pdf
+      component: Socket Manager
+        index: 9
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: socket-manager
+            sourcedir: sockman-34r0-B01F22
+            destdir: sockman
+            only on:  nt
+      component: Integrity KBs
+        index: 10
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-discovery-kbs
+            sourcedir: intedisc-34r0-B01F22
+            destdir: discovery-kbs
+              shortcut: 
+                folder name: Integrity
+                application display name: Integrity Discover
+                application directory: discovery-kbs
+                target name: discovery.bat
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity AutoDiscovery User's Guide
+                application directory: doc
+                target name: IntADUsersGuide.pdf
+      component: Auto Discovery
+        index: 11
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-discovery
+            sourcedir: integad-34r0-B01F22
+            destdir: discovery
+            only on:  nt
+              shortcut: 
+                folder name: Integrity
+                application display name: AutoDiscovery DHNS Startup
+                application directory: discovery\bin
+                target name: startup_dhns.bat
+              shortcut: 
+                folder name: Integrity
+                application display name: AutoDiscovery Server Startup
+                application directory: discovery\bin
+                target name: startup_server.bat
+              shortcut: 
+                folder name: Integrity
+                application display name: AutoDiscovery Client Startup
+                application directory: discovery\bin
+                target name: startup_client.bat
+      component: 4-Client Integrity Discovery Deployment OK
+        index: 12
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-discovery-deployment-4-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-discovery-deployment-4-v5.ok
+            new filename: g2.ok
+      component: 8-Client Integrity Discovery Deployment OK
+        index: 13
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-discovery-deployment-8-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-discovery-deployment-8-v5.ok
+            new filename: g2.ok
+      component: 16-Client Integrity Discovery Deployment OK
+        index: 14
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-discovery-deployment-16-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-discovery-deployment-16-v5.ok
+            new filename: g2.ok
+      component: 20-Client Integrity Discovery Deployment OK
+        index: 15
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-discovery-deployment-20-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-discovery-deployment-20-v5.ok
+            new filename: g2.ok
+      component: 24-Client Integrity Discovery Deployment OK
+        index: 16
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-discovery-deployment-24-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-discovery-deployment-24-v5.ok
+            new filename: g2.ok
+      component: 28-Client Integrity Discovery Deployment OK
+        index: 17
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-discovery-deployment-28-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-discovery-deployment-28-v5.ok
+            new filename: g2.ok
+      component: 32-Client Integrity Discovery Deployment OK
+        index: 18
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-discovery-deployment-32-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-discovery-deployment-32-v5.ok
+            new filename: g2.ok
+  bundle: integrity-premium-deployment
+    id: 7
+    version: 3.4r0
+      component: Integrity Client
+        index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-client-intelnt
+            sourcedir: opex-client-34r0-B01F22
+            destdir: client
+            only on:  nt
+              env variable: INTEGRITY_HOME
+                env value: <TARGETDIR>\\client
+                env effect: new
+            postinstall code: integrityPostInstall("Integrity");
+              shortcut: 
+                folder name: Integrity
+                application display name: Integrity Client
+                application directory: client\bin
+                target name: integrity.bat
+      component: G2
+        index: 2
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: G2 Windows Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2.exe
+            only on:  nt
+          part: G2 Unix Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2
+            only on:  sparcsol aix hpux linux
+          part: G2 Map
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2.map
+            only on:  nt
+          part: G2PASSWD Windows Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2passwd.exe
+            only on:  nt
+          part: G2PASSWD Unix Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2passwd
+            only on:  sparcsol aix hpux linux
+          part: Kanji index dictionary
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: index.dic
+          part: Kanji kojin dictionary
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: kojin.dic
+          part: Kanji main dictionary
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: main.dic
+          part: G2 EXT Directory
+            sourcedir:  g2-51r7 ext
+            destdir: g2/ext
+          part: Sample G2 OK file
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2.ok
+            only on:  nt
+      component: Ping Manager
+        index: 3
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: ping-manager
+            sourcedir: pingmgr-34r0-B01F22
+            destdir: bin
+            only on:  nt sparcsol hpux
+      component: Remote OS Agent
+        index: 4
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: remote-os-agent
+            sourcedir: rosa-34r0-B01F22
+            destdir: remote-os
+            only on:  nt sparcsol
+      component: Java Generic SNMP Bridge
+        index: 5
+        only on:  nt sparcsol
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: java-snmp
+            sourcedir: g2snmpgn-34r0-B01F22
+            destdir: jsnmp
+              shortcut: 
+                folder name: Integrity
+                application display name: SNMP Trap Receiver
+                application directory: jsnmp\bin
+                target name: jsnmp.bat -listenerport 22041
+              shortcut: 
+                folder name: Integrity
+                application display name: SNMP Set Requests
+                application directory: jsnmp\bin
+                target name: jsnmp.bat -listenerport 22044
+      component: G2 SNMP HPOV Bridge
+        index: 6
+        only on:  sparcsol hpux
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: g2-snmp-hpov-bridge
+            sourcedir: g2snmpov-34r0-B01F22
+            destdir: g2snmpov
+            only on:  hpux sparcsol
+      component: g2-snmp-netview
+        index: 7
+        only on:  aix
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: g2-snmp-netview
+            sourcedir: g2snmpnv-34r0-B01F22
+            destdir: g2snmpnv
+            only on:  aix
+      component: Integrity Documentation
+        index: 8
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-doc
+            sourcedir: opexdoc-34r0-B01F22
+            destdir: doc
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity User's Guide
+                application directory: doc
+                target name: IntUsersGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Reference Manual
+                application directory: doc
+                target name: IntRefManual.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Utilities Guide
+                application directory: doc
+                target name: IntUtilGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Socket Manager User's Guide
+                application directory: doc
+                target name: IntJSockManGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity G2-SNMP User's Guide
+                application directory: doc
+                target name: IntSNMPUsersGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Java G2-SNMP User's Guide
+                application directory: doc
+                target name: IntJSNMPUsersGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity 3.4r0 Release Notes
+                application directory: doc
+                target name: IntRelNotes.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Demo Guide
+                application directory: doc
+                target name: IntDemoGuide.pdf
+      component: Socket Manager
+        index: 9
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: socket-manager
+            sourcedir: sockman-34r0-B01F22
+            destdir: sockman
+            only on:  nt
+      component: Integrity KBs
+        index: 10
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-premium-kbs
+            sourcedir: inteprem-34r0-B01F22
+            destdir: premium-kbs
+              shortcut: 
+                folder name: Integrity
+                application display name: Integrity Premium
+                application directory: premium-kbs
+                target name: premium.bat
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity SymCure Developers Guide
+                application directory: doc
+                target name: IntSymDevGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity SymCure Modeling Guide
+                application directory: doc
+                target name: IntSymModelingGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity AutoDiscovery User's Guide
+                application directory: doc
+                target name: IntADUsersGuide.pdf
+      component: Auto Discovery
+        index: 11
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-discovery
+            sourcedir: integad-34r0-B01F22
+            destdir: discovery
+            only on:  nt
+              shortcut: 
+                folder name: Integrity
+                application display name: AutoDiscovery DHNS Startup
+                application directory: discovery\bin
+                target name: startup_dhns.bat
+              shortcut: 
+                folder name: Integrity
+                application display name: AutoDiscovery Server Startup
+                application directory: discovery\bin
+                target name: startup_server.bat
+              shortcut: 
+                folder name: Integrity
+                application display name: AutoDiscovery Client Startup
+                application directory: discovery\bin
+                target name: startup_client.bat
+      component: 4-Client Integrity Premium Deployment OK
+        index: 12
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-premium-deployment-4-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-premium-deployment-4-v5.ok
+            new filename: g2.ok
+      component: 8-Client Integrity Premium Deployment OK
+        index: 13
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-premium-deployment-8-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-premium-deployment-8-v5.ok
+            new filename: g2.ok
+      component: 16-Client Integrity Premium Deployment OK
+        index: 14
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-premium-deployment-16-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-premium-deployment-16-v5.ok
+            new filename: g2.ok
+      component: 20-Client Integrity Premium Deployment OK
+        index: 15
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-premium-deployment-20-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-premium-deployment-20-v5.ok
+            new filename: g2.ok
+      component: 24-Client Integrity Premium Deployment OK
+        index: 16
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-premium-deployment-24-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-premium-deployment-24-v5.ok
+            new filename: g2.ok
+      component: 28-Client Integrity Premium Deployment OK
+        index: 17
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-premium-deployment-28-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-premium-deployment-28-v5.ok
+            new filename: g2.ok
+      component: 32-Client Integrity Premium Deployment OK
+        index: 18
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-premium-deployment-32-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-premium-deployment-32-v5.ok
+            new filename: g2.ok
+  bundle: integrity-reasoner-deployment
+    id: 8
+    version: 3.4r0
+      component: Integrity Client
+        index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-client-intelnt
+            sourcedir: opex-client-34r0-B01F22
+            destdir: client
+            only on:  nt
+              env variable: INTEGRITY_HOME
+                env value: <TARGETDIR>\\client
+                env effect: new
+            postinstall code: integrityPostInstall("Integrity");
+              shortcut: 
+                folder name: Integrity
+                application display name: Integrity Client
+                application directory: client\bin
+                target name: integrity.bat
+      component: G2
+        index: 2
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: G2 Windows Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2.exe
+            only on:  nt
+          part: G2 Unix Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2
+            only on:  sparcsol aix hpux linux
+          part: G2 Map
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2.map
+            only on:  nt
+          part: G2PASSWD Windows Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2passwd.exe
+            only on:  nt
+          part: G2PASSWD Unix Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2passwd
+            only on:  sparcsol aix hpux linux
+          part: Kanji index dictionary
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: index.dic
+          part: Kanji kojin dictionary
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: kojin.dic
+          part: Kanji main dictionary
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: main.dic
+          part: G2 EXT Directory
+            sourcedir:  g2-51r7 ext
+            destdir: g2/ext
+          part: Sample G2 OK file
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2.ok
+            only on:  nt
+      component: Ping Manager
+        index: 3
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: ping-manager
+            sourcedir: pingmgr-34r0-B01F22
+            destdir: bin
+            only on:  nt sparcsol hpux
+      component: Remote OS Agent
+        index: 4
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: remote-os-agent
+            sourcedir: rosa-34r0-B01F22
+            destdir: remote-os
+            only on:  nt sparcsol
+      component: Java Generic SNMP Bridge
+        index: 5
+        only on:  nt sparcsol
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: java-snmp
+            sourcedir: g2snmpgn-34r0-B01F22
+            destdir: jsnmp
+              shortcut: 
+                folder name: Integrity
+                application display name: SNMP Trap Receiver
+                application directory: jsnmp\bin
+                target name: jsnmp.bat -listenerport 22041
+              shortcut: 
+                folder name: Integrity
+                application display name: SNMP Set Requests
+                application directory: jsnmp\bin
+                target name: jsnmp.bat -listenerport 22044
+      component: G2 SNMP HPOV Bridge
+        index: 6
+        only on:  sparcsol hpux
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: g2-snmp-hpov-bridge
+            sourcedir: g2snmpov-34r0-B01F22
+            destdir: g2snmpov
+            only on:  hpux sparcsol
+      component: g2-snmp-netview
+        index: 7
+        only on:  aix
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: g2-snmp-netview
+            sourcedir: g2snmpnv-34r0-B01F22
+            destdir: g2snmpnv
+            only on:  aix
+      component: Integrity Documentation
+        index: 8
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-doc
+            sourcedir: opexdoc-34r0-B01F22
+            destdir: doc
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity User's Guide
+                application directory: doc
+                target name: IntUsersGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Reference Manual
+                application directory: doc
+                target name: IntRefManual.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Utilities Guide
+                application directory: doc
+                target name: IntUtilGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Socket Manager User's Guide
+                application directory: doc
+                target name: IntJSockManGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity G2-SNMP User's Guide
+                application directory: doc
+                target name: IntSNMPUsersGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Java G2-SNMP User's Guide
+                application directory: doc
+                target name: IntJSNMPUsersGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity 3.4r0 Release Notes
+                application directory: doc
+                target name: IntRelNotes.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: Integrity Demo Guide
+                application directory: doc
+                target name: IntDemoGuide.pdf
+      component: Socket Manager
+        index: 9
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: socket-manager
+            sourcedir: sockman-34r0-B01F22
+            destdir: sockman
+            only on:  nt
+      component: Integrity KBs
+        index: 10
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-kbs
+            sourcedir: intereas-34r0-B01F22
+            destdir: reasoner-kbs
+              shortcut: 
+                folder name: Integrity
+                application display name: Integrity Reasoner
+                application directory: reasoner-kbs
+                target name: reasoner.bat
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: SymCure Developers Guide
+                application directory: doc
+                target name: IntSymDevGuide.pdf
+              shortcut: 
+                folder name: Integrity\Documentation
+                application display name: SymCure Modeling Guide
+                application directory: doc
+                target name: IntSymModelingGuide.pdf
+      component: 4-Client Integrity Reasoner Deployment OK
+        index: 11
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-deployment-4-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-deployment-4-v5.ok
+            new filename: g2.ok
+      component: 8-Client Integrity Reasoner Deployment OK
+        index: 12
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-deployment-8-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-deployment-8-v5.ok
+            new filename: g2.ok
+      component: 16-Client Integrity Reasoner Deployment OK
+        index: 13
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-deployment-16-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-deployment-16-v5.ok
+            new filename: g2.ok
+      component: 20-Client Integrity Reasoner Deployment OK
+        index: 14
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-deployment-20-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-deployment-20-v5.ok
+            new filename: g2.ok
+      component: 24-Client Integrity Reasoner Deployment OK
+        index: 15
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-deployment-24-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-deployment-24-v5.ok
+            new filename: g2.ok
+      component: 28-Client Integrity Reasoner Deployment OK
+        index: 16
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-deployment-28-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-deployment-28-v5.ok
+            new filename: g2.ok
+      component: 32-Client Integrity Reasoner Deployment OK
+        index: 17
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-deployment-32-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-deployment-32-v5.ok
+            new filename: g2.ok
+  bundle: optegrity-reasoner-development
+    id: 9
+    version: 3.4r0
+      component: Optegrity Client
+        index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-client-intelnt
+            sourcedir: opteg-client-34r0-B01F22
+            destdir: optclient
+            only on:  nt
+              env variable: OPTEGRITY_HOME
+                env value: <TARGETDIR>\\optclient
+                env effect: new
+            postinstall code: integrityPostInstall("Optegrity");
+              shortcut: 
+                folder name: Optegrity
+                application display name: Optegrity Client
+                application directory: optclient\bin
+                target name: optegrity.bat
+      component: G2
+        index: 2
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: G2 Windows Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2.exe
+            only on:  nt
+          part: G2 Unix Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2
+            only on:  sparcsol aix hpux linux
+          part: G2 Map
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2.map
+            only on:  nt
+          part: G2PASSWD Windows Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2passwd.exe
+            only on:  nt
+          part: G2PASSWD Unix Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2passwd
+            only on:  sparcsol aix hpux linux
+          part: Kanji index dictionary
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: index.dic
+          part: Kanji kojin dictionary
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: kojin.dic
+          part: Kanji main dictionary
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: main.dic
+          part: G2 EXT Directory
+            sourcedir:  g2-51r7 ext
+            destdir: g2/ext
+          part: Sample G2 OK file
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2.ok
+            only on:  nt
+      component: Remote OS Agent
+        index: 3
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: remote-os-agent
+            sourcedir: rosa-34r0-B01F22
+            destdir: remote-os
+            only on:  nt sparcsol
+      component: Optegrity Documentation
+        index: 4
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-doc
+            sourcedir: optegdoc-34r0-B01F22
+            destdir: optdoc
+              shortcut: 
+                folder name: Optegrity\Documentation
+                application display name: Optegrity User's Guide
+                application directory: optdoc
+                target name: OptUsersGuide.pdf
+              shortcut: 
+                folder name: Optegrity\Documentation
+                application display name: Optegrity Reference Manual
+                application directory: optdoc
+                target name: OptRefManual.pdf
+              shortcut: 
+                folder name: Optegrity\Documentation
+                application display name: Optegrity Utilities Guide
+                application directory: optdoc
+                target name: IntUtilGuide.pdf
+              shortcut: 
+                folder name: Optegrity\Documentation
+                application display name: Optegrity Socket Manager User's Guide
+                application directory: optdoc
+                target name: IntJSockManGuide.pdf
+              shortcut: 
+                folder name: Optegrity\Documentation
+                application display name: Optegrity SymCure Developers Guide
+                application directory: optdoc
+                target name: OptSymDevGuide.pdf
+              shortcut: 
+                folder name: Optegrity\Documentation
+                application display name: Optegrity SymCure Modeling Guide
+                application directory: optdoc
+                target name: OptSymModelingGuide.pdf
+              shortcut: 
+                folder name: Optegrity\Documentation
+                application display name: Optegrity 3.4r0 Release Notes
+                application directory: optdoc
+                target name: OptRelNotes.pdf
+              shortcut: 
+                folder name: Optegrity\Documentation
+                application display name: Optegrity Demo Guide
+                application directory: optdoc
+                target name: IntDemoGuide.pdf
+      component: Socket Manager
+        index: 5
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: socket-manager
+            sourcedir: sockman-34r0-B01F22
+            destdir: sockman
+            only on:  nt
+      component: Optegrity KBs
+        index: 6
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-kbs
+            sourcedir: optegrity-34r0-B01F22
+            destdir: optegrity-kbs
+              shortcut: 
+                folder name: Optegrity
+                application display name: Optegrity
+                application directory: optegrity-kbs
+                target name: optegrity.bat
+      component: 1-Client Integrity Reasoner Development OK
+        index: 7
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-1-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-1-v5.ok
+            new filename: g2.ok
+      component: 2-Client Integrity Reasoner Development OK
+        index: 8
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-2-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-2-v5.ok
+            new filename: g2.ok
+      component: 3-Client Integrity Reasoner Development OK
+        index: 9
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-3-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-3-v5.ok
+            new filename: g2.ok
+      component: 4-Client Integrity Reasoner Development OK
+        index: 10
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-4-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-4-v5.ok
+            new filename: g2.ok
+      component: 5-Client Integrity Reasoner Development OK
+        index: 11
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-5-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-5-v5.ok
+            new filename: g2.ok
+      component: 6-Client Integrity Reasoner Development OK
+        index: 12
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-6-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-6-v5.ok
+            new filename: g2.ok
+      component: 7-Client Integrity Reasoner Development OK
+        index: 13
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-7-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-7-v5.ok
+            new filename: g2.ok
+      component: 8-Client Integrity Reasoner Development OK
+        index: 14
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-8-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-8-v5.ok
+            new filename: g2.ok
+      component: 9-Client Integrity Reasoner Development OK
+        index: 15
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-9-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-9-v5.ok
+            new filename: g2.ok
+      component: 10-Client Integrity Reasoner Development OK
+        index: 16
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-10-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-10-v5.ok
+            new filename: g2.ok
+      component: 12-Client Integrity Reasoner Development OK
+        index: 17
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-12-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-12-v5.ok
+            new filename: g2.ok
+      component: 16-Client Integrity Reasoner Development OK
+        index: 18
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-16-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-16-v5.ok
+            new filename: g2.ok
+      component: 20-Client Integrity Reasoner Development OK
+        index: 19
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-20-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-20-v5.ok
+            new filename: g2.ok
+      component: 24-Client Integrity Reasoner Development OK
+        index: 20
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-24-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-24-v5.ok
+            new filename: g2.ok
+      component: 28-Client Integrity Reasoner Development OK
+        index: 21
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-28-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-28-v5.ok
+            new filename: g2.ok
+      component: 32-Client Integrity Reasoner Development OK
+        index: 22
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-development-32-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-development-32-v5.ok
+            new filename: g2.ok
+  bundle: optegrity-reasoner-deployment
+    id: 10
+    version: 3.4r0
+      component: Optegrity Client
+        index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-client-intelnt
+            sourcedir: opteg-client-34r0-B01F22
+            destdir: optclient
+            only on:  nt
+              env variable: OPTEGRITY_HOME
+                env value: <TARGETDIR>\\optclient
+                env effect: new
+            postinstall code: integrityPostInstall("Optegrity");
+              shortcut: 
+                folder name: Optegrity
+                application display name: Optegrity Client
+                application directory: optclient\bin
+                target name: optegrity.bat
+      component: G2
+        index: 2
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: G2 Windows Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2.exe
+            only on:  nt
+          part: G2 Unix Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2
+            only on:  sparcsol aix hpux linux
+          part: G2 Map
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2.map
+            only on:  nt
+          part: G2PASSWD Windows Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2passwd.exe
+            only on:  nt
+          part: G2PASSWD Unix Executable
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2passwd
+            only on:  sparcsol aix hpux linux
+          part: Kanji index dictionary
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: index.dic
+          part: Kanji kojin dictionary
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: kojin.dic
+          part: Kanji main dictionary
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: main.dic
+          part: G2 EXT Directory
+            sourcedir:  g2-51r7 ext
+            destdir: g2/ext
+          part: Sample G2 OK file
+            sourcedir: g2-51r7
+            destdir: g2
+            filename: g2.ok
+            only on:  nt
+      component: Remote OS Agent
+        index: 3
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: remote-os-agent
+            sourcedir: rosa-34r0-B01F22
+            destdir: remote-os
+            only on:  nt sparcsol
+      component: Optegrity Documentation
+        index: 4
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-doc
+            sourcedir: optegdoc-34r0-B01F22
+            destdir: optdoc
+              shortcut: 
+                folder name: Optegrity\Documentation
+                application display name: Optegrity User's Guide
+                application directory: optdoc
+                target name: OptUsersGuide.pdf
+              shortcut: 
+                folder name: Optegrity\Documentation
+                application display name: Optegrity Reference Manual
+                application directory: optdoc
+                target name: OptRefManual.pdf
+              shortcut: 
+                folder name: Optegrity\Documentation
+                application display name: Optegrity Utilities Guide
+                application directory: optdoc
+                target name: IntUtilGuide.pdf
+              shortcut: 
+                folder name: Optegrity\Documentation
+                application display name: Optegrity Socket Manager User's Guide
+                application directory: optdoc
+                target name: IntJSockManGuide.pdf
+              shortcut: 
+                folder name: Optegrity\Documentation
+                application display name: Optegrity SymCure Developers Guide
+                application directory: optdoc
+                target name: OptSymDevGuide.pdf
+              shortcut: 
+                folder name: Optegrity\Documentation
+                application display name: Optegrity SymCure Modeling Guide
+                application directory: optdoc
+                target name: OptSymModelingGuide.pdf
+              shortcut: 
+                folder name: Optegrity\Documentation
+                application display name: Optegrity 3.4r0 Release Notes
+                application directory: optdoc
+                target name: OptRelNotes.pdf
+              shortcut: 
+                folder name: Optegrity\Documentation
+                application display name: Optegrity Demo Guide
+                application directory: optdoc
+                target name: IntDemoGuide.pdf
+      component: Socket Manager
+        index: 5
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: socket-manager
+            sourcedir: sockman-34r0-B01F22
+            destdir: sockman
+            only on:  nt
+      component: Optegrity KBs
+        index: 6
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-kbs
+            sourcedir: optegrity-34r0-B01F22
+            destdir: optegrity-kbs
+              shortcut: 
+                folder name: Optegrity
+                application display name: Optegrity
+                application directory: optegrity-kbs
+                target name: optegrity.bat
+      component: 4-Client Integrity Reasoner Deployment OK
+        index: 7
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-deployment-4-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-deployment-4-v5.ok
+            new filename: g2.ok
+      component: 8-Client Integrity Reasoner Deployment OK
+        index: 8
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-deployment-8-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-deployment-8-v5.ok
+            new filename: g2.ok
+      component: 16-Client Integrity Reasoner Deployment OK
+        index: 9
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-deployment-16-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-deployment-16-v5.ok
+            new filename: g2.ok
+      component: 20-Client Integrity Reasoner Deployment OK
+        index: 10
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-deployment-20-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-deployment-20-v5.ok
+            new filename: g2.ok
+      component: 24-Client Integrity Reasoner Deployment OK
+        index: 11
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-deployment-24-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-deployment-24-v5.ok
+            new filename: g2.ok
+      component: 28-Client Integrity Reasoner Deployment OK
+        index: 12
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-deployment-28-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-deployment-28-v5.ok
+            new filename: g2.ok
+      component: 32-Client Integrity Reasoner Deployment OK
+        index: 13
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: integrity-reasoner-deployment-32-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: integrity-reasoner-deployment-32-v5.ok
+            new filename: g2.ok
