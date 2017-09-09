@@ -1,0 +1,188 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_reference.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+covxml - Export as XML
+</h1>
+<pre>
+covxml [<i>options</i>]
+</pre>
+
+<h2>DESCRIPTION</h2>
+<p>
+Converts coverage data to an XML format, and writes it to the standard output.
+The XML format is described below.
+<h3>The Root Element</h3>
+<pre>
+&lt;?xml version="1.0"?&gt;
+&lt;BullseyeCoverage name="<i>basename</i>" dir="<i>directory</i>" buildId="<i>buildId</i>" version="4"&gt;
+&lt;!-- sequence of &lt;folder&gt; and &lt;src&gt; elements --&gt;
+&lt;/BullseyeCoverage&gt;
+</pre>
+<table border=1>
+<tr><th>Attribute</th><th>Description</th></tr>
+<tr><td><code>name</code></td><td>basename of coverage file</td></tr>
+<tr><td><code>dir</code></td><td>directory coverage file is in</td></tr>
+<tr><td><code>buildId</code></td><td>identifies the last change made to the coverage file as a result of building
+</td></tr>
+</table>
+
+<h3>The folder Element</h3>
+<pre>
+&lt;folder name="<i>basename</i>" <a href="#summary_measurements"><i>summary-measurements</i></a>&gt;
+&lt;!-- sequence of &lt;folder&gt; and &lt;src&gt; elements --&gt;
+&lt;/folder&gt;
+</pre>
+<table border=1>
+<tr><th>Attribute</th><th>Description</th></tr>
+<tr><td><code>name</code></td><td>basename of folder</td></tr>
+</table>
+
+<h3>The src Element</h3>
+<pre>
+&lt;src name="<i>basename</i>" mtime="<i>n</i>" <a href="#summary_measurements"><i>summary-measurements</i></a>&gt;
+&lt;!-- sequence of &lt;fn&gt; elements --&gt;
+&lt;/src&gt;
+</pre>
+<table border=1>
+<tr><th>Attribute</th><th>Description</th></tr>
+<tr><td><code>name</code></td><td>basename of source file</td></tr>
+<tr><td><code>mtime</code></td><td>timestamp of source file in
+<a href="http://www.opengroup.org/onlinepubs/009695399/basedefs/xbd_chap04.html#tag_04_14">seconds since the Epoch</a>
+</td></tr>
+</table>
+
+<h3>The fn Element</h3>
+<pre>
+&lt;fn name="<i>function-name</i>" <a href="#summary_measurements"><i>summary-measurements</i></a>&gt;
+&lt;!-- sequence of &lt;probe&gt; elements --&gt;
+&lt;/fn&gt;
+</pre>
+<table border=1>
+<tr><th>Attribute</th><th>Description</th></tr>
+<tr><td><code>name</code></td><td>function name</td></tr>
+</table>
+
+<h3>The probe Element</h3>
+<pre>
+&lt;probe line="<i>n</i>" column="<i>n</i>" col_seq="<i>n</i>" kind="<i>kind</i>" event="<i>event</i>"/&gt;
+</pre>
+<table border=1>
+<tr><th>Attribute</th><th>Description</th></tr>
+<tr><td><code>line</code></td><td>Source file line number</td></tr>
+<tr><td><code>column</code><td>
+Beginning column number of the code measured by the probe, not counting whitespace.
+If not present, the value is zero.
+</td></tr>
+<tr><td><code>col_seq</code></td><td>
+Column sequence number.
+Uniquely identifies probes having the same line and column.
+If not present, the value is zero.
+</td></tr>
+<tr><td><code>kind</code></td><td>One of: <code>catch</code>, <code>condition</code>, <code>constant</code>,
+    <code>decision</code>, <code>function</code>, <code>switch-label</code>, <code>try</code></td></tr>
+<tr><td><code>event</code></td><td>One of: <code>none</code>, <code>false</code>, <code>true</code>, <code>full</code></td></tr>
+</table>
+
+<h3>
+<a name=summary_measurements></a>
+The <i>summary-measurements</i> Attributes
+</h3>
+<pre>
+fn_cov="<i>n</i>" fn_total="<i>n</i>" cd_cov="<i>n</i>" cd_total="<i>n</i>" d_cov="<i>n</i>" d_total="<i>n</i>"
+</pre>
+<table border=1>
+<tr><th>Attribute</th><th>Description</th></tr>
+<tr><td><code>fn_cov</code></td><td>number of functions invoked for the region</td></tr>
+<tr><td><code>fn_total</code></td><td>total number of functions in the region</td></tr>
+<tr><td><code>cd_cov</code></td><td>number of conditions and decisions invoked for the region</td></tr>
+<tr><td><code>cd_total</code></td><td>total number of conditions and decisions in the region</td></tr>
+<tr><td><code>d_cov</code></td><td>number of decisions invoked for the region</td></tr>
+<tr><td><code>d_total</code></td><td>total number of decisions in the region</td></tr>
+</table>
+<p>
+We recommend ignoring the decision coverage measurements, <code>d_cov</code> and <code>d_total</code>.
+Decision coverage may report uncovered code as covered.
+Use these measurements only to compare with results from other tools that cannot provide condition/decision coverage. 
+<p>
+See <a href="report-calculation.html">Coverage Calculation</a>.
+
+<h2>OPTIONS</h2>
+<table cellspacing=12>
+<colgroup><col span=2 style=white-space:nowrap></colgroup>
+<tr><td><code>-f</code><i>Path</i><td><code>--file</code> <i>Path</i>
+<td>The coverage file is specified by <i>Path</i>. The default is <code>test.cov</code>.
+<tr><td><code>-h</code><td><code>--help</code>
+<td>Display a summary of options.
+<tr><td><code>-q</code><td><code>--quiet</code>
+<td>Suppress warnings and the copyright message.
+<tr><td><code>--no-banner</code><td>
+<td>
+Suppress startup banner
+</table>
+
+<h2>ENVIRONMENT VARIABLES</h2>
+<table CELLSPACING=12 summary="">
+<tr><td><code>COVFILE</code><td>The coverage file. Option <CODE>-f</CODE> (<CODE>--file</CODE>) overrides this setting.
+<tr><td><code>COVXMLCFG</code><td>Configuration file. See FILES.
+</table>
+
+<H2>FILES</H2>
+<p>
+If the files listed below exist, they contain initial options separated by white space.
+<p>
+<i>BullseyeCoverage</i><code>/bin/covxml.cfg</code><br>
+<i>home-directory</i><code>/covxml.cfg</code><br>
+
+<H2>VERSION HISTORY</H2>
+<p>
+<table border=1>
+<tr>
+<th>File Version
+<th>Software Version
+<th>Date
+<th>Changes
+<tr><td>1<td>7.7.25<td>Sep 2007<td>
+<tr><td>2<td>7.8.0<td>Sep 2007<td>
+Remove root element attribute <code>mtime</code>, add attribute <code>buildId</code>
+<tr><td>3<td>7.11.3<td>Jan 2009<td>
+Add <code>probe</code> element attribute <code>column</code>
+<tr><td>4<td>7.12.4<td>Jun 2009<td>
+Remove <code>probe</code> element attribute <code>seq</code>, add attribute <code>col_seq</code>
+</table>
+
+<p style=font-size:xx-small>
+Last reviewed: 25 Jun 2009
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
