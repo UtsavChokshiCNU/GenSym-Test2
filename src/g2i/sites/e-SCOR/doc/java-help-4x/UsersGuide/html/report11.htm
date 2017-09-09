@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="02/06/02 18:48:16">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Triggering Regular Updates for Multiple Reports</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="report10.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="report12.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+      <div align="center"><b>e-SCOR User's Guide</b></div>
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/e-SCOR/OnlineHelpFiles/UsersGuide/html/reports.htm">  
+        Using Reports  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Triggering Regular Updates for Multiple Reports
+</h2>
+<p>You might want to trigger multiple reports to update at the same time. The easiest way to do this is to associate each report with an Update Trigger tool, which triggers updates for all associated reports.<a name="292597"></a></p>
+<p>Another advantage of using an Update Trigger tool is that you can configure a time delay before the first update. <a name="302941"></a></p>
+<h4 >	 To trigger regular updates for multiple reports:<a name="292418"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>1	</b></td>    <td valign="top" width="580">Display the e-SCOR toolbar and click the Tools tab:<a name="292420"></a></td>  </tr></table><p >
+  <a name="1136897"> </a>
+<p><div align="left"><img src="images/e-scor-9.gif" border="0" hspace="0" vspace="0">
+</div><a name="1136896"></a></p>
+
+
+
+</p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>2	</b></td>    <td valign="top" width="580">Select an Update Trigger tool and place it on the workspace that contains the report object.<a name="304519"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>3	</b></td>    <td valign="top" width="580">Display the properties dialog for the Update Trigger and on the General tab, configure the Label.<a name="84647"></a></td>  </tr></table><blockquote>  <a name="84648">For example, you might label the Update Trigger "Hourly Update."</a></blockquote>
+<blockquote>  <a name="308437">By default, the Update Trigger tool triggers updates continuously.</a></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>4	</b></td>    <td valign="top" width="580">Click the Block tab and configure the Maximum Starts to be the maximum number of times the trigger should update, as needed.<a name="306115"></a></td>  </tr></table><blockquote>  <a name="308707">You might want to begin triggering updates after a time delay or stop triggering updates after a certain simulation time.</a></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>5	</b></td>    <td valign="top" width="580">Configure the Start Time and End Time to be the time at which the trigger tool should start and finish triggering updates, as needed.<a name="308706"></a></td>  </tr></table><blockquote>  <a name="1136980">For a role report, you typically use the Financial Period parameter as the value of the Mean parameter so the report computes financial metrics once per financial period. </a></blockquote>
+<blockquote><h6><b>Tip: </b>To ensure that the report computes metrics for the current Financial Period, click the Block tab and configure the Start Time of the Update Trigger to be <code>2 seconds</code>, which causes the report to trigger two seconds after the end of the Financial Period.<a name="1015935"></a></h6></blockquote><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>6	</b></td>    <td valign="top" width="580">Click the Duration tab and configure the Period to be the frequency with which to trigger updates.<a name="84650"></a></td>  </tr></table><blockquote>  <a name="84651">For example, to update the reports once an hour of simulation time, enter <code>1 hour</code>. </a></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>7	</b></td>    <td valign="top" width="580">Choose the Choose Update Trigger menu choice on a report object, then choose Select on the Update Trigger.<a name="299831"></a></td>  </tr></table><blockquote>  <a name="84658">A magenta arrow appears indicating that you have selected the trigger. </a></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>8	</b></td>    <td valign="top" width="580">Repeat Step 7. for each report object whose data you want to update, based on the Update Trigger.<a name="84659"></a></td>  </tr></table><p>This figure shows how you use a single Update Trigger tool to update two reports. The Role Output Report and Level 2 Output Report are both associated with the Financial Period Update Trigger, which is configured to update its associated reports once per financial period, which is 30 days, by default. By configuring the Start Time of the trigger to be <code>2 seconds</code>, the reports update two seconds after each update period, which means the report shows the most current values.<a name="1137097"></a></p>
+<p >
+  <a name="1137107"> </a>
+<p><div align="left"><img src="images/update12.gif" border="0" hspace="0" vspace="0">
+</div><a name="1137106"></a></p>
+
+
+
+</p>
+<p>Here are both reports after one update cycle. Notice that Data Update Time of each report is 1-31-2000 12:02 am, which is 30 days and two seconds after the start of the simulation. <a name="1137108"></a></p>
+<p >
+  <a name="1137120"> </a>
+<p><div align="left"><img src="images/update14.gif" border="0" hspace="0" vspace="0">
+</div><a name="1137119"></a></p>
+
+
+
+</p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="report10.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="report12.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
