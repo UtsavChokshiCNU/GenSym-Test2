@@ -1,0 +1,31 @@
+#!/bin/sh
+
+# Official build machines for this system at Gensym:
+# alphaosf - moscow
+# hp9000s700 - nevada
+# sparcsol - ontario
+# linux - lnx
+# rs6000 - reston
+
+# uname always works, but we prefer machine if it's available:
+if [ -f /usr/local/bin/machine ]; then
+  MY_PLATFORM=`/usr/local/bin/machine`
+else 
+  MY_PLATFORM=`uname`
+fi
+
+echo Building on $MY_PLATFORM
+
+if [ `uname` = "HP-UX" ]; then
+  MY_CFLAGS="-Ae"
+fi
+
+# hopefully something that works
+MY_MAKE=make
+
+# avoid rogue gnu make on solaris
+if [ -f /usr/ccs/bin/make ]; then
+  MY_MAKE=/usr/ccs/bin/make
+fi
+
+$MY_MAKE clean PLATFORM=$MY_PLATFORM && $MY_MAKE QUIRKS=$MY_CFLAGS PLATFORM=$MY_PLATFORM
