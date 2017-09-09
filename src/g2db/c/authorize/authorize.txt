@@ -1,0 +1,34 @@
+
+ENABLING BRIDGE PRODUCTS WITH GENSYM AUTHORIZATION FUNCTIONALITY
+
+Courtesy of Bob Franceschini since no one else bothered to write it down
+anywhere and since no 1 person has all the information.
+
+You must do the following in order to utilize the authorization stuff for 
+bridges:
+
+Symbols:
+--------------------------------------
+GSI_ROOT     - define to a directory location containing the gsi.ok file
+   (Note: an easy way to define symbols under NT is to open the 'control panel' and
+    choose 'system'. At the bottom it lets you define symbols available at startup)
+
+Pre-Processor Definitions:
+--------------------------------------
+WIN32        - for nsleep.obj  (should be set automatically) 
+MSDOS        - for gsi_brg.obj
+
+
+Link Libraries & Objects
+--------------------------------------
+nsleep.obj   - gets ethernet card address and/or hardware key address
+gsi_brg.obj  - performs authorization check (stage1,stage2,periodic)
+wsock32.lib  - for ICP socket routines
+advapi32.lib - ??? you probably don't need this but they say we do
+netapi32.lib - since nsleep uses Netbios calls     
+spromeps.lib - for hardware key  
+
+
+Note: Hardware keys are available though P & L. The nsleep software first
+      searches for the hardware key and then the ethernet address (on NT).
+      For Windows DOS, I think that only hardware keys are supported.
