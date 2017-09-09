@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_platform.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>NXP TriMedia Compilation System</h1>
+<h2>Build Run-Time Library</h2>
+<p>
+Use the commands below to build the BullseyeCoverage run-time library.
+Modify the compile command to use the same compile options as your project.
+<pre>
+cd %ProgramFiles%\BullseyeCoverage\run
+tmcc -c -O libcov-trimedia.c
+tmar -r ../lib/libcov-trimedia.a libcov-trimedia.o
+</pre>
+<h2>Modify NXP Makefiles</h2>
+<p>
+In the directory <code>c:/Nexperia/NDK5.6/sde/tm_psos</code>,
+modify <code>common.mk</code> to change the setting of <code>CC</code> to <code>tmcc</code>:
+<pre>
+CC = tmcc
+</pre>
+<p>
+Modify <code>maketarget_dvp1.mk</code> to add the BullseyeCoverage run-time library to the link command:
+<pre>
+LOCAL_LDFLAGS += c:/Progra~1/BullseyeCoverage/lib/libcov-trimedia.a \
+</pre>
+
+<h2>Build Project</h2>
+<p>
+Add the <i>BullseyeCoverage</i>/bin directory to the front of the <code>PATH</code> environment variable.
+Enable coverage build and then build as you normally do.
+<pre>
+set PATH=%ProgramFiles%\BullseyeCoverage\bin;%PATH%
+cov01 -1
+<i>(rebuild project)</i>
+</pre>
+
+<p style="font-size:xx-small">
+Last reviewed: 4 Sep 2009
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
