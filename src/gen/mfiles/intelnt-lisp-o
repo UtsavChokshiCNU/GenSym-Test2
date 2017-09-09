@@ -1,0 +1,37 @@
+# -*- Mode: Makefile -*-
+
+PRODUCT = lisp
+ODIR = o
+PLATFORM = intelnt
+CDIR = $(SRCBOX)\xanalys
+MFDIR = $(DSTBOX)\$(PRODUCT)\$(ODIR)
+SCRIPTSDIR = $(SCRIPTSBOX)\scripts\nt
+CC_FLAGS = $(cflags) $(cvarsmt)
+
+!include <win32.mak>
+
+deplibs = $(DSTBOX)\ext\$(ODIR)\libcprim.lib $(DSTBOX)\fnt\$(ODIR)\libfnt.lib \
+      $(DSTBOX)\jpeg\$(ODIR)\libjpeg.lib $(SRCBOX)\specific\intelnt\spromeps.lib
+libs = comctl32.lib crypt32.lib shell32.lib version.lib rpcrt4.lib $(deplibs)
+frzlibs = $(libs) C:\SFU\usr\local\acl501\acl5016.lib
+
+all: twlibs.dll twfranz.dll
+
+twlibs.dll: $(deplibs) $(CDIR)\twxprts.def twcallbacks.obj
+    $(link) $(linkdebug) /nodefaultlib:libc.lib /nodefaultlib:libcmt.lib \
+    -entry:DllMain $(dlllflags) $(guilibsdll) $(libs) twcallbacks.obj \
+    -def:$(CDIR)\twxprts.def -out:twlibs.dll
+
+twcallbacks.obj: $(CDIR)\twcallbacks.c 
+    $(cc) $(cdebug) $(CC_FLAGS) $(CDIR)\twcallbacks.c
+
+twfranz.dll: $(deplibs) $(CDIR)\twxprts.def allegro.obj
+    $(link) $(linkdebug) /nodefaultlib:libc.lib /nodefaultlib:libcmt.lib \
+    -entry:DllMain $(dlllflags) $(guilibsdll) $(frzlibs) allegro.obj \
+    -def:$(CDIR)\twxprts.def -out:twfranz.dll
+
+allegro.obj: $(CDIR)\allegro.c 
+    $(cc) $(cdebug) $(CC_FLAGS) $(CDIR)\allegro.c
+
+clean :
+    -del *.dll *.lib *.pdb *.exp *.obj
