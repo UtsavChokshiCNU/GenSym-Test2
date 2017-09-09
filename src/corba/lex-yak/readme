@@ -1,0 +1,25 @@
+To process a yacc input file (.y), enter the following:
+
+	yacc -l -d filename.y
+
+To do the same with Bison: 
+
+	bison -l -d filename.y
+
+
+For the corba_bridge project, take the yacc output files: y.tab.c and y.tab.h and rename 
+them to ytab.c and ytab.h:
+
+	mv y.tab.c ytab.c
+	mv y.tab.h ytab.h
+
+
+Note: For the corba project, yacc was run on DUBLIN (OSF/1, v2.0). Other systems (PELE, which
+      is at Solaris 2.5 as of this writing) will generate slightly different y.tab files, but 
+      they should work just as well. 
+Note: the Bison parser-generator was used in the corba project as a check on what yacc
+      would produce, since it had some different (better, sometimes) error messages.
+      Bison wasn't used for the corba bridge however, as GNU licensing forbids the use of the 
+      output in commercial products.
+
+      Bison was run on syseng3 (HP-UX 10.x.x)
