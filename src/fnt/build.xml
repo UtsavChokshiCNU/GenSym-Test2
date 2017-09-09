@@ -1,0 +1,45 @@
+<project name="fnt" basedir=".." default="build">
+	<property name="module.name" value="fnt"/>
+	<property name="${module.name}.basedir" value=".."/> 
+	<property file="${fnt.basedir}/ant/build.properties"/>
+
+	<!-- Build section -->
+	<target name="clean-build">
+		<delete dir="${fnt.basedir}/../dst/${module.name}"/>
+	</target>
+
+	<target name="clean-results">
+		<delete dir="${result.dir}/${module.name}"/>
+    </target>
+	
+	<target name="build">
+		<ant dir="${fnt.basedir}/ant" target="c-build"/>
+	</target>
+	<!-- End of Build section -->
+	
+	<!-- Tests section -->
+	<target name="api-tests">
+		<mkdir dir="${result.dir}/${module.name}"/>
+    <!-- for FNT module we have no api tests yet -->
+	</target>
+	<!-- End of Tests section -->
+  
+	<!-- Checks section -->
+	<target name="check-coverage">
+		<ant dir="${fnt.basedir}/ant" target="check-c-coverage"/>
+	</target>
+  
+	<target name="check-static-metrics" depends="check-findbugs, check-cpd"/>
+
+	<target name="check-findbugs">
+		<property name="c.findbugs.srcfolder" value="${fnt.basedir}/${module.name}/c"/>
+		<ant dir="${fnt.basedir}/ant" target="check-c-findbugs"/>
+	</target>
+  
+	<target name="check-cpd">
+		<property name="c.cpd.srcfolder" value="${fnt.basedir}/${module.name}/c"/>
+		<ant dir="${fnt.basedir}/ant" target="check-c-cpd"/>
+	</target>
+	<!-- End of Checks section -->
+  
+</project>
