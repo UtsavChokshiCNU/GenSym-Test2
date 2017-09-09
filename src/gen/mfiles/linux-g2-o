@@ -1,0 +1,76 @@
+SHELL = /bin/sh
+PRODUCT = g2
+ODIR = o
+PLATFORM = linux
+CDIR = $(SRCBOX)/$(PRODUCT)/c
+C2DIR = $(SRCBOX)/$(PRODUCT)/c2
+MQTTDIR = $(SRCBOX)/mqtt/bin
+EXTDIR = $(DSTBOX)/ext/$(ODIR)
+FNTDIR = $(DSTBOX)/fnt/$(ODIR)
+GSIDIR = $(DSTBOX)/gsi/$(ODIR)
+JPEGDIR = $(DSTBOX)/jpeg/$(ODIR)
+PNGDIR = $(DSTBOX)/libpng/$(ODIR)
+MFDIR = $(DSTBOX)/$(PRODUCT)/$(ODIR)
+RTHDIR = $(SRCBOX)/rtl/c
+RTLDIR = $(DSTBOX)/rtl/$(ODIR)
+SCRIPTSDIR = $(SRCBOX)/scripts
+SPFCDIR = $(SRCBOX)/specific/$(PLATFORM)
+XMLDIR = $(DSTBOX)/xml/$(ODIR)
+COMDIR = $(SRCBOX)/common/c/include
+CC_FLAGS = -g -Wimplicit -DNDEBUG -I$(COMDIR)
+RTHFILES = $(RTHDIR)/c-ifuns.h $(RTHDIR)/c-sdefs.h \
+  $(RTHDIR)/config.h $(RTHDIR)/core.h $(RTHDIR)/externs.h $(RTHDIR)/ffi.h \
+  $(COMDIR)/gensym.h $(RTHDIR)/ifuns.h $(RTHDIR)/initvars.h \
+  $(RTHDIR)/inline.h $(RTHDIR)/instance.h $(RTHDIR)/kernel.h \
+  $(RTHDIR)/librtl.h $(RTHDIR)/lisplib.h $(RTHDIR)/longname.h \
+  $(RTHDIR)/object.h $(RTHDIR)/smcompat.h $(RTHDIR)/specific.h \
+  $(RTHDIR)/svarargs.h $(RTHDIR)/uconfig.h $(RTHDIR)/values.h \
+  $(RTHDIR)/varkey.h
+
+include $(SRCBOX)/gen/mfiles/obj-g2.mak
+
+all : _mfenter g2 _mfexit
+
+_mfenter : 
+	@- $(SCRIPTSDIR)/errsweep -init
+
+_mfexit : 
+	@- $(SCRIPTSDIR)/errsweep -finish
+
+g2 : ${MQTTDIR}/libmqttclient.a $(EXTDIR)/libcprim.a $(FNTDIR)/libfnt.a \
+  $(JPEGDIR)/libjpeg.a $(PNGDIR)/libpng.a $(XMLDIR)/liblsxml.a $(RTLDIR)/librtl.a \
+  $(OBJS)
+	@- if [ -f g2 ] ; then rm -f g2 ; fi
+	@- $(SCRIPTSDIR)/errsweep g2
+	$(GCC) -Wl,--wrap=memcpy -o g2 -rdynamic -L/usr/X11R6/lib $(OBJS) \
+  ${MQTTDIR}/libmqttclient.a $(FNTDIR)/libfnt.a $(EXTDIR)/libcprim.a $(JPEGDIR)/libjpeg.a $(PNGDIR)/libpng.a \
+  $(RTLDIR)/librtl.a $(XMLDIR)/liblsxml.a -lxml2 -lX11 $(SPFCDIR)/libssl.a $(SPFCDIR)/libcrypto.a -lm -ldl -lz
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+smlt.o : $(C2DIR)/NativeKBext/smlt.c $(RTHFILES)
+	@- if [ -f smlt.o ] ; then rm -f smlt.o ; fi
+	@- $(SCRIPTSDIR)/errsweep smlt.o
+	$(CC) -c $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) $(C2DIR)/NativeKBext/smlt.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+ 
+StatisticalProcedures.o : $(C2DIR)/NativeKBext/Specific/Continental/StatisticalProcedures.c $(RTHFILES)
+	@- if [ -f StatisticalProcedures.o ] ; then rm -f StatisticalProcedures.o ; fi
+	@- $(SCRIPTSDIR)/errsweep StatisticalProcedures.o
+	$(CC) -c $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) $(C2DIR)/NativeKBext/Specific/Continental/StatisticalProcedures.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+CountHistoryDatapoints.o : $(C2DIR)/NativeKBext/Specific/SmartSignal/CountHistoryDatapoints.c $(RTHFILES)
+	@- if [ -f CountHistoryDatapoints.o ] ; then rm -f CountHistoryDatapoints.o ; fi
+	@- $(SCRIPTSDIR)/errsweep CountHistoryDatapoints.o
+	$(CC) -c $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) $(C2DIR)/NativeKBext/Specific/SmartSignal/CountHistoryDatapoints.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+%.o :  $(CDIR)/%.c $(CDIR)/%.h $(RTHFILES)
+	@- if [ -f $@ ] ; then rm -f $@ ; fi
+	@- $(SCRIPTSDIR)/errsweep $@
+	$(CC) -c $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) $<
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+clean : 
+	- rm -f *.[oa]
+	- rm -f g2
