@@ -1,0 +1,83 @@
+;;; -*- Mode: LISP; Syntax: Common-Lisp; Base: 10; Package: USER -*-
+(in-package "USER")
+
+;;;; Makefile generator relational database: xml-dependencies.rel
+
+;;; Copyright (c) 1986-2017 Gensym Corporation.
+;;; All Rights Reserved.
+
+;;; author: John Valente
+
+;;; This file contains the relation that maintains the dependencies
+;;; for creation of the XML library (liblsxml) in the xml directory.
+
+
+
+(setq xml-dependency-relation
+ '(( target-group  type-group
+                        platform-group
+                                    dependency    dependency-type
+                                                       local )
+;;   ------------   ---- ----------- ------------  ---- -----
+   ((all            dum  _all        liblsxml        lib  y     )
+    (all            dum  _all        testxml         exe  y     )
+    
+    (_all           obj  _all        xmlhfiles       var  y     )
+    (_all           obj  _all        cprim           h    n     )
+
+    (xmlhfiles      var  _all        xml_support     h    y     )
+    (xmlhfiles      var  _all        "DOCBparser"    h    n     )
+    (xmlhfiles      var  _all        "HTMLparser"    h    n     )
+    (xmlhfiles      var  _all        "HTMLtree"      h    n     )
+    (xmlhfiles      var  _all        "SAX"           h    n     )
+    (xmlhfiles      var  _all        "SAX2"          h    n     )
+    (xmlhfiles      var  _all        c14n            h    n     )
+    (xmlhfiles      var  _all        catalog         h    n     )
+    (xmlhfiles      var  _all        chvalid         h    n     )
+    (xmlhfiles      var  _all        "debugXML"      h    n     )
+    (xmlhfiles      var  _all        dict            h    n     )
+    (xmlhfiles      var  _all        encoding        h    n     )
+    (xmlhfiles      var  _all        entities        h    n     )
+    (xmlhfiles      var  _all        globals         h    n     )
+    (xmlhfiles      var  _all        hash            h    n     )
+    (xmlhfiles      var  _all        list            h    n     )
+    (xmlhfiles      var  _all        nanoftp         h    n     )
+    (xmlhfiles      var  _all        nanohttp        h    n     )
+    (xmlhfiles      var  _all        parser          h    n     )
+    (xmlhfiles      var  _all      "parserInternals" h    n     )
+    (xmlhfiles      var  _all        pattern         h    n     )
+    (xmlhfiles      var  _all        relaxng         h    n     )
+    (xmlhfiles      var  _all     "schemasInternals" h    n     )
+    (xmlhfiles      var  _all        threads         h    n     )
+    (xmlhfiles      var  _all        tree            h    n     )
+    (xmlhfiles      var  _all        uri             h    n     )
+    (xmlhfiles      var  _all        valid           h    n     )
+    (xmlhfiles      var  _all        xinclude        h    n     )
+    (xmlhfiles      var  _all        xlink           h    n     )
+    (xmlhfiles      var  _all        "xmlIO"         h    n     )
+    (xmlhfiles      var  _all        xmlautomata     h    n     )
+    (xmlhfiles      var  _all        xmlerror        h    n     )
+    (xmlhfiles      var  _all        xmlexports      h    n     )
+    (xmlhfiles      var  _all        xmlmemory       h    n     )
+    (xmlhfiles      var  _all        xmlmodule       h    n     )
+    (xmlhfiles      var  _all        xmlreader       h    n     )
+    (xmlhfiles      var  _all        xmlregexp       h    n     )
+    (xmlhfiles      var  _all        xmlsave         h    n     )
+    (xmlhfiles      var  _all        xmlschemas      h    n     )
+    (xmlhfiles      var  _all        xmlschemastypes h    n     )
+    (xmlhfiles      var  _all        xmlstring       h    n     )
+    (xmlhfiles      var  _all        xmlunicode      h    n     )
+    (xmlhfiles      var  _all        xmlversion      h    n     )
+    (xmlhfiles      var  _all        xmlwriter       h    n     )
+    (xmlhfiles      var  _all        xpath           h    n     )
+    (xmlhfiles      var  _all       "xpathInternals" h    n     )
+    (xmlhfiles      var  _all        xpointer        h    n     )
+
+    (liblsxml       lib  _all        lispxml         obj  y     )
+    (liblsxml       dso  _all        lispxml         obj  y     )
+
+    (testxml        exe  _all        main_test       obj  y     )
+    (testxml        exe  _all        liblsxml        lib  y     )
+    (testxml        exe  unix        libxml2         lib  n     )
+    (testxml        exe  intelnt     libxml2_a       lib  n     )
+    )))
