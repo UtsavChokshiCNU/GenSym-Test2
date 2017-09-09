@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="01/11/02 11:08:09">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Creating a Custom Feed</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="customig.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="customb3.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/ReThink/custom-manual/stylesets/Customizing%20ReThink/Output/html/customig.htm">  
+        Customizing Instruments  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Creating a Custom Feed
+</h2>
+<p>Suppose you want to create a custom feed that supplies a random value to the attribute of a work object. <a name="14493"></a></p>
+<h6><b>Note: </b>This behavior is available in Modeler mode by using a Change feed with the 
+Change Mode attribute set to Random.
+<a name="32401"></a></h6><p>For general information on how to customize the behavior of instruments, see <a href="how-to22.htm#15859">Customizing the Default Behavior of Blocks or Instruments</a>.<a name="14494"></a></p>
+<h4 >	 To create a custom feed that supplies a random value to a work object:<a name="14498"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>1	</b></td>    <td valign="top" width="580">Create a subclass of <code>bpr-change-feed</code>, the feed subclass most similar to that of the custom feed.<a name="14499"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>2	</b></td>    <td valign="top" width="580">Edit the<code> class-name</code> to be a name that reflects the behavior of the new custom feed, such as <code>randomize-feed</code>. <a name="14500"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>3	</b></td>    <td valign="top" width="580">Because the feed will store a random value between a given minimum value and a given maximum value, define two class-specific attributes to store these values.<a name="14501"></a></td>  </tr></table><blockquote>  <a name="14502">The class definition for the custom feed looks like this:</a></blockquote>
+<p >
+  <a name="14520"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="14505"><div >Attribute</a></div></th>
+    <th><a name="14507"><div >Value</a></div></th>
+  </tr>
+  <tr>
+    <td><code>class-name<a name="14509"> </a></code></blockquote></td>
+    <td><code>randomize-feed<a name="14511"> </a></code></blockquote></td>
+  </tr>
+  <tr>
+    <td><code>direct-superior-classes<a name="14513"> </a></code></blockquote></td>
+    <td><code>bpr-change-feed<a name="14515"> </a></code></blockquote></td>
+  </tr>
+  <tr>
+    <td><code>class-specific-attributes<a name="14517"> </a></code></blockquote></td>
+    <td><code>minimum-allowable;
+maximum-allowable<a name="14519"> </a></code></blockquote></td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<blockquote>  <a name="14524">The class-specific attributes appear on the User Tab of the custom feed.</a></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>4	</b></td>    <td valign="top" width="580">To define the behavior of the custom feed, copy the <code>bpr-change-feed::<br>bpr-stop-method</code> method, the default stop method of<code> </code>the Change feed, and modify the method, as follows:<a name="35832"></a></td>  </tr></table><blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>a	</b></td>    <td valign="top" width="560">Edit the first argument to the method to refer to the custom subclass.<a name="14525"></a></td>  </tr></table></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>b	</b></td>    <td valign="top" width="560">Delete the existing body and local names of the method.<a name="14526"></a></td>  </tr></table></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>c	</b></td>    <td valign="top" width="560">Add a local name for the random value.<a name="14527"></a></td>  </tr></table></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>d	</b></td>    <td valign="top" width="560">Edit the custom portion of the method to compute a random value based on the <code>maximum-allowable</code> and <code>minimum-allowable</code> of the custom feed.<a name="14528"></a></td>  </tr></table></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>e	</b></td>    <td valign="top" width="560">Conclude that the <code>destination-attribute-name</code> of the Randomize feed is the random value the method computes.<a name="14529"></a></td>  </tr></table></blockquote>
+<p>Here is the class definition and stop method for the <code>randomize-feed</code>, which computes a random value and then concludes a value for the <code>destination-attribute-name</code> of the feed:<a name="14530"></a></p>
+<p >
+  <a name="14537"> </a>
+<div style="color: #000000;  font-size: 4pt; font-style: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: justify; text-decoration: none; text-indent: 0pt; text-transform: none; vertical-align: baseline">
+<a name="14536"> </a><div align="left"><img src="images/customc3.gif" border="0" hspace="0" vspace="0">
+</div><br>
+</div>
+
+
+
+</p>
+<h4 >	 To test the custom feed:<a name="14538"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>1	</b></td>    <td valign="top" width="580">Create a model with a Source block, Task block, and Sink block. <a name="14539"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>2	</b></td>    <td valign="top" width="580">Create a new class of work object with an attribute, such as <code>weight</code>, which the feed updates.<a name="14540"></a></td>  </tr></table><blockquote>  <a name="14541">The class definition looks like this:</a></blockquote>
+<p >
+  <a name="14559"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="14544"><div >Attribute</a></div></th>
+    <th><a name="14546"><div >Value</a></div></th>
+  </tr>
+  <tr>
+    <td><code>class-name<a name="14548"> </a></code></blockquote></td>
+    <td><code>box<a name="14550"> </a></code></blockquote></td>
+  </tr>
+  <tr>
+    <td><code>direct-superior-classes<a name="14552"> </a></code></blockquote></td>
+    <td><code>bpr-object <a name="14554"> </a></code></blockquote></td>
+  </tr>
+  <tr>
+    <td><code>class-specific-attributes<a name="14556"> </a></code></blockquote></td>
+    <td><code>weight<a name="14558"> </a></code></blockquote></td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>3	</b></td>    <td valign="top" width="580">Configure the path type of the output path of the Source block to be <code>box</code>.<a name="14560"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>4	</b></td>    <td valign="top" width="580">Attach an instance of <code>randomize-feed </code>to the Source block. <a name="14561"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>5	</b></td>    <td valign="top" width="580">On the User Tab of the custom feed, configure the Minimum Allowable and Maximum Allowable attributes.<a name="14562"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>6	</b></td>    <td valign="top" width="580">Assign<code> weight</code> as the value of the Destination Attribute Name of the feed.<a name="14563"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>7	</b></td>    <td valign="top" width="580">Configure the Apply to Class Name attribute of the feed to be box.<a name="14564"></a></td>  </tr></table><p>When the simulation runs, the feed updates the <code>weight</code> attribute of the work object by using a random value between the <code>maximum-value</code> and <code>minimum-value </code>of the feed.<a name="14565"></a></p>
+<p>Here is a running model that shows how the Randomize Feed updates the <code>weight</code> attribute of the work object:<a name="14566"></a></p>
+<p >
+  <a name="33523"> </a>
+<div style="color: #000000;  font-size: 4pt; font-style: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 7pt; text-align: justify; text-decoration: none; text-indent: 0pt; text-transform: none; vertical-align: baseline">
+<a name="33522"> </a><div align="left"><img src="images/customb2.gif" border="0" hspace="0" vspace="0">
+</div><br>
+</div>
+
+
+
+</p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="customig.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="customb3.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
