@@ -1,0 +1,74 @@
+#!/bin/sh
+
+if [ "$1" = "-help" ]; then
+  echo "Usage: $0 lisp-symbol-name"
+  echo "Search your sandbox's lisp sources, in load-order, for a lisp symbol."
+  echo "Uses a precomputed identifier database to speed the search.  See mkid (and make-id)."
+  exit 1
+fi
+
+
+DbReader=/gensym/bin/lid
+
+# Yeck. The pattern [^a-z] does not match newline!
+
+LispSymbol=$1
+NotLispSymbol='[^a-zA-Z0-9_!@#$%^&*-]'
+# This pattern skips comment lines.
+Pattern="^[^;](.*$NotLispSymbol|)$LispSymbol($NotLispSymbol|\$)"
+SourceDirectory=`pwd`
+foundid=0
+
+if [ ! -x $DbReader ]; then
+  echo 'Cannot find program to read database file (lid).'
+else
+
+# Look for the database file first in ., then local sandbox, then in /home/ab.
+# Change into the directory where we found the database file to run "lid".
+
+  if [ -f ./ID ]; then
+    foundid=1
+  elif [ -f "$LISP_DIR/ID" ]; then
+    foundid=1
+    cd $LISP_DIR
+    SourceDirectory=$LISP_DIR
+  elif [ -f /home/ab/g2/ID ]; then
+    foundid=1
+    cd /home/ab/g2/
+  else
+    echo Cannot find the identifier database, ID.
+  fi
+
+fi
+
+if [ $foundid = 1 ]; then
+  if [ ! -z "$LispSymbol" ]; then
+    LispSymbol=`echo $LispSymbol | tr '[A-Z]' '[a-z]'`
+  fi
+  Files=`$DbReader -n $LispSymbol`
+else
+  if [ -r files-in-order.dat ]; then
+    echo "Grepping every AB Lisp file in your sandbox, in order."
+    Files=`/bin/cat files-in-order.dat`
+  else
+    echo "Cannot find files-in-order.dat.  Grepping in alphabetical order."
+    Files=*.lisp
+  fi
+fi
+
+# The /dev/null forces grep to always include filenames in its output.
+# We need to use the gnu egrep in /usr/local/bin/
+# -n to include line numbers. Emacs wants them especially.
+# Also, lisp symbols are case-insensitive, so search that way.
+
+cd $SourceDirectory
+
+if [ ! -z "$Files" ]; then
+  if [ "`/usr/local/bin/machine`" = "sparcsol" ]; then
+    exec /home/ab/bin/gnu/solaris/egrep -ni "$Pattern" $Files /dev/null
+  elif [ "`/usr/local/bin/machine`" = "sun4" ]; then
+    exec ${GREPPATH:-/usr/local/bin/}egrep -ni "$Pattern" $Files /dev/null
+  else
+    exec /bin/egrep -ni "$Pattern" $Files /dev/null
+  fi
+fi
