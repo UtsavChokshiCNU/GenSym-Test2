@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<project name="Common LISP Build Framework">
+	<macrodef name="lisp-build">
+		<attribute name="implementation"/>
+		<attribute name="dir"/>
+		<attribute name="logFile" default="lisp-build.log"/>
+		<attribute name="options" default=""/>
+		<element name="dynamic-size" optional="yes"/>
+		<element name="eval" optional="yes"/>
+		<element name="operation" optional="yes"/>
+		<sequential>
+			<delete dir="${main.basedir}/../dst/lisp/dev"/>
+			<mkdir dir="${main.basedir}/../dst/lisp/dev"/>
+			<delete dir="${main.basedir}/../dst/lisp/g2"/>
+			<mkdir dir="${main.basedir}/../dst/lisp/g2/macro"/>
+
+			<echo>Launching @{implementation}</echo>			
+			<exec dir="@{dir}" executable="@{implementation}" output="${log.dir}/@{logFile}" failonerror="true">
+				<env key="Path" value="${env.Path};${libiconv.dll}"/>
+				<dynamic-size/>
+				<eval/>
+				<operation/>
+				<arg value="@{options}"/>
+			</exec>
+		</sequential>
+	</macrodef>
+
+	<!-- SBCL instrumentation -->	
+	<macrodef name="sbcl-run">
+		<attribute name="sbcl-platform" />
+		<attribute name="logFile" />
+		<attribute name="eval-command" default="--eval" />
+		<attribute name="eval-form" default="" />
+		<attribute name="load-command" default="--load" />
+		<attribute name="load-file" default="" />
+		<attribute name="sbcl-home" default="${main.basedir}/tools/lisp/sbcl" />
+		<sequential>
+			<echo>Launching @{sbcl-platform} using "@{load-command} @{load-file} @{eval-command} @{eval-form}"</echo>
+			<exec executable="@{sbcl-platform}" output="@{logFile}" failonerror="false">
+				<env key="Path" value="${env.Path};${libiconv.dll}"/>
+				<env key="SBCL_HOME" value="@{sbcl-home}"/>
+				<arg line="--no-userinit @{load-command} @{load-file} @{eval-command} @{eval-form}" />
+			</exec>
+		</sequential>
+	</macrodef>
+
+	<!-- Clozure CL instrumentation -->	
+	<macrodef name="ccl-run">
+		<attribute name="ccl-platform" />
+		<attribute name="logFile" />
+		<attribute name="eval-command" default="-e" />
+		<attribute name="eval-form" default="" />
+		<attribute name="load-command" default="-l" />
+		<attribute name="load-file" default="" />
+		<sequential>
+			<echo>Launching @{ccl-platform} using "@{load-command} @{load-file} @{eval-command} @{eval-form}"</echo>
+			<exec executable="@{ccl-platform}" output="@{logFile}" failonerror="false">
+				<env key="Path" value="${env.Path};${libiconv.dll}"/>
+				<arg line="-n @{load-command} @{load-file} @{eval-command} @{eval-form}" />
+			</exec>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="lw-run">
+		<attribute name="lw-platform" />
+		<attribute name="logFile" />
+		<attribute name="eval-command" default="-eval" />
+		<attribute name="eval-form" default="" />
+		<attribute name="load-command" default="-build" /> <!-- old: -load -->
+		<attribute name="load-file" default="" />
+		<sequential>
+			<echo>Launching @{lw-platform} using "@{load-command} @{load-file} @{eval-command} @{eval-form}"</echo>
+			<exec executable="@{lw-platform}" output="@{logFile}" failonerror="false">
+				<env key="Path" value="${env.Path};${libiconv.dll}"/>
+				<arg line="-init - @{load-command} @{load-file} @{eval-command} @{eval-form}" />
+			</exec>
+		</sequential>
+	</macrodef>
+</project>
