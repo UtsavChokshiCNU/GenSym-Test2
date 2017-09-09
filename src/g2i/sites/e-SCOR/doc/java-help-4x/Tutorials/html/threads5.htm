@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="02/06/02 18:38:45">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Financial Process</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="threads4.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="threads6.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+      <div align="center"><b>e-SCOR Tutorials</b></div>
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/e-SCOR/OnlineHelpFiles/Tutorials/html/threadst.htm">  
+        What Happens When the Simulation Runs  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Financial Process
+</h2>
+<p>The <b>Financial process</b> is responsible for generating invoices and making payments, based on orders for source products. The steps are:<a name="282903"></a></p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>1	</b></td>    <td valign="top" width="580">Generate customer or replenishment orders for source products with upstream suppliers.<a name="273827"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>2	</b></td>    <td valign="top" width="580">Send product shipments of delivery products to the downstream buyer role.<a name="273836"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>3	</b></td>    <td valign="top" width="580">Receive product shipments from the upstream supplier role.<a name="273850"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>4	</b></td>    <td valign="top" width="580">Generate invoices based on shipments of delivery products.<a name="273861"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>5	</b></td>    <td valign="top" width="580">Receive those invoices.<a name="273703"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>6	</b></td>    <td valign="top" width="580">Generate payments based on invoices. <a name="273705"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>7	</b></td>    <td valign="top" width="580">Receive those payments.<a name="273920"></a></td>  </tr></table><p>The process initiates when the buyer receives a customer order from the Sc: Source Consumer category of a Consumer role or a replenishment order from the Source Planning process of a Distributor or Manufacturer role.<a name="282920"></a></p>
+<p>This diagram shows a high-level representation of the steps in the Financial process, the objects associated with each step, and the triggering event:<a name="273708"></a></p>
+<p >
+  <a name="287862"> </a>
+<p><div align="left"><img src="images/threada3.gif" border="0" hspace="0" vspace="0">
+</div><a name="287861"></a></p>
+
+
+
+</p>
+<p>The Financial process is also responsible for computing Financial Bookings, Financial Outstanding, and Financial Collections Period and Financial Collections Total for supplier roles and Deliver categories, and Financial Obligations, Financial Payments Period, and Financial Payments Total for buyer roles and Source categories. The Financial process computes these metrics each Financial Period of the role. <a name="183139"></a></p>
+<p>In addition, each financial period, the Financial process computes these asset metrics for each role: <b>Days of Supply</b> metrics, <b>Asset Turns</b>, <b>Cash-to-Cash Cycle Time</b>, and <b>Days Sales Outstanding</b>. It also computes the <b>Order Management Cost</b> metric for each role and the Cost Incurred metrics for each Source and Deliver category, as appropriate.<a name="183167"></a></p>
+<h4 >	 To view the Financial process:<a name="182755"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>1	</b></td>    <td valign="top" width="580">View the detail of the Consumer role.<a name="182839"></a></td>  </tr></table><blockquote>  <a name="183013">The Sc: Source Consumer category generates customer orders for its source products on a regular cycle, based on its Order Frequency parameter. The size of each order is based on the Order Size parameter of the Sc category. It sends those orders to the Deliver category of the upstream buyer role.</a></blockquote>
+<blockquote>  <a name="182923">The Source category of the Distributor and Manufacturer roles behaves similarly, except that these roles use source planning to determine order size and frequency. </a></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>2	</b></td>    <td valign="top" width="580">View the Base Manufacturer role detail.<a name="182842"></a></td>  </tr></table><p>Whenever it can, the Deliver category of the upstream supplier role delivers shipments of delivery products to the Source category of the downstream buyer role, based on customer orders. <a name="183029"></a></p>
+<p>At the same time, the Deliver category of the supplier role generates an invoice for the cost of the order. The Net Selling Price parameter of the delivery product of the supplier role determines the cost to the buyer. <a name="183036"></a></p>
+<p>The Source category of the buyer role receives the invoice. It waits the entire Financial Payment Terms of the supplier role, then sends a payment to the supplier. The Deliver category of the supplier role then receives the payment. <a name="183079"></a></p>
+<p><b>Related help topics:</b><a name="1001472"></a></p>
+<p><a href="../../UsersGuide/html/threads2.htm#236094">Process Diagrams</a><a name="1001476"></a></p>
+<p><a href="../../UsersGuide/html/thread12.htm#108630">Financial Process</a><a name="1001480"></a></p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="threads4.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="threads6.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
