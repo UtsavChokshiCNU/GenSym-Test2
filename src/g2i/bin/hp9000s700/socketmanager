@@ -1,0 +1,28 @@
+#!/bin/csh -f
+
+setenv HM %ROOTDIR%
+
+setenv BASE_CLASSPATH ${HM}/sockman/classes:${HM}/sockman/classes/SocketManager.jar:${HM}/javalink/classes/classtools.jar:${HM}/javalink/classes/core.jar:${HM}/javalink/classes/javalink.jar
+
+if ($?CLASSPATH) then
+  setenv CLASSPATH ${BASE_CLASSPATH}:${CLASSPATH}
+else 
+  setenv CLASSPATH ${BASE_CLASSPATH}
+endif
+
+if ($?SHLIB_PATH ) then
+  setenv SHLIB_PATH ${HM}/javalink/bin:${SHLIB_PATH}
+else
+  setenv SHLIB_PATH ${HM}/javalink/bin
+endif
+
+if ($?JAVA_HOME) then
+  setenv PATH ${PATH}:${JAVA_HOME}/bin
+else
+  setenv JAVA_HOME ${HM}/jre
+  setenv PATH ${PATH}:${HM}/jre/java/bin
+endif
+
+echo Starting SocketManager...
+
+java com.gensym.SocketManager.JavaG2SocketManager $*
