@@ -1,0 +1,183 @@
+== Procedures
+
+=== ACTIVATE-SBN-INTERFACE
+
+==== Synopsis
+
+`ACTIVATE-SBN-INTERFACE`(`_TIMEOUT_`: QUANTITY) -> `_RET0_`: TRUTH-VALUE
+
+|===
+|Argument|Description
+
+|`_TIMEOUT_`|Time to wait for GSI connection
+|===
+
+|===
+|Return Value|Description
+
+|`_RET0_`|true if GSI connection was established
+|===
+
+==== Description
+
+Starts the SBN GSI interface.
+
+
+=== DEACTIVATE-SBN-INTERFACE
+
+==== Synopsis
+
+`DEACTIVATE-SBN-INTERFACE`()
+
+|===
+|Argument|Description
+
+|===
+
+It has no return value.
+
+==== Description
+
+Stops the SBN GSI interface.
+
+
+=== SBN-UNSUBSCRIBE
+
+==== Synopsis
+
+`SBN-UNSUBSCRIBE`(`_MSG-ID_`: INTEGER)
+
+|===
+|Argument|Description
+
+|`_MSG-ID_`|message id, 16 bit
+|===
+
+It has no return value.
+
+==== Description
+
+unsubscribe to message id
+
+
+=== SBN-SUBSCRIBE
+
+==== Synopsis
+
+`SBN-SUBSCRIBE`(`_MSG-ID_`: INTEGER)
+
+|===
+|Argument|Description
+
+|`_MSG-ID_`|message id, 16bit
+|===
+
+It has no return value.
+
+==== Description
+
+subscribe to message id
+
+
+=== SBN-SET-LOOP-DELAY
+
+==== Synopsis
+
+`SBN-SET-LOOP-DELAY`(`_DELAY-MS_`: INTEGER)
+
+|===
+|Argument|Description
+
+|`_DELAY-MS_`|delay in milliseconds
+|===
+
+It has no return value.
+
+==== Description
+
+sets the main SBN loop delay
+
+
+=== SBN-SET-HEARTBEAT-TIMEOUT
+
+==== Synopsis
+
+`SBN-SET-HEARTBEAT-TIMEOUT`(`_PERIOD_`: INTEGER)
+
+|===
+|Argument|Description
+
+|`_PERIOD_`|period in loop cycles
+|===
+
+It has no return value.
+
+==== Description
+
+sets SBN heartbeat timeout
+
+
+=== SBN-SEND-APP-MESSAGE
+
+==== Synopsis
+
+`SBN-SEND-APP-MESSAGE`(`_ID_`: INTEGER, `_COMMAND_`: INTEGER, `_PAYLOAD_`: CLASS INTEGER-ARRAY, `_PAYLOAD-SIZE_`: INTEGER)
+
+|===
+|Argument|Description
+
+|`_ID_`|message id, 16bit
+|`_COMMAND_`|command code
+|`_PAYLOAD_`|message payload
+|`_PAYLOAD-SIZE_`|payload size
+|===
+
+It has no return value.
+
+==== Description
+
+send the SBN app message
+
+
+=== SBN-APP-MESSAGE-CALLBACK
+
+==== Synopsis
+
+`SBN-APP-MESSAGE-CALLBACK`(`_ID_`: INTEGER, `_PAYLOAD_`: CLASS INTEGER-ARRAY)
+
+|===
+|Argument|Description
+
+|`_ID_`|message id
+|`_PAYLOAD_`|payload
+|===
+
+It has no return value.
+
+==== Description
+
+This callback gets called when a SBN app message arrives. In turn,
+  it passes its arguments to the procedure named by SBN-CALLBACK
+  parameter.
+
+
+=== SBN-TEST-CALLBACK
+
+==== Synopsis
+
+`SBN-TEST-CALLBACK`(`_ID_`: INTEGER, `_PAYLOAD_`: CLASS INTEGER-ARRAY)
+
+|===
+|Argument|Description
+
+|`_ID_`|
+|`_PAYLOAD_`|
+|===
+
+It has no return value.
+
+
+== Classes
+
+== Methods
+
