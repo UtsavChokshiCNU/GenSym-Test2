@@ -1,0 +1,66 @@
+<HTML>
+<HEAD>
+<TITLE>GSI Web Known Bugs</TITLE>
+</HEAD>
+<BODY bgcolor="#FFFFFF">
+<H1>Known Bugs in G2 WebLink</H1>
+
+<p>
+See also: <A href="home.htm">G2 Link Homepage</A>
+
+<HR>
+
+
+<H4>Tendering URLs</H4>
+
+<p>
+If you tender a URL with a procedure P in G2 and P is unavailable when
+the user requests the URL the bridge will report and error and then shutdown.
+The most common senario where this arises is when P is inactive and has
+notes because it was just revised.
+
+<H4>Netscape problem with Single Line Resources</H4>
+
+<p>
+Some Browsers, Netscape Navigator 2.0 for example, will report that
+they recieved no data if they fetch a text resource containing no
+line terminators at all.  It is easy to work around the problem
+making sure your resources have more than one line in them.
+
+
+<H4>Post Method</H4>
+
+<p>
+The HTTP protocol is usually used to "get" resources.  It may also be used
+to "post" resources.  Posting is not currently supported.
+
+<H4>G2 problems with Images</H4>
+
+<p>
+G2 doesn't like interlaced GIF files.  G2 doesn't like JPEG files.
+
+<H4>G2 problem with Drawing Parameters</H4>
+
+<p>
+Do not set the drawing pallet in drawing parameters to custom colors
+from a particular image-definition when that image-definition has
+notes.  If you do the drawing parameters will become inactive and
+you will have to restart to clear that state.
+
+<H4>Cache Refresh</H4>
+
+<p>
+The bridge currently does not check that cache entries are uptodate.
+For example if you fetch the a resource once the cache entry will
+be returned from then on.  You can workaround this problem by
+setting the fetch style to ignore the cache.
+
+
+<H4>Cache Overflow</H4>
+
+<p>
+The cache is not currently flushed to clear old entries.
+
+
+</BODY>
+</HTML>
