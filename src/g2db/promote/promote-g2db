@@ -1,0 +1,106 @@
+#!/bin/csh
+
+# ==========================================================================
+#   Make sure this script is running on sdev5 under ab's account
+# ==========================================================================
+if ("`uname -n`" != sdev5 || "`whoami`" != ab) then
+    echo '** ' This script must be run on sdev5 as user ab.
+    exit -1
+endif
+
+# ==========================================================================
+# Verify that the required inputs have been specified:
+#   argv[1] - root directory of the staging area has been specified
+#   argv[2] - i , e, or ie indicating whether we should promote to
+#             i-ship, e-ship, or both
+#   argv[3] - build id (version - build code)
+#   argv[4] - e-ship ID. Normally the bridge version, e.g., 60r10.
+#             Occasionally the sames as the build ID, e.g., 60r10-FD10
+#
+# ==========================================================================
+if ($#argv < 3 || $#argv > 4) goto Usage
+if ($#argv == 3 && ($argv[2] == e || $argv[2] == ie) ) goto Usage
+if (! -d $argv[1]) then
+    echo '** ' $argv[1] is not a directory.
+    goto Usage
+endif
+@ procf = 0
+if ($argv[2] == i) then
+    @ procf = 1
+else if ($argv[2] == e) then
+    @ procf = 2
+else if ($argv[2] == ie || $argv[2] == ei) then
+    @ procf = 3
+else
+    echo '** ' Invalid promotion option
+    goto Usage
+endif
+@ ishipf = $procf % 2
+
+
+# ==========================================================================
+# Scan through the staging area and find every combination of platform and
+# database for which there is a directory.  Perform each requested promotion
+# of the bridge for that combination.
+# ==========================================================================
+foreach platform (alphaosf hp9000s700 intelnt linux rs6000 sparcsol)
+    foreach db (odbc oracle sybase)
+        set fromDir = $argv[1]/$platform/g2$db-$argv[3]
+        if (-d $fromDir) then      
+            if ($ishipf == 1) then       
+                /gensym/tools/promote-product -noconfirm -i g2$db $platform $fromDir $argv[3]
+            endif
+            if ($procf >= 2) then
+                /gensym/tools/promote-product -noconfirm -e g2$db $platform $argv[3] $argv[4]
+            endif
+        endif
+    end
+end
+exit 0
+
+# ==========================================================================
+# Tell the user how to use this script
+# ==========================================================================
+Usage:
+    echo Usage: promote-g2db '<staging area root> <type> <build ID> <e-ship ID>'
+    echo '       Promote database bridge to i-ship, e-ship, or both.'
+    echo
+    echo '       Command-line parameters:'
+    echo '       <staging area root> - Your staging area should form a tree'
+    echo '           where each bridge is in a directory named' 
+    echo '           <staging area root>/$platform/g2$db-<build ID>.  For'
+    echo '           example, if your staging area root is /stage, the version'
+    echo '           of the bridges is 6.0 rev 10, and they have build code FD10'
+    echo '           then the Oracle bridges for Linux should be staged in the '
+    echo '           directory /stage/linux/g2oracle-60r10-FD10.'
+    echo
+    echo '           Note that even though you will not copy files from the'
+    echo '           staging area when promoting to e-ship, this script uses the'
+    echo '           existence of directories in the staging area to determine'
+    echo '           which bridges for which platforms should be promoted.  You'
+    echo '           should therefore leave your staging area intact after promoting'
+    echo '           for i-ship until you have promoted for e-ship.'
+    echo
+    echo '       <type> - i for i-ship, e for e-ship, ie or ei for both.'
+    echo
+    echo '       <build ID> - "version - build code", e.g., 60r10-FD10.'
+    echo
+    echo '       <E-ship ID> - usually the version code, e.g., 60r10.  Occasionally,'
+    echo '           (for example, when you have done more than one build for a version),'
+    echo '           the E-ship ID should be the same as the build ID.'
+    echo
+    echo '       Examples:'
+    echo
+    echo '           promote-g2db /bt/ab/stage i 60r7-EG02'
+    echo '              Promote to i-ship the 6.0 rev 7 database bridges with build code'
+    echo '              EG02 that were staged under the /bt/ab/stage directory.'
+    echo
+    echo '           promote-g2db /bt/ab/stage e 60r7-EG02 60r7'
+    echo '              Promote to e-ship the 6.0 rev 7 database bridges.  They were'
+    echo '              previously promoted to i-ship with build ID 60r7-EG02.'
+    echo
+    echo '           promote-g2db ~/stage ie 60r10-FD10 60r10'
+    echo '              Promote the database bridges that were staged under the directory'
+    echo '              "stage" in your home directory.  The bridges are version'
+    echo '              6.0 rev. 10 with build code FD10'
+    exit 1
