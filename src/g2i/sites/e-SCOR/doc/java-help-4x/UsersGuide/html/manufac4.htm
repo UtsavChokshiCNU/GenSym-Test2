@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="02/06/02 18:48:27">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Configuring Build Selection Parameters</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="manufac3.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="manufac5.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+      <div align="center"><b>e-SCOR User's Guide</b></div>
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/e-SCOR/OnlineHelpFiles/UsersGuide/html/manufact.htm">  
+        Modeling a Manufacturing Process  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Configuring Build Selection Parameters
+</h2>
+<p >
+  <a name="80647"> </a>
+<p><div align="left"><img src="images/m1-no-st.gif" border="0" hspace="0" vspace="0">
+</div><a name="80646"></a></p>
+
+
+
+</p>
+<p>You can control how a Manufacturer role sort and selects build orders for manufacturing, based on a set of sort criteria. You do this to describe how your current manufacturing process works or to experiment with alternative techniques to enhance the performance of the manufacturing phase.<a name="12053"></a></p>
+<p>For example, if two build orders are waiting to be manufactured, you can configure the Make category to manufacture the highest cost build orders first, the oldest build orders first, or the largest build orders first with a minimum batch size.<a name="12054"></a></p>
+<h6><b>Note: </b>The Build Selection parameters are relevant for the M1: Make-to-Stock category 
+only.
+<a name="12055"></a></h6><p>e-SCOR uses an exclusion strategy to identify the build orders to manufacture. The Make category places all build orders in the Build Orders pool into a list, then applies the first set of sort criteria to the build orders in the list. If a build order does not meet the sort criteria, the Make category removes the build order from the list. If two build orders have the same value for the set of sort criteria, the Make category applies the second set of criteria, and so on. You can configure the Make category to sort build orders, based on up to four sets of sort criteria. <a name="29659"></a></p>
+<p>Each set of sort criteria specifies the direction of the sort (smallest or biggest) and cutoff parameters, which are relative to the selected property of a build order. You sort build orders, based on numeric values of an order. For example, if the property to sort by is the internal build order number and the sort direction is smallest, the Make category sorts build orders, based on a first-in, first-out (FIFO) basis.<a name="29660"></a></p>
+<p>You can also configure the Make category to use a cutoff value, which lets you further restrict the build orders that are candidates for manufacturing. For example, you can choose to manufacture only build orders of a certain size to guarantee minimum batch sizes. <a name="29661"></a></p>
+<p>The following figure shows the Build Orders tab of the properties dialog for an M1: Make-to-Stock category that sorts build orders on a first-in first-out (FIFO) basis:<a name="30444"></a></p>
+<p >
+  <a name="80678"> </a>
+<p><div align="left"><img src="images/m1-buil3.gif" border="0" hspace="0" vspace="0">
+</div><a name="80677"></a></p>
+
+
+
+</p>
+<p>To sort build orders for manufacture, you configure the following build selection parameters for the M1 category:<a name="10527"></a></p>
+<p >
+  <a name="10564"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="30623"><div >Parameter</a></div></th>
+    <th><a name="30625"><div >Description</a></div></th>
+  </tr>
+  <tr>
+    <td><p>Sort Direction<a name="30628"></a></p>
+</td>
+    <td><p>Determines whether to sort build orders, based on the <code>Smallest</code> or <code>Biggest</code> value. You can also sort build orders, based on a <code>Random</code> value, which chooses a build order at random. The default value is <code>Smallest</code>.<a name="30630"></a></p>
+<p>For an example, see <a href="manufac5.htm#43675">Sorting Build Orders with No Cutoff</a>.<a name="34381"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Sort By<a name="30633"></a></p>
+</td>
+    <td><p>Determines the value the Make category uses to sort build orders. The options include any value of a build order that is a number. The default value is <code>Internal Order Number</code>.<a name="30635"></a></p>
+<p>The options are: <code>Cost</code>, <code>Internal Order Number</code>, <code>Order Size</code>, and <code>Product Preference</code>.<a name="30636"></a></p>
+<p>For an example, see <a href="manufac5.htm#43675">Sorting Build Orders with No Cutoff</a>.<a name="34494"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Cutoff<a name="30639"></a></p>
+</td>
+    <td><p>Determines whether the Make category includes all build orders in its sort (<code>None</code>) or whether it includes only those build orders that meet an acceptable cutoff. <a name="30641"></a></p>
+<p>The options are: <code>Maximum Acceptable</code>, <code>Minimum Acceptable</code>, and <code>Maximum Delta Acceptable</code>. <a name="30642"></a></p>
+<p>If Cutoff is <code>Maximum Delta Acceptable</code>, Sort Direction must be <code>Smallest</code> or <code>Biggest</code>. <a name="30643"></a></p>
+<p>For an example, see <a href="manufac6.htm#10612">Restricting the Orders to Sort Based on a Cutoff</a>.<a name="30646"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Cutoff Value<a name="30650"></a></p>
+</td>
+    <td><p>When Cutoff is a value other than <code>None</code>, specifies the value that determines whether a build order is excluded from the sort. If the specified value of a build order does not meet the cutoff criteria, the Make category does not manufacture the build order.<a name="30652"></a></p>
+<p>For an example, see <a href="manufac6.htm#10612">Restricting the Orders to Sort Based on a Cutoff</a>.<a name="34559"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Cutoff Duration<a name="30655"></a></p>
+</td>
+    <td><p>Not used for sorting build orders.<a name="30657"></a></p>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<h4 >	 To configure build selection criteria:<a name="10565"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>1	</b></td>    <td valign="top" width="580">Display the properties dialog for the M1: Make-to-Stock category and click the Build Orders tab.<a name="10566"></a></td>  </tr></table><blockquote>  <a name="10567">The parameters to configure appear in the Build Selection group. The Build Selection group has four tab pages, one for each set of build-selection criteria.</a></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>2	</b></td>    <td valign="top" width="580">Configure the parameters on the First tab, according to the table above, to configure the basic parameters the Make category uses to sort build orders.<a name="30189"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>3	</b></td>    <td valign="top" width="580">Click the Second tab to configure a second set of parameters, which the Make category applies after the first set of criteria.<a name="30190"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>4	</b></td>    <td valign="top" width="580">Repeat step 3 for the Third and Fourth tab, as needed, to configure up to four sets of criteria, which the Make category applies after the previous sets of criteria.<a name="43671"></a></td>  </tr></table><p><b>Related topics:</b><a name="80708"></a></p>
+<p><a href="manufac5.htm#43675">Sorting Build Orders with No Cutoff</a><a name="80712"></a></p>
+<p><a href="manufac6.htm#10612">Restricting the Orders to Sort Based on a Cutoff</a><a name="80716"></a></p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="manufac3.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="manufac5.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
