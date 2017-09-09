@@ -1,0 +1,21 @@
+<project name="xanalys" default="build_32_std">
+	<property name="module.name" value="xanalys"/>
+	<property name="${module.name}.basedir" value=".."/> 
+	<property file="${xanalys.basedir}/ant/build.properties"/>
+  
+	<!-- Build section -->
+	<target name="build_32_std">
+		<ant dir="${xanalys.basedir}/ant" target="vstudio" inheritAll="false">
+			<property name="type" value="Release|Win32"/>
+			<property name="module" value="${module.name}"/>
+		</ant>
+	</target>
+	
+	<target name="build_64_ent" depends="build_32_std">
+		<ant dir="${xanalys.basedir}/ant" target="vstudio" inheritAll="false">
+			<property name="type" value="Release - Enterprise|x64"/>
+			<property name="module" value="${module.name}"/>
+		</ant>
+	</target>
+	<!-- End of Build section -->
+</project>
