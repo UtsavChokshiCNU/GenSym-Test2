@@ -1,0 +1,64 @@
+#!/bin/csh
+#Promote iship for UNIX and NT platforms, mainline version 8.x, ab sandbox.
+
+#Platforms are: intelnt hp9000s700 rs6000 sparcsol alphaosf alphavms linux hpia64
+set platforms = (intelnt sparcsol rs6000 alphaosf hp9000s700 linux hpia64)
+#  
+
+if ($#argv != 1) then
+  echo "Error: Wrong number of arguments, $#argv supplied, 1 required (buildid)."
+  exit 1
+endif
+
+set buildid = $1
+
+foreach i ($platforms)
+  /gensym/tools/promote-product -noconfirm -i g2  ${i} /bt/ab/dst/${i}/g2/tape $buildid
+  /gensym/tools/promote-product -noconfirm -i tw  ${i} /bt/ab/dst/${i}/tw/tape $buildid
+  /gensym/tools/promote-product -noconfirm -i gsi ${i} /bt/ab/dst/${i}/gsi/tape $buildid
+end
+
+/gensym/tools/promote-product -noconfirm -i fonts /bt/ab/stage/fonts $buildid
+/gensym/tools/promote-product -noconfirm -i kbs /bt/ab/stage/kbs $buildid
+
+/gensym/tools/promote-product -noconfirm -i gsi intelnt /bt/ab/dst/intelnt/gsi/tape-intc $buildid-INTC
+
+# protools, not currently handled separately.  
+# This fixes bug HQ-4260487 Profiler.kb not included in G2 6x utilities?
+# but not really nicely.  IWBNI the makefile generator created and populated 
+# the staging area for these four kbs.  The family file (as of 62r1)
+# shuffles the kbs into the proper locations (protools and g2/kbs/utils)
+
+rm -rf /bt/ab/stage/protools
+mkdir /bt/ab/stage/protools
+cp -p /bt/ab/kbs/protools.kb /bt/ab/stage/protools
+cp -p /bt/ab/kbs/ptroot.kb /bt/ab/stage/protools
+cp -p /bt/ab/kbs/profiler.kb /bt/ab/stage/protools
+cp -p /bt/ab/kbs/profroot.kb /bt/ab/stage/protools
+cp -p /bt/ab/kbs/profile-demo.kb /bt/ab/stage/protools
+/gensym/tools/promote-product -noconfirm -i protools /bt/ab/stage/protools $buildid
+
+# Similarly, we're doing stuff for demos.
+
+rm -rf /bt/ab/stage/demos
+mkdir /bt/ab/stage/demos
+cp -p /bt/ab/promote/bin/sleep.exe /bt/ab/stage/demos
+cp -p /bt/ab/promote/start-mill.bat /bt/ab/stage/demos
+cp -p /bt/ab/promote/StartServer.bat /bt/ab/stage/demos
+cp -p /bt/ab/promote/startserver /bt/ab/stage/demos
+cp -p /bt/ab/promote/registerControls.bat /bt/ab/stage/demos
+cp -p /bt/ab/promote/unregisterControls.bat /bt/ab/stage/demos
+
+/gensym/tools/promote-product -noconfirm -i demos /bt/ab/stage/demos $buildid
+
+
+
+/gensym/tools/promote-product -noconfirm -i gservice intelnt /bt/ab/dst/intelnt/gservice/tape $buildid
+
+/gensym/tools/promote-product -noconfirm -i workspace-view intelnt /bt/ab/stage/workspace-view $buildid
+
+/gensym/tools/promote-product -noconfirm -i tw intelnt /bt/ab/dst/intelnt/twng/tape $buildid-NG
+
+/gensym/tools/promote-product -noconfirm -i twax intelnt /bt/ab/stage/twax $buildid
+
+/gensym/tools/promote-product -noconfirm -i g2pi intelnt /bt/ab/stage/g2pi $buildid
