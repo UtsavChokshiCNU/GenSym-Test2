@@ -1,0 +1,494 @@
+<?xml version="1.0"?>
+
+<!--
+ Copyright (C) Unpublished Trilogy Software, Inc. All rights reserved.
+ Trilogy Software, Inc., Confidential and Proprietary. Unless otherwise
+ explicitly stated in writing, this software may not be used by or
+ disclosed to any third party. This software is subject to copyright
+ protection under the laws of the United States and other countries.
+ Unless otherwise explicitly stated, this software is provided
+ by Trilogy "AS IS".
+-->
+<project name="G2i build project" default="build" basedir="." xmlns:jacoco="antlib:org.jacoco.ant">
+
+    <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
+      <classpath path="${basedir}/../java/jacoco-0.7.9/lib/jacocoant.jar" />
+    </taskdef>
+
+    <property environment="env"/>
+    <property name="JAVA_HOME" value="${env.JAVA_HOME}"/>
+    <property name="libiconv.dll" value="${basedir}/../libiconv/MSVC14/lib64;${basedir}/../libiconv/MSVC14/lib"/>
+
+    <property name="SRCBOX" value="${basedir}/.."/>    
+    <property name="DSTBOX" value="${SRCBOX}/../dst"/>
+    <property name="RESBOX" value="/g2/results"/>
+    <property name="G2I_SRC_HOME" value="${SRCBOX}/g2i"/>
+    <property name="G2DB_SRC_HOME" value="${SRCBOX}/g2db"/>
+    <property name="JAVALINK_HOME" value="${DSTBOX}/javalink"/>
+    <property name="G2I_HOME" value="${DSTBOX}/g2i"/>
+    <property name="JMAIL_HOME" value="${DSTBOX}/jmail"/>
+
+    <property name="SNMP_HOME" value="${DSTBOX}/jsnmp"/>
+    <property name="MIBPARSER_HOME" value="${DSTBOX}/g2mibparser"/>
+    <property name="SOCKMAN_HOME" value="${DSTBOX}/sockman"/>
+
+    <property name="g2.ok" value="../license/g2sitev2015.ok"/>
+
+    <property file="${basedir}/build.properties"/>
+
+    <condition property="isLinux" value="true">
+        <os name="linux"/>
+    </condition>
+    <condition property="isWindows">
+        <os family="windows"/>
+    </condition>
+
+    <property name="apacheoro.src.dir" value="java/org/apache/oro/text/regex"/>
+
+    <target name="clean">
+        <delete dir="${DSTBOX}/g2i"/>
+        <delete dir="${JMAIL_HOME}"/>
+        <delete dir="${JMS_HOME}"/>
+        <delete dir="${SNMP_HOME}"/>
+        <delete dir="${MIBPARSER_HOME}"/>
+        <delete dir="${SOCKMAN_HOME}"/>
+        <delete dir="${test.result.dir}"/>
+    </target>
+
+    <target name="create-stage">
+        <!-- g2i stage folder -->
+        <mkdir dir="${DSTBOX}/g2i/staging"/>
+
+        <!-- G2 JMail bridge stage folder -->
+        <mkdir dir="${JMAIL_HOME}"/>
+        <mkdir dir="${JMAIL_HOME}/bin"/>
+        <mkdir dir="${JMAIL_HOME}/classes"/>
+        <mkdir dir="${JMAIL_HOME}/doc"/>
+        <mkdir dir="${JMAIL_HOME}/examples"/>
+        <mkdir dir="${JMAIL_HOME}/kbs"/>
+        <copy file="${G2I_SRC_HOME}/java/classes/mail.jar" todir="${JMAIL_HOME}/classes"/>
+        <copy file="${G2I_SRC_HOME}/java/classes/activation.jar" todir="${JMAIL_HOME}/classes"/>
+
+        <!-- G2 JMS bridge stage folder -->
+        <mkdir dir="${JMS_HOME}"/>
+        <mkdir dir="${JMS_HOME}/bin"/>
+        <mkdir dir="${JMS_HOME}/classes"/>
+        <mkdir dir="${JMS_HOME}/doc"/>
+        <mkdir dir="${JMS_HOME}/examples"/>
+        <mkdir dir="${JMS_HOME}/kbs"/>
+
+        <!-- G2 SNMP bridge stage folder -->
+        <mkdir dir="${SNMP_HOME}"/>
+        <mkdir dir="${SNMP_HOME}/bin"/>
+        <mkdir dir="${SNMP_HOME}/classes"/>
+        <mkdir dir="${SNMP_HOME}/doc"/>
+        <mkdir dir="${SNMP_HOME}/examples"/>
+        <mkdir dir="${SNMP_HOME}/kbs"/>
+        <copy file="${G2I_SRC_HOME}/java/classes/AdventNetSnmp.jar" todir="${SNMP_HOME}/classes"/>
+        <copy file="${G2I_SRC_HOME}/java/classes/AdventNetSnmpHLAPI.jar" todir="${SNMP_HOME}/classes"/>
+        <copy file="${G2I_SRC_HOME}/java/classes/AdventNetSnmpLLAPI.jar" todir="${SNMP_HOME}/classes"/>
+        <copy file="${G2I_SRC_HOME}/java/classes/AdventNetLogging.jar" todir="${SNMP_HOME}/classes"/>
+
+        <!-- MIBPARSER bridge stage folder -->
+        <mkdir dir="${MIBPARSER_HOME}"/>
+        <mkdir dir="${MIBPARSER_HOME}/bin"/>
+        <mkdir dir="${MIBPARSER_HOME}/classes"/>
+        <mkdir dir="${MIBPARSER_HOME}/doc"/>
+        <mkdir dir="${MIBPARSER_HOME}/examples"/>
+        <mkdir dir="${MIBPARSER_HOME}/kbs"/>
+        <copy file="${G2I_SRC_HOME}/java/classes/MibBrowser.jar" todir="${MIBPARSER_HOME}/classes"/>
+        <copy file="${G2I_SRC_HOME}/java/classes/AdventNetSnmpHLAPI.jar" todir="${MIBPARSER_HOME}/classes"/>
+        <copy file="${G2I_SRC_HOME}/java/classes/AdventNetSnmpLLAPI.jar" todir="${MIBPARSER_HOME}/classes"/>
+
+        <!-- G2 Java SocketManager bridge -->
+        <mkdir dir="${SOCKMAN_HOME}"/>
+        <mkdir dir="${SOCKMAN_HOME}/bin"/>
+        <mkdir dir="${SOCKMAN_HOME}/classes"/>
+        <mkdir dir="${SOCKMAN_HOME}/doc"/>
+        <mkdir dir="${SOCKMAN_HOME}/examples"/>
+        <mkdir dir="${SOCKMAN_HOME}/kbs"/>
+
+	<!-- G2I Test Result Folder -->
+	<mkdir dir="${test.result.dir}"/>
+	
+        <antcall target="stageSpecific-windows"/>
+        <antcall target="stageSpecific-linux"/>
+    </target>
+
+    <target name="stageSpecific-linux" if="isLinux">
+        <copy file="${G2I_SRC_HOME}/bin/linux/startjmailbridge" todir="${JMAIL_HOME}/bin"/>
+        <copy file="${G2I_SRC_HOME}/bin/linux/startjmsbridge-j2ee" todir="${JMS_HOME}/bin"/>
+        <copy file="${G2I_SRC_HOME}/bin/linux/startjmsbridge-jboss" todir="${JMS_HOME}/bin"/>
+        <copy file="${G2I_SRC_HOME}/bin/linux/startjmsbridge-openjms" todir="${JMS_HOME}/bin"/>
+        <copy file="${G2I_SRC_HOME}/bin/linux/startjsnmpbridge" todir="${SNMP_HOME}/bin"/>
+        <copy file="${G2I_SRC_HOME}/bin/linux/startjmibparser" todir="${MIBPARSER_HOME}/bin"/>
+        <copy file="${G2I_SRC_HOME}/bin/linux/socketmanager" todir="${SOCKMAN_HOME}/bin"/>
+    </target>
+
+    <target name="stageSpecific-windows" if="isWindows">
+        <copy file="${G2I_SRC_HOME}/bin/intelnt/StartJMailBridge.bat" todir="${JMAIL_HOME}/bin"/>
+        <copy file="${G2I_SRC_HOME}/bin/intelnt/StartJmsBridge-FioranoMQ.bat" todir="${JMS_HOME}/bin"/>
+        <copy file="${G2I_SRC_HOME}/bin/intelnt/StartJmsBridge-j2ee.bat" todir="${JMS_HOME}/bin"/>
+        <copy file="${G2I_SRC_HOME}/bin/intelnt/StartJmsBridge-jboss.bat" todir="${JMS_HOME}/bin"/>
+        <copy file="${G2I_SRC_HOME}/bin/intelnt/StartJmsBridge-OpenJMS.bat" todir="${JMS_HOME}/bin"/>
+        <copy file="${G2I_SRC_HOME}/bin/intelnt/StartJmsBridge-SonicMQ.bat" todir="${JMS_HOME}/bin"/>
+        <copy file="${G2I_SRC_HOME}/bin/intelnt/StartJmsBridge-WebSphereMQ.bat" todir="${JMS_HOME}/bin"/>
+        <copy file="${G2I_SRC_HOME}/bin/intelnt/StartJsnmpBridge.bat" todir="${SNMP_HOME}/bin"/>
+        <copy file="${G2I_SRC_HOME}/bin/intelnt/StartJMibParser.bat" todir="${MIBPARSER_HOME}/bin"/>
+        <copy file="${G2I_SRC_HOME}/bin/intelnt/SocketManager.bat" todir="${SOCKMAN_HOME}/bin"/>
+        <!-- Call CreateCAB.bat only on Windows -->
+        <exec executable="cmd" dir="${SRCBOX}/g2i/bin" failonerror="true">
+            <env key="SRCBOX" value="${SRCBOX}"/>
+            <env key="DSTBOX" value="${DSTBOX}"/>
+            <arg line="/c CreateCAB.bat"/>
+        </exec>
+    </target>
+
+    <!-- build components one by one, note that we will copy the building results into stage folder in each target -->
+    <target name="build" depends="clean, create-stage">
+        <antcall target="build-kbs"/>
+        <antcall target="build-jmail"/>
+        <antcall target="build-jms"/>
+        <antcall target="build-snmp"/>
+        <antcall target="build-jmibparser"/>
+        <antcall target="build-sockman"/>
+    </target>
+
+    <macrodef name="start-server-1">
+        <attribute name="kb" default=""/>
+        <attribute name="module-search-path" default="&#34;'${basedir}${file.separator}..${file.separator}kbs'
+	'${basedir}${file.separator}..${file.separator}kbs${file.separator}sources'&#34;"/>
+        <attribute name="name" default="G2 Server"/>
+        <attribute name="log" default="g2.log"/>
+        <attribute name="ok" default="${g2.ok}"/>
+        <attribute name="exec" default="g2"/>
+        <attribute name="options" default="-module-search-path @{module-search-path} -kb @{kb} -log @{log} -copy-logbook-on-console -name @{name} -start -ok @{ok}"/>
+        <sequential>
+            <echo>Started G2 Server [@{options}]</echo>
+            <exec executable="${basedir}${file.separator}..${file.separator}..${file.separator}dst${file.separator}g2${file.separator}opt${file.separator}@{exec}">
+		<env key="Path" value="${env.Path};${libiconv.dll}"/>	
+                <env key="SRCBOX" value="${basedir}${file.separator}..${file.separator}"/>
+                <env key="DSTBOX" value="${basedir}${file.separator}..${file.separator}..${file.separator}dst"/>
+                <env key="UTILS" value="${basedir}${file.separator}..${file.separator}kbs${file.separator}tools"/>
+                <env key="MODMAP" value="sb.mm"/>
+                <env key="JAVA_SRCBOX" value="${basedir}${file.separator}.."/>
+                <env key="G2I_HOME" value="${SRCBOX}${file.separator}g2i${file.separator}"/>
+                <env key="G2_OK" value="${g2.ok}"/>
+                <arg line="@{options}"/>
+            </exec>
+        </sequential>
+    </macrodef>
+
+    <target name="build-kbs">
+        <start-server-1 options="-log ${basedir}${file.separator}..${file.separator}..${file.separator}results${file.separator}build-logs${file.separator}g2i.log
+		-icon 'G2i Dev' -name 'G2i Dev Server' -auto-build ${DSTBOX}${file.separator}g2i${file.separator}staging${file.separator}
+		-kb ${basedir}${file.separator}..${file.separator}g2i${file.separator}sites${file.separator}DevSite${file.separator}kbs${file.separator}g2i-dev.kb
+		-module-search-path &#34;'${basedir}${file.separator}..${file.separator}g2i${file.separator}sites${file.separator}DevSite'
+		'${basedir}${file.separator}..${file.separator}g2i${file.separator}kbs'
+		'${basedir}${file.separator}..${file.separator}g2i${file.separator}sites${file.separator}DevSite${file.separator}kbs'
+		'${basedir}${file.separator}..${file.separator}g2i${file.separator}sites${file.separator}Optegrity${file.separator}kbs'
+		'${basedir}${file.separator}..${file.separator}g2i${file.separator}sites${file.separator}Nol${file.separator}kbs'
+		'${basedir}${file.separator}..${file.separator}g2i${file.separator}sites${file.separator}e-SCOR${file.separator}kbs'
+		'${basedir}${file.separator}..${file.separator}g2i${file.separator}sites${file.separator}ReThink${file.separator}kbs'
+		'${basedir}${file.separator}..${file.separator}g2i${file.separator}sites${file.separator}Integrity${file.separator}kbs' '${basedir}${file.separator}..${file.separator}kbs'
+		'${basedir}${file.separator}..${file.separator}java${file.separator}products${file.separator}javalink${file.separator}common${file.separator}kbs'
+		'${basedir}${file.separator}..${file.separator}g2pi${file.separator}kbs' '${basedir}${file.separator}..${file.separator}g2db${file.separator}kbs'
+		'${basedir}${file.separator}..${file.separator}g2opc${file.separator}kbs' '${basedir}${file.separator}..${file.separator}gw${file.separator}kbs'
+		'${basedir}${file.separator}..${file.separator}corba${file.separator}kbs'
+		'${basedir}${file.separator}..${file.separator}java${file.separator}products${file.separator}sequoia${file.separator}common${file.separator}kbs'&#34;"/>
+
+        <copy file="${G2I_HOME}/staging/jmail-demo.kb" todir="${JMAIL_HOME}/examples"/>
+        <copy file="${G2I_HOME}/staging/jmail.kb" todir="${JMAIL_HOME}/kbs"/>
+        <copy file="${G2I_HOME}/staging/jms-demo.kb" todir="${JMS_HOME}/examples"/>
+        <copy file="${G2I_HOME}/staging/jms.kb" todir="${JMS_HOME}/kbs"/>
+        <copy file="${G2I_HOME}/staging/gsnmp.kb" todir="${SNMP_HOME}/kbs"/>
+        <copy file="${G2I_HOME}/staging/gsockdemo.kb" todir="${SOCKMAN_HOME}/examples"/>
+        <copy file="${G2I_HOME}/staging/gsockman.kb" todir="${SOCKMAN_HOME}/kbs"/>
+    </target>
+
+    <target name="build-jmail">
+        <echo>Started G2 Server ${JMAIL_HOME}</echo>
+        <mkdir dir="${JMAIL_HOME}/compile"/>
+        <javac srcdir="${jmail.src.dir}" destdir="${JMAIL_HOME}/compile" fork="true"
+               executable="${JAVA_HOME}/bin/javac">
+            <classpath>
+                <pathelement location="${basedir}/java/classes/mail.jar"/>
+                <pathelement location="${JAVALINK_HOME}/classes/javalink.jar"/>
+                <pathelement location="${JAVALINK_HOME}/classes/core.jar"/>
+            </classpath>
+        </javac>
+        <jar basedir="${JMAIL_HOME}/compile"
+             destfile="${JMAIL_HOME}/classes/G2JMail.jar"/>
+        <delete dir="${JMAIL_HOME}/compile"/>
+    </target>
+
+    <target name="test-jmail" depends="compile-test-jmail">
+        <mkdir dir="${jmail.test.result.dir}"/>
+        <jacoco:coverage>
+            <junit printsummary="yes" fork="yes" haltonfailure="no"
+                   showoutput="true" failureproperty="test.failed">
+                <classpath refid="test.jmail.classpath"/>
+                <formatter type="xml" />
+                <batchtest fork="yes" todir="${jmail.test.result.dir}">
+                    <fileset dir="java/test">
+                        <include name="com/gensym/jmail/**.*"/>
+                    </fileset>
+                </batchtest>
+            </junit>
+        </jacoco:coverage>
+        <fail message="JMail Tests Failed" if="test.failed"/>
+    </target>
+
+    <target name="compile-test-jmail" depends="build-jmail, clean-test">
+        <mkdir dir="${jmail.test.dest.dir}"/>
+        <echo>${toString:test.jmail.classpath}</echo>
+        <javac srcdir="java/test" destdir="${jmail.test.dest.dir}" debug="on" classpathref="test.jmail.classpath">
+            <include name="com/gensym/jmail/**.*"/>
+        </javac>
+    </target>
+
+    <target name="clean-jmail-test">
+        <delete dir="${jmail.test.dest.dir}"/>
+	<delete dir="${jmail.test.result.dir}"/>
+    </target>
+
+    <path id="test.jmail.classpath">
+        <pathelement location="${JMAIL_HOME}/classes/G2JMail.jar"/>
+        <pathelement location="${jmail.test.dest.dir}"/>
+        <pathelement location="${JMAIL_HOME}/classes/mail.jar"/>
+        <pathelement location="${JAVALINK_HOME}/classes/javalink.jar"/>
+        <pathelement location="${JAVALINK_HOME}/classes/core.jar"/>
+        <fileset dir="${lib.dir.testlibs}/">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+    <target name="build-jms">
+        <mkdir dir="${jms.dest.dir}"/>
+        <javac srcdir="${jms.src.dir}" destdir="${jms.dest.dir}" fork="true"
+               executable="${JAVA_HOME}/bin/javac">
+            <classpath>
+                <pathelement location="${G2I_SRC_HOME}/java/classes/j2ee.jar"/>
+                <pathelement location="${JAVALINK_HOME}/classes/javalink.jar"/>
+                <pathelement location="${JAVALINK_HOME}/classes/core.jar"/>
+            </classpath>
+        </javac>
+        <jar basedir="${jms.dest.dir}"
+             destfile="${JMS_HOME}/classes/G2Jms.jar"/>
+        <delete dir="${jms.dest.dir}"/>
+    </target>
+
+    <target name="test-jms" depends="compile-test-jms">
+        <mkdir dir="${jms.test.result.dir}"/>
+        <jacoco:coverage>
+            <junit printsummary="yes" fork="yes" haltonfailure="no"
+                   showoutput="true" failureproperty="test.failed">
+                <classpath refid="test.jms.classpath"/>
+                <formatter type="xml" />
+                <batchtest fork="yes" todir="${jms.test.result.dir}">
+                    <fileset dir="java/test">
+		      <include name="com/gensym/jms/**.*"/>
+                    </fileset>
+                </batchtest>
+            </junit>
+        </jacoco:coverage>
+        <fail message="Some Tests Failed" if="test.failed"/>
+    </target>
+
+    <target name="compile-test-jms" depends="build-jms, clean-test">
+        <mkdir dir="${jms.test.dest.dir}"/>
+        <javac srcdir="java/test" destdir="${jms.test.dest.dir}" debug="on" classpathref="test.jms.classpath">
+            <include name="com/gensym/jms/**.*"/>
+        </javac>
+    </target>
+
+    <target name="clean-jms-test">
+        <delete dir="${jms.test.dest.dir}"/>
+	<delete dir="${jms.test.result.dir}"/>
+    </target>
+
+    <path id="test.jms.classpath">
+        <pathelement location="${jms.src.dir}"/>
+        <pathelement location="${jms.test.dest.dir}"/>
+        <pathelement location="${G2I_SRC_HOME}/java/classes/j2ee.jar"/>
+        <pathelement location="${JAVALINK_HOME}/classes/javalink.jar"/>
+        <pathelement location="${JAVALINK_HOME}/classes/core.jar"/>
+        <fileset dir="${lib.dir.testlibs}/">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+    <target name="build-snmp">
+        <mkdir dir="${SNMP_HOME}/compile"/>
+        <javac srcdir="${snmp.src.dir}" destdir="${SNMP_HOME}/compile" fork="true"
+               executable="${JAVA_HOME}/bin/javac">
+            <classpath>
+                <pathelement location="${basedir}/java/classes/AdventNetSnmp.jar"/>
+                <pathelement location="${JAVALINK_HOME}/classes/javalink.jar"/>
+                <pathelement location="${JAVALINK_HOME}/classes/core.jar"/>
+            </classpath>
+        </javac>
+        <jar basedir="${SNMP_HOME}/compile" destfile="${SNMP_HOME}/classes/G2SNMP.jar"/>
+        <delete dir="${SNMP_HOME}/compile"/>
+    </target>
+
+    <target name="test-snmp" depends="compile-test-snmp">
+        <mkdir dir="${snmp.test.result.dir}"/>
+        <jacoco:coverage>
+            <junit printsummary="yes" fork="yes" haltonfailure="no"
+                   showoutput="true" failureproperty="test.failed">
+                <classpath refid="test.snmp.classpath"/>
+                <formatter type="xml" />
+                <batchtest fork="yes" todir="${snmp.test.result.dir}">
+                    <fileset dir="java/test">
+                        <include name="com/gensym/jsnmp/**.*"/>
+                    </fileset>
+                </batchtest>
+            </junit>
+        </jacoco:coverage>
+        <fail message="Snmp Tests Failed" if="test.failed"/>
+    </target>
+
+    <target name="compile-test-snmp" depends="build-snmp, clean-test">
+        <mkdir dir="${snmp.test.dest.dir}"/>
+        <javac srcdir="java/test" destdir="${snmp.test.dest.dir}" debug="on" classpathref="test.snmp.classpath">
+            <include name="com/gensym/jms/**.*"/>
+        </javac>
+    </target>
+
+    <target name="clean-snmp-test">
+        <delete dir="${snmp.test.dest.dir}"/>
+        <delete dir="${snmp.test.result.dir}"/>
+    </target>
+
+    <path id="test.snmp.classpath">
+        <pathelement location="${snmp.test.dest.dir}"/>
+        <pathelement location="${SNMP_HOME}/classes/G2SNMP.jar"/>
+        <pathelement location="${SNMP_HOME}/classes/AdventNetSnmp.jar"/>
+        <pathelement location="${JAVALINK_HOME}/classes/javalink.jar"/>
+        <pathelement location="${JAVALINK_HOME}/classes/core.jar"/>
+        <fileset dir="${lib.dir.testlibs}/">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+    <target name="build-jmibparser">
+        <mkdir dir="${MIBPARSER_HOME}/compile"/>
+        <javac srcdir="${jmibparser.src.dir}" destdir="${MIBPARSER_HOME}/compile" fork="true"
+               executable="${JAVA_HOME}/bin/javac">
+            <classpath>
+                <pathelement location="${basedir}/java/classes/AdventNetSnmp.jar"/>
+                <pathelement location="${basedir}/java/classes/MibBrowser.jar"/>
+                <pathelement location="${JAVALINK_HOME}/classes/javalink.jar"/>
+                <pathelement location="${JAVALINK_HOME}/classes/core.jar"/>
+            </classpath>
+        </javac>
+        <jar basedir="${MIBPARSER_HOME}/compile"
+             destfile="${MIBPARSER_HOME}/classes/jmibparser.jar"/>
+        <delete dir="${MIBPARSER_HOME}/compile"/>
+    </target>
+
+    <target name="test-jmibparser" depends="compile-test-jmibparser">
+        <mkdir dir="${jmibparser.test.result.dir}"/>
+        <jacoco:coverage>
+            <junit printsummary="yes" fork="yes" haltonfailure="no"
+                   showoutput="true" failureproperty="test.failed">
+                <classpath refid="test.jmibparser.classpath"/>
+                <formatter type="xml" />
+                <batchtest fork="yes" todir="{jmibparser.test.result.dir}">
+                    <fileset dir="java/test">
+                        <include name="com/gensym/JMibParser/**.*"/>
+                    </fileset>
+                </batchtest>
+            </junit>
+        </jacoco:coverage>
+        <fail message="JMibParser Tests Failed" if="test.failed"/>
+    </target>
+
+    <target name="compile-test-jmibparser" depends="build-jmibparser, clean-test">
+        <mkdir dir="${jmibparser.test.dest.dir}"/>
+        <javac srcdir="java/test" destdir="${jmibparser.test.dest.dir}" debug="on" classpathref="test.jmibparser.classpath">
+            <include name="com/gensym/JMibParser/**.*"/>
+        </javac>
+    </target>
+
+    <target name="clean-jmibparser-test">
+        <delete dir="${jmibparser.test.dest.dir}"/>
+        <delete dir="{jmibparser.test.result.dir}"/>
+    </target>
+
+    <path id="test.jmibparser.classpath">
+        <pathelement location="${jmibparser.test.dest.dir}"/>
+        <pathelement location="${MIBPARSER_HOME}/classes/jmibparser.jar"/>
+        <pathelement location="${basedir}/java/classes/AdventNetSnmp.jar"/>
+        <pathelement location="${basedir}/java/classes/MibBrowser.jar"/>
+        <pathelement location="${JAVALINK_HOME}/classes/javalink.jar"/>
+        <pathelement location="${JAVALINK_HOME}/classes/core.jar"/>
+        <fileset dir="${lib.dir.testlibs}/">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+    <target name="build-sockman">
+        <mkdir dir="${SOCKMAN_HOME}/compile"/>
+        <javac srcdir="${apacheoro.src.dir}" destdir="${SOCKMAN_HOME}/compile" fork="true"
+               executable="${JAVA_HOME}/bin/javac"/>
+        <javac srcdir="${sockman.src.dir}" destdir="${SOCKMAN_HOME}/compile" fork="true"
+               executable="${JAVA_HOME}/bin/javac">
+            <classpath>
+                <pathelement location="${SOCKMAN_HOME}/compile"/>
+                <pathelement location="${JAVALINK_HOME}/classes/javalink.jar"/>
+                <pathelement location="${JAVALINK_HOME}/classes/core.jar"/>
+            </classpath>
+        </javac>
+        <jar basedir="${SOCKMAN_HOME}/compile"
+             destfile="${SOCKMAN_HOME}/classes/SocketManager.jar"/>
+        <delete dir="${SOCKMAN_HOME}/compile"/>
+    </target>
+
+    <target name="test-sockman" depends="compile-test-sockman">
+        <mkdir dir="${sockman.test.result.dir}"/>
+        <jacoco:coverage>
+            <junit printsummary="yes" fork="yes" haltonfailure="no"
+                   showoutput="true" failureproperty="test.failed">
+                <classpath refid="test.sockman.classpath"/>		
+                <formatter type="xml" />
+                <batchtest fork="yes" todir="${sockman.test.result.dir}">
+                    <fileset dir="java/test">
+                    	<include name="com/gensym/SocketManager/**.*"/>
+                    </fileset>
+                </batchtest>
+            </junit>
+        </jacoco:coverage>
+        <fail message="SocketManager Tests Failed" if="test.failed"/>
+    </target>
+
+    <target name="compile-test-sockman" depends="build-sockman, clean-test">
+        <mkdir dir="${sockman.test.dest.dir}"/>
+        <javac srcdir="java/test" destdir="${sockman.test.dest.dir}" debug="on" classpathref="test.sockman.classpath">
+            <include name="com/gensym/SocketManager/**.*"/>
+            <include name="com/gensym/helpers/**.*"/>
+        </javac>
+    </target>
+
+    <target name="clean-sockman-test">
+        <delete dir="${sockman.test.dest.dir}"/>
+        <delete dir="${sockman.test.result.dir}"/>
+    </target>
+
+    <path id="test.sockman.classpath">
+        <pathelement location="${sockman.test.dest.dir}"/>
+        <pathelement location="${SOCKMAN_HOME}/classes/SocketManager.jar"/>
+        <pathelement location="${SOCKMAN_HOME}/compile"/>
+        <pathelement location="${JAVALINK_HOME}/classes/javalink.jar"/>
+        <pathelement location="${JAVALINK_HOME}/classes/core.jar"/>
+        <fileset dir="${lib.dir.testlibs}/">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+    <target name="clean-test" depends="clean-jms-test , clean-jmail-test , clean-snmp-test , clean-jmibparser-test , clean-sockman-test" />
+    
+    <target name="junit" depends="test-jms , test-jmail , test-snmp , test-jmibparser , test-sockman" />
+
+</project>
