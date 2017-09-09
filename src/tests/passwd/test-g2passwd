@@ -1,0 +1,31 @@
+#!/bin/csh
+
+# Run the program given as the first and only argument.  It
+# is presumably g2passwd.  use this to change the password
+# in the ext/c/test1-g2.ok file and then check that the
+# result is as given in ext/c/test2-g2.ok.  Print a
+# complaint if we fail and a note if we succeed.  Return a
+# non-zero result if we fail.
+
+# Note that this uses undocumented arguments to g2passwd,
+# these arguments exist only to enable this testing.  General
+# use of these arguments would constitute an invitation to
+# create a security hole.
+
+onintr cleanup
+set result = 1
+cd $BT_ROOT/ext/c
+cp test1-g2.ok /tmp/$$.ok
+$1 /tmp/$$.ok ed alphabet betalpha
+if ( $status ) goto cleanup
+cmp -s /tmp/$$.ok test2-g2.ok
+set result = $status
+cleanup:
+if ( ! $result ) then
+  echo LOG: Test Passed.
+else
+  echo "TEST FAILED"
+  diff /tmp/$$.ok test2-g2.ok
+endif
+rm -rf /tmp/$$.ok
+exit $result
