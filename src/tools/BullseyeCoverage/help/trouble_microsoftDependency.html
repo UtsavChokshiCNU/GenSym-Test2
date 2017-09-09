@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_trouble_build.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+Visual C++ Does Not Rebuild After Modifying Header
+</h1>
+<h2>SYMPTOMS</h2>
+<p>
+The Microsoft Visual C++ <code>Build</code> command does not re-compile
+any sources even though a header file in the project was modified.
+<h2>CAUSE</h2>
+<p>
+Microsoft Visual C++ fails to record dependency information when
+preprocessing is performed separately from compiling, as
+BullseyeCoverage does.
+<h2>RESOLUTION</h2>
+<p>
+After modifying a header, rebuild your whole project.
+<h2>MORE INFORMATION</h2>
+<p>
+The Microsoft Visual C++ compiler generates dependency information into
+a file named <i>project</i>.pdb during preprocessing.
+BullseyeCoverage feeds the compiler preprocessed source files.
+Microsoft Visual C++ records only dependency information for the main
+source file but not the header files named by <code>#line</code>
+directives.
+<p>
+Microsoft does not document the <code>.pdb</code> file format,
+so BullseyeCoverage cannot work around the problem by updating the file
+with the correct dependencies.
+<p>
+The problem does not occur with Microsoft Visual C++ version 6.
+
+<p style="font-size:xx-small">
+Last reviewed: 25 Jul 2006
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
