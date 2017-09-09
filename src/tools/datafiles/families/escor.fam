@@ -1,0 +1,208 @@
+index: 3
+
+family file syntax version: 10
+
+family: e-SCOR
+  only on: nt
+  splash screen: escor-setup.bmp
+  directory name: escor
+  guid: 243D4BAE-9EE7-11D4-8111-00A02431D004
+
+bundle: e-SCOR
+  id: 37 
+  version: 2.0r0
+  directory name: escor
+
+
+
+  component: escor
+    index: 1
+   #
+   #  Notes about portions that are missing from this file but will be relevant for the installer
+   #	- The installer must:
+   # 		- registry INSTALL_DIR\bin\G2Com.dll
+   #		- register escor program/version in the registry
+   # 		- check if Acrobat Reader is installed and if not point it out in a message
+
+   part: Readme
+      sourcedir: D:\bt\pp1\builds\e-SCOR-20r0\Cd\Components
+      filename: Readme.html
+
+      shortcut:
+	folder name: e-SCOR
+	application display name: Readme
+	application directory:  
+	target name: Readme.html
+
+
+    part: DLLs to register
+    	sourcedir: Bin
+      destdir: Bin
+      filename: G2Com.dll
+	register:yes 
+
+
+    part: Bin
+      sourcedir: Bin
+      destdir: Bin
+      filename: e-SCOR.ico
+      filename: e-SCOR-Client.bat
+      filename: e-SCOR-Server.bat
+      filename: g2-odbc.exe
+      filename: gsi.dll
+      filename: JgiInterface.dll
+      filename: regsvr32.exe
+
+      shortcut:
+	folder name: e-SCOR
+	application display name: e-SCOR Server
+	application directory: Bin
+	target name: e-SCOR-Server.bat
+        icon file: e-SCOR.ico
+        icon index: 0
+ 	run style: minimized
+
+     shortcut:
+	folder name: e-SCOR
+	application display name: e-SCOR Client
+	application directory: Bin
+	target name: e-SCOR-Client.bat
+	icon file: e-SCOR.ico
+	icon index: 0
+	run style: minimized
+
+    part: Classes
+      sourcedir: Classes
+      destdir: Classes
+
+    part: G2
+      sourcedir: G2
+      destdir: G2
+
+      env variable: ESCOR_HOME_V2
+        env value: <TARGETDIR>
+        env effect: new
+
+    part: jre
+      sourcedir: jre
+      destdir: jre
+
+    part: Kbs
+      sourcedir: Kbs
+      destdir: Kbs
+
+      shortcut:
+	folder name: e-SCOR
+	application display name: Default Summary Report
+	application directory: Kbs
+	target name: Default-Summary-Reports.xls
+
+
+
+      shortcut:
+	folder name: e-SCOR
+	subfolder name: Tutorial Solutions
+	application display name: Simplest Model
+	application directory: bin
+	target name: e-SCOR-Server.bat
+	parameters: Tutorial-Simplest-Model.kb
+	icon file: e-SCOR.ico
+	icon index: 0
+	run style: minimized
+
+      shortcut:
+	folder name: e-SCOR
+	subfolder name: Tutorial Solutions
+	application display name: Simplest Model Summary Reports
+	application directory: kbs
+	target name: Tutorial-Simplest-Model-Summary-Reports.xls
+
+
+      shortcut:
+	folder name: e-SCOR
+	subfolder name: Tutorial Solutions
+	application display name: ACME
+	application directory: bin
+	target name: e-SCOR-Server.bat
+	parameters: Tutorial-ACME.kb
+	icon file: e-SCOR.ico
+	icon index: 0
+	run style: minimized
+
+      shortcut:
+	folder name: e-SCOR
+	subfolder name: Tutorial Solutions
+	application display name: ACME Summary Reports
+	application directory: kbs
+	target name: Tutorial-ACME-Summary-Reports.xls
+
+
+      shortcut:
+	folder name: e-SCOR
+	subfolder name: Tutorial Solutions
+	application display name: VMI
+	application directory: bin
+	target name: e-SCOR-Server.bat
+	parameters: Tutorial-VMI.kb
+	icon file: e-SCOR.ico
+	icon index: 0
+	run style: minimized
+
+      shortcut:
+	folder name: e-SCOR
+	subfolder name: Tutorial Solutions
+	application display name: VMI Summary Reports
+	application directory: kbs
+	target name: Tutorial-VMI-Summary-Reports.xls
+
+
+  component: docs
+    index: 2
+    part: docs
+      sourcedir: Docs
+      destdir: Docs
+
+      shortcut:
+	folder name: e-SCOR
+	application display name: e-SCOR Quick Reference
+	application directory: Docs
+	target name: e-SCOR-Quick-Reference.pdf
+
+      shortcut:
+	folder name: e-SCOR
+	application display name: e-SCOR User's Guide
+	application directory: Docs
+	target name: e-SCOR-Users-Guide.pdf
+
+      shortcut:
+	folder name: e-SCOR
+	application display name: e-SCOR Tutorials
+	application directory: Docs
+	target name: e-SCOR-Tutorials.pdf
+
+      shortcut:
+	folder name: e-SCOR
+	application display name: SCOR Version 4.0
+	application directory: Docs
+	target name: SCOR-Version-4.0.pdf
+
+
+  component: e-SCOR Professional
+    index: 3
+    watermark: g2/g2.ok
+    radio button group index: 1
+    part: Professional
+	sourcedir: Licenses
+	destdir: G2
+	filename: escor-professional.ok
+	new filename: g2.ok
+
+  component: e-SCOR Standard
+    index: 4
+    watermark: g2/g2.ok
+    radio button group index: 1
+    part: Standard
+	sourcedir: Licenses
+	destdir: G2
+	filename: escor-standard.ok
+	new filename: g2.ok
