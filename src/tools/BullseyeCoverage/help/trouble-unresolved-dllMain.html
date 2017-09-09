@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+<style type="text/css">
+code {
+	white-space: normal;
+}
+</style>
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_trouble_build.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+Error LNK2001 Unresolved Symbol on DLL Entry Point
+</h1>
+<h2>SYMPTOMS</h2>
+<p>
+The errors shown below occur when linking a DLL.
+<pre>
+BullseyeCoverageEntryUser-<i>n</i>.obj : error LNK2001: unresolved external symbol <i>DllMain</i>@12
+fatal error LNK1120: 1 unresolved externals
+</pre>
+<pre>
+BullseyeCoverageEntryUser-<i>n</i>.obj : error LNK2001: unresolved external symbol "int __stdcall <i>DllMain</i>(struct HINSTANCE__ *,unsigned long,void *)"
+fatal error LNK1120: 1 unresolved externals
+</pre>
+
+<h2>CAUSE</h2>
+<p>
+Your DLL entry point <i>DllMain</i> parameters and return type do not conform to the Win32
+<a href="http://msdn.microsoft.com/en-us/library/ms682583.aspx">DllMain Callback Function</a>:
+<pre>
+BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved);
+</pre>
+<h2>RESOLUTION</h2>
+<p>
+Modify your source code to change your DllMain callback function so that the parameters and return type match the Win32 documentation.
+
+<p style="font-size:xx-small">
+Last reviewed: 12 Feb 2009
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
