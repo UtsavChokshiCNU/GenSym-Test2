@@ -1,0 +1,514 @@
+;;; -*- Mode: Text -*-
+
+LIBRARY GSILIBS
+EXPORTS
+
+    ;
+    ; os-foreign.lisp
+    ;
+    isG2Enterprise
+    
+    ;
+    ; dom.lisp
+    ;
+    g2xml_validate
+    ;
+
+    ; os-time.lisp
+    ;
+    g2ext_decode_unix_time
+    g2ext_get_current_time_zone
+    g2ext_get_encoded_unix_time
+    g2ext_infer_encoded_unix_time
+    g2ext_is_dst_used
+    g2ext_time_zone
+    g2ext_unix_time_as_float
+    g2ext_g2_clock_ticks
+    g2ext_g2_clock_ticks_per_second
+
+    ;
+    ; os-settings.lisp
+    ;
+    g2ext_return_environment_variable
+    g2ext_environment_variable_strlen
+    g2ext_return_argc
+    g2ext_return_argv
+    g2ext_argv_strlen
+
+    ;
+    ; primitives.lisp
+    ;
+    g2ext_cache_cpointer
+    g2ext_decache_g2pointer
+    g2ext_show_function_address
+    g2ext_visible_window_is_present
+    g2ext_window_is_present
+    g2ext_run_trace
+    g2ext_run_trace
+    g2ext_str_close
+    g2ext_str_write_string
+    g2ext_g2_stream_open
+    g2ext_g2_stream_open_s16
+    g2ext_g2_probe_file
+    g2ext_uuid_create
+    g2ext_substatus_run_command_line
+    g2ext_set_include_directory
+    g2ext_produce_shared_object
+    g2ext_load_library
+    g2ext_process_exists
+    g2ext_kill_spawned_command_line
+    g2ext_set_inherit_stdio_handles
+    g2ext_spawn_command_directly
+    g2ext_spawn_command_line_process
+    g2ext_get_process_identifier
+    g2ext_exit_from_lisp
+    g2ext_verify_operating_system
+    g2ext_check_windows_platform
+    g2ext_max_ready
+    g2ext_sys_sleep
+    g2ext_gensym_pause
+    g2ext_write_string_to_console_1
+    g2ext_directory_contains_directory
+    g2ext_run_program_with_string_output_and_timeout_mx
+    g2ext_unix_cmd_with_string_output_and_timeout_mx
+    g2ext_unix_cmd_with_string_output_mx
+    g2ext_set_file_operation_retry_timeout
+    g2ext_map_g2pointer_to_cpointer
+    g2ext_initialize_g2pointers
+    g2ext_initialize_locales
+    g2ext_cancel_future_alarm_signal
+    g2ext_cause_future_alarm_signal
+    g2ext_get_trace_function_name
+    g2ext_get_name_for_function
+
+    ;
+    ; socket1.lisp
+    ;
+    g2ext_get_peer_address_string
+    g2ext_get_peer_hostname
+
+    ;
+    ; socket2.lisp
+    ;
+    g2ext_icmp_open
+    g2ext_icmp_write
+    g2ext_icmp_read
+    
+    ;
+    ; unicode.lisp
+    ;
+    g2ext_write_float_from_c
+
+    ;
+    ; utilities3.lisp
+    ;
+    g2ext_foreign_partition_float
+    g2ext_foreign_partition_long
+    g2ext_foreign_reconstruct_float
+    g2ext_foreign_reconstruct_long
+    g2ext_read_float_from_string
+    g2ext_set_secure_icp
+
+    ; utilities4.lisp
+    g2ext_g_fmt
+
+    ;
+    ; os-error.lisp
+    ;
+    g2ext_establish_launch_sig_handler
+    g2ext_inhibit_core_dumping
+    g2ext_most_recent_signal_code
+    g2ext_unestablish_signal_handler
+    g2ext_establish_signal_handler
+
+    ;
+    ; platforms.lisp
+    ;
+    g2ext_get_system_metric
+    g2ext_x11_parse_geometry_height
+    g2ext_x11_parse_geometry_width
+    g2ext_x11_parse_geometry_y
+    g2ext_x11_parse_geometry_x
+    g2ext_x11_parse_geometry
+    g2ext_x11_bell
+    g2ext_w_draw_ellipse
+    g2ext_w_draw_polygon
+    g2ext_w_draw_tiles
+    g2ext_w_fill_rect
+    g2ext_w_draw_wide_polyline
+    g2ext_w_draw_line_with_clipping
+    g2ext_allocate_x_font
+    g2ext_get_character_set_width
+    g2ext_draw_string_in_font_with_clipping
+    g2ext_draw_string_in_font
+    g2ext_w_draw_string_with_clipping
+    g2ext_w_draw_string
+    g2ext_scroll_rectangle
+    g2ext_x11_tile
+    g2ext_x11_initialize_tile
+    g2ext_offscreen
+    g2ext_p_fill_arc
+    g2ext_p_draw_arc
+    g2ext_p_fill_clipped_polygon
+    g2ext_p_fill_triangle
+    g2ext_p_fill_rect
+    g2ext_p_stipple_rect
+    g2ext_p_draw_wide_line
+    g2ext_p_draw_line
+    g2ext_p_draw_point
+    g2ext_get_event
+    g2ext_x11_move_pointer
+    g2ext_reclaim_pixmap
+    g2ext_create_pixmap
+    g2ext_copy_polychrome_pixmap_to_window
+    g2ext_x11_clear_debug_mode
+    g2ext_x11_set_debug_mode
+    g2ext_copy_bitmap_to_bitmap
+    g2ext_copy_pixmap_to_window
+    g2ext_x11_get_mouse_x_position
+    g2ext_window_height
+    g2ext_window_width
+    g2ext_stop_tracking_mouse
+    g2ext_start_tracking_mouse
+    g2ext_x11_last_expose_height
+    g2ext_x11_last_expose_width
+    g2ext_x11_last_expose_y_position
+    g2ext_x11_last_expose_x_position
+    g2ext_x11_last_window_height
+    g2ext_x11_last_window_width
+    g2ext_x11_last_window_y
+    g2ext_x11_last_window_x
+    g2ext_x11_last_event_value
+    g2ext_x11_last_event_window_handle
+    g2ext_x11_last_event_time
+    g2ext_x11_last_event_bits
+    g2ext_x11_last_mouse_y_position
+    g2ext_x11_last_mouse_x_position
+    g2ext_free_extended_colors
+    g2ext_get_pixel
+    g2ext_x11_flush
+    g2ext_x11_sync
+    g2ext_x11_close
+    g2ext_x11_make_xwindow_visible
+    g2ext_x11_initialize
+    g2ext_x11_preinitialize
+    g2ext_x11_file_descriptor_for_window
+    g2ext_read_clipboards
+    g2ext_write_clipboards
+    g2ext_x11_clipboard_x_targets_p
+    g2ext_x11_clipboard_has_text
+    g2ext_x11_write_cut_buffer
+    g2ext_x11_read_cut_buffer
+    g2ext_x11_raise_window
+    g2ext_x11_screen_depth
+    g2ext_is_XPendingp
+    g2ext_x11_set_window_is_connected
+    g2ext_x11_initialize_after_connection
+
+    ;
+    ; launch.lisp
+    ;
+    g2ext_get_platform_code
+    g2ext_maybe_wait_for_return_key
+    g2ext_app_init
+
+    ;
+    ; pathnames.lisp
+    ;
+    g2ext_get_user_name
+
+    ;
+    ; streams.lisp
+    ;
+    g2ext_str_max_filename
+    g2ext_str_logical_name_p
+    g2ext_str_release_write_lock
+    g2ext_str_get_write_lock
+    g2ext_str_file_access_check
+    g2ext_str_file_timestamp
+    g2ext_str_avail_disk_space
+    g2ext_str_get_device
+    g2ext_str_get_version
+    g2ext_str_get_file_position
+    g2ext_str_set_file_position
+    g2ext_str_file_non_empty
+    g2ext_str_file_length
+    g2ext_str_change_default_dir
+    g2ext_str_get_default_dir
+    g2ext_create_directory
+    g2ext_str_directory_p
+    g2ext_str_get_next_device
+    g2ext_str_open_device_list
+    g2ext_str_read_subdirs
+    g2ext_str_readdir
+    g2ext_str_closedir
+    g2ext_str_opendir
+    g2ext_str_initdir
+    g2ext_make_unique_filename
+    g2ext_str_rename_file
+    g2ext_str_delete_file
+    g2ext_g2_stream_write_wide_buffer
+    g2ext_g2_stream_write_buffer
+    g2ext_str_write_char
+    g2ext_g2_stream_read_octets_wide
+    g2ext_g2_stream_read_wide_buffer
+    g2ext_g2_stream_read_string
+    g2ext_str_read_non_cr_char
+    g2ext_str_read_char
+    g2ext_str_flip_bidir_mode
+    g2ext_str_sync
+    g2ext_str_flush
+    g2ext_str_eof_p
+    g2ext_g2_stream_get_error_number
+    g2ext_str_copy_file
+
+    ;
+    ; networks.lisp
+    ;
+    g2ext_nth_network_address
+    g2ext_g2_gethostname
+    g2ext_note_null_write_callbacks
+    g2ext_network_write
+    g2ext_network_read
+    g2ext_network_listener_count
+    ne_enqueue_scheduler_event
+    ne_set_next_timer_event
+    ne_display_events_enabled
+    ne_disable_display_events
+    ne_enable_display_events
+    ne_initialize_event_handling
+    ne_get_listener_handle
+    g2ext_get_network_listener
+    g2ext_set_debug_status
+    g2ext_set_connection_pathname
+    g2ext_get_connection_pathname
+    g2ext_secure_socket_p
+    g2ext_network_accept
+    g2ext_network_close
+    g2ext_network_listen
+    g2ext_network_connect
+    ne_last_error_code
+    ne_connected_p
+    g2ext_network_get_fd_from_handle
+    g2ext_network_get_listener_fd
+
+    ;
+    ; netevent.lisp
+    ;
+    g2ext_set_handle_network_events
+    g2ext_reset_waited_period
+    g2ext_get_waited_period
+    ne_last_error_string
+    ne_last_error_length
+    g2_event_cycle
+    g2_event_wait
+    g2_event_ready
+
+    ;
+    ; windows1.lisp
+    ;
+    g2ext_finalize_g2_MD5_context
+    g2ext_update_g2_MD5_context_wide
+    g2ext_update_g2_MD5_context
+    g2ext_init_g2_MD5_context
+
+    ;
+    ; windows2.lisp
+    ;
+    g2ext_set_mdi_client_background_color
+
+    ;
+    ; windows4.lisp
+    ;
+    g2ext_manage_editor
+    g2ext_x11_tell_control_our_session_id
+    g2ext_mega_refresh
+    g2ext_manage_scrollbars
+    g2ext_scroll_window
+    g2ext_redirect_window
+    g2ext_x11_stack_windows
+    g2ext_x11_manage_window
+    g2ext_x11_create_window
+
+    ;
+    ; images.lisp
+    ;
+    g2ext_stretch_bits
+    g2ext_x11_put_image
+    g2ext_x11_draw_pixmap
+    g2ext_x11_draw_mask_pixmap
+    g2ext_image_stream_error
+    g2ext_reverse_bits_in_byte
+    g2ext_image_stream_transparentindex
+    g2ext_image_stream_color_map
+    g2ext_image_stream_ncolors
+    g2ext_image_stream_size
+    g2ext_image_stream_depth
+    g2ext_image_stream_width
+    g2ext_image_stream_height
+    g2ext_image_stream_format
+    g2ext_close_image_stream
+    g2ext_read_image_row
+    g2ext_open_image_stream
+
+    ;
+    ; fonts.lisp
+    ;
+    g2fnt_get_current_raster_text_width
+    g2fnt_get_y_offset_for_cur_raster
+    g2fnt_get_x_offset_for_cur_raster
+    g2fnt_get_textx_offset_for_cur_raster
+    g2fnt_fontrip_bitmap_value
+    g2fnt_make_outline_character_raster
+    g2fnt_load_built_in_outline_font
+    g2fnt_load_outline_font
+    g2fnt_run_built_in_demo
+    g2fnt_run_font_demo
+    g2fnt_run_font_demo_1
+    g2fnt_get_bbox_width_and_height
+
+    ;
+    ; sequences1.lisp
+    ;
+    g2ext_nsleep_next
+    g2ext_nsleep
+    g2ext_shift_rule_ordering
+    g2ext_cache_deferred_rules
+    g2ext_invokation_updates_needed
+    g2ext_frequently_typed_chars
+    g2ext_reduce_sleep_tolerance
+    g2ext_update_callback_frames
+
+    ;
+    ; dialogs.lisp
+    ;
+    g2ext_specify_text_box_extensions
+    g2ext_specify_grid_view_cells
+    g2ext_manage_grid_view
+    g2ext_end_dialog_update
+    g2ext_abort_dialog_update
+    g2ext_dialog_component_update
+    g2ext_start_dialog_update
+    g2ext_abort_dialog_query
+    g2ext_finish_dialog_query
+    g2ext_add_to_dialog_query
+    g2ext_start_dialog_query
+    g2ext_send_dialog_control_update
+    g2ext_accept_dialog
+    g2ext_abort_dialog
+    g2ext_show_dialog
+    g2ext_set_dialog_background_property
+    g2ext_add_to_dialog
+    g2ext_start_dialog
+    g2ext_debugger_dialog
+    g2ext_choose_directory
+    g2ext_file_dialog
+    g2ext_about_box
+    g2ext_query_box
+    g2ext_message_box
+    g2ext_list_box
+    g2ext_simple_dialog
+
+    ;
+    ; native-tw.lisp
+    ;
+    g2ext_manage_tabular_view
+    g2ext_create_tabular_view
+    g2ext_chart_set_double_array
+    g2ext_chart_set_double
+    g2ext_chart_set_string
+    g2ext_chart_set_int
+    g2ext_manage_chart_view
+    g2ext_create_chart_view
+    g2ext_get_charting_library_version
+    g2ext_post_dialog
+    g2ext_add_control
+    g2ext_make_dialog
+    g2ext_manage_shortcut_bar
+    g2ext_create_shortcut_bar
+    g2ext_manage_html_view
+    g2ext_create_html_view
+    g2ext_manage_property_grid
+    g2ext_create_property_grid
+    g2ext_manage_tree_view
+    g2ext_create_tree_view
+    g2ext_manage_pane
+    g2ext_manage_status_bar
+    g2ext_nms_create_combo_box
+    g2ext_nms_create_edit_box
+    g2ext_nms_create_toolbar
+    g2ext_nms_delete_control
+    g2ext_nms_manage_control
+    g2ext_nms_append_control
+    g2ext_nms_set_theme
+    g2ext_native_icons_limit
+    g2ext_nms_get_toolkit
+    g2ext_nms_set_flag
+    g2ext_nms_fetch_help_string_result
+    g2ext_nms_set_help
+    g2ext_nms_pop_up_menu
+    g2ext_nms_set_menu
+    g2ext_nms_modify_menu_item
+    g2ext_nms_width_maintainance_p
+    g2ext_nms_remove_menu_item
+    g2ext_nms_enable_menu_item
+    g2ext_nms_check_radio_item
+    g2ext_nms_check_menu_item
+    g2ext_nms_append_menu
+    g2ext_nms_dismiss
+    g2ext_nms_delete_menu_items
+    g2ext_nms_destroy_menu
+    g2ext_nms_create_menu
+    g2ext_note_progress
+    g2ext_manage_logbook
+    g2ext_create_logbook
+    g2ext_tabbed_mdi_mode
+    g2ext_set_ui_property
+    g2ext_x11_manage_native_icons
+    g2ext_x11_set_window_title
+    g2ext_html_help
+    g2ext_set_icon_offsets
+    g2ext_abort_printing
+    g2ext_end_doc
+    g2ext_end_page
+    g2ext_start_page
+    g2ext_start_doc
+    g2ext_draw_to_printer
+    g2ext_print_dialog
+    g2ext_print_window
+    g2ext_list_directory_response
+    g2ext_cancel_modal_dialogs_and_menus
+    g2ext_manage_animation
+    g2ext_manage_notification
+    g2ext_reclaim_item_menu
+    g2ext_choose_from_item_menu
+    g2ext_add_submenu_to_item_menu
+    g2ext_add_color_string_to_item_menu
+    g2ext_add_string_to_item_menu
+    g2ext_begin_item_menu
+
+    ;
+    ; telewindows.lisp
+    ;
+    g2ext_set_tcp_connect_retry
+    
+    ; gsi.lisp
+    g2ext_create_argument_list
+
+    ;
+    ; gw*.lisp
+    ;
+    gw_fetch_errno
+    gw_flush_console_streams
+    gw_tcpip_connection_check
+    gw_socket_data_available_p
+    gw_socket_poll_status
+    gw_socket_read
+    gw_socket_write
+    g2ext_tcpip_accept_internals
+    g2pvt_tcpip_connect
+    g2pvt_tcpip_close
+    g2pvt_tcpip_listen
+    g2pvt_tcpip_set_nodelay
+    lgsi_rpc_declare_remote_1
+    g2ext_print_network_connections
