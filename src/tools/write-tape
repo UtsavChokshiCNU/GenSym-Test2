@@ -1,0 +1,87 @@
+#!/bin/csh -f
+set fail=0
+goto main
+
+usage:
+echo "Usage: write-tape PRODUCT RELEASE PART-NUMBER"
+exit 1
+
+main:
+
+if ( $#argv == 0 ) then
+  echo "Available Products:"
+  # An error can occur in the following foreach if lines in write-tape.dat
+  # exceed 1024 characters.  To work around the problem, CD lines in that file
+  # can be broken into parts and mastered using the cd-rom-no-erase option.
+  foreach line_raw ( " `cat datafiles/write-tape.dat` " )
+    set line = ( $line_raw )
+    if ($#line >= 2) then
+      if ("$line[1]" != "#") then
+        # Fix this awk line later.  -jra 12/2/92
+        # echo "$line[2] $line[1]" | awk '{printf "%-20 %-20s\n", $1, $2}'
+        echo "  $line[2]		$line[1]"
+      endif
+    endif
+  end
+  echo ""
+  echo "Available Part Numbers:"
+  foreach line_raw ( " `cat datafiles/part_number.dat` " )
+    set line = ( $line_raw )
+    if ($#line >= 6) then
+      if ("$line[1]" != "#") then
+        # Fix this awk line later.  -jra 12/2/92
+        # echo "$line[1] $line[2] $line[6]" | awk '{printf "%-5 %-20s %-20s\n", $1, $2}'
+        echo "  $line[1]		$line[2] $line[6]"
+      endif
+    endif
+  end
+  goto usage
+endif
+
+if ( $#argv != 3 ) then
+  set fail=1
+  goto usage
+endif
+
+set product = $1
+set release = $2
+set part_number = $3
+
+set product_info = `grep "^$product-$release " datafiles/write-tape.dat`
+set part_info = `grep "^$part_number " datafiles/part_number.dat`
+
+if ( $#product_info < 2 ) then
+   echo "ERROR: Unknown product release, i.e. $product $release"
+   set fail = 1
+   goto usage
+endif
+
+if ( $#part_info < 3 ) then
+   echo "ERROR: Unknown part number, i.e. $part_number"
+   set fail=1
+   goto usage
+endif
+
+shift product_info
+shift part_info
+set product_name = $product_info[1]
+set part_name = $part_info[1]
+echo "LOG: Writing tape of:"
+echo "    product:       $product_name"
+echo "    platform:      $part_name"
+shift product_info
+shift part_info
+
+# echo "make-gensym-tape $product_info $part_info"
+make-gensym-tape $product_info $part_info
+set fail=$status
+
+exit:
+
+if ( $fail ) then
+  echo "ERROR: write tape failed."
+else
+  echo "LOG: Creation of $product_name on $part_name succeeded."
+endif
+
+exit $fail
