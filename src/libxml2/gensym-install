@@ -1,0 +1,101 @@
+#!/bin/sh
+
+version=2.4.24
+shsuf=so
+locmach=mother
+
+machine=`machine`
+
+if [ "$machine" = "alphaosf" ]
+then
+  version=6.4.24
+fi
+
+
+if [ "`whoami`" = "root" ]
+then
+  stagedir=root_stagedir
+  locdir=root_locdir
+  shsuf=root_shsuf
+  lmach=root_lmach
+
+  cd ${locdir}/lib
+  echo "Ooh, root.  Boy am I impressed.  Working in `pwd`"
+  rm -f libxml2.a libxml2.lai libxml2.${shsuf}*
+  cp -p ${stagedir}/libxml2.a libxml2.a
+  cp -p ${stagedir}/libxml2.lai libxml2.lai
+  cp -p ${stagedir}/libxml2.${shsuf} libxml2.${shsuf}.${version}
+  ln -s libxml2.${shsuf}.${version} libxml2.${shsuf}
+  ln -s libxml2.${shsuf}.${version} libxml2.${shsuf}.2
+else
+  if [ -z "$SRCBOX" ]
+  then
+    echo "You must first set SRCBOX (presumably with 'sandbox')"
+    exit 1
+  fi
+  if [ ! -d ${SRCBOX} ]
+  then
+    echo "Error: SRCBOX ${SRCBOX} does not exist"
+    exit 1
+  fi
+
+
+# Use /home/comalley simply because it's on mother, on the same disk where
+# export/local is.  Plus, it makes as much sense as using any other particular
+# home directory.  Copying the files to export/local will be fairly quick
+# after they're moved to /home/comalley.  I created an xml subdirectory, made
+# it owned by ab, and made it world-writable.
+
+  stagedir=/home/comalley/xml/lib-stage/${machine}
+
+  if [ "$machine" = "hp9000s700" ]
+  then
+    shsuf=sl
+  fi
+  if [ "$machine" = "linux" ]
+  then
+    locmach=lnx
+  fi
+
+  case $machine in
+    alphaosf)
+	      uloc=/export/local/alphaosf
+	      ;;
+    hp9000s700)
+		uloc=/export/local/hp9000s700
+		;;
+    rs6000)
+	    uloc=/export/local/rs6000
+	    ;;
+    sparcsol)
+	      uloc=/export/local/sun4u
+	      ;;
+    linux)
+	   uloc=/usr/local
+	   ;;
+  esac
+
+  rm -rf ${stagedir}
+  mkdir -p ${stagedir}
+
+  cd ${stagedir}
+  echo "copying files to `pwd`"
+
+  cp -p ${SRCBOX}/libxml2/.libs/libxml2.a libxml2.a
+  cp -p ${SRCBOX}/libxml2/.libs/libxml2.lai libxml2.lai 
+  if [ "$machine" = "rs6000" ]
+  then
+    cp -p ${SRCBOX}/libxml2/.libs/libxml2.${shsuf}.2 libxml2.${shsuf}.${version}
+  else
+    cp -p ${SRCBOX}/libxml2/.libs/libxml2.${shsuf} libxml2.${shsuf}.${version}
+  fi
+  ln -s libxml2.${shsuf}.${version} libxml2.${shsuf}
+  ln -s libxml2.${shsuf}.${version} libxml2.${shsuf}.2
+  # Now copy this file too
+  sed -e "s,root_stagedir,${stagedir}," \
+   -e "s,root_locdir,${uloc}," \
+   -e "s,root_lmach,${locmach}," \
+   -e "s,root_shsuf,${shsuf}," ${SRCBOX}/libxml2/gensym-install > gensym-install
+  chmod 755 gensym-install
+  echo "Copied four files, made two links"
+fi
