@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_build.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+Locating Files
+</h1>
+<P>
+This section describes how you inform BullseyeCoverage of the location
+of the coverage file as well as the location of the source
+files.
+<p>
+BullseyeCoverage requires source files only for building and for the annotated
+source code report.
+<P>
+BullseyeCoverage stores coverage data in one file, named <CODE>test.cov</CODE>
+by default. The <a href=ref_covc.html>covc</a>
+command creates the coverage file if it does not exist and adds
+an entry for each source file processed. When you run a test program,
+the BullseyeCoverage run-time library reads and writes the coverage file.
+The coverage file does not grow in size when the test program runs.
+<P>
+You can specify an alternate directory or filename for the coverage
+file with the environment variable <CODE>COVFILE</CODE> or with
+the command line option <CODE>-f</CODE> (<CODE>--file</CODE>).
+If you have source files in multiple directories, it is very important
+that you specify the location of the coverage file; do not use
+the default. Since the BullseyeCoverage run-time uses the environment variable
+<CODE>COVFILE</CODE> and has no command line option to locate
+the coverage file, setting <CODE>COVFILE</CODE> is generally preferred
+over the command line option. Set <CODE>COVFILE</CODE> to the
+absolute path (fully qualified filename) of the coverage file.
+<P>
+The example commands below set <CODE>COVFILE</CODE> at the command
+prompt on various operating systems.
+<PRE>
+set COVFILE=c:\source\test.cov (Windows)
+export COVFILE=`pwd`/test.cov  (Unix Bourne/Korn shell)
+setenv COVFILE `pwd`/test.cov  (Unix C shell)
+</PRE>
+<P>
+On Windows you can set environment variables in the Control Panel
+under System.
+Be careful not to write spaces at the beginning or end of an environment
+variable setting.
+<P>
+<a href=ref_covc.html>covc</a> stores source
+file names relative to the source directory. By default, the source
+directory is the directory where the coverage file is located.
+If you need to locate the coverage file in a directory other than
+where the source files are located, use environment variable <CODE>COVSRCDIR</CODE>
+or command line option <CODE>-d</CODE> (<CODE>--srcdir</CODE>)
+to specify the source directory. For example, consider a project
+consisting of the following source files.
+<PRE>
+/project/src/dir1/source1.c
+/project/src/dir1/source2.c
+/project/src/dir2/dir3/source3.c
+/project/src/source4.c
+</PRE>
+<P>
+In the simplest case, you would set <CODE>COVFILE</CODE> to <CODE>/prj/src/test.cov</CODE>.
+But suppose you do not have permission to create the data file
+in <CODE>/project/src</CODE>. In this case, you might set <CODE>COVFILE</CODE>
+to <CODE>/user/steve/test.cov</CODE> and set <CODE>COVSRCDIR</CODE>
+to <CODE>/project/src</CODE>.
+<p>
+If you move source files or change the environment variable
+<code>COVSRCDIR</code> or option <code>-d</code>
+(<code>--srcdir</code>), delete the coverage file and rebuild your
+project.
+<p>
+If you do not specify the source directory explicitly, do not move the
+coverage file.
+Rather, delete the coverage file and rebuild your project.
+<P>
+If your run-time operating system does not support environment
+variables or does not provide the function <CODE>getenv</CODE>,
+you can set the value of the macro <code>Libcov_covfile</code>
+to a filename other than <CODE>test.cov</CODE>.
+For details, see <a href="env_custom.html#8">Custom and Embedded Environments: Build Options</a>.
+
+<p style="font-size:xx-small">
+Last reviewed: 4 Mar 2010
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
