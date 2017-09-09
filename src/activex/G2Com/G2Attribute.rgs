@@ -1,0 +1,26 @@
+HKCR
+{
+	G2Com.G2Attribute.1 = s 'G2Attribute Class'
+	{
+		CLSID = s '{738B47FA-2D36-40D2-8DC3-47E97717E64B}'
+	}
+	G2Com.G2Attribute = s 'G2Attribute Class'
+	{
+		CLSID = s '{738B47FA-2D36-40D2-8DC3-47E97717E64B}'
+		CurVer = s 'G2Com.G2Attribute.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {738B47FA-2D36-40D2-8DC3-47E97717E64B} = s 'G2Attribute Class'
+		{
+			ProgID = s 'G2Com.G2Attribute.1'
+			VersionIndependentProgID = s 'G2Com.G2Attribute'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{AC4C85D1-B16C-11d1-A718-006008C5F933}'
+		}
+	}
+}
