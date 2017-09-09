@@ -1,0 +1,264 @@
+#!/bin/sh
+
+# ax-update-version
+# Copyright (c) 1986 - 2017, Gensym Corporation. All right reserved.
+# John Valente
+#
+# This script is an attempt to automate as much as possible when we need to
+# update the version of the Telewindows ActiveX Control and the Workspace View
+# control.  It may not be complete.
+
+# "local variables"
+tmpfile=/tmp/axc-up-$$.tmp
+
+# parameters -- default values.  128 means commercial release.  See values
+# and documentation in activex/control/src/defs-twax.h
+twqual="TW_AX_CONTROL_CRELEASE"
+nqual=128
+lqual="r"
+vqual=""
+maj=8
+min=0
+rev=1
+
+# usage message
+usage ()
+{
+  echo "Usage: $0 [-major <major-version>] [-minor <minor-version>]"
+  echo "          [-revision <revision>] [-qual <alpha|beta|crelease>]"
+  echo "  major-version, minor-version, and revision must be integers"
+  echo "  For minor-version, specify it as the user should see it."
+  echo "  Do NOT multiply by 10, even though that's how it's done in delta.lisp"
+  echo " "
+  echo -n "  All parameters are optional; default values are crelease, major "
+  echo "version ${maj},"
+  echo "  minor ${min}, revision ${rev}."
+  exit 1
+}
+
+while [ -n "$1" ]
+do
+  if [ -z "$2" ]
+  then
+    echo "Error: number of arguments must be even"
+    usage
+  fi
+  case $1 in
+    -major)
+       maj=$2
+       shift
+       shift
+       ;;
+    -minor)
+       min=$2
+       shift
+       shift
+       ;;
+    -revision)
+       rev=$2
+       shift
+       shift
+       ;;
+    -qual)
+       if [ "$2" = "crelease" ]
+       then
+         nqual=128
+         twqual="TW_AX_CONTROL_CRELEASE"
+         lqual="r"
+       elif  [ "$2" = "beta" ]
+       then
+         nqual=32
+         twqual="TW_AX_CONTROL_BETA"
+         lqual="b"
+	 # note, vqual requires trailing space
+         vqual="Beta "
+       elif  [ "$2" = "alpha" ]
+       then
+         nqual=16
+         twqual="TW_AX_CONTROL_ALPHA"
+         lqual="a"
+	 # note, vqual requires trailing space
+         vqual="Alpha "
+       else
+         echo " "
+         echo "Error: unrecognized release quality $2"
+         echo " "
+         usage
+       fi
+       shift
+       shift
+       ;;
+    *)
+       echo "Error: unrecognized argument $1"
+       usage
+       ;;
+  esac
+done
+
+if [ -z "$SRCBOX" ]
+then
+  echo "You must first set SRCBOX (presumably with 'sandbox')"
+  exit 1
+fi
+if [ ! -d ${SRCBOX}/activex/control ]
+then
+  echo "Error: SRCBOX ${SRCBOX}/activex/control does not exist"
+  exit 1
+fi
+
+# The point of this script is that we will commit the files after they are
+# edited.  You don't commit files which were not up to date when you edited
+# them, so make sure we are up to date first.
+cd ${SRCBOX}/activex/control
+cvs up
+
+# OK, we know the version; convert it into the proper forms and make the edits
+newver="${maj},${min},${nqual},${rev}"
+spcver="${maj}, ${min}, ${nqual}, ${rev}"
+esver="${maj}${min}${lqual}${rev}"
+justver="${maj}.${min}"
+fullver="${maj}.${min}${lqual}${rev}"
+verbosever="${maj}.${min} ${vqual}Rev. ${rev}"
+
+# Edit src files.  There should never be a case where ${SRCBOX}/activex exists
+#   but doesn't have a control/src subdirectory but check for that just in case
+#
+if [ ! -d ${SRCBOX}/activex/control/src ]
+then
+  echo "Error: SRCBOX ${SRCBOX}/activex/control/src does not exist"
+  exit 1
+fi
+cd ${SRCBOX}/activex/control/src
+
+buildid=`egrep BUILD_ID_STRING defs-twax.h | awk '{print $3}' | awk -F'"' '{print $2}'`
+
+echo "....."
+echo "Editing activex/control text files as ${esver}-${buildid}"
+echo "....."
+
+/bin/mv defs-twax.h ${tmpfile}
+sed -e "s/MAJOR_VERSION     [0-9]*/MAJOR_VERSION     ${maj}/" \
+    -e "s/MINOR_VERSION     [0-9]*/MINOR_VERSION     ${min}/" \
+    -e "s/RELEASE_QUALITY   TW_[A-Z_]*/RELEASE_QUALITY   ${twqual}/" \
+    -e "s/REVISION_NUMBER   [0-9]*/REVISION_NUMBER   ${rev}/" \
+    -e "s/VERSION_KEY     _T(\"[^\"]*\")/VERSION_KEY     _T(\"${verbosever}\")/" \
+    -e "s/g2-[0-9]*\.[0-9]*/g2-${justver}/" \
+    -e "s/g2-[0-9]*\.[0-9]*[a-z][0-9]*/g2-${fullver}/" ${tmpfile} > defs-twax.h
+/bin/rm -f ${tmpfile}
+
+/bin/mv resources.rc ${tmpfile}
+sed -e "s/FILEVERSION [0-9]*,[0-9]*,[0-9]*,[0-9]*/FILEVERSION ${newver}/" \
+    -e "s/PRODUCTVERSION [0-9]*,[0-9]*,[0-9]*,[0-9]*/PRODUCTVERSION ${newver}/" \
+    -e "s/[0-9]*, [0-9]*, [0-9]*, [0-9]*\\\\/${spcver}\\\\/g" ${tmpfile} > resources.rc
+/bin/rm -f ${tmpfile}
+
+/home/development/build/update-rc-files ${SRCBOX}/activex/control/src/resources.rc
+
+
+/bin/mv TwControl.odl ${tmpfile}
+sed -e "s/version.[0-9]*.[0-9]*./version(${justver})/" ${tmpfile} > TwControl.odl
+/bin/rm -f ${tmpfile}
+
+
+# Check for auxi directory, just in case
+if [ ! -d ${SRCBOX}/activex/control/auxi ]
+then
+  echo "Error: SRCBOX ${SRCBOX}/activex/control/auxi does not exist"
+  exit 1
+fi
+cd ${SRCBOX}/activex/control/auxi
+
+# Edit "inf" file used for building the cabinet file.  Unfortunately, there
+# are other "version"s contained in this file.  We don't want to try to do
+# serious parsing, so we use a heuristic: if the version begins with 7 or 8,
+# we assume it belongs to us.
+/bin/mv info-twax.inf ${tmpfile}
+sed "s/FileVersion=[78],[0-9]*,[0-9]*,[0-9]*/FileVersion=${newver}/g" ${tmpfile} > info-twax.inf
+/bin/rm -f ${tmpfile}
+
+/bin/mv wsv-info.inf ${tmpfile}
+sed "s/FileVersion=[78],[0-9]*,[0-9]*,[0-9]*/FileVersion=${newver}/g" ${tmpfile} > wsv-info.inf
+/bin/rm -f ${tmpfile}
+
+
+
+/bin/mv prepare-twax ${tmpfile}
+sed "s/eshipid=[0-9][0-9][abr][0-9]*/eshipid=${esver}/" ${tmpfile} > prepare-twax
+/bin/rm -f ${tmpfile}
+
+# /bin/mv axinstall ${tmpfile}
+# sed "s/info[0-9]*.shtml/info${maj}${min}.shtml/" ${tmpfile} > axinstall
+# /bin/rm -f ${tmpfile}
+
+
+# Edit example html files.
+if [ ! -d ${SRCBOX}/activex/control/examples ]
+then
+  echo "Error: SRCBOX ${SRCBOX}/activex/control/examples does not exist"
+  exit 1
+fi
+cd ${SRCBOX}/activex/control/examples
+
+for hfile in *.html
+do
+  /bin/mv $hfile ${tmpfile}
+  sed "s/Version=[0-9]*,[0-9]*,[0-9]*,[0-9]*/Version=${newver}/g" ${tmpfile} > $hfile
+  /bin/rm -f ${tmpfile}
+done
+
+/bin/mv twloc.html ${tmpfile}
+sed "s/c:.tw-[0-9][0-9][abr][0-9]*/c:\\\\tw-${esver}/" ${tmpfile} > twloc.html
+/bin/rm -f ${tmpfile}
+
+/bin/mv twproj.vbp ${tmpfile}
+sed -e "s/#[0-9].[0-9]#0; TwControl.ocx/#${justver}#0; TwControl.ocx/" \
+    -e "s/MajorVer=[0-9]*/MajorVer=${maj}/" \
+    -e "s/MinorVer=[0-9]*/MinorVer=${min}/" \
+    -e "s/RevisionVer=[0-9]*/RevisionVer=${rev}/" ${tmpfile} > twproj.vbp
+/bin/rm -f ${tmpfile}
+
+/bin/mv diag-exe.html ${tmpfile}
+sed "s/g2-[0-9]*\.[0-9]*/g2-${justver}/" ${tmpfile} > diag-exe.html
+/bin/rm -f ${tmpfile}
+
+echo "....."
+echo "Editing activex/control/wsview text files as ${esver}-${buildid}"
+echo "....."
+
+cd ${SRCBOX}/activex/control/wsview
+
+/bin/mv defs-ws.h ${tmpfile}
+sed -e "s/MAJOR_VERSION     [0-9]*/MAJOR_VERSION     ${maj}/" \
+    -e "s/MINOR_VERSION     [0-9]*/MINOR_VERSION     ${min}/" \
+    -e "s/RELEASE_QUALITY   TW_[A-Z_]*/RELEASE_QUALITY   ${twqual}/" \
+    -e "s/REVISION_NUMBER   [0-9]*/REVISION_NUMBER   ${rev}/" \
+    -e "s/VERSION_KEY     TEXT(\"[^\"]*\")/VERSION_KEY     TEXT(\"${verbosever}\")/" \
+    -e "s/g2-[0-9]*\.[0-9]*/g2-${justver}/" \
+    -e "s/g2-[0-9]*\.[0-9]*[a-z][0-9]*/g2-${fullver}/" ${tmpfile} > defs-ws.h
+/bin/rm -f ${tmpfile}
+
+/bin/mv view-resources.rc ${tmpfile}
+sed -e "s/FILEVERSION [0-9]*,[0-9]*,[0-9]*,[0-9]*/FILEVERSION ${newver}/" \
+    -e "s/PRODUCTVERSION [0-9]*,[0-9]*,[0-9]*,[0-9]*/PRODUCTVERSION ${newver}/" \
+    -e "s/[0-9]*, [0-9]*, [0-9]*, [0-9]*\\\\/${spcver}\\\\/g" ${tmpfile} > view-resources.rc
+/bin/rm -f ${tmpfile}
+
+/home/development/build/update-rc-files ${SRCBOX}/activex/control/wsview/view-resources.rc
+
+/bin/mv WorkspaceView.odl ${tmpfile}
+sed -e "s/version.[0-9]*.[0-9]*./version(${justver})/" ${tmpfile} > WorkspaceView.odl
+/bin/rm -f ${tmpfile}
+
+cd ${SRCBOX}/activex/G2Com/demos/VBDemo
+
+/bin/mv WorkspaceViewDemo.vbp ${tmpfile}
+sed -e "s/#[0-9].[0-9]#0; WorkspaceView.ocx/#${justver}#0; WorkspaceView.ocx/" \
+    -e "s/MajorVer=[0-9]*/MajorVer=${maj}/" \
+    -e "s/MinorVer=[0-9]*/MinorVer=${min}/" \
+    -e "s/RevisionVer=[0-9]*/RevisionVer=${rev}/" ${tmpfile} > WorkspaceViewDemo.vbp
+/bin/rm -f ${tmpfile}
+
+
+
+echo "Text update complete."
+echo "Remember to update the twcontrol kb, and perhaps also the splash gif."
