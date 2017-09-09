@@ -1,0 +1,134 @@
+<html><head><title>Installing and Running G2 WebLink</title></head>
+<body bgcolor="#ffffff">
+<a href="install4.htm"><h5>| Prev </a> <a href="install6.htm">| Next </a> <a href="installi.htm">| Start of Chapter </a> <a href="install6.htm">| End of Chapter </a> <a href="booktoc.htm">| Contents </a> <a href="bookix.htm">| Index |</a> (6 out of 7)</h5> <br>
+
+
+<a name="2942">
+<h1> Authorizing G2 WebLink</h1>
+</a><a name="2943">
+Before running G2 WebLink, you must authorize your machine to do so. This 
+requires a product authorization code sheet. 
+<p>
+</a><a name="2944">
+If you do not have a product authorization code sheet, call the Gensym Product 
+Distribution Administrator at (617) 547-2500; if you have a touch-tone phone and 
+are in the U.S.A., you can choose option 6, or you can ask the operator for Production and Licensing. Be prepared to supply your machine identification number.
+<p>
+</a><a name="2946">
+You can obtain your machine identification number by attempting to run G2 
+WebLink before it is authorized. This results in an error message that includes 
+your machine identification number, provided that the environment variable 
+<code>GSI_ROOT</code> exists, and you have created an empty <code>gsi.ok</code> file. 
+<p>
+</a><a name="4073">
+When you have a product authorization code sheet, you can authorize the bridge.
+<p>
+</a><a name="2947">
+<dt><img src="diamond.gif">
+<strong>To authorize the bridge:
+
+</strong></dt><p></a><ol><a name="3443">
+<li>Set the following environment variable or logical, depending on your system:<p>
+</a><ul type=disc><a name="3809">
+<li>For UNIX (and MS-DOS) systems, if the environment variable <code>GSI_ROOT</code> does not exist, you must set the value of the GSI_ROOT environment variable to the pathname of the GSI.OK file; otherwise, put the GSI.OK file in <code>GSI_ROOT</code>. On UNIX platforms, you must specify the <code>GSI_ROOT</code> file name in capital letters.
+<p></a><a name="3811">
+<li>For VMS systems, you must set the logical <code>GSI$ROOT</code> to the pathname of the directory containing the <code>GSI.OK</code> file. On VMS systems, <code>GSI$ROOT</code> is defined for you if you have already installed GSI.
+<p></a><a name="3813">
+<li>On Windows NT, if <code>GSI_ROOT</code> is not defined or G2 WebLink has not been properly authorized, the bridge process window will be closed immediately (seen as a brief flash), thereby preventing you from seeing any messages corresponding to the problem.
+<p></a><a name=3814">
+In order to see the messages, open an MSDOS window and rerun the bridge by typing the name of the bridge executable, such as <code>c:gensymbridgesgw</code>. When the bridge process stops, the MSDOS window will remain open, allowing you to view the messages.<p>
+</a><a name=3815">
+To define <code>GSI_ROOT</code>, double-click <code>control panels</code> within the <code>main</code> program group. Double-click on <code>system</code> within the <code>control panels</code> group. Click anywhere within the <code>System Environment Variables</code> box. At the bottom of the dialog, replace the contents of <code>Variable:</code> with <code>GSI_ROOT</code> (do not click on the delete button). Replace the contents of <code>Value:</code> with the fully qualified path to your <code>GSI.OK</code> file, such as <code>c:gensymbridges</code>. Do not click on the delete button. Do not include the filename <code>gsi.ok</code> in the definition of <code>GSI_ROOT</code>.<p>
+</a></ul>
+<a name="3444">
+<li>Enter a line in the GSI.OK file exactly as it appears on the product authorization code sheet. This line must contain the following fields, in order, separated by spaces or tabs: <p>
+</a><a name="3820">
+<table border=4>
+<tr><td valign="middle"><a name="3859">
+name<p>
+</a><br><td valign="middle"><a name="3861">
+machine ID<p>
+</a><br><td valign="middle"><a name="3863">
+product<p>
+</a><br><td valign="middle"><a name="3865">
+version<p>
+</a><br><td valign="middle"><a name="3867">
+time spec<p>
+</a><br><td valign="middle"><a name="3869">
+codes 1- 5<p>
+</a><br>
+
+</table>
+
+<p></a><a name="3878">
+name<br>The name of the machine. Consult your system administrator or networking software manual to obtain the name. 
+<p></a><a name="3821">
+machine ID<br>The identification number of the machine. (Include hyphens if they are part of your machine's identification number.) To obtain a machine's identification number: (1) create a GSI.OK file that contains nothing other than one blank line, and set the appropriate logical or environment variable; (2) run the bridge. A message will state that "there is no line containing a machine ID equal to machine ID" (your machine identification number).
+<p></a><a name="3822">
+product<br>The name of your bridge, <code>G2-WebLink</code>. 
+<p></a><a name="3823">
+version<br>The version of the product. The syntax is: <em>Vn</em> where <em>V</em> is an upper or lower case "V" and <em>n</em> is an integer which represents the major version number (minor version numbers are ignored).
+<p></a><a name="3824">
+time spec<br>An optional field that only appears if the license is temporary. If the license is temporary, specify a time period as follows: 
+<p></a><ul><a name="3825">
+<pre>from day month year to day month year 
+</pre>
+</a></ul><a name="3826">
+where:
+<p></a><ul><a name=3827">
+day<br>A two-digit integer between 01 and 31.<p>
+</a><a name=3828">
+month<br>One of the following three-letter abbreviations: jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, or dec.<p>
+</a><a name=3829">
+year<br>A four-digit integer, such as 1996.<p>
+</a><a name=3830">
+For example: <p>
+</a><a name="3832">
+<pre><code>From 01 jan 1996 to 31 feb 1996 
+</code></pre>
+</a></ul><a name="3831">
+codes 1-5<br>The five product authorization codes specific to your machine and bridge license. In most cases, these codes are on your product authorization code sheet.
+<p></a></ol><a name="2997">
+<h2> Sample Authorization File</h2>
+</a><a name="2998">
+The following is an example of a <code>GSI.OK</code> file that contains a temporary authorization for one bridge and permanent authorization information (no <code>From</code> and <code>to</code> 
+dates) for another. 
+<p>
+</a><ul><a name="2999">
+Line 1:
+<p></a><a name=3000">
+<pre>bridge-mach 80352734 G2-WebLink v1 From 01 may 1996 to 
+31 oct 1996 8813869 5920288 414971 6937199 371245905
+</pre>
+</a><a name="3001">
+Line 2:
+<p></a><a name=3002">
+<pre>myvax 08-00-2b-04-1a-10 G2-WebLink V1 11111 33375 555586 
+77777 99999
+</pre>
+</a></ul><a name="3003">
+Blank lines in authorization files are ignored.
+<p>
+</a><a name="3005">
+<h2> Validating Your Authorization File</h2>
+</a><a name="3006">
+An authorization is valid if all of the following are true:
+<p>
+</a><ul type=disc><ul type=disc><a name="3007">
+<li>The <code>GSI.OK</code> file can be located by the G2 WebLink executable.
+<p></a><a name="3008">
+<li>Some line within the <code>GSI.OK</code> file is in the proper format and contains the correct number of fields.
+<p></a><a name="3009">
+<li>That same line specifies a machine ID that matches the machine-ID of the machine currently executing G2 WebLink.
+<p></a><a name="3010">
+<li>That same line specifies the G2 WebLink product name that matches the product name of the executing G2 WebLink. 
+<p></a><a name="3011">
+<li>That same line, if it contains a time span, contains an unexpired time span.
+<p></a><a name="3012">
+<li>That same line specifies five authorization integers (authorization codes) that the G2 WebLink executable recognizes as valid. 
+<p></a></ul>
+</ul>
+
+<a href="install4.htm"><h5>| Prev </a> <a href="install6.htm">| Next </a> <a href="installi.htm">| Start of Chapter </a> <a href="install6.htm">| End of Chapter </a> <a href="booktoc.htm">| Contents </a> <a href="bookix.htm">| Index |</a> (6 out of 7)</h5> <br>
+<A HREF="titlepa1.htm"><h6>Copyright &#169; 1996, Gensym Corporation, Inc.</h6></A>
+</body></html>
