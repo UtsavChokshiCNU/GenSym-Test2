@@ -1,0 +1,44 @@
+#!/bin/csh
+
+#script to construct and promote NOL.  Requires: input version number for the
+#build results from GDANOL.  Input version number for the build results from
+#G2i.  Constructs the items in a new temporary directory and promotes to the 
+#GDANOL version.
+
+if ($#argv < 2) then
+        echo Usage: promote-nol gdanol-version g2i-version
+        exit 1
+endif
+
+
+setenv gdavers $1
+
+setenv g2ivers $2
+
+mkdir /tmp/nol-$gdavers
+
+cd /bt/app-build/dst/gdanol/nol/dist/$gdavers
+
+tar cf - . | (cd /tmp/nol-$gdavers ; tar xf - )
+
+cd /tmp/nol-$gdavers
+
+mkdir projects
+mkdir projects/examples
+mv bakery-demo projects/examples
+mv bleach-demo projects/examples
+mv total-demo projects/examples
+mkdir projects/examples/gnne-demo
+
+cp -p /bt/app-build/g2i/builds/nol-$g2ivers/iship/bin/* bin
+
+cp -p /bt/app-build/g2i/builds/nol-$g2ivers/iship/kbs/* kbs
+
+cp -p /bt/app-build/g2i/builds/nol-$g2ivers/iship/data/* projects/examples/gnne-demo
+cp -p /bt/app-build/g2i/builds/nol-$g2ivers/iship/examples/gnne-demo.kb projects/examples/gnne-demo
+
+/gensym/tools/promote-product -noconfirm -i nol /tmp/nol-$gdavers $gdavers 
+
+cd
+
+rm -rf /tmp/nol-$gdavers
