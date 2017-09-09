@@ -1,0 +1,62 @@
+SHELL = /bin/sh
+PRODUCT = xml
+ODIR = o
+PLATFORM = intelsol
+CDIR = $(SRCBOX)/$(PRODUCT)/c
+EXTCDIR = $(SRCBOX)/ext/c
+HELPERDIR = $(SRCBOX)/helpers
+LIBXMLHDIR = $(SRCBOX)/xml
+MFDIR = $(DSTBOX)/$(PRODUCT)/$(ODIR)
+SCRIPTSDIR = $(SRCBOX)/scripts
+SPFCDIR = $(SRCBOX)/specific/$(PLATFORM)
+LIBXMLLOC = $(LIBXMLHDIR)/libxml
+CC_FLAGS = -Dsparcsol -Wimplicit
+XMLHFILES = $(CDIR)/xml_support.h $(LIBXMLLOC)/DOCBparser.h \
+  $(LIBXMLLOC)/HTMLparser.h $(LIBXMLLOC)/HTMLtree.h $(LIBXMLLOC)/SAX.h \
+  $(LIBXMLLOC)/SAX2.h $(LIBXMLLOC)/c14n.h $(LIBXMLLOC)/catalog.h \
+  $(LIBXMLLOC)/chvalid.h $(LIBXMLLOC)/debugXML.h $(LIBXMLLOC)/dict.h \
+  $(LIBXMLLOC)/encoding.h $(LIBXMLLOC)/entities.h $(LIBXMLLOC)/globals.h \
+  $(LIBXMLLOC)/hash.h $(LIBXMLLOC)/list.h $(LIBXMLLOC)/nanoftp.h \
+  $(LIBXMLLOC)/nanohttp.h $(LIBXMLLOC)/parser.h \
+  $(LIBXMLLOC)/parserInternals.h $(LIBXMLLOC)/pattern.h \
+  $(LIBXMLLOC)/relaxng.h $(LIBXMLLOC)/schemasInternals.h \
+  $(LIBXMLLOC)/threads.h $(LIBXMLLOC)/tree.h $(LIBXMLLOC)/uri.h \
+  $(LIBXMLLOC)/valid.h $(LIBXMLLOC)/xinclude.h $(LIBXMLLOC)/xlink.h \
+  $(LIBXMLLOC)/xmlIO.h $(LIBXMLLOC)/xmlautomata.h $(LIBXMLLOC)/xmlerror.h \
+  $(LIBXMLLOC)/xmlexports.h $(LIBXMLLOC)/xmlmemory.h $(LIBXMLLOC)/xmlmodule.h \
+  $(LIBXMLLOC)/xmlreader.h $(LIBXMLLOC)/xmlregexp.h $(LIBXMLLOC)/xmlsave.h \
+  $(LIBXMLLOC)/xmlschemas.h $(LIBXMLLOC)/xmlschemastypes.h \
+  $(LIBXMLLOC)/xmlstring.h $(LIBXMLLOC)/xmlunicode.h \
+  $(LIBXMLLOC)/xmlversion.h $(LIBXMLLOC)/xmlwriter.h $(LIBXMLLOC)/xpath.h \
+  $(LIBXMLLOC)/xpathInternals.h $(LIBXMLLOC)/xpointer.h
+
+all : _mfenter liblsxml.a testxml _mfexit
+
+_mfenter : 
+	@- $(SCRIPTSDIR)/errsweep -init
+
+_mfexit : 
+	@- $(SCRIPTSDIR)/errsweep -finish
+
+liblsxml.a : lispxml.o
+	@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)
+	@- if [ -f liblsxml.a ] ; then rm -f liblsxml.a ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) ar qc liblsxml.a  lispxml.o
+
+testxml : $(SPFCDIR)/libxml2.a main_test.o liblsxml.a
+	@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)
+	@- if [ -f testxml ] ; then rm -f testxml ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -o testxml -Xlinker -R -Xlinker /usr/openwin/lib  main_test.o liblsxml.a $(SPFCDIR)/libiconv.so \
+  $(SPFCDIR)/libxml2.a $(SPFCDIR)/libz.a -lm -lsocket -lintl -ldl -lnsl
+
+lispxml.o : $(CDIR)/lispxml.c $(XMLHFILES) $(EXTCDIR)/cprim.h
+	@- if [ -f lispxml.o ] ; then rm -f lispxml.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(LIBXMLHDIR) -I$(EXTCDIR) $(CDIR)/lispxml.c
+
+main_test.o : $(CDIR)/main_test.c $(XMLHFILES) $(EXTCDIR)/cprim.h
+	@- if [ -f main_test.o ] ; then rm -f main_test.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS) -I$(LIBXMLHDIR) -I$(EXTCDIR) $(CDIR)/main_test.c
+
+clean : 
+	- rm -f *.[oa]
+	- rm -f testxml
