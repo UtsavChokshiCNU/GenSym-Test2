@@ -1,0 +1,82 @@
+#!/bin/sh
+
+# Promote debuggables for UNIX and NT platforms to iship and eship.
+# You must be AB on SDEV4 to run this script.
+# This is the mainline version of the script -- it promotes from the ab sandbox.
+
+if [ $# != 1 ]; then
+  echo "Error: Wrong number of arguments, $#argv supplied, 1 required (version)."
+  exit 1
+fi
+
+
+# Variable declarations: edit this for a new version
+ISHIPVER=temp-delete
+ESHIPVER=$1
+
+UNIXPLATFORMS="alphaosf hp9000s700 rs6000 sparcsol linux hpia64"
+NTPLATFORMS="intelnt"
+
+# Clean up anything that might have been left around from a bad promote
+rm -rf /tmp/g2debug
+
+# Create a temporary directory to create the item to be promoted
+mkdir /tmp/g2debug
+
+# Promote UNIX platforms
+for i in $UNIXPLATFORMS
+do
+  cp -p /bt/ab/dst/$i/g2/o/g2 /tmp/g2debug/g2
+  cp -p /bt/ab/dst/$i/tw/o/tw /tmp/g2debug/tw
+  cp -p /bt/ab/gsi/c/gsi_main.c /tmp/g2debug/gsi_main.c
+  cp -p /bt/ab/gsi/c/gsi_main.h /tmp/g2debug/gsi_main.h
+  cp -p /bt/ab/gsi/c/gsi_misc.c /tmp/g2debug/gsi_misc.c
+  cp -p /bt/ab/gsi/c/gsi_misc.h /tmp/g2debug/gsi_misc.h
+  cp -p /bt/ab/dst/$i/gsi/o/libgsi.a /tmp/g2debug/libgsi.a
+  cp -p /bt/ab/dst/$i/gsi/o/gsi_main.o /tmp/g2debug/gsi_main.o
+  cp -p /bt/ab/dst/$i/gsi/o/gsi_misc.o /tmp/g2debug/gsi_misc.o
+  cp -p /bt/ab/dst/$i/rtl/o/librtl.a /tmp/g2debug/librtl.a
+  cp -p /bt/ab/dst/$i/ext/o/libtcp.a /tmp/g2debug/libtcp.a
+  cp -p /bt/ab/dst/$i/ext/o/libnet.a /tmp/g2debug/libnet.a
+  cp -p /bt/ab/dst/$i/ext/o/libdec.a /tmp/g2debug/libdec.a
+  /gensym/tools/promote-product -noconfirm -i g2db ${i} /tmp/g2debug ${ISHIPVER}
+  
+  # The first line promotes the debuggables from iship to eship, the second
+  # removes the iship promotion of the debuggables to conserve disk space.
+  /gensym/tools/promote-product -noconfirm -e g2db ${i} ${ISHIPVER} ${ESHIPVER}
+  /gensym/tools/remove-product -noconfirm -i g2db ${ISHIPVER} ${i}
+ 
+  rm -f /tmp/g2debug/*
+done
+
+# Promote NT platforms
+for i in $NTPLATFORMS
+do
+  cp -p /bt/ab/dst/${i}/g2/o/g2.exe /tmp/g2debug/g2.exe
+  cp -p /bt/ab/dst/${i}/g2/o/g2.map /tmp/g2debug/g2.map
+  cp -p /bt/ab/dst/${i}/tw/o/tw.exe /tmp/g2debug/tw.exe
+  cp -p /bt/ab/dst/${i}/tw/o/tw.map /tmp/g2debug/tw.map
+  cp -p /bt/ab/dst/${i}/twng/o/twng.exe /tmp/g2debug/twng.exe
+  cp -p /bt/ab/dst/${i}/twng/o/twng.pdb /tmp/g2debug/twng.pdb
+  cp -p /bt/ab/dst/${i}/twng/opt/twng.pdb /tmp/g2debug/twng-optimized.pdb
+  cp -p /bt/ab/gsi/c/gsi_main.c /tmp/g2debug/gsi_main.c
+  cp -p /bt/ab/gsi/c/gsi_main.h /tmp/g2debug/gsi_main.h
+  cp -p /bt/ab/gsi/c/gsi_misc.c /tmp/g2debug/gsi_misc.c
+  cp -p /bt/ab/gsi/c/gsi_misc.h /tmp/g2debug/gsi_misc.h
+  cp -p /bt/ab/dst/${i}/gsi/o/gsi_main.obj /tmp/g2debug/gsi_main.obj
+  cp -p /bt/ab/dst/${i}/gsi/o/gsi_misc.obj /tmp/g2debug/gsi_misc.obj
+  cp -p /bt/ab/dst/${i}/gsi/o/gsi.exp /tmp/g2debug/gsi.exp
+  cp -p /bt/ab/dst/${i}/gsi/o/gsi.dll /tmp/g2debug/gsi.dll
+  cp -p /bt/ab/dst/${i}/gsi/o/gsi.exp /tmp/g2debug/gsi.exp
+  cp -p /bt/ab/dst/${i}/gsi/o/libgsi.lib /tmp/g2debug/libgsi.lib
+  cp -p /bt/ab/dst/${i}/rtl/o/librtl.lib /tmp/g2debug/librtl.lib
+  cp -p /bt/ab/dst/${i}/ext/o/libtcp.lib /tmp/g2debug/libtcp.lib
+  /gensym/tools/promote-product -noconfirm -i g2db ${i} /tmp/g2debug ${ISHIPVER}
+
+  # The first line promotes the debuggables from iship to eship, the second
+  # removes the iship promotion of the debuggables to conserve disk space.
+  /gensym/tools/promote-product -noconfirm -e g2db ${i} ${ISHIPVER} ${ESHIPVER}
+  /gensym/tools/remove-product -noconfirm -i g2db ${ISHIPVER} ${i}
+                                                                  
+  rm -f /tmp/g2debug/*
+done 
