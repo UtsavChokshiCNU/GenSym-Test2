@@ -1,0 +1,14 @@
+<ivysettings>
+    <settings defaultResolver="${ivy.resolver}" />
+    <resolvers>
+        <sftp name="Production-Resolver" user="${sftp.repository.user}" userPassword="${sftp.repository.password}"
+            host="${sftp.repository.host}" port="${sftp.repository.port}">
+            <ivy pattern="[organisation]/[module]/ivys/ivy-[revision].xml" />
+            <artifact pattern="[organisation]/[module]/[type]s/[artifact]-[revision].[ext]" />
+        </sftp>
+        <filesystem name="Local-Resolver">
+            <ivy pattern="${local.repo.dir}/[organisation]/[module]/ivys/ivy-[revision].xml" />
+            <artifact pattern="${local.repo.dir}/[organisation]/[module]/[type]s/[artifact]-[revision].[ext]" />
+        </filesystem>
+    </resolvers>
+</ivysettings>
