@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_build.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+Measuring a Library
+</h1>
+<P>
+Sometimes you want to measure coverage of a library but you
+have little or no interest in measuring coverage of the driver
+program(s) used to test the library.
+There are three alternatives described below.
+With both of these alternatives, just one coverage file is used.
+No environment variables need adjustment and no BullseyeCoverage library calls
+are needed.
+<h2>Selecting the Library in the Coverage Browser</h2>
+<p>
+This alternative is the easiest, by far.
+<p>
+Build the library as well as the driver program.
+Immediately after building, run the
+<a href=coverageBrowser.html>Coverage Browser</a>.
+Use the menu command <code>Region Exclude</code> to exclude the driver program.
+Measurements for the driver program no longer appear.
+If you choose to build again, no probes are added to the excluded source code.
+<h2>Selecting the Library Source with covc
+</H2>
+<P>
+If your library source is located in a separate directory, for
+example named <CODE>library</CODE>, you can measure coverage of
+only that source by specifying covc option <CODE>-tlibrary/</CODE>
+(<CODE>--select library/</CODE>). This alternative completely
+excludes the driver program source code and reports only measurements
+for the library.
+<P>
+For example, run the command below before building.
+<PRE>
+echo -tlibrary/ &gt;<i>BullseyeCoverage</i>/bin/covc.cfg
+</PRE>
+<P>
+If you have multiple libraries, you can specify all of them at
+once. For example, if you have library source located in directories
+<CODE>dir1</CODE>, <CODE>dir2</CODE>, and <CODE>dir3</CODE>.
+<PRE>
+echo -tdir1/,dir2/,dir3/ &gt;<i>BullseyeCoverage</i>/bin/covc.cfg
+</PRE>
+<h2>Selecting the Library Source at Report-time from the Command Prompt
+</H2>
+<p>
+If you sometimes want coverage measurements for the driver program(s)
+as well as the library, you can measure all source code then create
+reports for all the source or for just the library source. Suppose
+your library source is located in a directory named <CODE>library</CODE>
+and your driver program is located in a directory named <CODE>driver</CODE>.
+You can see a report for the library using the command line region
+<CODE>library/</CODE>. For example,
+<PRE>
+covsrc library/
+</PRE>
+<P>
+You can see a report for the driver program using the command
+line region <CODE>driver/</CODE>. For example,
+<PRE>
+covsrc driver/
+</PRE>
+<P>
+You can see a report for all source by simply omitting any command
+line regions.
+<P>
+If you wish to discard measurements the driver program, use <a href=ref_covmgr.html>covmgr</a>
+option <CODE>-r</CODE> (<CODE>--remove</CODE>). For example,
+<PRE>
+covmgr -r driver/
+</PRE>
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
