@@ -1,0 +1,251 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include "windows.h"
+#undef APSTUDIO_HIDDEN_SYMBOLS
+#include "resource.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (United States) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_G2OPC               ICON                    "G2OPC.ICO"
+IDI_SMALL               ICON                    "SMALL.ICO"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDC_G2OPC MENU
+BEGIN
+    POPUP "Icon_Popup"
+    BEGIN
+        MENUITEM "&About ...",                  IDM_ABOUT
+        MENUITEM SEPARATOR
+        MENUITEM "OPC Servers autodiscovery",   ID_AUTODISCOVERY
+        MENUITEM "Control Panel",               ID_CONTROLPANEL
+        MENUITEM SEPARATOR
+        MENUITEM "Shutdown",                    ID_APP_EXIT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDC_G2OPC ACCELERATORS
+BEGIN
+    "?",            IDM_ABOUT,              ASCII,  ALT
+    "/",            IDM_ABOUT,              ASCII,  ALT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOG 22, 17, 158, 105
+STYLE DS_SETFONT | DS_MODALFRAME | WS_CAPTION
+CAPTION "About G2-OPC Client Bridge"
+FONT 8, "System"
+BEGIN
+    ICON            IDI_G2OPC,IDC_MYICON,12,6,20,20
+    LTEXT           "G2-OPC Client Bridge",IDC_STATIC,41,6,74,8,SS_NOPREFIX
+    LTEXT           "Copyright (C) 2007-2012, Gensym Co.",IDC_STATIC,28,27,105,8
+    DEFPUSHBUTTON   "OK",IDOK,119,8,30,11,WS_GROUP
+    CONTROL         131,IDC_STATIC,"Static",SS_BITMAP,43,41,66,33
+    LTEXT           "Version 2011",IDC_STATIC,39,16,77,11
+END
+
+IDD_CTRLPANEL DIALOG 40, 25, 191, 191
+STYLE DS_SYSMODAL | DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "G2-OPC Client Control Panel"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",1,24,168,50,14
+    PUSHBUTTON      "Cancel",2,102,168,50,14
+    GROUPBOX        "Logging",IDC_STATIC,3,2,177,87
+    CONTROL         "Log to G2",IDC_LOG_TO_G2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,111,16,46,12
+    CONTROL         "Log to Screen",IDC_LOG_TO_SCREEN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,111,34,64,12
+    CONTROL         "Archive Last Log",IDC_ARCHIVE_LOG,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,111,52,65,11
+    CONTROL         "Logging Enabled",IDC_LOGGING_ENABLED,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,111,69,65,12
+    GROUPBOX        "Quality Filter",IDC_STATIC,4,91,49,65
+    EDITTEXT        IDC_QUALITY_FILTER,18,106,19,14,ES_CENTER | ES_AUTOHSCROLL
+    GROUPBOX        "OPC Server Status",IDC_STATIC,54,91,125,65
+    CONTROL         "Check Server Status",IDC_CHK_SRVR_STAT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,62,104,96,11
+    LTEXT           "Frequency:",IDC_STATIC,61,120,38,10
+    EDITTEXT        IDC_SRVR_CHK_FREQ,104,118,29,14,ES_CENTER | ES_AUTOHSCROLL
+    LTEXT           "seconds",IDC_STATIC,136,120,35,9
+    GROUPBOX        "Trace Level",IDC_STATIC,5,12,101,73
+    CONTROL         "Fatal Errors Only",IDC_TL0,"Button",BS_AUTORADIOBUTTON | WS_GROUP,10,23,81,11
+    CONTROL         "Critical and Fatal Errors",IDC_TL1,"Button",BS_AUTORADIOBUTTON,10,35,87,11
+    CONTROL         "All Errors",IDC_TL2,"Button",BS_AUTORADIOBUTTON,10,47,81,11
+    CONTROL         "Warnings and Errors",IDC_TL3,"Button",BS_AUTORADIOBUTTON,10,59,81,11
+    CONTROL         "Info, Warnings and Errors",IDC_TL4,"Button",BS_AUTORADIOBUTTON,9,71,94,11
+    CONTROL         "Use G2 Timestamp",IDC_USE_G2_TIMESTAMP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,62,138,76,12
+END
+
+IDD_SERVERLIST DIALOG 0, 0, 181, 182
+STYLE DS_SYSMODAL | DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "OPC Server Autodiscovery"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "Find",ID_FIND_SERVERS,123,138,50,14
+    PUSHBUTTON      "Close",ID_CLOSE_DLG,123,161,50,14
+    CONTROL         "OPC Data Access Version 1",IDC_OPC1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,134,106,12
+    CONTROL         "OPC Data Access Version 2",IDC_OPC2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,149,106,12
+    CONTROL         "OPC Data Access Version 3",IDC_OPC3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,165,106,12
+    LISTBOX         IDC_SERVERS,5,6,169,121,LBS_SORT | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_CTRLPANEL, DIALOG
+    BEGIN
+        RIGHTMARGIN, 185
+        BOTTOMMARGIN, 186
+    END
+
+    IDD_SERVERLIST, DIALOG
+    BEGIN
+        RIGHTMARGIN, 180
+        BOTTOMMARGIN, 177
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+2 TEXTINCLUDE 
+BEGIN
+    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""windows.h""\r\n"
+    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""resource.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION    2015,20,32,0
+ PRODUCTVERSION 2015,20,32,0
+ FILEFLAGSMASK 0x17L
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Build ID", "TH27\0"
+            VALUE "CompanyName", "Gensym\0"
+            VALUE "FileDescription", "G2-OPC Client Bridge\0"
+            VALUE "FileVersion", "2011\0"
+            VALUE "InternalName", "G2-OPC Client Bridge\0"
+            VALUE "LegalCopyright", "Copyright \251 1986-2017 Gensym Corporation.\0"
+            VALUE "OriginalFilename", "G2OPC.exe\0"
+            VALUE "ProductName", "G2-OPC Client Bridge\0"
+            VALUE "ProductVersion", "2011\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_BITMAP1             BITMAP                  "OPCMemberLogo.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDS_APP_TITLE           "G2-OPC"
+    IDS_HELLO               "Hello World!"
+    IDC_G2OPC               "G2-OPC"
+END
+
+#endif    // English (United States) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
