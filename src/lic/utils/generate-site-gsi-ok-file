@@ -1,0 +1,131 @@
+#!/bin/csh -f
+onintr cleanup
+
+if ( $?SRCBOX && -e $SRCBOX/lic/integrals.4b ) goto main
+cat <<EOF
+You must be using an existing sandbox (use-sandbox...), with
+a "lic" module, which has compiled versions of the "approprate" files.
+EOF
+
+
+main:
+
+echo "LOG: Generating a fresh site gsi.ok file."
+## This module is unique in this senario, so set the current version aside.
+rm -rf $SRCBOX/lisp/dev/foo-license.4b
+if ( -e $SRCBOX/lisp/dev/license.4b ) then
+  mv $SRCBOX/lisp/dev/license.4b $SRCBOX/lisp/dev/foo-license.4b
+endif
+
+## Get the input to this process
+ypcat hostinfo > /tmp/hostinfo
+
+rm -rf /tmp/gsi.ok
+
+## Run the code that and ask to generate a gsi.ok file.
+cd $SRCBOX/lisp
+/home/lucid/lucid41/lisp-clos-411 <<EOF
+(progn
+  (push :generate-gsi-ok *features*)
+  (print *features*)
+  (load "load")
+  (compile-g2 'no-make 'no-process 'to 'unicode)
+  (compile-ls 'no-make 'no-process)
+  (funcall (find-symbol "GENERATE-GSI-OK" (find-package "AB")))
+  (print "That's all - for lisp - folks.")
+  (quit))
+EOF
+
+if ( ! -e /tmp/gsi.ok ) then
+  echo '.'
+  echo 'ERROR: The new gsi.ok file not created'
+  goto cleanup
+endif
+
+
+echo 'LOG: Making smaller gsi.ok file for local site.'
+
+## Make a list of strings we consider "important."
+cat <<EOF > /tmp/$$
+vms
+vax
+build 
+syseng
+engineering
+sdev
+gensym
+s5
+montreal
+moscow
+baltimore
+nippon
+ox
+rwanda
+somalia
+th
+uganda
+holden
+be
+andorra
+bhutan
+bhyde
+ncaruso
+angus
+gentilpc
+picasso
+mgribble
+bombay
+dulles
+eris
+finland
+gambia
+ganesha
+he
+hy
+homer
+iraq
+ireland
+israel
+jordan
+li
+lr
+lesotho
+malawi
+mendota
+niue
+ele
+lasma
+thailand
+thor
+tm
+vivace
+wa
+wy
+wyoming
+zaire
+zeus
+EOF
+
+## Move the huge file to one side.
+mv /tmp/gsi.ok /tmp/gsi-huge.ok
+
+## Get "imporant" machines from the hostinfo file.
+grep -i -f /tmp/$$ < /tmp/hostinfo | awk -F: '{print $1}' > /tmp/$$.2
+
+# Get the "important" machines from the gsi.ok file.
+grep -i -f /tmp/$$.2 < /tmp/gsi-huge.ok > /tmp/gsi.ok
+
+echo "LOG: The result is in these files."
+ls -l /tmp/gsi*.ok
+echo "LOG: Compare these to the ones in /home/ab."
+ls -l /home/ab/gsi*.ok
+echo "LOG: Now you need to do this, wearing Mr. AB's hat."
+echo "mv /tmp/gsi-huge.ok /home/ab/gsi-huge.ok"
+echo "mv /tmp/gsi.ok /home/ab/gsi.ok"
+
+
+cleanup:
+rm -rf /tmp/$$*
+if ( -e $SRCBOX/lisp/dev/foo-license.4b ) then
+  mv $SRCBOX/lisp/dev/foo-license.4b $SRCBOX/lisp/dev/license.4b
+endif
