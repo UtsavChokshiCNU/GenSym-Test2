@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_trouble_build.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+Error on "BullseyeCoverageTemplateSyntaxError"
+</h1>
+<h2>SYMPTOMS</h2>
+<p>
+A compiler error containing the symbol <code>BullseyeCoverageTemplateSyntaxError</code> occurs, such as one of the following.
+<p>
+<table border=1>
+<tr><td>Borland C++<td><code>Error E2451 </code>...<code>: Undefined symbol 'BullseyeCoverageTemplateSyntaxError'</code>
+<tr><td>CodeWarrior<td><code>undefined identifier 'BullseyeCoverageTemplateSyntaxError'</code>
+<tr><td>IBM C++<td><code>1540-0274 (S) The name lookup for "BullseyeCoverageTemplateSyntaxError" did not find a declaration.</code>
+<tr><td>Intel C++<td><code>error: identifier "BullseyeCoverageTemplateSyntaxError" is undefined</code>
+<tr><td>Microsoft C++<td><code>error C2065: 'BullseyeCoverageTemplateSyntaxError' : undeclared identifier</code>
+<tr><td>SGI MIPSpro C++<td><code>cc-1020 CC: ERROR </code>...<code> The identifier "BullseyeCoverageTemplateSyntaxError" is undefined.</code>
+<tr><td>Sun C++<td><code>Error: BullseyeCoverageTemplateSyntaxError is not defined.</code>
+</table>
+<h2>CAUSE</h2>
+<p>
+BullseyeCoverage encountered a syntax error in the template function where the error occurred.
+<h2>RESOLUTION</h2>
+<p>
+Compile your code without BullseyeCoverage.
+If a syntax error occurs, fix the source code.
+If no syntax error occurs, report this problem to
+<a href="http://www.bullseye.com/support.html">Technical Support</a>.
+<h2>MORE INFORMATION</h2>
+<p>
+The compilers listed below defer syntax checking of template functions until instantiation.
+However, BullseyeCoverage cannot determine whether template functions are instantiated.
+In order to follow the behaviour of these compilers,
+BullseyeCoverage handles a syntax error in a template function by
+inserting the undefined identifier <code>BullseyeCoverageTemplateSyntaxError</code> into the function.
+If the function is instantiated, an error is guaranteed to occur,
+ensuring that BullseyeCoverage parses code the same way as the compiler.
+<p>
+These compilers defer syntax checking of template functions until instantiation.
+<ul>
+<li>Borland C++
+<li>CodeGear C++
+<li>CodeWarrior
+<li>GCC 3.3 and earlier
+<li>HP aC++ 6
+<li>IBM C++
+<li>Intel C++
+<li>Microsoft C++
+<li>SGI MIPSpro
+<li>Sun C++
+</ul>
+<p>
+These compilers do not defer syntax checking.
+<ul>
+<li>Embarcadero C++ 6.20 and later
+<li>GCC 3.4 and later
+<li>HP aC++ 3
+</ul>
+<p>
+You can demonstration the compiler behavior with the source code below.
+The source contains an error that is not reported.
+Uncomment the first line in <code>main</code> to see the error reported.
+<pre>
+template&lt;typename T&gt;
+void f()
+{
+    error
+}
+
+int main()
+{
+    //f&lt;int&gt;();
+    return 0;
+}
+</pre>
+
+<p style="font-size:xx-small">
+Last reviewed: 27 Mar 2009
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
