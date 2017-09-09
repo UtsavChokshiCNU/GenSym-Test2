@@ -1,0 +1,103 @@
+<html><head><title>Remote Procedures</title></head>
+<body bgcolor="#ffffff">
+<a href="procedu7.htm"><h5>| Prev </a> <a href="procedu9.htm">| Next </a> <a href="procedur.htm">| Start of Chapter </a> <a href="proced11.htm">| End of Chapter </a> <a href="booktoc.htm">| Contents </a> <a href="bookix.htm">| Index |</a> (9 out of 12)</h5> <br>
+
+
+<a name="5844">
+<h1> gw-make-base64-encoded 
+</h1>
+</a><a name="5845">
+Converts a text string into a slightly encoded text string. 
+<p>
+</a><a name="5846">
+<h2> Synopsis </h2>
+</a><ul><a name="5847">
+<pre><code>gw-make-base64-encoded (</code><em>text-to-encode</em><code>: text) = (text) 
+</code></pre>
+</a><a name="5857">
+<table border=4>
+<tr><th align="left" valign="middle"><a name="5850">
+<strong>Argument 
+</strong>
+</a><th align="left" valign="middle"><a name="5852">
+<strong>Description 
+</strong>
+</a>
+<tr><td valign="middle"><a name="5854">
+ <em>text-to-encode
+</em><p>
+</a><br><td valign="middle"><a name="5856">
+The user name and password that you 
+want to encode.
+<p>
+</a><br>
+
+</table>
+
+<p></a></ul><a name="5858">
+<h2> Description </h2>
+</a><a name="5859">
+The remote procedure <code>gw-make-base64-encoded()</code> is needed when G2 requests 
+resources from a server that requires a user name and password. 
+<p>
+</a><a name="5860">
+In this situation, the request from G2 to the server includes headers that identify 
+the user to the server. While many techniques can be used to encode this information, the only technique specified in HTTP version 1.0 is known as the "Basic 
+Authentication Scheme." The encoding done is specified in RFC 1521. 
+<p>
+</a><a name="5861">
+For example, if the user named "Aladdin" wishes to obtain a resource from a 
+server where his password is "open sesame", he can include in his request a 
+header of the form: 
+<p>
+</a><a name="5862">
+    Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ== 
+<p>
+</a><a name="5863">
+For example, the following call: 
+<p>
+</a><ul><a name="5864">
+<pre>coded = call gw-make-base-64-encoded("Aladdin:open sesame"; 
+</pre>
+</a></ul><a name="5865">
+results in text value "QWxhZGRpbjpvcGVuIHNlc2FtZQ==" being stored into 
+coded. 
+<p>
+</a><a name="5867">
+You can specify information to place in the header of a request in the <a href="configur.htm#">fetch style</a> 
+used in making the request. 
+<p>
+</a><a name="5871">
+<h2> Return Values</h2>
+</a><a name="5881">
+<table border=4>
+<tr><th align="left" valign="middle"><a name="5874">
+<strong>Value 
+</strong>
+</a><th align="left" valign="middle"><a name="5876">
+<strong>Description 
+</strong>
+</a>
+<tr><td valign="middle"><a name="5878">
+<code>text
+</code><p>
+</a><br><td valign="middle"><a name="5880">
+The encoded user name and password. 
+<p>
+</a><br>
+
+</table>
+
+<p></a><a name="5882">
+
+
+<p></a><a name="5883">
+<h2> Signals </h2>
+</a><a name="5884">
+None. 
+<p>
+</a>
+
+<a href="procedu7.htm"><h5>| Prev </a> <a href="procedu9.htm">| Next </a> <a href="procedur.htm">| Start of Chapter </a> <a href="proced11.htm">| End of Chapter </a> <a href="booktoc.htm">| Contents </a> <a href="bookix.htm">| Index |</a> (9 out of 12)</h5> <br>
+<A HREF="titlepa1.htm"><h6>Copyright &#169; 1996, Gensym Corporation, Inc.</h6></A>
+</body></html>
