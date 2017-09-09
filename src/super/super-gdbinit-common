@@ -1,0 +1,61 @@
+#
+set confirm off
+#
+# allow printing an unlimited number of lines before pausing
+set height 0
+#
+# do not wrap gdb output
+set width 0
+#
+# do not stop (for user gdb commands) when signals are received
+handle all nostop
+handle all noprint
+#
+break g2int_error_handler
+commands 1
+where
+frame 1
+info locals
+frame 2
+info locals
+frame 3
+info locals
+frame 4
+info locals
+frame 5
+info locals
+frame 6
+info locals
+cont
+end
+#
+break g2int_signal_handler
+commands 2
+where
+frame 3
+info locals
+frame 4
+info locals
+frame 5
+info locals
+frame 6
+info locals
+cont
+end
+#
+break g2rtl_warn_gensym_area_violation
+commands 3
+where
+frame 2
+info locals
+frame 3
+info locals
+frame 4
+info locals
+frame 5
+info locals
+frame 6
+info locals
+cont
+end
+
