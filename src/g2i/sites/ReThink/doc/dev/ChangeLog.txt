@@ -1,0 +1,782 @@
+
+                     ReThink 3.1 Rev. 0 Change Log
+                     =============================
+
+  --------------------------------------------------------------------
+
+  Changed the version to "3.1 Rev. 0 Development".
+
+  --------------------------------------------------------------------
+
+* Modified the procedures bpr-random-available-resource, bpr-lowest-    AvailableResource.kb
+  cost-available-resource, bpr-lowest-utilization-available-resource,   Case 1 - 5
+  bpr-highest-priority-available-resource, and bpr-lowest-priority-
+  available-resource to take availability, based upon temporal
+  constraints, into account when allocating resources. So the first
+  available resource will always be allocated if no resources are
+  available due to other allocations or temporal constraints.
+
+  --------------------------------------------------------------------
+
+  Modified the resource allocation procedures mentioned above to fix a  AvailableResource.kb
+  problem with the wrong resource being selected when one of the        Case 6 - 10
+  resources is available.
+
+  --------------------------------------------------------------------
+
+  Fixed the code in the procedure bpr-find-not-available-time-in-       TemporalConstraint.kb
+  interval which calculates the not available time for a resource.      TCResourceStatistics Test
+  This code was not working properly after the temporal constraint
+  fixes implemented earlier in the 3.0 Rev. 1 release.
+
+  --------------------------------------------------------------------
+
+* Modified the procedure bpr-activate-next-usage and added the          AvailableResource.kb
+  procedures bpr-check-for-waiting-resources and bpr-switch-waiting-    Case 11
+  resource to potentially switch resources when a resource becomes
+  available. So if a resource is waiting on its temporal constraint
+  and another resource becomes available, the activity will be
+  switched to the available resource.
+
+  --------------------------------------------------------------------
+
+? Added code to the method bpr-stop-method of the sample and average    NewInstrument.kb
+  probes to support connecting them to quantitative parameters and      Case 1 - 2
+  variables. Rules were also added to update the sample and average
+  probes whenever the value of the quantitative parameter or variable
+  changes. This allows quantitative parameters and variables to be
+  charted over time.
+
+  --------------------------------------------------------------------
+
+  Modified the procedures bpr-set-source-attribute-name and bpr-set-    NewInstrument.kb
+  destination-attribute-name to correctly clear the subtable name and   Case 3
+  attribute name when the no source or destination attribute name,
+  respectively, is specified.
+
+  --------------------------------------------------------------------
+
+* Integrated my previous work on re-implementing all of the dialogs     ???
+  using the UIL tab dialogs. All of the dialogs now have a slightly
+  different look. The one other noticeable difference for users is
+  that the previously selected tab now comes up selected by default
+  (rather than always coming up with the first tab selected). Note
+  that we are also now using scheduled drawing, as this is required by
+  the UIL tab dialogs. This work also involved separating all of the
+  dialog code into a new BPRUI module, which is implemented using the
+  new Gensym coding standards.
+
+  --------------------------------------------------------------------
+
+* Added the animation-speed attribute to the scenario and created a     ???
+  user interface for it. The Set Scenario dialog now has a new
+  Animation tab which has a spin control for the animation speed, as
+  well as the enable animation control which used to be on the
+  Scenario tab.
+
+  --------------------------------------------------------------------
+
+* Added the capability to associate together two connectors on          MultipleModules.kb
+  different detail workspaces so that work objects can be sent across   Case 1 - 2
+  those detail workspaces even though the higher level task blocks are
+  not necessarily connected. This required the addition of a choose-
+  connector menu choice on connectors and some modifications to the
+  show-path menu choice.
+
+  --------------------------------------------------------------------
+
+? Updated the scenario start time to be January 1, 1998 by default,
+  rather than 1997. Also updated the copyright to include 1998 on the
+  About ReThink... workspace.
+
+  --------------------------------------------------------------------
+
+* Added the capability to associate a detail workspace (other than the  MultipleModules.kb
+  subworkspace) with the model and organizer objects. This required     Case 3 - 4
+  the addition of the show-detail (in place of the go-to-subworkspace
+  menu choice) and choose-detail menu choices for these objects.
+
+  --------------------------------------------------------------------
+
+* Added an Animation tab page to support changing the icon colors in    ???
+  modeler mode for all of the objects that have an animation subtable.
+  This consists of blocks, paths, resources, surrogates, and
+  instruments.
+
+  --------------------------------------------------------------------
+
+* Enhanced the copy block to optionally also add to the associations    customadds.kb
+  of the original work object. The set block dialog for the copy block
+  now has an add to associations toggle button.
+
+  --------------------------------------------------------------------
+
+* Enhanced the associate block to operate in one of three different     customadds.kb
+  modes; new, add, or remove. New mode is the original associate block
+  operated, add mode adds the input work object to an existing
+  association, and remove mode removes the input work object from an
+  existing association.
+
+  --------------------------------------------------------------------
+
+* Added a show-associations user menu choice on work objects to show    ???
+  the associated work objects. This uses the bpr-indicate procedure to
+  show the associated work objects and makes the text be "Original"
+  for the selected work object and the association name for all other
+  work objects.
+
+  --------------------------------------------------------------------
+
+* Enhanced the reconcile block to optionally reconcile only if all of   customadds.kb
+  associated work objects are waiting at the block. The set block
+  dialog for the reconcile block now has a reconcile all toggle
+  button.
+
+  --------------------------------------------------------------------
+
+* Added the Merge Module..., Rename Module..., Create Module..., and    ???
+  Delete Module... menu choices under the File menu. Modules that are
+  merged and created are automatically added to the module hierarchy
+  as required by the top level module. Renaming a module changes all
+  references to the module, both in the module hierarchy and for top
+  level workspaces. Deleting a module also deletes all references to
+  the module in the module hierarchy.
+
+  --------------------------------------------------------------------
+
+* Enhanced the summary reports to support customizing the attributes    change-report-attributes.kb
+  to be displayed in the report (and their order). This is done using
+  the new edit attributes... user menu choice, which brings up a
+  standard GXL editing workspace.
+
+  - Usability Review 2/17/98 -----------------------------------------
+
+* Added the efficiency factor attribute to the utilization tab of the   EfficiencyFactor.kb
+  set resource dialog. This is a multiplier that allows the duration
+  of a block to be modified based upon the resource selected.
+
+  --------------------------------------------------------------------
+
+* Added the capability to have reports use Excel for the spreadsheet    ???
+  (as an alternative to GXL). This required the addition of several
+  new attributes to the set summary report dialog. The report mode
+  attribute is used to indicate that Excel is to be used for the
+  spreadsheet. The excel file name attribute specifies the name of the
+  Excel spreadsheet which will be launched when the create report menu
+  choice is selected. Finally, the report title attribute is used to
+  specify which worksheet to use within the Excel spreadsheet.
+
+  --------------------------------------------------------------------
+
+* Restructured the way reports are updated to support an update         ???
+  interval, making them significantly more efficient. Visible changes
+  to a user include the refresh report button is now called update
+  report to more accurately reflect what it is doing and the update
+  interval on the set report dialog. The update interval specifies an
+  interval with which the report is automatically updated.
+
+  --------------------------------------------------------------------
+
+* Added the load image... and delete image menu choices to the object   ???
+  definition class. The load image... menu choice brings up a dialog
+  which allows the user to specify an image file which is loaded into
+  an image definition placed on the subworkspace of the object
+  definition. The icon description attribute is also updated to use
+  the image definition. The delete image menu choice removes the icon
+  description and deletes the image definition. The show image menu
+  choice previews the image on a workspace, which can be deleted by
+  clicking anywhere on the workspace.
+
+  --------------------------------------------------------------------
+
+* Added the sort ascending and sort descending buttons to the GXL       ???
+  spreadsheet toolbar. These become enabled when a column is selected.
+
+  --------------------------------------------------------------------
+
+? Changed the use of the id attribute for work objects. By default,     ???
+  work objects are no longer assigned a unique id (since this added
+  significant overhead to long simulations and was not required). The
+  objects-require-unique-id attribute has been added to the scenario
+  object, for backward compatibility.
+
+  --------------------------------------------------------------------
+
+* Updated the database capabilities to work with the G2-Database 6.0    Database.kb
+  API and class name changes. Users must use the 6.0 versions of the
+  G2-Database bridges, as the older version will no longer work. The
+  only user visible change is that all references to qo-record must be
+  changed to db-qo-record.
+
+  --------------------------------------------------------------------
+
+? Changed all of the references to the class g2-window to the class     ???
+  ui-client-item, its parent class. This is required for Telewindows2
+  and results in no visible change for modelers.
+
+  --------------------------------------------------------------------
+
+  Fixed numerous bugs in the new code to switch a waiting resource to   GensymCalendar.kb,
+  an available resource which has been deallocated.                     SwitchWaitingResources.kb,
+                                                                        BrucesTemporalConstraintTests.kb
+  --------------------------------------------------------------------
+
+* Added the capability to swap instruments and resources in the same    ???
+  way that blocks can be swapped, by dropping a block on top of
+  another block. Also added the make subclass menu choice (available
+  in developer mode) for instruments and resources. This is basicly
+  infrastructure work for the planned graphics enhancements.
+
+  --------------------------------------------------------------------
+
+* Added the icon tool object, which allows you to easily transfer       ???
+  images and icons to other objects, to the tools palette. The icon
+  tool object has the load image... and delete image menu choices
+  which are basicly identical as the same menu choices for object
+  definitions. The one difference is that the icon tool changes its
+  icon to be the image that has been loaded with the text "Icon Tool"
+  in red letters on top of the image. The icon tool also provides the
+  edit icon menu choice for invoking the icon editor. The icon tool
+  can then be dropped on top of object definitions, blocks,
+  instruments, and resources to change the icon of these objects to
+  the icon of the icon tool (by invoking the make subclass menu choice
+  for blocks, instruments, and resources).
+
+  --------------------------------------------------------------------
+
+* Added the images... menu item under the models menu for loading a     ???
+  library of images. This menu item brings up a dialog for specifying
+  a directory whose image files (*.gif and *.xbm) are to be loaded.
+  The images are shown on a dynamic palette of icon tools, where the
+  icon tools can be cloned like any object on a palette. Unlike
+  standard palettes, the dynamic palette is actually deleted when the
+  workspace label is selected. This provides the image capabilities
+  without bloating the product and supports customers using their own
+  image libraries.
+
+  --------------------------------------------------------------------
+
+* Added the load image... and delete image menu choice capability for   ???
+  workspaces. This works almost exactly the same as for object
+  definitions, except that the image definition is simply placed on
+  the workspace (but can be moved by the user).
+
+  --------------------------------------------------------------------
+
+* Added icon text to the blocks and instruments which operate in        ???
+  different modes to indicate which mode the block or instrument is
+  in. The icon text is changed whenever the mode of the block or
+  instrument is changed. This currently applies to the source, branch,
+  batch, store, and retrieve blocks and the change feed.
+
+  - 3.1 Alpha Rev. 0 E29 ---------------------------------------------
+
+* Added the parameter feed and parameter probe instruments which allow  customadds.kb
+  getting and setting the value of a parameter or variable,             Case 6
+  respectively. The quantitative parameter to be used by the
+  instrument can be created using the create parameter menu choice.
+  Alternatively, the parameter or variable can be selected using the
+  choose parameter menu choice. The selected parameter or variable can
+  be shown by the show parameter menu choice and conversely, the
+  instruments can be shown using the show instruments menu choice.
+
+  --------------------------------------------------------------------
+
+* Added the average probe to calculate the average of the value being   customadds.kb
+  sampled. The average probe also keeps track of the minimum and        Case 4
+  maximum sample values.
+
+  --------------------------------------------------------------------
+
+* Added the cumulative sample attribute to the sample probe. When set   customadds.kb
+  to true, the sample value attribute maintains the sum of the          Case 5
+  samples.
+
+  --------------------------------------------------------------------
+
+* Added the retrieve copy and add to associations attributes to the     customadds.kb
+  retrieve block. When the retrieve copy attribute is set to true, a    Case 7a & 7b
+  copy of the retrieved work object is created and sent out while the   Case 8a & 8b
+  original remains in the pool. The retrieve copy attribute applies to  Case 9a & 9b
+  all retrieve modes except database, as database retrieve mode always
+  copies the data from the table and never deletes the record from the
+  table. The add to associations attribute is only applicable when the
+  retrieve copy attribute is true. It specifies whether or not the
+  associations are to copied as well, exactly as in the copy block. 
+
+  --------------------------------------------------------------------
+
+* Added the retrieve all attribute to the retrieve block. This has      customadds.kb
+  similar but slightly different interpretations depending upon the     Case 7a & 7b
+  retrieve mode. In random retrieve mode, it retrieves all of the work  Case 8a & 8b
+  objects on the same workspace as the randomly retrieved work object.  Case 9a & 9b
+  In association retrieve mode, it retrieves all of the associated
+  work objects within the resource pool. In database retrieve mode, it
+  retrieves all of the records in the table and uses the data to
+  create multiple work objects. Note that the default behavior in the
+  database retrieve mode has changed from previous versions, as
+  retrieve all is by default set to off and the previous database
+  retrieve mode behavior is now equivalent to retrieve all set to on.
+  With retrieve all set to off, the database retrieve mode now
+  retrieves the next record from the table.
+
+  --------------------------------------------------------------------
+
+* Added the attribute value lookup mode for the retrieve block. This    customadds.kb
+  mode is very similar to the attribute value mode of the branch        Case 7b
+  block. The retrieve block now has the attributes retrieve attribute   Case 8b
+  operation, retrieve attribute, retrieve attribute value, retrieve     Case 9a & 9b
+  range lower, and retrieve range upper. These all operate exactly as
+  in the attribute value mode of the branch block. With retrieve all
+  set to off, a random work object that meets the attribute value
+  criteria is selected. With retrieve all set to on, all of the work
+  objects on the workspace that meet the criteria are selected.
+
+  --------------------------------------------------------------------
+
+* Added the start time and end time attributes to the source block. By  customadds.kb
+  default, the first work object is sent from a source block at the     Case 10
+  time specified by the duration. By specifying a start time, the user
+  can explicitly say when this first work object is sent (independent
+  of the duration). The end time specifies the time at which the last
+  work object is sent. Note that a work object will always be sent at
+  the start time and at the end time. So a source block with a start
+  time of 45 minutes, an end time of 60 minutes, and a duration of
+  exactly 10 minutes will result in work objects being sent at time 45
+  minutes, 55 minutes, and 60 minutes.
+
+  --------------------------------------------------------------------
+
+* Added the random and unique id modes to the change feed. The          customadds.kb
+  original operating mode is now known as the value mode. The random    Case 6
+  operating mode generates a random number uniformly distributed        Case 4
+  between a minimum value and a maximum value. The unique id operating  Case 5
+  mode assigns a unique number, starting with the value specified in    Case 11a, 11b, & 11c
+  the initial id attribute.                                             Case 15
+                                                                        Case 18
+  --------------------------------------------------------------------
+
+* Added the output count attribute to the source, task, and copy        customadds.kb
+  blocks. This attribute specifies the number of copies of new work     Case 12a & 12b
+  objects to make for each output path. The default value is 1, so the  Case 13a & 13b
+  standard blocks behave as always. Note that this attribute only
+  applies to the source block when in the type operating mode.
+
+  --------------------------------------------------------------------
+
+* Added the dynamic proportion operating mode to the branch block. In   customadds.kb
+  this operating mode, the proportions change based upon the number of  Case 14
+  times the work object has looped through the block. The dynamic
+  proportions are specified via the edit dynamic proportions... user
+  menu choice on the output paths. If the number of times looped
+  exceeds the number of dynamic proportions specified, the last
+  specified value is used. Other than the fact that the proportions
+  change based upon the number of visits, this operating mode is the
+  same as the proportion operating mode.
+
+  --------------------------------------------------------------------
+
+* Added the sum, trigger, and interval operating modes for the batch    customadds.kb
+  block, in addition to the number operating mode which was already     Case 15
+  provided. As before, the number operating mode releases the batch     Case 16
+  when a specified number of work objects exceeds the threshold. The    Case 17
+  sum operating mode releases the batch when the sum of values of a     batch-interval.kb
+  specified attribute exceeds the threshold. The attribute whose value
+  is to be summed is specified in the interval attribute name
+  attribute. The trigger operating mode releases the batch when a
+  triggering work object is received. The triggering work object is
+  specified via the choose trigger input path user menu choice. The
+  interval operating mode releases the batch at specific time
+  intervals specified via the interval start time, interval end time,
+  interval frequency, interval time unit, and interval days
+  attributes.
+
+  --------------------------------------------------------------------
+
+* Added the capability to have the specified duration be a time for     customadds.kb
+  each unit, where an attribute of the work object specifies the        Case 18
+  number of units it represents. The time per unit attribute name
+  attribute of the block duration subtable object specifies the
+  attribute of the work object that contains the number of units. The
+  duration is then multiplied by the number of units to produce the
+  overall duration.
+
+  --------------------------------------------------------------------
+
+* Added the capability to disable and enable the detail for a task      ???
+  block. This is accomplished via the disable detail and enable detail
+  user menu choices. When the detail is disabled, the task block
+  behaves exactly as if it had no detail defined (except that the icon
+  is modified slightly to indicate the a disabled detail exists).
+
+  --------------------------------------------------------------------
+
+* Added the snapshot container user menu choice to the container        SnapshotContainer.kb
+  object. This lets you view the work objects within a container, as
+  you can view the work objects within a path queue using the snapshot
+  queue user menu choice.
+
+  --------------------------------------------------------------------
+
+* Added the capability to allow a user to specify whether the           InstrumentPhase.kb
+  instrument attached to a block is evaluated before or after the       Case 1 - 10
+  duration. The default is to evaluate after the duration, as was
+  always previously the case. The phase attribute of the instrument
+  object is used to specify this and can be either start or stop. Also
+  added the capability to instrument paths. When the phase attribute
+  is set to start, the instrument can be associated with the input
+  objects, resources, block, activity, or input paths. When the phase
+  attribute is set to stop, the instrument can be associated with the
+  output objects, resources, block, activity, or output paths.
+
+  --------------------------------------------------------------------
+
+? Fixed some problems with paths losing their values when you used      ???
+  junction blocks. To prevent this from happening, I removed the
+  delete user menu choice on the junction block class. Instead, users
+  should use the delete user menu choice on the connected path.
+
+  --------------------------------------------------------------------
+
+* Added the operation attribute to the accumulate and increment feed    AccumulateFeedOperation.kb
+  instruments. This allows a user to specify alternative arithmetic     Case 1 - 12
+  operations. Possible values are "+", "-", "*", "/", and "^". The
+  arithmetic operations are always performed on the destination
+  attribute value by the source attribute value or increment value.
+  So, if the destination attribute has a value of 2, the source
+  attribute has a value of 3, and the operation is "-", the new
+  destination attribute value will be -1.
+
+  --------------------------------------------------------------------
+
+* Added the capability to allocate associated resources. The resource   AssociateResourceManager.kb
+  manager class has a new association name attribute which, when        Case 1 - 5
+  specified, requires that the allocated resources need to be
+  associated to the input work object via the named association. The
+  user can also specify the number of associated resources to
+  allocated using the utilization attribute. If the utilization
+  attribute is set to 0 (and the association name is specified), all
+  of the associated resources are allocated. If the utilization
+  attribute is set to a negative number (and the association name is
+  specified), all but that number of the associated resources are
+  allocated.
+
+  --------------------------------------------------------------------
+
+* Added, removed, and modified user menu choices to try to provide      ???
+  some consistency around the use of create and show detail (versus
+  create and go to subworkspace). Objects which support a hierarchy
+  (task blocks, models, organizers, and resources) now all use the
+  convention create detail and show detail. Objects that have a
+  specific thing on their subworkspace (scenarios, arrival rate input
+  graphs, temporal constraints, annotations, and reports) now all use
+  the convention create <object type> (e.g., create report) (where
+  appropriate) and show <object type> (e.g., show report). Changes
+  from previous versions include show detail is now show constraint
+  for temporal constraints, create graph is now create input graph for
+  arrival rate input graphs, update graph is now update input graph
+  for arrival rate input graphs, create subworkspace is now create
+  detail for resources, and all references to go to subworkspace have
+  been replaced. Also, the following user menu choices have been
+  removed for scenarios (as they are redundant with the control panel
+  buttons): jump mode, synch mode, step mode, activate scenario,
+  deactivate scenario, start all, reset scenario, resume scenario, and
+  pause scenario.
+
+  - 3.1 Alpha Rev. 0 G10 ---------------------------------------------
+
+* Changed the default value for the pop up edit operations menu         ???
+  attribute (in the editor parameters system table) to no. This should
+  make it more obvious to users that they can use the new G2 5.0
+  pending delete feature. We should document the pending delete
+  feature and the fact that you can use the Windows standard shortcuts
+  for cut, copy, and paste (ctrl-x, ctrl-c, and ctrl-v).
+
+  --------------------------------------------------------------------
+
+* Added the attribute redraw-connection to all connections (path,       ???
+  instrument connection, and resource manager connection). Setting
+  this attribute to false for a connection disables the connection
+  redrawing capability for that specific connection. This is
+  considered a modeler feature for paths and a customization feature
+  for instrument and resource manager connections (the attribute will
+  only be visible in developer mode).
+
+  --------------------------------------------------------------------
+
+* Added several new duration distribution procedures. Those added are   Distributions.kb
+  the uniform, triangular, erlang, weibull, lognormal, gamma, and beta  Case 1 - 9
+  distributions; in addition to the exponential and normal
+  distributions previously provided.
+
+  --------------------------------------------------------------------
+
+* Added the time period attribute to the set instrument dialog of the   ???
+  moving average probe. This allows users to set the time period over
+  which the moving average is calculated. This was previously only
+  available in developer mode.
+
+  --------------------------------------------------------------------
+
+* Added the connector object to the tools palette. This makes it        ???
+  easier to use the feature which allows users to associate connectors
+  on different workspaces.
+
+  --------------------------------------------------------------------
+
+* Renamed the top level module from models to rethink. This will        ???
+  hopefully reduce the number of issues that we receive because people
+  accidentally load the wrong top level module.
+
+  - 3.1 Beta Rev. 0 H19 and Testing Retreat 8/19/98 ------------------
+
+* Added the capability to the source and retrieve blocks to have the    EvaluateQuery.kb
+  queries (when in database mode) be evaluated at runtime. The          Case 1 - 4
+  delimiters for the expression to be evaluated are the left and right
+  brackets (i.e., "[" and "]"). The input object for a retrieve block
+  can be accessed via the variable name "InputObject". For example,
+  the following is a valid query for the retrieve block: "Select *
+  from Orders where OrderID >= [the MinimumOrderID of InputObject] and
+  OrderID <= [the MaximumOrderID of InputObject]" (assuming that the
+  input work object has the attributes minimumorderid and
+  maximumorderid).
+
+  --------------------------------------------------------------------
+
+* Changed the color of the monthly temporal connector from cyan to      ???
+  green, so that it would not be confused with the temporal connector
+  which is also cyan.
+
+  --------------------------------------------------------------------
+
+* Added the capability to create type in boxes for the change feed in   ???
+  value mode when the value is a non-quantitative value (truth-value,
+  symbol, or text). This works exactly like the create type in and
+  show type in when the value is a quantitative value. The data type
+  of the type in is determined by the data type of value when the type
+  in box is created.
+
+  --------------------------------------------------------------------
+
+* Changed the behavior of the indicate capability to support two        ???
+  different modes; timeout and select (the new default). Timeout mode
+  works as in previous versions of ReThink where the indicator is
+  removed after some timeout period (10 seconds by default). In select
+  mode, the indicator is displayed until the user clicks on the
+  indicator. If the indicator is from a breakpoint and the scenario is
+  paused, clicking on the indicator (in select mode) also continues
+  the scenario. The indicate mode and timeout are set using the
+  indicate tab on the set scenario dialog.
+
+  --------------------------------------------------------------------
+
+* Added the show resources user menu choice to activities and objects.  show-resources-for-work-objects.kb
+  On an activity, it shows (using the indicator object) all of the
+  resources allocated to that activity. On a work object, it shows all
+  of the resources that have been allocated but not deallocated to
+  that object.
+
+  --------------------------------------------------------------------
+
+* Changed the default behavior of the api procedure bpr-clone-object    CopyItemLists.kb
+  to also clone any item lists (and their items) within the object. So  Case 1 - 3
+  by default, the copy and retrieve (in retrieve copy mode) blocks and
+  junction blocks now copy the item lists and the items within the
+  item lists. This default behavior can be altered (in developer mode
+  only) by changing the values of the copy item lists and copy item
+  list items attributes of these blocks. If users have customized
+  procedures that call bpr-clone-object and do not want the item lists
+  or items within the item lists copied, then they will need to call
+  the alternative form of the procedure (bpr-clone-object(original:
+  class bpr-object, CopyItemLists: truth-value, CopyItemListItems:
+  truth-value) = (copy: class bpr-object))
+
+  --------------------------------------------------------------------
+
+* Added the attribute feed to copy the value of an attribute from one   AttributeFeed.kb
+  attribute to another attribute. In the simplest case, both            Case 1 - 5
+  attributes are in the same object. In this case, the destination
+  class name attribute can be left as none or be set to the same value
+  as the apply to class name attribute. In more complex cases, the
+  source and destination attributes may actually be in different
+  objects. For example, you could put the work time of the activity
+  into an attribute of the output work object. This instrument also
+  supports an additional phase, called activity. This phase executes
+  right before the blocks stop method is executed and allows you to
+  set block attributes from the input work object. For example, the
+  input work object could carry the desired value of the output count
+  attribute of a task block.
+
+  --------------------------------------------------------------------
+
+* Enhanced the object file source mode of the source block to include   ???
+  the capability to specify item lists within the file. An item list
+  is specified using parenthesis and each item in the list is enclosed
+  in parenthesis. For example, the following file would create an item
+  list for the attribute line items with objects of class line item in
+  it:
+
+  order, line-items, ((line-item, product-name, "G2", product-version,
+  "5.1 Rev. 0"), (line-item, product-name, "ReThink", product-version,
+  "3.1 Rev. 0"))
+
+  --------------------------------------------------------------------
+
+* Added the organize images and make images local user menu choices to  ???
+  the organizer object. The organize images user menu choice moves all
+  of the image definitions within a model to the detail workspace of
+  the organizer. It also removes duplicates in the process, where a
+  duplicate is defined as having the same image file as another image
+  definition. The make images local user menu choice sets the save
+  image data with kb attribute of each image definition on the detail
+  workspace to true.
+
+  --------------------------------------------------------------------
+
+* Added the capability to write rules on the subworkspace of a branch   BranchRules.kb
+  block in attribute value mode. The rules could implement more         Case 1
+  sophisticated logic (based upon the value of multiple attributes)
+  that determine the routing of the work object by setting its branch
+  attribute and then using the conventional attribute value mode
+  logic. The branch mode in attribute value mode therefore has the new
+  create rules and show rules user menu choices. The rules need to be
+  of a specific format, which is shown using free text on the branch
+  block subworkspace when the create rules user menu choice is
+  selected.
+
+  - 3.1 Beta Rev. 0 (J27) --------------------------------------------
+
+* Changed the label of the checkbox on the set report dialog from       ???
+  Include All Subworkspaces to Include All Details. This change was
+  made to be consistent with the create and show detail conventions
+  used for hierarchical objects (e.g. task blocks).
+
+  --------------------------------------------------------------------
+
+* Changed the title of the advanced block and instrument dialogs to     ???
+  Set Block Mode and Set Instrument Mode, respectively. This changed
+  was made so they could be referred to in a way that differentiated
+  them from the set block and set instrument dialogs.
+
+  --------------------------------------------------------------------
+
+* Added the capability run the Excel spreadsheet reports on a remote    ???
+  system. If the create report menu choice is selected from a remote
+  Telewindows session, the Excel spreadsheet report is spawned on the
+  remote system. Also added the program attribute to the Excel tab
+  page of the set summary report dialog. Users must also change the
+  G2Location property of the ActiveXLink control in the Excel
+  spreadsheet to point to the server machine and port (it is
+  localhost:1111 by default).
+
+  --------------------------------------------------------------------
+
+* Fixed a problem where multiple sub-dialogs (e.g. set duration) would  ???
+  be displayed if the user clicked on the initiating control (e.g. the
+  other durations radio button) multiple times. Now only one instance
+  of a sub-dialog can be displayed at once (even for different
+  objects). Selecting the initiating control again asks the user if
+  they want to save the changes before starting a new edit session.
+
+  --------------------------------------------------------------------
+
+* Modified the code for displaying the set duration dialog to fix some  ???
+  problems with it not being updated properly. The Parameter and Graph
+  tab pages are now initially disabled until the desired duration is
+  selected.
+
+  --------------------------------------------------------------------
+
+* Fixed some problems with the batch block in trigger mode. If users    TriggerBatch.kb
+  want the trigger object to be sent out by the batch block, they need  Case 1 - 7
+  to use the choose trigger output path menu choice to select the
+  desired output path.
+
+  --------------------------------------------------------------------
+
+* Changed all of the references to object definitions in procedures to  ???
+  class definition. All existing object definitions were left as such,
+  but we want to encourage users to start using class definitions from
+  now on. Therefore, the object definition on the tools palette was
+  changed to a class definition (and the help ID therefore has
+  changed). Other examples of where users encounter this include now
+  creating a class definition when running a model encounters a new
+  path type and dropping an icon tool on a block, instrument, or
+  resource now creates a class definition.
+
+  --------------------------------------------------------------------
+
+* Added code to change the label of resource managers when the label    ???
+  of the related resource is changed. Note that this can only work
+  when a scenario is activated.
+
+  --------------------------------------------------------------------
+
+* Added the clear breaks and clear indicators buttons to the scenario   ???
+  control panel. The clear breaks button sets the break point
+  attribute for all blocks in the model to false. The clear indicators
+  button deletes all of the indicator objects in the model.
+
+  --------------------------------------------------------------------
+
+? Added back the delete menu choice for junction blocks, with all of    ???
+  the code necessary to preserve path attributes.
+
+  --------------------------------------------------------------------
+
+? Updated the Aero model to include two block summary reports and a     ???
+  customized version of the ReThink Summary Reports.xls spreadsheet
+  called Aero Summary Reports.xls. This demonstrates the capability to
+  perform additional calculations using the spreadsheet and then chart
+  the results.
+
+  --------------------------------------------------------------------
+
+* Pre-configured the online help to initially install just the ReThink  ???
+  User's Guide and Quick Reference books.
+
+  --------------------------------------------------------------------
+
+? Updated the scenario start time to be January 1, 1999 by default,     ???
+  rather than 1998. Also updated the copyright to include 1999 on the
+  About ReThink... workspace.
+
+  - 3.1 Beta Rev. 0 (A05) --------------------------------------------
+
+* Removed the time unit attribute of the batch block in interval mode.  batch-interval.kb
+  The start time, end time, and frequency attributes are all now        test-models.kb
+  explicit intervals. Note that this change may cause problems for
+  beta users, as these attributes are no longer multiplied by the time
+  unit attribute.
+
+  --------------------------------------------------------------------
+
+* Moved the output count attribute of the source block to the set       ???
+  block mode dialog, since it is specific to the source mode of type.
+
+  --------------------------------------------------------------------
+* Added the capability to associate all of the work objects waiting at  test-models.kb
+  an associate block. This is the associate block equivalent of the
+  reconcile all capability of the reconcile block. The set block
+  dialog now has an associate all attribute.
+
+  --------------------------------------------------------------------
+
+* Added the Getting Started with ReThink book to the online document-   ???
+  ation, added the necessary code for the help-ids, and made it one of
+  the default installed books.
+
+  --------------------------------------------------------------------
+
+* Changed all of the color edit boxes to combo boxes which list the     ???
+  available colors. This change is reflected on the animation tab of
+  the set block, set instrument, set resource, set path, and set
+  surrogate dialogs, as well as the chart tab of the set chart dialog.
+
+  --------------------------------------------------------------------
+
+* Added the distribution images to the graph tab of the set duration    ???
+  dialogs. The images change as different duration distributions are
+  selected on the duration tab.
+
+  - 3.1 Rev. 0 -------------------------------------------------------
