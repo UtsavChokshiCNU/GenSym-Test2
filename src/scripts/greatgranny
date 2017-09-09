@@ -1,0 +1,20 @@
+#!/usr/local/bin/perl -I/usr/local/lib/perl5
+
+# This calls the granny script with some default options set; in particular
+# with the -U switch, and with the number of days since 6.0 development was
+# begun (thought to be Dec. 1, 98).  It passes in any additional switches, and
+# requires a filename to be viewed.
+
+use Time::Local;
+
+#edit this line to change the "beginning of time" date
+#months are 0 based!
+
+$beginning = timegm(0,0,0,1,11,98);
+
+($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) = gmtime(time());
+$today = timegm(0, 0, 0, $mday, $mon, $year);
+
+$ndays = ($today - $beginning) / 86400;
+
+system( "granny -U -d $ndays @ARGV");
