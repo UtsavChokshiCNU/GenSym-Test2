@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_trouble_build.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>Coverage Build error: no compiler interceptors</h1>
+<h2>SYMPTOMS</h2>
+<pre>
+Coverage Build error: no compiler interceptors in <i>BullseyeCoverage</i>/bin
+</pre>
+<pre>
+Coverage Build unavailable; no compiler interceptors in <i>BullseyeCoverage</i>/bin
+</pre>
+<h2>CAUSE</h2>
+<p>
+Installation of BullseyeCoverage was not completed correctly.
+<h2>RESOLUTION</h2>
+<p>
+You can either create compiler interceptors manually, or you can re-install BullseyeCoverage.
+<h3>Creating Compiler Interceptors Manually on Windows</h3>
+<p>
+Move to the <i>BullseyeCoverage</i><code>/bin</code> directory and copy the program <code>covc.exe</code> to the name of your compiler.
+For example,
+<pre>
+cd %ProgramFiles%\BullseyeCoverage\bin
+copy covc.exe cl.exe
+</pre>
+<h3>Creating Compiler Interceptors Manually on Unix</h3>
+<p>
+Move to the <i>BullseyeCoverage</i><code>/bin</code> directory and link the program <code>covc</code> to the name of your compiler.
+For example,
+<pre>
+cd /opt/BullseyeCoverage/bin
+ln covc cc
+</pre>
+<h3>Re-installing on Windows</h3>
+<p>
+Re-run the installation program.
+At the page <code>Choose Compilers</code>, select all the compilers you are using.
+<h3>Re-installing on Unix</h3>
+<p>
+<ol>
+<li>
+Make sure all your compilers are listed in the <code>PATH</code> environment variable.
+<li>
+<code>echo $PATH >install_path</code>
+<li>
+Become super user (if required to write to the target directory)
+<li>
+<code>./install --prefix=</code><i>directory</i><br>
+You can install into the BullseyeCoverage distribution directory itself.
+To do this, use "<code>--prefix=.</code>".
+</ol>
+<h2>MORE INFORMATION</h2>
+<p>
+See <a href=build_coverageBuild.html>Coverage Build</a>.
+
+<p style="font-size:xx-small">
+Last reviewed: 13 Jun 2006
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
