@@ -1,0 +1,195 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="01/11/02 11:08:39">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>bpr-get-attribute-properties</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="api10.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="api12.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/ReThink/custom-manual/stylesets/Customizing%20ReThink/Output/html/api.htm">  
+        Application Programmer's Interface   </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+bpr-get-attribute-properties
+</h2>
+<p>Returns a structure that describes the properties of an attribute on a custom tab of a properties dialog.<a name="64517"></a></p>
+<h3 >
+  <a name="64518">Synopsis</a>
+</h3>
+<code>bpr-get-attribute-properties (<code>object</code>: class object, <code>subtable</code>: symbol, 
+   <code>attribute</code>: symbol, <code>ui-client-item</code>: class ui-client-item)
+<font >   -&gt; </font><font ><i><u>(structure)</u></i></font><a name="65638"> </a></code></blockquote><p >
+  <a name="66182"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="66163"><div >Argument</a></div></th>
+    <th><a name="66165"><div >Description</a></div></th>
+  </tr>
+  <tr>
+    <td><code><code>object</code><a name="66167"> </a></code></blockquote></td>
+    <td><p>The object whose attribute properties the method is describing.<a name="66169"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><code>subtable<a name="66171"> </a></code></blockquote></td>
+    <td><p>The subtable in which the attribute appears, if any, for example, <code>duration-subtable</code>.<a name="66173"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><code>attribute<a name="66175"> </a></code></blockquote></td>
+    <td><p>The attribute whose properties the method is describing.<a name="66177"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><code>ui-client-item<a name="66179"> </a></code></blockquote></td>
+    <td><p>The <code>ui-client-item</code> in which the attribute properties appear, which is the superior class of:<a name="66258"></a></p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">A <code>g2-window</code>, which is a window in the current G2 session or a remote connection to G2 through a Telewindows client.<a name="66259"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">A <code>ui-client-session</code>, which is a remote connection to G2 through a Telewindows2 Toolkit client, which allows you to create native UI clients for G2 applications.<a name="66260"></a></td>  </tr></table></td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<p >
+  <a name="66183"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="66194"><div >Return Value</a></div></th>
+    <th><a name="66196"><div >Description</a></div></th>
+  </tr>
+  <tr>
+    <td><a name="66198"><div >structure</a></div></td>
+    <td><p>A structure that describes various properties of the attribute.<a name="66200"></a></p>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<p>The returned structure has this format:<a name="66190"></a></p>
+<blockquote><code>structure
+   (ATTRIBUTE: the symbol FIXED-COST, 											// attribute name as a symbol
+    LABEL: &quot;Fixed Costs:&quot;, 											// label in dialogs, reports, and ui
+    TYPE: the symbol float,											// see below for valid types
+    READ-ONLY: true,											// true if it is read-only
+    DEVELOPMENT-ONLY: false,											// true for developer mode only
+    MIN: 0,											// minimum value for quantity values 
+    MAX: 100,											// maximum value for quantity values
+    CHOICES: the symbol none)											// procedure name to call to get list of
+											// choices.<a name="66184"> </a></code></blockquote></blockquote><p>The options for the <code>type</code> element of the structure depend on the attribute type specified in the class definition, as follows:<a name="65967"></a></p>
+<p >
+  <a name="66013"> </a><code><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="65970"><div >Symbol in Type <br>Element of Structure</a></div></th>
+    <th><a name="65972"><div >Attribute Type in <br>Class Definition</a></div></th>
+  </tr>
+  <tr>
+    <td><p><code>float</code><a name="65974"></a></p>
+</td>
+    <td><p><code>float</code>, <code>quantity</code> or no data type<a name="65976"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p><code>integer</code><a name="65978"></a></p>
+</td>
+    <td><p><code>integer</code>, <code>quantity</code> or no data type<a name="65980"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p><code>quantity</code><a name="65982"></a></p>
+</td>
+    <td><p><code>quantity</code> or no data type<a name="65984"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p><code>text</code><a name="65986"></a></p>
+</td>
+    <td><p><code>text</code> or no data type<a name="65988"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p><code>symbol</code><a name="65990"></a></p>
+</td>
+    <td><p><code>symbol</code> or no data type<a name="65992"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p><code>truth-value</code><a name="65994"></a></p>
+</td>
+    <td><p><code>truth-value</code> or no data type<a name="65996"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p><code>duration</code><a name="65998"></a></p>
+</td>
+    <td><p>no data type<a name="66000"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p><code>color</code><a name="66002"></a></p>
+</td>
+    <td><p><code>symbol</code> or no data type<a name="66004"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p><code>file</code><a name="66006"></a></p>
+</td>
+    <td><p><code>text</code> or no data type<a name="66008"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p><code>none</code><a name="66010"></a></p>
+</td>
+    <td><p>no data type, or <code>structure</code> or <code>sequence</code><a name="66012"></a></p>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+</code>
+</p>
+<p>The signature of the procedure to specify for <code>choices</code> has this signature:<a name="66237"></a></p>
+<blockquote><code>choice-procedure-name (<code>item</code>: class object)
+<font >-&gt; </font><font ><i><u>(sequence)</u></i></font> <a name="66238"> </a></code></blockquote></blockquote><h3 >
+  <a name="64531">Description</a>
+</h3>
+<p>To customize the properties of attributes that appear on custom tabs, you implement the <code>bpr-get-attribute-properties</code> method for a custom class. This method returns a structure, which sets various properties for each attribute, including its label, type, whether it is read-only, whether it is available in developer mode only, and its minimum and maximum values. <a name="65617"></a></p>
+<p>The method maps the attribute type specified in the class definition to the type element of the structure.<a name="66245"></a></p>
+<h3 >
+  <a name="64537">Example</a>
+</h3>
+<p>For an example, see <a href="custome5.htm#41364">Customizing Attribute Properties</a>.<a name="66252"></a></p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="api10.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="api12.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
