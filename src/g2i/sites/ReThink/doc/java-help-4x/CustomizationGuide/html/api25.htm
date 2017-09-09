@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="01/11/02 11:08:39">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>bpr-schedule-an-event</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="api24.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="api26.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/ReThink/custom-manual/stylesets/Customizing%20ReThink/Output/html/api.htm">  
+        Application Programmer's Interface   </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+bpr-schedule-an-event
+</h2>
+<p>Schedules a custom event.<a name="56222"></a></p>
+<h3 >
+  <a name="56223">Synopsis</a>
+</h3>
+<code>bpr-schedule-an-event (<code>scenario</code>: class bpr-scenario, <code>event</code>: class bpr-event)<a name="56225"> </a></code></blockquote><p >
+  <a name="56239"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="56228"><div >Argument</a></div></th>
+    <th><a name="56230"><div >Description</a></div></th>
+  </tr>
+  <tr>
+    <td><code><code>scenario</code><a name="56232"> </a></code></blockquote></td>
+    <td><p>The scenario associated with the model.<a name="56234"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><code><code>event</code><a name="56236"> </a></code></blockquote></td>
+    <td><p>The <code>bpr-event</code> to schedule.<a name="56238"></a></p>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<h3 >
+  <a name="56240">Description</a>
+</h3>
+<p>To schedule a custom event to occur in your model at a specified time, based on the simulation or online clock, you create a subclass of <code>bpr-event</code> and configure these attributes:<a name="56241"></a></p>
+<p >
+  <a name="56255"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="56244"><div >Attribute</a></div></th>
+    <th><a name="56246"><div >Description</a></div></th>
+  </tr>
+  <tr>
+    <td><code>time<a name="56248"> </a></code></blockquote></td>
+    <td><p>The simulation time at which the event should occur, relative to the start time of the simulation in units of seconds.<a name="56250"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><code>priority<a name="56252"> </a></code></blockquote></td>
+    <td><p>The priority of the event. <a name="56254"></a></p>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<p>In addition, you must implement the following method for the subclass:<a name="56256"></a></p>
+<blockquote><code>bpr-event-method(event: class bpr-event, scenario: class bpr-scenario, ui-client-item: class ui-client-item)<a name="56257"> </a></code></blockquote></blockquote><p>To schedule the event, call the method <code>bpr-schedule-an-event</code> for the scenario. The <code>bpr-event-method</code> is called when the simulation time reaches the time of the event.<a name="56258"></a></p>
+<h3 >
+  <a name="63510">Example</a>
+</h3>
+<p >
+  <a name="63501"> </a>
+<p><div align="left"><img src="images/bpr-scha.gif" border="0" hspace="0" vspace="0">
+</div><a name="63500"></a></p>
+
+
+
+</p>
+<p >
+  <a name="63449"> </a>
+<p><div align="left"><img src="images/bpr-sche.gif" border="0" hspace="0" vspace="0">
+</div><a name="63448"></a></p>
+
+
+
+</p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="api24.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="api26.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
