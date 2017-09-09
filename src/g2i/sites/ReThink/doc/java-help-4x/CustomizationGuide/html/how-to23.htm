@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="01/11/02 11:07:23">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Customizing the Stop Method</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="how-to22.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="how-to24.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/ReThink/custom-manual/stylesets/Customizing%20ReThink/Output/html/how-to-c.htm">  
+        How to Customize ReThink  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Customizing the Stop Method
+</h2>
+<p >
+  <a name="131500"> </a>
+<p><div align="left"><img src="images/bpr-sour.gif" border="0" hspace="0" vspace="0">
+</div><a name="131499"></a></p>
+
+
+
+</p>
+<p>To customize the stop method of a block or instrument, create a subclass and edit the default stop method for the class, which is called <code>bpr-stop-method</code>.<a name="15889"></a></p>
+<h6><b>Note: </b>Instruments execute the stop method either before or after the attached block 
+applies its duration to the simulation, according to the instrument's Phase 
+attribute. For more information, see the ReThink User's Guide.
+<a name="57895"></a></h6><h4 >	 To customize the stop method for a block or instrument:<a name="15890"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>1	</b></td>    <td valign="top" width="580">Create a subclass of the block or instrument you want to customize.<a name="15891"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>2	</b></td>    <td valign="top" width="580">Display the Block Definitions or Instrument Definitions workspace from the Methods workspace.<a name="15892"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>3	</b></td>    <td valign="top" width="580">Click the button associated with the class whose stop method you want to customize.<a name="96867"></a></td>  </tr></table><blockquote>  <a name="15893">ReThink displays the class definitions and associated stop methods that define the behavior of all the blocks and instruments.</a></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>4	</b></td>    <td valign="top" width="580">Copy the default <code>bpr-stop-method</code> and place it on your customizations workspace.<a name="15897"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>5	</b></td>    <td valign="top" width="580">Choose Edit Text on the stop method and configure its text, as follows:<a name="15898"></a></td>  </tr></table><blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>a	</b></td>    <td valign="top" width="560">Edit the first argument to the stop method to refer to the custom subclass you just created.<a name="15899"></a></td>  </tr></table></blockquote>
+<blockquote><blockquote>  <a name="15900">Editing the method's first argument changes the qualified name of the method so that it corresponds to the custom subclass.</a></blockquote></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>b	</b></td>    <td valign="top" width="560">Delete the local name initializations and the body of the default method.<a name="15901"></a></td>  </tr></table></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>c	</b></td>    <td valign="top" width="560">Add a <code>call next method</code> statement to the procedure in the desired location.<a name="15903"></a></td>  </tr></table></blockquote>
+<blockquote><blockquote>  <a name="15904">To cause the block or instrument to perform the custom portion of the method before it performs the default behavior, place the <code>call next method</code> statement at the end of the method. Otherwise, place the <code>call next method</code> statement at the beginning of the method.</a></blockquote></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>d	</b></td>    <td valign="top" width="560">Specify the custom portion of the procedure in the desired location.<a name="15905"></a></td>  </tr></table></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>6	</b></td>    <td valign="top" width="580">Create an instance of your custom class.<a name="15906"></a></td>  </tr></table><p>The custom class now obtains its default behavior from the custom stop method.<a name="15907"></a></p>
+<p>For example, suppose you wanted to compute the commission for a sale, based on the purchase price of an order. To do this, first create a subclass of a work object with two user-defined attributes: <code>cost-of-order</code> and <code>commission</code>. Next, create a subclass of a Task block and edit the default stop method to compute the commission, based on the order cost.<a name="15908"></a></p>
+<p>This simple model uses a custom Task block to compute the commission of an order, whose cost is a random number. The User Tab of the properties dialog for the order on the output path of the custom task shows the Cost of Order as <code>22</code> and the Commission as <code>2.2</code>, which is 10% of the order price.<a name="15909"></a></p>
+<p >
+  <a name="15919"> </a>
+<div style="color: #000000;  font-size: 4pt; font-style: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: justify; text-decoration: none; text-indent: 0pt; text-transform: none; vertical-align: baseline">
+<a name="15918"> </a><div align="left"><img src="images/how-ta10.gif" border="0" hspace="0" vspace="0">
+</div><br>
+</div>
+
+
+
+</p>
+<p>Here is the properties dialog of the class definition of the <code>order</code> class, which defines the two class-specific attributes:<a name="15920"></a></p>
+<p >
+  <a name="90308"> </a>
+<div style="color: #000000;  font-size: 4pt; font-style: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: justify; text-decoration: none; text-indent: 0pt; text-transform: none; vertical-align: baseline">
+<a name="90307"> </a><div align="left"><img src="images/stop-met.gif" border="0" hspace="0" vspace="0">
+</div><br>
+</div>
+
+
+
+</p>
+<p>Here is the custom stop method for the custom Task block and its class definition, which is a subclass of <code>bpr-task</code>. The first argument to the stop method is the custom class, <code>bpr-task-1</code>. The stop method obtains the current order from the activity and concludes that the <code>commission</code> of the <code>order</code> is <code>0.1</code> times the <code>cost-of-order</code>. The method includes a <code>call next method</code> statement before the custom portion of the method so that the custom portion of the method executes after the default stop method.<a name="79122"></a></p>
+<p >
+  <a name="90320"> </a>
+<p><div align="left"><img src="images/how-ta29.gif" border="0" hspace="0" vspace="0">
+</div><a name="90319"></a></p>
+
+
+
+</p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="how-to22.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="how-to24.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
