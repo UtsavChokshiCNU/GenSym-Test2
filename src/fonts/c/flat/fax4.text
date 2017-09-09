@@ -1,0 +1,504 @@
+7/13/93
+
+Karen Tackett@Bitstream.com
+
+Also being faxed to Bitstream at (617)868-0784.
+
+Dear Karen,
+
+
+Please call me and we can discuss this, and I can talk in terms of the actual
+code below.  Don't feel that you have to read it over and understand it before
+calling.
+
+(1) As already mentioned, type specified in the documentation for the fields of
+bbox, fix15, is wrong: it is actually fix31 in the code.
+
+(2) The documentation says that these are in whole pixel units.  And their
+function suggests that they should be so.  But then why do they have fraction
+bits -- non-zero in the rightmost 16 bits?
+
+(3) If the results are to be useful, how are you supposed to interpret
+the bounding box information?  Is the way it's done below, in demo_all_bboxes,
+correct?
+
+(4) A few (speedo) fonts had a few characters with too-narrow or too-short
+bounding boxes.  These were found using the code below, and the output from
+running this code on these fonts is shown further below.  This is a particularly
+bad problem, because it means that if you relied on the information you are
+given to allocate the right size bitmap, it would be too small to accomodate all
+of the actual bits in the bounding box, and you couldn't reliably set bits in
+the bitmap you'd allocated without the added expense of clipping.
+
+font3186.spd  -- i grave  -- 1 pixel too narrow bounding box
+
+font3153.spd  -- e umlaut -- 1 pixel too narrow bounding box
+
+font0003.spd  -- 1/8      -- 1 pixel too narrow bounding box
+font0003.spd  -- 1/3      -- 1 pixel too narrow bounding box
+
+
+(5) We found that the bounding box width is off even for "simple" (non-compound)
+characters, in contradiction to the documentation, which says that the bounding
+box may only be wider than needed for "compound" characters, e.g., fractions.
+
+
+(6) We found that the xorg and yorg args to sp_open_bitmap are frequently
+different than the xmin and ymin fields of the bbox.  Why should that ever
+be the case?  Isn't that also a bug?
+
+--- Mark H. David (mhd@gensym.com)
+
+
+=============
+SELECTED SOURCE CODE FRAGMENTS:
+---------------
+---------------
+---------------
+
+
+
+/* 
+ * sp_open_bitmap is called by the character generator to initialize a buffer 
+ * prior to receiving bitmap data.
+
+ */
+
+void sp_open_bitmap(x_set_width, y_set_width, xorg, yorg, xsize, ysize)
+     fix31 x_set_width;
+     fix31 y_set_width;
+     fix31 xorg;
+     fix31 yorg;
+     fix15 xsize;
+     fix15 ysize;
+{
+  width_of_current_raster = xsize;
+  height_of_current_raster = ysize;
+  horizontal_offset_of_current_raster
+    = (fix15)(xorg >> 16);
+  vertical_offset_of_current_raster
+    = (fix15)(yorg >> 16);
+  x_set_width_of_current_raster
+    = x_set_width;
+  x_in_current_raster = 0;
+  y_in_current_raster = 0;
+  
+  switch (current_fontrip_output_mode)
+    {
+
+    case BBOX_GETTING_MODE:
+      return;
+
+      ... /* rest of function omitted -- irrelevant */
+    }
+}
+
+
+==============
+
+
+/* fontrip_get_char_bbox is a replacement for the system function
+   fi_get_char_bbox.  The latter is not functioning yet.  When it
+   is, we should replace this code with a call to that, or have callers
+   use it directly.
+
+   This works by setting current_fontrip_output_mode temporarily
+   to a special value, BBOX_GETTING_MODE, in which the character
+   is "made", but the user-defined output functions just collect
+   the bounding box information.  (The old mode is restored on
+   exit.)
+   */
+
+boolean fontrip_get_char_bbox(char_id, bbox)
+     void *char_id;
+     bbox_t *bbox;
+{
+  int old_mode = current_fontrip_output_mode;
+  boolean result;
+  
+  current_fontrip_output_mode = BBOX_GETTING_MODE;
+  result = fi_make_char(char_id);
+  current_fontrip_output_mode = old_mode;
+  if (result == TRUE)
+    {
+      /* NOTE: the casts to fix31 are done to agree with the actual code
+	 that declares the bbox structure, not with the documentation of
+	 it on page 7-62 of the 4-in-1 manual!  --MHD, 7/12/93
+	 */
+      bbox->xmin = (fix31)horizontal_offset_of_current_raster;
+      bbox->xmax = (fix31)horizontal_offset_of_current_raster + (fix31)width_of_current_raster;
+      bbox->ymin = (fix31)vertical_offset_of_current_raster;
+      bbox->ymax = (fix31)vertical_offset_of_current_raster + (fix31)height_of_current_raster;
+      return(TRUE);
+    }
+  else
+    return(FALSE);
+}
+
+
+
+=================	
+
+/* demo_all_bboxes checks the information returned by fi_get_char_bbox for each
+   character in the current font.
+
+   This is also intended to demonstrate how to use and interpret the results of
+   fi_get_char_bbox, since that is not done (properly) in the manual.
+
+   Currently, this only complains if the bbox returned implies a smaller raster
+   width or height than would be specified by the call to sp_open_bitmap (i.e.,
+   smaller than would be actually needed to make the character).  But, it can
+   check for other discrepancies between the information in gotten through
+   fi_get_char_bbox and the information passed into sp_open_bitmap.  See the
+   code and the comments therein for details.
+
+   Note: this calls fi_reset with DirectIndex character mapping, and then calls
+   set_up_font.  To go back to using the other font mapping protocols after
+   calling this, call these functions again, with appropriate arguments.
+
+   --mhd, 7/13/93
+
+   */
+
+demo_all_bboxes()
+{
+  bbox_t bbox, bbox2;  
+  void *char_id;
+  fix15 xmin, xmax, ymin, ymax;
+  boolean problem;
+  
+  fi_reset(protoDirectIndex, font_type);
+  set_up_font();
+  for (char_index = 0; char_index < no_font_chars; char_index++)
+    {
+      problem = FALSE;
+      
+      character = (void *)&char_index;      
+      if (fi_get_char_bbox(character, &bbox) == FALSE)
+	break;      
+      /* Use Gensym's version of get_char_bbox: */
+      fontrip_get_char_bbox(character, &bbox2);
+
+
+
+      /* interpret the 4 bbox fields -- from fix31's in terms
+	 of 1/65536 into fix15's (shorts)
+	 */
+      xmin = (fix15)(bbox.xmin >> 16);		/* floor (towards negative infinity) */
+      xmax = (fix15)((bbox.xmax			/* ceiling (towards positive infinity) */
+		      + ((1 << 16) - 1))  >> 16);
+      ymin = (fix15)(bbox.ymin >> 16);		/* floor (towards negative infinity) */
+      ymax = (fix15)((bbox.ymax			/* ceiling (towards positive infinity) */
+		      + ((1 << 16) - 1))  >> 16);
+
+
+
+      if (/* -- too frequently occuring: 
+	     Note: the xorg/yorg args to sp_open_bitmap
+	     are being rounded (floored) in the same way as
+	     we do the xmin/ymin bbox values in this function.
+	     so, they're really different! ---
+	     (bbox2.xmin != xmin)
+	  || (bbox2.xmax != xmax)
+	  || (bbox2.ymin != ymin)
+	  || (bbox2.ymax != ymax)
+	  || 
+	  */
+	  /* -- this occurs pretty frequently, and the
+	     spec actually allows it for "compound characters",
+	     e.g., fractions, but I'm seeing it for non compound
+	     characters, too, e.g., the numeral 1 in font0003.spd
+	     ("Swiss 721")! --
+	  ((bbox2.xmax - bbox2.xmin) != (xmax - xmin))
+	  || ((bbox2.ymax - bbox2.ymin) != (ymax - ymin))
+	  */
+
+	  ((bbox2.xmax - bbox2.xmin) > (xmax - xmin))
+	  || ((bbox2.ymax - bbox2.ymin) > (ymax - ymin))
+	  )
+	problem = TRUE;
+
+      if (problem == TRUE)
+	{
+
+	  printf("\n\nCharacter Direct Index = %d", char_index);
+	  printf("\nBBOX = [xmin=%d, xmax=%d, ymin=%d, ymax=%d] (raw)",
+		 bbox.xmin, bbox.xmax, bbox.ymin, bbox.ymax);
+	  /* Oh.  I see: these have 16 bits of fraction.  Let's
+	     print them out as floats: */
+	  printf("\nBBOX = [xmin=%f, xmax=%f, ymin=%f, ymax=%f] (floats)",
+		 (real)bbox.xmin/65536.0, (real)bbox.xmax/65536.0,
+		 (real)bbox.ymin/65536.0, (real)bbox.ymax/65536.0);
+
+	  /* now the four fields have been interpreted & turned into short integers */ 
+	  printf("\nBBOX = [xmin=%d, xmax=%d, ymin=%d, ymax=%d] (shorts)",
+		 xmin, xmax, ymin, ymax);
+	  printf("\n(width for raster X height for raster) = (%dx%d)",
+		 xmax - xmin, ymax - ymin);
+
+      
+	  printf("\nBBOX = [xmin=%d, xmax=%d, ymin=%d, ymax=%d] [GENSYM'S]",
+		 bbox2.xmin, bbox2.xmax, bbox2.ymin, bbox2.ymax);
+	  /* we know that running fontrip-get-char-bbox left these special
+	     variables around:   (these are the the dimensions called for by
+	     sp_open_bitmap).
+	     */
+	  printf("\n(width for raster X height for raster) = (%dx%d)  [GENSYM'S]",
+		 width_of_current_raster, height_of_current_raster);
+
+	  
+	  if (bbox2.xmin != xmin)
+	    printf("\nXMIN DOES NOT AGREE!");
+	  if (bbox2.xmax != xmax)
+	    printf("\nXMAX DOES NOT AGREE!");
+	  if (bbox2.ymin != ymin)
+	    printf("\nYMIN DOES NOT AGREE!");
+	  if (bbox2.ymax != ymax)
+	    printf("\nYMAX DOES NOT AGREE!");
+	  if ((bbox2.xmax - bbox2.xmin) != (xmax - xmin))
+	    {
+	      printf("\n********* WIDTH OF RASTER DOES NOT AGREE!! *********");
+	      printf("\n********* %d  vs  %d *********",
+		     (bbox2.xmax - bbox2.xmin),
+		     (xmax - xmin));
+	      if ((bbox2.xmax - bbox2.xmin) > (xmax - xmin))
+		printf("\n********* BBox Width is Less Than Actual! -- BIG PROBLEM!! *********");
+	    }
+	  if ((bbox2.ymax - bbox2.ymin) != (ymax - ymin))
+	    {
+	      printf("\n********* HEIGHT OF RASTER DOES NOT AGREE!! *********");
+	      printf("\n********* %d  vs  %d *********",
+		     (bbox2.ymax - bbox2.ymin),
+		     (ymax - ymin));
+	      /* It's really bad if the following gets printed;
+		 this seems to happen sometimes with font0003.spd,
+		 Bitstream's Swiss 721 font!  -mhd, 7/13/93
+		 */
+	      if ((bbox2.ymax - bbox2.ymin) > (ymax - ymin))
+		printf("\n********* BBox Height is Less Than Actual! -- BIG PROBLEM!! *********");
+	    }
+
+	  fi_make_char(character);
+	}
+    }
+}
+
+
+
+
+
+
+
+
+
+===================
+output
+===================
+
+
+ripdemo font0003.spd
+
+
+Character Direct Index = 150
+BBOX = [xmin=93440, xmax=1376000, ymin=-36096, ymax=1149696] (raw)
+BBOX = [xmin=1.425781, xmax=20.996094, ymin=-0.550781, ymax=17.542969] (floats)
+BBOX = [xmin=1, xmax=21, ymin=-1, ymax=18] (shorts)
+(width for raster X height for raster) = (20x19)
+BBOX = [xmin=0, xmax=21, ymin=-1, ymax=17] [GENSYM'S]
+(width for raster X height for raster) = (21x18)  [GENSYM'S]
+XMIN DOES NOT AGREE!
+YMAX DOES NOT AGREE!
+********* WIDTH OF RASTER DOES NOT AGREE!! *********
+********* 21  vs  20 *********
+********* BBox Width is Less Than Actual! -- BIG PROBLEM!! *********
+********* HEIGHT OF RASTER DOES NOT AGREE!! *********
+********* 18  vs  19 *********
+lines-per-em: h=25|0; v=25|0
+raster width X height: 21 X 18
+xorg: 36096; yorg: -65536 (shifted: 0, -1)
+raster width X height: 21 X 18
+Character index = 150
+set width = 56230 (0.9)
+set width = 21.4, 0.0
+open bitmap hex setwidth = 157300
+X offset  = 0
+Y offset  = -1
+
+   . . . X . . . . . . . . . . . X X . . . . 
+   . . X X . . . . . . . . . . X X . . . . . 
+   X X X X . . . . . . . . . . X . . . . . . 
+   . . . X . . . . . . . . . X X . . . . . . 
+   . . . X . . . . . . . . . X . . . . . . . 
+   . . . X . . . . . . . . X . . . . . . . . 
+   . . . X . . . . . . . X X . . . . . . . . 
+   . . . X . . . . . . . X . . . X X X X . . 
+   . . . X . . . . . . X X . X X . . . . X X 
+   . . . X . . . . . X X . . X . . . . . . X 
+   . . . . . . . . . X . . . X X . . . . X X 
+   . . . . . . . . X X . . . . X X X X X X . 
+   . . . . . . . X X . . . . X X . . . . X X 
+   . . . . . . . X . . . . . X . . . . . . X 
+   . . . . . . X X . . . . . X . . . . . . X 
+   . . . . . . X . . . . . . . X . . . . X . 
+   . . . . . X . . . . . . . . . X X X X . . 
+   . . . . X X 
+
+
+Character Direct Index = 157
+BBOX = [xmin=93440, xmax=1369344, ymin=-36096, ymax=1149696] (raw)
+BBOX = [xmin=1.425781, xmax=20.894531, ymin=-0.550781, ymax=17.542969] (floats)
+BBOX = [xmin=1, xmax=21, ymin=-1, ymax=18] (shorts)
+(width for raster X height for raster) = (20x19)
+BBOX = [xmin=0, xmax=21, ymin=-1, ymax=17] [GENSYM'S]
+(width for raster X height for raster) = (21x18)  [GENSYM'S]
+XMIN DOES NOT AGREE!
+YMAX DOES NOT AGREE!
+********* WIDTH OF RASTER DOES NOT AGREE!! *********
+********* 21  vs  20 *********
+********* BBox Width is Less Than Actual! -- BIG PROBLEM!! *********
+********* HEIGHT OF RASTER DOES NOT AGREE!! *********
+********* 18  vs  19 *********
+lines-per-em: h=25|0; v=25|0
+raster width X height: 21 X 18
+xorg: 23552; yorg: -65536 (shifted: 0, -1)
+raster width X height: 21 X 18
+Character index = 157
+set width = 56230 (0.9)
+set width = 21.4, 0.0
+open bitmap hex setwidth = 157300
+X offset  = 0
+Y offset  = -1
+
+   . . . X . . . . . . . . . . . X X . . . . 
+   . . X X . . . . . . . . . . X X . . . . . 
+   X X X X . . . . . . . . . . X . . . . . . 
+   . . . X . . . . . . . . . X X . . . . . . 
+   . . . X . . . . . . . . . X . . . . . . . 
+   . . . X . . . . . . . . X . . . . . . . . 
+   . . . X . . . . . . . X X . . . . . . . . 
+   . . . X . . . . . . . X . . . X X X X X . 
+   . . . X . . . . . . X X . X X . . . . X X 
+   . . . X . . . . . X X . . X . . . . . . X 
+   . . . . . . . . . X . . . . . . . . . X X 
+   . . . . . . . . X X . . . . . . X X X X . 
+   . . . . . . . X X . . . . . . . . . . X X 
+   . . . . . . . X . . . . . . . . . . . . X 
+   . . . . . . X X . . . . . X . . . . . . X 
+   . . . . . . X . . . . . . X X . . . . X . 
+   . . . . . X . . . . . . . . . X X X X . . 
+   . . . . X X 
+
+
+
+
+
+
+
+
+
+
+
+
+
+ripdemo font3153.spd
+
+
+Character Direct Index = 197
+BBOX = [xmin=3328, xmax=718336, ymin=-26112, ymax=1074176] (raw)
+BBOX = [xmin=0.050781, xmax=10.960938, ymin=-0.398438, ymax=16.390625] (floats)
+BBOX = [xmin=0, xmax=11, ymin=-1, ymax=17] (shorts)
+(width for raster X height for raster) = (11x18)
+BBOX = [xmin=-1, xmax=11, ymin=0, ymax=16] [GENSYM'S]
+(width for raster X height for raster) = (12x16)  [GENSYM'S]
+XMIN DOES NOT AGREE!
+YMIN DOES NOT AGREE!
+YMAX DOES NOT AGREE!
+********* WIDTH OF RASTER DOES NOT AGREE!! *********
+********* 12  vs  11 *********
+********* BBox Width is Less Than Actual! -- BIG PROBLEM!! *********
+********* HEIGHT OF RASTER DOES NOT AGREE!! *********
+********* 16  vs  18 *********
+lines-per-em: h=25|0; v=25|0
+raster width X height: 12 X 16
+xorg: -29184; yorg: 0 (shifted: -1, 0)
+raster width X height: 12 X 16
+Character index = 197
+set width = 29126 (0.4)
+set width = 11.1, 0.0
+open bitmap hex setwidth = b1c00
+X offset  = -1
+Y offset  = 0
+
+   . . . . X X X . . X X X 
+   . . . . X X X . . X X X 
+   . . . . X X X . . X X X 
+   . . . . . . . . . . . . 
+   . . . . . . . . . . . . 
+   . . . . . X X X X . . . 
+   . . . X X X . . X X . . 
+   . . X X X . . . X X . . 
+   . . X X . . . X X X . . 
+   . X X X . . . X X . . . 
+   X X X X . X X X . . . . 
+   X X X X X . . . . . . . 
+   X X X . . . . . X . . . 
+   X X X . . . . X . . . . 
+   . X X X X X X . . . . . 
+   . . X X X X 
+
+
+
+
+
+
+ripdemo font3186.spd
+
+
+Character Direct Index = 192
+BBOX = [xmin=-64000, xmax=509952, ymin=-3328, ymax=1510400] (raw)
+BBOX = [xmin=-0.976562, xmax=7.781250, ymin=-0.050781, ymax=23.046875] (floats)
+BBOX = [xmin=-1, xmax=8, ymin=-1, ymax=24] (shorts)
+(width for raster X height for raster) = (9x25)
+BBOX = [xmin=-2, xmax=8, ymin=0, ymax=22] [GENSYM'S]
+(width for raster X height for raster) = (10x22)  [GENSYM'S]
+XMIN DOES NOT AGREE!
+YMIN DOES NOT AGREE!
+YMAX DOES NOT AGREE!
+********* WIDTH OF RASTER DOES NOT AGREE!! *********
+********* 10  vs  9 *********
+********* BBox Width is Less Than Actual! -- BIG PROBLEM!! *********
+********* HEIGHT OF RASTER DOES NOT AGREE!! *********
+********* 22  vs  25 *********
+lines-per-em: h=25|0; v=25|0
+raster width X height: 10 X 22
+xorg: -89856; yorg: 0 (shifted: -2, 0)
+raster width X height: 10 X 22
+Character index = 192
+set width = 16992 (0.3)
+set width = 6.5, 0.0
+open bitmap hex setwidth = 67b00
+X offset  = -2
+Y offset  = 0
+
+   . . . . . X X X . . 
+   . . . . . . X X X . 
+   . . . . . . . X X . 
+   . . . . . . . . X X 
+   . . . . . . . . . . 
+   . . . . . X X X . . 
+   . . . . X X X X . . 
+   . . . . X X X . . . 
+   . . . . X X X . . . 
+   . . . X X X X . . . 
+   . . . X X X X . . . 
+   . . . X X X . . . . 
+   . . . X X X . . . . 
+   . . X X X X . . . . 
+   . . X X X . . . . . 
+   . . X X X . . . . . 
+   . . X X X . . . . . 
+   . X X X X . . . . . 
+   . X X X . . . . . . 
+   . X X X . . . . . . 
+   X X X X . . . . . . 
+   X X X X 
