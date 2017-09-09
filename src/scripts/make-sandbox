@@ -1,0 +1,339 @@
+#!/bin/sh
+
+# make-sandbox
+
+# Copyright (c) 1986 - 2017 Gensym Corporation.
+# All Rights Reserved.
+
+# This Bourne shell script is used to create new sandboxes for development for
+# various Gensym product sources.  This script will create new sandboxes, or
+# verify the validity of construction of an existing sandbox.  So, a user can
+# call this script on an existing sandbox without harming it.  When finished
+# with a sandbox, users should remove them with the script remove-sandbox.
+
+# This script takes at least three arguments.  The first argument is the name
+# of the new sandbox, for example "ap".  Once created, the sandbox can then
+# be accessed from /bt e.g. /bt/ap.
+
+# The second argument specifies which spin tree this sandbox should shadow.
+# This should most likely be ab, although it could still be ab-9oct95 or even
+# ab-7sep92.  We have no plans to create more repositories at this time.
+# Branching works.
+
+# The third argument specifies the location for the new sandbox. The user can
+# specify an existing directory.
+
+# All arguments after the third argument are the modules that should be checked
+# out into the newly created sandbox.  By default, this script checks out
+# lisp/123.lisp, because there are non-CVS things that need to be in lisp for
+# our Lucid/Chestnut environment to work, which this script will create.  It
+# is also necessary to have at least one CVS module for the "sandbox" alias
+# to function, so checking out a single Lisp file makes sure that there is
+# something there.
+
+progname=$0
+
+usage () {
+  echo "Usage: $progname <sandbox-name> <spin-tree> <location>"
+  echo "           [-no-dst] [-use-dstboxes] [-no-nfs] [-r <tag>]"
+  echo "           [-full-lisp] [-build-sandbox] [additional-modules...]"
+  echo "  spin-tree = ab | ab-9oct95"
+  echo "  location  = sandboxes | tmp | local | <dir>"
+  echo "  tag       = G283R1 | G283R1_PATCH_BRANCH | etc."
+  echo "  modules   = gen ext..."
+
+  exit 1
+}
+
+failed () {
+  echo "Error: The last command failed with status ${last_status}."
+  exit $last_status
+}
+
+
+# Process and check the arguments.
+
+if [ -z "$3" ]
+then
+  echo "Error: Wrong number of arguments, $# supplied, at least 3 required."
+  usage
+fi
+
+sandbox_name=$1
+from_spin=$2
+location=$3
+
+all_bts="/gensym /home/intelnt-mount"
+cvshost=sdev5
+toolsdir=/home/development
+cvs_dir=/gensym/${from_spin}-repos
+modules=""
+use_dst=1
+use_dstboxes=0
+use_rsh=0
+branch="-A"
+machine=sparcsol
+
+if [ -z "$MACHINE" ]
+then
+  echo "Warning: could not determine machine, assuming sparcsol"
+else
+  machine=$MACHINE
+fi
+
+if [ -z "$REF_SBOX" ]
+then
+  refsandbox=/bt/ab
+else
+  refsandbox="$REF_SBOX"
+fi
+if [ ! -d ${refsandbox}/. ]
+then
+  unset refsandbox
+fi
+if [ -z "$NONDEV_ROOT" ]
+then
+  NONDEV_ROOT=/bt
+fi
+
+if [ -d $location ]
+  then
+  dir_location=specified
+else
+  echo "Error: $location is not a supported location."
+  echo "    Supply an existing directory (usually /gensym/sandboxes)"
+  usage
+fi
+
+shift
+shift
+shift
+
+# Now parse options, if any, and get modules
+while [ -n "$1" ]
+do
+  case "$1" in
+    -full-lisp)
+		modules="lisp ext fnt jpeg xml gen specific rtl gsi tw g2 $modules"
+		shift
+		;;
+    -build-sandbox)
+		    modules="activex build corba ext fnt g2 g2db g2opc g2pi gen"
+		    modules="${modules} gservice gsi gw jpeg kbs lisp promote"
+		    modules="${modules} rtl scintilla scripts specific tests"
+		    modules="${modules} tw twng twplug vstudio widgets xml xtp"
+		    modules="${modules} projects tools util"
+		shift
+		;;
+    -no-dst)
+	      use_dst=0
+	      shift
+	      ;;
+    -use-dstboxes)
+	      use_dst=1
+	      use_dstboxes=1
+	      shift
+	      ;;
+    -no-nfs)
+	      use_rsh=1
+	      shift
+	      ;;
+    -r*)
+	 if [ "$1" = "-r" ]
+	 then
+	   branch="-r$2"
+	   shift
+	   shift
+	 else
+	   branch=$1
+	   shift
+	 fi
+	 ;;
+    -*)
+	echo "Warning: unrecognized argument $1"
+	shift
+	;;
+    *)
+       modules="$modules $1"
+       shift
+       ;;
+  esac
+done
+
+if [ "$use_rsh" = 0 ]
+then
+  if [ ! -d $cvs_dir ]
+  then
+    echo "Error: Spin tree $from_spin cannot be used since $cvs_dir does not exist."
+    usage
+  fi
+else
+  echo "Info: not attempting to verify repository since -no-nfs flag was specified."
+  cvs_dir=${cvshost}:${cvs_dir}
+fi
+
+# Make the target directory.
+
+target_dir=${location}/$sandbox_name
+
+if [ -d $target_dir ]
+then
+  echo "  The directory $target_dir already exists, continuing."
+else
+  echo "  Making $target_dir..."
+  echo "mkdir $target_dir" | csh -vf
+  last_status=$?
+  if [ $last_status -ne 0 ]
+  then
+    failed
+  fi
+fi
+
+
+# Make the links from /bt and intelnt
+
+for sb_dir in $all_bts
+do
+  new_link=${sb_dir}/bt/$sandbox_name
+  if [ -h $new_link ]
+  then
+    echo "  Removing old link $new_link ..."
+    echo "rm $new_link" | csh -vf
+    last_status=$?
+    if [ $last_status -ne 0 ]
+    then
+      failed
+    fi
+  fi
+
+  echo "  Making link from $new_link directory..."
+  echo "ln -s $target_dir $new_link" | csh -vf
+  last_status=$?
+  if [ $last_status -ne 0 ]
+  then
+    failed
+  fi
+done
+
+
+# Check out lisp
+CVSROOT=$cvs_dir
+export CVSROOT
+bt_root=${NONDEV_ROOT}/$sandbox_name
+
+srcbox=${NONDEV_ROOT}/$sandbox_name/src
+echo "  Making $srcbox..."
+echo "mkdir -p $srcbox" | csh -vf
+
+if [ "$use_dst" = "1" ]
+then
+  dstbox=${bt_root}/dst/${machine}
+else
+  dstbox=${srcbox}
+fi
+echo "  Making $dstbox..."
+echo "mkdir -p $dstbox" | csh -vf
+
+if [ -d ${srcbox}/lisp ]
+then
+  echo "  Note that the ${srcbox}/lisp directory already exists."
+fi
+
+echo "cd $srcbox"
+cd $srcbox
+
+# Setting up lisp.
+echo "  Checking out lisp"
+echo "cvs checkout $branch lisp"
+cvs checkout $branch lisp
+
+
+# Creating srcbox.dat, dstbox.dat and toolsdir.dat file.
+if [ -d lisp ]
+then
+  echo "  Creating lisp/srcbox.dat file."
+  echo \"${srcbox}\" > lisp/srcbox.dat
+  last_status=$?
+  if [ $last_status -ne 0 ]
+  then
+    failed
+  fi
+
+  echo "  Creating lisp/dstbox.dat file."
+  echo \"${dstbox}\" > lisp/dstbox.dat
+  last_status=$?
+  if [ $last_status -ne 0 ]
+  then
+    failed
+  fi
+
+  echo "  Creating lisp/toolsdir.dat file."
+  echo \"${toolsdir}\" > lisp/toolsdir.dat
+  last_status=$?
+  if [ $last_status -ne 0 ]
+  then
+    failed
+  fi
+
+  echo ' '
+  if [ "$use_dst" = "0" ]
+  then
+    echo '  * If you want to use this sandbox on multiple platforms, or'
+    echo '    disassociate your object files from your source files, '
+    echo '    edit dstbox.dat (see jv for details.)'
+  fi
+  echo ' '
+fi
+
+# Checkout any additional modules as requested by the user.
+if [ -n "$modules" ]
+then
+  echo "  Checking out additional modules: $modules"
+  echo "cvs checkout $branch $modules"
+  cvs checkout $branch $modules
+fi
+
+echo "  Making $dstbox lisp directories..."
+echo "mkdir -p $dstbox/lisp" | csh -vf
+echo "mkdir -p $dstbox/lisp/macro" | csh -vf
+
+
+if [ -n "$refsandbox" ]
+then
+  echo "Making dstbox skeleton tree"
+  if [ "$use_dst" = "1" ]
+  then
+    if [ "$use_dstboxes" = "1" ]
+    then
+      mkdir /gensym/dstboxes/$sandbox_name
+      last_status=$?
+      if [ $last_status -ne 0 ]
+      then
+        failed
+      fi
+      ln -s /gensym/dstboxes/$sandbox_name dst
+      last_status=$?
+      if [ $last_status -ne 0 ]
+      then
+        failed
+      fi
+    else
+      mkdir -p dst
+    fi
+    cd ${dstbox}
+    mkdir -p `(cd ${refsandbox}/dst; find $machine -type d)`
+  else
+    mkdir -p `(cd ${refsandbox}/dst/$machine; find . -type d)`
+  fi
+fi
+
+cd $bt_root
+mkdir -p logs
+
+# Clean up and offer advice
+echo ""
+echo "${progname}: $sandbox_name was made successfully."
+echo "  Call the following to set up your environment:"
+echo "  sandbox $sandbox_name"
+
+exit 0
