@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="01/11/02 11:08:39">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>bpr-get-dialog-info</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="api11.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="api13.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/ReThink/custom-manual/stylesets/Customizing%20ReThink/Output/html/api.htm">  
+        Application Programmer's Interface   </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+bpr-get-dialog-info
+</h2>
+<p>Returns a structure that describes the elements of a custom dialog, including the custom tabs and the order of the attributes on each tab.<a name="66669"></a></p>
+<h3 >
+  <a name="66670">Synopsis</a>
+</h3>
+<code>bpr-get-dialog-info (<code>object</code>: class my-task, <code>ui-client-item</code>: class ui-client-item) 
+<font >   -&gt; </font><font ><i><u>(structure)</u></i></font><a name="66877"> </a></code></blockquote><p >
+  <a name="67065"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="67044"><div >Argument</a></div></th>
+    <th><a name="67046"><div >Description</a></div></th>
+  </tr>
+  <tr>
+    <td><code><code>object</code><a name="67048"> </a></code></blockquote></td>
+    <td><p>The object whose dialog information the method is describing.<a name="67050"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><code>ui-client-item<a name="67060"> </a></code></blockquote></td>
+    <td><p>The <code>ui-client-item</code> in which the dialog appears, which is the superior class of:<a name="67062"></a></p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">A <code>g2-window</code>, which is a window in the current G2 session or a remote connection to G2 through a Telewindows client.<a name="67063"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">A <code>ui-client-session</code>, which is a remote connection to G2 through a Telewindows2 Toolkit client, which allows you to create native UI clients for G2 applications.<a name="67064"></a></td>  </tr></table></td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<p >
+  <a name="67014"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="67007"><div >Return Value</a></div></th>
+    <th><a name="67009"><div >Description</a></div></th>
+  </tr>
+  <tr>
+    <td><a name="67011"><div >structure</a></div></td>
+    <td><p>A structure that describes dialog title, label, and custom tabs.<a name="67013"></a></p>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<p>The returned structure has this format:<a name="66878"></a></p>
+<blockquote><code>structure (
+	DIALOG-TITLE: title,
+	DIALOG-LABEL: &quot;My label&quot;,
+	DIALOG-TABS: sequence ( 
+		structure (
+			TAB-LABEL: &quot;My Tab 1&quot;,
+			TAB-ATTRIBUTES: sequence(
+				the symbol CUSTOM-ATTRIBUTE-1,
+				the symbol CUSTOM-ATTRIBUTE-2,
+				the symbol CUSTOM-INT,
+				the symbol CUSTOM-FLOAT,
+				the symbol CUSTOM-BOOLEAN,
+		  		the symbol SUM-VAL)<a name="66879"> </a></code></blockquote></blockquote><p>To specify the dialog title, you typically refer to the class, replacing hyphens with spaces and capitalizing each word. For example, this code fragment sets the local variable named <code>Title</code>, which is a <code>text</code>:<a name="66880"></a></p>
+<blockquote><code>Title = &quot;[the class of object]&quot;;
+Title = find-and-replace-pattern(&quot;-&quot;, &quot; &quot;, title, 1, length-of-text(title));
+Title = capitalize-words (title);<a name="66881"> </a></code></blockquote></blockquote><h3 >
+  <a name="66758">Description</a>
+</h3>
+<p>To create custom tabs and to control the order of the attributes that appear on each tab, you implement the <code>bpr-get-dialog-info</code> method for a custom class. This method returns a structure, which sets the dialog title and its label, and the custom tabs. You specify the custom tabs as a sequence of structures, where each structure sets the tab label and the tab attributes as a sequence of symbols.<a name="67382"></a></p>
+<h3 >
+  <a name="66761">Example</a>
+</h3>
+<p>For an example, see <a href="customd4.htm#37131">Creating Custom Tabs</a>.<a name="66765"></a></p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="api11.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="api13.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
