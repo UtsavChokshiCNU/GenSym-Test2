@@ -1,0 +1,142 @@
+#!/bin/csh
+onintr cleanup
+
+### Emit doc, if invoked with bad args.
+
+if ( $1 != -please || $#argv != 1 ) then
+cat <<EOF
+$0 -please
+
+This is a very slow, very, very, fat process.  It will create
+a fresh set of ok files for the site and distribute them to
+a mess of places.
+
+This requires a slew of stuff.
+ - A sandbox owned by Mr. AB.
+ - The lic module must be in this sandbox.
+ - The G2 lisp files must be functional.
+ - The encrypted lisp sources for creating licenses must have
+   compiled equivalents in the lic directory.
+ - The promote directory must be uptodate.
+
+EOF
+exit -1
+endif
+
+
+
+
+### Initialize
+set workdir = /home/siteok/foundry
+set mailto = siteok@gensym.com
+use-sandbox siteok ab
+echo "`date` Starting $0"
+
+
+#### Assure we have the temp directory.
+if ( ! -e $workdir ) then
+ echo The $workdir directory does not exist, creating it.
+ mkdir $workdir
+endif
+
+
+#### Get the site's host file.
+### Filter, sort, etc. to avoid doing the work if things
+### have changed in ways that wouldn't effect our result.
+if ( -e $workdir/hostinfo ) mv $workdir/hostinfo $workdir/hostinfo.old
+ypcat hostinfo | awk -F: '{printf("%s:%s\n",$1,$2)}' \
+  | sort -u > $workdir/hostinfo
+if ( -e $workdir/hostinfo.old ) then
+ cmp -s $workdir/hostinfo $workdir/hostinfo.old
+ if ( ! $status ) then
+   echo No change to the hostinfo database, all done.
+   exit 1
+ endif
+endif
+
+#### Clean out the workdir, after we decide to regenerate it.
+rm -rf $workdir/*ok*
+
+#### Keep a file change.log showing what changed when.
+echo "Changes to the hostinfo file"
+if ( -e $workdir/hostinfo.old ) then
+ diff -c0 $workdir/hostinfo.old $workdir/hostinfo | tee $workdir/last-change
+else
+ echo "Reset all hostinfo." | tee $workdir/last-change
+endif
+if ( ! -e $workdir/change.log ) then
+  echo "Created new change.log" > $workdir/change.log
+endif
+
+(cat $workdir/change.log; date; cat $workdir/last-change ) | tail -1000 > /tmp/$$
+cp /tmp/$$ $workdir/change.log
+rm -rf /tmp/$$
+
+
+
+#### With luck: generate a mess of OK files in $workdir
+## Note that the hack here is how it gets around the lack of an
+## off-line read-eval-print loop or the notion of a 'main': the
+## code to be executed is put inside a trace statement on a
+## sure-to-be-executed function as the condition on which the
+## trace is to occur. 
+
+cd /$BT_ROOT/lisp
+lucid <<EOF |& head -1000
+;; The usual setup.
+(load "load")
+(in-package "AB")
+
+;; Throw the switch to make site ok files
+
+
+(catch 'abandon-ship-mr-ab
+  (compile-ls 'no-make 'no-process)
+  (compile-g2 'no-make 'no-process)
+  (setf directory-part-of-ok-pathname-string "$workdir/")
+  (trace 
+    (validate-mouse-pointers
+      :entrycond
+ 	(progn
+          (format t "~&Generating Site OK files")
+          (update-gensym-site-ok-file)
+          (format t "~&Done generating Site OK files")
+          (throw 'abandon-ship-mr-ab nil))))
+  (replace-command-line "g2 -nowindow")
+  (launch-ab))
+
+EOF
+
+Mail -s "Please inspect and install new OK files." $mailto <<EOF
+
+A change in hostinfo was noticed, new site OK files are available for
+installation.
+
+`cat $workdir/last-change`
+
+My records (lic/utils/generate-site-ok) show you are responsible for
+checking if these changes look ok -- i.e. nobody is stealing copies
+of G2 via this route.  If this looks right you could install these
+with the script lic/utils/update-site-ok-files
+
+   Thank you. - Mr. AB
+EOF
+
+cleanup:
+rm -rf /tmp/$$*
+echo "`date` That's all folks."
+
+
+# jv, 10/11/99 - how to generate the files by hand
+# If you're sitting there and paying attention, you don't need to rely on the
+# hack described above to generate the files when validate-mouse-pointers
+# is hit.  Instead, you can just run the function.
+#
+# ypcat hostinfo | awk -F: '{printf("%s:%s\n",$1,$2)}' | sort -u > /home/siteok/foundry/hostinfo
+# (load "load")
+# (in-package "AB")
+# (compile-ls 'no-make 'no-process)
+# (compile-g2 'no-make)
+# ;; use C-= on the G2 to break with a workstation context
+# (setf directory-part-of-ok-pathname-string "/home/siteok/foundry/")
+# (update-gensym-site-ok-file)
