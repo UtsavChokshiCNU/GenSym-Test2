@@ -1,0 +1,2234 @@
+//tools.rul
+
+
+// List_components_on_media is intended for debugging usage.  It displays a dialog
+// showing what components are on the media, which during maintenance mode means
+// what components have been installed by a previous install.  This function uses
+// generic InstallShield functionality in every respect.
+
+function list_components_on_media ()
+  LIST components_list, results_list;
+  NUMBER n, i, test_integer;
+  STRING name, test_string, status_string, title, message;
+begin
+  components_list = ListCreate(STRINGLIST);
+  results_list = ListCreate(STRINGLIST);
+  FeatureListItems(MEDIA, "", components_list);
+  n = ListCount(components_list);
+  for i = 1 to n
+    if (i = 1) then ListGetFirstString(components_list, name);
+      else ListGetNextString(components_list, name); endif;
+    FeatureGetData(MEDIA, name, FEATURE_FIELD_SELECTED, test_integer, test_string);
+    if (test_integer) then status_string = "already";
+      else status_string = "NOT"; endif;
+    ListAddString(results_list, "Component " + name + " is "
+      + status_string + " installed ...", AFTER);
+  endfor;
+  title = "Components Installed";
+  message = "Components installed ...";
+  SdShowInfoList(title, message, results_list);
+  ListDestroy(components_list);
+  ListDestroy(results_list);
+end;
+
+
+// check to see that all characters in the string are actually ASCII.
+// It turns out that the G2 ok file can't handle non ASCII company names.
+// Returns FALSE if everything's OK, TRUE if there are nonascii chars.
+// yduJ, Aug 2004, for HQ-4697334
+function BOOL HasNonASCII(szString)
+  INT i,iLength;
+  BOOL found;
+  begin
+    found=FALSE;
+    i = 0;
+    iLength = StrLength (szString);
+    while (i <= iLength && !found)
+      if (szString[i] < 0 || szString[i] >= 128 ) then
+	found = TRUE;
+      endif;
+      i++;
+    endwhile;
+  return found;  
+end;
+
+
+// get_maintenance_product_name is intended to be called in maintenance mode to
+// return a string giving the name of the product that was previously installed in
+// the form of its display name, as stored in the Windows registry from the previous
+// installation.
+
+prototype STRING get_maintenance_product_name ();
+
+function STRING get_maintenance_product_name ()
+  STRING return_value_product_display_name, uninstall_key_path;
+  NUMBER return_value_size_in_bytes, should_be_REGDB_STRING;
+begin
+  if (!MAINTENANCE) then
+    return("(Unknown Product)");
+  else
+    // The first approach:   (what IS support person suggested, but it didn't work!)
+//     RegDBSetDefaultRoot(HKEY_LOCAL_MACHINE);
+//     uninstall_key_path
+//       = "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\";
+//     RegDBGetKeyValueEx(uninstall_key_path + PRODUCT_GUID,
+//                        "DisplayName", should_be_REGDB_STRING,
+//                        return_value_product_display_name, return_value_size_in_bytes);
+    // The second approach:  (found this in the online Help Library; it does the trick. -mhd)
+    RegDBGetItem(REGDB_UNINSTALL_NAME, return_value_product_display_name);
+    return return_value_product_display_name;
+  endif;
+end;
+
+
+
+// set_up_maintenance_previously_installed_list is to be called at the
+// beginning of the before maintenance UI function.  It sets to global
+// variable maintenance_previously_installed_list to a list of installed
+// components.  Note: this should be called, and the resulting list
+// should be referred to, iff this is a maintenance install. This condition
+// can best be tested by evaluating whether the global variable MAINTENANCE
+// is true.
+
+function set_up_maintenance_previously_installed_list ()
+NUMBER n, i, listresult, getresult, is_previously_installed;
+LIST all_components;
+STRING component, test_string;
+begin
+  maintenance_previously_installed_list = ListCreate(STRINGLIST);
+  all_components = ListCreate(STRINGLIST);
+  FeatureListItems(MEDIA, "", all_components);
+  listresult = ListGetFirstString(all_components, component);
+  while (listresult != END_OF_LIST)
+    getresult = FeatureGetData(MEDIA, component, FEATURE_FIELD_SELECTED, is_previously_installed, test_string);
+    if (getresult = 0) then  // then OK
+      if (is_previously_installed) then
+        ListAddString(maintenance_previously_installed_list, component, AFTER);
+      endif;
+    else
+      MessageBox("Error getting data about previous install component "
+		  + component + ".", WARNING);
+    endif;
+    listresult = ListGetNextString(all_components, component);
+  endwhile;
+end;
+
+
+
+
+// copy_list_of_string is a handy utility function. It's purpose is
+// to copy a list of string to the list 'to_string_list' from the list 'from'.
+// The 'to_string_list' variable should be a string list, and is passed by reference.
+// The from list should be a string list, and it is copied and is only
+// mildly mutated by this function as follow: its current-element pointer
+// is left in an undefined state.
+
+// NOTE: has not yet had, needs, testing! (MHD 12/6/00)
+// NOTE: just discovered CopyListToList, also unused, in this file,
+// but I like this better.  Eliminate one of them, probably, later!
+
+function copy_string_list (to_string_list, from_string_list)
+  NUMBER n, i;
+  STRING a_string;
+begin
+  n = ListCount(from_string_list);
+  for i = 1 to n
+    if (i = 1) then ListGetFirstString(from_string_list, a_string);
+          else ListGetNextString(from_string_list, a_string); endif;
+    ListAddString(to_string_list, a_string, AFTER);
+  endfor;
+end;
+
+
+
+
+
+
+
+function SplitStr(svToSplit,svFind,svFirst,svSecond)
+NUMBER nFound;
+begin
+   nFound = StrFind ( svToSplit, svFind );
+   if (nFound >= 0 ) then
+     StrSub(svFirst,svToSplit,0,nFound );
+     StrSub(svSecond,svToSplit,nFound + StrLength(svFind),StrLength(svToSplit));
+     return 0;
+   else
+     svFirst = "";
+     svSecond = "";
+     return 1; // not found
+   endif;
+end; // end SplitStr
+
+// SplitStr2 return the full string in first even if it did not find svFind
+function SplitStr2(svToSplit,svFind,svFirst,svSecond)
+NUMBER nFound;
+begin
+   nFound = StrFind ( svToSplit, svFind );
+   if (nFound >= 0 ) then
+     StrSub(svFirst,svToSplit,0,nFound );
+     StrSub(svSecond,svToSplit,nFound + StrLength(svFind),StrLength(svToSplit));
+     return 0;
+   else
+     svFirst = svToSplit;
+     svSecond = "";
+     return 1; // not found
+   endif;
+end; // end SplitStr
+
+function GetItemBetween(svToSplit,svFind,svReturn)
+STRING svFirst,svLast;
+NUMBER nFound;
+begin
+   nFound = StrFind ( svToSplit, svFind );
+   if (nFound >= 0 ) then
+     StrSub(svLast,svToSplit,nFound + StrLength(svFind),StrLength(svToSplit));
+     nFound = StrFind ( svLast, svFind );
+     if (nFound >= 0 ) then
+        StrSub(svFirst,svLast,0,nFound );
+        svReturn=svFirst;
+        return 0;
+     else
+        return 1;
+     endif;
+   else
+     svReturn = "";
+
+     return 1; // not found
+   endif;
+end; // end GetItemBetween
+
+function GetOptionsForThisDialog(svToSplit,svFind, svReturn)
+STRING svFirst,svLast;
+NUMBER nReturn;
+ begin
+  nReturn = SplitStr(svToSplit, svFind + ":", svFirst, svLast);
+  nReturn = SplitStr(svLast, ";", svFirst, svLast);
+  svReturn = svFirst;
+ return nReturn;
+ end; // end GetOptionsForThisDialog
+
+function IsDefualt(svItem, bDefualt)
+STRING svFirst,svLast;
+ begin
+  if (StrFind ( svItem, "&" )>= 0) then
+    bDefualt = TRUE;
+    SplitStr(svItem, "&", svFirst, svLast);
+    if (StrLength(svLast)= 0)then
+      svItem = svFirst;
+    else
+      svItem = svLast;
+    endif;
+  else
+    bDefualt = FALSE;
+  endif;
+ end;// end IsDefualt
+
+function IsLetters (svString)
+STRING svThisLetter,svMax;
+NUMBER nMax, nCount,nResult;
+CHAR cvLetter;
+begin
+nMax = StrLength(svString);
+nCount = 0;
+nMax = nMax + 1;
+//cvLetter = svString[nCount];
+GetByte( nResult, svString, nCount );
+while ((( nResult > 47) && ( nResult < 58))||(( nResult > 64) && ( nResult < 91))||(( nResult > 96) && ( nResult < 123)) && (nCount <  nMax) )
+    //NumToStr (svMax,nResult);
+   //MessageBox("nResult " + svMax,WARNING);
+   nCount = nCount + 1;
+   GetByte( nResult, svString, nCount );
+endwhile;
+ return nResult;
+end;
+
+function GetNextItem (svItem, bDefualt,svString)
+STRING svFirst,svLast;
+ begin
+  SplitStr(svString, ",", svFirst, svLast);
+   if (StrLength(svFirst)< 1)&& (StrLength(svString)> 1)then
+     svFirst= svString; // Last item in string does not have "," at end
+     svLast = "";
+   elseif (StrLength(svFirst)< 1)&& (StrLength(svString)< 1)then
+     svFirst= ""; // both strings are empty
+     svLast = "";
+   endif;
+  svString = svLast; // returns rest of string
+  IsDefualt(svFirst,bDefualt);//Strips defualt symbol and set defualt flag
+  svItem = svFirst; // returns first item off list
+ end; // end GetNextItem
+
+
+
+function CountItems (svItem, svDelimiter)
+STRING svFirst,svLast, svtemp;
+NUMBER nReturn, nCount, nFound;
+ begin
+  nCount = 0;
+ if (StrLength(svItem) > 0)then
+  nFound = SplitStr(svItem, svDelimiter, svFirst, svLast);
+  if (nFound = 0 ) then
+    nCount = 1;
+    while (nFound = 0 )
+        svtemp = svLast;
+        nFound = SplitStr(svtemp, svDelimiter, svFirst, svLast);
+        nCount = nCount + 1;
+    endwhile;
+   else
+     nCount = 1; // not found
+   endif;
+else nCount = 0;
+endif; //(svItem) > 0)
+   return nCount;
+ end; // end CountItems
+
+function ClearNumberList(lListDelete)
+NUMBER nvItem, nResult;
+
+begin
+
+    nResult=ListGetFirstItem(lListDelete, nvItem);
+    while (nResult = 0)
+        ListDeleteItem(lListDelete);
+        nResult=ListGetFirstItem(lListDelete, nvItem);
+    endwhile;
+end;
+
+function ClearStringList(lListDelete)
+NUMBER nResult;
+STRING svItem;
+begin
+
+    nResult=ListGetFirstString(lListDelete, svItem);
+    while (nResult = 0)
+        ListDeleteString (lListDelete);
+        nResult=ListGetFirstString(lListDelete, svItem);
+    endwhile;
+end;
+
+function ListGetLastItem (lListItem, nvItem)
+NUMBER nReturn;
+ begin
+  ListSetIndex (lListItem, LISTLAST);
+  nReturn = ListCurrentItem (lListItem, nvItem);
+  //SprintfBox(INFORMATION, "This is the Last item in the list", "%i", nvItem);
+ return nReturn;
+ end;
+
+function ListPopLastItem(lListItem, nvItem)
+NUMBER nReturn;
+begin
+  nReturn = ListGetLastItem (lListItem, nvItem);
+  ListSetIndex (lListItem, LISTLAST);
+  ListDeleteItem (lListItem);
+  if (nReturn < 0 ) then
+    nvItem = -1;
+  endif;
+end;
+
+function ShowList(lListItem,svWhat)
+NUMBER nResult, nvItem;
+STRING t1, szTitle;
+// this function only works on NUMBER list not string list
+begin
+    szTitle = "Show List";
+    nResult=ListGetFirstItem(lListItem, nvItem);
+    while (nResult != END_OF_LIST)
+        if (svWhat = "ALL") then
+          SprintfBox(INFORMATION, szTitle, "%i", nvItem);
+       endif;
+       nResult=ListGetNextItem(lListItem, nvItem);
+    endwhile;
+    SprintfBox(INFORMATION, "LAST Item", "%i", nvItem);
+end;
+
+function ShowListStr(lListItem,svWhat)
+NUMBER nResult;
+STRING t1, szTitle,svItem;
+// this function only works on String list not Number list
+begin
+    szTitle = "Show List String";
+    nResult=ListGetFirstString(lListItem, svItem);
+    while (nResult != END_OF_LIST)
+        if (svWhat = "ALL") then
+          SprintfBox(INFORMATION, szTitle, "%s", svItem);
+       endif;
+       nResult=ListGetNextString(lListItem, svItem);
+    endwhile;
+    SprintfBox(INFORMATION, "LAST Item", "%s", svItem);
+end;
+
+
+function GetPathAndDrive(szOrgPath,szDrive,szPath)
+STRING szLocalPath;
+NUMBER nReturn;
+begin
+  //MessageBox(" in getpath szOrgPath " + szOrgPath,WARNING);
+  if (StrLength(szOrgPath) > 1)then
+     nReturn = GetDir (szOrgPath, szPath);
+     if (nReturn = 0) then
+       nReturn = GetDisk (szOrgPath, szDrive);
+     else
+       szDrive = "c:";
+     endif;
+    else
+     szDrive = "c:";
+     szPath = "";
+  endif;
+
+  StrRemoveLastSlash (szPath);
+
+return nReturn;
+
+end;//GetDriveFromPath
+
+function TestMessage(szLocalMsg)
+
+begin
+if (AskYesNo (szLocalMsg, NO) = YES) then
+
+    endif;
+end;
+
+
+
+
+
+
+//////////////////////////////////////////////////////////////
+// function ValidateIconTag                                 //
+//  replaces all NOT allowed char in folder or icon names   //
+//                                                          //
+//////////////////////////////////////////////////////////////
+function ValidateIconTag(svIconTag)
+STRING svReplaceWith;
+begin
+ svReplaceWith = "_";
+ ReplaceChar(svIconTag,"/",svReplaceWith);
+ ReplaceChar(svIconTag,"<",svReplaceWith);
+ ReplaceChar(svIconTag,">",svReplaceWith);
+ ReplaceChar(svIconTag,"|",svReplaceWith);
+ ReplaceChar(svIconTag,"*",svReplaceWith);
+ ReplaceChar(svIconTag,"?",svReplaceWith);
+ ReplaceChar(svIconTag,"\\",svReplaceWith);
+end;
+
+//////////////////////////////////////////////////////////////
+// function ReplaceChar                                     //
+//  replaces one set of char's with another                 //
+//                                                          //
+//////////////////////////////////////////////////////////////
+
+function ReplaceChar(szString,svFind,szReplace)
+NUMBER nOffset,nResult;
+STRING svFirst,svLast;
+begin
+nOffset = StrFind(szString, svFind);
+  while (nOffset >= 0 )
+    nResult = StrLength( szString );
+    StrSub( svFirst, szString, 0, nOffset );
+    StrSub(svLast,szString,nOffset + StrLength(svFind),StrLength(szString));
+    szString = svFirst + szReplace + svLast;
+    nOffset = StrFind( szString, svFind);
+  endwhile;
+end;
+
+
+
+
+function AddLastSlash(szType,svPath)
+NUMBER nLast;
+STRING svChar;
+begin
+StrSub (svChar, svPath, (StrLength(svPath)- 1), 1);
+if (szType = "URL")then
+  if (svChar != "/") then
+    svPath = svPath + "/";
+  endif;
+elseif (szType = "Win") then
+  if (svChar != "\\") then
+    svPath = svPath + "\\";
+  endif;
+else
+  return -1;
+endif;
+
+return 0;
+end;
+
+
+
+
+function GetKeyFromTextFile(svFilename,szKey,svData) //filename and path, key, data
+STRING svHoldSCR, svHoldTarget, svPath,svFilenameOnly,svStringFound,svFindKey,svQuestion,svMsg, svFirst,svLast;
+NUMBER nvLineNumber, nFound;
+begin
+//hold orginal paths
+svHoldTarget = TARGETDIR;
+svHoldSCR = SRCDIR;
+if (Is (FILE_EXISTS,svFilename)) then
+  ParsePath (svPath, svFilename, PATH);
+  ParsePath (svFilenameOnly, svFilename, FILENAME);
+  SRCDIR = svPath;
+  TARGETDIR = svPath;
+  svFindKey = szKey + "=";
+  nFound = 1;
+  if ( FileGrep( svFilenameOnly, svFindKey, svStringFound, nvLineNumber, RESTART ) = 0 ) then
+      // string found at nvLineNumber
+      SplitStr(svStringFound, "=",svFirst,svLast); //(ToSplit,Find,First,Last)
+      svData = svLast;
+      nFound = 0;
+  endif;
+else // Is File exist
+  nFound = 2;
+endif;
+
+// reset orginal paths
+TARGETDIR = svHoldTarget;
+SRCDIR = svHoldSCR;
+return nFound;
+end;
+
+
+
+//*********************************************************************//
+//
+//  GetLastDirectoryInPath(svFullPath,svLastDir)
+//  returns: length of directory -1 for zero length
+//  passes back svLastDir containing the last directory on the path
+//
+//
+//*********************************************************************//
+function GetLastDirectoryInPath(svFullPath,svLastDir)
+  INT iCount, iLength;
+ begin
+    StrRemoveLastSlash (svFullPath);
+    iLength = StrLength (svFullPath);
+    iCount = iLength;
+    while (svFullPath[iCount]!= "\\") && (iCount > 0)
+        iCount = iCount - 1;
+    endwhile;
+
+    if (svFullPath[iCount]= "\\")then
+        StrSub(svLastDir,svFullPath,iCount + 1,iLength);
+    else
+        svLastDir = "";
+    endif;
+
+    if (StrLength (svLastDir) > 0)then
+        return StrLength (svLastDir);
+    else
+        return -1;
+    endif;
+
+ end;
+
+
+
+
+function CopyListToList(lReturnList,lInputList)//(List returned, list to copy from
+NUMBER nResult;
+STRING svItem;
+begin
+nResult = ListGetFirstString (lInputList, svItem);
+while ( nResult = 0 )
+   ListAddString(lReturnList,svItem,AFTER);
+   nResult = ListGetNextString (lInputList, svItem);
+endwhile;
+end;
+
+function InitLogs(svFileName)
+begin
+  svFileName = "c:\debugLog.txt" ;
+end;
+
+
+function GetDebugSetting()
+begin
+  return ngDebug;
+end;
+
+function GetDebugFileName(svLogFile)
+begin
+  svLogFile = sgDebugLogFile;
+end;
+
+function SupportMessage(svLevel, svMsg) //(svLevel, svMsg)
+NUMBER nDebug;
+STRING svFileName;
+BOOL bVerbose;
+begin
+	nDebug = GetDebugSetting();
+	GetDebugFileName(svFileName);
+	GetVerbose(bVerbose);
+	//MessageBox(svLevel + svMsg,WARNING);//9999
+	ABS_SupportMessage(nDebug, bVerbose, svLevel, svMsg); //(nvDebug, svLevel, svMsg)
+end;
+
+function InitBundleList (lStringListID)
+begin
+ //ListDestroy (lItemList);
+ lStringListID  = ListCreate( STRINGLIST ); //init
+
+end;
+
+
+function GetListOfBundles(szComponentSet, lStringListID) //(library, ItemList)
+STRING sStringToAdd;
+begin
+  // WORK IN PROGRESS
+  //  BuildComponentList   (szComponentSet, lStringListID); // this build the media library from lStringListID
+
+
+
+end;
+
+function GetVerbose(bVerbose)
+begin
+  bVerbose = bgVerbose;
+end;
+
+function ABS_SupportMessage(nDebug, bVerbose, svLevel, svMsg) //(nvDebug, svLevel, svMsg)
+
+
+  begin
+    switch (nDebug)
+      case 2: //On screen messages when an error occurs
+      		if (svLevel = ERROR)then
+      		 	MessageBox(svLevel + ": " +  svMsg, WARNING);
+      		endif;
+      case 3: // 3 Error log is created or added to when errors occur
+      		if (svLevel = ERROR)then
+
+      		endif;
+      case 5: // 5 On screen messages for each step of the program, I would not advise to use
+      		MessageBox(svLevel + ": " +  svMsg, INFORMATION);
+      case 6: // 6 Error log for each step of the program
+
+      		if (svLevel = STEP)then
+      		  WriteLogEntry(svLevel + ": " +  svMsg);
+      		elseif (svLevel = ERROR)then
+      		  WriteLogEntry(svLevel + ": " +  svMsg);
+      		elseif (svLevel = DEBUG)then
+      		  WriteLogEntry(svLevel + ": " +  svMsg);
+      		endif;
+      case 7: // 7 Display a list of all settings at the end of the user interaction
+      		WriteLogEntry(svLevel + ": " +  svMsg);
+      case 9: // 9 Display a list of all debug settings at the end of the user interaction
+            if (svLevel = DEBUG)then
+              WriteLogEntry(svLevel + ": " +  svMsg);
+            endif;
+
+
+   endswitch;
+
+
+  end;
+
+function BuildComponentList   (szComponentSet, lStringListID) //(szComponentSet, lListToAdd);
+NUMBER nResult;
+NUMBER nDataSize;
+STRING szComponent;
+STRING szTest;
+STRING sHoldMEDIA;
+BOOL  bSelected;
+begin
+  sHoldMEDIA = MEDIA; //Hold media
+  //szTest = "new";
+  // MEDIA = szTest; // set the script based component set
+
+  MEDIA = szComponentSet; // set the script based component set
+
+  nResult=ListGetFirstString(lStringListID, szComponent);
+    while (nResult = 0)
+         nDataSize = 100;
+         bSelected = TRUE;
+         //MessageBox(szComponent,WARNING);//9999
+        FeatureAddItem(szComponentSet, szComponent, nDataSize, bSelected);
+        nResult=ListGetNextString(lStringListID, szComponent);
+    endwhile;
+   //szComponentSet = szTest;//9999
+  MEDIA = sHoldMEDIA;
+end;
+
+function AddComponentToList   (sLib, lStringList) //(sLibrary, lListToAdd);
+begin
+
+end;
+function DeleteItemsComponent (sLib, lItemList) //(sLibrary, lListToDelete);
+begin
+
+end;
+
+
+// The functions load_gensym_dll and unload_gensym_dll should
+// be invoked before and after, respectively, code that calls to
+// the Gensym DLL.  The load brings it into memory if necessary
+// and increment the OS's use count.  It also results in the
+// current directory being changed to SUPPORTDIR.  The unload
+// decrements its use count and flushes it if it's not in use.
+
+function load_gensym_dll()
+STRING szFilename;
+NUMBER nError;
+begin
+ if (FindFile (SUPPORTDIR, GENSYMDLL, szFilename) = 0 )then
+        ChangeDirectory(SUPPORTDIR);
+ 	nError = UseDLL(GENSYMDLL);
+ 	if (nError < 0) then
+ 	  SupportMessage(ERROR, "found dll but failed to load dll");
+ 	  MessageBox("found dll but failed to load dll",WARNING);
+ 	elseif (nError = 0) then
+          // Success case.
+          SupportMessage(STEP, "Using " + SUPPORTDIR ^ GENSYMDLL);
+ 	  // MessageBox("Using " + SUPPORTDIR ^ GENSYMDLL, WARNING);
+ 	endif;
+ else
+ 	SupportMessage(ERROR, "Cannot find " + SUPPORTDIR ^ GENSYMDLL );
+ 	MessageBox("Cannot find " + SUPPORTDIR ^ GENSYMDLL, WARNING);
+ endif;
+end;
+
+function unload_gensym_dll()
+begin
+ UnUseDLL(GENSYMDLL);
+end;
+
+function unregister_activexlink_dll()
+begin
+   	RegDBSetDefaultRoot( HKEY_LOCAL_MACHINE );
+	RegDBDeleteValue("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\SharedDlls", TARGETDIR + "\\activexlink\\bin\\" + ACTIVEXLINKDLL);       
+	LaunchAppAndWait("regsvr32", TARGETDIR ^ "activexlink\\bin\\" + ACTIVEXLINKDLL + " /u /s", WAIT);
+end;
+
+/*
+function GetInformation ()
+STRING szFilename, szTest;
+NUMBER nTest, nError;
+INT iTest;
+begin
+ load_gensym_dll();
+  MessageBox("before call",WARNING);
+  //iTest = fnGensym();
+  //iTest = nGensym();
+
+  iTest = GetFirstComponentIndex();
+  NumToStr(szTest,iTest);
+  MessageBox(szTest,WARNING);
+
+   iTest =GetNextComponentIndex();
+  NumToStr(szTest,iTest);
+  MessageBox(szTest,WARNING);
+
+   iTest =GetNextComponentIndex();
+  NumToStr(szTest,iTest);
+  MessageBox(szTest,WARNING);
+
+  iTest =GetNextComponentIndex();
+  NumToStr(szTest,iTest);
+  MessageBox(szTest,WARNING);
+
+  iTest =GetNextComponentIndex();
+  NumToStr(szTest,iTest);
+  MessageBox(szTest,WARNING);
+
+  iTest =GetNextComponentIndex();
+  NumToStr(szTest,iTest);
+  MessageBox(szTest,WARNING);
+
+  iTest =GetNextComponentIndex();
+  NumToStr(szTest,iTest);
+  MessageBox(szTest,WARNING);
+
+  iTest =GetNextComponentIndex();
+  NumToStr(szTest,iTest);
+  MessageBox(szTest,WARNING);
+
+  iTest =GetNextComponentIndex();
+  NumToStr(szTest,iTest);
+  MessageBox(szTest,WARNING);
+
+  iTest =GetNextComponentIndex();
+  NumToStr(szTest,iTest);
+  MessageBox(szTest,WARNING);
+
+  iTest =GetNextComponentIndex();
+  NumToStr(szTest,iTest);
+  MessageBox(szTest,WARNING);
+
+  iTest =GetNextComponentIndex();
+  NumToStr(szTest,iTest);
+  MessageBox(szTest,WARNING);
+
+
+  unload_gensym_dll();
+end;
+
+*/
+
+function  WriteLogEntry(svMsg)//The string you want entered into your log
+STRING svFilename;
+begin
+  GetLogname(svFilename);
+  ABS_WriteLogEntry(svFilename, svMsg); //(filename, entry)
+end;
+
+
+
+function ABS_WriteLogEntry(svFileandPath, svMsg) //(filename, entry)
+STRING szText, szFilename, szPath;
+STRING szDate,szTime;
+NUMBER nSetupLog, nResult;
+begin
+	OpenFileMode (FILE_MODE_APPEND);
+
+	if (ParsePath (szPath, svFileandPath, PATH)< 0 ) then
+  		MessageBox("Dev Error: getting path from ABS_WriteLogEntry",WARNING);
+	endif;
+	if (ParsePath (szFilename, svFileandPath, FILENAME)< 0 ) then
+  		MessageBox("Dev Error: getting filename from ABS_WriteLogEntry",WARNING);
+	endif;
+    // MessageBox( szPath ^ szFilename,WARNING);//9999
+ 	if ( FindFile ( szPath, szFilename, szText ) = 0 ) then
+        OpenFile( nSetupLog, szPath, szFilename );
+    else
+        if (CreateFile( nSetupLog, szPath, szFilename) < 0 )then
+           MessageBox("Dev Error: Creating Log file",WARNING);
+        endif;
+        WriteLine ( nSetupLog, "Welcome message"  );
+        GetSystemInfo ( DATE, nResult, szDate );
+        GetSystemInfo ( TIME, nResult, szTime );
+        WriteLine ( nSetupLog, szDate + "    " + szTime );
+    endif;
+    WriteLine ( nSetupLog, svMsg );
+	CloseFile (nSetupLog);
+	return 0;
+end;
+
+function GetLogname (svFile)
+begin
+	svFile = "debug.log";
+	svFile = "c:" ^ svFile;
+end;
+
+
+
+function BuildBundleList (szRegNum,lBundList)
+    NUMBER nLength, nCount, nTest;
+    STRING svAddItem, svTest;
+
+begin
+nLength = StrLengthChars (szRegNum);
+nCount = 0;
+ClearStringList(lBundList);
+//nTest = ListCount(lBundList);
+//NumToStr(svTest,nTest);
+// MessageBox( svTest,WARNING);
+
+
+while  (nCount <= nLength )
+ StrSub(svAddItem,szRegNum,nCount,1);
+ ListAddString(lBundList,svAddItem,AFTER);
+  nCount = nCount + 1;
+ endwhile;
+
+end;
+
+function  BuildMedia(svSerialNum)
+    STRING szDisplayName, szFilename, szComponent, szComponentNumber;
+    NUMBER nTemp, nError, nResult,bSelected, nReturn;
+    // Added by JW
+    LIST lComponentsList,  list, previously_installed_list;
+    NUMBER nCount, nComponents;
+    NUMBER is_previously_installed;
+    STRING ref_string, test_string;
+    STRING product_name;
+    BOOL warned_bundle_crossgrade_problem;
+    BOOL maint_install_is_for_same_bundle;
+    BOOL dontCare;
+    NUMBER tmp_no;
+    STRING tmp_str, tmp_str2;
+    STRING display_name;
+    STRING display_description;
+    NUMBER n, error;
+begin
+ load_gensym_dll();
+ ///////////////////////////////////////////////////////////////////////////////
+ // Try to init the license key
+ nResult = initialize_license_key (svSerialNum);
+ if (nResult = 0 ) then
+   SupportMessage(DEBUG, "initialize_license_key (svSerialNum) was Successful");
+   nReturn = 0;
+ else
+   SupportMessage(DEBUG, "initialize_license_key (svSerialNum) Failed");
+   nReturn = -1;
+   // REMOVE THE FOLLOWING LINE BEFORE RELEASE
+   //test_key_interface(svSerialNum);
+ endif;
+ /////////////////////////////////////////////////////////////////////////////////
+
+ ///////////////////////////////////////////////////////////////////////////////
+ // Try to get Installer version only if last step was ok
+ if (nReturn = 0) then
+ 	nResult = get_installer_version();
+ 	if (nResult = -1 ) then
+   		SupportMessage(DEBUG, "get_installer_version() Failed");
+   		nReturn = -1;
+ 	else
+   		SupportMessage(DEBUG, "get_installer_version() Was Successful");
+   		nReturn = 0;
+ 	endif;
+ endif; //(nResult = 0)
+ /////////////////////////////////////////////////////////////////////////////////
+
+
+  ///////////////////////////////////////////////////////////////////////////////
+  // Try to Get the family ID
+  if (nReturn = 0) then
+    nResult = get_familyid();
+    if (nResult = -1 ) then
+      SupportMessage(DEBUG, "get_familyid() Failed");
+      nReturn = -1;
+    else
+      SupportMessage(DEBUG, "get_familyid() was Successful");
+      if (nResult != BUNDLE_FAMILY_ID) then
+        NumToStr(tmp_str, nResult);
+        NumToStr(tmp_str2, BUNDLE_FAMILY_ID);
+        SdFinish("Installation Unable to Proceed", "The license key is not valid for this product.",
+                 "Licence key family ID = " + tmp_str + "; This product family ID = " + tmp_str2,
+                 "", "", dontCare, dontCare);
+        abort;
+      endif;
+      nReturn = 0;
+    endif;
+  endif; //(nResult = 0)
+  /////////////////////////////////////////////////////////////////////////////////
+
+
+ ///////////////////////////////////////////////////////////////////////////////
+ // Try to Get the get_bundleid();
+ if (nReturn = 0) then
+ 	nResult = get_bundleid();
+ 	if (nResult = -1 ) then
+   		SupportMessage(DEBUG, "get_bundleid() Failed");
+   		nReturn = -1;
+ 	else
+ 	    SetBundleDirAndVersion(nResult);
+        // fix bogus executable file name in the following -- get from family file! -mhd, 10/23/00
+        SetInstallationInfo(@COMPANY_NAME,
+
+	                    // @COMPANY_NAME is typically Gensym. BUNDLENAME is something
+                            // like "G2 Deployment" (includes product name and
+                            // bundle/"package"). BUNDLEVERSION is something like "5.1r6"
+                            @COMPANY_NAME + " " + BUNDLENAME + " " + BUNDLEVERSION,
+
+                            @PRODUCT_VERSION,
+
+                            // "Executable" is obviously bogus for non-G2 applications. Fix!
+                            "G2.EXE");
+   		SupportMessage(DEBUG, "get_bundleid() was Successful");
+   		nReturn = 0;
+ 	endif;
+ endif; //(nResult = 0)
+ /////////////////////////////////////////////////////////////////////////////////
+
+  ///////////////////////////////////////////////////////////////////////////////
+  // Try to Get the system ID
+  if (nReturn = 0) then
+    nResult = get_systemid();
+    if (nResult = -1 ) then
+      SupportMessage(DEBUG, "get_systemid() Failed");
+      nReturn = -1;
+    else
+      SupportMessage(DEBUG, "get_systemid() was Successful");
+      if (nResult != BUNDLE_SYSTEM_ID) then
+        NumToStr(tmp_str, nResult);
+        NumToStr(tmp_str2, BUNDLE_SYSTEM_ID);
+        SdFinish("Installation Unable to Proceed", "The license key is not valid for this product.",
+                 "Licence key system ID = " + tmp_str + "; This product system ID = " + tmp_str2,
+                 "", "", dontCare, dontCare);
+        abort;
+      endif;
+      nReturn = 0;
+    endif;
+  endif; //(nResult = 0)
+  /////////////////////////////////////////////////////////////////////////////////
+
+
+ // if everything was ok up to now read in components and turn then on in the installer
+ if (nReturn = 0 ) then
+
+    // May be useful for debugging:  -mhd
+    if (FALSE && MAINTENANCE) then
+      list_components_on_media();
+    endif;
+
+    // For first-time mode (nonmaintenance), turn on all the components
+    // permitted by the license key.  For maintenance mode (reinstall), only
+    // turn on previously installed components.
+
+    // First hide and unselect everything.  Collect previously installed if in maintenance mode.
+    previously_installed_list = ListCreate(STRINGLIST); // value returned by reference
+    lComponentsList = ListCreate(STRINGLIST);
+    FeatureListItems(MEDIA, "", lComponentsList);
+    nComponents = ListCount(lComponentsList);
+    warned_bundle_crossgrade_problem = FALSE;
+    for nCount = 1 to nComponents
+        if (nCount = 1) then ListGetFirstString(lComponentsList, szComponent);
+          else ListGetNextString(lComponentsList, szComponent); endif;
+        bSelected = FALSE;
+        if (MAINTENANCE) then
+          FeatureGetData(MEDIA, szComponent, FEATURE_FIELD_SELECTED, is_previously_installed, test_string);
+          if (is_previously_installed) then
+            ListAddString (previously_installed_list, szComponent, AFTER);
+            maint_install_is_for_same_bundle = (StrFind(szComponent, BUNDLENAME) = 0);
+            if (maint_install_is_for_same_bundle) then
+              // if for same family (i.e., component name string starts with BUNDLENAME)
+              bSelected = TRUE;
+            else
+              if (!warned_bundle_crossgrade_problem) then
+                 warned_bundle_crossgrade_problem = TRUE;
+                 product_name = get_maintenance_product_name ();
+                 MessageBox("The Gensym product package " + product_name
+                              + " appears to be currently installed.\n"
+                              + "Your license key is for the Gensym product package " + BUNDLENAME
+                              + " (Version " + BUNDLEVERSION + "). You must first remove \n"
+                              + product_name + " before you can install "
+                              + BUNDLENAME + " using this license key.",
+                            WARNING);
+                 nReturn = -1;  // return from here (after unloading the DLL):
+                 unload_gensym_dll();
+                 return(nReturn);
+              endif;
+            endif;
+          endif;
+        endif;
+        FeatureSelectItem(MEDIA, szComponent, FALSE);
+        FeatureSetData(MEDIA, szComponent, FEATURE_FIELD_VISIBLE, FALSE, "");
+    endfor;
+    ListDestroy(lComponentsList);
+
+    // Now, if installing for the first time, select everything; if doing
+    // maintenance (reinstalling), make everything permitted by the license
+    // key available, but don't select anything new, just leave previously
+    // installed components selected (from above).
+    nResult = get_first_component_index();
+    nCount = 0;
+    while ((nResult >= 0) && (nCount < nComponents))  // the second condition is questionable! -mhd
+      NumToStr(szComponentNumber, nResult);
+      szComponent = BUNDLENAME + szComponentNumber;
+      FeatureSetData(MEDIA, szComponent, FEATURE_FIELD_VISIBLE, TRUE, "");
+      if (MAINTENANCE) then
+        ListGetFirstString(previously_installed_list, ref_string);
+        if (ListFindString(previously_installed_list, szComponent) = 0) then
+          FeatureSelectItem(MEDIA, szComponent, TRUE); // bSelected
+        endif;
+
+        error = FeatureGetData(MEDIA, szComponent, FEATURE_FIELD_DISPLAYNAME, n, display_name);
+        if (error != 0) then
+          MessageBox("Error getting data about component " + szComponent + ".", WARNING);
+        endif;
+        if (gensym_component_previously_installed(display_name)) then
+          display_description = display_name + "\n\nCurrently installed.";
+        else
+          display_description = display_name + "\n\nNot currently installed.";
+        endif;
+        FeatureSetData(MEDIA, szComponent, FEATURE_FIELD_DESCRIPTION, 0, display_description);
+      else
+        FeatureSelectItem(MEDIA, szComponent, TRUE); // bSelected
+      endif;
+      nResult = get_next_component_index();
+      nCount = nCount + 1;
+    endwhile;
+    ListDestroy(previously_installed_list);
+
+ endif;   // (nReturn = 0)
+
+ unload_gensym_dll();
+ return nReturn;
+end;
+
+// BUG (anomoly)! - after you run this dialog, if you go back, these checks don't repeat -- the
+// tests are side-effecting the media!
+
+
+
+function TestDll()
+   STRING szFilename,szComponent;
+   NUMBER nError, nResult,bSelected;
+   POINTER pChar, pPointer;
+   CHAR cChar;
+   STRING szTemp[255];
+   LPSTR MyLpstr;
+
+  begin
+   cChar = "f";
+   pChar = &cChar;
+   szTemp = "testing";
+   load_gensym_dll();
+
+  	nError = 0;
+  	//nResult = GetFirstComponentIndex();
+  	//test_key_interface2();
+
+
+  	nResult = get_first_component_index();
+  	NumToStr(szComponent,nResult);
+    MessageBox ("get_first_component_index() returned " + szComponent,WARNING);//9999
+
+     pPointer = &szTemp;
+    //nResult = initialize_license_key(pPointer);
+    //NumToStr(szComponent,nResult);
+   // MessageBox ("initialize_license_key() returned " + szComponent,WARNING);//9999
+
+     nResult = Test_key (szTemp);
+     //Test_key (szTemp);
+     NumToStr(szTemp,nResult);
+    MessageBox ("Test_key(MyLpstr) returned " + szComponent,WARNING);//9999
+
+    nResult = get_installer_version();
+  	NumToStr(szComponent,nResult);
+    MessageBox ("get_installer_version() returned " + szComponent,WARNING);//9999
+
+    nResult = get_familyid();
+  	NumToStr(szComponent,nResult);
+    MessageBox ("get_familyid() returned " + szComponent,WARNING);//9999
+
+
+    nResult = get_bundleid();
+  	NumToStr(szComponent,nResult);
+    MessageBox ("get_bundleid() returned " + szComponent,WARNING);//9999
+
+
+    nResult = get_first_component_index();
+  	NumToStr(szComponent,nResult);
+    MessageBox ("get_first_component_index() returned " + szComponent,WARNING);//9999
+
+
+    while (nResult > 0)&&(nError < MAXCOMPONENT)
+         //nDataSize = 100;
+        bSelected = TRUE;
+        NumToStr(szComponent,nResult);
+        MessageBox ("get next " + szComponent,WARNING); //9999
+        //ComponentSetData (MEDIA, szComponent, COMPONENT_FIELD_VISIBLE, TRUE, "");
+        // ComponentSelectItem(MEDIA, szComponent, bSelected);
+         //nResult = GetNextComponentIndex();
+         nResult = get_next_component_index();
+        NumToStr(szComponent,nResult);
+        nError = nError + 1;
+    endwhile;
+  	//MEDIA = sHoldMEDIA;
+        unload_gensym_dll();
+  end;
+
+
+
+
+// Removal of a previous install per GUID.  Mostly taken from example
+// in the following at http://www.installshield.com
+//
+//   HOWTO: Uninstalling an Application from a Setup
+//   Document ID: Q104412
+//
+// The arg guid_string should be a string with just the GUID part,
+// i.e., no curly brackets,
+// e.g. "E2320DC5-B30D-11D3-8871-00104BD34E2B".
+//
+// The arg product_name_and_version_string should identify the product
+// name and version, and will be presented to the user.  E.g., if you
+// give "Wizbang 1.2", it will probably appear as "A previous
+// installation of Wizbang 1.2 has been found on this system. It must
+// be removed for the current setup to proceed".
+
+
+
+// The arg display_name_or_star should either be
+//
+//   the bundle name (e.g., "G2 Development" or (more recently used)
+//     "Gensym G2 Development")
+//
+// or
+//
+//   a string with just a star (asterisk) character, i.e., "*"
+//
+// to mean any bundle name.
+//
+// Note that for the G2/NOL/Netsleuth FCS, this is needed to distinguish
+// them, since they all used the same GUID, by mistake.  For most cases,
+// it is expected that the arg "*" should suffice.
+//
+// The arg display_name_return is a string var passed by reference; if this
+// returns TRUE, its value will be filled in with the real display name. If
+// this returns false, its resulting value is not defined.
+
+function previous_install_is_present (guid_string, display_name_or_star, display_name_return)
+STRING szUninstValue, svNumValue;
+NUMBER nvSize, nType, get_result;
+begin
+    nType = REGDB_NUMBER;
+    szUninstValue = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{" + guid_string + "}";
+    RegDBSetDefaultRoot(HKEY_LOCAL_MACHINE);
+    get_result = RegDBGetKeyValueEx(szUninstValue, "DisplayName",
+      nType, display_name_return, nvSize);
+    if ((display_name_or_star = "*")
+        || ((get_result >= 0) && (display_name_return = display_name_or_star))) then
+      // Retrieve the uninstallation string.
+      if (RegDBGetKeyValueEx(szUninstValue, "UninstallString", nType, svNumValue, nvSize) >= 0) then
+        return TRUE;
+      else
+        return FALSE;
+      endif;
+    endif;
+end;
+
+
+
+// remove_previous_install_per_guid is supposed to remove an installation based
+// on its GUID.  Not currently used: this is not quite ready for use, but
+// could probably be fixed up.  It's based on example code from InstallShield's
+// support web site. -mhd, 10/31/00
+
+function remove_previous_install_per_guid (guid_string, product_name_and_version_string)
+STRING szKey, svNumValue, szUninstValue,firststring,svString,secondstring;
+NUMBER nvSize, nType,nResult,numResult;
+LIST listID;
+begin
+    nType = REGDB_NUMBER;
+    szUninstValue = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{" + guid_string + "}";
+    RegDBSetDefaultRoot(HKEY_LOCAL_MACHINE);
+    // Retrieve the uninstallation string.
+    if (RegDBGetKeyValueEx(szUninstValue, "UninstallString", nType, svNumValue, nvSize) < 0) then
+        MessageBox("RegDBGetKeyValueEx failed.", SEVERE);
+    endif;
+    listID = ListCreate ( STRINGLIST );
+    StrGetTokens ( listID , svNumValue , "\"" );
+    nResult = ListGetFirstString (listID, svString);
+    firststring = svString;
+    // Loop while list items continue to be retrieved.
+    while (nResult != END_OF_LIST)
+        // Display the current element.
+	//        MessageBox (svString, INFORMATION);
+        // Get the next string in the list.
+        nResult = ListGetNextString (listID, svString);
+        numResult = StrFind ( svString , "setup.exe" );
+        if (numResult > 0)then
+            secondstring = svString;
+        endif;
+    endwhile;
+    LongPathToQuote ( secondstring , TRUE );
+    load_gensym_dll();
+    if (LaunchAppAndWait (secondstring, "", WAIT) < 0) then
+        MessageBox("Failed to Remove the Application", SEVERE);
+    unload_gensym_dll();
+    endif;
+end;
+
+
+function disallow_previous_install (guid, display_name_or_star, product_name, version)
+NUMBER nResult;
+STRING szMsg;
+BOOL dontCare;
+STRING display_name;
+begin
+  nResult = previous_install_is_present(guid, display_name_or_star, display_name);
+  if (nResult) then
+    szMsg = display_name + " is installed, "
+      + "but it is incompatible with the software you are about to install. You must remove it "
+      + "in order to use this installer. Click Finish to end this setup.";
+    SdFinish("Installation Unable to Proceed",
+      szMsg,
+      "Gensym support info: Installer Version " + BUNDLE_INSTALLER_VERSION + "; GUID=" + guid,
+      "", "", dontCare, dontCare);
+    abort;
+  endif;
+end;
+
+
+
+// The following have been moved here as fixed code.  Previously, they were
+// represented first as string constants, and then generated by the install
+// generator into the Environment.rul file.  Henceforth, they'll just be
+// called from that module.
+
+
+function RejectEnvVar (szEnvVarName)
+  STRING szWarning;
+begin
+ if (!global_system_envvar_problem_warning_issued) then
+  global_system_envvar_problem_warning_issued = TRUE;
+  MessageBox(
+  "Setup of system environment variables could not be completed because\n"
+  + "the system environment space is near its limit, 512 bytes, for this\n"
+  + "operating system, Windows NT 4.0 SP 5 or earlier.  You must refer to\n"
+  + "your product documentation and manually set environment variables as\n"
+  + "needed. For information about this operating system limitation, refer to\n"
+  + "Microsoft support article ID Q223275, \"Computer Stops or Hangs Due to\n"
+  + "Large System Environment Variable Values\" at Microsoft's Web site:\n"
+  + "http://support.microsoft.com",
+		WARNING);
+ endif;
+end;
+
+
+// system_subject_to_large_system_environment_variable_limit() is true
+// iff this is Windows NT 4.0 SP 5 or lower. Otherwise, it returns a
+// false value.
+//
+// install_subject_to_large_system_environment_variable_limit() is true
+// iff this is an all-users install (which generally implies setting system
+// variables) and this is Windows NT 4.0 SP 5 or lower.  Otherwise, it
+// returns a false value.
+
+function system_subject_to_large_system_environment_variable_limit()
+begin
+return((SYSINFO.WINNT.bWinNT4 && !(SYSINFO.WINNT.bWin2000))
+       && (SYSINFO.WINNT.nServicePack < 6));
+end;
+
+
+function install_subject_to_large_system_environment_variable_limit ()
+begin
+return(INSTALL_ALL_USERS
+       && system_subject_to_large_system_environment_variable_limit());
+end;
+
+
+// over_limit_for_environment_size returns true if installing for all
+// users (administrator mode), not for the current user (taking into account
+// the override global variable INSTALL_ENVVARS_FOR_CURRENT_USER),
+// and this is Windows NT 4.0, and service pack 5 or
+// earlier, and the number of bytes of space occupied
+// by the current environment variables (both the names and values) plus
+// the additional number of bytes specified > 512.
+//
+// This avoids the bug published by Microsoft as "Computer Stops
+// or Hangs Due to Large System Environment Variable Values"
+// (Q223275).  In this case, the total system environment
+// variable size must be kept to 512 bytes or less, including
+// the variable names.  With the "hotfix" (SP6), the size can go up
+// to 4,000 bytes, in which case we don't bother worrying about it.
+
+
+function over_limit_for_environment_size (additional_number_of_bytes, szKeyName)
+STRING szSubKey, name, szCurrentValue, szNum;
+NUMBER nItem, nType, nSize, n, i;
+LIST listResults, results_printout;
+NUMBER byte_count;
+begin
+  if (install_subject_to_large_system_environment_variable_limit()
+      && !INSTALL_ENVVARS_FOR_CURRENT_USER) then
+    szSubKey = szKeyName;
+    nItem = REGDB_NAMES;
+    listResults = ListCreate(STRINGLIST);
+    if (listResults = LIST_NULL) then
+      MessageBox("Failed checking environment (failed list allocation).", SEVERE);
+    endif;
+    if (RegDBQueryKey(szSubKey, nItem, listResults) < 0) then
+      MessageBox("Failed checking environment (querying registry).", SEVERE);
+    endif;
+    n = ListCount(listResults);
+
+    results_printout = ListCreate(STRINGLIST);
+
+    byte_count = 0;
+    for i = 1 to n
+      if (i = 1) then ListGetFirstString(listResults, name);
+        else ListGetNextString(listResults, name); endif;
+      byte_count = byte_count + StrLength(name) + 1;  // extra 1 for NUL byte
+      RegDBGetKeyValueEx(szSubKey, name, nType, szCurrentValue, nSize);
+      byte_count = byte_count + nSize;
+       NumToStr(szNum, (StrLength(name) + nSize));
+       ListAddString(results_printout, "(" + szNum + ") " + name + " = " + szCurrentValue, AFTER);
+    endfor;
+    ListDestroy(listResults);
+    NumToStr(szNum, byte_count);
+    if ((byte_count + additional_number_of_bytes) > 512) then
+       if (!global_system_envvar_problem_warning_issued) then
+         // For debugging:
+         // SdShowInfoList("System Environment Variable Space At Limit", "System Environment Variables Space: " + szNum + " bytes", results_printout);
+       endif;
+      ListDestroy(results_printout);
+      return(TRUE);
+    else
+      ListDestroy(results_printout);
+      return(FALSE);
+    endif;
+  else
+    return(FALSE);
+  endif;
+end;
+
+
+
+
+
+function set_env_var (key, var, val, append_p)
+  STRING orig_val, final_val;
+  NUMBER size, type, get_result, var_length, val_length, delta_length;
+begin
+
+  // Bail out if this is WIN9X but we don't do envvars:
+  if (SYSINFO.WIN9X.bWin9X && IGNORE_ENVVARS_FOR_WIN9X) then
+    return 0;
+  endif;
+
+
+  // Take care of global restrictions on setting certain shared
+  // environment variables (PATH and CLASSPATH). Return without doing
+  // anything if this restriction applies.  For Bundle Installer 1.0.2.
+  // (MHD 11/29/00)
+  if ((!MAY_SETENV_CLASSPATH && (var = "CLASSPATH"))
+      || (!MAY_SETENV_PATH && (var = "PATH"))) then
+    return 0;
+  endif;
+
+  if (SYSINFO.WIN9X.bWin9X) then
+    get_result = GetEnvVarDef95(var, orig_val);
+  else
+    get_result = RegDBGetKeyValueEx(key, var, type, orig_val, size);
+  endif;
+  if (get_result < 0) then  // var didn't previously exist
+    delta_length = StrLength(var) + 1;
+    orig_val = "";
+    size = 0;
+  endif;
+  if (!append_p || (orig_val = "")) then
+    final_val = val;
+  else
+    final_val = orig_val + ";" + val;
+  endif;
+  delta_length = delta_length + StrLength(final_val) + 1;
+  delta_length = delta_length - size;
+  if (delta_length < 0) then
+    delta_length = 0;
+  endif;
+  if (over_limit_for_environment_size(delta_length, key)) then
+    RejectEnvVar(var);
+  else
+
+    // Disable logging temporarily around the environment variable set
+    // for append-style changes.  This is to keep the uninstall
+    // from completely removing/unsetting the variable.  Restore below.
+    if (append_p) then
+      Disable(LOGGING);
+    endif;
+
+    if (SYSINFO.WIN9X.bWin9X) then
+      ReplaceEnvVar95(var, final_val);
+    else
+      RegDBSetKeyValueEx(key, var, REGDB_STRING_EXPAND, final_val, -1);
+    endif;
+
+    // Record that a reboot is needed for the environment variable settings
+    // to take effect.  We have found no more reliable way to have
+    // these take effect is through a reboot.  Plus this was done by the
+    // previous TW2 & Javalink component installers. (MHD 10/31/00)
+    global_system_envvar_changes_require_reboot = TRUE;
+
+    // Restore logging.
+    if (append_p) then
+      Enable(LOGGING);
+    endif;
+  endif;
+end;
+
+
+
+function Create1EnvVarAppendStyle (szKeyName, szComponentName, szEnvVarName, szNewValue)
+begin
+  if FeatureIsItemSelected(MEDIA, szComponentName) then
+    set_env_var(szKeyName, szEnvVarName, szNewValue, TRUE);
+  endif;
+end;
+
+function Create1EnvVar (szKeyName, szComponentName, szEnvVarName, szNewValue)
+begin
+  if FeatureIsItemSelected(MEDIA, szComponentName) then
+    set_env_var(szKeyName, szEnvVarName, szNewValue, FALSE);
+  endif;
+end;
+
+function Create1EnvVarMergeStyle (szKeyName, szComponentName, szEnvVarName, szNewValue)
+  STRING szCurrentValue;
+  NUMBER nSize, nType;
+begin
+  // Bail out if this is WIN9X but we don't do envvars:
+  if (SYSINFO.WIN9X.bWin9X && IGNORE_ENVVARS_FOR_WIN9X) then
+    return 0;
+  endif;
+  if FeatureIsItemSelected(MEDIA, szComponentName) then
+    if (SYSINFO.WIN9X.bWin9X) then
+      GetEnvVarDef95(szEnvVarName, szCurrentValue);
+    else
+      RegDBGetKeyValueEx(szKeyName, szEnvVarName, nType, szCurrentValue, nSize);
+    endif;
+    if (!(IsInPath(szCurrentValue, szNewValue))) then
+      set_env_var(szKeyName, szEnvVarName, szNewValue, TRUE);
+    endif;
+  endif;
+end;
+
+
+// If installing for all users and there's no override
+// (INSTALL_ENVVARS_FOR_CURRENT_USER) in effect, we set
+// a system variable.  Otherwise, we set a normal user
+// environment variable.  The override, if any, should
+// be set up in Setup.rul.
+
+// InstallShield comment about Environment Variables & Win9X:
+// In Microsoft Windows 3.x and 95 environments, it is recommended that you not
+// change the value of environment variables. If you need to set a new environment
+// variable, set it in the Autoexec.bat file and then reboot the system. For
+// Windows NT, see [documentation] "Set an environment variable under Windows NT".
+
+
+function set_environment_registry_key(szKeyName)
+STRING szOSType;
+NUMBER nOSType;
+begin
+  if (SYSINFO.WIN9X.bWin9X) then
+    // no registry key for Window 95/98; env. var.'s go in batch files
+    szKeyName = "irrelevant for Win9x";
+  elseif (INSTALL_ALL_USERS && !INSTALL_ENVVARS_FOR_CURRENT_USER) then
+    RegDBSetDefaultRoot(HKEY_LOCAL_MACHINE);
+    szKeyName = "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment";
+  else
+    RegDBSetDefaultRoot(HKEY_CURRENT_USER);
+    szKeyName = "Environment";
+  endif;
+end;
+
+
+
+
+
+// The following were adapted from jave/.../gensym.rul (The shipping
+// TW2/Javalink setup scripts based on InstallShield 3. -mhd, 10/19/00
+
+/*
+ * Function:
+ * Purpose: Check (ignoring case) to see the directory to is in the list
+ *          of directries and if not add it to the end of a path string.
+ *          Add a semicolon if needed.
+ */
+function AddToEndIfNotInList(dirs, dirToAdd, pathString)
+begin
+  if IsInList(dirs, dirToAdd) then
+    return 0;
+  endif;
+
+  if pathString != "" then
+    pathString = pathString + ";";
+  endif;
+
+  pathString = pathString + dirToAdd;
+end;
+
+/*
+ * Function: IsInPath
+ * Purpose: Find a directory in path. This had to be written because the
+ *          PathSet function for InstallShield3 did not like paths that
+ *          contain directories with spaces like "C:\Program Files".
+ */
+function IsInPath(path, dir)
+  LIST dirs;
+begin
+  dirs = CreateDirListFromPath(path);
+  return IsInList(dirs, dir);
+end;
+
+/*
+ * Function: CreateDirListFromPath
+ * Purpose: Create a list of directories from a given path string.
+ */
+function CreateDirListFromPath(path)
+  LIST dirs;
+begin
+  dirs = ListCreate(STRINGLIST);
+  StrGetTokens(dirs, path, ";");
+  return dirs;
+end;
+
+/*
+ * Function: IsInList
+ * Purpose: Find a string in a list ignoring case.
+ */
+function IsInList(strings, match)
+  STRING currentString;
+  NUMBER result;
+begin
+  result = ListGetFirstString(strings, currentString);
+  while result = 0
+    // StrCompare is NOT case sensitive.
+    if StrCompare(currentString, match) = 0 then
+      return TRUE;
+    endif;
+
+    result = ListGetNextString(strings, currentString);
+  endwhile;
+
+  return FALSE;
+end;
+
+
+/*
+ * Function: FixupPropertiesFile
+ * Purpose: Read the raw properties file from the source dir,
+ *          replace %ROOTDIR% with the target dir,
+ *          and write the fixed up file to target dir.
+ */
+function FixupPropertiesFile(sourceDir, rawFileName, targetDir, subDir,
+                             fileName)
+  LIST sourceLines;
+  STRING fixedTargetDir;
+  STRING currentLine;
+  NUMBER result;
+  BOOL lineChanged;
+  LIST tokens;
+  STRING currentToken;
+begin
+  sourceLines = ListCreate(STRINGLIST);
+  if ListReadFromFile(sourceLines, sourceDir ^ rawFileName) < 0 then
+    // WarnAndLog was used originally in component installer. Consider
+    // reviving for bundle installer. -mhd, 12/6/00
+    MessageBox("Could not read properties template from file " + sourceDir ^ rawFileName, WARNING);
+    return FALSE;
+  endif;
+
+  // Java properties file use the \ as an escape char.
+  // So we must double each single \
+  DoubleSlashify(targetDir, fixedTargetDir);
+
+  // loop through lines and replace %root dir%
+  result = ListGetFirstString(sourceLines, currentLine);
+  while result = 0
+    lineChanged = FALSE;
+    tokens = ListCreate(STRINGLIST);
+    StrGetTokens(tokens, currentLine, "%");
+    currentLine = "";
+    result = ListGetFirstString(tokens, currentToken);
+    while result = 0
+      if currentToken = "ROOTDIR" then
+        currentLine = currentLine + fixedTargetDir;
+        lineChanged = TRUE;
+      else
+        currentLine = currentLine + currentToken;
+      endif;
+
+      result = ListGetNextString(tokens, currentToken);
+    endwhile;
+
+    ListDestroy(tokens);
+    if lineChanged then
+      ListSetCurrentString(sourceLines, currentLine);
+    endif;
+
+    result = ListGetNextString(sourceLines, currentLine);
+  endwhile;
+
+  if !OverwriteLinesOfText(targetDir ^ subDir, fileName, sourceLines) then
+    // originally WarnAndLog -- mhd, 12/6/00
+    MessageBox("Could not write " + targetDir ^ subDir ^ fileName + ".", WARNING);
+    return FALSE;
+  endif;
+
+  return TRUE;
+end;
+
+
+/*
+ * Function: replace_rootdir
+ * Purpose: replaces %ROOTDIR% with TARGETDIR in the specified file in the specified
+ * directory relative to TARGETDIR.  Bug/limitation: any line that has %ROOTDIR% on
+ * will have any other occurances of %'s removed.  This could be fixed if it's a problem,
+ * but would require a smarter text line parser and/or more complicated code.
+ */
+
+function replace_rootdir(directory, file_name)
+  LIST sourceLines;
+  STRING currentLine;
+  NUMBER result;
+  BOOL lineChanged;
+  LIST tokens;
+  STRING currentToken;
+  STRING absolute_directory;
+begin
+  absolute_directory = TARGETDIR ^ directory;
+  sourceLines = ListCreate(STRINGLIST);
+  if ListReadFromFile(sourceLines, absolute_directory ^ file_name) < 0 then
+    MessageBox("Postinstall step: cannot modify file " + absolute_directory ^ file_name + " with install directory.", WARNING);
+    return FALSE;
+  endif;
+
+  // loop through lines and replace %ROOTDIR% with TARGETDIR
+  result = ListGetFirstString(sourceLines, currentLine);
+  while result = 0
+    lineChanged = FALSE;
+    tokens = ListCreate(STRINGLIST);
+    StrGetTokens(tokens, currentLine, "%");
+    currentLine = "";
+    result = ListGetFirstString(tokens, currentToken);
+
+    lineChanged = FALSE;
+    while result = 0
+      if currentToken = "ROOTDIR" then
+        currentLine = currentLine + TARGETDIR;
+        lineChanged = TRUE;
+      else
+        currentLine = currentLine + currentToken;
+      endif;
+
+      result = ListGetNextString(tokens, currentToken);
+    endwhile;
+
+    ListDestroy(tokens);
+    if lineChanged then
+      ListSetCurrentString(sourceLines, currentLine);
+    endif;
+
+    result = ListGetNextString(sourceLines, currentLine);
+  endwhile;
+
+  if !OverwriteLinesOfText(absolute_directory, file_name, sourceLines) then
+    MessageBox("Could not write " + absolute_directory ^ file_name + ".", WARNING);
+    return FALSE;
+  endif;
+
+  return TRUE;
+end;
+
+
+/* Function: CorrectRegistryEntry
+ * Purpose: fixup the %ROOTDIR% inside a registry entry we created 
+ * with a "registry entry" in the family file.  We don't have
+ * access to the correct information at registry file creation time, so
+ * fix it at runtime.
+ */
+function CorrectRegistryEntry(nRootKey,szSubKey)
+LIST listResults;
+STRING svName, svValue, szNewString, szEndString;
+NUMBER nReturn, nvSize, nLen, i, nType, nStartPos;
+STRING svLen;
+begin
+  listResults = ListCreate(STRINGLIST);
+
+  if (listResults = LIST_NULL) then
+     MessageBox ("Correcting Registry Entries after installation:  call to ListCreate failed.", SEVERE);
+     return -1;
+  endif;
+
+  /* First set root to, e.g., HKEY_LOCAL_MACHINE */
+  if (RegDBSetDefaultRoot (nRootKey) < 0) then
+     MessageBox ("Correcting Registry Entries after installation:  call to RegDBSetDefaultRoot failed.", SEVERE);      
+     return -1;
+  endif;
+
+  /* Now retrieve all the keys for our subkey, which is something like
+     "SOFTWARE\\Gensym\\Telewindows\\8.0 Alpha Rev. 1" */
+  if (RegDBQueryKey (szSubKey, REGDB_NAMES, listResults) < 0) then
+     MessageBox("Correcting Registry Entries after installation:  querying for "
+                + szSubKey + " failed.",SEVERE);
+     return -1;
+  endif;
+
+  nType = REGDB_STRING;
+  /* Now loop through all the keys, looking for values that match %ROOTDIR%, 
+     and replacing them with TARGETDIR, which is what we actually WANT. */
+  for i = 1 to ListCount(listResults)
+    if (i = 1) then ListGetFirstString(listResults, svName);
+      else ListGetNextString(listResults, svName); endif;
+
+    if (RegDBGetKeyValueEx (szSubKey, svName, nType, svValue, nvSize) < 0) then
+       MessageBox("Correcting Registry Entries after installation:  retrieving "
+                  + svName + " failed.",SEVERE);
+       return -1;
+    endif;
+    nStartPos = StrFind(svValue,"%ROOTDIR%");
+    if (nStartPos < 0) then
+      /* No rootdir, leave it alone. */
+      return 0;
+    else
+      /* Get prefix (postfix) around %ROOTDIR%, if any, and prepend (append)
+         to TARGETDIR. */
+      if (nStartPos > 0) then
+	StrSub(szNewString, svValue, 0, nStartPos);
+      else
+	szNewString = "";
+      endif;
+      szNewString = szNewString + TARGETDIR;
+      if ((nStartPos + StrLength(svValue)) > StrLength("%ROOTDIR%")) then
+	StrSub(szEndString, svValue, (nStartPos + StrLength("%ROOTDIR%")), 
+               StrLength(svValue) - (nStartPos + StrLength("%ROOTDIR%")));
+	szNewString = szNewString + szEndString;
+      endif;
+      if (RegDBSetKeyValueEx (szSubKey, svName, nType, szNewString, -1) < 0) then
+	 MessageBox("Correcting Registry Entries after installation:  setting "
+                     + svName + " to " + TARGETDIR + " failed.",SEVERE);
+	 return -1;
+      endif;
+    endif;
+  endfor;
+end;
+
+/*
+ * Function: DoubleSlashify
+ * Purpose: Replace each back slash with 2 for use in Java properties files.
+ */
+function DoubleSlashify(inString, outString)
+  LIST tokens;
+  BOOL firstToken;
+  NUMBER result;
+  STRING token;
+begin
+  tokens = ListCreate(STRINGLIST);
+  if StrGetTokens(tokens, inString, "\\") < 0 then
+    outString = inString;
+    return 0;
+  endif;
+
+  outString = "";
+  firstToken = TRUE;
+  result = ListGetFirstString(tokens, token);
+  while result = 0
+    if !firstToken then
+      outString = outString + "\\\\";
+    endif;
+
+    outString = outString + token;
+    result = ListGetNextString(tokens, token);
+    firstToken = FALSE;
+  endwhile;
+end;
+
+
+
+/*
+ * Function: OverwriteLinesOfText
+ * Purpose: Writes a list of strings to a file. Overwrites the text if the
+ *          file exists.
+ */
+function OverwriteLinesOfText(directory, fileName, linesOfText)
+  STRING tempFileName;
+  NUMBER result;
+  NUMBER fileHandle;
+  STRING currentLine;
+begin
+  tempFileName = directory ^ "temp.txt";
+  OpenFileMode(FILE_MODE_APPEND);
+  result = CreateFile(fileHandle, directory, tempFileName);
+  CloseFile(fileHandle);
+
+  // uninstall does not uninstall files created by CreateFile
+  // so make a copy and delete the original.
+
+  // MessageBox("About to delete " + directory ^ fileName, INFORMATION);
+  DeleteFile(directory ^ fileName);  // desired/expected: deletes file if present or is silent
+
+  // MessageBox("About to copy " + tempFileName + " to " + directory ^ fileName, INFORMATION);
+  CopyFile(tempFileName, directory ^ fileName);
+
+  //MessageBox("About to delete " + tempFileName, INFORMATION);
+  DeleteFile(tempFileName);
+
+  // MessageBox("About to ListWriteToFile " + directory ^ fileName, INFORMATION);
+  if ListWriteToFile(linesOfText, directory ^ fileName) < 0 then
+    return FALSE;
+  endif;
+
+  return TRUE;
+end;
+
+
+/* I (MHD) have adapted the following from Javalink 11r0-era Gensym IS setup code.
+   It previously had a bug in that it would only open the batch file once, but
+   close it any number of times.  It was probably not detecting errors.  I tested
+   it enough to learn that it would, as you would expect, contribute at most one
+   environment variable to the startup (autoexec.bat) file.  This is fixed below,
+   and I've tested it.  Meanwhile, we don't want to devote further resources to
+   testing this. Apparently it was not documented, or known about, by support for
+   Javalink and Telewindows2, so we'll leave it at that.  The feature is disabled.
+   See IGNORE_ENVVARS_FOR_WIN9X, which is obeyed elsewhere; note that these
+   functions will not obey that variable: they should not be called if it's true.
+   (MHD 12/18/00)
+*/
+
+/*
+ * Function: GetEnvVarDef95
+ * Purpose: This gets the value part of the system definition for a variable
+ *          from the Win95 autoexec.bat.  This returns <0 (-1) if there is
+ *          no definition for the variable in autoxec.bat.
+ */
+function GetEnvVarDef95(name, def)
+  NUMBER defStart;
+begin
+  BatchFileLoad("");
+
+  if BatchFind(name, def, RESTART) < 0 then
+    return -1;
+  endif;
+
+  defStart = StrFind(def, "=");
+  if defStart <= 0 then
+    return -1;
+  endif;
+
+  StrSub(def, def, defStart + 1, StrLength(def));
+  return 0;
+end;
+
+
+/*
+ * Function: ReplaceEnvVar95
+ * Purpose: Replaces or adds an enviroment variable on Win95.
+ */
+function ReplaceEnvVar95(name, value)
+begin
+    BatchFileLoad("");
+
+    BatchAdd(name, value, "", REPLACE);
+    BatchFileSave("");
+end;
+
+
+
+
+/*
+ * Function: AppendPathToEnvVar95
+ * Purpose: Appends to the value of an enviroment variable on Win95.
+ */
+
+function AppendPathToEnvVar95(name, value)
+  STRING oldValue;
+begin
+  BatchFileLoad("");
+
+  oldValue = "";
+  BatchFind(name, oldValue, RESTART);
+  if oldValue != "" then
+    oldValue = oldValue + ";";
+  endif;
+
+  oldValue = oldValue + value;
+  BatchAdd(name, oldValue, "", REPLACE);
+  BatchFileSave("");
+end;
+
+
+
+
+
+
+/* 
+ * Function: write_basedir_batfile
+ * Purpose: writes a file named basedir.bat in the given directory relative to
+ * the installation directory.
+ * When run, the batfile sets the specified environment variable to
+ * the base directory pathname, i.e., the value of TARGETDIR at the
+ * time of the installation.  Note that the file name should have the .bat
+ * extension.
+ * Note: this ended up not needing to be used, but it seemed
+ * like possibly good functionality later on to leave around. Note, too,
+ * that you want to have a dummy file installed before this this runs; that
+ * ensures that uninstalling will remove the file this creates.  See how
+ * we do this for watermark.txt and various OK files. The same
+ * applies to the function below. (MHD 12/13/01)
+ */
+
+function write_basedir_batfile(directory, environment_variable_name)
+  NUMBER file_handle;
+  STRING dir_pathname, batfile_name;
+begin
+
+  dir_pathname = TARGETDIR ^ directory;
+  batfile_name = "basedir.bat";
+
+  OpenFileMode(FILE_MODE_APPEND);
+  CreateFile(file_handle, dir_pathname, batfile_name);
+
+  if (file_handle < 0) then
+    MessageBox("Error creating file " + dir_pathname ^ batfile_name, SEVERE);
+    return (FALSE);
+  endif;
+
+  WriteLine (file_handle, "set " + environment_variable_name + "=" + TARGETDIR);
+  CloseFile (file_handle);
+end;
+
+
+/*
+ * Function: write_gsi_launch_batfile
+ * Purpose: writes a file named as per the arguments directory and exe_file_name.
+ * When run, the batfile (1) sets GSI_ROOT to the directory relative to the base
+ * directory, i.e., TARGETDIR ^ directory, (2) launches the bridge by executing
+ * the executable specified by exe_file_name, which should be the name of the
+ * exe file (without the ".exe" extension).  The batfile starts with a call
+ * to setlocal, so the setting of GSI_ROOT will be local to that batchfile only.
+ * The batfile name is of the form "run-<exe_file_name>.bat".  It is intended
+ * to be called from a shortcut with no arguments and with the working directory
+ * set to the same directory as specified in the arguments.
+ */
+
+function write_gsi_launch_batfile(directory, exe_file_name)
+  NUMBER file_handle;
+  STRING dir_pathname, batfile_name;
+begin
+
+  dir_pathname = TARGETDIR ^ directory;
+  batfile_name = "run-" + exe_file_name + ".bat";
+
+  OpenFileMode(FILE_MODE_APPEND);
+  CreateFile(file_handle, dir_pathname, batfile_name);
+
+  if (file_handle < 0) then
+    MessageBox("Error creating file " + dir_pathname ^ batfile_name, SEVERE);
+    return (FALSE);
+  endif;
+
+  WriteLine (file_handle, "@echo off");
+  WriteLine (file_handle, "setlocal");
+  WriteLine (file_handle, "set GSI_ROOT=" + dir_pathname);
+  WriteLine (file_handle, exe_file_name);
+  CloseFile (file_handle);
+end;
+  
+//Callable from user postinstall code in a part to verify that a DLL is present
+//and up to a certain version. 
+//   Five args: First three are obvious: 
+//      DLL you care about
+//      major version
+//      minor version
+//      possible "standin" DLL
+//      pretty name of the component (for messages)
+//
+//The standin arg is strange, but it is used thusly: for TW, shell32.dll should
+//be 4.71, but if it's not, it's still OK as long as shfolder.dll is present.
+//If you don't have a standin, pass "".
+//
+//Example:  in foo-family.lisp:
+//    :postinstall-code "VerifyDLLVersion(\"comctl32.dll\",4,71,\"\",\"Telewindows\");"
+function VerifyDLLVersion(base_dll,major_ver,minor_ver,other_dll,component_name)
+NUMBER check_value;
+STRING major_string,minor_string,check_string;
+begin
+  load_gensym_dll();
+  NumToStr (major_string, major_ver);
+  NumToStr (minor_string, minor_ver);
+  check_value = CheckDllVersion(base_dll,major_ver,minor_ver,other_dll);
+  NumToStr(check_string,check_value);
+  if (check_value = 0) then
+    MessageBox(base_dll + " version is not at least " + major_string + "." + minor_string
+               + ".  Portions of " + component_name + " may not function properly.",WARNING);
+  elseif (check_value = -1) then
+    MessageBox("Failed to determine version of " + base_dll 
+               + ".  Can't verify version at least " + major_string + "." + minor_string
+               + ".  Portions of " + component_name + " may not function properly.",SEVERE);
+  endif;
+  unload_gensym_dll();
+end;
+
+function DeleteDLLIfNotNeeded(dll_name,major_ver,minor_ver,directory_name)
+NUMBER check_value;
+STRING empty;
+begin 
+  load_gensym_dll();
+  empty = "";
+  check_value = CheckDllVersion(dll_name,major_ver,minor_ver,empty);
+
+  // If check_value is other than 1, then the DLL does not exist (or
+  // is not up to the needed version).  In this case we are good.
+  // Otherwise, we have to delete the dll, because we don't want to
+  // override the system version.
+  if (check_value = 1) then
+    DeleteFile(TARGETDIR ^ directory_name ^ dll_name);
+  endif;
+  unload_gensym_dll();
+end;
+
+///////////////////////////////////////////////
+// Integrity additions, by William Morris, to be called from
+// code in the Integrity family files:  (6/28/01, 3.4r0)
+//
+//   integrityCopyPropertyFiles (STRING)
+//
+// This copies the *.properties files from the OPEXproperties directory
+// to the user's %USERPROFILE%\opex directory.  These files are necessary
+// for the Java UI to function and to allow the user to configure the UI.
+// The STRING argument, in all four functions, will either be "Integrity"
+// or "Optegrity".  This is needed in order to set the source directory
+// for the copy.
+//
+//   integrityInstallProperties (STRING)
+//
+// This launches the InstallProperties.bat file located in the installed
+// javalink directory.  This function needs to be called before the
+// integrityModifyPropFile function.
+//
+//   integrityModifyPropFile (STRING)
+//
+// This function modifies the .com.gensym.properties file to include the
+// installed dlg directory.  The dlg directory contains the GUIDE
+// converted dialogs used by OPAC.  If this function is not called, the
+// dialogs will not work.
+//
+//   integrityPostInstall (STRING)
+//
+// This function was created to create a single entry point for the post
+// install of the Client.  Other functions can be added if necessary for
+// future release.
+///////////////////////////////////////////////
+function integrityCopyPropertyFiles (AppType)
+STRING szVar;
+STRING svHome;
+INT nvCopyRtn;
+begin
+  szVar = "USERPROFILE";
+  if (GetEnvVar (szVar, svHome) >= 0) then
+    VarSave (SRCTARGETDIR);
+    if (AppType = "Integrity") then
+      SRCDIR = TARGETDIR + "\\Client\\OPEXproperties";
+    else
+      SRCDIR = TARGETDIR + "\\optclient\\OPEXproperties";
+    endif;
+    TARGETDIR = svHome + "\\opex";
+    if (ExistsDir (TARGETDIR) = EXISTS) then
+      if (DeleteDir (TARGETDIR, ALLCONTENTS) < 0) then
+        MessageBox ("Deletion of " + TARGETDIR + " failed.", WARNING);
+      endif;
+    endif;
+    nvCopyRtn = XCopyFile ("*.*", "opex", COMP_NORMAL);
+    if (nvCopyRtn < 0) then
+      MessageBox ("Setup could not copy OPEXproperties to " + TARGETDIR + ".", WARNING);
+    endif;
+    VarRestore (SRCTARGETDIR);
+  else
+    MessageBox ("USERPROFILE not set, did not copy OPEXproperties to HOME directory.", WARNING);
+  endif;
+  //MessageBox ("Target dir = " + TARGETDIR, INFORMATION);
+end;
+
+function integrityInstallProperties (AppType)
+STRING szInstallProperties;
+STRING svParameter;
+INT nvLaunchReturn;
+begin
+  if (AppType = "Integrity") then
+    szInstallProperties = TARGETDIR + "\\javalink\\bin\\InstallProperties.bat";
+    svParameter = TARGETDIR + "\\Client\\javalink";
+  else
+    szInstallProperties = TARGETDIR + "\\javalink\\bin\\InstallProperties.bat";
+    svParameter = TARGETDIR + "\\optclient\\javalink";
+  endif;
+  nvLaunchReturn = LaunchAppAndWait (szInstallProperties, svParameter, WAIT);
+  if (nvLaunchReturn < 0) then
+    MessageBox ("Failed to run InstallProperties.bat,\n" +
+                "please run before starting Client.", INFORMATION);
+  endif;
+end;
+
+function integrityModifyPropFile (AppType)
+STRING svPropsHome, szParam, svResult, svLine;
+NUMBER nvNewFileHandle, nvLineNumber;
+STRING svReturnLine, svPropMsg, svReturnString, svNewInstallDir;
+LIST listID;
+STRING szDelimiterSet, szPath, svString;
+NUMBER nResult;
+STRING svClientDir;
+begin
+  listID = ListCreate (STRINGLIST);
+  szDelimiterSet = "\\";
+  if (AppType = "Integrity") then
+    svClientDir = TARGETDIR + "\\Client";
+  else
+    svClientDir = TARGETDIR + "\\optclient";
+  endif;
+  if (StrGetTokens (listID, svClientDir, szDelimiterSet) < 0) then
+    MessageBox ("Failed to parse .com.gensym.properties", SEVERE);
+  else
+    nResult = ListGetFirstString (listID, svString);
+    while (nResult != END_OF_LIST)
+      svNewInstallDir = svNewInstallDir + svString + "/";
+      nResult = ListGetNextString (listID, svString);
+    endwhile;
+  endif;
+  ListDestroy (listID);
+  svLine = "com.gensym.beaneditor.uilconversionrepository=file:///" +
+    svNewInstallDir + "dlg";
+//  szParam = "USERPROFILE";
+//  if (GetEnvVar (szParam, svPropsHome) < 0) then
+//    MessageBox ("Could not obtain USERPROFILE!", WARNING);
+//  endif;
+//  if (FindFile (svPropsHome, ".com.gensym.properties", svResult) < 0) then
+//    VarSave (SRCTARGETDIR);
+// //    if (AppType = "Integrity") then
+// //      SRCDIR = TARGETDIR + "\\Client\\javalink\\classes";
+// //    else
+// //      SRCDIR = TARGETDIR + "\\optclient\\javalink\\classes";
+//      SRCDIR = TARGETDIR + "\\javalink\\classes";
+// //    endif;
+//    TARGETDIR = svPropsHome;
+//    if (CopyFile (".com.gensym.properties", ".com.gensym.properties") < 0) then
+//      MessageBox ("Could not copy .com.gensym.properties!", WARNING);
+//    endif;
+//    VarRestore (SRCTARGETDIR);
+//  endif;
+  svPropsHome = TARGETDIR + "\\javalink\\classes";
+  if (FindFile (svPropsHome, ".com.gensym.properties", svResult) < 0) then
+    MessageBox ("Counld not find .com.gensym.properties at " + svPropsHome, WARNING);
+    //Should be there unless an error occurred during the copy.
+  else
+    VarSave (SRCTARGETDIR);
+    SRCDIR = svPropsHome;
+    TARGETDIR = svPropsHome;
+    if (FileGrep (".com.gensym.properties", "uilconversionrepository",
+      svReturnLine, nvLineNumber, RESTART) = 0) then
+      if (FileInsertLine (".com.gensym.properties", svLine, nvLineNumber, REPLACE) < 0) then
+        svPropMsg = "Could not modify .com.gensym.properties due to error";
+        MessageBox (svPropMsg, WARNING);
+      endif;
+    else
+      OpenFileMode (FILE_MODE_APPEND);
+      OpenFile (nvNewFileHandle, svPropsHome, ".com.gensym.properties");
+      WriteLine (nvNewFileHandle, svLine);
+      CloseFile (nvNewFileHandle);
+    endif;
+    VarRestore (SRCTARGETDIR);
+  endif;
+end;
+
+/////////////////////////////////////////////////////
+// Added: 6/18/2003 by WSM
+// This function will copy the .com.gensym.properties file
+// from the javalink\classes directory to the %USERPROFILE%
+// directory.  This is needed for the correct operation of
+// the Integrity Java Client.
+/////////////////////////////////////////////////////
+function integrityCopyGensymPropertyFile (AppType)
+STRING szVar;
+STRING svHome;
+INT nvCopyRtn;
+begin
+  szVar = "USERPROFILE";
+  if (GetEnvVar (szVar, svHome) >= 0) then
+    VarSave (SRCTARGETDIR);
+    SRCDIR = TARGETDIR + "\\javalink\\classes";
+    TARGETDIR = svHome;
+    nvCopyRtn = XCopyFile (".com.gensym.properties", svHome, COMP_NORMAL);
+    if (nvCopyRtn < 0) then
+      MessageBox ("Setup could not copy .com.gensym.properties to " + TARGETDIR + ".", WARNING);
+    endif;
+    VarRestore (SRCTARGETDIR);
+  else
+    MessageBox ("USERPROFILE not set, did not copy .com.gensym.properties to HOME directory.", WARNING);
+  endif;
+end;
+
+
+function integrityPostInstall (AppType)
+begin
+  integrityCopyPropertyFiles(AppType);
+  // no need to do since Javalink must be installed and it takes care of this.
+  //      integrityInstallProperties(AppType);
+  integrityModifyPropFile(AppType);
+  integrityCopyGensymPropertyFile(AppType);
+end;
