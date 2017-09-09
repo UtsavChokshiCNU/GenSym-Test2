@@ -1,0 +1,475 @@
+<html><head><title>G2UiGateway</title></head>
+<body bgcolor="#ffffff">
+<h5><a href="g2twcon2.htm">| Prev </a> 
+  <a href="g2twcon4.htm">| Next </a>
+ <a href="g2twconn.htm">| Start of Chapter </a>
+ <a href="g2twcon4.htm">| End of Chapter </a>
+ <a href="booktoc.htm">| Contents </a> <a href="glossary.htm">| Glossary </a> <a href="bookix.htm">| Index </a>  <a href="mailto:docs@gensym.com">| Comments | </a> (4 out of 5) </h5> <br>
+
+<a name="996905">
+<h1> Methods</h1>
+</a><a name="996906">
+Using methods, the Visual Basic application makes requests of the Telewindows2 Toolkit control. The methods enable you to manage the connection, invoke G2 procedures, and display workspaces.<p>
+</a><a name="1002540">
+<h2> CallG2Procedure()</h2>
+</a><a name="1002543">
+The <code>CallG2Procedure()</code> method calls a procedure in G2 and waits for the G2 procedure to complete. <p>
+</a><a name="996915">
+<h3> Syntax</h3>
+</a><ul><a name=996916">
+<pre><code>CallG2Procedure(</code><code><em>ProcedureName</code></em><code> As String,<br>&#32;&#32;&#32;[</code><code><em>ParamArray InputArguments()</code></em><code> As &#32;Variant]) <br></code><code><em>&#32;&#32;&#32;ReturnArguments</code></em><code> As &#32;Variant</code></pre>
+</a><a name="996932">
+<table border="3">
+<caption></caption>
+<tr><th align="left" valign="middle"><a name="996921">
+<strong>Arguments </strong>
+</a><th align="left" valign="middle"><a name="996923">
+<strong>Description </strong>
+</a>
+<tr><td valign="middle"><a name="996925">
+<code><code><em>ProcedureName </code></em><code>As String</code></code>
+</a><br><td valign="middle"><a name="996927">
+The name of the G2 procedure you are calling.
+</a><br>
+<tr><td valign="middle"><a name="996929">
+<code><code><em>ParamArray</code></em><code><em> InputArguments()<br></code></em><code>As Variant</code></code>
+</a><br><td valign="middle"><a name="996931">
+Any of zero or more arguments to be passed to the G2 procedure. 
+</a><br>
+
+</table>
+
+<table>
+<tr><td>
+</table>
+<p>
+</a><a name="996942">
+<table border="3">
+<caption></caption>
+<tr><th align="left" valign="middle"><a name="996935">
+<strong>Return Values</strong>
+</a><th align="left" valign="middle"><a name="996937">
+<strong>Description </strong>
+</a>
+<tr><td valign="middle"><a name="996939">
+<code><code><em>ReturnArguments </code></em><code>As Variant</code></code>
+</a><br><td valign="middle"><a name="996941">
+Any of zero or more arguments to be returned from the G2 procedure. If a G2 procedure returns more than one value, Visual Basic can access the return values by using array subscripting, such as Ret(1), Ret(2), and so on. If only one value is returned, the array subscript is not necessary.
+</a><br>
+
+</table>
+
+<table>
+<tr><td>
+</table>
+<p>
+</a></ul><a name="996943">
+<h3> Description</h3>
+</a><a name="996945">
+The <code>CallG2Procedure()</code> method waits until the G2 procedure completes and returns values before executing the next statement following the call.<p>
+</a><a name="996946">
+<hr><strong>Note:</strong> The container application can pass any number of arguments to G2 and G2 can return any number of arguments.<hr>
+<p></a><a name="996948">
+Telewindows2 Toolkit returns an exception to the caller under one of the following conditions:<p>
+</a><ul><a name="996949">
+<li>If G2 does not respond within the time specified by the <code>CallTimeout</code> property.
+<p></a><a name="996950">
+<li>If an error with the call is detected by Telewindows2 Toolkit.
+<p></a><a name="996951">
+<li>If the G2 procedure signals an error.
+<p></a></ul><a name="996952">
+<h3> Example</h3>
+</a><a name="996953">
+Visual Basic calls the G2 procedure and passes three values: an <code>integer</code>, a <code>string</code>, and a <code>boolean</code>. The call waits for a return value. G2 displays these values on the message board and returns a string to Visual Basic.<p>
+</a><a name="996954">
+<h3> Visual Basic </h3>
+</a><ul><a name=996955">
+<pre>Private Sub Form_Load()<br>&#32;&#32;&#32;Ret = G2UiGateway1.Call("my-proc", <br>&#32;&#32;&#32;&#32;&#32;&#32;1, "Hello G2", True)<br>&#32;&#32;&#32;MsgBox Ret<br>End Sub</pre>
+</a></ul><a name="996956">
+<h3> G2 </h3>
+</a><ul><a name="996957">
+<pre>my-proc(arg1: value, arg2: value, arg3: value) = value</pre>
+</a><a name="996958">
+<pre>begin<br>&#32;&#32;&#32;inform the operator that "Value1:[arg1], Value2:[arg2], Value3:[arg3]";<br>&#32;&#32;&#32;return "Hello COM";<br>end</pre>
+</a></ul><a name="996959">
+<h2> ClassInstances()</h2>
+</a><a name="996960">
+The <code>ClassInstances()</code> method gets all the instances of a given class. You can use the <code>ClassInstances()</code> method to create an array of <code>G2Items</code>, such as every instance of tank, to which you can programmatically apply changes. The changes take effect on the G2 server.<p>
+</a><a name="996961">
+<h3> Syntax</h3>
+</a><ul><a name=996962">
+<pre><code>ClassInstances(</code><code><em>ClassName</code></em><code> As String, [</code><code><em>StrictClassOnly</code></em><code> &#32;As &#32;Boolean]) </code></pre>
+</a><a name="998790">
+<table border="3">
+<caption></caption>
+<tr><th align="left" valign="middle"><a name="998779">
+<strong>Arguments</strong>
+</a><th align="left" valign="middle"><a name="998781">
+<strong>Description </strong>
+</a>
+<tr><td valign="middle"><a name="998783">
+<code><code><em>ClassName </code></em><code>As String</code></code>
+</a><br><td valign="middle"><a name="998785">
+The name of the G2 class whose instances you want to modify.
+</a><br>
+<tr><td valign="middle"><a name="998957">
+<code><code><em>StrictClassOnly</code></em><code> As &#32;Boolean</code></code>
+</a><br><td valign="middle"><a name="998959">
+If <code>true</code>, gets all the instances of the superclass. If <code>false</code>, gets all the instances of the superclass and all subclasses. Default is <code>false</code>.
+</a><br>
+
+</table>
+
+<table>
+<tr><td>
+</table>
+<p>
+</a></ul><a name="996964">
+<h3> Example</h3>
+</a><a name="1001559">
+The following code fragment shows the use of <code>ClassInstances()</code> to change the attribute values the instances of a class in G2 by using a <code>For</code> loop. <code>ClassInstances()</code> returns an array for instances of <code>tank</code>. The attribute value <code>FillMax</code> is changed to 25.<p>
+</a><ul><a name=1001573">
+<pre>Dim instances () As G2Item</pre>
+</a><a name=1001582">
+<pre>instances = G2UiGateway1.ClassInstances ("tank")<br>For i = 0 To UBound(ret)<br>&#32;&#32;&#32;instances(i).Attributes("FillMax") = 25<br>Next i</pre>
+</a></ul><a name="1001542">
+<h2> Connect()</h2>
+</a><a name="996967">
+The <code>Connect()</code> method establishes a connection to G2 at the network address specified by the <code>G2Location</code> property.<p>
+</a><a name="996968">
+<h3> Syntax</h3>
+</a><ul><a name=996969">
+<pre><code>Connect() </code></pre>
+</a></ul><a name="996984">
+<h3> Description</h3>
+</a><a name="996985">
+You can safely make a <code>Connect()</code> call at any time. If you make a <code>Connect()</code> call to a Telewindows2 Toolkit object in G2 that is already connected, the call returns with no error. <p>
+</a><a name="996986">
+If you call <code>Start()</code> or <code>Call()</code> and Telewindows2 Toolkit is not already connected, Telewindows2 Toolkit automatically creates the connection. Normally, <code>Connect()</code> does not have to be called by the container application.<p>
+</a><a name="996988">
+<h2> CreateItem()</h2>
+</a><a name="996989">
+The <code>CreateItem()</code> method creates an object in G2, which is reflected back in your Visual Basic application.<p>
+</a><a name="996990">
+<h3> Syntax</h3>
+</a><ul><a name=996991">
+<pre><code>CreateItem(</code><code><em>ItemClass</code></em><code> As String) As G2Item</code></pre>
+</a><a name="998888">
+<table border="3">
+<caption></caption>
+<tr><th align="left" valign="middle"><a name="998881">
+<strong>Argument</strong>
+</a><th align="left" valign="middle"><a name="998883">
+<strong>Description </strong>
+</a>
+<tr><td valign="middle"><a name="998885">
+<code><code><em>ItemClass </code></em><code>As String</code></code>
+</a><br><td valign="middle"><a name="998887">
+The name of the instance of the G2 class that you want to create.
+</a><br>
+
+</table>
+
+<table>
+<tr><td>
+</table>
+<p>
+</a></ul><a name="1001771">
+<h3> Example</h3>
+</a><a name="1001772">
+The following code fragment creates an instance of a <code>tank</code> item in G2 and sets the value of the <code>FillMax</code> attribute to 30.<p>
+</a><ul><a name=1001774">
+<pre>Dim obj As G2Item</pre>
+</a><a name=1001775">
+<pre>Set obj = G2UiGateway1.CreateItem("tank")<br>obj.Attribute("FillMax") = 30</pre>
+</a></ul><a name="996992">
+<h2> DirectSubclasses()</h2>
+</a><a name="996993">
+The <code>DirectSubclasses()</code> method returns an array of class names.<p>
+</a><a name="996994">
+<h3> Syntax</h3>
+</a><ul><a name=996995">
+<pre><code>DirectSubclasses(</code><code><em>ClassName</code></em><code> As String)</code></pre>
+</a><a name="998915">
+<table border="3">
+<caption></caption>
+<tr><th align="left" valign="middle"><a name="998908">
+<strong>Argument</strong>
+</a><th align="left" valign="middle"><a name="998910">
+<strong>Description </strong>
+</a>
+<tr><td valign="middle"><a name="998912">
+<code><code><em>ClassName </code></em><code>As String</code></code>
+</a><br><td valign="middle"><a name="998914">
+The name of the G2 class whose direct subclasses you want to modify.
+</a><br>
+
+</table>
+
+<table>
+<tr><td>
+</table>
+<p>
+</a></ul><a name="996997">
+<h2> Disconnect()</h2>
+</a><a name="997000">
+The <code>Disconnect</code> method breaks the connection with G2. <p>
+</a><a name="997001">
+<h3> Syntax</h3>
+</a><ul><a name=997002">
+<pre><code>Disconnect()</code></pre>
+</a></ul><a name="997005">
+<h3> Description</h3>
+</a><a name="997006">
+You can use the <code>Call()</code> and <code>Start()</code> methods to establish transient connections to G2 and use <code>Disconnect()</code> to explicitly disconnect these connections when not in use. The next time you invoke the <code>Call()</code> and <code>Start()</code> methods Telewindows2 Toolkit reestablishes the connection with G2. <p>
+</a><a name="997007">
+<h2> GetNamedItem()</h2>
+</a><a name="997008">
+The <code>GetNamedItem()</code> method gets the specified object from the G2 server.<p>
+</a><a name="997009">
+<h3> Syntax</h3>
+</a><ul><a name=997010">
+<pre><code>GetNamedItem(</code><code><em>ItemName</code></em><code> As String, [</code><code><em>ItemClass</code></em><code> As String]) As &#32;G2Item</code></pre>
+</a><a name="997024">
+<table border="3">
+<caption></caption>
+<tr><th align="left" valign="middle"><a name="997013">
+<strong>Argument </strong>
+</a><th align="left" valign="middle"><a name="997015">
+<strong>Description </strong>
+</a>
+<tr><td valign="middle"><a name="997017">
+<code><code><em>ItemName</code></em> A<code>s String</code></code>
+</a><br><td valign="middle"><a name="997019">
+The name of the item in G2.
+</a><br>
+<tr><td valign="middle"><a name="997021">
+<code><code><em>ItemClass</code></em> As String</code>
+</a><br><td valign="middle"><a name="997023">
+The name of the item's class in G2.
+</a><br>
+
+</table>
+
+<table>
+<tr><td>
+</table>
+<p>
+</a></ul><a name="1001835">
+<h3> Example</h3>
+</a><a name="1001836">
+The following code fragment gets an item from the G2 server when the form loads and assigns it to the Item property of <code>G2Itemholder</code>. The form persistently points to the <code>MixingTank</code> ("<code>tank2</code>") on the G2 server. (For more information on the Item property of <code>G2ItemHolder</code>, see <a href="g2itemho.htm#192">Chapter &#32;7, G2ItemHolder.</a>)<p>
+</a><ul><a name=1001838">
+<pre>Private Sub Form_Load()<br>&#32;&#32;&#32;Dim MixingTank as G2Item<br>&#32;&#32;&#32;Set MixingTank = G2UiGateway.GetNamedItem("tank2")<br>&#32;&#32;&#32;G2ItemHolder1.Item = MixingTank<br>End Sub</pre>
+</a></ul><a name="997837">
+<h2> GetNamedWorkspaces()</h2>
+</a><a name="997838">
+The <code>GetNamedWorkspaces()</code> method gets a list of workspaces available in the G2 server.<p>
+</a><a name="997839">
+<h3> Syntax</h3>
+</a><ul><a name=997840">
+<pre><code>GetNamedWorkspaces</code><code>()</code></pre>
+</a></ul><a name="1001922">
+<h3> Example</h3>
+</a><a name="1001923">
+The following code fragment uses <code>GetNamedWorkspaces()</code> to retrieve a list of workspaces from the G2 server. The list of workspaces is displayed in a listbox.<p>
+</a><ul><a name=1001927">
+<pre>Private Sub List1_Click()<br>&#32;&#32;&#32;Dim Names As Variant<br><br>&#32;&#32;&#32;List1.Clear<br>&#32;&#32;&#32;Names = G2UiGateway1.GetNamedWorkspaces<br>&#32;&#32;&#32;For i = 0 To UBound(Names)<br>&#32;&#32;&#32;&#32;&#32;&#32;List1.AddItem Names(i)<br>&#32;&#32;&#32;Next i<br>End Sub</pre>
+</a></ul><a name="997026">
+The following figure shows the default application shell's Specify Workspace form with a listing of the currently available workspaces on the G2 server.<p>
+</a><a name="1001980">
+<table border="3">
+<caption></caption>
+<tr><td valign="middle"><img src="g2twcoa8.gif"><br>
+
+</table>
+
+<table>
+<tr><td>
+</table>
+<p>
+</a><a name="1001944">
+<h2> PostMessage()</h2>
+</a><a name="997030">
+The <code>PostMessage()</code> method displays text or values in G2's message board.<p>
+</a><a name="997031">
+<h3> Syntax</h3>
+</a><a name="997032">
+<pre><code>PostMessage(</code><code><em>Message</code></em><code> As String) </code></pre>
+</a><a name="1002635">
+<table border="3">
+<caption></caption>
+<tr><th align="left" valign="middle"><a name="1002628">
+<strong>Argument </strong>
+</a><th align="left" valign="middle"><a name="1002630">
+<strong>Description </strong>
+</a>
+<tr><td valign="middle"><a name="1002632">
+<code><code><em>Message</code></em> A<code>s String</code></code>
+</a><br><td valign="middle"><a name="1002634">
+The data or text that appears in the G2 message board. You can send any supported COM automation data type to the G2 message board by using <code>PostMessage()</code>.
+</a><br>
+
+</table>
+
+<table>
+<tr><td>
+</table>
+<p>
+</a><a name="1002643">
+<h2> SetUserPassword()</h2>
+</a><a name="1002700">
+The SetUserPassword() method sets the user password to be used when the user logs in.<p>
+</a><a name="1002714">
+<h3> Syntax</h3>
+</a><a name="1002715">
+<pre><code>SetUserPassword(</code><code><em>Password</code></em><code> As String) </code></pre>
+</a><a name="1002725">
+<table border="3">
+<caption></caption>
+<tr><th align="left" valign="middle"><a name="1002718">
+<strong>Argument </strong>
+</a><th align="left" valign="middle"><a name="1002720">
+<strong>Description </strong>
+</a>
+<tr><td valign="middle"><a name="1002722">
+<code><code><em>Password</code></em> A<code>s String</code></code>
+</a><br><td valign="middle"><a name="1002724">
+The password of the user who is specified by the <code>UserName</code> property.
+</a><br>
+
+</table>
+
+<table>
+<tr><td>
+</table>
+<p>
+</a><a name="1002637">
+<h2> StartG2Procedure()</h2>
+</a><a name="1002640">
+The <code>StartG2Procedure()</code> method starts a procedure in G2. The effects of starting the procedure are reflected back into your Visual Basic container.<p>
+</a><a name="997050">
+<h3> Syntax</h3>
+</a><ul><a name=997051">
+<pre><code>StartG2Procedure(</code><code><em>ProcedureName</code></em><code> As String,<br>&#32;&#32;&#32;[</code><code><em>ParamArray Arguments()</code></em><code> As Variant])</code></pre>
+</a><a name="997067">
+<table border="3">
+<caption></caption>
+<tr><th align="left" valign="middle"><a name="997056">
+<strong>Arguments </strong>
+</a><th align="left" valign="middle"><a name="997058">
+<strong>Description </strong>
+</a>
+<tr><td valign="middle"><a name="997060">
+<code><code><em>ProcedureName</code></em><code> As String</code></code>
+</a><br><td valign="middle"><a name="997062">
+The name of the G2 procedure you are starting.
+</a><br>
+<tr><td valign="middle"><a name="997064">
+<code><code><em>ParamArray</code></em><code><em> Arguments()</code></em><code> As Variant</code></code>
+</a><br><td valign="middle"><a name="997066">
+Any of the arguments to be sent to G2. This array is a <code>Variant</code> and is constructed automatically for all remaining arguments. The array can contain one or more values.
+</a><br>
+
+</table>
+
+<table>
+<tr><td>
+</table>
+<p>
+</a></ul><a name="997068">
+<h3> Description</h3>
+</a><a name="997070">
+The started G2 procedure cannot return values to the container application. If Telewindows2 Toolkit is not already connected with G2, the <code>StartG2Procedure()</code> method makes the connection. <p>
+</a><a name="997071">
+<hr><strong>Note:</strong> The container application can pass any number of arguments to G2.<hr>
+<p></a><a name="997072">
+<h3> Example</h3>
+</a><a name="997073">
+Visual Basic starts a G2 procedure and passes a string to it.<p>
+</a><a name="997074">
+<h3> Visual Basic </h3>
+</a><ul><a name=997075">
+<pre>Private Sub Form_Load()<br>&#32;&#32;&#32;Call G2UiGateway1.StartG2Procedure("my-started-proc", <br>&#32;&#32;&#32;&#32;&#32;&#32;"my message to you")<br>&#32;&#32;&#32;MsgBox Ret<br>End Sub</pre>
+</a></ul><a name="997076">
+<h3> G2 </h3>
+</a><ul><a name="997077">
+<pre>my-started-proc(arg1: value)</pre>
+</a><a name="997078">
+<pre>begin<br>&#32;&#32;&#32;inform the operator that "Message from COM:[arg1]";<br>end</pre>
+</a></ul><a name="997079">
+<h2> Structure()</h2>
+</a><a name="997080">
+The <code>Structure()</code> method creates a G2 structure from an array of name-value pairs. <code>Structure()</code> serves as a constructor for creating a G2 structure, removing the need to use the Visual Basic keyword <code>new</code> to create a structure by using the <code>G2Structure</code> object (see <a href="mapping3.htm#35262">Passing a G2 Structure</a>).<p>
+</a><a name="997081">
+<h3> Syntax</h3>
+</a><a name="997082">
+<pre><code>Structure([</code><code><em>NameValuePairs()</code></em><code> As Variant]) As G2Structure</code></pre>
+</a><a name="997092">
+<table border="3">
+<caption></caption>
+<tr><th align="left" valign="middle"><a name="997085">
+<strong>Argument </strong>
+</a><th align="left" valign="middle"><a name="997087">
+<strong>Description </strong>
+</a>
+<tr><td valign="middle"><a name="997089">
+<code><code><em>NameValue<br>Pairs()</code></em><code> </code>A<code>s Variant</code></code>
+</a><br><td valign="middle"><a name="997091">
+An array of name-value pairs out of which a G2 structure is created. You can send the structure to G2.
+</a><br>
+
+</table>
+
+<table>
+<tr><td>
+</table>
+<p>
+</a><a name="1002115">
+<h3> Example</h3>
+</a><a name="1002116">
+The following line of code shows how you can call a G2 procedure and pass it arguments in the form of a G2 structure.<p>
+</a><ul><a name=1002117">
+<pre>Call G2UiGateway1.call("SetTemperatures", <br>&#32;&#32;&#32;G2UiGateway1.Structure("temp1", 45, "temp2", 80))</pre>
+</a></ul><a name="997093">
+<h2> Symbol()</h2>
+</a><a name="997094">
+The <code>Symbol()</code> method creates a G2 symbol from a text string. <code>Symbol()</code> serves as a constructor for creating a G2 symbol, removing the need to use the Visual Basic keyword <code>new</code> to create a symbol (see <a href="mapping2.htm#34016">Passing a G2 Symbol</a>).<p>
+</a><a name="997095">
+<h3> Syntax</h3>
+</a><ul><a name=997096">
+<pre><code>Symbol([</code><code><em>SymbolName</code></em><code> As String]) As G2Symbol</code></pre>
+</a><a name="997106">
+<table border="3">
+<caption></caption>
+<tr><th align="left" valign="middle"><a name="997099">
+<strong>Argument </strong>
+</a><th align="left" valign="middle"><a name="997101">
+<strong>Description </strong>
+</a>
+<tr><td valign="middle"><a name="997103">
+<code><code><em>SymbolName</code></em><code> </code>A<code>s String</code></code>
+</a><br><td valign="middle"><a name="997105">
+A text string out of which a G2 symbol is created, which can be sent to G2.
+</a><br>
+
+</table>
+
+<table>
+<tr><td>
+</table>
+<p>
+</a></ul><a name="1002235">
+<h3> Example</h3>
+</a><a name="1002258">
+The following line of code shows how you can set the value of a G2 attribute that requires the G2 symbol data type.<p>
+</a><ul><a name=1002259">
+<pre>Call G2UiGateway1.call("SetTitle", <br>&#32;&#32;&#32;G2UiGateway1.Symbol("Mixing-Tank")</pre>
+</a></ul>
+
+<h5><a href="g2twcon2.htm">| Prev </a> 
+  <a href="g2twcon4.htm">| Next </a>
+ <a href="g2twconn.htm">| Start of Chapter </a>
+ <a href="g2twcon4.htm">| End of Chapter </a>
+ <a href="booktoc.htm">| Contents </a> <a href="glossary.htm">| Glossary </a> <a href="bookix.htm">| Index </a>  <a href="mailto:docs@gensym.com">| Comments | </a> (4 out of 5) </h5> <br>
+<A HREF="titlepa1.htm"><h6>Copyright &#169; 1998 Gensym Corporation, Inc.</h6></A>
