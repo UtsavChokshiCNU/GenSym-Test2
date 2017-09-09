@@ -1,0 +1,59 @@
+#!/bin/sh
+
+MODS_BASE=../mods
+
+if [ -z "$TMP" ]; then
+  if [ -n "$TMPDIR" ] && [ -d "$TMPDIR" ]; then
+    TMP=$TMPDIR
+  else
+    TMP=/tmp
+  fi
+fi
+CVS=cvs
+
+if [ "`uname`" = "Interix" ]; then
+  CVS=cvs.exe
+  TMP=`ntpath2posix $TMP`
+fi
+
+export TMP
+
+# Redirect only *stdout*, not stderr, for this step
+${CVS} up | awk '{print $2}' | tr -d '\015' > ${TMP}/up.log
+find . -name '.#*' >>  ${TMP}/up.log
+find . -name '*~' >>  ${TMP}/up.log
+
+if [ "${SRCBOX}" = "`pwd`" ]
+then
+  for fod in *
+  do
+    if [ ! -d ${fod}/CVS ]
+    then
+      echo "${fod}" >> ${TMP}/up.log
+    fi
+  done
+fi
+
+if [ -d ${MODS_BASE} ]; then
+  version=1
+  MODS_DIR=${MODS_BASE}-$version
+  while [ -d ${MODS_DIR} ]; do
+    version=`expr $version + 1`
+    MODS_DIR=${MODS_BASE}-$version
+  done
+else
+  MODS_DIR=${MODS_BASE}
+fi
+mkdir ${MODS_DIR}
+
+for upfile in `cat ${TMP}/up.log`
+do
+  echo "Making dir `dirname $upfile`"
+  mkdir -p ${MODS_DIR}/`dirname $upfile`
+  echo "Moving $upfile to ${MODS_DIR}/$upfile"
+  /bin/mv -i $upfile ${MODS_DIR}/$upfile
+done
+
+/bin/mv -i $MODS_DIR .
+
+${CVS} up
