@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="02/06/02 18:38:40">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Configuring Deliver Category Parameters: Base Manufacturer Role</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="level2t6.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="level2t8.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+      <div align="center"><b>e-SCOR Tutorials</b></div>
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/e-SCOR/OnlineHelpFiles/Tutorials/html/level2tu.htm">  
+        Configuring Level 2 SCOR: Simplest Model  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Configuring Deliver Category Parameters: Base Manufacturer Role
+</h2>
+<p>The Deliver category is responsible for entering and choosing orders for shipment, picking delivery products from inventory, packing containers, shipping containers to buyers, and invoicing and receiving payments from buyers. You configure timing and cost parameters related to processing and fulfilling orders for delivery products.<a name="230298"></a></p>
+<p>By default, a role chooses orders for shipment at random. You can configure the criteria the role uses to choose orders for shipment for stock products. For example, you can deliver orders on a first-in first-out basis, or you can deliver the most expensive orders first. <a name="230796"></a></p>
+<p>You can configure any logistical parameter, based on the carrier. Logistical parameters include all of the timing parameters and some of the cost parameters associated with the Deliver category, as well as the timing and cost parameters associated with receiving source products for the Source category. To do this, you configure the Carrier parameter for the Deliver category of the role, you configure the logistical parameter's Mode Type to use a Report Lookup, then you create a Logistical Lookup Report that specifies values for each of the logistical parameters, based on the carrier. <a name="289616"></a></p>
+<p>Configure the Deliver category so that it:<a name="289617"></a></p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Takes 1 day, on average, to enter an order from when it is received.<a name="230300"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Chooses orders for shipment on a first-in first-out basis, by sorting orders based on the smallest Internal Order Number first, the default.<a name="230851"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Takes 1 hour, on average, to pick delivery products from inventory and to pack a container.<a name="231036"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Takes 3 days, on average, to ship a container.<a name="231053"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Costs $10 to enter, fulfill, distribute, ship, invoice, and receive payment for each order.<a name="231102"></a></td>  </tr></table><h4 >	 To configure Deliver category parameters for the Base Manufacturer role:<a name="230301"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td valign="top" width="20"><img src="images/arrow1.gif"></td>
+    <td valign="top" width="580">Configure these parameters for the D1: Deliver Stocked Product category on the Base Manufacturer role detail:<a name="230302"></a></td>
+  </tr>
+</table><p >
+  <a name="283619"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="283593"><div >Tab</a></div></th>
+    <th><a name="283595"><div >Group/Parameter</a></div></th>
+    <th><a name="283597"><div >Value</a></div></th>
+  </tr>
+  <tr>
+    <td><p>Order<a name="283695"></a></p>
+</td>
+    <td><p><a href="../../UsersGuide/html/level240.htm#289283">Order Receipt to Entry Time<br></a>   Mode Type<br>   Min<br>   Mode<br>   Max<a name="283698"></a></p>
+</td>
+    <td><p><code><br>Random-Triangular<br>12 hours<br>1 day<br>1.5 days</code><a name="283604"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Order<a name="283702"></a></p>
+</td>
+    <td><p>Order Selection<br>   <a href="../../UsersGuide/html/distrib6.htm#26933">Sort Direction<br></a>   <a href="../../UsersGuide/html/distrib6.htm#26950">Sort By</a><a name="283705"></a></p>
+</td>
+    <td><p><code><br>Smallest <br>Internal Order<br>   Number</code><a name="283611"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Fulfillment<a name="283951"></a></p>
+</td>
+    <td><p><a href="../../UsersGuide/html/level240.htm#289313">Pick Material Time<br></a>   Mode Type<br>   Min<br>   Mode<br>   Max<a name="283954"></a></p>
+</td>
+    <td><p><code><br>Random-Triangular<br>12 hours<br>1 day<br>1.5 days</code><a name="306660"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Fulfillment<a name="283958"></a></p>
+</td>
+    <td><p><a href="../../UsersGuide/html/level240.htm#289322">Packing Time<br></a>   Mode Type<br>   Min<br>   Mode<br>   Max<a name="284405"></a></p>
+</td>
+    <td><p><code><br>Random-Triangular<br>12 hours<br>1 day<br>1.5 days</code><a name="306674"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Transportation<a name="284375"></a></p>
+</td>
+    <td><p><a href="../../UsersGuide/html/level240.htm#289332">Order Shipment to Receipt Time<br></a>   Mode Type<br>   Min<br>   Mode<br>   Max<a name="284538"></a></p>
+</td>
+    <td><p><code><br>Random-Triangular<br>2 days<br>3 days<br>4 days</code><a name="284379"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Cost<a name="284566"></a></p>
+</td>
+    <td><p>Costs per Transaction<br>   <a href="../../UsersGuide/html/level240.htm#289343">Order Entry<br></a>   <a href="../../UsersGuide/html/level240.htm#289352">Order Fulfillment<br></a>   <a href="../../UsersGuide/html/level240.htm#289361">Distribution<br></a>   <a href="../../UsersGuide/html/level240.htm#289370">Transportation<br></a>   <a href="../../UsersGuide/html/level240.htm#289379">Customer Invoicing<br></a>   <a href="../../UsersGuide/html/level240.htm#289388">Customer Collections</a><a name="284569"></a></p>
+</td>
+    <td><p><code><br>10<br>10<br>10<br>10<br>10<br>10</code><a name="284564"></a></p>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<p><b>Related help topics:</b><a name="314660"></a></p>
+<p><a href="../../UsersGuide/html/level234.htm#117347">Configuring the Deliver Category</a><a name="314664"></a></p>
+<p><a href="../../UsersGuide/html/level220.htm#514018">Configuring Logistical Parameters through a Report</a><a name="314668"></a></p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="level2t6.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="level2t8.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
