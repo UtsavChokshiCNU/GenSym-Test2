@@ -1,0 +1,93 @@
+
+cflags = /AL /Ot /Gy /G2 /DMSDOS /D_4DEMO_ -I../speedo -I../4demo -I. -DPROC_PCL=0 -DPROC_TYPE1=0
+
+sd = ../speedo
+4d = ../4demo
+
+all: ttsample.exe
+
+$(sd)/speedo.h : $(sd)/useropt.h
+$(sd)/spdo_prv.h : $(sd)/speedo.h
+
+
+truetype.obj : truetype.c $(sd)/useropt.h $(sd)/speedo.h fscdefs.h \
+        fontscal.h sfnt.h fserror.h truetype.h 
+	cl $(cflags) -c truetype.c
+
+tt_iface.obj : tt_iface.c $(sd)/useropt.h $(sd)/spdo_prv.h $(4d)/fino.h \
+        fscdefs.h fontscal.h sfnt.h fserror.h truetype.h
+	cl $(cflags) -c tt_iface.c
+
+tt_specs.obj : tt_specs.c $(sd)/useropt.h $(sd)/spdo_prv.h $(4d)/fino.h \
+        fscdefs.h fontscal.h truetype.h 
+	cl $(cflags) -c tt_specs.c
+
+fontscal.obj : fontscal.c $(sd)/useropt.h $(4d)/fino.h fserror.h fscdefs.h \
+                fontmath.h sfnt.h sc.h fnt.h fontscal.h fsglue.h \
+        privsfnt.h privfosc.h
+	cl $(cflags) -c fontscal.c
+
+fsglue.obj : fsglue.c $(sd)/useropt.h $(4d)/fino.h fserror.h fscdefs.h \
+                fontmath.h sfnt.h sc.h fnt.h fontscal.h fsglue.h \
+                privsfnt.h
+	cl $(cflags) -c fsglue.c
+
+out_blk.obj : $(sd)/out_blk.c $(sd)/spdo_prv.h $(4d)/fino.h \
+	$(sd)/speedo.h
+	cl $(cflags) -c ..\speedo\out_blk.c
+
+out_bl2d.obj : $(sd)/out_bl2d.c $(sd)/spdo_prv.h $(4d)/fino.h \
+	$(sd)/speedo.h
+	cl $(cflags) -c ..\speedo\out_bl2d.c
+
+out_outl.obj : $(sd)/out_outl.c $(sd)/spdo_prv.h $(4d)/fino.h \
+	$(sd)/speedo.h
+	cl $(cflags) -c ..\speedo\out_outl.c
+
+out_scrn.obj : $(sd)/out_scrn.c $(sd)/spdo_prv.h $(4d)/fino.h \
+	$(sd)/speedo.h
+	cl $(cflags) -c ..\speedo\out_scrn.c
+
+out_util.obj : $(sd)/out_util.c $(sd)/spdo_prv.h $(4d)/fino.h \
+	$(sd)/speedo.h
+	cl $(cflags) -c ..\speedo\out_util.c
+
+out_wht.obj : $(sd)/out_wht.c $(sd)/spdo_prv.h $(4d)/fino.h \
+	$(sd)/speedo.h
+	cl $(cflags) -c ..\speedo\out_wht.c
+
+fnt.obj : fnt.c  $(sd)/useropt.h $(4d)/fino.h fscdefs.h fontmath.h sc.h \
+		$(sd)/spdo_prv.h \
+		$(sd)/speedo.h \
+        fnt.h fserror.h 
+	cl $(cflags) -c fnt.c
+
+sfntd.obj : sfntd.c $(sd)/useropt.h $(4d)/fino.h fserror.h fscdefs.h fontmath.h \
+			$(sd)/spdo_prv.h \
+			$(sd)/speedo.h  \
+            sfnt.h fnt.h sc.h fontscal.h fsglue.h privsfnt.h mapstrng.h
+	cl $(cflags) -c sfntd.c
+
+mapstrng.obj : mapstrng.c  $(sd)/useropt.h $(4d)/fino.h fscdefs.h mapstrng.h \
+		$(sd)/spdo_prv.h \
+		$(sd)/speedo.h 
+	cl $(cflags) -c mapstrng.c
+
+newscan.obj : newscan.c $(sd)/useropt.h $(4d)/fino.h $(sd)/spdo_prv.h \
+				$(sd)/speedo.h \
+                fscdefs.h fontscal.h 
+	cl $(cflags) -c newscan.c
+
+fixed_pt.obj : fixed_pt.c $(4d)/fino.h fixed.h \
+				$(sd)/spdo_prv.h \
+				$(sd)/speedo.h 
+	cl $(cflags) -c fixed_pt.c
+
+ttsample.exe : truetype.obj tt_iface.obj tt_specs.obj fontscal.obj \
+              fsglue.obj out_blk.obj out_util.obj fnt.obj sfntd.obj \
+              mapstrng.obj newscan.obj fixed_pt.obj out_outl.obj \
+              out_scrn.obj out_bl2d.obj out_wht.obj
+	link /STACK:2048 @ttsample.lnk
+
+clean:
+	del *.obj
