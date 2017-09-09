@@ -1,0 +1,234 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_reference.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+covc - Compile C/C++
+</h1>
+<p>
+<CODE>covc [</CODE><i>options</i><CODE>]</CODE> <i>compiler</i> <CODE>...</CODE> <i>source</i><CODE> ...</CODE><br>
+<i>BullseyeCoverage</i><code>/bin/</code><i>compiler</i> <code>...</code> <i>source</i><code> ...</code>
+<H2>DESCRIPTION</H2>
+<p>
+<CODE>covc</CODE> compiles C/C++ source files after adding coverage
+measurement probes. You can automatically compile source files
+for coverage measurement by running <CODE>covc</CODE> through
+the compiler command name. The <CODE>covc</CODE> program file
+is copied (or linked with <CODE>ln</CODE>, on Unix) to the compiler
+name within the BullseyeCoverage <CODE>bin</CODE> directory. The BullseyeCoverage
+<CODE>bin</CODE> directory must occur in the <CODE>PATH</CODE>
+environment variable before the compiler command directory. See
+also <a href=ref_cov01.html>cov01</a>.
+<P>
+<CODE>covc</CODE> preprocesses each source file, adds probes to
+the preprocessed code, then compiles it using the real compiler.
+The coverage file is created if it does not exist. An entry is
+created in the coverage file for each source file processed. <CODE>covc</CODE>
+does not modify the original source files.
+<P>
+The resulting object files must be linked with the BullseyeCoverage run-time
+library.
+By default, BullseyeCoverage automatically adds the BullseyeCoverage run-time
+library to the link command.
+On Unix, <CODE>covc</CODE> adds the BullseyeCoverage run-time library name
+to the command line unless one of the following situations occur.
+<UL>
+<LI>The command does not produce an executable due to a compiler
+option such as <CODE>-c</CODE>, <CODE>-E</CODE>, <CODE>-P</CODE>,
+<CODE>-S</CODE>.
+<LI>The compiler command already contains the name of a BullseyeCoverage
+run-time library of the form <code>*libcov*.a</code>.
+</UL>
+<P>
+The coverage file, named <CODE>test.cov</CODE> by default, contains
+all BullseyeCoverage data for all test programs.
+Measurements are automatically merged
+into the file when test programs exit. The coverage file does
+not grow in size when the test program runs.
+<P>
+If either of the options <code>-DBullseyeCoverageDisable</code> or <code>-D
+BullseyeCoverageDisable</code> occur in the compile command, <code>covc</code>
+does not add any probes.
+<p>
+<code>covc</code> recognizes commands in source code within <code>#pragma</code>
+directives, <code>_Pragma</code> expressions and string literals that control instrumentation.
+The commands have the forms shown below.
+<pre>
+#pragma BullseyeCoverage <i>command ...</i>
+_Pragma("BullseyeCoverage <i>command ...</i>")
+"BullseyeCoverage <i>command ...</i>"
+</pre>
+<p>
+where <i>command</i> is one of:
+<ul>
+<li><code>off</code> - turn off instrumentation
+<li><code>on</code> - turn on instrumentation
+<li><code>save</code> - push the current <code>on</code>/<code>off</code> setting
+<li><code>restore</code> - pop the current <code>on</code>/<code>off</code> setting
+</ul>
+<p>
+<code>covc</code> defines the macro <code>_BullseyeCoverage</code>,
+to the version number in the decimal format <i>xyyzzz</i>
+where <i>x</i>, <i>yy</i>, and <i>zzz</i> are the major, minor, and release numbers, respectively.
+<H2>OPTIONS</H2>
+<TABLE CELLSPACING=12 summary="">
+<colgroup><col span=2 style=white-space:nowrap></colgroup>
+<tr><td><code>-a</code><td><code>--abs</code>
+<td>Store absolute file paths in the coverage file.
+Use this option to easily locate source files even if the coverage file
+is moved later.
+
+<tr><td><code>-d</CODE><i>Dir</i><td><code>--srcdir</CODE> <i>Dir</i>
+<td>Store source file names relative to source directory <i>Dir</i> rather than relative to the directory where the coverage file is located.
+
+<tr><td><code>-f</CODE><i>Path</i><td><code>--file</CODE> <i>Path</i>
+<td>The coverage file is specified by <i>Path</i>. The default is <CODE>test.cov</CODE>.
+
+<tr><td><code>-l</code><td><code>--leave</CODE>
+<td>
+Leave intermediate source files with probes in the temporary directory.
+Normally you do not want to use this option.
+It is intended for technical support.
+To determine the temporary directory on Unix, <code>covc</code> first
+checks for an environment variable <code>TMPDIR</code>, then
+<code>TMP</code>.
+If neither variable exists, <code>covc</code> uses <code>/tmp</code>.
+
+<tr><td><code>-q</code><td><code>--quiet</CODE>
+<td>Suppress warnings and the copyright message.
+
+<tr><td><code>-t</CODE><i>List</i><td><code>--select</CODE> <i>List</i>
+<td>Analyze only selected source regions in comma separated <i>List</i>. Normally, <CODE>covc</CODE> adds probes to all the code in the source files specified on the command line and to all files they include via <CODE>#include</CODE>. Use this option to prevent <CODE>covc</CODE> from adding probes to source you do not want to measure. The <i>List</i> specifies regions to include or exclude. For more information, see <a href=ref_regions.html>Regions</a>. <CODE>covc</CODE> automatically excludes compiler header files located in any sub-directory of the directory containing the real compiler <CODE>bin/</CODE><i>compiler</i>. Do not write spaces in <i>List</i>. Multiple occurrences of this option are allowed.
+
+<tr><td><code>-v</code><td><code>--verbose</CODE>
+<td>Show informational messages.
+
+<tr><td><code>--lib <i>Path</i></code><td>
+<td>
+covc uses the BullseyeCoverage run-time library specified by <i>Path</i>
+rather than automatically selecting a library for the native operating system.
+You can use this option when cross-compiling as an alternative to modifying linker arguments.
+
+<tr><td><code>--const</code><td>
+<td>
+Instrument decisions and <code>switch</code> expressions that contain no identifiers.
+Normally <code>covc</code> does not measure the outcome of such constant expressions.
+This option is intended for projects requiring strict certification.
+
+<tr><td><code>--macro</code><td>
+<td>
+Instrument macro expansions at the point of invocation.
+Use this option to compare results with those obtained by
+BullseyeCoverage versions prior to 7.5 with compilers other than
+Microsoft C++ or Intel C++.
+Measuring macro expansions is undesirable.
+It causes dilution of the overall coverage measurements.
+You cannot see what code is instrumented at the point of a macro invocation.
+If you wish to measure code in a macro definition,
+we recommend converting the macro to an inline function.
+
+<tr><td><code>--no-autox</code><td>
+<td>
+Do not automatically exclude compiler and SDK headers.
+Without this option, <code>covc</code> automatically excludes source files
+in any subdirectory of the parent of the compiler executable directory.
+On Windows, <code>covc</code> also excludes MFC and Microsoft SDK and
+DDK headers.
+On Unix, <code>covc</code> also excludes <code>/usr/include/</code>.
+
+<tr><td><code>--no-banner</code><td>
+<td>
+Suppress startup banner
+
+<tr><td><code>--no-lib</code><td>
+<td>Do not automatically link with the BullseyeCoverage run-time library. On non-Unix systems this option prevents <CODE>covc</CODE> from adding <CODE>#pragma</CODE> directives which name the BullseyeCoverage library as a default library. On Unix, this option prevents <CODE>covc</CODE> from adding <CODE>libcov.a</CODE> to link commands.
+
+<tr><td><code>--retain</code><td>
+<td>Preserve all previous measurements when rebuilding. Use this option when you compile the same object file more than once during one build.  You can also use this option to preserve historical data that might be displayed by a future release.  However, the coverage file can grow very large.
+
+<tr><td><code>--symbolic</code><td>
+<td>Resolve symbolic links in source and object filenames before adding them into the coverage file.
+Use this option if you have symbolic links that cause source files to appear in more than one directory.
+
+</TABLE>
+<H2>EXAMPLES</H2>
+<p>
+<pre>
+cov01 -1
+cc -c source.c
+
+covc cc -c source.c
+</pre>
+<p>
+You can use directives as shown below to exclude a portion of code without affecting the surrounding selection status.
+<pre>
+#pramga BullseyeCoverage save off
+/* This code not instrumented */
+#pragma BullseyeCoverage restore
+</pre>
+<H2>ENVIRONMENT VARIABLES</H2>
+<TABLE CELLSPACING=12 summary="">
+<tr><td><code>BULLSEYE_LIB</code><td>
+Specifies a location to find the BullseyeCoverage run-time libraries rather than <i>BullseyeCoverage</i><code>/lib</code>.
+<tr><td><code>BULLSEYE_PATH</code><td>
+Specifies where to search for the real compiler, instead of using environment variable <code>PATH</code>.
+Normally you should not set this variable.
+You only need to set this variable if you cannot modify the <code>PATH</code>
+environment variable, and <code>PATH</code> does not contain the directory of
+the real compiler.
+This variable has the same format as <code>PATH</code>.
+Do not set this variable to <i>BullseyeCoverage</i><code>/bin</code>.
+<tr><td><code>COVFILE</code><td>The coverage file. Option <CODE>-f</CODE> (<CODE>--file</CODE>) overrides this setting.
+
+<tr><td><code>COVSRCDIR</code><td>The source file directory. Option <CODE>-d</CODE> (<CODE>--srcdir</CODE>) overrides this setting.
+It is usually not recommended to set this variable.
+
+<tr><td><code>COVCCFG</code><td>Configuration file. See FILES.
+
+<tr><td><code>TMPDIR</code><td>The temporary directory.
+
+<tr><td><code>TMP</code><td>The temporary directory if <code>TMPDIR</code> is not set.
+
+<tr><td><code>TZ</code><td>The local time zone and difference from UTC (Unix).
+
+</TABLE>
+<H2>FILES</H2>
+<p>
+If the files listed below exist, they contain initial options separated by white space.
+<p>
+<i>BullseyeCoverage</i><code>/bin/covc.cfg</code><br>
+<i>home-directory</i><code>/covc.cfg</code>
+<p style="font-size:xx-small">
+Last reviewed: 27 Apr 2009
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
