@@ -1,0 +1,595 @@
+#!/bin/sh
+#-----------------------------------------------------------------
+# promote-product
+#
+# Copyright (c) 1996
+#          Gensym Corporation.
+#          125 CambridgePark Drive, Cambridge MA 02140
+#          All Rights Reserved.
+#
+# Dependencies:
+#     platforms.dat:  List of promotable platforms
+#     products.dat:   The products database
+#
+# Modifications:
+#     7/24/96, mpc: File creation
+#-----------------------------------------------------------------
+
+# Note: script user id check is not needed any more. --binghe, 2011/9/14
+# 
+# builduser="ab"
+# 
+# if [ `whoami` != $builduser ]
+# then
+#   echo "ERROR: Only $builduser can run this script."
+#   exit 2
+# fi
+
+if [ ! -d /g2 ]
+then
+  echo "ERROR: This must be done on a machine with a spin tree (/st)."
+  echo " "
+  exit 3
+fi
+
+
+if [ $# -lt 4 ]; then
+    echo " "
+    echo "NAME"
+    echo "   promote-product - Performs promotions for Gensym products"
+    echo " "
+    echo "SYNOPSIS"
+    echo "   promote-product -i <product> [<machine>] <source path> <iship id>"
+    echo "   promote-product -e <product> [<machine>] <iship id> <eship id>"
+    echo " "
+    echo "DESCRIPTION"
+    echo "   In the first form, this promotes from the given product source"
+    echo "   directory to the iship area."
+    echo " "
+    echo "   In the second form, this promotes the given product from the iship"
+    echo "   area to the eship area."
+    echo " "
+    echo "   At each promotion stage it creates a /tape directory for the"
+    echo "   product tar archive and a /test directory for internal testing"
+    echo "   and execution. Links are created to make the /test directory"
+    echo "   accessible from user tree, /gensym/ut."
+    echo " "
+    echo "OPTIONS"
+    echo "   -i             Iship flag. Specifies that this promotion is from"
+    echo "                  a development area to iship."
+    echo "   -e             Eship flag. Specifies that this promotion is from"
+    echo "                  iship to eship."
+    echo "   <product>      Product name. Must be registered in product"
+    echo "                  database (maintained by Order Services)"
+    echo "                  and be approved for shipping."
+    echo "   <machine>      Machine Id. Used to specify that product is for"
+    echo "                  a given binary architecture. This is required for"
+    echo "                  dep products and should not be given for indep."
+    echo "   <source path>  Required for iship promotions. Specifies the "
+    echo "                  product directory from which to promote."
+    echo "   <iship id>     Internal release id. These take the form of a"
+    echo "                  major number, a minor number, a release code letter"
+    echo "                  (p for Pre, a for Alpha, b for Beta, or r for"
+    echo "                  Release), rev number, and a date identifier."
+    echo "                  E.G. 50r2-BG12. The date has form YMDD, where"
+    echo "                      Y is B for 1999, C for 2000, ..."
+    echo "                      M is A for January, B for February, ..."
+    echo "   <eship id>     External release id. These take the form of a"
+    echo "                  major number, a minor number, a release code letter"
+    echo "                  (p for Pre, a for Alpha, b for Beta, or r for"
+    echo "                  Release), and rev number.  E.G. 50r2"
+    echo "EXAMPLES:"
+    echo "   To promote a platform independent product to iship, use a command"
+    echo "   similar to the following:"
+    echo " "
+    echo "       promote-product -i gda /gensym/bg/gda/ship 42b3-BG02"
+    echo " "
+    echo "   To promote a platform dependent product to iship, use a command"
+    echo "   similar to the following:"
+    echo " "
+    echo "       promote-product -i gm sun4 /gensym/bt/dep-sun4/gm/tape 20r0-BE18"
+    echo " "
+    echo "   To promote a platform independent product to eship, use a command"
+    echo "   similar to the following:"
+    echo " "
+    echo "       promote-product -e rethink 40r0-BL25 40r0"
+    echo " "
+    echo "   To promote a platform dependent product to eship, use a command"
+    echo "   similar to the following:"
+    echo " "
+    echo "       promote-product -e tw alphaosf 51r0-BD01 51r0"
+    echo " "
+    exit 1
+fi
+
+#-----------------------------------------------------------------
+# Directories Needed
+#-----------------------------------------------------------------
+data_home="$SRCBOX/tools/datafiles"
+staging_area="/tmp"
+dep_iship_dir="/g2/stage/iship/dep"
+dep_eship_dir="/g2/stage/eship/dep"
+indep_iship_dir="/g2/stage/iship/indep"
+indep_eship_dir="/g2/stage/eship/indep"
+iship_link_root="/g2/stage/skeletons/mt-skel/iut-skel-"
+eship_link_root="/g2/stage/skeletons/mt-skel/eut-skel-"
+
+
+#-----------------------------------------------------------------
+# Debugging substitutions.
+#     When working on this script, swap the above locations for
+#     some test dirs of your own. Uncomment these lines and
+#     comment the counterparts above. DO NOT check in until
+#     switching them back!
+#     Remember to similarly switch the user tree links below.
+#-----------------------------------------------------------------
+# staging_area="/bt/mpc/util/test/stage"
+# dep_iship_dir="/bt/mpc/util/test/iship"
+# dep_eship_dir="/bt/mpc/util/test/eship"
+# indep_iship_dir="/bt/mpc/util/test/iship/indep"
+# indep_eship_dir="/bt/mpc/util/test/eship/indep"
+# iship_link_root="/gensym/bt/mpc/util/test/links/iship/"
+# eship_link_root="/gensym/bt/mpc/util/test/links/eship/"
+
+noconfirm=0
+latest=1
+
+#-----------------------------------------------------------------
+# Process the command line and set appropriate variables
+#-----------------------------------------------------------------
+
+while [ TRUE ]; do               # loop exits when case does not match option
+  case "$1" in
+      -noconfirm) noconfirm=1; shift
+             ;;
+      -notlatest) latest=0; shift
+             ;;
+      -i) promote="iship"
+          shift
+             ;;
+      -e) promote="eship"
+          shift
+             ;;
+      *)  break                  # must be product name so leave loop
+             ;;
+  esac
+done
+
+#-----------------------------------------------------------------
+# Parse and validate the product argument.
+#-----------------------------------------------------------------
+product=$1
+shift
+product_info=`grep "product $product " $data_home/products.dat`
+
+if [ "$product_info" = "" ]; then
+    #-----------------------------------------------------------------
+    # If product database contains no entry for given product, display
+    # error and list of valid products.
+    #-----------------------------------------------------------------
+    echo "ERROR: Unknown kind of product ($product).  Products can be added by"
+    echo "       the Product Distribution Manager.  The current authorized"
+    echo "       products are:"
+    sed -e 's/product \([^ ]*\).*$/   \1/' $data_home/products.dat
+    exit 1
+else
+    #-----------------------------------------------------------------
+    # Found a record for the given product of the format:
+    #     product <product name>  [dep | indep] [shipping | not-shipping]
+    # Bourne shell doesn't provide a simple way to pull apart lists
+    # (such as csh's list[n] referencing) so here's where we do a little
+    # magic. In order to get the record elements we need:
+    #     1. Save positional parameters
+    #     2. Set positional params to value to our record
+    #     3. Pull out the positional params we're interested in
+    #     4. Restore positional parameters.
+    #-----------------------------------------------------------------
+    oldparams=$*
+    set $product_info
+    indep_info=$3
+    shipping_info=$4
+    set $oldparams
+
+    case "$shipping_info" in
+        shipping)
+            ;;
+        not-shipping)
+            if [ "$promote" = "iship" ]; then
+                echo "WARNING: $product is not currently shipping, but can be"
+                echo "         promoted for iship."
+            else
+                echo "ERROR: $product is not marked for shipping, and so cannot"
+                echo "       be promoted."
+            fi
+            exit 1
+            ;;
+        *)
+            echo "ERROR: malformed product information entry, $shipping_info"
+            exit 1
+            ;;
+    esac
+
+    case "$indep_info" in
+        indep)
+	    prodtype="indep"
+	    machine_id="indep"   
+            ;;
+        dep)
+            prodtype="dep"
+            ;;
+        *)
+            echo "ERROR: malformed product information entry, $indep_info"
+            exit 1
+            ;;
+    esac
+fi
+
+
+#-----------------------------------------------------------------
+# If product database lists given product as dep then platform
+# name should be the next argument.
+#-----------------------------------------------------------------
+
+if [ "$prodtype" = "dep" ]; then
+    if [ $# -ne 3 ]; then
+        echo "ERROR: wrong number of args for a platform-dependent product."
+        echo "Type promote-product for proper syntax."
+        exit 1
+    fi
+
+    machine_id=$1
+    shift
+    name_found=`grep "^$machine_id$" $data_home/platforms.dat`
+
+    if [ "$name_found" = "" ]; then
+        #-----------------------------------------------------------------
+        # If platform list contains no entry for given platform, display
+        # error and list of valid platforms.
+        #-----------------------------------------------------------------
+        echo "ERROR: Unknown kind of machine ($machine_id), must be one of:"
+        cat $data_home/platforms.dat
+        exit 1
+    fi
+fi
+
+#-----------------------------------------------------------------
+# Parse the remaining 2 args.
+#     For iship promotes they should be source_dir and iship_id
+#     For eship promotes they should be eship_id and iship_id
+#-----------------------------------------------------------------
+
+if [ $# -ne 2 ]; then
+    echo "ERROR: wrong number of args"
+    echo "Type promote-product for proper syntax."
+    exit 1
+fi
+
+if [ "$promote" = "iship" ]; then
+    source_dir=$1
+    diff_source=$source_dir
+    iship_id=$2
+else
+    iship_id=$1
+    eship_id=$2
+fi
+
+#-----------------------------------------------------------------
+# Establish the source and target directories.
+#-----------------------------------------------------------------
+
+if [ "$promote" = "iship" ]; then
+    release_id=$iship_id
+else
+    release_id=$eship_id
+fi
+
+source_id="${product}-${iship_id}"
+target_id="${product}-${release_id}"
+
+
+if [ "$promote" = "iship" -a "$prodtype" = "indep" ]; then
+
+    # --- Source=development dir. Target=Indep Iship dir ---
+    # --- Source dir given on command line. ---
+    target_dir_base="${indep_iship_dir}/${target_id}"
+
+elif [ "$promote" = "iship" -a "$prodtype" = "dep" ]; then
+
+    # --- Source=development dir. Target=Machine-specific Iship dir ---
+    # --- Source dir given on command line. ---
+    target_dir_base="${dep_iship_dir}/${machine_id}/${target_id}"
+
+elif [ "$promote" = "eship" -a "$prodtype" = "indep" ]; then
+
+    # --- Source=Iship tape dir. Target=Indep Iship dir ---
+    source_dir="${indep_iship_dir}/${source_id}/tape"
+    diff_source="${indep_iship_dir}/${source_id}/test"
+    target_dir_base="${indep_eship_dir}/${target_id}"
+
+elif [ "$promote" = "eship" -a "$prodtype" = "dep" ]; then
+
+    # --- Source=Iship tape dir. Target=Machine-specific Iship dir ---
+    source_dir="${dep_iship_dir}/${machine_id}/${source_id}/tape"
+    diff_source="${dep_iship_dir}/${machine_id}/${source_id}/test"
+    target_dir_base="${dep_eship_dir}/${machine_id}/${target_id}"
+fi
+
+target_tape="${target_dir_base}/tape"
+target_test="${target_dir_base}/test"
+
+
+#-----------------------------------------------------------------
+# Stop if Source does not exist OR target *does* exist.
+#-----------------------------------------------------------------
+
+if [ ! -d $source_dir ]; then
+    echo "ERROR: $source_dir does not exist or isn't a directory."
+    exit 1
+fi
+
+if [ -d $target_dir_base ]; then
+    echo "ERROR: the directory to be created, $target_dir_base, already exists."
+    exit 1
+fi
+
+#-----------------------------------------------------------------
+# Echo back to user and give him a chance to kill it.
+#-----------------------------------------------------------------
+
+if [ "$promote" = "eship" ]; then
+    ship_name="External"
+else
+    ship_name="Internal"
+fi
+
+echo ""
+echo "LOG: Promoting Machine Dependent Product for $ship_name Shipment"
+echo "  Product:           $product"
+echo "  Release Id:        $release_id"
+echo "  Machine Type:      $machine_id"
+echo "  Product Directory: $source_dir"
+echo "  Target Directory:  $target_dir_base"
+
+if [ "$noconfirm" = "0" ]; then
+    while [ TRUE ]; do
+        echo ""
+        echo -n '  Are you sure you want to promote this product? (yes or no): '
+        read answer
+        if [ "$answer" = "yes" ]; then
+            echo "LOG: Promoting ${release_id}..."
+            break
+        elif [ "$answer" = "no" ]; then
+            echo "Abandoning promotion and exiting."
+            exit 1
+        else
+            echo "Please answer yes or no."
+        fi
+    done
+fi
+
+#-----------------------------------------------------------------
+# Make the target directory and subdirs.
+#-----------------------------------------------------------------
+
+for dir in $target_dir_base $target_tape $target_test
+do
+    mkdir -p $dir
+    if [ ! -d $dir ]; then
+        echo "ERROR: Unable to make $dir."
+        echo "You should remove this incomplete promotion with remove-product"
+        exit 1
+    fi
+done
+
+if [ "$promote" = "iship" ]; then
+
+    #-------------------------------------------------------------------
+    # The iship promote creates a tar file which contains the structure:
+    #     ./$machine_name/$product_name/<product files...>
+    # In order to create this, the iship promote does the following:
+    #   1. Create a shadow directory in a tmp area
+    #   2. Create a $machine subdir
+    #   3. Use tar to copy files from source dir to product subdir
+    #   4. If not present, create a contents file
+    #   5. Use tar to archive product from product subdir to target_tape
+    #-------------------------------------------------------------------
+  
+    shadow_directory="$staging_area/shadow.$$"
+
+    if [ ! -d $shadow_directory ]; then
+        mkdir -p $shadow_directory
+    fi
+
+    top_shadow_dir="$shadow_directory"
+
+    if [ ! -d $shadow_directory/$machine_id ]; then
+        mkdir -p $shadow_directory/$machine_id
+    fi
+
+    shadow_directory="$top_shadow_dir/$machine_id/$product"
+    mkdir -p $shadow_directory
+
+    (cd $source_dir ; tar cf - .) | (cd $shadow_directory ; tar xf -)
+
+    #-------------------------------------------------------------------
+    # We have just copied the product directory to the shadow directory.
+    # If a contents file is not present, create one as follows:
+    #     1. Go to shadow directory
+    #     2. Use find to recursively list each file name
+    #     3. Echo the name of the file and its checksum info of
+    #        a file named contents.txt
+    #-------------------------------------------------------------------
+    if [ ! -f $shadow_directory/contents.txt ]; then
+      (cd $shadow_directory ; files=`ls -A`; for file in `find $files -type f -print`
+                        do
+			  echo $file `sum $file` >>contents.txt
+	done)
+    fi
+    
+    #-------------------------------------------------------------------
+    # Finally transfer the entire $machine/$product heirarchy to a
+    # tar file in the target directory.
+    #-------------------------------------------------------------------
+    (cd $top_shadow_dir ; tar cf $target_tape/$target_id.tar $machine_id)
+
+    if [ ! -f $target_tape/$target_id.tar ];  then
+      echo "ERROR: Error while using tar to copy $source_dir to ${target_tape}."
+      echo "You should remove this incomplete promotion with remove-product."
+      if [ -d $top_shadow_dir ]; then
+	  rm -rf $top_shadow_dir
+      fi
+      exit 1
+    fi
+
+elif [ "$promote" = "eship" ]; then
+    top_shadow_dir="none_needed"
+
+    #-----------------------------------------------------------------------
+    # Eship promotes are now fairly simple.
+    #   1. Copy tar file from source dir (iship tape) to target (eship tape)
+    #-----------------------------------------------------------------------
+
+    (cd $target_tape ; cp $source_dir/$source_id.tar $target_id.tar)
+
+    if [ ! -f $target_tape/$target_id.tar ];  then
+        echo "ERROR: Error promoting $source_dir to ${target_tape}."
+        echo "You should remove this incomplete promotion with remove-product."
+	exit 1
+    fi
+
+fi
+
+#-----------------------------------------------------------------
+# Now create test from tape. Since tar will extract the entire
+# directory heirarchy from the tar file, we build the test dir
+# as follows:
+#   1. Extract the product (heirarchy) from the target_tape dir
+#      into the target_test dir
+#   2. Move the product files from $machine subdir to test dir.
+#   3. Remove the (now empty) $machine subdir from test
+#-----------------------------------------------------------------
+
+echo "LOG: Promotion to tape directory complete, making test directory."
+
+(cd $target_test ; tar xf $target_tape/$target_id.tar $machine_id/$product)
+
+if [ -d $target_test/$machine_id/$product ]; then
+    (cd $target_test/$machine_id/$product ; mv `ls -A` $target_test)
+    (cd $target_test; rm -rf $machine_id)
+    echo "LOG: 'diff'ing $diff_source against $target_test"
+    if [ ! -f $diff_source/contents.txt ]; then
+       echo "LOG: (contents.txt found only in $target_test is expected)"
+    fi
+    diff -r $diff_source $target_test
+else
+    echo -n "ERROR:  Error while creating package test directory for "
+    echo "$product $release_id"
+    echo "You should remove this incomplete promotion with remove-product."
+    if [ $promote = "iship" -a -d $top_shadow_dir ]; then
+      rm -rf $top_shadow_dir
+    fi
+    exit 1
+fi
+
+echo "LOG: Promotion complete, setting /gensym/ut links."
+
+#-----------------------------------------------------------------
+# Set up the link for each machine in the eut or iut directory to
+# the test directory. These skeletons directories get automounted
+# as the user trees /gensym/ut and /gensym/ut/dev.
+#-----------------------------------------------------------------
+
+#-----------------------------------------------------------------
+# Debugging substitutions.
+#     When working on this script, swap the link locations below
+#     with some test dirs of your own. Uncomment the lines and
+#     comment the counterparts. DO NOT check in until
+#     switching them back!
+#-----------------------------------------------------------------
+
+if [ "$promote" = "iship" ]; then
+    link_root=$iship_link_root
+    if [ "$prodtype" = "indep" ]; then
+        mt_dir="/g2/stage/iship/indep"
+    else
+        mt_dir="/g2/stage/iship/dep/$machine_id"
+    fi
+#    if [ "$prodtype" = "indep" ]; then
+#        mt_dir="/gensym/bt/mpc/util/test/iship/indep"
+#    else
+#        mt_dir="/gensym/bt/mpc/util/test/iship/$machine_id"
+#    fi
+else
+    link_root=$eship_link_root
+    if [ "$prodtype" = "indep" ]; then
+        mt_dir="/g2/stage/eship/indep"
+    else
+        mt_dir="/g2/stage/eship/dep/$machine_id"
+    fi
+#    link_root="/gensym/bt/mpc/util/test/links/eship/"
+#    if [ "$prodtype" = "indep" ]; then
+#        mt_dir="/gensym/bt/mpc/util/test/eship/indep"
+#    else
+#        mt_dir="/gensym/bt/mpc/util/test/eship/$machine_id"
+#    fi
+fi
+
+link_target="${mt_dir}/${target_id}/test"
+link_latest="${product}-latest"
+
+#-----------------------------------------------------------------
+# User tree links:
+#     If this is a platform dependent product then we only create
+#     a link in the skeleton for that one particular platform.
+#     However, if this is a platform independent product we must
+#     create a link in ALL active platform skeletons.
+#-----------------------------------------------------------------
+
+if [ "$prodtype" = "indep" ]; then
+    platforms=`cat $data_home/platforms.dat`
+else
+    platforms="$machine_id"
+fi
+
+for platform in $platforms
+do
+    echo "LOG: Linking $platform"
+
+    link_dir="${link_root}${platform}"
+    link_name="${link_dir}/${target_id}"
+    # --binghe, 2011/9/14
+    mkdir -p $link_dir
+    ln -s $link_target $link_name
+
+    if [ ! -h $link_name ]; then
+        echo "WARNING: link for $platform directories failed,"
+	echo "continuing anyway."
+    fi
+    
+    if [ "$promote" = "iship" -a  "$latest" = "1" ]; then
+        link_name="${link_dir}/${link_latest}"
+        if [ -h $link_name ]; then
+            rm $link_name
+            if [ -h $link_name ]; then
+              echo "WARNING: rm for $link_latest link failed, continuing anyway."
+            fi
+        fi
+        ln -s $target_id $link_name
+        if [ ! -h $link_name ]; then
+            echo -n "WARNING: link for $platform $product latest failed,"
+            echo    "continuing anyway."
+        fi
+    fi
+done
+
+#-----------------------------------------------------------------
+# Remove staging area directory used in iship promotions.
+#-----------------------------------------------------------------
+if [ $promote = "iship" -a -d $top_shadow_dir ]; then
+  rm -rf $top_shadow_dir
+fi
+
+echo ""
+echo "LOG: Promote for $ship_name Shipment of $target_id succeeded."
+
+exit 0
