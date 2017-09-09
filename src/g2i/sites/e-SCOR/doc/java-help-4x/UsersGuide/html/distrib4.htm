@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="02/06/02 18:48:25">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Configuring a Distributor Role to Outsource Finished Products</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="distrib3.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="distrib5.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+      <div align="center"><b>e-SCOR User's Guide</b></div>
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/e-SCOR/OnlineHelpFiles/UsersGuide/html/distribu.htm">  
+        Modeling a Distribution Process  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Configuring a Distributor Role to Outsource Finished Products
+</h2>
+<p>You might have a supply chain in which a Distributor role assembles components into kits, while at the same time outsources those same kits as finished products from a secondary supplier. You use this technique to address component shortages when assembling components into kits. You can specify whether the Distributor role prefers to deliver kits that it assembles from components or complete finished products that it outsources from a secondary supplier.<a name="5051"></a></p>
+<p>The following figure shows a model in which the Distributor role both assembles components into kits and outsources finished products. The Distributor role sources components from the Component Manufacturer role and assembles those components into computer kits. It also sources finished computers from the Finished Computer Supplier role by outsourcing. <a name="106258"></a></p>
+<p>When you explicitly assign the finished product and component to the role, e-SCOR creates product composites for both the finished product and the component, which are automatically configured to be both a source product and a delivery product, by default. You must explicitly configure the Source Product and Delivery Product parameters of the product composites to assemble components into kits.<a name="106345"></a></p>
+<p >
+  <a name="103716"> </a>
+<p><div align="left"><img src="images/distria8.gif" border="0" hspace="0" vspace="0">
+</div><a name="103715"></a></p>
+
+
+
+</p>
+<h4 >	 To configure a Distributor role to outsource finished products:<a name="5303"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>1	</b></td>    <td valign="top" width="580">Create a product hierarchy that contains a finished product with components.<a name="22166"></a></td>  </tr></table><blockquote>  <a name="31173">For details, see <a href="level110.htm#224929">Creating a Product Hierarchy with Components</a>.</a></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>2	</b></td>    <td valign="top" width="580">Assign to the Distributor role the product specifications that represent the finished product and its components. <a name="103898"></a></td>  </tr></table><blockquote>  <a name="104038">In the example above, the Products tab of the Distributor dialog would look like this:</a></blockquote>
+<p >
+  <a name="104045"> </a>
+<p><div align="left"><img src="images/distriba.gif" border="0" hspace="0" vspace="0">
+</div><a name="104044"></a></p>
+
+
+
+</p>
+<blockquote>  <a name="31570">For details, see <a href="level118.htm#7822">Configuring the Products a Role Sources and Delivers</a>.</a></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>3	</b></td>    <td valign="top" width="580">Configure the Source Product and Deliver Product parameters for the product composites associated with the Distributor role, as follows:<a name="103970"></a></td>  </tr></table><p >
+  <a name="103990"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="103973"><div >Product Composite</a></div></th>
+    <th><a name="103975"><div >Parameter</a></div></th>
+    <th><a name="103977"><div >Value</a></div></th>
+  </tr>
+  <tr>
+    <td><p>Kit (finished product)<a name="103979"></a></p>
+</td>
+    <td><p>Source Product<br>Delivery Product<a name="103981"></a></p>
+</td>
+    <td><code>true
+true<a name="103983"> </a></code></blockquote></td>
+  </tr>
+  <tr>
+    <td><p>Components<a name="103985"></a></p>
+</td>
+    <td><p>Source Product<br>Delivery Product<a name="103987"></a></p>
+</td>
+    <td><code>true
+false<a name="103989"> </a></code></blockquote></td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>4	</b></td>    <td valign="top" width="580">Configure the Completion Preference of the delivery product to determine whether the role should source complete products <code>(Complete</code>) or kits assembled from components (<code>Assembled</code>) first.<a name="31202"></a></td>  </tr></table><h6><b>Note: </b>The Completion Preference for a Distributor role should be either Complete or 
+Assembled, never Complete Only, which is the value for a Manufacturer role.
+<a name="61364"></a></h6><p><b>Related topics:</b><a name="120019"></a></p>
+<p><a href="distrib3.htm#4885">Configuring a Distributor to Assemble Components into Kits</a><a name="120023"></a></p>
+<p><a href="distrib3.htm#4885">Configuring a Distributor to Assemble Components into Kits</a><a name="120027"></a></p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="distrib3.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="distrib5.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
