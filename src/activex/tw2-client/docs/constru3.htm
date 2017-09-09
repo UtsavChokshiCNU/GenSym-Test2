@@ -1,0 +1,122 @@
+<html><head><title>Getting Started</title></head>
+<body bgcolor="#ffffff">
+<h5><a href="constru2.htm">| Prev </a> 
+  | Next
+  <a href="construc.htm">| Start of Chapter </a>
+ <a href="connecti.htm">| Next Chapter </a> <a href="booktoc.htm">| Contents </a> <a href="glossary.htm">| Glossary </a> <a href="bookix.htm">| Index </a>  <a href="mailto:docs@gensym.com">| Comments | </a> (4 out of 4) </h5> <br>
+
+<a name="32820">
+<h1> Building Menus for the Default Application Shell</h1>
+</a><a name="49795">
+The default application shell uses a Multiple-Document Interface (MDI), which you can quickly create in Visual Basic. In a multiple-document interface, you can have several documents or forms open at the same time. In the default application shell, you open the application in a main window and perform operations on separate forms, such as displaying a workspace.<p>
+</a><a name="50272">
+<h2> Creating the MDI Form</h2>
+</a><a name="50471">
+A Visual Basic project can only have one MDI form, which can have more than one child forms. Child forms are displayed inside the parent form. The forms that contain G2 workspaces are children of the main form in the default application shell.<p>
+</a><a name="50315">
+<img src="diamond.gif">
+<strong>To create an MDI form in Visual Basic:
+</strong></dt><p></a><ol><a name="50361">
+<li>Create or open a project in Microsoft Visual Basic.<p>
+</a><a name="50370">
+<li>Click Add MDI Form in the Project menu, as shown in the following figure:<p>
+</a><a name="50287">
+<table border="3">
+<caption></caption>
+<tr><td valign="middle"><img src="consta13.gif"><br>
+
+</table>
+
+<table>
+<tr><td>
+</table>
+<p>
+</a></ol><a name="50409">
+<img src="diamond.gif">
+<strong>To create a child of the MDI form in Visual Basic:
+</strong></dt><p></a><ul><a name="49993">
+<img src="arrwrite.gif">
+In the form you want to make a child of your MDI form, set its MDI property to True.
+<p></a></ul><a name="50458">
+<h2> Creating the Menubar</h2>
+</a><a name="50492">
+On the MDI form, which users see first, you create the menus that enable users to perform the operations with your application. Upon opening, the default application shell contains menus for opening a connection to G2 (under the G2 menu) and exiting (under the File menu). The following figure shows the opening form for the default application shell:<p>
+</a><a name="50553">
+<table border="3">
+<caption></caption>
+<tr><td valign="middle"><img src="constra2.gif"><br>
+
+</table>
+
+<table>
+<tr><td>
+</table>
+<p>
+</a><a name="50059">
+By using the Menu editor in Visual Basic, you can create menus without typing code. The following figure shows the Menu editor filled with the menus for the default application shell.<p>
+</a><a name="50565">
+<table border="3">
+<caption></caption>
+<tr><td valign="middle"><img src="construa.gif"><br>
+
+</table>
+
+<table>
+<tr><td>
+</table>
+<p>
+</a><a name="49995">
+The Menu editor enables you to specify menu captions, names, accelerators, and properties. The Enabled and Visible properties help you set the initial appearance of the menu option. The Open Connection option in the G2 menu is both enabled and visible when you open the shell. In contrast, the Get Workspace menu option is visible but not enabled, so it is "grayed out" and not selectable at startup.<p>
+</a><a name="49999">
+The following figure shows selectable and unselectable menu options.<p>
+</a><a name="52968">
+<table border="3">
+<caption></caption>
+<tr><td valign="middle"><img src="consta19.gif"><br>
+
+</table>
+
+<table>
+<tr><td>
+</table>
+<p>
+</a><a name="50000">
+<img src="diamond.gif">
+<strong>To set the Enabled and Visible properties in the Menu editor: 
+</strong></dt><p></a><ol><a name="52077">
+<li>Click on a menu option to select it.<p>
+</a><a name="52082">
+<li>Click the Enabled and Visible checkboxes to place or remove a checkmark.<p>
+</a></ol><a name="52054">
+After the form loads, you can change the menu properties programmatically. In the default application shell, the available menu options change once a connection to G2 is made. <p>
+</a><a name="52152">
+The following code fragment sets the Enabled and Visible properties for nine menubar and menu options once the <a href="g2twcon4.htm#997146">G2Connected</a> event is detected. The status bar in the lower right corner is also updated.<p>
+</a><a name="52100">
+<pre>Private Sub G2UiGateway1_G2Connected()<br>&#32;&#32;&#32;'  Update the display at the window bottom<br>&#32;&#32;&#32;TW2Status.Caption = G2UiGateway1.G2Location</pre>
+</a><a name="52104">
+<pre>  ' Now change all of the menus<br>&#32;&#32;&#32;mnuFileGet.Enabled = True<br>&#32;&#32;&#32;mnuEdit.Visible = True<br>&#32;&#32;&#32;mnuWorkspaces.Visible = True<br>&#32;&#32;&#32;mnuG2CloseConnection.Enabled = True<br>&#32;&#32;&#32;mnuWindow.Visible = True<br>&#32;&#32;&#32;mnuObject.Visible = True<br>&#32;&#32;&#32;mnuG2State1.Enabled = True<br>&#32;&#32;&#32;mnuG2State2.Enabled = True<br>&#32;&#32;&#32;mnuG2State3.Enabled = True<br>End Sub</pre>
+</a><a name="52148">
+After a connection is made to G2, the menubar expands and more menu options are selectable. The following figure shows the main form after a connection to G2 has been established. Compare this figure with the figure at the beginning of this section.<p>
+</a><a name="50192">
+<table border="3">
+<caption></caption>
+<tr><td valign="middle"><img src="consta15.gif"><br>
+
+</table>
+
+<table>
+<tr><td>
+</table>
+<p>
+</a><a name="50608">
+<hr><strong>Note:</strong> For more information on creating Visual Basic menus, see the <em>Microsoft Visual Basic 5.0 Programmer's Guide</em> or another of the many books on Visual Basic.<hr>
+<p></a><a name="50184">
+<p>
+</a>
+
+<h5><a href="constru2.htm">| Prev </a> 
+  | Next
+  <a href="construc.htm">| Start of Chapter </a>
+ <a href="connecti.htm">| Next Chapter </a> <a href="booktoc.htm">| Contents </a> <a href="glossary.htm">| Glossary </a> <a href="bookix.htm">| Index </a>  <a href="mailto:docs@gensym.com">| Comments | </a> (4 out of 4) </h5> <br>
+<A HREF="http://www.gensym.com"><IMG ALIGN = BOTTOM SRC = "logo.gif" height=51 width=162><A HREF="http://www.gensym.com"><h6>Gensym Corporation, Inc.</h6></A>
+<A HREF="titlepa1.htm"><h6>Copyright &#169; 1998 Gensym Corporation, Inc.</h6></A>
