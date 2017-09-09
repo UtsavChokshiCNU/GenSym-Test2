@@ -1,0 +1,49 @@
+#!/bin/csh -f
+
+# Noconflicts
+
+# Jim Allard 3/4/93
+
+# This C shell script is used by CVS when commiting files into the AB source
+# repository, and other spinoffs from AB taken after 3/93.  This script is
+# called as a pre-commit check because of an entry in the commitinfo file, and
+# it is also called directly by changelog, the other script that can be called
+# from a commitinfo entry.
+
+# When CVS detects a conflice during an update to a sandbox, it will use
+# rcsmerge to attempt to merge the files, and it will place a copy of the
+# unmerged file into the same directory under the name ".#<file>.<version>".
+# As a policy in software development's use of CVS, we will require that these
+# files be removed before a commit will be accepted for this sandbox.  The
+# intent of this restriction is that the removal of this file is the
+# developer's way of confirming that the conflict was seen, and that the
+# developer has ensured that the merge either went correctly, or was fixed.
+
+set nonomatch
+set conflicts= ( .\#* )
+unset nonomatch
+
+if ("$conflicts" == '.#*') then
+  exit 0
+endif
+
+echo ""
+echo "The following conflict file(s) were found:"
+foreach conflict ($conflicts)
+  echo "  $conflict"
+end
+cat <<EOF
+
+Conflict files are generated whenever cvs update detects that someone else has
+commited a new revision of a file that you were already editing.  The update
+operation has already attempted to merge your changes into the other person's
+changes, and has replaced your file with the result of that merge operation.
+The conflict file(s) listed above contain your version of the file before
+merging.  You should compare the conflict file with the file you are about to
+commit to ensure that the merge proceeded to your satisfaction, editing the
+file to resolve any problems.  When done, delete the conflict file(s) listed
+above, at which point you may attempt to commit again.  -jra
+
+EOF
+
+exit 1
