@@ -1,0 +1,167 @@
+<?xml version="1.0"?>
+
+<!-- Build file for the project g2i_JMibParser -->
+<project name="g2i_JMibParser" default="all" basedir=".">
+		
+	<!-- Property file to read various properties -->
+	<property file="${basedir}/res/build_JMibParser.properties"/>
+	<property file="${basedir}/res/threshold_JMibParser.properties"/>
+	<property name="debug" value="on"/>
+
+
+	<path id="build.classpath">
+	    <pathelement path="${env.CLASSPATH}"/>
+		<pathelement location="${classes.dir}/AdventNetSnmp.jar"/>     
+    </path>
+
+	<path id="emma.lib">
+		<pathelement location="${emma.dir}/emma.jar"/>
+		<pathelement location="${emma.dir}/emma_ant.jar"/>
+    </path> 
+
+    <path id="testcompile.classpath">
+		<pathelement location="${basedir}/lib/junit.jar" />
+		<pathelement location="${compile.classes.dir}" />
+    </path>
+
+	<path id="bmplugin.classpath">
+ 			<pathelement location="${lib.dir}/bm_plugin.jar"/> 
+	</path>	
+	 <!-- Set the test classpath -->
+	<path id="test.classpath">
+		<path refid="build.classpath"/>
+		<path refid="emma.lib"/>
+        <path refid="testcompile.classpath"/>
+		<pathelement location="${compile.classes.dir}"/>
+		<pathelement location="${test_classes}"/>
+	</path>
+
+	<taskdef resource="emma_ant.properties" classpathref="emma.lib" />
+    
+	<target name="all" depends="clean,compile"/>
+
+	<!-- deleting the build directories -->
+	<target name="clean">
+		<delete dir="${test_classes}"/> 
+		<delete dir="${out.dir}"/>
+	</target>
+
+    <!-- compile java source code -->
+    <target name="compile" description="compile java source code">
+		<echo message="Compiling the java source code" />
+		<delete dir="${compile.classes.dir}"/>
+		<mkdir dir="${compile.classes.dir}"/>
+		<javac srcdir="${java.src.dir}" destdir="${compile.classes.dir}" classpathref="build.classpath" includes="**/*.java" debug="${debug}"/>
+    </target>
+
+  <!-- compile test source code -->
+	<target name="testcompile" description="compile test source code" depends="compile">
+		<echo message="Compiling the test source code" />
+		<delete dir="${test_classes}"/> 
+		<mkdir dir="${test_classes}"/>
+		<javac srcdir="${java.testsrc.dir}" destdir="${test_classes}" classpathref="testcompile.classpath" includes="**/*.java" />
+	 </target>
+
+	<!--  target to run check-style -->
+    <target name="check-style" description="Prepare the Checkstyle report">
+	    <delete dir="${checkstyle.report.dir}" /> 
+	    <taskdef resource="checkstyletask.properties"> 
+            <classpath>
+				<path location="${lib.dir}/checkstyle-all-4.2.jar"/>
+            </classpath>
+        </taskdef> 
+        <mkdir dir="${checkstyle.report.dir}" description="Be sure that Check style report folder exists"/>
+        <checkstyle maxerrors="${checkstyle.error.threshold}"
+		            failOnViolation="true"
+                    failureProperty="checkstyle.fail"
+                    config="${checkstyle.config}"
+                    description="Run the Checkstyle">
+            <fileset dir="${java.src.dir}" includes="**/*.java" /> 
+		    <formatter type="xml" toFile="${checkstyle.report.dir}/checkstyle.xml"/>
+        </checkstyle>
+        <style basedir="${checkstyle.report.dir}"
+               destdir="${checkstyle.report.dir}"
+               includes="checkstyle.xml"
+               style="${checkstyle.report.xsl}">
+            <param name="output.dir" expression="${checkstyle.report.dir}"/>
+        </style>
+	</target>
+
+	<!--  Making the jar -->
+    <target name="makeJar" depends="compile">
+         <delete dir="${findbugs_jar}" />
+         <mkdir dir="${findbugs_jar}" />
+         <jar destfile="${findbugs_jar}/findbugs.jar" basedir="${compile.classes.dir}" includes="**/*.class"/>
+      </target> 
+	
+	<!--  target to initialize findbugs -->
+    <target name="findbugs-init" >
+	    <taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask"> 
+		    <classpath>
+			    <path location ="${findbugs.home}/lib/findbugs.jar"/>
+				<path location ="${findbugs.home}/lib/findbugs-ant.jar"/>
+				<path location ="${findbugs.home}/lib/bcel.jar"/>
+            </classpath> 
+		</taskdef>
+	</target>
+
+	<!--  target to run findbugs -->
+    <target name="check-findbugs" depends="findbugs-init,makeJar" > 
+		<mkdir dir="${findbugs.report.dir}" />
+        <findbugs home="${findbugs.home}" output="xml" outputFile="${findbugs.report.dir}/bcel-fb.xml" jvmargs="-Xmx1024M" >
+              <class location="${findbugs_jar}/findbugs.jar" />  
+        </findbugs> 
+    </target>
+	
+	  
+	<!-- Emma target -->
+	<target name="emma">
+		<echo message="Enabling emma"/>
+		<delete dir="${coverage.dir}/classes"/> 
+		<mkdir dir="${coverage.dir}/classes"/>
+		<property name="emma.enabled" value="true" />
+	</target>
+
+	<!--target to test emma coverage --> 
+   	<target name="test" depends="testcompile">
+		<emma enabled="${emma.enabled}" >
+			<instr destdir="${instr.classes.dir}" metadatafile="${coverage.dir}/metadata.emma" merge="false">
+				<instrpath>
+					<pathelement location="${compile.classes.dir}"/>
+				</instrpath>
+			</instr>
+		</emma>
+		<junit printsummary="yes" fork="yes" maxmemory="512000000">
+			<classpath>
+				<pathelement location="${instr.classes.dir}"/>
+				<path refid="test.classpath"/>
+				<pathelement location="${test_classes}"/>
+			</classpath>
+			<formatter usefile="yes" type="plain"/>
+			<test name="com.gensym.testJMibParser.SampleTestCase" outfile="test_results">
+				<formatter usefile="yes" type="plain"/>
+			</test>
+			<jvmarg value="-Demma.coverage.out.file=${coverage.dir}/coverage.emma"/>
+			<jvmarg value="-Demma.coverage.out.merge=true"/>
+			<jvmarg value="-Dorg.xml.sax.driver=org.apache.xerces.parsers.SAXParser"/>
+		</junit>
+		<emma enabled="${emma.enabled}" >
+			<report sourcepath="${java.src.dir}" >
+	            <fileset dir="${coverage.dir}" >
+	   	        	<include name="*.emma" />
+	       	    </fileset>
+	           	<html outfile="${coverage.dir}/coverage.html" />
+				<xml outfile="${coverage.dir}/coverage.xml" />
+		    </report>
+		</emma>
+	</target>
+
+	<!-- target to check-coverage coverage -->
+	<target name="check-coverage"  depends="emma,test" description="Run the Test Cases, generate the Emma Report and Check-in the source if it is modified"> 
+		<taskdef name="ecct" classname="com.trilogy.buildmgmt.emma.EmmaCheckCoverageTask" classpathref="bmplugin.classpath"/>	
+		<ecct emmaReportXmlFile="${coverage.dir}/coverage.xml" failOnError="true" moduleName="JMibParser">
+			<checkcoverage  ctClass="${CLASS_THRESHOLD}" ctMethod="${METHOD_THRESHOLD}" ctBlock="${BLOCK_THRESHOLD}" ctLine="${LINE_THRESHOLD}" ignoreBlock="false" thresholdFile="${basedir}/res/threshold.properties"/>
+		</ecct> 
+    </target>
+  
+</project>
