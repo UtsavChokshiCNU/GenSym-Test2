@@ -1,0 +1,98 @@
+
+
+function GetPrimaryAndChildPath(szPath,szPrimary,szChild)
+STRING szTemp;
+begin
+// SplitStr2(szPath,"\\" + SOME ,szPrimary,szChild);
+ SplitStr2(szChild,"\\" ,szTemp,szChild);
+end;
+
+function SetPrimaryPath(szPath,szPrimary)
+STRING szChild;
+begin
+ GetPrimaryAndChildPath(szPath,szPrimary,szChild);
+end;
+
+function SetChildPath(szPath,szChild)
+STRING szPrimary;
+begin
+ GetPrimaryAndChildPath(szPath,szPrimary,szChild);
+end;
+
+function GetCompletePath (szPath,szPrimary,szChild)
+NUMBER nSize;
+begin
+nSize = StrLength(szChild);
+if (nSize > 0) then
+     szPath = szPrimary  ^ szChild;
+ else
+     szPath = szPrimary ;
+ endif;
+end;
+
+
+
+function GetParentDirectory (ThisDir,ParentDir)
+INT
+    nCount,nResult;
+begin
+    nCount = StrLength(ThisDir);
+    nCount = nCount - 1;
+    nResult = 0;
+    // ASCII char 92 is "\"
+   while (( nResult != 92) && (nCount > 1) )
+        nCount--;
+        GetByte( nResult, ThisDir, nCount );
+   endwhile;
+
+   StrSub( ParentDir, ThisDir, 0, nCount + 1 );
+
+   if (nCount = 1) then     // Error handling
+     ParentDir = ThisDir;   // Error on getting Parent directory reset to this dir
+     if (bgVerbose) then MessageBox ("Error finding parent directory of " + ThisDir, WARNING); endif;
+     return 1;              // return error code 1 set parent dir to thisdir
+   else
+     return 0; // Successful
+   endif;
+
+end;
+
+function GetParentAndChildDirectory (ThisDir,ParentDir,ChildDir)
+INT
+    nCount,nResult;
+begin
+    StrRemoveLastSlash (ThisDir);
+    nCount = StrLength(ThisDir);
+    nCount = nCount - 1;
+    nResult = 0;
+    // ASCII char 92 is "\"
+   while (( nResult != 92) && (nCount > 1) )
+        nCount--;
+        GetByte( nResult, ThisDir, nCount );
+   endwhile;
+
+   StrSub( ParentDir, ThisDir, 0, nCount + 1 );
+   StrSub( ChildDir, ThisDir,nCount + 1,(StrLength(ThisDir)-nCount + 1));
+
+   if (nCount = 1) then     // Error handling
+     ParentDir = ThisDir;   // Error on getting Parent directory reset to this dir
+     if (bgVerbose) then MessageBox ("Error finding parent directory of " + ThisDir, WARNING); endif;
+     return 1;              // return error code 1 set parent dir to thisdir
+   else
+     return 0; // Successful
+   endif;
+
+end;
+
+
+
+
+
+
+
+
+
+
+
+
+
