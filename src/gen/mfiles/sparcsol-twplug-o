@@ -1,0 +1,39 @@
+SHELL = /bin/sh
+PRODUCT = twplug
+ODIR = o
+PLATFORM = sparcsol
+CDIR = $(SRCBOX)/$(PRODUCT)/c
+NPDIR = $(SRCBOX)/twplug/support
+PLUGDIR=/home/jv/bin/sparcsol/Netscape6/plugins/
+SCRIPTSDIR = /home/development/scripts
+CC_FLAGS = -g -DXP_UNIX -I$(NPDIR) -I.
+
+all : _mfenter nptwplug.so _mfexit
+
+_mfenter : 
+	@- $(SCRIPTSDIR)/errsweep -init
+
+_mfexit : 
+	@- $(SCRIPTSDIR)/errsweep -finish
+
+nptwplug.so : twnpshell.o npunix.o
+	@- if [ -f nptwplug.so ] ; then rm -f nptwplug.so ; fi
+	@- $(SCRIPTSDIR)/errsweep nptwplug.so
+	ld -G -o nptwplug.so twnpshell.o npunix.o
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+twnpshell.o : $(CDIR)/twnpshell.c $(CDIR)/gensym-np.h
+	@- if [ -f twnpshell.o ] ; then rm -f twnpshell.o ; fi
+	@- $(SCRIPTSDIR)/errsweep twnpshell.o
+	gcc -c $(CC_FLAGS) $(CDIR)/twnpshell.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+npunix.o : $(NPDIR)/npunix.c
+	@- if [ -f npunix.o ] ; then rm -f npunix.o ; fi
+	@- $(SCRIPTSDIR)/errsweep npunix.o
+	gcc -c $(CC_FLAGS) $(NPDIR)/npunix.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+clean :
+	- rm -f *.[oa]
+	- rm -f nptwplug.so
