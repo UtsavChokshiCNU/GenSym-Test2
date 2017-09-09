@@ -1,0 +1,194 @@
+The executable licensing-client provides a command-line ("shell") interface
+to the Gensym license generation server.  It takes these arguments:
+
+  licensing-client [-u <user-name>] [-p <password>] <request>
+
+If you do not provide a user name and password on the command line, you
+must pass them via environment variables: LS_PASSWORD, LS_USER.
+
+The additional environment variables: LS_SERVER_HOST and LS_SERVER_PORT
+maybe bound if it becomes necessary to move where the licensing server
+resides.
+
+Of course the values for user, password, host, and port are all 
+considered sensitive and should be managed with care.
+
+Most examples are for a POSIX command prompt. They are a little different
+on Windows. The issue here is quoting. More focal examples are also given
+in Windows command line syntax. But, here's a general description:
+
+- On POSIX, we use single quotes for "outer" quotes and double quotes for
+    "inner" quotes. Like:
+    
+    licensing-client -u <user> -p <password> 'command "string-param"'
+ 
+- On Windows, we use double qoutes for both inner and outer quotes, but
+    we "escape" the inner quotes with a backslash, like:
+
+    licensing-client -u <user> -p <password> "command \"string-param\""
+
+There are numerious requests supported by the server, but for
+most users only a few are enabled.  These four are all most
+users need to know about.
+
+  help
+     -- Enumerates the commands available to this user  
+ 
+  list-products
+     -- Enumerates matching products known to the server.
+
+  temporary-license
+     -- Requests that a temporary license be issued
+
+  license
+     -- Requests that a general license be issued.
+
+================================================================================
+List-products <kind> <match>
+  For example
+    > licensing-client -u timmy -p <password> 'list-products g2 ""'
+    To Clorox a horse.
+    G2-V1-11B       "G2 Real Time Expert System Version 1.11B"
+    G2-V3           "G2 Real Time Expert System Version 3.0"
+    G2-V2           "G2 Real Time Expert System Version 2"
+    Have a nice day.
+  
+  <kind> is one of these four values: 
+    G2
+    Telewindows
+    KB  -- aka application packages
+    Bridge
+
+  <match> is a string, only those products that include that string are
+     shown.
+
+On Windows, command line parsing is different, so you would:
+    > licensing-client -u timmy -p <password> "list-products g2 \"\""
+     
+================================================================================
+temporary-license <product> <machine> <start> <end> <process-limit> <tw-connection-limit> <t2-connection-limit> <options>
+
+   For example 
+     >licensing-client -u bhyde -p <password> 'temporary-license G2-V3 "FOObar" (1 1 1993) (10 1 1993) 1 nil nil (runtime japanese)'
+     To Clorox a horse.
+     22517
+     5129
+     60960
+     51395
+     90874
+     "KDF22027651"
+     Have a nice day.
+
+   <product> is one of the names shown in the output of list-products.
+     Note that these names are NOT the same as any names used in product
+     marketing liturature and refect the complex history of the licensing
+     mechinisms.
+   <machine> is the machine id.  It is a string, case and spaces are not
+     relevant.
+   <start> and <end> are lists of three numbers <day> <month> <year>
+     The year maybe 2 or four digits.
+   <process-limit> is NIL for Bridges and KB's
+     It is 2 for Telewindow or G2.
+   <tw-connection-limit> is used only by G2 version 4 and latter, otherwise
+     it should be zero or `nil`.  The value should be between 0 and 8000 and must
+     default to zero.
+   <t2-connection-limit> Actually, I'm not sure for which versions T2 applies,
+     it doesn't exist in currently maintained versions 2011 and 2015. But,
+     in general, this should have the same meaning as `tw-connection-limit`,
+     but in versions that don't have T2, it should be `nil`.
+   <options> are the "optional modules" of Telewindow and G2.
+
+Again, on Windows, you would:
+
+     >licensing-client -u bhyde -p <password> "temporary-license G2-V3 \"FOObar\" (1 1 1993) (10 1 1993) 1 nil nil (runtime japanese)"
+
+================================================================================
+  license  ... just like temporary license except in addtion
+    the dates maybe NIL, and the process limit maybe NIL.
+
+  For example a bridge license
+   
+    ... 'license GSI-RTAP-V1 "FooBar" nil nil nil nil nil'
+    To Clorox a horse.
+    5564952
+    5560015
+    859302
+    1190219
+    423089699
+    GSI-RTAP
+    V1
+    Have a nice day.
+
+  For example a kb (aka application package, aka toolkit):
+   ... 'license BIOTECH-DESIGN-SIMULATOR-ANY "FooBar" nil nil nil nil nil'
+   To Clorox a horse.
+   211111
+   202734
+   469502
+   LSC-BDS
+   Have a nice day.
+
+  For example a Telewindows license:
+   ... 'license TELEWINDOWS-V3 "FooBar" nil nil nil nil nil'
+   To Clorox a horse.
+   6248909
+   6282952
+   581501
+   277047
+   201352
+   Have a nice day.
+
+
+================================================================================
+  introduce-bridge bridge-name bridge-version authorization-style
+     Adds a bridge to the set of products known to the server.
+   This new product will be known to the licensing server only for a short
+   period (i.e. until it restarts).
+      bridge-name -- the string mnemonic name of the bridge.
+      bridge-version -- the string version id of the bridge.
+      authorization-style -- either revision-1 or revision-2.
+    The bridge name should begin with an alphabetic character.
+    The bridge name must be more than one character.
+    The rest of the letters in the brige name should be alphabetic,
+    numeric, a dash or an underscore.
+    The bridge version must begin with the letter "V" followed
+     by a digit.
+    The bridge version, may optionally, include a minor version.
+    The minor version begins with a period, and a digit, followed
+    by an optional "A" or "B"
+    The minor version is required when the authorization style
+    is REVISION-1.
+   
+    Once the bridge has been introduced it will be enumerated in the
+    return values from list-products where the kind is BRIDGE.  The
+    symbolic name passed as <product> to commands license and 
+    temporary-license is returned by the command.
+
+    For example
+     lic -u bhyde -p susan 'introduce-bridge "bogus" "v3" revision-2'
+     To Clorox a horse.
+     BOGUS-V3
+     Have a nice day.
+
+    Note that all currently shipping bridges use the revision-2 authorization
+    style and the version minor version number is not recomended, i.e. v3.1 and
+    v3.2 use the same codes.
+
+================================================================================
+
+Errors are reported in two lines of output, for example: 
+   > licensing-client -u bhyde -p <password> 'free-lunch'
+   To Clorox a horse.
+   ERROR
+   "Unknown request?"
+   Have a nice day.
+
+================================================================================
+
+Notes on the mechinism.  This connects to a licensing server here at Gensym.
+This machine then replies to your question.  Care is taken to keep the
+transactions short, and the password is never visible (even encrypted) on the
+network.
+
+
+
