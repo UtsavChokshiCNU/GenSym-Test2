@@ -1,0 +1,26 @@
+<!-- API, UI, Performance tests -->
+
+<project name="common-targets" default="api-tests" basedir=".">  
+
+	<taskdef resource="net/sf/antcontrib/antlib.xml">
+		<classpath><pathelement location="${shared.basedir}/lib/ant-contrib.jar"/></classpath>
+	</taskdef>
+
+	<target name="api-tests">
+		<copy file="${basedir}\..\..\dst\g2\opt\g2.exe" todir="${basedir}"/>
+		<for param="file">
+			 <path>
+				<fileset dir="${basedir}\..\tests\Good" includes="*.kb"/>
+			</path>
+			<sequential>
+				<echo>@{file}</echo>
+				<exec executable="g2.exe" failonerror="true">
+					<arg line="-start -kb @{file}"/>
+					<env key="G2_AUTO_TEST" value="."/>
+					<env key="G2_MODULE_SEARCH_PATH" value="'..\kbs' '..\g2i\kbs' '..\g2i\sites\Integrity\kbs' '..\java\products\javalink\kbs' '..\g2db\kbs' '..\g2i\sites\Optegrity\kbs' '..\g2i\sites\e-scor\kbs' '..\g2pi\kbs' '..\g2i\sites\ReThink\kbs' '..\g2i\sites\Nol\kbs' '..\g2i\sites\HLA\kbs' '..\g2opc\kbs' '..\gdanol\gda\kbs' '..\gdanol\common\kbs' '..\tests' '..\gdanol\nol\kbs'"/>
+				</exec>
+			</sequential>
+		</for>
+	</target>
+
+</project>
