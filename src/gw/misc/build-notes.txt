@@ -1,0 +1,48 @@
+This note discusses some historical details of how this product
+is built and why it is built that way. 
+
+I wanted to be a vanilla GSI Bridge, a 40r1 bridge.  I had
+hoped I would write lisp code and link against the libraries
+shipped with 40r1.  I do link against the runtime library and
+networking library.  But I have to retranslate the entire
+of GSI.  The reasons for this are discussed next.
+
+Long names are truncated during the translate, this process
+is not dependable.  My translates have numerous names truncated
+into different names from those used in the 40r1 translate of
+gsi.  What is a little odd is that in many cases it appeares
+that the truncates symbol didn't collide with anything else
+either when 40r1 was made or when I translated.  For example
+F00?-ab-name-of-unique-type appears only once, but is F002 in
+my translates, and F001 in the 40r1 translate.
+
+I added back three modules from G2/TW (streams,file-parse,pathnames).
+These created additional problems.
+
+My patches file has to be different since I'm not patching out
+as much stuff, hence I my libgsi.a forks from the 40r1 library.
+
+My libgsi forks from the libgsi.a library for additional reasons.
+For example, things that were removed for eliminate-for-gsi, but
+used by the three modules added back.
+
+utilities3 -- I needed read-positive-fixnum-from-string 
+utilities1 -- to get convert-ascii-filename-to-text-string-as-m...
+
+Some problems arise with special variables.  Chestnut emits
+the special variable in the first module to USE that variable,
+not in the defining module.  The adding back of the three modules
+created changes in these patterns and hence multiple definitions
+of some things.  (I worked around these).
+
+It appears that some modules, but not all, are having the
+string text compression mechinism at work in them.  That's
+bad since the resulting compression is different than that
+used in the 40r1 libraries (i.e. none).
+
+So... I've given up using the 40r1 library directly, which
+effectively means I've forked off with all the gsi 4.0 lisp
+code (which I've promised my self I won't modify).
+
+
+
