@@ -1,0 +1,153 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="02/06/02 18:38:52">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Mapping Inputs and Outputs for Distributor Roles</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="vmidem13.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="vmidem15.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+      <div align="center"><b>e-SCOR Tutorials</b></div>
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/e-SCOR/OnlineHelpFiles/Tutorials/html/vmidemo.htm">  
+        Case Study: Central Distributor Model  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Mapping Inputs and Outputs for Distributor Roles
+</h2>
+<p>A Distributor role uses source planning to determine the size and frequency with which it places orders with suppliers. You configure source planning parameters in the P2: Plan Source category on the role detail and in the source and delivery products associated with the role. <a name="275369"></a></p>
+<p>You determine delivery time by configuring parameters in the Deliver category on each role detail.<a name="274798"></a></p>
+<p>The model computes inventory levels, based on products shipped and received. Inventory days of supply and other asset calculations represents the dollar value of the current inventory level, measured in days. Therefore, to translate current inventory levels into a dollar amount, you must provide a value for the price each downstream buyer must pay for its source products. To do this, you configure the Net Selling Price parameter of each supplier's delivery product. The buyer then computes the Purchase Cost metric for its source product. <a name="284054"></a></p>
+<p>This table maps the inputs and outputs for the Distributor roles to the appropriate e-SCOR parameters and metrics, assuming a triangular distribution for the timing parameters, the default:<a name="285276"></a></p>
+<p >
+  <a name="319574"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="319495"><div ><br>Description</a></div></th>
+    <th><a name="319497"><div >Input/<br>Output</a></div></th>
+    <th><a name="319499"><div >Category/<br>Product Composite</a></div></th>
+    <th><a name="319501"><div >e-SCOR <br>Parameter/Metric</a></div></th>
+  </tr>
+  <tr>
+    <td><p>Order frequency<a name="319503"></a></p>
+</td>
+    <td><p>I<a name="319505"></a></p>
+</td>
+    <td><p>P2: Plan Source<a name="319507"></a></p>
+</td>
+    <td><p>Planning Period<a name="319509"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Replenishment<br>level<a name="319511"></a></p>
+</td>
+    <td><p>I<a name="319513"></a></p>
+</td>
+    <td><p>Source and delivery<br>product<br>(Planning tab)<a name="319515"></a></p>
+</td>
+    <td><p>Replenishment<br>Threshold<a name="319517"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Delivery time<a name="319519"></a></p>
+</td>
+    <td><p>I<a name="319521"></a></p>
+</td>
+    <td><p>D1: Delivery Stock<br>Product<br>(Fulfillment tab)<a name="319523"></a></p>
+</td>
+    <td><p><b>Order Shipment to<br>Receipt Time<br></b>   Min<br>   Mode<br>   Max<a name="319525"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Inventory<a name="319527"></a></p>
+</td>
+    <td><p>I<a name="319529"></a></p>
+</td>
+    <td><p>Delivery product<br>(Delivery tab)<a name="319531"></a></p>
+</td>
+    <td><p>Net Selling Price<a name="319533"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Inventory<a name="319535"></a></p>
+</td>
+    <td><p>O<a name="319537"></a></p>
+</td>
+    <td><p>Source and delivery<br>product<br>(Inventory tab)<a name="319539"></a></p>
+</td>
+    <td><p>Inventory Level<a name="319541"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Inventory<a name="319543"></a></p>
+</td>
+    <td><p>O<a name="319545"></a></p>
+</td>
+    <td><p>Distributor role<br>(Assets tab)<a name="319547"></a></p>
+</td>
+    <td><p><b>Inventory <br>Days of Supply</b><a name="319549"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Assets<a name="319551"></a></p>
+</td>
+    <td><p>O<a name="319553"></a></p>
+</td>
+    <td><p>Distributor role<br>(Asset tab)<a name="319555"></a></p>
+</td>
+    <td><p>Asset Turns<a name="319557"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Assets<a name="319559"></a></p>
+</td>
+    <td><p>O<a name="319561"></a></p>
+</td>
+    <td><p>Distributor role<br>(Asset tab)<a name="319563"></a></p>
+</td>
+    <td><p>Cash-to-Cash <br>Cycle Time<a name="319565"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Assets<a name="319567"></a></p>
+</td>
+    <td><p>O<a name="319569"></a></p>
+</td>
+    <td><p>Distributor role<br>(Asset tab)<a name="319571"></a></p>
+</td>
+    <td><p>Cash Flow Period<a name="319573"></a></p>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="vmidem13.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="vmidem15.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
