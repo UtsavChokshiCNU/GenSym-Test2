@@ -1,0 +1,297 @@
+#!/usr/local/bin/perl -I/usr/local/lib/perl5
+
+#
+# Granny version 1.0 by J. Gabriel Foster (gabe@sgrail.com)
+#
+# Use the -h option to get basic usage information
+#
+use Time::Local;
+use Getopt::Std;
+
+sub usage;
+sub hsvtorgb;
+
+print STDERR "Granny: graphical display of cvs annotate information.\n";
+print STDERR "Created by J. Gabriel Foster (gabe\@sgrail.com)\n\n";
+
+&usage unless getopts("DUVXhi:o:d:");
+
+#
+# process args
+#
+usage(1) if $opt_h;		# help
+
+if ( $opt_i )
+{
+	if ( $opt_i ne "-" )
+	{
+		$file = $opt_i;
+		open(STDIN, "< $opt_i") ||
+			die "Can't open $opt_i for input because '$!'";
+	}
+	else
+	{
+		$file = "stdin";
+	}
+}
+else
+{
+	&usage unless ( $#ARGV >= 0 );
+	$file = $ARGV[0];
+	open(STDIN, "cvs annotate $file |") ||
+		die "Can't run cvs annotate on $file";
+}
+
+if ( $opt_o )
+{
+	if ( $opt_i ne "-" )
+	{
+		open(STDOUT, "> $opt_o") ||
+			die "Can't open $opt_o for output because '$!'";
+	}
+}
+else
+{
+	$tmp = "/usr/tmp/annotate.$$";
+	open(STDOUT, "> $tmp") || die "Can't open $tmp for output because '$!'";
+
+}
+
+if ($opt_X && !($opt_D || $opt_U)) {
+    print STDERR "-X only makes sense in conjunction with -U or -D\n";
+}
+
+$opt_d = 365 unless $opt_d > 0;
+
+#
+# Month lookup tables
+#
+%month = ( "Jan", 0, "Feb", 1, "Mar", 2, "Apr", 3, "May", 4, "Jun", 5, "Jul", 6, "Aug", 7, "Sep", 8, "Oct", 9, "Nov", 10, "Dec", 11 );
+@monthnames = ( "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" );
+
+#
+# Compute the start of this day
+#
+($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) = gmtime(time());
+$today = timegm(0, 0, 0, $mday, $mon, $year);
+
+#
+# line counter
+#
+$count = 0;
+($me) = getpwuid($<);
+
+while ( <STDIN> )
+{
+#
+# Parse an annotate string
+#
+	if ( /((\d+\.?)+)\s+\((\w+)\s+(\d\d)-(\w{3})-(\d\d)\): (.*)/ )
+	{
+		$version[$count] = $1;
+		$user[$count] = $3;
+		$time[$count] = ($today - timegm(0, 0, 0, $4, $month{$5}, $6)) / 86400;
+		$source[$count] = $7;
+		$source[$count] =~ s/\&/\&amp\;/g;
+		$source[$count] =~ s/\</\&lt\;/g;
+		$source[$count] =~ s/\>/\&gt\;/g;
+	}
+	else
+	{
+		$source[$count] = $_;
+	}
+	$count++;
+}
+
+
+#yduJ: this used to use 240 to smooth its curve.
+#I haven't a CLUE what the numbers mean, but 240 seems to be the bottom.
+#leaving out the bottom edge of colors to make all changes stand out against
+#the one for the beginning of time.
+for ( $i = 0; $i < $opt_d; $i++)
+{
+	$color[$i] = hsvtorgb(190.0 * $i / $opt_d, 1.0, 1.0);
+}
+$color[$opt_d] = hsvtorgb(240.0, 1.0, 1.0);
+
+print "<body bgcolor = #000000>\n";
+print "<font color=#FFFFFF><H1>File $file</H1>\n";
+
+$changeid = 1;
+printf "<a href=\"#change$changeid\"><font color=#FFFFFF>$me\'s first change</font></a><br>" if ($opt_U);
+
+print "<H3>Code age in days</H3>\n";
+
+$step = int $opt_d / 40;
+if ( $step < 5 )
+{
+	$step = 1;
+	while ( ($opt_d / $step) > 40 )
+	{
+		$step++;
+	}
+}
+
+if ( $step >= 5 )
+{
+	if ( $step != 5 )
+	{
+		$step += 5 - ($step % 5);
+	}
+
+	while ( ($opt_d / $step) > 20 )
+	{
+		$step += 5;
+	}
+}
+
+for ( $i = 0; $i < $opt_d; $i += $step)
+{
+	print "<font color=$color[$i]>$i ";
+}
+print "<font color=$color[$opt_d]>older\n";
+
+print "<code><pre>\n";
+
+#Here's the main stuff...
+
+$lastuser = "";
+
+
+for ( $i = 0; $i < $count; $i++ )
+{
+    if ($opt_U && $lastuser ne $user[$i] && $user[$i] eq $me) {
+	printf "<a name=\"change$changeid\"></a>\n";
+	$changeid++;
+    }
+    if ($opt_U && $lastuser ne $user[$i] && $lastuser eq $me) {
+	printf "<a href=\"#change$changeid\"><font color=#FFFF00>$me\'s next change</font></a><br>" if ($opt_U);	
+    }
+    $lastuser = $user[$i];
+	if ($opt_U) {
+	    if ( (!($opt_X) || ($me eq $user[$i]))) {
+		printf "<font color=#FFFFFF>%-10s ", $user[$i];
+	    } else {
+		print " " x 11;
+	    }
+	}
+	printf "<font color=#FFFFFF>%-6s ", $version[$i] if $opt_V;
+	if ( $opt_D )
+	{
+	    if ($opt_X && ($time[$i] > $opt_d)) {
+		print " " x 10;
+	    } else {
+		($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) =
+			gmtime($today - $time[$i] * 86400);
+		$year = $year % 100;
+		printf "<font color=#FFFFFF>%2d/%s/%02d ", $mday, $monthnames[$mon], $year;
+	    }
+	}
+
+	$fcolor = $time[$i] < $opt_d ? $color[$time[$i]] : $color[$opt_d];
+	print "<font color=$fcolor> $source[$i]\n";
+}
+
+printf "<a name=\"change$changeid\"></a>\n<font color=#FFFF00>No more changes for $me</font>" if $opt_U;
+
+print "</code></pre>\n";
+print "<font color=#FFFFFF>\n";
+print "<H5>Granny created by <I>J. Gabriel Foster</I>\n";
+print "<ADDRESS><A HREF=\"mailto:gabe\@sgrail.com\">gabe\@sgrail.com</A></ADDRESS>\n";
+close STDOUT;
+
+if ( $tmp )
+{
+	if ( system("netscape -remote openFile\\($tmp\\)") )
+	{
+		print STDERR "$0: Trying to run netscape, please wait\n";
+
+		if ( system("netscape &") == 0 )
+		{
+			for ( $i = 0; $i < 10; $i++ )
+			{
+				sleep 1;
+				last if ( system("netscape -remote openFile\\($tmp\\)") == 0 )
+			}
+
+			if ( $i == 10 )
+			{
+				print STDERR "$0: Unable to start netscape\n";
+				exit 1;
+			}
+		}
+		else
+		{
+			print STDERR "$0: Unable to start netscape\n";
+			exit 1;
+		}
+	}
+
+	sleep 2;			# give netscape a chance to read the file
+	unlink $tmp;
+}
+
+sub usage
+{
+	my($help) = @_;
+	print STDERR "usage: $0 [-h][-d days][-i input][-o output][-DUVX] [file]\n";
+
+	if ($help)
+	{
+		print STDERR "-h:	Get this help display.\n";
+		print STDERR "-i:	Specify the input file. (Use - for stdin.)\n";
+		print STDERR "-o:	Specify the output file. (Use - for stdout.)\n";
+		print STDERR "-d:	Specify the day range for the coloring.\n";
+		print STDERR "-D:	Display the date the line was last edited.\n";
+		print STDERR "-U:	Display the user that last edited the line.\n";
+		print STDERR "-V:	Display the version the line was last edited.\n";
+		print STDERR "-X:	In conjunction with -U, only displays current user -- others blank.\n";
+		print STDERR "   	In conjunction with -D, dates older than start not displayed.\n";
+		print STDERR "\n";
+		print STDERR "By default, $0 executes a cvs annotate on [file] and\n";
+		print STDERR "runs netscape to display the graphic.\n"
+	}
+
+	exit 1;
+}
+
+sub hsvtorgb
+{
+	my($h, $s, $v) = @_;
+	my($i, $f, $p, $q, $t, $r, $g, $b);
+
+	if( $s == 0.0 )
+	{
+		$r = $v;
+		$g = $v;
+		$b = $v;
+	}
+	else
+	{
+		if( $h < 0 )
+		{
+			$h += 360.0;
+		}
+		elsif( $h >= 360.0 )
+		{
+			$h -= 360.0;
+		}
+
+		$h /= 60.0;
+		$i = int $h;
+		$f = $h - $i;
+
+		$s = 1.0 if( $s > 1.0 );
+		$p = $v * (1.0 - $s);
+		$q = $v * (1.0 - ($s * $f));
+		$t = $v * (1.0 - ($s * (1.0 - $f)));
+	    if ( $i == 0 )		{ $r = $v; $g = $t; $b = $p; }
+		elsif ( $i == 1 )	{ $r = $q; $g = $v; $b = $p; }
+		elsif ( $i == 2 )	{ $r = $p; $g = $v; $b = $t; }
+		elsif ( $i == 3 )	{ $r = $p; $g = $q; $b = $v; }
+		elsif ( $i == 4 )	{ $r = $t; $g = $p; $b = $v; }
+		elsif ( $i == 5 )	{ $r = $v; $g = $p; $b = $q; }
+	}
+
+	sprintf "#%02X%02X%02X", $r * 255 + 0.5, $g * 255 + 0.5, $b * 255 + 0.5;
+}
