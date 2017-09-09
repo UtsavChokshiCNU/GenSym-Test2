@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="01/11/02 11:08:18">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Customizing How Resource Managers Allocate Resources</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="customc2.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="customc4.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/ReThink/custom-manual/stylesets/Customizing%20ReThink/Output/html/customih.htm">  
+        Customizing Resources and Work Objects  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Customizing How Resource Managers Allocate Resources
+</h2>
+<p>A Resource Manager allocates and deallocates resources to and from an activity. Each time a block processes a work object, the attached manager:<a name="14601"></a></p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Checks to see if a resource is available; if so, it allocates a resource for the duration of the activity, according to the value of the Choose Resource attribute of the Resource Manager.<a name="14602"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">If no resources are available, queues the block for processing when a resource becomes available. <a name="14603"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">If more than one block requires the same resource, keeps track of the blocks that are waiting for the resources and allocates the resource to each block that is waiting, according to the value of the Choose Manager attribute of the Resource Manager.<a name="14604"></a></td>  </tr></table><p>Resource Managers specify the following two attributes and default values to determine how it allocates and deallocates resources:<a name="14605"></a></p>
+<p >
+  <a name="14632"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="14608"><div >Attribute</a></div></th>
+    <th><a name="14610"><div >Default Value</a></div></th>
+    <th><a name="14612"><div >Description</a></div></th>
+  </tr>
+  <tr>
+    <td><code><code>choose-resource-
+procedure-name</code><a name="14615"> </a></code></blockquote></td>
+    <td><code>bpr-random-available-
+resource<a name="14618"> </a></code></blockquote></td>
+    <td><p>Checks to see if there are any idle resources:<a name="14620"></a></p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">If so, it allocates the first available resource to the activity and randomly reorders the resources.<a name="14621"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">If not, it returns the symbol <code>none</code>.<a name="14622"></a></td>  </tr></table></td>
+  </tr>
+  <tr>
+    <td><code><code>sequence-block-
+procedure-name</code><a name="14625"> </a></code></blockquote></td>
+    <td><code>bpr-random-waiting-block<a name="14628"> </a></code></blockquote></td>
+    <td><p>Queues the activities that are waiting for resources by inserting the block in the <code>blocks-waiting</code> list of the pool. The procedure then allocates a resource to the first block in the list and randomly reorders the waiting blocks.<a name="14630"></a></p>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<p>These two attributes have different values, depending on the values of the Choose Resource and Choose Manager attributes of the Resource Manager:<a name="14635"></a></p>
+<p >
+  <a name="16754"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="16816"><div >Attribute</a></div></th>
+    <th><a name="16818"><div >Possible Values</a></div></th>
+    <th><a name="16820"><div >Descriptions</a></div></th>
+  </tr>
+  <tr>
+    <td><code><code>choose-resource-
+procedure-name</code><a name="16823"> </a></code></blockquote></td>
+    <td><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580"><code>bpr-lowest-cost-<br>available-resource</code><a name="16825"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580"><code>bpr-lowest-utilization-<br>available-resource</code><a name="16826"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580"><code>bpr-highest-priority-<br>available-resource</code><a name="16827"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580"><code>bpr-lowest-priority-<br>available-resource</code><a name="16828"></a></td>  </tr></table></td>
+    <td><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Chooses the resource with the lowest <code>total-cost</code>.<a name="16830"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Chooses the resource with the lowest <code>average-utilization</code>.<a name="16831"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Chooses the resource whose <code>resource-priority</code> is the largest number.<a name="16832"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Chooses the resource whose <code>resource-priority</code> is the smallest number.<a name="16833"></a></td>  </tr></table></td>
+  </tr>
+  <tr>
+    <td><code><code>sequence-block-
+procedure-name</code><a name="16836"> </a></code></blockquote></td>
+    <td><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580"><code>bpr-highest-priority-<br>waiting-block<br></code><a name="16839"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580"><code>bpr-lowest-priority-<br>waiting-block</code><a name="31245"></a></td>  </tr></table></td>
+    <td><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Allocates a resource to the block in the <code>blocks-waiting</code> list whose <code>manager-priority</code> is the largest number.<a name="16872"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Allocates a resource to the block in the <code>blocks-waiting</code> list whose <code>manager-priority</code> is the smallest number.<a name="16911"></a></td>  </tr></table></td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<p>For a summary of how to customize Resource Managers, see <a href="how-to15.htm#15212">Customizing Resource Managers</a>.<a name="16686"></a></p>
+<p>This topic describes:<a name="54151"></a></p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580"><a href="customc4.htm#14638">Choosing the Resource that has Worked the Shortest Amount of Time</a><a name="54155"></a></td>  </tr></table> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="customc2.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="customc4.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
