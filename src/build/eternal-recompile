@@ -1,0 +1,212 @@
+#!/bin/csh
+# eternal-recompile
+
+# Change history:
+# 7/11/94, mes - Changed script to use update-cvs-dir rather than
+#   synch-working-directory-from-cvs.  The trash is no longer emptied first.
+# 1/4/94, cpm - Added compilation of GSI.
+#   The first argument to this script is now g2, tw, gsi, or all.
+#   "All" replaces the "both" argument, which is no longer used.
+# 9/14/93, cpm - Update the ext/c directory, as well as the lisp directory.
+# 3/12/93, cpm - Fixed one-cycle to stop when the product arg is not "both".
+# 3/12/93, cpm - No longer update Lisp files from MA:>ab>.  AB is in CVS!
+#   Added "u" to the 123 args, so that an update is not done.
+#   Updating from cvs using synch-working-directory-from-cvs which tests for
+#   and moves any unexpected or modified files in the ab sandbox to a trash
+#   directory.  The trash directory is first emptied.
+# 1/12/93, cpm - Fixed "one-cycle" to work correctly in the "both"
+#   case.  It now compiles both G2 and TW once.  Previously, it just
+#   compiled G2.
+# 1/12/93, cpm - Modified the error test to exit the eternal recompile on all
+#   trapped errors and not just "ERROR-TRAPPED: STOP REQUEST RECEIVED".
+# 1/12/93, cpm - Added a "both" argument that compiles both G2 and TW.
+#
+# To Do:
+# 1. Add g2save, twsave, and bothsave arguments.  This would save G2 and/or
+#    TW images after the compile.
+#    Currently, this cannot be done because the save-system-image function
+#    is not defined during the compile.  This function has the following
+#    compilation switch:
+#      (and (or (not lispm) development)
+#           (not translator)
+#    The switch is false because "translator" is in *features*.  A possible
+#    fix is to modify the compiler switch to be:
+#      (and (or (not lispm) development)
+#           (or (not translator) non-development-macros)
+#    - cpm, 1/12/93
+
+# The eternal-recompile is a script used to update and compile the development
+# source code for G2, GSI, and TW.  It is normally run repeatedly so that
+# developers can receive timely feedback regarding compiler errors and warnings.
+# For each product, the compilation results are traced to log files and the
+# compilation errors and warnings are collected to a warning file.
+#
+# Note that this script was originally developed by JRA.
+
+# ARGUMENTS
+# 1st argument:
+#   {g2 | gsi | tw} - run the compile only for the 1 product.
+#   all - run the compile for all products
+# 2nd argument:
+#   <no argument> - run repeatedly, until interrupted.
+#   one-cycle - compile the indicated product(s) only once.
+
+# STOPPING an "eternal" recompile
+# 1. Copy a file named STOP-ER-NOW to the lisp directory.
+#    This stops eternal recompiles after the current file is done compiling.
+#    The command "stop-eternal-recompile asap" will do this.
+# 2. Copy a file name STOP-ETERNAL-RECOMPILE to the log_dir.
+#    This stops the compilation of any of the products after it is completed.
+#    For example, if TW is currently compiling, the compilation will stop
+#    after the TW compilation is done.  It will not go on to compiling another
+#    product.  The command "stop-eternal-recompile" will do this.
+
+goto main
+
+usage:
+echo "usage: eternal-recompile: {g2 | tw | gsi | all} [one-cycle]"
+goto exit
+
+main:
+
+# Locals.
+set one_cycle = 0
+set scripts_dir = "/home/development/scripts"
+set translator = "/home/development/scripts/run-translator"
+
+set src_dir = "/bt/er/src"
+set log_dir = "/bt/er/logs"
+
+set stop_soon = "${log_dir}/STOP-ETERNAL-RECOMPILE"
+set stop_compile = "${src_dir}/lisp/STOP-ER-NOW"
+set compile_loop = 0
+set product_arg = 0
+
+# Parse the arguments
+if( $#argv != 1 && $#argv != 2 ) then
+  echo "ERROR: Wrong number $#argv of arguments."
+  goto usage
+endif
+set product_arg = $1
+if ( $#argv == 2 ) then
+  set one_cycle = $2
+endif
+
+# Validate the arguments
+if ($product_arg != g2 && $product_arg != tw && $product_arg != gsi && $product_arg != all) then
+  echo "ERROR: Unknown product $product_arg"
+  goto usage
+endif
+if ($one_cycle != 0 && $one_cycle != one-cycle ) then
+ echo "ERROR: the one-cycle switch was misspelled: $one_cycle"
+ goto usage
+endif
+
+# Determine the product.
+#   A product_arg of "all" starts by compiling G2 first.
+if ( $product_arg == all) then
+  set product = g2
+else
+  set product = $product_arg
+endif
+
+# Derived locals.
+#   Used initially by the G2 or TW compile.
+#   The "all" compile also uses this section to compute locals
+#   from inside the WHILE loop.
+#
+derive_locals:
+if ( $product == g2 ) then
+   set args = "7rip"
+   set basename = g2lucid
+else if ( $product == tw ) then
+  set args = "7trip"
+  set basename = twlucid
+else if ( $product == gsi ) then
+  set args = "7grip"
+  set basename = gsilucid
+endif
+set log = "$log_dir/${basename}.log"
+set warningsfile = "$log_dir/${basename}-w.log"
+
+if ( $compile_loop != 0 ) then
+  goto start_compile_loop
+endif
+
+# Lets Go!
+rm -f $log
+cd ${src_dir}/lisp
+if( -e $stop_soon ) then
+  echo "WARN: clearing a (probably) old eternal recompile stop request file."
+  rm -rf $stop_soon
+endif
+if( -e $stop_compile ) then
+  echo "WARN: clearing a (probably) old translate stop request file."
+  rm -rf $stop_compile
+endif
+
+start_compile_loop:
+while(1)
+  set compile_loop = 1
+
+  echo 'next eternal recompile launched at: ' `date` >> $warningsfile
+  echo "eternal recompile: date `date`, args: $args, log: $log"
+  echo "LOG: update-cvs-dir ${src_dir}/lisp"
+  ${scripts_dir}/update-cvs-dir ${src_dir}/lisp
+  echo "LOG: update-cvs-dir ${src_dir}/ext/c"
+  ${scripts_dir}/update-cvs-dir ${src_dir}/ext/c
+  echo "LOG: update-cvs-dir ${src_dir}/gen/mfiles"
+  ${scripts_dir}/update-cvs-dir ${src_dir}/gen/mfiles
+  echo "LOG: update-cvs-dir ${src_dir}/fnt/c"
+  ${scripts_dir}/update-cvs-dir ${src_dir}/fnt/c
+  echo "LOG: update-cvs-dir ${src_dir}/jpeg/c"
+  ${scripts_dir}/update-cvs-dir ${src_dir}/jpeg/c
+  echo "LOG: update-cvs-dir ${src_dir}/xml"
+  ${scripts_dir}/update-cvs-dir ${src_dir}/xml
+  echo "LOG: update-cvs-dir ${src_dir}/specific"
+  ${scripts_dir}/update-cvs-dir ${src_dir}/specific
+  /bin/rm ${src_dir}/lisp/*.5rb
+  echo "${translator} < 123.lisp $args > $log"
+  ${translator} < 123.lisp $args > $log
+  cp $warningsfile ${warningsfile}.bak
+  ${src_dir}/build/report/get-warnings $log
+  echo 'get-warnings extracted that output at:' `date` >> $warningsfile
+  echo "File containing warnings in $warningsfile"
+  # Two ways to stop cycling:
+  # One.
+  if( $one_cycle == one-cycle ) then
+    if ( $product_arg == all ) then
+      if ( $product == gsi) then
+      # stop after G2, TW, and GSI are all compiled, in that order.
+        break
+      endif
+    else
+    # product_arg is not "all". It is either G2, TW, or GSI.
+      break
+    endif
+  endif
+  # Two
+  if( -f $stop_soon ) then
+     echo "Stopping eternal recompile since $stop_soon noticed at end of cycle."
+     rm $stop_soon
+     break
+  endif
+
+  # For "all" product_arg, choose the next compile.
+  if ( $product_arg == all ) then
+    if ( $product == g2) then
+      set product = tw
+    else if ( $product == tw) then
+      set product = gsi
+    else
+      set product = g2
+    endif
+    goto derive_locals
+  endif
+end
+echo "Terminating eternal recompile, `date`."
+exit:
+rm -rf $stop_compile
+rm -rf $stop_soon
+exit
+
