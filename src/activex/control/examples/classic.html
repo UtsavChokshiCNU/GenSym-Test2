@@ -1,0 +1,91 @@
+<HTML>
+<TITLE>Telewindows Classic Example</TITLE>
+<BODY BGCOLOR="#f0fafa">
+
+<CENTER><H1>Telewindows Control Classic Example</H1></CENTER>
+
+<p>This example demonstrates the "classic" mode of Telewindows.  In this mode,
+Telewindows 7.0 and later behave just as Telewindows 6.2 and earlier do.
+
+<HR>
+<P>
+<!-- Begin TW code -->
+<!-- Users must have the Telewindows ActiveX Control installed on their machine
+     for the following to work.  You received a cabinet file, TwControl.cab,
+     with G2, which will allow users' browsers to automatically download and
+     install the control.  To accomplish this, you need to install the cabinet
+     file on your intranet web server, and modify the example URL shown below
+     to reflect the location where you installed it.
+  -->
+<OBJECT CLASSID="clsid:EC99E4EE-F5F1-4323-9829-06E9B0AFB934"
+        ID=WorkstationView HEIGHT=500 WIDTH=700 HSPACE=85
+        codebase="http://download.example.com/gensym/TwControl.cab#Version=8,3,128,1">
+</OBJECT>
+<br><a href="diag-exe.html"><i>If you don't see G2 running, click here.</i></a>
+
+<SCRIPT LANGUAGE=VBScript>
+WorkstationView.LaunchHost = "localhost"
+WorkstationView.LaunchPort = "1111"
+WorkstationView.LaunchBackground = "pale-goldenrod"
+WorkstationView.LaunchUI = "classic"
+WorkstationView.ConnectToG2()
+</SCRIPT>
+<!-- End TW code -->
+
+<P>
+<HR>
+
+<P>Notes/requirements:
+
+<ul>
+
+<li>In this example, the Telewindows ActiveX control connects to host
+"<b>localhost</b>" at TCP/IP port <b>1111</b>.  Before running this
+example, you should run G2 on the same computer as your browser.  Make
+sure G2 uses port 1111. You can see which port is being used by
+running the command <i>Main Menu</i> -> <i>Miscellany</i> ->
+<i>Network Info</i>.  Alternatively, change the host and port settings
+specified in the VB Script code in this HTML document so that they
+specify the desired G2 host and port.
+
+<li>No particular KB is required or expected for this example.
+
+<li>Here is the VB Script code used for this example:<br>
+  <pre>
+  &lt;OBJECT CLASSID="clsid:EC99E4EE-F5F1-4323-9829-06E9B0AFB934"
+          ID=WorkstationView HEIGHT=500 WIDTH=700 HSPACE=85
+          codebase="http://download.example.com/gensym/TwControl.cab#Version=8,3,128,1">
+  &lt;/OBJECT>
+  &lt;SCRIPT LANGUAGE=VBScript>
+  WorkstationView.LaunchHost = "localhost"
+  WorkstationView.LaunchPort = "1111"
+  WorkstationView.LaunchBackground = "pale-goldenrod"
+  <b>WorkstationView.LaunchUI = "classic"</b>
+  WorkstationView.ConnectToG2()
+  &lt;/SCRIPT></pre>
+
+Notice that the WorkstationView.LaunchUI property is set to
+"<b>classic</b>". This tells newer versions of G2 to use the classic
+UI style.
+
+<li>This example uses ActiveX, and therefore needs to run on
+Microsoft's Internet Explorer web browser.
+
+<li>The Telewindows ActiveX Control in this example is specified as being
+downloadable via the Internet from a fictitious HTTP server.  If you change the
+example to reflect a location where the cab file can be downloaded, there may be
+a noticeable delay for the Internet Explorer browser to connect to the server
+the first time the Telewindows ActiveX Control is used.  After the choice is
+confirmed to download and install the control, an additional delay will occur
+while the control is downloaded and installed.
+
+</ul>
+
+Other useful links:
+<UL>
+<LI><A HREF="http://www.gensym.com">Gensym Home Page</A>
+<LI><A HREF="http://www.gensym-support.com">Gensym Support</A><P>
+</UL>
+
+</BODY>
+</HTML>
