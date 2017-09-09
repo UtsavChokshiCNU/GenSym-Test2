@@ -1,0 +1,84 @@
+// WorkspaceView.odl : type library source for Workspace View ActiveX Control
+
+// This file will be processed by the Make Type Library (mktyplib) tool to
+// produce the type library (WorkspaceView.tlb) that will become a resource in
+// WorkspaceView.ocx.
+
+// THE WAY WE USE THE SAME UUIDs FOR TwControl.ocx and WorkspaceView.ocx
+// IS VERY WRONG!!!   THIS IS JUST FOR TESTING.  FOR RELEASE, MUST USE
+// ACTUAL UNIQUE GUIDS!!!
+
+#include <olectl.h>
+#include <idispids.h>
+
+[ uuid(F0F0CC75-38F6-443A-839E-FD43283C2B4B), version(8.0),
+  helpstring("Gensym Workspace View ActiveX Control"),
+  control ]
+library TWLib
+{
+	importlib(STDOLE_TLB);
+	importlib(STDTYPE_TLB);
+
+	//  Primary dispatch interface for CTelewindowsCtrl
+
+	[ uuid(A3132A7D-1A9A-41C0-8468-7A0B2BA3B0E8),
+	  helpstring("Dispatch interface for Workspace View Control"), hidden ]
+	dispinterface _DTwControl
+	{
+		properties:
+			// NOTE - ClassWizard will maintain property information here.
+			//    Use extreme caution when editing this section.
+			//{{AFX_ODL_PROP(CTelewindowsCtrl)
+			[id(1)] BSTR TwLocation;
+			[id(2)] BSTR LaunchHost;
+			[id(3)] BSTR LaunchPort;
+			[id(4)] BSTR LaunchUserName;
+			[id(5)] BSTR LaunchUserMode;
+			[id(6)] BSTR LaunchPassword;
+			[id(7)] BSTR LaunchBackground;
+			[id(8)] BSTR InitString;
+			[id(9)] BSTR Splashtime;
+			[id(10)] BSTR LaunchUI;
+			[id(11)] BSTR LaunchWindow;
+			[id(12)] BSTR LaunchWorkspace;
+			[id(13)] BSTR LaunchWorkspaceUUID;
+			//}}AFX_ODL_PROP
+
+		methods:
+			// NOTE - ClassWizard will maintain method information here.
+			//    Use extreme caution when editing this section.
+			//{{AFX_ODL_METHOD(CTelewindowsCtrl)
+			[id(14)] void ConnectToG2();
+			[id(15)] HRESULT AssignG2Gateway(IUnknown *gateway_object);
+			//}}AFX_ODL_METHOD
+	};
+
+	//  Event dispatch interface for CTelewindowsCtrl
+
+	[ uuid(480B1A49-D990-4385-9F67-90B1C9174EEA),
+	  helpstring("Event interface for Workspace View Control") ]
+	dispinterface _DTwControlEvents
+	{
+		properties:
+			//  Event interface has no properties
+
+		methods:
+			// NOTE - ClassWizard will maintain event information here.
+			//    Use extreme caution when editing this section.
+			//{{AFX_ODL_EVENT(CTelewindowsCtrl)
+			//}}AFX_ODL_EVENT
+	};
+
+	//  Class information for CTelewindowsCtrl
+
+	[ uuid(EC99E4EE-F5F1-4323-9829-06E9B0AFB934),
+	  helpstring("Gensym Workspace View ActiveX Control"), control ]
+	coclass TwControl
+	{
+		[default] dispinterface _DTwControl;
+		[default, source] dispinterface _DTwControlEvents;
+	};
+
+	//{{AFX_APPEND_ODL}}
+	//}}AFX_APPEND_ODL}}
+};
