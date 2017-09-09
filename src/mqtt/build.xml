@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<project name="mqttlib" default="build_32_std">
+  <property name="msbuild.dir" value="c:/Windows/Microsoft.NET/Framework64/v4.0.30319" />
+  <condition property="windowsos">
+	<os family="windows" />
+  </condition>
+  <condition property="linuxos">
+	<os family="unix" />
+  </condition>
+  <target name="clean">
+    <delete includeEmptyDirs="true">
+	<fileset dir="${basedir}/build/mqttclient/" includes="**/debug/"/>
+	<fileset dir="${basedir}/build/mqttclient/" includes="**/release/"/>
+	<fileset dir="${basedir}/build/mqttclient/" includes="**/x64/"/>
+    </delete>
+    <exec executable="${msbuild.dir}\msbuild.exe" dir="${basedir}/build/mqttclient" failonerror="true">
+      <arg line="mqttclient.vcxproj /m /t:clean /clp:ErrorsOnly" />
+    </exec>
+    <exec executable="${msbuild.dir}\msbuild.exe" dir="${basedir}/build/mqttclient_tests" failonerror="true">
+      <arg line="mqttclient_tests.vcxproj /m /t:clean /clp:ErrorsOnly" />
+    </exec>
+  </target>
+  
+  <target name="build_mqttlib" depends="clean">
+    <exec executable="${msbuild.dir}\msbuild.exe" dir="${basedir}/build/mqttclient" failonerror="true">
+      <arg line="mqttclient.vcxproj /m /t:Build /p:Configuration=Release;Platform=${mqttbuild.platform} /clp:ErrorsOnly" />
+    </exec>
+  </target>
+  
+  <target name="build_mqttlibtests" depends="build_mqttlib">
+    <exec executable="${msbuild.dir}\msbuild.exe" dir="${basedir}/build/mqttclient_tests" failonerror="true">
+      <arg line="mqttclient_tests.vcxproj /m /t:Build /p:Configuration=Release;Platform=${mqttbuild.platform} /clp:ErrorsOnly" />
+    </exec>
+  </target>
+  
+  <target name="build_32_std">
+    <property name="mqttbuild.platform" value="Win32" />
+    <ant target="build_mqttlibtests"/>
+  </target>
+  
+  <target name="build_64_ent">
+    <property name="mqttbuild.platform" value="x64" />
+    <ant target="build_mqttlibtests"/>
+  </target>
+  
+  <target name="build_64_ent_wout_32">
+    <property name="mqttbuild.platform" value="x64" />
+    <ant target="build_mqttlibtests"/>
+  </target>
+
+  <target name="run-tests">
+    <mkdir dir="${basedir}/../../results/api-tests/c/" />
+    <exec executable="${basedir}\bin\mqttclient_tests.exe" failonerror="true">
+	<arg line = "-r junit -o ${basedir}/../../results/api-tests/c/api_tests_junit_mqttclient.xml" />
+    </exec>
+  </target>
+  <target name="deploy-mosquitto" if="windowsos">
+	<mkdir dir="mosquitto" />
+	<mkdir dir="mosquitto/bin" />
+    <mosquitto-get 
+	artifactId="mos"
+	version="1.4.12"
+	extension="7z" 
+	dest="mosquitto" 
+    />
+  </target>
+  <macrodef name="mosquitto-get">
+    <attribute name="artifactId"/>
+    <attribute name="version"/>
+    <attribute name="extension"/>
+    <attribute name="dest"/>
+    <sequential>        
+	<get src="http://www.steves-internet-guide.com/wp-content/uploads/mos.7z" dest="@{dest}/@{artifactId}.@{extension}" skipexisting="true"/>
+	<exec executable="C:\Program Files\7-Zip\7z.exe">
+		<arg value="e"/>
+		<arg value="-y"/>
+		<arg value="@{dest}/@{artifactId}.7z"/>
+		<arg value="-o@{dest}/bin"/>
+	</exec>
+	<copy file="@{dest}/dioty_ca.crt" todir="@{dest}/bin"/>
+    </sequential>
+  </macrodef>
+</project>
