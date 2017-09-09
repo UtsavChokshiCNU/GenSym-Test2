@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="01/11/02 11:08:39">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>bpr-create-object</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="api6.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="api8.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/ReThink/custom-manual/stylesets/Customizing%20ReThink/Output/html/api.htm">  
+        Application Programmer's Interface   </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+bpr-create-object
+</h2>
+<p>Creates a new work object.<a name="14739"></a></p>
+<h3 >
+  <a name="14740">Synopsis </a>
+</h3>
+<code>bpr-create-object
+	( <code>activity</code>: class bpr-activity, <code>creator</code>: class object, <code>object-type</code>: symbol )  
+	<font >-&gt;</font> 	<font ><i><u>object</u></i></font>: bpr-object<a name="14742"> </a></code></blockquote><p >
+  <a name="14760"> </a><font ><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="29990"><div >Argument</a></div></th>
+    <th><a name="29992"><div >Description</a></div></th>
+  </tr>
+  <tr>
+    <td><a name="29994"><div >activity</a></div></td>
+    <td><p>The activity related to the scenario that controls the model.<a name="29996"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><code><code>creator</code><a name="29998"> </a></code></blockquote></td>
+    <td><p>The object from which the new <code>bpr-object</code> is created.<a name="30000"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><code><code>object-type</code><a name="30002"> </a></code></blockquote></td>
+    <td><p>The type of the output to be created.<a name="30004"></a></p>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+</font><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="14745"><div >Return Value</a></div></th>
+    <th><a name="14747"><div >Description</a></div></th>
+  </tr>
+  <tr>
+    <td><a name="14749"><div >object</a></div></td>
+    <td><p>The new object of type <code>object-type</code>.<a name="14751"></a></p>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<h3 >
+  <a name="14761">Description</a>
+</h3>
+<p>This procedure creates a new <code>bpr-object</code>, whose <code>Class-name</code> matches <code>object-type.</code> It creates a new class definition for the <code>bpr-object</code>, if none exists, and it places the new definition on the workspace near <code>creator</code>. The <code>Class-name</code> for the new class definition is <code>object-type</code>, and the <code>Direct-superior-classes</code> is <code>bpr-object</code>. <a name="14762"></a></p>
+<p>The default <code>bpr-stop-method</code> for the Source block, the Task block, and the Batch block all call <code>bpr-create-object</code> to generate objects on the output paths of the block.<a name="14763"></a></p>
+<h3 >
+  <a name="14764">Example</a>
+</h3>
+<p>This method is <code>bpr-task::bpr-stop-method</code>, the method that defines the default behavior of a Task block. It calls <code>bpr-create-object </code>to create a <code>bpr-object</code> for each output path that does not have an input work object. It then posts the <code>bpr-object</code> onto the output path. <a name="14766"></a></p>
+<p>For information about the other API in this example, see <a href="api22.htm#15044">bpr-post-path</a>.<a name="30229"></a></p>
+<p >
+  <a name="73391"> </a>
+<div style="color: #000000;  font-size: 4pt; font-style: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: justify; text-decoration: none; text-indent: 0pt; text-transform: none; vertical-align: baseline">
+<a name="73390"> </a><div align="left"><img src="images/apia7.gif" border="0" hspace="0" vspace="0">
+</div><br>
+</div>
+
+
+
+</p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="api6.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="api8.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
