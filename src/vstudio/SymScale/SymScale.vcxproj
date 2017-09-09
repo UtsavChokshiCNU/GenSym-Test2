@@ -1,0 +1,784 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{48C641A8-42A5-4D0B-97D5-3844E83AE217}</ProjectGuid>
+    <RootNamespace>SymScale</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TargetEnvironment>X64</TargetEnvironment>
+      <TypeLibraryName>$(IntDir)g2.tlb</TypeLibraryName>
+      <HeaderFileName>
+      </HeaderFileName>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\rtl\c;..\..\common\c\include;..\..\pthreads-w32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>PACKAGING_G2_ENTERPRISE;DEBUG;_DEBUG;WIN32;_WINDOWS;_CTYPE_DISABLE_MACROS;SI_SUPPORT_THREAD=1;PTW32_STATIC_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeaderOutputFile>$(IntDir)g2.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <StringPooling>false</StringPooling>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>ws2_32.lib;mswsock.lib;wsock32.lib;netapi32.lib;rpcrt4.lib;version.lib;comctl32.lib;winmm.lib;imm32.lib;crypt32.lib;htmlhelp.lib;Activeds.lib;ADSIid.Lib;iphlpapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>..\..\specific\intelnt\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <StackReserveSize>8388608</StackReserveSize>
+      <LargeAddressAware>true</LargeAddressAware>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>$(IntDir)$(TargetName).bsc</OutputFile>
+    </Bscmake>
+    <PostBuildEvent>
+      <Command>md ..\..\..\dst\g2\o
+copy "$(TargetPath)" ..\..\..\dst\g2\o
+copy "$(OutDir)$(TargetName).pdb" ..\..\..\dst\g2\o</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TargetEnvironment>X64</TargetEnvironment>
+      <TypeLibraryName>$(IntDir)g2.tlb</TypeLibraryName>
+      <HeaderFileName>
+      </HeaderFileName>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>..\..\rtl\c;..\..\common\c\include;..\..\pthreads-w32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>PACKAGING_G2_ENTERPRISE;NDEBUG;WIN32;_WINDOWS;_CTYPE_DISABLE_MACROS;SI_SUPPORT_THREAD=1;PTW32_STATIC_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>false</StringPooling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeaderOutputFile>$(IntDir)g2.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <BrowseInformation>false</BrowseInformation>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <OmitFramePointers>true</OmitFramePointers>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
+      <CallingConvention>FastCall</CallingConvention>
+      <ErrorReporting>Prompt</ErrorReporting>
+      <MinimalRebuild>false</MinimalRebuild>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>ws2_32.lib;mswsock.lib;wsock32.lib;netapi32.lib;rpcrt4.lib;version.lib;comctl32.lib;winmm.lib;imm32.lib;crypt32.lib;htmlhelp.lib;Activeds.lib;ADSIid.Lib;iphlpapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>..\..\specific\intelnt\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <StackReserveSize>8388608</StackReserveSize>
+      <LargeAddressAware>true</LargeAddressAware>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+      <LinkErrorReporting>PromptImmediately</LinkErrorReporting>
+    </Link>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>$(IntDir)$(TargetName).bsc</OutputFile>
+    </Bscmake>
+    <PostBuildEvent>
+      <Command>md ..\..\..\dst\g2\opt
+copy "$(TargetPath)" ..\..\..\dst\g2\opt
+copy "$(OutDir)$(TargetName).pdb" ..\..\..\dst\g2\opt</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\g2\c2\NativeKBext\smlt.c" />
+    <ClCompile Include="..\..\g2\c2\NativeKBext\Specific\Continental\StatisticalProcedures.c" />
+    <ClCompile Include="..\..\g2\c2\NativeKBext\Specific\SmartSignal\CountHistoryDatapoints.c" />
+    <ClCompile Include="..\..\SymScale\c\actvte.c" />
+    <ClCompile Include="..\..\SymScale\c\alphbt.c" />
+    <ClCompile Include="..\..\SymScale\c\arrays.c" />
+    <ClCompile Include="..\..\SymScale\c\atrxpt.c" />
+    <ClCompile Include="..\..\SymScale\c\attrs.c" />
+    <ClCompile Include="..\..\SymScale\c\basics.c" />
+    <ClCompile Include="..\..\SymScale\c\books.c" />
+    <ClCompile Include="..\..\SymScale\c\boxes.c" />
+    <ClCompile Include="..\..\SymScale\c\btstrp.c" />
+    <ClCompile Include="..\..\SymScale\c\cells.c" />
+    <ClCompile Include="..\..\SymScale\c\chars.c" />
+    <ClCompile Include="..\..\SymScale\c\chars2.c" />
+    <ClCompile Include="..\..\SymScale\c\chglog.c" />
+    <ClCompile Include="..\..\SymScale\c\chnng.c" />
+    <ClCompile Include="..\..\SymScale\c\chrts1.c" />
+    <ClCompile Include="..\..\SymScale\c\clocks.c" />
+    <ClCompile Include="..\..\SymScale\c\cmds0.c" />
+    <ClCompile Include="..\..\SymScale\c\cmds1.c" />
+    <ClCompile Include="..\..\SymScale\c\cmds2.c" />
+    <ClCompile Include="..\..\SymScale\c\cmpl1.c" />
+    <ClCompile Include="..\..\SymScale\c\cmpl2.c" />
+    <ClCompile Include="..\..\SymScale\c\cmptls.c" />
+    <ClCompile Include="..\..\SymScale\c\cnclde.c" />
+    <ClCompile Include="..\..\SymScale\c\cnct1.c" />
+    <ClCompile Include="..\..\SymScale\c\cnct2.c" />
+    <ClCompile Include="..\..\SymScale\c\cnct3.c" />
+    <ClCompile Include="..\..\SymScale\c\cnct3a.c" />
+    <ClCompile Include="..\..\SymScale\c\cnct4.c" />
+    <ClCompile Include="..\..\SymScale\c\cnct5.c" />
+    <ClCompile Include="..\..\SymScale\c\cntnntlxtnsn.c" />
+    <ClCompile Include="..\..\SymScale\c\cntrls.c" />
+    <ClCompile Include="..\..\SymScale\c\cycles.c" />
+    <ClCompile Include="..\..\SymScale\c\debug.c" />
+    <ClCompile Include="..\..\SymScale\c\delta.c" />
+    <ClCompile Include="..\..\SymScale\c\dfntns.c" />
+    <ClCompile Include="..\..\SymScale\c\dlogs.c" />
+    <ClCompile Include="..\..\SymScale\c\dom.c" />
+    <ClCompile Include="..\..\SymScale\c\draw.c" />
+    <ClCompile Include="..\..\SymScale\c\dsplys.c" />
+    <ClCompile Include="..\..\SymScale\c\edit1.c" />
+    <ClCompile Include="..\..\SymScale\c\edit2.c" />
+    <ClCompile Include="..\..\SymScale\c\entts.c" />
+    <ClCompile Include="..\..\SymScale\c\eval.c" />
+    <ClCompile Include="..\..\SymScale\c\evt-g2.c" />
+    <ClCompile Include="..\..\SymScale\c\evt.c" />
+    <ClCompile Include="..\..\SymScale\c\expln.c" />
+    <ClCompile Include="..\..\SymScale\c\f-keys.c" />
+    <ClCompile Include="..\..\SymScale\c\fclts.c" />
+    <ClCompile Include="..\..\SymScale\c\flprse.c" />
+    <ClCompile Include="..\..\SymScale\c\flsp.c" />
+    <ClCompile Include="..\..\SymScale\c\fltrs.c" />
+    <ClCompile Include="..\..\SymScale\c\fnctns.c" />
+    <ClCompile Include="..\..\SymScale\c\fntfls.c" />
+    <ClCompile Include="..\..\SymScale\c\fonts.c" />
+    <ClCompile Include="..\..\SymScale\c\frms1.c" />
+    <ClCompile Include="..\..\SymScale\c\frms2.c" />
+    <ClCompile Include="..\..\SymScale\c\frms2a.c" />
+    <ClCompile Include="..\..\SymScale\c\frms2b.c" />
+    <ClCompile Include="..\..\SymScale\c\frms3.c" />
+    <ClCompile Include="..\..\SymScale\c\frms4.c" />
+    <ClCompile Include="..\..\SymScale\c\frms5.c" />
+    <ClCompile Include="..\..\SymScale\c\frmts.c" />
+    <ClCompile Include="..\..\SymScale\c\g2-gsi.c" />
+    <ClCompile Include="..\..\SymScale\c\g2bpl.c" />
+    <ClCompile Include="..\..\SymScale\c\g2cnfg.c" />
+    <ClCompile Include="..\..\SymScale\c\g2ds.c" />
+    <ClCompile Include="..\..\SymScale\c\g2dsnp.c" />
+    <ClCompile Include="..\..\SymScale\c\g2fnl.c" />
+    <ClCompile Include="..\..\SymScale\c\g2frgn.c" />
+    <ClCompile Include="..\..\SymScale\c\g2mtrs.c" />
+    <ClCompile Include="..\..\SymScale\c\g2pts.c" />
+    <ClCompile Include="..\..\SymScale\c\g2rpc1.c" />
+    <ClCompile Include="..\..\SymScale\c\g2rpc2.c" />
+    <ClCompile Include="..\..\SymScale\c\g2rpc3.c" />
+    <ClCompile Include="..\..\SymScale\c\gbmap.c" />
+    <ClCompile Include="..\..\SymScale\c\gbmapr.c" />
+    <ClCompile Include="..\..\SymScale\c\gfi-sb.c" />
+    <ClCompile Include="..\..\SymScale\c\gfi.c" />
+    <ClCompile Include="..\..\SymScale\c\glbscs.c" />
+    <ClCompile Include="..\..\SymScale\c\gram0.c" />
+    <ClCompile Include="..\..\SymScale\c\gram1.c" />
+    <ClCompile Include="..\..\SymScale\c\gram1a.c" />
+    <ClCompile Include="..\..\SymScale\c\gram2.c" />
+    <ClCompile Include="..\..\SymScale\c\gram3.c" />
+    <ClCompile Include="..\..\SymScale\c\gram4.c" />
+    <ClCompile Include="..\..\SymScale\c\gram4a.c" />
+    <ClCompile Include="..\..\SymScale\c\gram5.c" />
+    <ClCompile Include="..\..\SymScale\c\gram6a.c" />
+    <ClCompile Include="..\..\SymScale\c\gram6b.c" />
+    <ClCompile Include="..\..\SymScale\c\gram6c.c" />
+    <ClCompile Include="..\..\SymScale\c\gram7.c" />
+    <ClCompile Include="..\..\SymScale\c\graphs.c" />
+    <ClCompile Include="..\..\SymScale\c\grphdf.c" />
+    <ClCompile Include="..\..\SymScale\c\grphs1.c" />
+    <ClCompile Include="..\..\SymScale\c\grphs2.c" />
+    <ClCompile Include="..\..\SymScale\c\grphtl.c" />
+    <ClCompile Include="..\..\SymScale\c\gscmn.c" />
+    <ClCompile Include="..\..\SymScale\c\gspan.c" />
+    <ClCompile Include="..\..\SymScale\c\hb72.c" />
+    <ClCompile Include="..\..\SymScale\c\hbrw14.c" />
+    <ClCompile Include="..\..\SymScale\c\hbrw18.c" />
+    <ClCompile Include="..\..\SymScale\c\hbrw24.c" />
+    <ClCompile Include="..\..\SymScale\c\hfep1.c" />
+    <ClCompile Include="..\..\SymScale\c\hfep2.c" />
+    <ClCompile Include="..\..\SymScale\c\hm14.c" />
+    <ClCompile Include="..\..\SymScale\c\hm18.c" />
+    <ClCompile Include="..\..\SymScale\c\hm24.c" />
+    <ClCompile Include="..\..\SymScale\c\hshtbl.c" />
+    <ClCompile Include="..\..\SymScale\c\hstrs.c" />
+    <ClCompile Include="..\..\SymScale\c\icons.c" />
+    <ClCompile Include="..\..\SymScale\c\icons1.c" />
+    <ClCompile Include="..\..\SymScale\c\icons2.c" />
+    <ClCompile Include="..\..\SymScale\c\icons3.c" />
+    <ClCompile Include="..\..\SymScale\c\icons4.c" />
+    <ClCompile Include="..\..\SymScale\c\icons5.c" />
+    <ClCompile Include="..\..\SymScale\c\instll.c" />
+    <ClCompile Include="..\..\SymScale\c\int0.c" />
+    <ClCompile Include="..\..\SymScale\c\int1.c" />
+    <ClCompile Include="..\..\SymScale\c\int2.c" />
+    <ClCompile Include="..\..\SymScale\c\int3a.c" />
+    <ClCompile Include="..\..\SymScale\c\int3b.c" />
+    <ClCompile Include="..\..\SymScale\c\int4.c" />
+    <ClCompile Include="..\..\SymScale\c\intrp.c" />
+    <ClCompile Include="..\..\SymScale\c\is2022.c" />
+    <ClCompile Include="..\..\SymScale\c\is8859.c" />
+    <ClCompile Include="..\..\SymScale\c\java1.c" />
+    <ClCompile Include="..\..\SymScale\c\java2.c" />
+    <ClCompile Include="..\..\SymScale\c\java3.c" />
+    <ClCompile Include="..\..\SymScale\c\jismap.c" />
+    <ClCompile Include="..\..\SymScale\c\kbld1.c" />
+    <ClCompile Include="..\..\SymScale\c\kbld2.c" />
+    <ClCompile Include="..\..\SymScale\c\kbmrge.c" />
+    <ClCompile Include="..\..\SymScale\c\kbsv1.c" />
+    <ClCompile Include="..\..\SymScale\c\kbsv2.c" />
+    <ClCompile Include="..\..\SymScale\c\kbsv3.c" />
+    <ClCompile Include="..\..\SymScale\c\kbsv4.c" />
+    <ClCompile Include="..\..\SymScale\c\kfep1.c" />
+    <ClCompile Include="..\..\SymScale\c\kfep2.c" />
+    <ClCompile Include="..\..\SymScale\c\kfep3.c" />
+    <ClCompile Include="..\..\SymScale\c\ksmap2.c" />
+    <ClCompile Include="..\..\SymScale\c\kybrds.c" />
+    <ClCompile Include="..\..\SymScale\c\kydfs.c" />
+    <ClCompile Include="..\..\SymScale\c\launch.c" />
+    <ClCompile Include="..\..\SymScale\c\lexer.c" />
+    <ClCompile Include="..\..\SymScale\c\lists.c" />
+    <ClCompile Include="..\..\SymScale\c\lngge.c" />
+    <ClCompile Include="..\..\SymScale\c\load.c" />
+    <ClCompile Include="..\..\SymScale\c\loop.c" />
+    <ClCompile Include="..\..\SymScale\c\lspimg.c" />
+    <ClCompile Include="..\..\SymScale\c\lttrs.c" />
+    <ClCompile Include="..\..\SymScale\c\main.c" />
+    <ClCompile Include="..\..\SymScale\c\media.c" />
+    <ClCompile Include="..\..\SymScale\c\mem-sp.c" />
+    <ClCompile Include="..\..\SymScale\c\menus.c" />
+    <ClCompile Include="..\..\SymScale\c\mice.c" />
+    <ClCompile Include="..\..\SymScale\c\mods.c" />
+    <ClCompile Include="..\..\SymScale\c\moves.c" />
+    <ClCompile Include="..\..\SymScale\c\names.c" />
+    <ClCompile Include="..\..\SymScale\c\natvtw.c" />
+    <ClCompile Include="..\..\SymScale\c\ntrrr.c" />
+    <ClCompile Include="..\..\SymScale\c\ntvnt.c" />
+    <ClCompile Include="..\..\SymScale\c\ntwrks.c" />
+    <ClCompile Include="..\..\SymScale\c\nwmns.c" />
+    <ClCompile Include="..\..\SymScale\c\nwrls.c" />
+    <ClCompile Include="..\..\SymScale\c\nwtbls.c" />
+    <ClCompile Include="..\..\SymScale\c\os-mem.c" />
+    <ClCompile Include="..\..\SymScale\c\os-set.c" />
+    <ClCompile Include="..\..\SymScale\c\osfrgn.c" />
+    <ClCompile Include="..\..\SymScale\c\osrrr.c" />
+    <ClCompile Include="..\..\SymScale\c\ostme.c" />
+    <ClCompile Include="..\..\SymScale\c\panes.c" />
+    <ClCompile Include="..\..\SymScale\c\parse.c" />
+    <ClCompile Include="..\..\SymScale\c\parse2.c" />
+    <ClCompile Include="..\..\SymScale\c\parts.c" />
+    <ClCompile Include="..\..\SymScale\c\pccmp.c" />
+    <ClCompile Include="..\..\SymScale\c\pcdbg.c" />
+    <ClCompile Include="..\..\SymScale\c\pcgrm.c" />
+    <ClCompile Include="..\..\SymScale\c\pcnst.c" />
+    <ClCompile Include="..\..\SymScale\c\pcnst2.c" />
+    <ClCompile Include="..\..\SymScale\c\pctls.c" />
+    <ClCompile Include="..\..\SymScale\c\places.c" />
+    <ClCompile Include="..\..\SymScale\c\player.c" />
+    <ClCompile Include="..\..\SymScale\c\priqus.c" />
+    <ClCompile Include="..\..\SymScale\c\prmtvs.c" />
+    <ClCompile Include="..\..\SymScale\c\prntng.c" />
+    <ClCompile Include="..\..\SymScale\c\ps.c" />
+    <ClCompile Include="..\..\SymScale\c\pshdr.c" />
+    <ClCompile Include="..\..\SymScale\c\ptfms.c" />
+    <ClCompile Include="..\..\SymScale\c\pthnms.c" />
+    <ClCompile Include="..\..\SymScale\c\qrs.c" />
+    <ClCompile Include="..\..\SymScale\c\rings.c" />
+    <ClCompile Include="..\..\SymScale\c\rltns.c" />
+    <ClCompile Include="..\..\SymScale\c\roles.c" />
+    <ClCompile Include="..\..\SymScale\c\rpcmn1.c" />
+    <ClCompile Include="..\..\SymScale\c\rpcmn2.c" />
+    <ClCompile Include="..\..\SymScale\c\rpcmn3.c" />
+    <ClCompile Include="..\..\SymScale\c\rsrcs.c" />
+    <ClCompile Include="..\..\SymScale\c\rules.c" />
+    <ClCompile Include="..\..\SymScale\c\run.c" />
+    <ClCompile Include="..\..\SymScale\c\sax.c" />
+    <ClCompile Include="..\..\SymScale\c\schdle.c" />
+    <ClCompile Include="..\..\SymScale\c\sets.c" />
+    <ClCompile Include="..\..\SymScale\c\slots.c" />
+    <ClCompile Include="..\..\SymScale\c\slvc14.c" />
+    <ClCompile Include="..\..\SymScale\c\slvc18.c" />
+    <ClCompile Include="..\..\SymScale\c\slvc24.c" />
+    <ClCompile Include="..\..\SymScale\c\smlt1.c" />
+    <ClCompile Include="..\..\SymScale\c\smlt2.c" />
+    <ClCompile Include="..\..\SymScale\c\smlt3.c" />
+    <ClCompile Include="..\..\SymScale\c\smlt5.c" />
+    <ClCompile Include="..\..\SymScale\c\smrtsgnlxtnsn.c" />
+    <ClCompile Include="..\..\SymScale\c\sock1.c" />
+    <ClCompile Include="..\..\SymScale\c\sock2.c" />
+    <ClCompile Include="..\..\SymScale\c\sqncs1.c" />
+    <ClCompile Include="..\..\SymScale\c\sqncs2.c" />
+    <ClCompile Include="..\..\SymScale\c\sqncs3.c" />
+    <ClCompile Include="..\..\SymScale\c\stkcmp.c" />
+    <ClCompile Include="..\..\SymScale\c\stkcts.c" />
+    <ClCompile Include="..\..\SymScale\c\stkkrn.c" />
+    <ClCompile Include="..\..\SymScale\c\stknst.c" />
+    <ClCompile Include="..\..\SymScale\c\stktls.c" />
+    <ClCompile Include="..\..\SymScale\c\stkvl1.c" />
+    <ClCompile Include="..\..\SymScale\c\stkvl2.c" />
+    <ClCompile Include="..\..\SymScale\c\strms.c" />
+    <ClCompile Include="..\..\SymScale\c\symtab.c" />
+    <ClCompile Include="..\..\SymScale\c\syscns.c" />
+    <ClCompile Include="..\..\SymScale\c\systm.c" />
+    <ClCompile Include="..\..\SymScale\c\tables.c" />
+    <ClCompile Include="..\..\SymScale\c\telesb.c" />
+    <ClCompile Include="..\..\SymScale\c\thai14.c" />
+    <ClCompile Include="..\..\SymScale\c\thai18.c" />
+    <ClCompile Include="..\..\SymScale\c\thai24.c" />
+    <ClCompile Include="..\..\SymScale\c\times.c" />
+    <ClCompile Include="..\..\SymScale\c\tlsrvr.c" />
+    <ClCompile Include="..\..\SymScale\c\token.c" />
+    <ClCompile Include="..\..\SymScale\c\tran.c" />
+    <ClCompile Include="..\..\SymScale\c\trnscd.c" />
+    <ClCompile Include="..\..\SymScale\c\trvs.c" />
+    <ClCompile Include="..\..\SymScale\c\types.c" />
+    <ClCompile Include="..\..\SymScale\c\uncde.c" />
+    <ClCompile Include="..\..\SymScale\c\userfuns.c" />
+    <ClCompile Include="..\..\SymScale\c\userinit.c" />
+    <ClCompile Include="..\..\SymScale\c\usersyms.c" />
+    <ClCompile Include="..\..\SymScale\c\utlts0.c" />
+    <ClCompile Include="..\..\SymScale\c\utlts1.c" />
+    <ClCompile Include="..\..\SymScale\c\utlts2.c" />
+    <ClCompile Include="..\..\SymScale\c\utlts3.c" />
+    <ClCompile Include="..\..\SymScale\c\utlts4.c" />
+    <ClCompile Include="..\..\SymScale\c\vrbls.c" />
+    <ClCompile Include="..\..\SymScale\c\vw-def.c" />
+    <ClCompile Include="..\..\SymScale\c\vw-g2.c" />
+    <ClCompile Include="..\..\SymScale\c\vwmsg1.c" />
+    <ClCompile Include="..\..\SymScale\c\vws.c" />
+    <ClCompile Include="..\..\SymScale\c\wbsvcs.c" />
+    <ClCompile Include="..\..\SymScale\c\win1.c" />
+    <ClCompile Include="..\..\SymScale\c\win2.c" />
+    <ClCompile Include="..\..\SymScale\c\win3.c" />
+    <ClCompile Include="..\..\SymScale\c\win3a.c" />
+    <ClCompile Include="..\..\SymScale\c\win4.c" />
+    <ClCompile Include="..\..\SymScale\c\winmain.c" />
+    <ClCompile Include="..\..\SymScale\c\wrkstn.c" />
+    <ClCompile Include="..\..\SymScale\c\wrmbt.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\SymScale\c\actvte.h" />
+    <ClInclude Include="..\..\SymScale\c\alphbt.h" />
+    <ClInclude Include="..\..\SymScale\c\arrays.h" />
+    <ClInclude Include="..\..\SymScale\c\atrxpt.h" />
+    <ClInclude Include="..\..\SymScale\c\attrs.h" />
+    <ClInclude Include="..\..\SymScale\c\basics.h" />
+    <ClInclude Include="..\..\SymScale\c\books.h" />
+    <ClInclude Include="..\..\SymScale\c\boxes.h" />
+    <ClInclude Include="..\..\SymScale\c\btstrp.h" />
+    <ClInclude Include="..\..\SymScale\c\cells.h" />
+    <ClInclude Include="..\..\SymScale\c\chars.h" />
+    <ClInclude Include="..\..\SymScale\c\chars2.h" />
+    <ClInclude Include="..\..\SymScale\c\chglog.h" />
+    <ClInclude Include="..\..\SymScale\c\chnng.h" />
+    <ClInclude Include="..\..\SymScale\c\chrts1.h" />
+    <ClInclude Include="..\..\SymScale\c\clocks.h" />
+    <ClInclude Include="..\..\SymScale\c\cmds0.h" />
+    <ClInclude Include="..\..\SymScale\c\cmds1.h" />
+    <ClInclude Include="..\..\SymScale\c\cmds2.h" />
+    <ClInclude Include="..\..\SymScale\c\cmpl1.h" />
+    <ClInclude Include="..\..\SymScale\c\cmpl2.h" />
+    <ClInclude Include="..\..\SymScale\c\cmptls.h" />
+    <ClInclude Include="..\..\SymScale\c\cnclde.h" />
+    <ClInclude Include="..\..\SymScale\c\cnct1.h" />
+    <ClInclude Include="..\..\SymScale\c\cnct2.h" />
+    <ClInclude Include="..\..\SymScale\c\cnct3.h" />
+    <ClInclude Include="..\..\SymScale\c\cnct3a.h" />
+    <ClInclude Include="..\..\SymScale\c\cnct4.h" />
+    <ClInclude Include="..\..\SymScale\c\cnct5.h" />
+    <ClInclude Include="..\..\SymScale\c\cntnntlxtnsn.h" />
+    <ClInclude Include="..\..\SymScale\c\cntrls.h" />
+    <ClInclude Include="..\..\SymScale\c\cycles.h" />
+    <ClInclude Include="..\..\SymScale\c\debug.h" />
+    <ClInclude Include="..\..\SymScale\c\delta.h" />
+    <ClInclude Include="..\..\SymScale\c\dfntns.h" />
+    <ClInclude Include="..\..\SymScale\c\dlogs.h" />
+    <ClInclude Include="..\..\SymScale\c\dom.h" />
+    <ClInclude Include="..\..\SymScale\c\draw.h" />
+    <ClInclude Include="..\..\SymScale\c\dsplys.h" />
+    <ClInclude Include="..\..\SymScale\c\edit1.h" />
+    <ClInclude Include="..\..\SymScale\c\edit2.h" />
+    <ClInclude Include="..\..\SymScale\c\entts.h" />
+    <ClInclude Include="..\..\SymScale\c\eval.h" />
+    <ClInclude Include="..\..\SymScale\c\evt-g2.h" />
+    <ClInclude Include="..\..\SymScale\c\evt.h" />
+    <ClInclude Include="..\..\SymScale\c\expln.h" />
+    <ClInclude Include="..\..\SymScale\c\f-keys.h" />
+    <ClInclude Include="..\..\SymScale\c\fclts.h" />
+    <ClInclude Include="..\..\SymScale\c\flprse.h" />
+    <ClInclude Include="..\..\SymScale\c\flsp.h" />
+    <ClInclude Include="..\..\SymScale\c\fltrs.h" />
+    <ClInclude Include="..\..\SymScale\c\fnctns.h" />
+    <ClInclude Include="..\..\SymScale\c\fntfls.h" />
+    <ClInclude Include="..\..\SymScale\c\fonts.h" />
+    <ClInclude Include="..\..\SymScale\c\frms1.h" />
+    <ClInclude Include="..\..\SymScale\c\frms2.h" />
+    <ClInclude Include="..\..\SymScale\c\frms2a.h" />
+    <ClInclude Include="..\..\SymScale\c\frms2b.h" />
+    <ClInclude Include="..\..\SymScale\c\frms3.h" />
+    <ClInclude Include="..\..\SymScale\c\frms4.h" />
+    <ClInclude Include="..\..\SymScale\c\frms5.h" />
+    <ClInclude Include="..\..\SymScale\c\frmts.h" />
+    <ClInclude Include="..\..\SymScale\c\g2-gsi.h" />
+    <ClInclude Include="..\..\SymScale\c\g2bpl.h" />
+    <ClInclude Include="..\..\SymScale\c\g2cnfg.h" />
+    <ClInclude Include="..\..\SymScale\c\g2ds.h" />
+    <ClInclude Include="..\..\SymScale\c\g2dsnp.h" />
+    <ClInclude Include="..\..\SymScale\c\g2fnl.h" />
+    <ClInclude Include="..\..\SymScale\c\g2frgn.h" />
+    <ClInclude Include="..\..\SymScale\c\g2mtrs.h" />
+    <ClInclude Include="..\..\SymScale\c\g2pts.h" />
+    <ClInclude Include="..\..\SymScale\c\g2rpc1.h" />
+    <ClInclude Include="..\..\SymScale\c\g2rpc2.h" />
+    <ClInclude Include="..\..\SymScale\c\g2rpc3.h" />
+    <ClInclude Include="..\..\SymScale\c\gbmap.h" />
+    <ClInclude Include="..\..\SymScale\c\gbmapr.h" />
+    <ClInclude Include="..\..\SymScale\c\gfi-sb.h" />
+    <ClInclude Include="..\..\SymScale\c\gfi.h" />
+    <ClInclude Include="..\..\SymScale\c\glbscs.h" />
+    <ClInclude Include="..\..\SymScale\c\gram0.h" />
+    <ClInclude Include="..\..\SymScale\c\gram1.h" />
+    <ClInclude Include="..\..\SymScale\c\gram1a.h" />
+    <ClInclude Include="..\..\SymScale\c\gram2.h" />
+    <ClInclude Include="..\..\SymScale\c\gram3.h" />
+    <ClInclude Include="..\..\SymScale\c\gram4.h" />
+    <ClInclude Include="..\..\SymScale\c\gram4a.h" />
+    <ClInclude Include="..\..\SymScale\c\gram5.h" />
+    <ClInclude Include="..\..\SymScale\c\gram6a.h" />
+    <ClInclude Include="..\..\SymScale\c\gram6b.h" />
+    <ClInclude Include="..\..\SymScale\c\gram6c.h" />
+    <ClInclude Include="..\..\SymScale\c\gram7.h" />
+    <ClInclude Include="..\..\SymScale\c\graphs.h" />
+    <ClInclude Include="..\..\SymScale\c\grphdf.h" />
+    <ClInclude Include="..\..\SymScale\c\grphs1.h" />
+    <ClInclude Include="..\..\SymScale\c\grphs2.h" />
+    <ClInclude Include="..\..\SymScale\c\grphtl.h" />
+    <ClInclude Include="..\..\SymScale\c\gscmn.h" />
+    <ClInclude Include="..\..\SymScale\c\gspan.h" />
+    <ClInclude Include="..\..\SymScale\c\hb72.h" />
+    <ClInclude Include="..\..\SymScale\c\hbrw14.h" />
+    <ClInclude Include="..\..\SymScale\c\hbrw18.h" />
+    <ClInclude Include="..\..\SymScale\c\hbrw24.h" />
+    <ClInclude Include="..\..\SymScale\c\hfep1.h" />
+    <ClInclude Include="..\..\SymScale\c\hfep2.h" />
+    <ClInclude Include="..\..\SymScale\c\hm14.h" />
+    <ClInclude Include="..\..\SymScale\c\hm18.h" />
+    <ClInclude Include="..\..\SymScale\c\hm24.h" />
+    <ClInclude Include="..\..\SymScale\c\hshtbl.h" />
+    <ClInclude Include="..\..\SymScale\c\hstrs.h" />
+    <ClInclude Include="..\..\SymScale\c\icons.h" />
+    <ClInclude Include="..\..\SymScale\c\icons1.h" />
+    <ClInclude Include="..\..\SymScale\c\icons2.h" />
+    <ClInclude Include="..\..\SymScale\c\icons3.h" />
+    <ClInclude Include="..\..\SymScale\c\icons4.h" />
+    <ClInclude Include="..\..\SymScale\c\icons5.h" />
+    <ClInclude Include="..\..\SymScale\c\instll.h" />
+    <ClInclude Include="..\..\SymScale\c\int0.h" />
+    <ClInclude Include="..\..\SymScale\c\int1.h" />
+    <ClInclude Include="..\..\SymScale\c\int2.h" />
+    <ClInclude Include="..\..\SymScale\c\int3a.h" />
+    <ClInclude Include="..\..\SymScale\c\int3b.h" />
+    <ClInclude Include="..\..\SymScale\c\int4.h" />
+    <ClInclude Include="..\..\SymScale\c\intrp.h" />
+    <ClInclude Include="..\..\SymScale\c\is2022.h" />
+    <ClInclude Include="..\..\SymScale\c\is8859.h" />
+    <ClInclude Include="..\..\SymScale\c\java1.h" />
+    <ClInclude Include="..\..\SymScale\c\java2.h" />
+    <ClInclude Include="..\..\SymScale\c\java3.h" />
+    <ClInclude Include="..\..\SymScale\c\jismap.h" />
+    <ClInclude Include="..\..\SymScale\c\kbld1.h" />
+    <ClInclude Include="..\..\SymScale\c\kbld2.h" />
+    <ClInclude Include="..\..\SymScale\c\kbmrge.h" />
+    <ClInclude Include="..\..\SymScale\c\kbsv1.h" />
+    <ClInclude Include="..\..\SymScale\c\kbsv2.h" />
+    <ClInclude Include="..\..\SymScale\c\kbsv3.h" />
+    <ClInclude Include="..\..\SymScale\c\kbsv4.h" />
+    <ClInclude Include="..\..\SymScale\c\kfep1.h" />
+    <ClInclude Include="..\..\SymScale\c\kfep2.h" />
+    <ClInclude Include="..\..\SymScale\c\kfep3.h" />
+    <ClInclude Include="..\..\SymScale\c\ksmap2.h" />
+    <ClInclude Include="..\..\SymScale\c\kybrds.h" />
+    <ClInclude Include="..\..\SymScale\c\kydfs.h" />
+    <ClInclude Include="..\..\SymScale\c\launch.h" />
+    <ClInclude Include="..\..\SymScale\c\lexer.h" />
+    <ClInclude Include="..\..\SymScale\c\lists.h" />
+    <ClInclude Include="..\..\SymScale\c\lngge.h" />
+    <ClInclude Include="..\..\SymScale\c\load.h" />
+    <ClInclude Include="..\..\SymScale\c\loop.h" />
+    <ClInclude Include="..\..\SymScale\c\lspimg.h" />
+    <ClInclude Include="..\..\SymScale\c\lttrs.h" />
+    <ClInclude Include="..\..\SymScale\c\main.h" />
+    <ClInclude Include="..\..\SymScale\c\media.h" />
+    <ClInclude Include="..\..\SymScale\c\mem-sp.h" />
+    <ClInclude Include="..\..\SymScale\c\menus.h" />
+    <ClInclude Include="..\..\SymScale\c\mice.h" />
+    <ClInclude Include="..\..\SymScale\c\mods.h" />
+    <ClInclude Include="..\..\SymScale\c\moves.h" />
+    <ClInclude Include="..\..\SymScale\c\names.h" />
+    <ClInclude Include="..\..\SymScale\c\natvtw.h" />
+    <ClInclude Include="..\..\SymScale\c\ntrrr.h" />
+    <ClInclude Include="..\..\SymScale\c\ntvnt.h" />
+    <ClInclude Include="..\..\SymScale\c\ntwrks.h" />
+    <ClInclude Include="..\..\SymScale\c\nwmns.h" />
+    <ClInclude Include="..\..\SymScale\c\nwrls.h" />
+    <ClInclude Include="..\..\SymScale\c\nwtbls.h" />
+    <ClInclude Include="..\..\SymScale\c\os-mem.h" />
+    <ClInclude Include="..\..\SymScale\c\os-set.h" />
+    <ClInclude Include="..\..\SymScale\c\osfrgn.h" />
+    <ClInclude Include="..\..\SymScale\c\osrrr.h" />
+    <ClInclude Include="..\..\SymScale\c\ostme.h" />
+    <ClInclude Include="..\..\SymScale\c\panes.h" />
+    <ClInclude Include="..\..\SymScale\c\parse.h" />
+    <ClInclude Include="..\..\SymScale\c\parse2.h" />
+    <ClInclude Include="..\..\SymScale\c\parts.h" />
+    <ClInclude Include="..\..\SymScale\c\pccmp.h" />
+    <ClInclude Include="..\..\SymScale\c\pcdbg.h" />
+    <ClInclude Include="..\..\SymScale\c\pcgrm.h" />
+    <ClInclude Include="..\..\SymScale\c\pcnst.h" />
+    <ClInclude Include="..\..\SymScale\c\pcnst2.h" />
+    <ClInclude Include="..\..\SymScale\c\pctls.h" />
+    <ClInclude Include="..\..\SymScale\c\places.h" />
+    <ClInclude Include="..\..\SymScale\c\player.h" />
+    <ClInclude Include="..\..\SymScale\c\priqus.h" />
+    <ClInclude Include="..\..\SymScale\c\prmtvs.h" />
+    <ClInclude Include="..\..\SymScale\c\prntng.h" />
+    <ClInclude Include="..\..\SymScale\c\ps.h" />
+    <ClInclude Include="..\..\SymScale\c\pshdr.h" />
+    <ClInclude Include="..\..\SymScale\c\ptfms.h" />
+    <ClInclude Include="..\..\SymScale\c\pthnms.h" />
+    <ClInclude Include="..\..\SymScale\c\qrs.h" />
+    <ClInclude Include="..\..\SymScale\c\rings.h" />
+    <ClInclude Include="..\..\SymScale\c\rltns.h" />
+    <ClInclude Include="..\..\SymScale\c\roles.h" />
+    <ClInclude Include="..\..\SymScale\c\rpcmn1.h" />
+    <ClInclude Include="..\..\SymScale\c\rpcmn2.h" />
+    <ClInclude Include="..\..\SymScale\c\rpcmn3.h" />
+    <ClInclude Include="..\..\SymScale\c\rsrcs.h" />
+    <ClInclude Include="..\..\SymScale\c\rules.h" />
+    <ClInclude Include="..\..\SymScale\c\run.h" />
+    <ClInclude Include="..\..\SymScale\c\sax.h" />
+    <ClInclude Include="..\..\SymScale\c\schdle.h" />
+    <ClInclude Include="..\..\SymScale\c\sets.h" />
+    <ClInclude Include="..\..\SymScale\c\slots.h" />
+    <ClInclude Include="..\..\SymScale\c\slvc14.h" />
+    <ClInclude Include="..\..\SymScale\c\slvc18.h" />
+    <ClInclude Include="..\..\SymScale\c\slvc24.h" />
+    <ClInclude Include="..\..\SymScale\c\smlt1.h" />
+    <ClInclude Include="..\..\SymScale\c\smlt2.h" />
+    <ClInclude Include="..\..\SymScale\c\smlt3.h" />
+    <ClInclude Include="..\..\SymScale\c\smlt5.h" />
+    <ClInclude Include="..\..\SymScale\c\smrtsgnlxtnsn.h" />
+    <ClInclude Include="..\..\SymScale\c\sock1.h" />
+    <ClInclude Include="..\..\SymScale\c\sock2.h" />
+    <ClInclude Include="..\..\SymScale\c\sqncs1.h" />
+    <ClInclude Include="..\..\SymScale\c\sqncs2.h" />
+    <ClInclude Include="..\..\SymScale\c\sqncs3.h" />
+    <ClInclude Include="..\..\SymScale\c\stkcmp.h" />
+    <ClInclude Include="..\..\SymScale\c\stkcts.h" />
+    <ClInclude Include="..\..\SymScale\c\stkkrn.h" />
+    <ClInclude Include="..\..\SymScale\c\stknst.h" />
+    <ClInclude Include="..\..\SymScale\c\stktls.h" />
+    <ClInclude Include="..\..\SymScale\c\stkvl1.h" />
+    <ClInclude Include="..\..\SymScale\c\stkvl2.h" />
+    <ClInclude Include="..\..\SymScale\c\strms.h" />
+    <ClInclude Include="..\..\SymScale\c\symtab.h" />
+    <ClInclude Include="..\..\SymScale\c\syscns.h" />
+    <ClInclude Include="..\..\SymScale\c\systm.h" />
+    <ClInclude Include="..\..\SymScale\c\tables.h" />
+    <ClInclude Include="..\..\SymScale\c\telesb.h" />
+    <ClInclude Include="..\..\SymScale\c\thai14.h" />
+    <ClInclude Include="..\..\SymScale\c\thai18.h" />
+    <ClInclude Include="..\..\SymScale\c\thai24.h" />
+    <ClInclude Include="..\..\SymScale\c\times.h" />
+    <ClInclude Include="..\..\SymScale\c\tlsrvr.h" />
+    <ClInclude Include="..\..\SymScale\c\token.h" />
+    <ClInclude Include="..\..\SymScale\c\tran.h" />
+    <ClInclude Include="..\..\SymScale\c\trnscd.h" />
+    <ClInclude Include="..\..\SymScale\c\trvs.h" />
+    <ClInclude Include="..\..\SymScale\c\types.h" />
+    <ClInclude Include="..\..\SymScale\c\uncde.h" />
+    <ClInclude Include="..\..\SymScale\c\user.h" />
+    <ClInclude Include="..\..\SymScale\c\userfuns.h" />
+    <ClInclude Include="..\..\SymScale\c\userinit.h" />
+    <ClInclude Include="..\..\SymScale\c\userstrs.h" />
+    <ClInclude Include="..\..\SymScale\c\usersyms.h" />
+    <ClInclude Include="..\..\SymScale\c\uspecial.h" />
+    <ClInclude Include="..\..\SymScale\c\utlts0.h" />
+    <ClInclude Include="..\..\SymScale\c\utlts1.h" />
+    <ClInclude Include="..\..\SymScale\c\utlts2.h" />
+    <ClInclude Include="..\..\SymScale\c\utlts3.h" />
+    <ClInclude Include="..\..\SymScale\c\utlts4.h" />
+    <ClInclude Include="..\..\SymScale\c\vrbls.h" />
+    <ClInclude Include="..\..\SymScale\c\vw-def.h" />
+    <ClInclude Include="..\..\SymScale\c\vw-g2.h" />
+    <ClInclude Include="..\..\SymScale\c\vwmsg1.h" />
+    <ClInclude Include="..\..\SymScale\c\vws.h" />
+    <ClInclude Include="..\..\SymScale\c\wbsvcs.h" />
+    <ClInclude Include="..\..\SymScale\c\win1.h" />
+    <ClInclude Include="..\..\SymScale\c\win2.h" />
+    <ClInclude Include="..\..\SymScale\c\win3.h" />
+    <ClInclude Include="..\..\SymScale\c\win3a.h" />
+    <ClInclude Include="..\..\SymScale\c\win4.h" />
+    <ClInclude Include="..\..\SymScale\c\winmain.h" />
+    <ClInclude Include="..\..\SymScale\c\wrkstn.h" />
+    <ClInclude Include="..\..\SymScale\c\wrmbt.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\g2\c\g2.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\g2\c\g2.rc">
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">\G2\src\g2\c;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">\G2\src\g2\c;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\libiconv\windows\VC10\iconv.vcxproj">
+      <Project>{bec03130-a64c-48f8-863c-52da83cfb3ae}</Project>
+      <Private>true</Private>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
+    </ProjectReference>
+    <ProjectReference Include="..\..\libxml2\win32\VC10\libxml2.vcxproj">
+      <Project>{1d6039f6-5078-416f-a3af-a36efc7e6a1c}</Project>
+      <Private>true</Private>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
+    </ProjectReference>
+    <ProjectReference Include="..\libcprim\libcprim.vcxproj">
+      <Project>{a10af456-5768-4596-952f-01f960d34613}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\libfnt\libfnt.vcxproj">
+      <Project>{e6f97aba-0b6d-4f63-876e-dcc6a9cb0ff7}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\libjpeg\libjpeg.vcxproj">
+      <Project>{97b2eff7-ed87-49f3-8f2b-12a378e71d1a}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\liblsxml\liblsxml.vcxproj">
+      <Project>{55868c8d-107a-41d4-837f-9ca3ec35d847}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\libpng\libpng.vcxproj">
+      <Project>{8b191c73-4897-49be-b1ba-818e7650bd9c}</Project>
+      <Private>true</Private>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
+    </ProjectReference>
+    <ProjectReference Include="..\librtl\librtl.vcxproj">
+      <Project>{fcdb2cd1-18d3-40ee-834c-1b402ac8d912}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\pthreads-w32\pthread.vcxproj">
+      <Project>{562bc623-95f3-4bc8-8f72-ceccafffcb88}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
