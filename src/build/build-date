@@ -1,0 +1,21 @@
+#!/bin/sh
+
+#---------------------------------------------------------
+# + Find and encode the current date. This is used as the number 
+#   to identify the build. The date has form YMDD, where Y increases from
+#   A to Z with 1998 as year A, M increases from A to L with January as
+#   month A, and DD is the two-digit day of the month. For example, May 9,
+#   1999 is BE09.
+
+
+month=`date +%m`
+year=`date +%y`
+if [ $year -lt 98 ]; then
+  year=`expr $year + 3`
+else
+  year=`expr $year - 97`
+fi
+
+build_date=`expr substr ABCDEFGHIJKLMNOPQRSTUVWXYZ $year 1``expr substr ABCDEFGHIJKL $month 1``date +%d`
+
+echo $build_date
