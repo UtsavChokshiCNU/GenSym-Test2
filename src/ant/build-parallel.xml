@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<project name="Gensym Remote Build Framework" basedir="." default="parallel-build">
+
+	<target name="parallel-build" depends="clean">
+            <initSlave roleName="Slave1" srcdir="${src.dir}" antdir="${ant.dir}" />
+		<parallel threadCount="2">
+		    <ant target="parallel-Master"/>
+		    <ant target="parallel-Slave1"/>
+		</parallel>
+	    <ant target="install"/>
+		<parallel threadCount="2">
+    		    <ant target="parallel-Slave2" />
+         	    <ant target="regressiontests"/>
+		</parallel>
+	</target>
+
+	<target name="parallel-Master">
+		<parallel threadCount="2">
+	    <ant dir="${src.dir}/ext" target="clean-build"/>
+	    <ant dir="${src.dir}/rtl" target="clean-build"/>
+    	<ant dir="${src.dir}/fnt" target="clean-build" />
+	    <ant dir="${src.dir}/jpeg" target="clean-build"/>
+    	<ant dir="${src.dir}/xml" target="clean-build"/>
+	    <ant dir="${src.dir}/scintilla" target="clean-build"/>
+    	<ant dir="${src.dir}/tw" target="clean-build"/>
+	    <ant dir="${src.dir}/twplug" target="clean-build"/>
+    	<ant dir="${src.dir}/gsi" target="clean-build"/>
+<!--    <ant dir="${src.dir}/gw" target="clean-build"/> -->
+	    <ant dir="${src.dir}/g2" target="clean-build"/>
+    	<ant dir="${src.dir}/xtp" target="clean-build"/>
+	    <ant dir="${src.dir}/widgets" target="clean-build"/>
+    	<ant dir="${src.dir}/twng" target="clean-build"/>  
+   <!-- <ant dir="${src.dir}/twng/java/jfreelib" target="clean-build"/>  -->
+	    <ant dir="${src.dir}/genflex" target="clean" />
+    	<ant dir="${src.dir}/lisp/tests" target="clean" />
+		
+	    <ant dir="${src.dir}/ext" target="build"/>
+    	<ant dir="${src.dir}/rtl" target="build"/>
+	    <ant dir="${src.dir}/fnt" target="build" />
+    	<ant dir="${src.dir}/jpeg" target="build"/>
+	    <ant dir="${src.dir}/xml" target="build"/>
+    	<ant dir="${src.dir}/scintilla" target="build"/>
+	    <ant dir="${src.dir}/tw" target="build"/>
+    	<ant dir="${src.dir}/twplug" target="build"/>
+	    <ant dir="${src.dir}/gsi" target="build"/>
+<!--    <ant dir="${src.dir}/gw" target="clean-results"/> -->
+    	<ant dir="${src.dir}/g2" target="build"/>
+	    <ant dir="${src.dir}/xtp" target="build"/>
+    	<ant dir="${src.dir}/widgets" target="build"/>
+	    <ant dir="${src.dir}/twng" target="build"/>  
+    	<ant dir="${src.dir}/twng/java/jfreelib" target="build"/>  
+	    <ant dir="${src.dir}/genflex" target="build" />
+		
+		</parallel>
+	</target>
+
+	<target name="parallel-Slave1"> 
+		<parallel threadCount="2">
+		    <remote-exec roleName="Slave1" target="check-cpd" />
+		    <remote-exec roleName="Slave1" target="check-pmd" />
+		    <remote-exec roleName="Slave1" target="check-mi" />
+		    <remote-exec roleName="Slave1" target="checkstyle" />
+		    <remote-exec roleName="Slave1" target="check-findbugs" />
+		</parallel>
+		<syncFrom roleName="Slave1" srcDir="${result.dir}" />
+	</target>
+	<target name="parallel-Slave2"> 
+                <remote-exec roleName="Slave1" target="check-coverage" />
+		<syncFrom roleName="Slave1" srcDir="${result.dir}" />
+	</target>
+</project>
