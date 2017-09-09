@@ -1,0 +1,91 @@
+PRODUCT = xml
+ODIR = opt
+PLATFORM = intelnt
+CDIR = $(SRCBOX)\$(PRODUCT)\c
+EXTCDIR = $(SRCBOX)\ext\c
+LIBXMLHDIR = $(SRCBOX)\xml
+MFDIR = $(DSTBOX)\$(PRODUCT)\$(ODIR)
+NODEBUG = 1
+SCRIPTSDIR = $(SCRIPTSBOX)\scripts\nt
+SPFCDIR = $(SRCBOX)\specific\$(PLATFORM)
+LIBXMLLOC = $(LIBXMLHDIR)\libxml
+CC_FLAGS = $(cflags) $(cvarsmt) -D_CTYPE_DISABLE_MACROS -DLIBXML_STATIC -I$(SRCBOX)\common\c\include
+!ifdef USE_VS2008
+LIBXMLNAME = libxml2_a9.lib
+!else
+LIBXMLNAME = libxml2_a.lib
+!endif
+# The include file ntwin32.mak defines macros to provide independence
+# macro      Intel NT             Alpha NT      Definition
+# =====      ========             ========      ===========
+# $(cc)      cl                   claxp         compiler
+# $(ccommon) -c -W3               same          standard compiler flags
+# $(cdebug)  -Od -Zi              -Od -Zi -Zh   standard debug flags*
+# $(cflags)  $(ccommon) -D_X86_=1 -c -DALPHA=1  to identify platform
+# $(cvarsdll) -DWIN32 $(noansi)    same          to identify o.s.
+# $(link)    link32               same          linker
+# $(ldebug)  -debug:full          same          linker debug flags*
+#            -debugtype:cv              
+# $(guilflags) -subsystem:windows same          GUI link flags
+#             -entry:WinMainCRTStartup  
+#
+# (*) A NODEBUG option or macro turns off debugging and specifies
+#    full optimization.
+
+!include <ntwin32.mak>
+
+XMLHFILES = $(CDIR)\xml_support.h $(LIBXMLLOC)\DOCBparser.h \
+  $(LIBXMLLOC)\HTMLparser.h $(LIBXMLLOC)\HTMLtree.h $(LIBXMLLOC)\SAX.h \
+  $(LIBXMLLOC)\SAX2.h $(LIBXMLLOC)\c14n.h $(LIBXMLLOC)\catalog.h \
+  $(LIBXMLLOC)\chvalid.h $(LIBXMLLOC)\debugXML.h $(LIBXMLLOC)\dict.h \
+  $(LIBXMLLOC)\encoding.h $(LIBXMLLOC)\entities.h $(LIBXMLLOC)\globals.h \
+  $(LIBXMLLOC)\hash.h $(LIBXMLLOC)\list.h $(LIBXMLLOC)\nanoftp.h \
+  $(LIBXMLLOC)\nanohttp.h $(LIBXMLLOC)\parser.h \
+  $(LIBXMLLOC)\parserInternals.h $(LIBXMLLOC)\pattern.h \
+  $(LIBXMLLOC)\relaxng.h $(LIBXMLLOC)\schemasInternals.h \
+  $(LIBXMLLOC)\threads.h $(LIBXMLLOC)\tree.h $(LIBXMLLOC)\uri.h \
+  $(LIBXMLLOC)\valid.h $(LIBXMLLOC)\xinclude.h $(LIBXMLLOC)\xlink.h \
+  $(LIBXMLLOC)\xmlIO.h $(LIBXMLLOC)\xmlautomata.h $(LIBXMLLOC)\xmlerror.h \
+  $(LIBXMLLOC)\xmlexports.h $(LIBXMLLOC)\xmlmemory.h $(LIBXMLLOC)\xmlmodule.h \
+  $(LIBXMLLOC)\xmlreader.h $(LIBXMLLOC)\xmlregexp.h $(LIBXMLLOC)\xmlsave.h \
+  $(LIBXMLLOC)\xmlschemas.h $(LIBXMLLOC)\xmlschemastypes.h \
+  $(LIBXMLLOC)\xmlstring.h $(LIBXMLLOC)\xmlunicode.h \
+  $(LIBXMLLOC)\xmlversion.h $(LIBXMLLOC)\xmlwriter.h $(LIBXMLLOC)\xpath.h \
+  $(LIBXMLLOC)\xpathInternals.h $(LIBXMLLOC)\xpointer.h
+
+all : _mfenter liblsxml.lib testxml.exe _mfexit
+
+_mfenter : 
+	@- $(SCRIPTSDIR)\errsweep.bat -init
+
+_mfexit : 
+	@- $(SCRIPTSDIR)\errsweep.bat -finish
+
+liblsxml.lib : lispxml.obj
+	- del liblsxml.lib
+	@- $(SCRIPTSDIR)\errsweep.bat liblsxml.lib
+	$(implib) /out:liblsxml.lib   lispxml.obj
+	@- del current.bat
+
+testxml.exe : $(SPFCDIR)\$(LIBXMLNAME) main_test.obj liblsxml.lib
+	- del testxml.exe
+	@- $(SCRIPTSDIR)\errsweep.bat testxml.exe
+	$(link) -out:testxml.exe /machine:IX86  main_test.obj liblsxml.lib $(SPFCDIR)\$(LIBXMLNAME) $(guilibsmt) ws2_32.lib version.lib
+	@- del current.bat
+
+lispxml.obj : $(CDIR)\lispxml.c $(XMLHFILES) $(EXTCDIR)\cprim.h
+	- del lispxml.obj
+	@- $(SCRIPTSDIR)\errsweep.bat lispxml.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(LIBXMLHDIR) -I$(EXTCDIR) $(CDIR)\lispxml.c
+	@- del current.bat
+
+main_test.obj : $(CDIR)\main_test.c $(XMLHFILES) $(EXTCDIR)\cprim.h
+	- del main_test.obj
+	@- $(SCRIPTSDIR)\errsweep.bat main_test.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(LIBXMLHDIR) -I$(EXTCDIR) $(CDIR)\main_test.c
+	@- del current.bat
+
+clean : 
+	- del *.obj
+	- del *.lib
+	- del *.exe
