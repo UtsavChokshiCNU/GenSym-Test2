@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="02/06/02 18:48:16">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Keeping a History of Data Values</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="report13.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="report15.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+      <div align="center"><b>e-SCOR User's Guide</b></div>
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/e-SCOR/OnlineHelpFiles/UsersGuide/html/reports.htm">  
+        Using Reports  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Keeping a History of Data Values
+</h2>
+<p>By default, output reports generate static data. To generate time-series data for any type of output report, you configure the report to keep a history of data values. Typically, you configure reports that keep a history to update at regular time intervals. Each time the report updates, e-SCOR outputs new values to the report for each metric so you can compare values over time. You can then output the data to Excel, to a CSV file, or to a database to perform analysis on the time-series data. For example, you might configure a Role Output Report to output financial data once a financial period.<a name="84795"></a></p>
+<p>Each data value in the history has an associated timestamp that indicates when the value was generated. You can format the timestamp as an absolute date and time or as a relative duration. By using relative durations, you can use the time-series data as input to the Demand Input Report, which provides initial order data to the overall supply chain through a report. To do this, you must create an output report with the same visible attributes as the Demand Input Report. For more information, see <a href="report36.htm#1140345">Creating Demand Input Reports</a>. <a name="111011"></a></p>
+<p>When using the Scenario Manager to perform multiple simulations for the same model, you can configure the report to keep a history across all simulations. When keeping a history across multiple simulations, the output report has an additional column named Simulation Counter, which indicates the number of the simulation run. For details, see <a href="batchsim.htm#143432">Using the Scenario Manager</a>.<a name="240188"></a></p>
+<h4 >	 To keep a history of data values:<a name="106007"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>1	</b></td>    <td valign="top" width="580">Display the properties dialog for the output report object for which you want to keep a history.<a name="106065"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>2	</b></td>    <td valign="top" width="580">Configure the report to update at regular time intervals.<a name="106098"></a></td>  </tr></table><blockquote>  <a name="106425">For details, see <a href="reports9.htm#261529">Updating Output Reports at Regular Time Intervals</a>.</a></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>3	</b></td>    <td valign="top" width="580">On the General tab, enable the Keep History option.<a name="106400"></a></td>  </tr></table><blockquote>  <a name="106889">By default, the timestamp the report generates uses an absolute time and date, based on simulation time. For example:</a></blockquote>
+<blockquote><blockquote><code>1/1/02 0:00<a name="106903"> </a></code></blockquote></blockquote><blockquote>  <a name="106907">You can configure the timestamp to use a relative duration from the start of the simulation. For example:</a></blockquote>
+<blockquote><blockquote>  <a name="106940"><code>1 weeks, 2 days, 1 hour, 30 minutes, and 10 seconds<br>2 weeks, 1 day, 30 minutes, and 30 seconds<br>3 weeks and 1 hour<br>etc.</code></a></blockquote></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>4	</b></td>    <td valign="top" width="580">Enable the Date/Time as Durations option to use relative timestamps, if desired.<a name="240227"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>5	</b></td>    <td valign="top" width="580">When running batch simulations on the same model, using the Scenario Manager, enable the Batch Simulation History option to keep a history across multiple models, if desired.<a name="106295"></a></td>  </tr></table><p>This figure shows how to configure a Level 2 Output Report to generate time-series data once every 30 days of simulation time, where the timestamps appear as durations:<a name="1137366"></a></p>
+<p >
+  <a name="1137381"> </a>
+<p><div align="left"><img src="images/keep-h35.gif" border="0" hspace="0" vspace="0">
+</div><a name="1137380"></a></p>
+
+
+
+</p>
+<p>When you run the simulation, e-SCOR generates data for each role's metrics each time the report updates. This figure shows a Level 2 Output Report that keeps a history, uses durations as timestamps, and updates once every 30 days of simulation time:<a name="1137382"></a></p>
+<p >
+  <a name="1137394"> </a>
+<p><div align="left"><img src="images/keep-h39.gif" border="0" hspace="0" vspace="0">
+</div><a name="1137393"></a></p>
+
+
+
+</p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="report13.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="report15.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
