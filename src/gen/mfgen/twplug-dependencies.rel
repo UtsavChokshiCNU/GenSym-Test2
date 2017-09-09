@@ -1,0 +1,31 @@
+;;; -*- Mode: LISP; Syntax: Common-Lisp; Base: 10; Package: USER -*-
+(in-package "USER")
+
+;;;; Makefile generator relational database: twplug-dependencies.rel
+
+;;; Copyright (c) 1986-2017 Gensym Corporation.
+;;; All Rights Reserved.
+
+;;; This file contains the relation that stores the dependencies
+;;; for creation of files in the twplug directory.
+
+;;; Notes:
+
+;;; Modifications:
+
+
+(setq twplug-dependency-relation
+ '(( target-group  type-group
+			platform-group
+				    dependency	  dependency-type
+						       local )
+;;   ------------  ---- ----------- ------------  ---- -----
+    ;; main dummy
+   ((all	   dum	_all        nptwplug	  dlib y     )
+    
+    ;; other dummies 
+    (nptwplug	   dlib _all        twnpshell	  obj  y     )
+
+    ;; dependencies
+    (twnpshell	   obj	_all        gensym-np	  h    y     )
+ )))
