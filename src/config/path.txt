@@ -1,0 +1,137 @@
+#
+# Standard .path (sourced by .cshrc) for Gensym's Unix systems
+# JV 1/14/08 last modified
+#
+
+# Per a discussion this morning with Michael Gray, he recommends that
+# path be the following: take the value of $path on a machine, and
+# begin to add other things to the front of it.  The things that he
+# felt we should add to the front of it were:
+#   .                              Current directory overrides all
+#   /usr/local/bin                 CRG maintained
+#   /usr/openwin/bin               On Suns, windowing.
+#   /gensym/bin                    Programs like mkid, the helpers, buildshell
+#   /etc                           If users want ping, mount, etc.
+#   /usr/etc                       More ping, mount etc.
+
+if ($?LD_LIBRARY_PATH) then
+   setenv LD_LIBRARY_PATH "${LD_LIBRARY_PATH}:/usr/local/lib"
+else
+   setenv LD_LIBRARY_PATH "/usr/local/lib"
+endif
+
+# The variable `standardpath' always has the directory "." as the first
+# element.  You can thus add things as the second element after the dot.
+# It is never ok to put things in front of the dot.
+# 2/15/02 jv -- this is nonsense.  dot needs to go at the END of the path.
+#   Oh well.  Leave it the way it is, I suppose.
+# 3/8/94 mes -- added /gensym/bin to the head of the list.  This will be
+#   the directory for executables created in-house.  It appears first so
+#   that we can provide local overrides where appropriate.
+# 9/27/95 jra -- Moved /usr/local/bin closer to the front, so we can specialize
+#   system utilities such as diff without having to visit every machine.
+set standardpath=( . /home/development/helpers /home/development/scripts /usr/local/bin \
+                    /usr/ccs/bin /usr/lib/gcc /usr/sunlink/dni /usr/bsd /usr/sbin \
+                   /usr/ucb /bin /usr/bin /etc /usr/etc \
+                   /usr/bin/X11 /usr/local/lib/pbmplus)
+
+switch ($machine)
+  case rs6000:
+        # This was based on and works for host cs-aix4.  The /bin/ja* links there
+        # are a complete mess, a mixture of 1.1.x and 1.3 java bins! -mhd, 6/6/01
+	# It was further modified for host richmond and java 1.4.   -yduJ 6/30/04
+	if (-d /usr/java14) then
+	  setenv JAVA_HOME /usr/java14
+	else
+          setenv JAVA_HOME /usr/java130
+	endif
+        set path=( $standardpath[1] $JAVA_HOME/bin /usr/dt/bin $standardpath[2-] /usr/g++/bin )
+        setenv MOZILLA_HOME /usr/local/netscape
+        breaksw;
+  case linux:
+        # this was based on and works for hosts herb and brookline -yduj, 4/21/04
+        setenv JAVA_HOME /usr/java/j2sdk1.4.2_03
+        set path=( $standardpath $JAVA_HOME/bin )
+        breaksw;
+  case intelnt:
+  case win98:
+        source ${SOURCE_HOME}/machine.txt
+        setenv PATH "${CVSC_HOME}"
+        setenv PATH "${PATH}:${SITE_HOME}/scripts"
+        setenv PATH "${PATH}:${EMACSHOME}/bin"
+        setenv PATH "${PATH}:${JAVA_HOME}/bin"
+        setenv PATH "${PATH}:/bin"
+        setenv PATH "${PATH}:/opt/gcc.3.3/bin"
+        setenv PATH "${PATH}:/usr/contrib/bin"
+        setenv PATH "${PATH}:/usr/X11R6/bin"
+        setenv PATH "${PATH}:/usr/local/bin"
+        setenv PATH "${PATH}:/usr/contrib/win32/bin"
+        setenv PATH "${PATH}:."
+        setenv CLASSPATH "${JAVA_HOME}/jre/lib/rt.jar;${JAVA_HOME}/lib/tools.jar;."
+        # We could build GNU make on NT, but our generated makefiles are for
+        # nmake, so that's the thing to use.
+        setenv MAKEPRG nmake
+        breaksw;
+  case hp:
+  case hp9000s700:
+  case hp9000s800:
+	# This was based on machines paloalto and tibet.  -yduJ 6/30/04
+	if (-d /opt/java1.4) then
+	  setenv JAVA_HOME /opt/java1.4
+	else if (-d /opt/java1.3) then
+	  setenv JAVA_HOME /opt/java1.3
+	else
+	  setenv JAVA_HOME /opt/java
+        endif
+        set path=( /opt/ansic/bin $standardpath /usr/contrib/bin $JAVA_HOME/bin )
+        breaksw
+  case sun:
+  case sun4:
+  case sparcsol:
+        setenv OPENWINHOME /usr/openwin
+        setenv XNEWSHOME $OPENWINHOME
+        # We don't need to check for LD_LIBRARY_PATH being undefined, because
+        # we gave it a value above.
+        setenv LD_LIBRARY_PATH "${OPENWINHOME}/lib:/usr/lib:${LD_LIBRARY_PATH}"
+        # NOTE: we put /usr/ucb explicitly in front of the openwin
+        # elements we are adding because since we upgraded to 3.0,
+        # /usr/ucb/mail started getting shadowed by openwin's mail,
+        # which is undesirable. -- MHD, 11/12/92
+
+        # /home/ab/man -- are man pages for Mr. AB's misc. tools
+        # /usr/openwin/man -- are the open win tools, only some users care.
+        # /usr/lang/man -- I don't know what these are.
+
+        # MHD, 11/7/00: Previous value (but hasn't worked lately):
+        #   setenv JAVA_HOME /home/qa/java/jdk1.1.7B
+        setenv JAVA_HOME /usr/j2se
+        set manpath = (/usr/man:/usr/local/man:/home/ab/man:/usr/openwin/man:/usr/lang/man)
+
+        # the following hideous stuff tries to put tools.jar on your class path, but only
+        # if it is not already present.  -yduj, 11/8/00
+        if ($?CLASSPATH) then
+          if !(`echo $CLASSPATH|grep "$JAVA_HOME/lib/tools.jar"` != "") then
+            if (-e $JAVA_HOME/lib/tools.jar) setenv CLASSPATH $JAVA_HOME/lib/tools.jar:${CLASSPATH}
+          endif
+        else
+        # no pre-existing class path; just set it
+           if (-e $JAVA_HOME/lib/tools.jar) setenv CLASSPATH $JAVA_HOME/lib/tools.jar
+        endif
+
+        setenv MANPATH $manpath
+
+        set path=( $standardpath[1] $JAVA_HOME/bin /usr/lang /usr/ucb \
+                   $OPENWINHOME/bin $OPENWINHOME/etc $standardpath[2-] )
+
+        # The following provides a standard self-contained gcc that is
+        # independent of operating system versions.
+        # It masks /usr/local/bin/gcc.
+        if ($machine == sparcsol) then
+                set path=( $path[1] /home/gnu-sol/bin $path[2-] )
+        endif
+
+        breaksw
+  default:
+        set path=( $standardpath )
+        breaksw
+endsw
