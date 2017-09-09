@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_platform.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>IAR Embedded Workbench</h1>
+<p>
+The IAR integrated development environment cannot be configured to build using BullseyeCoverage.
+However, you can build from the command prompt using a makefile or script.
+This documentation applies to version IAR Embedded Workbench 5.4-6.0.
+
+<h2>Build Run-Time Library</h2>
+<p>
+Use the commands below to build the BullseyeCoverage run-time library.
+Modify the compile command to use the same compile options as your project.
+<h3>ARM</h3>
+<p>
+Modify the <code>--cpu</code> argument to match your project.
+<pre>
+cd <i>BullseyeCoverage</i>/run
+iccarm -DLibcov_covfile=\"c:/test.cov\" --dlib_config nul.c --cpu ARM7TDMI --interwork -I. \
+	-I"c:/Program Files/IAR Systems/Embedded Workbench 5.4 Kickstart/ARM/inc" -O \
+	--section .bss=.covbss --section .data=.covdata libcov-iar.c
+iarchive --create ../lib/libcov-iar.a libcov-iar.o
+</pre>
+<h3>SuperH</h3>
+<pre>
+cd <i>BullseyeCoverage</i>/run
+iccsh -DLibcov_covfile=\"c:/test.cov\" --dlib_config nul.c \
+	-I"c:/Program Files/IAR Systems/Embedded Workbench Kickstart 6.0/sh/inc" -O \
+	libcov-iar.c
+iarchive --create ../lib/libcov-iar.a libcov-iar.o
+</pre>
+
+<h2>Convert Project to a Script</h2>
+<p>
+These steps show how to convert an IDE project to a script.
+To make sure the conversion is correct,
+do not enable BullseyeCoverage until you have the script working.
+<ol>
+<li>
+Run <code>iarbuild</code> with <code>-log all</code> to obtain a detailed log.
+<pre>
+iarbuild <i>project</i>.ewp -build <i>config</i> -log all &gt;log.txt
+</pre>
+<li>
+Extract the compiler, assembler and linker command lines from the detailed log.
+You can use the windows <code>find</code> command to extract these lines as shown below.
+<pre>
+find ".exe" &lt;log.txt &gt;build.bat
+</pre>
+<p>
+The command above is run with the <code>cmd.exe</code> console shell.
+Note that the quotes <code>"</code> are part of the <code>find</code> command syntax.
+<p>
+<li>
+Fix up <code>build.bat</code> by quoting or shortening file names that contain spaces.
+Use the directory separator forward slash <code>/</code> rather than backslash <code>\</code> to avoid escaping quotes.
+For example, change
+<pre>
+iccarm.exe C:\Program Files\IAR Systems\Embedded Workbench 5.4 Kickstart\arm\examples\Actel\CoreMP7\Blinky\blinky.c
+	-o C:\Program Files\IAR Systems\Embedded Workbench 5.4 Kickstart\arm\examples\Actel\CoreMP7\Blinky\Debug RAM\Obj\
+	...
+</pre>
+to:
+<pre>
+iccarm.exe blinky.c -o "Debug RAM/Obj/" ...
+</pre>
+<li>
+<p>
+Invoke <code>build.bat</code> to verify you can build your project.
+<pre>
+.\build.bat
+</pre>
+<li>
+Add the BullseyeCoverage run-time library to the link command.
+For example, change:
+<pre>
+ilinkarm.exe <i>...</i>
+</pre>
+to:
+<pre>
+ilinkarm.exe <i>...</i> "%ProgramFiles%/BullseyeCoverage/lib/libcov-iar.a"
+</pre>
+</ol>
+
+<h2>Build Project</h2>
+<p>
+Add the BullseyeCoverage run-time library to your link command.
+Make sure the <i>BullseyeCoverage</i><code>/bin</code> is first in the PATH environment variable.
+<pre>
+set PATH=%ProgramFiles%\BullseyeCoverage\bin;%PATH%
+cov01 -1
+.\build.bat
+</pre>
+
+<h2>Saving Coverage</h2>
+<p>
+If your application never exits,
+add a call to <a href=ref_cov_write.html>cov_write</a> to your source code, at a
+point you know to be executed after the code you want to measure.
+<pre>
+#if _BullseyeCoverage
+	cov_write();
+#endif
+</pre>
+
+<h2>Run under Debugger</h2>
+<p>
+<img alt="" src=tool-iar-debugger.png style="float:right;margin-right:1em">
+The BullseyeCoverage run-time source file for IAR Systems,
+<i>BullseyeCoverage</i><code>/run/libcov-iar.c</code>, uses the overridable low-level i/o functions
+as described in ARM IAR C/C++ Development Guide Compiling and linking: LOW-LEVEL INTERFACE FOR DEBUG SUPPORT.
+Unless you have implementations of these low-level i/o functions, configure to run under the debugger.
+<p style="clear:both">
+After building your application using <code>build.bat</code>, return to the IDE and start the debugger.
+<p>
+Due to a bug in the IAR System tools, the debugger may show an incorrect source position.
+If this problem occurs, ignore the incorrect source position and run the program (menu command Debug Go).
+<p>
+BullseyeCoverage run-time error messages are written to standard error.
+After starting the debugger, use the command <code>View Terminal I/O</code> so
+that you can see any error messages that might occur.
+
+<p style="font-size:xx-small">
+Last reviewed: 18 Mar 2010
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
