@@ -1,0 +1,38 @@
+<HTML>
+<TITLE>Gensym Internal Telewindows Control Example</TITLE>
+<BODY BGCOLOR=yellow>
+
+<CENTER><H1>Gensym Internal Telewindows Control Example</H1></CENTER>
+
+<HR>
+
+<b><a href="../doc/gensym-twctrl.txt">A Few Remaining Issues</a></b>
+<ul>
+<li>What should the "non-connected" appearance be?</li>
+<li>How do we build and ship TW?</li>
+<li>Can we make a connection be to a single workspace?</li>
+<li>Need to disconnect TW from G2 before starting another tw.exe.</li>
+</ul>
+
+<P>
+<!-- Begin TW code -->
+<OBJECT CLASSID="clsid:EC99E4EE-F5F1-4323-9829-06E9B0AFB934"
+        ID=WorkstationView HEIGHT=500 WIDTH=700 HSPACE=85
+        codebase="../../opt/TwControl.cab#Version=8,3,128,1">
+</OBJECT>
+<br><a href="diag-exe.html"><i>If you don't see G2 running, click here.</i></a>
+
+<SCRIPT LANGUAGE=VBScript>
+WorkstationView.LaunchHost = "localhost"
+WorkstationView.LaunchPort = "1111"
+WorkstationView.LaunchUI = "verbose"
+WorkstationView.ConnectToG2()
+</SCRIPT>
+<!-- End TW code -->
+
+<P>
+<A HREF="http://www.gensym.com">Gensym Home Page</A>
+</P>
+
+</BODY>
+</HTML>
