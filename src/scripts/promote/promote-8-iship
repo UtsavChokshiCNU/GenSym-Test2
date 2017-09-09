@@ -1,0 +1,63 @@
+#!/bin/csh
+#Promote iship for UNIX and NT platforms from the 8build sandbox.
+
+#Platforms are: intelnt hp9000s700 rs6000 sparcsol alphaosf alphavms linux
+set platforms = (intelnt sparcsol rs6000 alphaosf hp9000s700 linux)
+#  
+# Set buildid to the proper build id for your release.
+
+if ($#argv != 1) then
+  echo "Error: Wrong number of arguments, $#argv supplied, 1 required (version)."
+  exit 1
+endif
+
+set buildid = $1
+
+foreach i ($platforms)
+  /gensym/tools/promote-product -noconfirm -i g2  ${i} /bt/8build/dst/${i}/g2/tape $buildid
+  /gensym/tools/promote-product -noconfirm -i tw  ${i} /bt/8build/dst/${i}/tw/tape $buildid
+  /gensym/tools/promote-product -noconfirm -i gsi ${i} /bt/8build/dst/${i}/gsi/tape $buildid
+end
+
+/gensym/tools/promote-product -noconfirm -i fonts /bt/8build/stage/fonts $buildid
+/gensym/tools/promote-product -noconfirm -i kbs /bt/8build/stage/kbs $buildid
+
+# protools, not currently handled separately.  
+# This fixes bug HQ-4260487 Profiler.kb not included in G2 6x utilities?
+# but not really nicely.  IWBNI the makefile generator created and populated 
+# the staging area for these four kbs.  The family file (as of 62r1)
+# shuffles the kbs into the proper locations (protools and g2/kbs/utils)
+
+rm -rf /bt/8build/stage/protools
+mkdir /bt/8build/stage/protools
+cp -p /bt/8build/kbs/protools.kb /bt/8build/stage/protools
+cp -p /bt/8build/kbs/ptroot.kb /bt/8build/stage/protools
+cp -p /bt/8build/kbs/profiler.kb /bt/8build/stage/protools
+cp -p /bt/8build/kbs/profroot.kb /bt/8build/stage/protools
+cp -p /bt/8build/kbs/profile-demo.kb /bt/8build/stage/protools
+/gensym/tools/promote-product -noconfirm -i protools /bt/8build/stage/protools $buildid
+
+# Similarly, we're doing stuff for demos.
+
+rm -rf /bt/8build/stage/demos
+mkdir /bt/8build/stage/demos
+cp -p /bt/8build/promote/bin/sleep.exe /bt/8build/stage/demos
+cp -p /bt/8build/promote/start-mill.bat /bt/8build/stage/demos
+cp -p /bt/8build/promote/StartServer.bat /bt/8build/stage/demos
+cp -p /bt/8build/promote/startserver /bt/8build/stage/demos
+cp -p /bt/8build/promote/registerControls.bat /bt/8build/stage/demos
+cp -p /bt/8build/promote/unregisterControls.bat /bt/8build/stage/demos
+
+/gensym/tools/promote-product -noconfirm -i demos /bt/8build/stage/demos $buildid
+
+
+
+/gensym/tools/promote-product -noconfirm -i gservice intelnt /bt/8build/dst/intelnt/gservice/tape $buildid
+
+/gensym/tools/promote-product -noconfirm -i workspace-view intelnt /bt/8build/stage/workspace-view $buildid
+
+/gensym/tools/promote-product -noconfirm -i tw intelnt /bt/8build/dst/intelnt/twng/tape $buildid-NG
+
+/gensym/tools/promote-product -noconfirm -i twax intelnt /bt/8build/stage/twax $buildid
+
+/gensym/tools/promote-product -noconfirm -i g2pi intelnt /bt/8build/stage/g2pi $buildid
