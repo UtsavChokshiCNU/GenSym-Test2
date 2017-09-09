@@ -1,0 +1,56 @@
+#!/bin/csh -f
+
+# Module safe-rmdir
+
+# Copyright (c) 1992 Gensym Corporation.
+# All Rights Reserved.
+
+# Jim Allard
+
+# jv, 5/14/99 - extracted this code out of remove-sandbox into a separate script
+
+goto main
+
+usage:
+
+echo ""
+echo "Usage: safe-rmdir <directory-name>"
+
+exit 1
+
+failed:
+
+echo "Error: the last command failed with status ${last_status}."
+exit $last_status
+
+main:
+
+if ($#argv != 1) then
+  echo "Error: $#argv arguments given, 1 required."
+  goto usage
+endif
+
+set dir = $1
+
+if !(-d $dir) then
+  echo "Error: $dir does not exist."
+  goto usage
+endif
+
+ask:
+echo -n "Remove directory $dir and its contents? (y/n) "
+set answer = $<
+if ("$answer" == "y") then
+  echo "rm -rf $dir" | csh -vf
+  set last_status = $status
+  if ($last_status != 0) goto failed
+else if ("$answer" == "n") then
+  echo "Not removing ${dir}"
+  exit 2
+else
+  echo 'Please answer "y" or "n".'
+  goto ask
+endif
+
+echo "$dir successfully removed."
+exit 0
