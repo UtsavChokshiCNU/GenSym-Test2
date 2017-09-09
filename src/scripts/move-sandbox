@@ -1,0 +1,126 @@
+#!/bin/csh -f
+
+# Module move-sandbox
+
+# Copyright (c) 1986 - 2017 Gensym Corporation.
+# All Rights Reserved.
+
+# Jim Allard
+
+# This C-shell script is used to create move sandboxes between directories.
+# This is occasionally necessary when we are running low on disk space in one of
+# the locations for sandboxes.
+
+# This script takes three arguments.  The first is the name of the sandbox, the
+# second is the name of the current directory location of the sandbox, and the
+# third is the desired location of the new sandbox.  The names tmp and
+# sandboxes* are treated specially in this script, as they are in make-sandbox.
+# Tmp always means /tmp on the local machine and sandboxes* always means
+# /gensym/sandboxes*.  The directory names to not need to have trailing /
+# characters.
+
+goto main
+
+usage:
+
+echo "Usage: move-sandbox <sandbox-name> <current-location> <new-location>"
+echo "  where location  = sandboxes<n> | tmp | <dir>, please use sandboxes3"
+echo "  e.g. move-sandbox jra sandboxes1 sandboxes3"
+echo "    or"
+echo "  e.g. move-sandbox jra sandboxes1 /home/jra/work"
+
+
+exit 1
+
+failed:
+
+echo "Error: The last command failed with status ${last_status}."
+exit $last_status
+
+main:
+
+# Process and check the arguments.
+
+if ($#argv != 3) then
+  echo "Error: Wrong number of arguments, $#argv supplied, 3 required."
+  goto usage
+endif
+
+set sandbox_name = $1
+set from_loc = $2
+set to_loc = $3
+
+if ($from_loc =~ sandboxes*) then
+  set from_dir = /gensym/$from_loc
+else if ($from_loc == tmp) then
+  set from_dir = /tmp
+else if (-d $from_loc) then
+  set from_dir = $from_loc
+else
+  echo "Error: $from_loc is not a supported location."
+  echo "       The supported locations are sandboxes<n>, tmp, and existing directories."
+  goto usage
+endif
+
+if ($to_loc =~ sandboxes*) then
+  set to_dir = /gensym/$to_loc
+else if ($to_loc == tmp) then
+  set to_dir = /tmp
+else if (-d $to_loc) then
+  set to_dir = $to_loc
+else
+  echo "Error: $to_loc is not a supported location."
+  echo "       The supported locations are sandboxes<n>, tmp, and existing directories."
+  goto usage
+endif
+
+# Check that the source directory exists and the target doesn't.
+
+if !(-d $from_dir/$sandbox_name) then
+  echo "Error: source sandbox dir $from_dir/$sandbox_name doesn't exist."
+  goto usage
+else if (-d $to_dir/$sandbox_name) then
+  echo "Error: target sandbox dir $to_dir/$sandbox_name already exists."
+  goto usage
+endif
+
+# Copy the sandbox
+
+echo "Tar'ing directory $from_dir/$sandbox_name to $to_dir/$sandbox_name."
+cd $from_dir
+set last_status = $status
+if ($last_status != 0) goto failed
+tar cf - $sandbox_name | (cd $to_dir ; tar xf -)
+set last_status = $status
+if ($last_status != 0) goto failed
+
+# Make the new symbolic links.
+
+echo "Copying complete, making /bt symbolic links."
+
+foreach new_link (/bt/$sandbox_name /home/intelnt-mount/bt/$sandbox_name /home/alphant-mount/bt/$sandbox_name /home/vax-mount/bt/$sandbox_name /home/alpha-mount/bt/$sandbox_name)
+  if ({ test -h $new_link }) then
+    echo "  Removing old link $new_link ..."
+    rm $new_link
+    set last_status = $status
+    if ($last_status != 0) goto failed
+  endif
+
+  echo "  Making link from $new_link ..."
+  ln -s $to_dir/$sandbox_name $new_link
+  set last_status = $status
+  if ($last_status != 0) goto failed
+end
+
+# Remove the old sandbox directory.
+
+echo "Removing old sandbox directory $from_dir/$sandbox_name"
+rm -rf $from_dir/$sandbox_name
+set last_status = $status
+if ($last_status != 0) goto failed
+
+
+# Exit
+
+echo "Sandbox moved."
+exit 0
