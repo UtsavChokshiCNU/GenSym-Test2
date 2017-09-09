@@ -1,0 +1,133 @@
+#!/bin/sh
+
+# As the name implies, this file can be used to rename a sandbox.
+# That entails:
+#     (a) renaming the actual directory, if it exists
+#     (b) fixing srcbox.dat and dstbox.dat in the new sandbox, if
+#         they exist, and creating them if they don't
+#     (c) fixing buildroot.dat if it exists
+#     (d) removing old links in the various /bt directories
+#     (e) adding new links in the various /bt directories
+#     (f) fixing up dstbox if it's a link
+#  This script will sort-of work if the old sandbox doesn't exist.
+#  In that case, it obviously is not really renaming the sandbox,
+#  but just fixing it up a bit.
+#
+# It's a nifty script, trust me.
+
+if [ -z "$3" ]
+then
+  echo "Usage: $0 <oldname> <newname> <location>"
+  exit 1
+fi
+
+tmpfile=/tmp/tmp$$.tmp
+oldname=$1
+newname=$2
+location=$3
+
+machine=sparcsol
+
+if [ -z "$MACHINE" ]
+then
+  echo "Warning: could not determine machine, assuming sparcsol"
+else
+  machine=$MACHINE
+fi
+
+cd $location
+if [ -d $oldname ]
+then
+  echo "Moving $location/$oldname to $location/$newname"
+  /bin/mv -i $oldname $newname
+  lispdir=""
+  if [ -d $newname/lisp ]
+  then
+    lispdir=$newname/lisp
+  elif [ -d $newname/src/lisp ]
+  then
+    lispdir=$newname/src/lisp
+  fi
+  if [ -n "$lispdir" ]
+  then
+    echo lispdir = $lispdir
+    if [ -f $lispdir/srcbox.dat ]
+    then
+      echo "Fixing srcbox.dat"
+      /bin/mv -i $lispdir/srcbox.dat $tmpfile
+      sed "s,$oldname,$newname,g" $tmpfile > $lispdir/srcbox.dat
+      /bin/rm $tmpfile
+    else
+      echo "Creating srcbox.dat"
+      echo \"/bt/${newname}\" > $lispdir/srcbox.dat
+    fi
+    if [ -f $lispdir/dstbox.dat ]
+    then
+      echo "Fixing dstbox.dat"
+      /bin/mv -i $lispdir/dstbox.dat $tmpfile
+      sed "s,$oldname,$newname,g" $tmpfile > $lispdir/dstbox.dat
+      /bin/rm $tmpfile
+    else
+      echo "Creating dstbox.dat"
+      if [ -d $newname/dst ]
+      then
+	echo \"/bt/${newname}/dst/$machine\" > $lispdir/dstbox.dat
+      else
+        echo \"/bt/${newname}\" > $lispdir/dstbox.dat
+      fi
+    fi
+    if [ -d $newname/dst ]
+    then
+      dst=$newname/dst
+      lsoutput=`/bin/ls -l $dst`
+      case $lsoutput in
+	l*)
+	    # get target of link
+	    target=`echo $lsoutput | awk '{print $NF}'`
+	    rm -f $dst
+	    # get last part of link filename, "foo" of "/gensym/dstboxes/foo"
+	    dsttarget=`echo $target | awk '{print x[split($0,x,"/")]}'`
+	    # now get front part, "/gensym/dstboxes"
+	    dstboxes=`echo $target | sed s,/$dsttarget\$,,g`
+	    mv $target $dstboxes/$newname
+	    echo Repointing DSTBOX target $target to $dstboxes/$newname
+	    ln -s $dstboxes/$newname $dst
+	    ;;
+      esac
+    fi
+
+    if [ -f $lispdir/toolsdir.dat ]
+    then
+      echo "Fixing toolsdir.dat"
+      /bin/mv -i $lispdir/toolsdir.dat $tmpfile
+      sed "s,$oldname,$newname,g" $tmpfile > $lispdir/toolsdir.dat
+      /bin/rm $tmpfile
+    else
+      echo "Creating toolsdir.dat"
+      echo \"/bt/${newname}\" > $lispdir/toolsdir.dat
+    fi
+    if [ -f $lispdir/buildroot.dat ]
+    then
+      /bin/rm $lispdir/buildroot.dat
+      echo $newname > $lispdir/buildroot.dat
+    fi
+
+    echo "Removing Lisp binary files that may contain truenames"
+    /bin/rm ${lispdir}/*.[45]b ${lispdir}/*.[45][lcr]b
+  fi
+
+  for btdir in /bt /home/intelnt-mount/bt /home/alphant-mount/bt /home/vax-mount/bt /home/alpha-mount/bt
+  do
+    cd ${btdir}
+    /bin/rm -f ${oldname}
+    echo "Creating symlink in $btdir"
+    ln -s ${location}/${newname} ${newname}
+  done
+else
+  echo "Error: $location/$oldname does not exist."
+fi
+
+
+
+
+
