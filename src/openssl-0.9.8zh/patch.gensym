@@ -1,0 +1,19 @@
+diff -r openssl-0.9.8zh/apps/s_client.c openssl-original/apps/s_client.c
+823d822
+< #ifndef OPENSSL_NO_DGRAM
+854d852
+< #endif
+diff -r openssl-0.9.8zh/apps/s_server.c openssl-original/apps/s_server.c
+1625d1624
+< #ifndef OPENSSL_NO_DGRAM
+1651d1649
+< #endif
+diff -r openssl-0.9.8zh/crypto/ui/ui_openssl.c openssl-original/crypto/ui/ui_openssl.c
+189,191c189,191
+< #if defined(linux) && !defined(TERMIOS)
+< # define  TERMIOS
+< # undef  TERMIO
+---
+> #if defined(linux) && !defined(TERMIO)
+> # undef  TERMIOS
+> # define TERMIO
