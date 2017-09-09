@@ -1,0 +1,174 @@
+<HTML>
+<TITLE>Diagnostics for Gensym Telewindows ActiveX Control</TITLE>
+<BODY BGCOLOR="#ffeeee">
+
+<CENTER>
+<H1>Diagnostics</H1>
+<H2>Gensym Telewindows ActiveX Control</H2>
+<i>(using separate tw.exe file)</i>
+</CENTER><P>
+
+<HR>
+
+When any of Gensym's sample HTML pages for the Telewindows ActiveX control is
+opened in Internet Explorer, it should display Telewindows in a designated area
+at the top of the page.  If that is not happening properly, this page can help
+you to diagnose and correct the problem.<p>
+
+In order to diagnose the problem you are experiencing, it is helpful to
+understand what is really going on with the ActiveX control.  For this version,
+Telewindows always runs in a separate process.  The ActiveX control spawns a TW
+process, and tells it to display itself inside of the window the control has
+created.
+
+What problem are you having?<p>
+
+<UL>
+<LI><a href="#Netscape">The browser does not create a window for TW</a>
+<LI><a href="#OcxProb">The control is not being loaded or is not running</a>
+<LI><a href="#NoTwExe">The control is not finding TW</a>
+<LI><a href="#TwNoG2">TW is not connecting to G2</a>
+<LI><a href="#Unsure">I'm not sure.  How can I tell?</a>
+</UL>
+
+<HR>
+
+<a name="Netscape"><H3>The browser does not create a window for TW</H3></a>
+
+These sample HTML files are for use with Gensym's Telewindows ActiveX control.
+The syntax used in the HTML will embed the control into a page using Microsoft
+Internet Explorer.  The sample HTML pages do not work with Netscape Navigator,
+Netscape Communicator, or any other browser.  If you are using one of these
+non-Microsoft browsers, the control will essentially be ignored.  Gensym
+recommends version 5.5 or newer of Internet Explorer.  If you are using an older
+version, it might not behave properly either.
+
+
+<HR>
+
+<a name="OcxProb"><H3>The control is not starting properly</H3></a>
+
+ActiveX  controls are identified by a Universally Unique Identifier (UUID) which
+is "EC99E4EE-F5F1-4323-9829-06E9B0AFB934" for Gensym's Telewindows ActiveX
+control.  In order for Internet Explorer to embed the control, it must be able
+to find a mapping between that UUID and an .ocx file in the system registry.
+You must register the control before the OBJECT tag will work.  It is
+recommended that you exit out of Internet Explorer altogether before attempting
+to register the control.  Here are some ways to register the control:
+
+<UL>
+<LI>using a cabinet (.cab) file with Internet Explorer: if you open a page in IE
+  which requires the ActiveX control, and the control is not registered on your
+  machine, or if only an older version of the control than the page requires is
+  registered on your machine, then IE will automatically install from the
+  cabinet file.
+  <UL>
+  <LI>with an HTML file like the <i>install.html</i> file included with
+  Telewindows versions 7.0 and later, which specifies a codebase of a cabinet
+  file on the local file system.  Depending on the security settings of your
+  browser, it will probably install it without asking you to confirm or even
+  notifying you of what it is doing.
+
+  <LI>with an HTML file like the three sample files included with Telewindows
+  version 7.1r0 (<i>sample.html, classic.html, twloc.html</i>),
+  which specify a codebase of a cabinet file available on a
+  web server or ftp server.  Depending on the security settings of your
+  browser, it will probably present you with a dialog box confirming the
+  validity of the control it will install, and requiring you to authorize it to
+  continue with the installation.  If your security settings are particularly
+  high, IE might refuse to install the control.  You can modify your
+  security settings by choosing <i>Internet Options</i> from the <i>Tools</i>
+  menu of IE, and then clicking on the <i>Security</i> tab.
+
+  </UL>
+<LI>using the chktrust.exe utility from Microsoft with the cabinet file on your
+  local disk.  Gensym does not provide the chktrust utility, but you can
+  download it from Microsoft.  If you run <tt>chktrust TwControl.cab</tt> (from
+  the directory containing TwControl.cab), it will bring up the security dialog
+  box, and allow you to install the control, regardless of your security
+  settings or of which version, if any, you presently have installed on the
+  machine.
+<LI>using an .ocx file, just use the standard Windows utility
+  <i>regsvr32.exe</i> with TwControl.ocx as an argument.  Gensym ships a simple
+  batch file, <i>registerTwControl.bat</i>, which will register the ocx in this
+  manner for you.
+</UL>
+
+
+
+<HR>
+
+<a name="NoTwExe"><H3>The control is not finding tw.exe</H3></a>
+
+The Telewindows ActiveX control looks for the Telewindows executable in these
+locations, in this order:
+<OL>
+<LI>TwLocation property of the control
+<LI>TW_HOME_FOR_ACTIVEX environment variable
+<LI>A file called tw.exe in the same directory as the control (TwControl.ocx) 
+<LI><i>c:\Program Files\Gensym\g2-8.3\g2\tw.exe</i> is hard-coded as a final option
+</OL>
+<HR>
+
+<a name="TwNoG2"><H3>Telewindows is not connecting to G2</H3></a>
+
+You will, of course, need to have a G2 available to use Telewindows.  The
+example pages are set up to connect to localhost:1111.  If that's not the
+location of the G2 to which you'd like to connect, you can edit the HTML files
+to point to the right place.  Here is the sample VB Script code found in the
+examples:<br>
+<pre>
+  &lt;OBJECT CLASSID="clsid:EC99E4EE-F5F1-4323-9829-06E9B0AFB934"
+          ID=WorkstationView HEIGHT=500 WIDTH=700 HSPACE=85
+          codebase="http://download.example.com/gensym/TwControl.cab#Version=8,3,128,1">
+  &lt;/OBJECT>
+  &lt;SCRIPT LANGUAGE=VBScript>
+  ...
+  <b>WorkstationView.LaunchHost = "localhost"
+  WorkstationView.LaunchPort = "1111"</b>
+  ...
+  &lt;/SCRIPT>
+</pre>
+
+Modify the values of LaunchHost and LaunchPort to indicate the host and port of
+the G2 to which you'd like to connect, and refresh the page.
+
+<HR>
+
+<a name="Unsure"><H3>How can I tell what exactly is going wrong?</H3></a>
+
+Let's work backwards.  The first thing to be aware of is the "Splash Screen",
+which looks like this:
+<br><center><img src="splash.gif"></center><br>
+
+If you see this screen when you load the page, then Telewindows is working
+properly.  The problem, therefore, must be <a href="#TwNoG2">that Telewindows
+cannot make a connection to G2.</a>
+
+<p>If the splash screen is never displayed, then Telewindows is not starting up
+properly.  If you see a dialog box like the following:
+<p><center><img src="no-tw-exe.gif"></center><br>
+
+then the control is starting up properly and attempting to spawn a Telewindows
+process, but it is <a href="#NoTwExe">unable to locate a Telewindows
+executable.</a>
+
+<p>If you don't see the splash screen, and there is no dialog box, then the
+control is not being probably not being instantiated properly.  The behavior in
+this case depends somewhat on the settings of your browser, but generally,
+you'll observe the following conditions:
+<UL>
+<LI>the window created for Telewindows will be "blank" and colored the same as
+the background of the HTML page
+<LI>in the top left corner of the object window, the "object error" icon
+<img src="objerror.gif"> will appear
+<LI>in the status bar in the lower right corner of the Internet Explorer
+window, the "page error" icon <img src="pagerror.gif"> will appear
+</UL>
+
+In this case, <a href="#OcxProb">the control is not starting properly.</a>
+
+<p>
+
+</BODY>
+</HTML>
