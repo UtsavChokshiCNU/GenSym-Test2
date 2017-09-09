@@ -1,0 +1,66 @@
+#!/bin/sh
+
+# This script must be run on Windows.  This should be made obsolete, in favor
+# of the batch file, twaxsign.bat.  (Suggestion HQ-4848685, "simplify the
+# process of signing the Telewindows ActiveX control")  -jv, 7/30/04
+
+# This shell script signs the TwControl.cab file in ${SRCBOX}/stage/twax,
+# copies it to a Web Server, and then unregisters it, so that downloading
+# it will be required (and therefore one can immediately test the automatic
+# download right after running this script).  We don't want to put the VeriSign
+# files on the file system, so a directory containing the files must be mapped
+# to drive v: when this script is run.
+
+# Usage:
+#   Using a cygwin shell on the PC:
+#   Mount the drive or directory containing the pvk file as v:\
+#   Copy or ftp the correct TwControl.cab file into ${SRCBOX}/stage/twax
+#    $ cd ${SRCBOX}
+#    $ cvs co [-A|-r <branch>] activex promote
+#   Make sure the shtml file name is still correct
+#    $ ./activex/control/auxi/twaxinstall   # run this script
+#    $ cd ${SRCBOX}/promote
+#   Verify that the cab file is good:
+#    $ chktrust.exe TwControl.cab
+#   If the signing looks good, then, prepare the commit log and:
+#    $ cvs ci -F twax-cab-cvs.txt TwControl.cab
+#
+#   If you're going to continue to the next step and promote to iship:
+#
+#   Log in to sdev4 as ab:
+#    ab:sdev4> sandbox ab
+#    ab:sdev4> bt
+#    ab:sdev4> ./activex/control/auxi/prepare-twax -promote
+
+MYNAME="Telewindows ActiveX Control"
+TWAXHTTP=http://www.gensym.com/activex/twcontrol/info80.shtml
+TSERV=http://timestamp.verisign.com/scripts/timstamp.dll
+MYSPC=v:\\mycredentials.spc
+MYPVK=v:\\myprivatekey.pvk
+OCXLOC=${SRCBOX}/stage/twax
+
+OPTIONS="-spc ${MYSPC} -v ${MYPVK} -i ${TWAXHTTP} -$ individual -t ${TSERV}"
+
+cd ${OCXLOC}
+
+echo "Silently registering ActiveX control `cygpath -w ${OCXLOC}/TwControl.ocx`"
+regsvr32 /s TwControl.ocx
+
+echo "Signing cab file"
+signcode -n "${MYNAME}" ${OPTIONS} TwControl.cab 
+rstat=$?
+
+if [ "$rstat" = "0" ]
+then
+  if [ -d ${SRCBOX}/promote ]
+  then
+    echo "Copying cab file to promote"
+    cp TwControl.cab ${SRCBOX}/promote/TwControl.cab
+  fi
+
+  echo "Silently unregistering control on local machine so download will be required"
+  regsvr32 /u /s TwControl.ocx
+  echo "Now check in TwControl.cab from the promote module"
+else
+  echo "Aborting"
+fi
