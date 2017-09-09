@@ -1,0 +1,86 @@
+PRODUCT=ext
+ODIR=o
+PLATFORM = linux64
+SPFCDIR = $(SRCBOX)/specific/$(PLATFORM)
+CDIR = $(SRCBOX)/$(PRODUCT)/c
+TESTDIR = $(SRCBOX)/$(PRODUCT)/tests
+SCRIPTSDIR = $(SRCBOX)/scripts
+CPPUNITDIR=$(SRCBOX)/cppunit-1.13.2
+CC_FLAGS = --coverage -g -I$(SRCBOX)/common/c/include -I$(SRCBOX)/rtl/c -I$(CDIR) -I$(CPPUNITDIR)/include -fPIC -DPACKAGING_G2_ENTERPRISE
+CPPUNITLIB=$(CPPUNITDIR)/src/cppunit/.libs/libcppunit.a
+
+all : ext-test
+
+TESTO=CPrimTests.o CStreamsTests.o G2SignalTests.o TestCharactersCipher.o TestPackaging.o TestTSC.o g2_chomp_tests.o g2_wstring_tests.o ClipboardTest.o CProcessTest.o
+
+# These tests are currently too dependant on Windows so we're not
+# doing them on other platforms, but, this should be fixed:
+# 
+# - TestAppExit.cpp
+# - TestGraphics.cpp
+# - TestMaskBitmap.cpp
+# - TestModalLoop.cpp
+# - TestTCP.cpp
+# - TestWindowClose.cpp
+#
+# Some other test files are also too dependent on Windows and are
+# significantly crippled on anything non-Windows, but, at least they
+# do test _something_, unlike the above. This, too should be fixed.
+
+# These tests are for features currently supported only on Windows, so
+# it's natural we don't do them elsewhere:
+#
+# - TestChartProperties.cpp
+
+
+ext-test : $(CPPUNITLIB) ext_tests.o g2_externals.o $(TESTO) ../../$(PRODUCT)/$(ODIR)/libcprim.a
+	$(CXX) -o ext-test ext_tests.o g2_externals.o $(TESTO) ../../$(PRODUCT)/$(ODIR)/libcprim.a $(CPPUNITLIB) -lX11 $(SPFCDIR)/libssl.a $(SPFCDIR)/libcrypto.a -lgcov
+
+$(CPPUNITLIB): $(CPPUNITDIR)/Makefile
+	$(MAKE) -C $(CPPUNITDIR)
+
+$(CPPUNITDIR)/Makefile: $(CPPUNITDIR)/configure
+	cd $(CPPUNITDIR) && ./configure
+
+ext_tests.o: $(TESTDIR)/ext_tests.cpp
+	$(CXX) -c $(CC_FLAGS) $(TESTDIR)/ext_tests.cpp
+
+g2_externals.o: $(TESTDIR)/g2_externals.c
+	$(CC) -c $(CC_FLAGS) $(TESTDIR)/g2_externals.c
+
+CPrimTests.o: $(TESTDIR)/CPrimTests.cpp
+	$(CXX) -c $(CC_FLAGS) $(TESTDIR)/CPrimTests.cpp
+
+CStreamsTests.o: $(TESTDIR)/CStreamsTests.cpp $(TESTDIR)/CStreamsTests.h
+	$(CXX) -c $(CC_FLAGS) $(TESTDIR)/CStreamsTests.cpp
+
+G2SignalTests.o: $(TESTDIR)/G2SignalTests.cpp
+	$(CXX) -c $(CC_FLAGS) $(TESTDIR)/G2SignalTests.cpp
+
+TestAppExit.o: $(TESTDIR)/TestAppExit.cpp
+	$(CXX) -c $(CC_FLAGS) $(TESTDIR)/TestAppExit.cpp
+
+TestCharactersCipher.o: $(TESTDIR)/TestCharactersCipher.cpp $(TESTDIR)/TestCharactersCipher.h
+	$(CXX) -c $(CC_FLAGS) $(TESTDIR)/TestCharactersCipher.cpp
+
+TestPackaging.o: $(TESTDIR)/TestPackaging.cpp $(TESTDIR)/TestPackaging.h
+	$(CXX) -c $(CC_FLAGS) $(TESTDIR)/TestPackaging.cpp
+
+TestTSC.o: $(TESTDIR)/TestTSC.cpp $(TESTDIR)/TestTSC.h
+	$(CXX) -c $(CC_FLAGS) $(TESTDIR)/TestTSC.cpp
+
+g2_chomp_tests.o: $(TESTDIR)/g2_chomp_tests.cpp $(TESTDIR)/GoogleStyleTest.h
+	$(CXX) -c $(CC_FLAGS) $(TESTDIR)/g2_chomp_tests.cpp
+
+g2_wstring_tests.o: $(TESTDIR)/g2_wstring_tests.cpp $(TESTDIR)/GoogleStyleTest.h
+	$(CXX) -c $(CC_FLAGS) $(TESTDIR)/g2_wstring_tests.cpp
+
+ClipboardTest.o: $(TESTDIR)/ClipboardTest.cpp $(TESTDIR)/ClipboardTest.h
+	$(CXX) -c $(CC_FLAGS) $(TESTDIR)/ClipboardTest.cpp
+
+CProcessTest.o: $(TESTDIR)/CProcessTest.cpp $(TESTDIR)/CProcessTest.h
+	$(CXX) -c $(CC_FLAGS) $(TESTDIR)/CProcessTest.cpp
+	
+clean : 
+	- rm -f *.[oa]
+	- rm -f ext-test
