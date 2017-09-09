@@ -1,0 +1,70 @@
+<project name="gsi" default="build">
+	<property name="module.name" value="gsi"/>  
+	<property name="${module.name}.basedir" value=".."/> 
+	<property file="${gsi.basedir}/ant/build.properties"/>
+
+	<!-- Build section -->
+	<target name="clean-build">
+		<delete dir="${gsi.basedir}/../dst/${module.name}"/>
+	</target>
+
+	<target name="clean-results">
+		<delete dir="${result.dir}/${module.name}"/>
+	</target>
+
+	<target name="build_32_std">
+		<ant dir="${gsi.basedir}/ant" target="vstudio" inheritAll="false">
+			<property name="type" value="Release|Win32"/>
+			<property name="module" value="gsi"/>
+		</ant>
+		<ant dir="${gsi.basedir}/ant" target="vstudio" inheritAll="false">
+			<property name="type" value="Release|Win32"/>
+			<property name="module" value="libgsi"/>
+		</ant>
+		<ant dir="${gsi.basedir}/ant" target="vstudio" inheritAll="false">
+			<property name="type" value="Release|Win32"/>
+			<property name="module" value="libforgn"/>
+		</ant>
+	</target>
+
+	<target name="build_64_ent_wout_32">
+		<ant dir="${gsi.basedir}/ant" target="vstudio" inheritAll="false">
+			<property name="type" value="Release|x64"/>
+			<property name="module" value="gsi"/>
+		</ant>
+		<ant dir="${gsi.basedir}/ant" target="vstudio" inheritAll="false">
+			<property name="type" value="Release|x64"/>
+			<property name="module" value="libgsi"/>
+		</ant>
+	</target>
+
+	<target name="build_64_ent" depends="build_32_std, build_64_ent_wout_32" />
+
+	<target name="translate">
+		<ant dir="${gsi.basedir}/ant" target="sbcl" inheritAll="false">
+			<property name="translator" value="trans-sbcl"/>
+			<property name="type" value="3grpmx"/>
+			<property name="module" value="gsi"/>
+		</ant>
+	</target>
+	<!-- End of Build section -->
+  
+	<!-- Tests section -->
+	<target name="api-tests">
+		<mkdir dir="${result.dir}/${module.name}"/>
+	</target>
+	<!-- End of Tests section -->
+  
+	<!-- Checks section -->
+	<target name="check-coverage">
+    <ant dir="${gsi.basedir}/ant" target="check-c-coverage"/>
+	</target>
+  
+	<target name="check-static-metrics" depends="check-findbugs, check-cpd"/>
+  
+	<target name="check-findbugs"/>
+  
+	<target name="check-cpd"/>
+	<!-- End of Checks section -->
+  
+</project>
