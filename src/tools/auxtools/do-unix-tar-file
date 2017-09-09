@@ -1,0 +1,26 @@
+#!/bin/csh
+# See the following file for documentation.
+source auxtools/wtape-init.csh
+
+cd $release_directory
+if( $target_host == SELF ) then
+ echo "Creating the tar file $target_pathname"
+ tar -chlf $target_pathname *
+ set result = $status
+else
+ echo "Creating the tar file ${target_host}:${target_pathname}"
+ tar -chlf - * | rsh $target_host cat '>' $target_pathname
+ set result = "$status"
+endif
+
+# Verify this tape stupid!
+
+if($result) then
+  echo "Tar failed."
+else
+  echo "Tar file created."
+endif
+
+exit $result
+
+#eof
