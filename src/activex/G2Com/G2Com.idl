@@ -1,0 +1,664 @@
+#include <olectl.h>
+// G2Com.idl : IDL source for G2Com.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (G2Com.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+
+[uuid(13255623-8420-4948-9CFD-130416633EEC)]
+typedef enum { g2Null=0, g2Integer=1, g2SymbolType=3, g2String=4, g2Logical=5, 
+               g2Float=6, /* item=7, value=8, handle=9, g2Quantity=10, shortVector=11, */
+               g2IntegerArray=17, g2SymbolArray=19, g2StringArray=20, g2LogicalArray=21,
+               g2FloatArray=22, g2ItemArray=23, g2ValueArray=24, g2ItemOrValueArray=25,
+               g2QuantityArray=26, g2IntegerList=33, g2SymbolList=35, g2StringList=36,
+               g2LogicalList=37, g2FloatList=38, g2ItemList=39, g2ValueList=40,
+               g2ItemOrValueList=41, g2QuantityList=42, g2Sequence=49, 
+               g2StructureType=50 } G2Type ;
+
+[uuid(585F7437-1601-4245-B44E-9AC8B35A098E)]
+typedef enum { g2UnknownState=-1, g2Reset = 0, g2Paused = 1, g2Running = 2 } G2RunStateType ;
+
+[uuid(F2C13A71-2B27-46c7-AD2B-4B9A0DE4080A),v1_enum]
+typedef enum {stModify=1, 
+              stDelete=2,
+              stColorChg=3,
+              stCustom=4,
+              stValueChg=5,
+              stWkspcAdd=6,
+              stWkspcDel=7,
+              stSelection=8 } g2SubscriptionType ;   
+
+    [
+        object,
+        uuid(A71ACD10-3B6E-11D1-8AB3-00609703E60F),
+        dual,
+        helpstring("IG2Gateway Interface"),
+        pointer_default(unique)
+        ]
+    interface IG2Gateway : IDispatch
+    {
+        [id(1), helpstring("Establish connection to G2 at System and Port address specified by G2Loc property.")]
+        HRESULT Connect([in] VARIANT_BOOL WaitFlag);
+        [id(2), helpstring("Break connection with G2")]
+        HRESULT Disconnect();
+        [id(3), vararg, helpstring("Call procedure in G2, wait for completion")]
+        HRESULT Call([in] BSTR ProcedureName,[in] SAFEARRAY(VARIANT) *InputArguments, [out, retval] VARIANT *ReturnArguments);
+        [id(4), vararg, helpstring("Call procedure in G2, do not wait for completion.")]
+        HRESULT CallDeferred([in] BSTR ProcedureName, [in] VARIANT *DeferredCallIdentifier, [in] SAFEARRAY(VARIANT) *InputArguments);
+        [id(5), vararg, helpstring("Start procedure in G2 with no return values.")]
+        HRESULT Start([in] BSTR ProcedureName, [in] SAFEARRAY(VARIANT) *Arguments);
+        [id(6), helpstring("Not Implemented")]
+        HRESULT GetNamedObject([in] BSTR ObjectName, [in, defaultvalue("ITEM")] BSTR ObjectClass, [out, retval] LPDISPATCH *Obj);
+        [id(7), helpstring("Not Implemented")]
+        HRESULT CreateObjectInstance([in] BSTR ClassName, [out, retval] LPDISPATCH *Obj);
+        [propget, id(8), helpstring("Readonly, returns True if G2 is connected")]
+        HRESULT IsG2Connected([out, retval] VARIANT_BOOL *Val);
+        [propget, id(9), helpstring("property IsG2Running TRUE/FALSE G2 run status")]
+        HRESULT IsG2Running([out, retval] VARIANT_BOOL *Val);
+        [propget, id(10), helpstring("property Host machine name and port number. Default: \"localhost:1111\"")]
+        HRESULT G2Location([out, retval] BSTR *Location);
+        [propput, id(10)]
+        HRESULT G2Location([in] BSTR Location);
+        [propget, id(11), helpstring("Class of Interface Object to create in G2.  Must be subclass of of gsi-interface")]
+        HRESULT InterfaceClass([out, retval] BSTR *InterfaceClassName);
+        [propput, id(11)]
+        HRESULT InterfaceClass([in] BSTR InterfaceClassName);
+        [propget, id(12), helpstring("property Remote Initialization String stored in G2 interface object")]
+        HRESULT RemoteInitializationString([out, retval] BSTR *InitializationString);
+        [propput, id(12)]
+        HRESULT RemoteInitializationString([in] BSTR InitializationString);
+        [propget, id(13), helpstring("Maximum length of time in seconds to wait for G2 to respond")]
+        HRESULT CallTimeout([out, retval] long *MaxWait);
+        [propput, id(13)]
+        HRESULT CallTimeout([in] long MaxWait);
+        [id(14), helpstring("Internal Method, do not call"), hidden, restricted]
+        HRESULT _FireEvents();
+        [id(15), helpstring("Display Message on G2 Message Board")] 
+        HRESULT PostMessage([in] VARIANT *Message);
+    };
+
+    [
+        object,
+        uuid(C18D503E-C8A5-45c6-A42F-100F4347B367),
+        dual,
+        helpstring("ActiveXLink's Primary Interface (with OnStartPage and OnEndPage)"),
+        pointer_default(unique)
+    ]
+    interface IG2Gateway2 : IG2Gateway
+    {
+        [id(16), helpstring("Instantiating as part of ASP program")]
+        HRESULT OnStartPage([in] IUnknown* piUnk);
+        [id(17), helpstring("Leaving ASP program")]
+        HRESULT OnEndPage();    
+    };
+
+    [
+        object,
+        uuid(43DD340A-7247-416a-9DB0-64B15CD4BD28),
+        dual,
+        helpstring("ActiveXLink with G2RunState property and support for structures"),
+        pointer_default(unique)
+    ]
+
+    interface IG2Gateway3 : IG2Gateway2
+    {
+        [id(18), vararg, helpstring("Create COM Representation of G2 structure or item")] 
+        HRESULT MakeG2ComVariable([in] G2Type ComType, [in] SAFEARRAY(VARIANT) *inArgs, [out,retval] VARIANT *pResult) ;
+        [id(19), helpstring("Add Message to Debug Output"), hidden]
+        HRESULT DbgMsg([in] BSTR msg) ;
+        [propget, id(20), helpstring("property G2RunState")]
+        HRESULT G2RunState([out, retval] G2RunStateType *pVal);
+    }
+
+    [
+        object,
+        uuid(064BEA68-090C-47fe-8D43-1BF88F5BC47D),
+        dual,
+        helpstring("G2Gateway that supports G2 Items by Value"),
+        pointer_default(unique)
+    ]
+    interface IG2Gateway4 : IG2Gateway3
+    {
+        [hidden, propget, id(21), helpstring("return value stored for WSV")]
+            HRESULT TWHandle([out, retval] long *plHWnd);
+        [hidden, propput, id(21), helpstring("storage for WSV")]
+            HRESULT TWHandle([in] long lHWnd);
+        [hidden, id(22), helpstring("report if TWHandle is being used")] 
+            HRESULT ObtainTWLockIfUnused([out,retval]VARIANT_BOOL *pResult);
+        [hidden, id(23), helpstring("clear the TWHandle-in-use flag")]
+            HRESULT ClearTWLock();
+        [propget, id(24), helpstring("property G2Symbols")] 
+            HRESULT G2Symbols([out, retval] VARIANT_BOOL *pVal);
+        [propput, id(24), helpstring("property G2Symbols")] 
+            HRESULT G2Symbols([in] VARIANT_BOOL newVal);
+        [propget, id(25), helpstring("Disconnect on reset vs. inaccessible interface object")]
+            HRESULT DisconnectOnReset([out, retval] VARIANT_BOOL *pVal);
+        [propput, id(25), helpstring("Disconnect on reset vs. inaccessible interface object")]
+            HRESULT DisconnectOnReset([in] VARIANT_BOOL newVal);
+        [id(26), helpstring("Set context limit for gsi")]
+            HRESULT SetContextLimit([in] long limit);
+    } ;
+
+    [
+        object,
+        uuid(FCEB8041-EF78-4be6-ADC8-51C173F65484),
+        dual,
+        helpstring("Common Interface for all objects representing G2 data types"),
+        pointer_default(unique)
+    ]
+    interface G2ComObject : IDispatch
+    {
+        [hidden, propget, id(1000), helpstring("object type")]
+        HRESULT WhatAmI([out, retval] BSTR *pVal);
+        [hidden, id(1001), helpstring("create Duplicate of object")]
+        HRESULT Duplicate([out,retval]IUnknown** pNewObj);
+    }
+
+    [
+        object,
+        uuid(C4E20F9C-7ECC-4EE8-8FEF-6AB6D3D80943),
+        dual,
+        helpstring("IG2StructureEntry Interface"),
+        pointer_default(unique)
+    ]
+    interface IG2StructureEntry : G2ComObject
+    {
+        [propget, id(1), helpstring("property Name")] HRESULT Name([out, retval] BSTR *pVal);
+        [propput, id(1), helpstring("property Name")] HRESULT Name([in] BSTR newVal);
+        [propget, id(2), helpstring("property Value")] HRESULT Value([out, retval] VARIANT *pVal);
+        [propput, id(2), helpstring("property Value")] HRESULT Value([in] VARIANT newVal);
+    };
+
+    [
+        object,
+        uuid(A59A1DFB-3711-4893-B3F4-D9FD0B824C23),
+        dual,
+        helpstring("IG2Structure Interface"),
+        pointer_default(unique)
+    ] 
+    interface IG2Structure : G2ComObject
+    {
+        [propget, id(DISPID_VALUE), helpstring("value of this property name/value object")]
+        HRESULT Item([in] VARIANT index, [out, retval] VARIANT* pItem) ;
+        [propput, id(DISPID_VALUE), helpstring("set value of property name/value object")]
+        HRESULT Item([in] VARIANT index, [in] VARIANT value) ;
+        [propget, id(1), helpstring("property Count")] 
+        HRESULT Count([out, retval] long *pVal);
+        [id(2), vararg, helpstring("method Add")] 
+        HRESULT Add([in] SAFEARRAY(VARIANT) *InputArguments);
+        [id(3), helpstring("method Remove")] 
+        HRESULT Remove([in] VARIANT index);
+        [propget, restricted, id(DISPID_NEWENUM)]
+        HRESULT _NewEnum([out, retval] LPUNKNOWN *pVal);
+        [id(4), helpstring("get names of properties")]
+        HRESULT Names([out, retval]  SAFEARRAY(BSTR) *nameList) ;
+        [id(5), helpstring("make list of the property values")]
+        HRESULT Values([out, retval] SAFEARRAY(VARIANT) *valueList) ;
+    };
+
+    [
+        object,
+        uuid(D4A49E08-2ADA-49D2-BBCB-7FDD7EBB6D86),
+        dual,
+        helpstring("IG2Item Interface"),
+        pointer_default(unique)
+    ]
+    interface IG2Item : G2ComObject
+    {
+        [propget, id(DISPID_VALUE), helpstring("value of specified attribute")]
+            HRESULT Item([in] VARIANT Idx, [out, retval] VARIANT* pItem) ;
+        [propput, id(DISPID_VALUE), helpstring("set value of specified attribute")]
+            HRESULT Item([in] VARIANT Idx, [in] VARIANT value) ;
+        [propget, id(1), helpstring("Return Item's Class Name")] 
+            HRESULT ClassName([out, retval] BSTR *pClassName);
+        [propput, id(1), helpstring("Set Item's Class Name")] 
+            HRESULT ClassName([in] BSTR bstrClassName);
+        [propget, id(2), helpstring("Name of Object")]
+            HRESULT Name([out, retval] BSTR *pItemName) ;
+        [propput, id(2), helpstring("set item name")]
+            HRESULT Name([in] BSTR ItemName) ;
+        [propget, id(3), helpstring("Item Type")]
+            HRESULT Type([out, retval] G2Type *pGsiType) ;
+        [propput, id(3), helpstring("Set Item Type")]
+            HRESULT Type([in] G2Type GsiType) ;
+        [propget, id(4), helpstring("Item Type")]
+            HRESULT Value([out, retval] VARIANT *pGsiType) ;
+        [propput, id(4), helpstring("Set Item Type")]
+            HRESULT Value([in] VARIANT GsiType) ;
+        [propget, id(5), helpstring("property Count")] 
+            HRESULT Count([out, retval] long *pVal);
+        [id(6), helpstring("add an attribute")] 
+            HRESULT Add([in] BSTR atName, [in] VARIANT atVal);
+        [id(7), helpstring("remove an attribute")] 
+            HRESULT Remove([in] VARIANT varIdx);
+        [propget, restricted, id(DISPID_NEWENUM)]
+            HRESULT _NewEnum([out, retval] LPUNKNOWN *pVal);
+        [propget, id(8), helpstring("get names of attributes")]
+            HRESULT AttrNames([out, retval]  SAFEARRAY(BSTR) *attrNameList) ;
+        [propget, id(9), helpstring("make list of the attribute values")]
+            HRESULT AttrValues([out, retval]  SAFEARRAY(VARIANT) *attrValList) ;
+        [propget, id(10), helpstring("list of types of attributes")]
+            HRESULT AttrTypes([out, retval] SAFEARRAY(G2Type) *attrTypeList) ;
+        [id(11), helpstring("Convert attribute to symbol or string")]
+            HRESULT Symbolize(VARIANT idx, VARIANT_BOOL flgSym);
+        [id(12),hidden]
+            HRESULT Init([in] long pItem) ;
+        [id(13),hidden]
+            HRESULT Git([out] long *pGsiItem) ;
+    };
+
+    interface IG2ItemRef ;  // forward reference ;
+
+
+
+    // NOTE: The definition and implementation of Create needs to be changed 
+    //       each time we change the default interface of G2Gateway
+    // ---------------------------------------------------------------------       
+    [
+        object,
+        uuid(0E22A2CD-4E8C-4f5d-BE79-39D6CCC804F3),
+        dual,
+        helpstring("G2Item with references"),
+        pointer_default(unique)
+    ]
+    interface IG2Item2 : IG2Item
+    {
+        [id(14), hidden]
+            HRESULT Inix([in] long pItem, [in] IG2ItemRef *pRef) ;
+        [id(15), helpstring("Update the local copy with the remote data")] 
+            HRESULT Refresh();
+        [id(16), helpstring("Update the remote copy with the local data")] 
+            HRESULT Update();
+        [id(17), helpstring("Create a copy of this item in G2")] 
+            HRESULT Create([in] LPDISPATCH pAxL);
+        [id(18), helpstring("method Delete")] 
+            HRESULT Delete();
+        [propget, id(19), helpstring("Does this G2item reference an item in G2?")] 
+            HRESULT Linked([out, retval] VARIANT_BOOL *pflgLinked);
+        [id(20), helpstring("link local item to remote item")] 
+            HRESULT Link([in] IG2ItemRef *pItemRef);
+        [id(21), helpstring("Remove linkage to remote item")] 
+            HRESULT Unlink();
+        [id(22), helpstring("remove handle due to disconnect"), hidden] 
+            HRESULT Unhandle();
+        [propget, id(23), helpstring("Attribute type")] 
+            HRESULT AttrType([in] VARIANT idx, [out, retval] G2Type *pVal);
+        [propget, id(24), helpstring("Reference to remote item")] 
+            HRESULT Reference([out, retval] IG2ItemRef **pVal);
+        [id(25), helpstring("Request notification if attribute is modified")] 
+            HRESULT SubscribeToAttributeModification([in] VARIANT AttrName, [in] VARIANT userData, [out, retval] VARIANT * SubscripHndls);
+        [id(26), helpstring("Request deletion notification")] 
+            HRESULT SubscribeToDeletion([in] VARIANT userData, [out, retval] VARIANT * SubscripHndl);
+        [id(27), helpstring("Request notification of icon color change")] 
+            HRESULT SubscribeToIconColorChange([in] VARIANT userData, [out, retval] VARIANT * SubscripHndl);
+        [id(28), helpstring("Request notification of custom events")] 
+            HRESULT SubscribeToCustomEvent([in] BSTR EventName, [in] VARIANT userData, [out, retval] VARIANT * SubscripHndl);
+        [id(29), helpstring("method SubscribeToValueChange")] 
+            HRESULT SubscribeToValueChange([in] VARIANT userData, [retval, out] VARIANT *subscriptionHandle);
+        [id(30), helpstring("Cancel request notification if attribute of item is modified")] 
+            HRESULT UnsubscribeFromAttributeModification([in] VARIANT FromWhat);
+        [id(31), helpstring("Cancel request for deletion notification")] 
+            HRESULT UnsubscribeFromDeletion();
+        [id(32), helpstring("Cancel request for notification of icon color change")] 
+            HRESULT UnsubscribeFromIconColorChange();
+        [id(33), helpstring("Cancel request for custom event notification")] 
+            HRESULT UnsubscribeFromCustomEvent(VARIANT  EventNames);
+        [id(34), helpstring("method UnsubscribeFromAll")] 
+            HRESULT UnsubscribeFromAll();
+        [id(35), helpstring("method UnsubscribeFromValueChange")] 
+            HRESULT UnsubscribeFromValueChange();
+        [id(36), helpstring("Create a list of subscriptions")] 
+            HRESULT Subscriptions([out,retval] VARIANT *ArrayOfSubscriptions);
+    } ;
+
+    [
+        object,
+        uuid(159B27B6-6BB3-4317-A5E5-FD55001D3E9F),
+        dual,
+        helpstring("G2Items with references and icons"),
+        pointer_default(unique)
+    ]
+    interface IG2Item3 : IG2Item2
+    {
+		[propget, id(37), helpstring("Icon as it appears in G2")] 
+			HRESULT Icon([in] long BackgroundColor, [out, retval] LPDISPATCH *pVal);
+    } ;
+
+
+    [
+        object,
+        uuid(D8B90DC4-74BB-4775-983C-02137E2E283B),
+        dual,
+        helpstring("For initialization and use of G2Items using Datums"),
+        pointer_default(unique)
+    ]
+    interface IG2Item4 : IG2Item3
+	{
+		[id(38), hidden, helpstring("Wrap Datum")]        
+			HRESULT Init2([in] long pDatum);
+		[id(39), hidden, helpstring("Wrap linked Datum")] 
+			HRESULT Init3([in] long pDatum, [in] IG2ItemRef *pRef) ;
+		[id(40), hidden, helpstring("Retrieve Datum pointer")]
+		   HRESULT Git2([out] long* ppDatum);
+	}
+
+    [
+        object,
+        uuid(45BB4FD7-576B-4672-923E-15E7C13D2C76),
+        dual,
+        helpstring("Interface for manipulating interface of G2 item"),
+        pointer_default(unique)
+    ]
+    interface IG2Attribute : G2ComObject
+    {
+        [propget, id(1), helpstring("Name of Attribute")]
+            HRESULT Name([out, retval] BSTR *pName);
+
+        [propput, id(2), helpstring("Attribute Value")]
+            HRESULT Value([in] VARIANT AttrVal);
+        [propget, id(2), helpstring("Attribute Value")]
+            HRESULT Value([out, retval] VARIANT *pVal);
+
+        [propget, id(3), helpstring("Attribute Type")]
+            HRESULT Type([out, retval] G2Type *pType);
+        [propput, id(3), helpstring("Attribute Type")]
+            HRESULT Type([in] G2Type nType);
+
+        [hidden,  id(4), helpstring("Store ptr to gsi_attr in this object")]
+            HRESULT Init([in] long pGsiAttr) ;
+    };
+
+    [
+        object,
+        uuid(4A80A9FD-41DF-4b49-8740-13C43E350F29),
+        dual,
+        helpstring("Interface for manipulating elements of lists & arrays"),
+        pointer_default(unique)
+    ]
+        interface IG2ListOrArray : G2ComObject
+    {
+        [propget, id(DISPID_VALUE), helpstring("property Item")] 
+            HRESULT Item([in] long idx, [out, retval] VARIANT *pVal);
+        [propput, id(DISPID_VALUE), helpstring("property Item")] 
+            HRESULT Item([in] long idx, [in] VARIANT newVal);
+        [propget, id(1), helpstring("property Type")] 
+            HRESULT Type([out, retval] G2Type *pVal);
+        [propput, id(1), helpstring("property Type")] 
+            HRESULT Type([in] G2Type newVal);
+        [propget, id(2), helpstring("property Count")] 
+            HRESULT Count([out, retval] long *pVal);
+        [id(3), helpstring("Initialize G2ListOrArray"), hidden] 
+            HRESULT Init([in] long pGsiItem);
+        [id(4), helpstring("Method to insert an element before specified entry")] 
+            HRESULT Insert([in] long idx, [in] VARIANT varX);
+        [id(5), helpstring("Method to append an element after specified entry")] 
+            HRESULT Append([in] long idx, [in] VARIANT varX);
+        [id(6), helpstring("Add a new element to the end of this list or array")] 
+            HRESULT Add([in] VARIANT varX);
+        [id(7), helpstring("Remove the specified entry")]
+            HRESULT Remove([in] long idx);
+        [propget, id(DISPID_NEWENUM), helpstring("property _NewEnum")] 
+            HRESULT _NewEnum([out, retval] LPUNKNOWN *pVal);
+    }
+
+    [
+        object,
+        uuid(98A966CA-2D0B-4952-BD49-25B3BBEE91F6),
+        dual,
+        helpstring("IG2LAElement Interface"),
+        pointer_default(unique)
+    ]
+    interface IG2LAElement : G2ComObject
+    {
+        [propget, id(DISPID_VALUE), helpstring("property Value")] 
+            HRESULT Item([out, retval] VARIANT *pVal);
+        [propget, id(1), helpstring("property Value")] 
+            HRESULT Value([out, retval] VARIANT *pVal);
+        [propput, id(1), helpstring("property Value")] 
+            HRESULT Value([in] VARIANT newVal);
+        [id(2), helpstring("initialize element"), hidden] 
+            HRESULT Init([in] IG2ListOrArray *pLaw, [in] long idx);
+    };
+
+    [
+        object,
+        uuid(B2E73BD0-B965-4456-B9D0-8D11EA69D476),
+        dual,
+        helpstring("IG2Symbol Interface"),
+        pointer_default(unique)
+    ]
+    interface IG2Symbol : G2ComObject
+    {
+        [propget, id(DISPID_VALUE), helpstring("property Item")]
+            HRESULT Item([out, retval] BSTR *pVal);
+        [propput, id(DISPID_VALUE), helpstring("property Item")]
+            HRESULT Item([in] BSTR newVal);
+        [propget, id(2), helpstring("property UpperCase")]
+            HRESULT UpperCase([out, retval] VARIANT_BOOL *pVal);
+        [propput, id(2), helpstring("property UpperCase")] 
+            HRESULT UpperCase([in] VARIANT_BOOL newVal);
+    };
+
+    // NOTE: The definition and implementation of the Gateway method needs to 
+    //       be changed each time we change the default interface of G2Gateway
+    // ----------------------------------------------------------------------
+    [
+        object,
+        uuid(3862DC96-AF87-48C9-9C14-0F2D5A4B7250),
+        dual,
+        helpstring("IG2ItemRef Interface"),
+        pointer_default(unique)
+    ]
+    interface IG2ItemRef : G2ComObject
+    {
+        [id(1), helpstring("initialize with uuid & context address"), hidden] 
+            HRESULT Init([in] unsigned short *pUUIDin, [in] long pCtx);
+        [id(2), helpstring("method Git"),hidden] 
+            HRESULT Git([out] unsigned short *pUUIDout, [out] long *pctx);
+        [propget, id(3), helpstring("property UUID"), hidden] 
+            HRESULT UUID([out, retval] BSTR *pVal);
+        [propput, id(3), helpstring("property UUID"), hidden] 
+            HRESULT UUID([in] BSTR newVal);
+        [propput, id(4), helpstring("property Gateway"), hidden] 
+            HRESULT Gateway([in] IG2Gateway4 *gateway);
+    };
+
+    [
+        object,
+        uuid(986F5307-690C-4EF3-9173-7A2AE4014590),
+        dual,
+        helpstring("IG2Workspace Interface"),
+        pointer_default(unique)
+    ]
+    interface IG2Workspace : G2ComObject
+    {
+        [id(1), helpstring("Request Notification when Item added to Workspace")] 
+            HRESULT SubscribeToItemAddition([in] VARIANT userData, [out, retval]VARIANT *subHdl);
+        [id(2), helpstring("Request notification when item Removed from workspace")] 
+            HRESULT SubscribeToItemRemoval([in] VARIANT userData, [out, retval]VARIANT *subHdl);
+        [id(3), helpstring("Cancel item addition notification request")] 
+            HRESULT UnsubscribeFromItemAddition();
+        [id(4), helpstring("Cancel item deletion notification request")] 
+            HRESULT UnsubscribeFromItemRemoval();
+    };
+
+    [
+        object,
+        uuid(2488BB94-3222-4D5D-8257-8DD9600561F5),
+        dual,
+        helpstring("IG2Window Interface"),
+        pointer_default(unique)
+    ]
+    interface IG2Window : G2ComObject
+    {
+        [id(1), helpstring("method SubscribeToSelection")] 
+            HRESULT SubscribeToSelection([in] VARIANT userData, [out, retval] VARIANT *results);
+        [id(2), helpstring("method UnsubscribeFromSelection")] 
+            HRESULT UnsubscribeFromSelection();
+        [propget, id(3), helpstring("property g2UserMode")] 
+            HRESULT g2UserMode([out, retval] BSTR *pVal);
+        [propput, id(3), helpstring("property g2UserMode")] 
+            HRESULT g2UserMode([in] BSTR newVal);
+    };
+
+	[
+		object,
+		uuid(56E2306B-4F30-4249-94B0-B3B9647DBC3A),
+		dual,
+		helpstring("IG2ComConfigurator Interface"),
+		pointer_default(unique)
+	]
+	interface IG2ComConfigurator : IDispatch
+	{
+		[propget, id(1), helpstring("GSI As Fast As Possible?")] HRESULT HighThroughput([out, retval] VARIANT_BOOL *pVal);
+		[propput, id(1), helpstring("GSI As Fast As Possible?")] HRESULT HighThroughput([in] VARIANT_BOOL newVal);
+	};
+
+coclass G2Item ; // forward reference
+coclass G2Workspace ;
+coclass G2Window ;
+
+[
+    uuid(AC4C85D1-B16C-11d1-A718-006008C5F933),
+    version(2.0),
+    helpstring("Gensym G2 Gateway")
+]
+library GensymAxl
+{
+    importlib("stdole32.tlb");
+    importlib("stdole2.tlb");
+
+    [
+        uuid(F15B9434-B166-11d1-A718-006008C5F933),
+        helpstring("Event interface for Gensym G2 Gateway Control")
+    ]
+    dispinterface _G2Events  {
+        properties:
+        methods:
+        [id(1), helpstring("Fired when G2 is paused")] 
+            void G2Paused();
+        [id(2), helpstring("Fired when G2 resumes after pause")] 
+            void G2Resumed();
+        [id(3), helpstring("Fired when connection to G2 is created")] 
+            void G2Connected();
+        [id(4), helpstring("Fired when connection to G2 is broken")] 
+            void G2Disconnected();
+        [id(5), helpstring("Fired as procedure call from G2, may return values")] 
+            void RpcCalled([in] BSTR ProcedureName, [in] VARIANT *InputArguments, [out] VARIANT *ReturnArguments);
+        [id(6), helpstring("Fired when procedure is started from G2, may not return results to G2")] 
+            void RpcStarted([in] BSTR ProcedureName, [in] VARIANT *InputArguments);
+        [id(7), helpstring("Fired when a call made with CallDeferred() returns, contains returned values")] 
+            void RpcReturned([in] BSTR ProcedureName,[in] VARIANT *ReturnArguments, [in] VARIANT *DeferredCallIdentifier);
+        [id(8), helpstring("Fired when error is detected, with description")] 
+            void Error([in] BSTR ErrorMessage, [in] long ErrorCode, [in] VARIANT *DeferredCallIdentifier);
+        [id(9), helpstring("Fired when message is received from G2 inform action")] 
+            void GotMessage(BSTR Message);
+        [id(10), helpstring("Fired when G2 is reset")]
+            void G2Reset() ;
+        [id(11), helpstring("Fired when G2 is started")]
+            void G2Started() ;
+        [id(12), helpstring("Fired when AxL learns the run state of G2")]
+            void G2RunStateKnown() ;
+        [id(13), helpstring("Fired when item to which we have subscribed is deleted")]
+            void ItemDeleted([in]G2Item **localItem, [in] long subscriptionHndl, [in] VARIANT userData) ;
+        [id(14), helpstring("Fired when an attribute change to which we have subscribed occurs")]
+            void AttributeModified([in]G2Item **localItem, [in] BSTR attributeName, [in] VARIANT newValue,
+                            [in] long subscriptionHndl, [in] VARIANT userData) ;
+        [id(15), helpstring("Fired when a region of the icon for this item changes color")]
+            void IconColorChanged([in]G2Item **localItem, [in] long subscriptionHndl, [in] LPDISPATCH chgStruct, [in] VARIANT userData) ;
+        [id(16), helpstring("Fired when a custom event is received")]
+            void CustomEvent([in]G2Item **localItem, [in] BSTR EventName, [in] VARIANT newValue, 
+                            [in] long subscriptionHndl, [in] VARIANT userData) ;
+        [id(17), helpstring("Fired when item is added to workspace with subscription")]
+            void ItemAdded([in]G2Workspace **localItem, [in] long subscriptionHndl, [in] VARIANT userData) ;
+        [id(18), helpstring("Fired when item is Removed from workspace with subscription")]
+            void ItemRemoved([in]G2Workspace **localItem, [in] long subscriptionHndl, [in] VARIANT userData) ;
+        [id(19), helpstring("Thrown when value of variable or parameter changes")] 
+            void ValueChanged([in]G2Item **localItem, [in] VARIANT newValue, [in] long subscriptionHndl, [in] VARIANT userData);
+        [id(20), helpstring("Fired when an item is selected in a watched window")] 
+            void ItemSelected([in]G2Window **localWindow, [in] long subscriptionHandle, [in] VARIANT userData);
+    };
+
+		[ uuid(AC4C85D0-B16C-11d1-A718-006008C5F933), helpstring("Gensym G2 Gateway") ]
+    coclass G2Gateway        { [default] interface IG2Gateway4 ;
+                               interface IG2Gateway3 ;
+                               interface IG2Gateway2 ;
+                               interface IG2Gateway ;
+                               [default, source] dispinterface _G2Events; };
+    
+		[ uuid(8AEF2DA3-471A-11D1-8AB5-00609703E60F), helpstring("GatewayProp Class") ]
+    coclass GatewayProp      { interface IUnknown; };
+
+		[ uuid(15FC7CCC-C179-49BA-A68B-13C20C580DC0), helpstring("G2StructureEntry Class") ]
+    coclass G2StructureEntry { [default] interface IG2StructureEntry; };
+
+    [
+        uuid(CE90290F-2EAE-49EF-8B5A-D5FF6AAE8CE0),
+        helpstring("G2Structure Class")
+    ]
+
+    coclass G2Structure   {
+        [default] interface IG2Structure;
+    };
+
+    [
+        uuid(65DA1F96-DA11-47FE-B3EF-1CE21CDB0ED0),
+        helpstring("G2Item Class")
+    ]
+    coclass G2Item        {
+		[default] interface IG2Item4;
+        interface IG2Item3;
+        interface IG2Item2;
+        interface IG2Item;
+    };
+
+    [
+        uuid(738B47FA-2D36-40D2-8DC3-47E97717E64B),
+        helpstring("G2Attribute Class")
+    ]
+
+    coclass G2Attribute   {
+        [default] interface IG2Attribute;
+    };
+
+    [
+        uuid(27F911C6-B864-4C85-A7FA-CE151B60F4BF),
+        helpstring("G2 List/Array Wrapper")
+    ]
+    coclass G2ListOrArray {
+        [default] interface IG2ListOrArray;
+    };
+
+    [
+        uuid(3137F3E2-9860-4335-907B-3F0A4DE31C62),
+        helpstring("G2Symbol Class")
+    ]
+    coclass G2Symbol   {
+        [default] interface IG2Symbol;
+    };
+
+        [ uuid(9BB94100-E344-415F-9976-D2BEB3DA4B29), helpstring("G2LAElement Class") ]
+    coclass G2LAElement      { [default] interface IG2LAElement; };
+
+        [ uuid(15DD1D07-37FD-4D16-9ACB-BEBC4CE25438), helpstring("G2ItemRef Class") ]
+    coclass G2ItemRef        { [default] interface IG2ItemRef; };
+
+		[ uuid(4F6FF39F-793B-4BC5-8413-657F7BA99F57), helpstring("G2Workspace Class") ]
+    coclass G2Workspace      { [default] interface IG2Workspace; };
+
+		[ uuid(4E1A836D-1FEA-4E83-8F2F-A21204406222), helpstring("G2Window Class") ]
+    coclass G2Window         { [default] interface IG2Window; };
+
+	[
+		uuid(659E9603-1375-4225-BFD8-DDB4281855A6),
+		helpstring("Class to Configure ActiveXLink's Behavior")
+	]
+	coclass G2ComConfigurator
+	{
+		[default] interface IG2ComConfigurator;
+	};
+};
