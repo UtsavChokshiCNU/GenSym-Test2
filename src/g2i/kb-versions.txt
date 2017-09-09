@@ -1,0 +1,155 @@
+################################################################################
+#
+# KB Version Configuration file.
+#
+# At startup in development mode (i.e. with gdev module loaded), two sections of
+# this file are loaded into G2 to define the current version used to set the
+# module version. The sections are named G2-8 and G2-7, each corresponding to
+# the G2 versions. You may keep other sections in the file for older version that
+# were build for previous G2 versions, but will not be the active ones. Initially
+# I wanted to read the section corresponding to the running G2 version, but that
+# would exclude creating the kbs for a bundle version that does not correspond to
+# the current running G2 (for example build the kbs for a G2 8.0r1 bundle using
+# G2 8.0r0.
+#
+#
+# Notes about version numbers:
+#	- xxx-PACKAGE-NAME : kept in there as the title of the package (i.e. the
+#		title on the top level workspace), but typically is never changed.
+#	- xxx-CURRENT-VERSION : the text representation of the current version
+#	- xxx-CURRENT-VERSION-NUMBER : the number of the current version number.
+#		We use the practive of encoding the version number as an integer.
+#		For example 4.3r1 corresponds to 4030120 as the version number.
+#		The last two digits encode Alpha version (0 to 9, i.e. up to 10
+#		Alpha releases), Beta versions (10 to 19, i.e. up to 10 Beta
+#		releases) and build/patch id. For the build/patch id, use the
+#		following encoding: 20 is the official release, 21 to 99 are patches
+#		of the version/revisions (incremental numbers), 0 to 
+#		Formula using two forms
+#		  1. major * 1000000 + minor * 10000 (2 digits)
+#		    + revision (2 digits) * 100
+#		    + build/patch index per version/revision (2 digits)
+#		  2. Mmmrrbb, where MM = major version number, mm = minor version
+#		     number, rr = revision version number, bb = build id
+#		     starting at 0 for each version/revision (the last two digits
+#		     of any official release will always be 20 and is incremented
+#		     as we deliver patches of modules).
+#               Note:  If you are creating a second alpha or beta, you do not 
+#               increment the "revision" rr numbers, but only the alpha or beta
+#               build numbers (last two digits)
+#	- xxx-OLDEST-VERSION : the oldest version the kb is compatible with. See
+#		GFR for greater details. Typically not changed/used and left to 0.
+#	- xxx-PROPRIETARY-PACKAGE : the keywork/syntax to make a kb proprietary.
+#		This is left in the file since the keywords may change between
+#		major versions.
+#
+#	Do not forget to update the target G2 version that the kbs should be 
+#	associated with in entries: G2-VERSION-NUMBER, G2-CURRENT-VERSION-NUMBER,
+#	G2-OLDEST-VERSION-NUMBER, G2-MINIMUM-VERSION.
+#
+#	Never decrease version numbers otherwise GFR will complain at startup!
+#
+################################################################################
+#
+#
+
+
+# Active section for bundles build for G2 8
+
+[G2-8]
+
+ESCOR-PACKAGE-NAME = Gensym e-SCOR
+ESCOR-CURRENT-VERSION = 5.2 Alpha Rev. 0
+ESCOR-CURRENT-VERSION-NUMBER = 5020020
+ESCOR-OLDEST-VERSION-NUMBER = 0
+ESCOR-PROPRIETARY-PACKAGE = potentially gensym-escor-v5
+
+RETHINK-PACKAGE-NAME = Gensym ReThink
+RETHINK-CURRENT-VERSION = 5.2 Alpha Rev. 0
+RETHINK-CURRENT-VERSION-NUMBER = 5020000
+RETHINK-OLDEST-VERSION-NUMBER = 0
+RETHINK-PROPRIETARY-PACKAGE = potentially gensym-rethink-v5
+
+NOL-PACKAGE-NAME = Gensym NOL
+NOL-CURRENT-VERSION = 5.2 Alpha Rev. 0
+NOL-CURRENT-VERSION-NUMBER = 5020000
+NOL-OLDEST-VERSION-NUMBER = 0
+NOL-PROPRIETARY-PACKAGE = potentially gensym-nol-v5
+
+OPTEGRITY-PACKAGE-NAME = Gensym Optegrity
+OPTEGRITY-CURRENT-VERSION = 5.2 Alpha Rev. 0
+OPTEGRITY-CURRENT-VERSION-NUMBER = 5020000
+OPTEGRITY-OLDEST-VERSION-NUMBER = 0
+OPTEGRITY-PROPRIETARY-PACKAGE = potentially gensym-optegrity-v5
+
+INTEGRITY-PACKAGE-NAME = Gensym Integrity
+INTEGRITY-CURRENT-VERSION = 5.1 Alpha Rev. 0
+INTEGRITY-CURRENT-VERSION-NUMBER = 5010000
+INTEGRITY-OLDEST-VERSION-NUMBER = 0
+INTEGRITY-PROPRIETARY-PACKAGE = potentially gensym-integrity-v5
+
+CDG-CURRENT-VERSION = 5.2 Alpha Rev. 0
+CDG-CURRENT-VERSION-NUMBER = 5020000
+CDG-OLDEST-VERSION-NUMBER = 0
+
+SOCKMAN-CURRENT-VERSION = 4.3 Alpha Rev. 0
+SOCKMAN-CURRENT-VERSION-NUMBER = 4030000
+SOCKMAN-OLDEST-VERSION-NUMBER = 0
+
+G2I-CURRENT-VERSION = 2.4 Alpha Rev. 0
+G2I-CURRENT-VERSION-NUMBER = 2040000
+G2I-OLDEST-VERSION-NUMBER = 0
+G2I-PROPRIETARY-PACKAGE = potentially private
+
+G2-VERSION-NUMBER = 8.4 Alpha Rev. 0
+G2-CURRENT-VERSION-NUMBER = 8040000
+G2-OLDEST-VERSION-NUMBER = 200
+G2-MINIMUM-VERSION = Version 8.2 Rev. 2
+
+
+
+# Active section for bundles build for G2 7
+
+[G2-7]
+
+ESCOR-PACKAGE-NAME = Gensym e-SCOR
+ESCOR-CURRENT-VERSION = 4.1 Alpha Rev. 0
+ESCOR-CURRENT-VERSION-NUMBER = 4010020
+ESCOR-OLDEST-VERSION-NUMBER = 0
+ESCOR-PROPRIETARY-PACKAGE = potentially gensym-e-scor-standard
+
+RETHINK-PACKAGE-NAME = Gensym ReThink
+RETHINK-CURRENT-VERSION = 4.1 Alpha Rev. 0
+RETHINK-CURRENT-VERSION-NUMBER = 4010020
+RETHINK-OLDEST-VERSION-NUMBER = 0
+RETHINK-PROPRIETARY-PACKAGE = potentially gensym-rethink
+
+NOL-PACKAGE-NAME = Gensym NOL
+NOL-CURRENT-VERSION = 4.3 Rev. 1
+NOL-CURRENT-VERSION-NUMBER = 4030120
+NOL-OLDEST-VERSION-NUMBER = 0
+NOL-PROPRIETARY-PACKAGE = potentially gensym-nol4
+
+OPTEGRITY-PACKAGE-NAME = Gensym Optegrity
+OPTEGRITY-CURRENT-VERSION = 4.2 Rev 0
+OPTEGRITY-CURRENT-VERSION-NUMBER = 4020020
+OPTEGRITY-OLDEST-VERSION-NUMBER = 0
+OPTEGRITY-PROPRIETARY-PACKAGE = potentially gensym-optegrity-v4
+
+CDG-CURRENT-VERSION = 4.2 Rev 0
+CDG-CURRENT-VERSION-NUMBER = 4020020
+CDG-OLDEST-VERSION-NUMBER = 0
+
+SOCKMAN-CURRENT-VERSION = 4.0 Rev. 2
+SOCKMAN-CURRENT-VERSION-NUMBER = 4000220
+SOCKMAN-OLDEST-VERSION-NUMBER = 0
+
+G2I-CURRENT-VERSION = 1.2 Rev. 1
+G2I-CURRENT-VERSION-NUMBER = 1020120
+G2I-OLDEST-VERSION-NUMBER = 0
+G2I-PROPRIETARY-PACKAGE = potentially private
+
+G2-VERSION-NUMBER = 7.1 Rev. 3
+G2-CURRENT-VERSION-NUMBER = 7010320
+G2-OLDEST-VERSION-NUMBER = 200
+G2-MINIMUM-VERSION = Version 7.1 Rev. 2
