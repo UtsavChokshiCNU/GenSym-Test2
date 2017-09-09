@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="01/11/02 11:08:36">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>The High-Level View</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="block-pr.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="block-p3.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/ReThink/custom-manual/stylesets/Customizing%20ReThink/Output/html/block-pr.htm">  
+        Block Processing  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+The High-Level View
+</h2>
+<p>Block processing consists of three basic phases: <a name="14525"></a></p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">The planning phase<a name="14526"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">The start activity phase<a name="14527"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">The stop activity phase<a name="14528"></a></td>  </tr></table><p>Whenever a block receives a work object, ReThink must first determine whether the block is ready to run by checking to see if the current number of activities is below the maximum that the block specifies.<a name="14529"></a></p>
+<p>If the block is ready, it enters a planning phase for the activity. It checks to see if all the required inputs are available for the block. If the block has an attached Resource Manager, it checks to see if all the required resources are available for the activity. If the resources are not available, the block waits for the resources to become available. <a name="14530"></a></p>
+<p>When all the required resources are available, ReThink creates an activity object for the block and schedules the start event for the activity. Every activity has a start event, which invokes the procedures that process the block. The block executes the start event at the same simulation time at which it schedules the event.<a name="14531"></a></p>
+<p>When the activity's start event completes, it schedules the activity's stop event to occur after the duration. The stop event invokes the actions that conclude the processing of the block. After the stop event concludes, the work object moves to the next block in the simulation, which activates the processing of that block. <a name="14532"></a></p>
+<p>ReThink sorts and processes the start and stop events, based on their timestamps and their priorities. Within each second of simulation time, ReThink sorts the events by priority, then processes events with the lowest priority first. Note that the scheduling of events is not limited to the start and stop activities of blocks; it is also used to update reports, calculate metrics, and schedule parameter changes. <a name="30984"></a></p>
+<p>The internal priorities that ReThink uses for various events are:<a name="30839"></a></p>
+<p >
+  <a name="30865"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="30842"><div >Priority</a></div></th>
+    <th><a name="30844"><div >Event</a></div></th>
+  </tr>
+  <tr>
+    <td><code>5<a name="30846"> </a></code></blockquote></td>
+    <td><p>The end of the statistic period for a Statistic probe.<a name="30848"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><code>10<a name="30850"> </a></code></blockquote></td>
+    <td><p>Attribute changes scheduled from a Scenario Manager or an Attribute Change Event Report.<a name="30852"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><code>100<a name="30854"> </a></code></blockquote></td>
+    <td><p>Start and stop phase events of blocks.<a name="30856"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><code>500<a name="30858"> </a></code></blockquote></td>
+    <td><p>Update events associated with Update Trigger tools and probes.<a name="30860"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><code>9999<a name="30862"> </a></code></blockquote></td>
+    <td><p>Update events that automatically update reports when the Update Mode of the report is set to <code>Simulation Time</code>.<a name="30864"></a></p>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<p>If the scenario is online mode and your model uses the online blocks, the processing order of work objects cannot be deterministic. ReThink always processes work objects, using the event timestamp and priority. However, the online blocks use asynchronous calls to remote procedures or execute SQL statements. ReThink does not wait until the remote process or database has completed the task to process other work objects. Instead, it spawns a new processing thread in the remote program, remote ReThink model, or database, and continues processing other work objects. Once the processing thread completes, the work object is propagated through the ReThink diagram. Thus, because the execution time of the processing thread or database SQL statement may vary, the order in which work objects are processed may vary as well.<a name="30866"></a></p>
+<p>Note that if the scenario is in online mode, the duration specified in a block is ignored, that is, the <code>work-time</code> and <code>elapsed-time</code> of the activity are set to 0. The exception is the Delay block and the Source block, including any subclass. When using ReThink as a workflow engine, block durations are not relevant because the timing of events is driven by other constraints. You use the Delay block to implement specific operational process delays. The Time Period of a Statistics probe and the Update Interval of a report are still based on scenario time in online mode.<a name="30867"></a></p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="block-pr.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="block-p3.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
