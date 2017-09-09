@@ -1,0 +1,54 @@
+#!/bin/csh
+
+# First some validate the environment we work in.
+if ( ! $?SPIN_ID ) then
+  echo "ERROR: $0 requires that you be using a sandbox
+  exit 1
+endif
+
+if ( ! $?TRANS_ID ) then
+  echo "ERROR: $0 requires a TRANS_ID environment variable, see script."
+  exit 1
+endif
+
+# TRANS_ID is the SPIN_ID of the place we do the actual translate.
+# this needs to be a sunos sandbox, with the ext/c library compiled
+# which the translator will need to load.  Otherwise it needs gsi/c
+# and a lisp and lisp/macro directory - and little if anything more.
+
+# We have to do this on some sunos machine.
+set sunos_machine = thailand
+
+# We need to rondevous someplace on the details of the translation.
+set script_file = /bt/ab/junk/gw-script
+
+# It is much faster to do the file copy on the file server.
+set file_server = sdev2
+
+# Remove the litter from the last try.
+cd /bt/$TRANS_ID/lisp
+rm -f macro/* *.{lisp,4b}
+
+# Copy the lisp files into the TRANS_ID
+rsh $file_server cp /bt/$SPIN_ID/lisp/*.lisp /bt/$TRANS_ID/lisp
+
+# Setup the script to do the translate.
+cat <<FOO > $script_file
+#!/bin/csh
+use-sandbox $TRANS_ID ab
+cd /bt/bhyde-gwt/lisp
+/bt/ab-9oct95/trans/trans-32b3-patched <<EOF |& head -1000
+(pushnew :gsi-web *features*)
+(load "123")
+3gxrpq
+(quit)
+EOF
+FOO
+
+# Bless it, Use it, remove it.
+chmod a+x $script_file
+rsh $sunos_machine $script_file
+rm -rf $script_file
+
+# Be done.
+exit 0
