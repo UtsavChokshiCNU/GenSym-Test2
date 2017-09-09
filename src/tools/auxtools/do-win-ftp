@@ -1,0 +1,32 @@
+#!/bin/csh
+# See the following file for documentation.
+source auxtools/wtape-init.csh
+
+set tape_tools = "/gensym/tools"
+set target_host = SELF
+set target_root = /home/ftp/private/shipping
+set target_path = $target_root/$product/$software_platform
+set target_file = ${product}${release}
+
+if ( ! -e $target_root/$product ) then
+   mkdir $target_root/$product
+   chmod 751 $target_root/$product
+endif
+
+if ( ! -e $target_path ) then
+   mkdir $target_path
+   chmod 751 $target_path
+endif
+
+if ( -e $target_path/${target_file}.zip) then
+   touch $target_path/${target_file}.zip
+   exit 0 
+endif
+
+$tape_tools/auxtools/do-zip-file write $media $platform $software_platform $product \
+        $release $parts_list $release_directory $target_host $target_path/${target_file}.zip
+
+set result = $status
+
+exit $result
+
