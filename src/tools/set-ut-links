@@ -1,0 +1,263 @@
+#!/bin/sh
+
+# set-ut-links
+# John Valente
+
+# This script links the /gensym/ut/<product>-test link to the specified version.
+
+# Usage: set-ut-links  <-iship | -eship> [< -indep | -dep >]
+#    [ -test ] [ -shipping ] <version-number> [<products>]
+
+# The /gensym/ut directory is intended to be the internal location for
+# products which have been shipped externally.  These are, then, the
+# versions of Gensym's products which have been officially approved by
+# their creators for use by the rest of the world.  Since the version
+# in development at any given time usually has some significant problems,
+# we expect the rest of the company (outside of Software Develoment)
+# to use the eship (externally shipped) products.
+#
+# Having one directory holding all of our current products simplifies finding
+# the products.  In order to make it even simpler, we set up symbolic links,
+# owned by ab, and modified whenever appropriate.  The time at which it becomes
+# appropriate depends on which link.  Currently (11/10/96), we have
+# <product>-shipping and <product>-test.  The -test link is for the version we
+# (specifically, the Quality Assurance department) want others in the company to
+# use and test, and report any bugs found.  The -shipping link is the latest
+# version of the software which has shipped to customers.  The -test link is the
+# version of the software with which we feel comfortable enough too have other
+# people run, but which may be at an alpha or beta quality, rather than a
+# shipping quality.  often, the links will in fact be the same, if there is no
+# upcoming release that we wish to be tested.  The point of the links is to
+# allow Gensym employees to set up shortcuts, for example to run G2 from
+# /gensym/ut/g2-shipping/g2, and always get the latest shipping version.
+# Without the links, we would have to remind everyone that the new version is
+# now available, and please switch to it.
+
+builduser="ab"
+mounted_st_root="/st/ab"
+mt_root="/gensym/ab"
+
+if [ `whoami` != $builduser ]
+then
+  echo "ERROR: Only $builduser can run this script."
+  exit 2
+fi
+
+if [ ! -d /st ]
+then
+  echo "ERROR: This must be done on a machine with a spin tree."
+  echo " "
+  exit 3
+fi
+
+
+# Parse Arguments
+
+if [ $# -lt 2 ]
+then
+  echo "usage: $0 <-iship | -eship> [< -indep | -dep >] [ -test ]"
+  echo "     [ -shipping ] <version-number> [<products>]"
+  echo "By default, assumptions are: -iship -dep g2 tw gsi"
+  echo " example: set-ut-links -iship -test 40r3-D26 g2 tw"
+  echo "      or: set-ut-links -eship -test 40r4"
+  echo "      or: set-ut-links -eship -indep -shipping 10r1 gold"
+  exit 1
+fi
+
+
+# OK, ab has entered two arguments on a machine which can access /st.
+# Now, initialization.  Note that the "links" variable is there in
+# case we want to extend the script to modify other /gensym/ut
+# links, a la set-dev-links.
+
+base_eship="${mounted_st_root}/skeletons/mt-skel/eut-skel-"
+nfs_platforms=`ls ${mounted_st_root}/iship/dep`
+symlink="/bin/ln -s"
+delete="/bin/rm -f"
+# symlink="echo Linking "
+# delete="echo Deleting "
+dependent=0
+iship=0
+links=""
+
+# flags is set to the set of all arguments beginning with '-'.  info is
+# all other arguments.
+
+flags=`echo $* | awk 'BEGIN {RS=" "} $1 ~ /^-/'`
+info=`echo $* | awk 'BEGIN {RS=" "} $1 !~ /^-/'`
+
+
+# Parse arguments
+
+# For $dependent and $iship, I use 1 for true, -1 for false, and
+# 0 for unspecified, which then defaults to true.  The point of
+# making the initial distinction is to make sure the user does
+# not explicitly specify conflicting options.
+
+for flag in $flags
+do
+  case $flag in
+    -iship)
+	    if [ $iship = 0 ]
+	    then
+	      iship=1
+	    else
+	      echo "Error: only one of -iship and -eship can be supplied"
+	      exit 1
+	    fi
+	    ;;
+    -eship)
+	    if [ $iship = 0 ]
+	    then
+	      iship=-1
+	    else
+	      echo "Error: only one of -iship and -eship can be supplied"
+	      exit 1
+	    fi
+	    ;;
+    -indep)
+	    if [ $dependent = 0 ]
+	    then
+	      dependent=-1
+	    else
+	      echo "Error: only one of -indep and -dep can be supplied"
+	      exit 1
+	    fi
+	    ;;
+    -dep)
+	  if [ $dependent = 0 ]
+	  then
+	    dependent=1
+	  else
+	    echo "Error: only one of -indep and -dep can be supplied"
+	    exit 1
+	  fi
+	  ;;
+    -shipping)
+# links starts out as the empty string; add shipping or test to it
+	links="$links shipping"
+	;;
+    -test)
+	links="$links test"
+	;;
+    *)
+       echo "Unknown flag $flag"
+       exit 1
+  esac
+done
+
+# Ensure that they have specified which kind of link they want
+if [ -z "$links" ]
+then
+  echo "Must provide -test and/or -shipping"
+  exit 1
+fi
+
+# Whereas the flags can be entered in any order, the release id *MUST*
+# come before the products, if any.
+
+release_id=`echo $info | awk '{print $1}'`
+products=`echo $info | awk '{$1 = ""; print}'`
+
+
+# If the user has not specified any products, use g2, tw, and gsi
+# by default.
+
+if [ -z "$products" ]
+then
+  products="g2 tw gsi"
+fi
+
+
+# Update <product>-test for NFS platforms.  VMS does not have -test links.
+
+# link_dir is the relative place to point to.  For example, if we want g2-test
+# to point to the externally promoted g2-40r3, the link should look like this:
+#          g2-test -> g2-40r3
+# ... since the two are in the same directory.  However, if we want to point
+# into iship, we need to specify a longer (full or relative) path, like this:
+#          g2-test -> /gensym/ab/iship/g2-40r3-G21/test
+# Note that in either case, the destination of the link is platform
+# independent.  Where the location is depends on what platform you are using
+# when you ask.
+
+# link_name is what it should look like in the directory, e.g., g2-test or
+#     gda-shipping
+# arch_dir is the directory where the link will be created for one platform
+# link_points_to is the name and id of the product, the basename of the location
+# test_link is a platform independent representation of the full pathname of
+#    the location.  This way, we can check if it exists while running on a
+#    single platform.  (Cf. link_dir).
+
+
+for product in ${products}
+do
+  echo "LOG: Making link using $product"
+  echo "  Release Id:        $release_id"
+  for platform in ${nfs_platforms}
+  do
+    if [ "${platform}" = "intelnt" -o "${platform}" = "alphant" ]
+    then
+      iship_dep_link_prefix="dev"
+    else
+      iship_dep_link_prefix="${mt_root}/iship"
+    fi
+    arch_dir=${base_eship}${platform}
+    cd ${arch_dir}
+    echo "    Machine Type:      $platform"
+    for lnk in ${links}
+    do
+      echo "      Link Name:         $lnk"
+      link_name="${product}-${lnk}"
+      link_points_to="${product}-${release_id}"
+
+      if [ ${iship} = -1 ]
+      then
+	link_dir="${link_points_to}"
+	if [ ${dependent} = -1 ]
+	then
+	  test_link="${mounted_st_root}/eship/indep/${link_points_to}"
+	else
+	  test_link="${mounted_st_root}/eship/dep/${platform}/${link_points_to}"
+	fi
+      else
+	if [ ${dependent} = -1 ]
+	then
+	  link_dir="${mt_root}/iship-indep/${link_points_to}/test"
+	  test_link="${mounted_st_root}/iship/indep/${link_points_to}"
+	else
+          if [ "${platform}" = "intelnt" -o "${platform}" = "alphant" ]
+          then
+            link_dir="${iship_dep_link_prefix}/${link_points_to}"
+          else
+            link_dir="${iship_dep_link_prefix}/${link_points_to}/test"
+          fi
+	  test_link="${mounted_st_root}/iship/dep/${platform}/${link_points_to}"
+	fi
+      fi
+
+      if [ -d ${test_link} ]
+      then
+	${delete} ${link_name}
+	${symlink} ${link_dir} ${link_name}
+	echo "        ${link_name} --> ${link_dir}"
+      else
+	echo -n "No ${link_points_to} found "
+	echo -n "on platform ${platform}. "
+	if [ -d ${arch_dir}/${link_name} ]
+	then
+	  echo " Leaving ${link_name} intact."
+	else
+	  if [ -h ${arch_dir}/${link_name} ]
+	  then
+	    echo "Deleting ${link_name}."
+	  else
+	    echo "No old link exists."
+	  fi
+	  ${delete} ${arch_dir}/${link_name}
+	fi
+      fi
+    done
+  done
+  echo " "
+done
