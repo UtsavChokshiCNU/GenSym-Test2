@@ -1,0 +1,51 @@
+<project name="SymScale" default="build_32_std">
+	<property name="module.name" value="g2"/>
+	<property name="${module.name}.basedir" value=".."/> 
+	<property file="${g2.basedir}/ant/build.properties"/>
+ 
+	<!-- Build section -->
+	<target name="clean-build">
+		<delete dir="${g2.basedir}/../dst/${module.name}"/>    
+	</target>
+
+	<target name="clean-results">
+		<delete dir="${result.dir}/${module.name}"/>    
+	</target>
+
+	<target name="build_64_ent">
+		<ant dir="${g2.basedir}/ant" target="vstudio" inheritAll="false">
+			<property name="type" value="Release|x64"/>
+			<property name="module" value="SymScale"/>
+		</ant>
+	</target>
+
+	<target name="translate">
+		<ant dir="${g2.basedir}/ant" target="sbcl" inheritAll="false">
+			<property name="translator" value="trans-mt-sbcl"/>
+			<property name="type" value="3srpmx"/>
+			<property name="module" value="SymScale"/>
+		</ant>
+	</target>
+	<!-- End of Build section -->
+  
+	<!-- Tests section -->
+	<target name="api-tests">
+		<mkdir dir="${result.dir}/g2"/>
+	</target>
+	<!-- End of Tests section -->
+  
+	<!-- Checks section -->
+	<target name="check-coverage">
+		<ant dir="${g2.basedir}/ant" target="check-c-coverage"/>
+	</target>
+  
+	<target name="check-static-metrics" depends="check-mi, check-findbugs, check-cpd"/>
+  
+	<target name="check-mi"/>
+  
+	<target name="check-findbugs"/>
+  
+	<target name="check-cpd"/>
+	<!-- End of Checks section -->
+  
+</project>
