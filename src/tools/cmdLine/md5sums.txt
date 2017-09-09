@@ -1,0 +1,121 @@
+======================
+     INTRODUCTION
+======================
+
+MD5sums is win32 command line software to generate MD5 hashes of files
+(with progress indicator)
+
+Author: Jem Berkes, SysDesign [ http://www.sysdesign.ca/ ]
+
+
+===============
+     USAGE
+===============
+
+MD5sums 1.2 freeware for Win9x/ME/NT/2000/XP+
+Copyright (C) 2001-2005 Jem Berkes - http://www.pc-tools.net/
+
+Usage: md5sums [OPTION] filespec1 [filespec2 ...]
+
+OPTION switches:
+-B  Base64 encoded output, instead of default hex format
+-b  Bare output, no path headers
+-e  Exit immediately; don't pause before returning
+-n  No percent done indicator
+-p  Pause before returning (incompatible with -e)
+-s  Display statistics at end (hashing speed)
+-u  Mimic output of UNIX md5 command (implies -b, -n)
+
+Examples:
+md5sums c:\temp
+md5sums original.doc copy*.doc backup*.doc
+md5sums -n -e d:\incoming > log
+
+
+==================
+     WARRANTY
+==================
+
+THIS FREE SOFTWARE COMES WITH ABSOLUTELY NO WARRANTY.
+USE AT YOUR OWN RISK!
+
+
+=========================
+     VERSION HISTORY
+=========================
+
+Changes in version 1.2 [2005-01-31]
+- UNIX compatible output fixed to match standard md5sum
+- Added -B switch to get base64 encoded output (rather than default hex)
+- Fixed percent indicator for files > 4 GB
+
+Changes in version 1.1 [2002-08-03]
+- Added many new command line switches
+- Percent done indicator is now only updated once per second
+- Executable is now UPX compressed [ http://upx.sourceforge.net/ ]
+
+
+==================
+     FEATURES
+==================
+
+MD5sums has user-friendly output, including a percent done indicator
+when processing large files. With its various command line switches
+you can customize MD5sums for use in scripts.
+
+The UNIX compatibility switch (-u) makes the output look like that
+from the Linux/BSD/UNIX md5 or md5sum commands.
+
+Besides the normal command line usage (see examples above), MD5sums
+can also be easily added to the windows shell. Use Windows Explorer
+to access your user profile directory (one level up from the "Start
+Menu" directory). Locate the "SendTo" folder and create a shortcut
+inside it to "md5sums -p" (pause before returning).
+
+If you have trouble locating your user profile directory, try this
+at the command prompt: echo %userprofile%
+
+After adding MD5sums to the SendTo folder, you can select one or
+more files on the desktop (or in any other folder), and right-click
+to "Send To" md5sums. Each selected file will be processed.
+
+
+===============================
+     ABOUT THE MD5 PROCESS
+===============================
+
+[Paraphrased and, in parts, quoted from RFC 1321]
+
+The MD5 Message Digest Algorithm takes an input (in this case, a
+file) and produces a 128-bit (or 16 byte) output, which can be
+represented as a string of 32 hexadecimal values. This output is
+a 'fingerprint' or 'message digest' for the file.
+
+You will often find an MD5 value supplied along with files you
+download off of the internet. By comparing the supplied MD5 value
+to the actual value computed by the MD5sums utility, you can make
+sure that the file has not been tampered with or modified.
+
+"It is conjectured that it is computationally infeasible to
+produce two messages having the same message digest, or to
+produce any message having a given prespecified target message
+digest."
+
+In the context of this MD5sums utility, what this means is: if
+you have a file and know what the MD5 value should be, and this
+value matches the actual MD5 value obtained by using the MD5sums
+utility, then the file is very likely the original file.
+
+This is a good way to both verify that the file has not been
+damaged during electronic transfers, and also to verify that the
+file you are getting has not been tampered with.
+
+For example, the MD5 value of md5sums.exe is:
+da1e100dc9e7bebb810985e37875de38
+
+Note that recent research has shown that MD5 computations are not
+as immune to collisions as thought earlier. While MD5 hashes are
+still excellent for file comparisons, for cryptographic strength
+it is recommended that one uses a stronger hash such as SHA-1.
+
+- Jem Berkes
