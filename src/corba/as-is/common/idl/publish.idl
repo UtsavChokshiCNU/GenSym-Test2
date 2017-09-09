@@ -1,0 +1,35 @@
+
+//
+// This IDL file contains a simple interface used for a publish subscribe system.
+//
+
+//
+// The event consumer interface is used to consume events.
+// A event producer may call the event method.
+//
+
+  enum eventCodes {red, blue, green};
+
+  interface eventConsumer {
+
+    short event(in eventCodes eventType);  // events happen
+
+  };
+
+//
+// The eventChannel interface provides a way to forward events to 
+// many eventConsumers.
+//
+// This subsclasses the eventConsumer interface and provides a way
+// to subscribe and unsubscribe other eventConsumers.  A eventChannel "is a" 
+// eventConsumer.
+//
+
+  interface eventChannel : eventConsumer {
+
+    exception reject {string reason;};
+
+    void subscribe(in eventConsumer target) raises (reject);
+    void unsubscribe(in eventConsumer target) raises (reject);
+  };
+
