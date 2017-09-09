@@ -1,0 +1,347 @@
+
+
+///////////////////////////////////////////////////////////////////////////////
+//                                                                           //
+// Function: DialogShowSdWelcome                                             //
+//                                                                           //
+//  Purpose: This function handles the standard welcome dialog.              //
+//                                                                           //
+//                                                                           //
+///////////////////////////////////////////////////////////////////////////////
+function DialogShowSdWelcome()
+        
+
+    NUMBER nResult;
+    STRING szTitle, szMsg, szText,svCourseName,svDirName,svNameOnly;
+begin
+    szTitle = "";
+    szMsg   = "";
+    nResult = SdWelcome( szTitle, szMsg );     
+    
+    return nResult;
+end;
+ 
+/*
+** DialogShowSdRegisterUserEx - Get registration info and then Build Media
+*
+* Modified 9/17/00: by MHD: have this use the standard SD_NDLG_REGISTERUSEREX
+*   dialog, instead of the one originally customized for this purpose by Jim
+*   Wright.  The custom one presented five 5-digit
+*   fields.  It was much less simple to use, it turned out, than the standard
+*   dialog, since it did not allow pasting in of the license key.  It also
+*   presented the prompt for a "serial number", even though we want here a
+*   license key.  The warning message was changed to at least say to enter
+*   the "25-digit" license key.  (Same wording as the Unix installer.)  Also
+*   removed some unnecessary whitespace and dubugging statements, for better
+*   legibility.  Also, fixed this to record the license key before doing
+*   a back button, so it's there when they come back forward.  To do: find
+*   a way to substitute "25-Digit License Key" for 
+*   "Serial Number" in the prompt.
+*/
+function DialogShowSdRegisterUserEx(svSerial, svName, svCompany) 
+NUMBER nvResult,nResult,nSerial,nCmdValue,nHwdInstall,nChildHwd;
+STRING szTitle, szMsg, szDialogName; 
+NUMBER nLength; 
+BOOL bDone;  
+begin
+   szMsg = "";  szTitle = "";  szDialogName = "RegisterUserEx";
+   nResult = EzDefineDialog (szDialogName, "", "", GENSYM_REGISTER_USER);
+   bDone = FALSE;
+   repeat
+      nCmdValue = WaitOnDialog(szDialogName);
+      nHwdInstall = CmdGetHwndDlg(szDialogName);
+      switch (nCmdValue)       
+        case DLG_INIT:
+          CtrlSetText( szDialogName, SD_EDIT_NAME, svName );
+          CtrlSetText( szDialogName, SD_EDIT_COMPANY, svCompany );
+	  CtrlSetText( szDialogName, SD_EDIT_SERIAL, svSerial );
+        case DLG_CLOSE,          // user clicked the window's close button
+             RES_PBUT_CANCEL:    // user clicked the CANCEL button
+          Do (EXIT);            
+        case DLG_ERR:
+          MessageBox ("Unable to display dialog. Setup canceled.", SEVERE);
+          abort;
+        case RES_PBUT_NEXT,      // user clicked NEXT button
+             RES_PBUT_BACK:      // user clicked BACK button
+          CtrlGetText( szDialogName, SD_EDIT_NAME, svName );
+          CtrlGetText( szDialogName, SD_EDIT_COMPANY, svCompany );
+          CtrlGetText( szDialogName, SD_EDIT_SERIAL, svSerial );
+          switch (nCmdValue)
+	     case RES_PBUT_BACK:
+        	bDone = TRUE;
+             default:
+             	if (BuildMedia(svSerial) = 0 ) then
+                  bDone = TRUE;
+		//yduJ, Aug 2004, for HQ-4697334:
+                if (HasNonASCII(sgCompany)) then
+                  MessageBox("Company name " + sgCompany + " contains non-ASCII characters; these will be stripped in the OK file.",WARNING);
+                endif;
+                else
+	          // Copy of note from bundle/c/geninst.c:
+	          // /* This used to say "25-digit" for the FCS, but it was decided by
+	          //    consensus that "25-character" captured the desire for both digits and
+	          //    letters, without making too many users think the hyphens (-) counted as
+	          //    characters.  Though some may still find "character" confusing, it's
+	          //    better than digit, -mhd, 10/24/00 */
+                  MessageBox("Please verify that you have entered your 25-character license key correctly under Serial Number.", INFORMATION);
+                endif;
+          endswitch;
+      endswitch;
+    until bDone;
+   EndDialog (szDialogName);     // close dialog box
+   ReleaseDialog (szDialogName); // free dialog box from memory
+   return nCmdValue;
+ end;
+  
+ function DialogShowSdAskDestPath()
+ NUMBER nvResult;
+ STRING szTitle, szMsg, szDir;
+  begin
+      szTitle = "";
+    szMsg   = "";
+    nvResult = SdAskDestPath( szTitle, szMsg, TARGETDIR, 0 );
+    TARGETDIR = szDir;
+
+  return nvResult;
+  end;
+  
+ 
+
+ function DialogShowSdComponentTree(svComponentSet)
+ NUMBER nvResult,nLevel,nSetupType;
+ STRING szTitle,szMsg,szTargetdir,szComponents, szHolMEDIA;
+ STRING svSerial;
+ STRING szFilename,szComponent;
+ NUMBER nError, nResult;
+ BOOL bSelected;
+ 
+  begin
+    //szHolMEDIA = MEDIA;
+    szTitle    = "";
+    szMsg      = "";
+    szTargetdir = TARGETDIR; 
+    szComponents = "";
+    nLevel = 2;  
+    
+    nvResult = SdComponentTree(szTitle, szMsg, szTargetdir, szComponents, 1);
+    return nvResult;
+  end;
+
+ function DialogShowObjDialogs()
+ NUMBER nvResult;
+  begin 
+      nvResult = ShowObjWizardPages(nvResult);
+          nvResult = NEXT;//9999
+      return nvResult;
+  end;
+
+ function DialogShowSdSelectFolder()
+ NUMBER nvResult;
+ STRING szfolder,szTitle,szMsg; 
+  begin 
+   szfolder = SHELL_OBJECT_FOLDER; 
+    szTitle    = "";
+    szMsg      = "";
+    nvResult    = SdSelectFolder( szTitle, szMsg, szfolder );
+    SHELL_OBJECT_FOLDER = szfolder;
+   // if (nResult = BACK) goto Dlg_ObjDialogs;
+   
+    // setup default status
+    SetStatusWindow(0, "");
+    Enable(STATUSEX);
+    StatusUpdate(ON, 100);
+
+    //return 0;
+  return nvResult;
+  end;
+
+function DialogShowNtAdmin(lLastDialog, nDialog)
+ NUMBER nvResult;
+ STRING svResult, szMsg, szHoldMedia, szComponentSet,szComponent;
+ STRING szMsg1,szMsg2,szId, szTitle,szAllUserMsg, szCurrentUserMsg; 
+ NUMBER nExclusiveFlag,nDataSize;
+ BOOL bAll, bOne;
+ begin  
+    szAllUserMsg = "Install for All Users";
+    bAll = TRUE;
+    szCurrentUserMsg = "Only install for the currently logged in user";
+    bOne = FALSE;
+        //nvResult = GetSystemInfo( OS, nvResult, svResult );
+        
+       if( Is (USER_ADMINISTRATOR, ""))then
+          
+           
+          szMsg = "You are currently logged in as an Administrator.\n";
+          szMsg = szMsg + "Do you want to give ALL users access to this product?";
+          nvResult = AskOptions (EXCLUSIVE ,szMsg,szAllUserMsg, bAll, szCurrentUserMsg, bOne );
+          if (nvResult = NEXT) then
+            ListAddItem(lLastDialog,nDialog,AFTER); //Includes Dialog in "Back" path 
+          endif;  
+          if (bAll) then
+                         INSTALL_ALL_USERS = TRUE; 
+                         //MessageBox("install all",WARNING);
+                  else
+                     INSTALL_ALL_USERS = FALSE; 
+                  endif; 
+                endif; //Is (USER_ADMINISTRATOR                      
+        return nvResult;
+  end;  
+
+   
+   function DialogShowSetupType (nSetupType)
+   STRING szDialogName, szTempDir,szTitle,szMsg;
+   NUMBER nResult,nCmdValue,nHwdInstall,nChildHwd,nvResult,nBrowse;
+   BOOL bDone;
+   begin
+   
+   
+   // Specify a name to identify the custom dialog in this setup.
+
+   szDialogName = "CustomDialog";
+
+
+
+   // Define the dialog.  Pass a null string in the second parameter
+
+   // to get the dialog from _isuser.dll or _isres.dll.  Pass a null
+
+   // string in the third parameter because the dialog is identified
+
+   // by its ID in the fourth parameter.
+    
+   // nvResult = AskOptions (EXCLUSIVE ,szMsg,szAllUserMsg, bAll, szCurrentUserMsg, bOne );
+    
+   nResult = EzDefineDialog (szDialogName, "", "", GENSYM_SETUP_TYPE);
+   nHwdInstall = CmdGetHwndDlg(szDialogName);
+
+
+   if (nResult < 0) then
+
+      // Report an error; then terminate.
+
+      MessageBox ("Error in defining dialog", SEVERE);
+      SupportMessage (DEBUG, "Error loading resource in ISUser.dll, SetupType 32009");
+      abort;
+
+   endif;
+
+
+
+   // Initialize the indicator used to control the while loop.
+
+   bDone = FALSE;
+
+
+
+   // Loop until done.
+
+   repeat
+
+
+
+      // Display the dialog and return the next dialog event.
+
+      nCmdValue = WaitOnDialog(szDialogName);
+
+
+
+      // Respond to the event.
+
+      switch (nCmdValue)
+
+
+
+         case DLG_CLOSE:
+
+            // The user clicked the window's close button.
+
+            Do (EXIT);
+
+
+
+         case DLG_ERR:
+
+            MessageBox ("Unable to display dialog. Setup canceled.", SEVERE);
+            SupportMessage (DEBUG, "Error loading resource in ISUser.dll, SetupType 32009");
+            abort;
+
+
+
+         case DLG_INIT: ;
+
+             CtrlSetState (szDialogName, 501, BUTTON_CHECKED); 
+                                                                // 501 is typical setup
+                                                                // 503 is Custom setup
+                                                               
+                        CtrlSetText (szDialogName, 715, TARGETDIR); // Set path 
+
+                                                            
+                                                            
+                                                            
+
+
+         case RES_PBUT_CANCEL:
+
+            // The user clicked the Cancel button.
+            nvResult = CANCEL;
+            Do (EXIT);
+
+
+         case 196: //Browse 
+         
+                szTempDir = TARGETDIR;
+                szTitle = "";
+                szMsg = "";
+            nBrowse = SelectDir (szTitle, szMsg, szTempDir, TRUE);
+            if (nBrowse = IDOK) then
+                TARGETDIR = szTempDir; 
+                CtrlSetText (szDialogName, 715, TARGETDIR); // Set path 
+                
+            endif;    
+
+         
+         
+         
+          
+         case RES_PBUT_NEXT:
+
+            bDone = TRUE;
+            nResult = CtrlGetState (szDialogName, 501 );
+            if (nResult = BUTTON_CHECKED ) then
+              nSetupType = TYPICAL;
+              nvResult = TYPICAL;
+            else 
+              nSetupType = CUSTOM;
+              nvResult = CUSTOM;
+            endif;  
+
+
+         case RES_PBUT_BACK:
+
+            bDone = TRUE;
+            nvResult = BACK;
+
+
+      endswitch;
+
+
+
+   until bDone;
+
+
+
+   // Close the dialog box.
+
+   EndDialog (szDialogName);
+
+
+
+   // Free the dialog box from memory.
+
+   ReleaseDialog (szDialogName);
+
+
+   
+   return nvResult;  
+   //return NEXT;
+   end;//DialogShowSetupType
