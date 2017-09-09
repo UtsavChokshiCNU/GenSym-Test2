@@ -1,0 +1,47 @@
+#!/bin/sh
+
+# builds the translator from source in SRCBOX
+# see trail/0313-translator-build.txt for more detail
+
+if [ -z "$SRCBOX" ]
+then
+  echo "You must first set SRCBOX (presumably with 'sandbox')"
+  exit 1
+fi
+
+if [ ! -d ${SRCBOX} ]
+then
+  echo "Error: SRCBOX ${SRCBOX} does not exist"
+  exit 1
+fi
+
+if [ ! -d ${SRCBOX}/chestnut ]
+then
+  echo "Error: no chestnut directory in sandbox -- cannot build"
+  exit 1
+fi
+
+rm ${SRCBOX}/chestnut/src/trans/OBIN/*.sbin-l50
+
+cd ${SRCBOX}/chestnut/src/trans/lisp
+
+/home/lucid/liquid50/lisp-clos-50 <<EOF
+
+(load "../obuild.lisp")
+
+(quit)
+
+EOF
+
+cd ${SRCBOX}/chestnut/src/trans
+
+/home/lucid/liquid50/lisp-clos-50 <<EOF
+
+(load "gensym-load-trans.lisp")
+
+(disksave "${SRCBOX}/chestnut/trans-32b3c" :full-gc t)
+
+(quit)
+
+EOF
+
