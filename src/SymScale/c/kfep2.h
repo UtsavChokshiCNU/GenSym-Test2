@@ -1,0 +1,207 @@
+/* kfep2.h -- Header File for kfep2.c
+ * Copyright (C) 1986-2017 Gensym Corporation.  All Rights Reserved.
+ */
+
+
+/* Symbol Definitions */
+extern Object Kinitial_element;
+extern Object Qstring_eq;
+extern Object Qunsigned_byte;
+
+extern Object Pclos;
+extern Object Pclos_run;
+extern Object Pclosx;
+extern Object Pcl;
+extern Object Pcl_user;
+extern Object Pkeyword;
+extern Object Ptrun;
+extern Object Ptx;
+
+/* function declarations */
+
+#ifdef USE_PROTOTYPES
+
+extern Object allocate_managed_simple_vector_for_skip_list(Object);
+extern Object bytes_per_typed_simple_array(Object,Object);
+extern Object c_native_clock_ticks_or_cache(Object,Object);
+extern Object clear_jis_map(Object);
+extern Object clear_jis_map_tree(Object);
+extern Object clear_optimized_constants(void);
+extern Object convert_ascii_to_kana_in_lisp_string(Object,Object,Object,Object,Object);
+extern Object convert_to_jis_string_if_possible(Object);
+extern Object copy_frame_serial_number(Object);
+extern Object copy_lisp_string_with_change_to_upper_case(Object);
+extern Object copy_managed_lisp_string(Object,Object,Object);
+extern Object delete_frame(Object);
+extern Object fixnum_time_interval(Object);
+extern Object flatten_jis_map(Object);
+extern Object flatten_skip_list(Object);
+extern Object force_process_drawing(void);
+extern Object g2_stream_directory_p(Object);
+extern Object g2_stream_probe_file_for_read(Object);
+extern Object gensym_string_substring(Object,Object,Object);
+extern Object get_command_line_keyword_argument(int,...);
+extern Object get_kfep_index_filename(void);
+extern Object get_kfep_kojin_filename(void);
+extern Object get_kfep_main_filename(void);
+extern Object import_text_string(int,...);
+extern Object initialize_ascii_kana_converters_if_neccessary(void);
+extern Object initialize_for_asian_languages(void);
+extern Object initialize_kana_to_kanji_converters(void);
+extern Object jis_map_hash_vector_307_vector_memory_usage(void);
+extern Object kfep_kka_koinit(void);
+extern Object kfep_kka_mainit(Object,Object,Object,Object);
+extern Object kfep_kka_p_batkanakan(Object,Object,Object,Object);
+extern Object kka_p_batkanakan(Object,Object,Object,Object);
+extern Object load_chinese_font(void);
+extern Object load_chinese_outline_font(void);
+extern Object load_hangul_font(void);
+extern Object load_korean_outline_font(void);
+extern Object make_absolute_pathname_if_possible(Object);
+extern Object make_jis_map(void);
+extern Object make_jis_map_hash_vector(void);
+extern Object make_jis_map_tree_for_hash_skip_list_sentinel(Object,Object);
+extern Object make_message(int,...);
+extern Object make_permanent_jis_map_hash_vector_307_vector_internal(void);
+extern Object make_skip_list_element_1(Object,Object,Object,Object);
+extern Object make_thread_array(Object);
+extern Object make_workspace(int,...);
+extern Object map_longest_possible_substring_using_jis_map(Object,Object,Object,Object,Object);
+extern Object notify_user(int,...);
+extern Object obtain_simple_gensym_string(Object);
+extern Object out_jis_map_hash_vector_307_vectors(void);
+extern Object push_optimized_constant(Object);
+extern Object put_up_long_operation_notification_now(void);
+extern Object reclaim_frame_serial_number(Object);
+extern Object reclaim_gensym_string(Object);
+extern Object reclaim_jis_map(Object);
+extern Object reclaim_jis_map_hash_vector(Object);
+extern Object reclaim_jis_map_tree_for_hash_nodes(Object,Object);
+extern Object reclaim_skip_list_element(Object);
+extern Object reclaim_text_string(Object);
+extern Object record_system_variable(Object,Object,Object,Object,Object,Object,Object);
+extern Object regenerate_optimized_constant(Object);
+extern Object replenish_lookup_cons_pool(void);
+extern Object replenish_vector_pool_cons_pool(void);
+extern Object roman_kana_g2(Object,Object,Object,Object,Object);
+extern Object roman_kata_g2(Object,Object,Object,Object,Object);
+extern Object set_skip_list_entry(Object,Object,Object,Object,Object,Object,Object,Object);
+extern Object sxhashw(Object);
+extern Object text_string_length(Object);
+extern Object tformat_text_string(int,...);
+extern Object update_object_pool_meters_list(Object);
+
+#else
+
+extern Object allocate_managed_simple_vector_for_skip_list();
+extern Object bytes_per_typed_simple_array();
+extern Object c_native_clock_ticks_or_cache();
+extern Object clear_jis_map();
+extern Object clear_jis_map_tree();
+extern Object clear_optimized_constants();
+extern Object convert_ascii_to_kana_in_lisp_string();
+extern Object convert_to_jis_string_if_possible();
+extern Object copy_frame_serial_number();
+extern Object copy_lisp_string_with_change_to_upper_case();
+extern Object copy_managed_lisp_string();
+extern Object delete_frame();
+extern Object fixnum_time_interval();
+extern Object flatten_jis_map();
+extern Object flatten_skip_list();
+extern Object force_process_drawing();
+extern Object g2_stream_directory_p();
+extern Object g2_stream_probe_file_for_read();
+extern Object gensym_string_substring();
+extern Object get_command_line_keyword_argument();
+extern Object get_kfep_index_filename();
+extern Object get_kfep_kojin_filename();
+extern Object get_kfep_main_filename();
+extern Object import_text_string();
+extern Object initialize_ascii_kana_converters_if_neccessary();
+extern Object initialize_for_asian_languages();
+extern Object initialize_kana_to_kanji_converters();
+extern Object jis_map_hash_vector_307_vector_memory_usage();
+extern Object kfep_kka_koinit();
+extern Object kfep_kka_mainit();
+extern Object kfep_kka_p_batkanakan();
+extern Object kka_p_batkanakan();
+extern Object load_chinese_font();
+extern Object load_chinese_outline_font();
+extern Object load_hangul_font();
+extern Object load_korean_outline_font();
+extern Object make_absolute_pathname_if_possible();
+extern Object make_jis_map();
+extern Object make_jis_map_hash_vector();
+extern Object make_jis_map_tree_for_hash_skip_list_sentinel();
+extern Object make_message();
+extern Object make_permanent_jis_map_hash_vector_307_vector_internal();
+extern Object make_skip_list_element_1();
+extern Object make_thread_array();
+extern Object make_workspace();
+extern Object map_longest_possible_substring_using_jis_map();
+extern Object notify_user();
+extern Object obtain_simple_gensym_string();
+extern Object out_jis_map_hash_vector_307_vectors();
+extern Object push_optimized_constant();
+extern Object put_up_long_operation_notification_now();
+extern Object reclaim_frame_serial_number();
+extern Object reclaim_gensym_string();
+extern Object reclaim_jis_map();
+extern Object reclaim_jis_map_hash_vector();
+extern Object reclaim_jis_map_tree_for_hash_nodes();
+extern Object reclaim_skip_list_element();
+extern Object reclaim_text_string();
+extern Object record_system_variable();
+extern Object regenerate_optimized_constant();
+extern Object replenish_lookup_cons_pool();
+extern Object replenish_vector_pool_cons_pool();
+extern Object roman_kana_g2();
+extern Object roman_kata_g2();
+extern Object set_skip_list_entry();
+extern Object sxhashw();
+extern Object text_string_length();
+extern Object tformat_text_string();
+extern Object update_object_pool_meters_list();
+
+#endif
+
+/* variables/constants */
+extern Object Allowable_non_alpha_characters_in_kfep_conversions;
+extern Object Ascii_and_kana_suffix_pairs;
+extern Object Ascii_to_jis_code_map;
+DECLARE_VARIABLE_WITH_SYMBOL(Ascii_to_kana_map, Qascii_to_kana_map);
+DECLARE_VARIABLE_WITH_SYMBOL(Available_jis_map_hash_vector_307_vectors, Qavailable_jis_map_hash_vector_307_vectors);
+extern Object Available_jis_map_hash_vector_307_vectors_vector;
+extern Object Available_lookup_conses_tail_vector;
+extern Object Available_lookup_conses_vector;
+extern Object Available_vector_pool_conses_tail_vector;
+extern Object Available_vector_pool_conses_vector;
+DECLARE_VARIABLE_WITH_SYMBOL(Cache_chinese_semantics_graph, Qcache_chinese_semantics_graph);
+DECLARE_VARIABLE_WITH_SYMBOL(Cache_korean_semantics_graph, Qcache_korean_semantics_graph);
+DECLARE_VARIABLE_WITH_SYMBOL(Count_of_jis_map_hash_vector_307_vectors, Qcount_of_jis_map_hash_vector_307_vectors);
+DECLARE_VARIABLE_WITH_SYMBOL(Current_frame_serial_number, Qcurrent_frame_serial_number);
+DECLARE_VARIABLE_WITH_SYMBOL(Current_kb_serial_number, Qcurrent_kb_serial_number);
+DECLARE_VARIABLE_WITH_SYMBOL(Current_long_operation_notification_workspace, Qcurrent_long_operation_notification_workspace);
+DECLARE_VARIABLE_WITH_SYMBOL(Current_thread_index, Qcurrent_thread_index);
+DECLARE_VARIABLE_WITH_SYMBOL(Doing_long_operation_with_notification_qm, Qdoing_long_operation_with_notification_qm);
+DECLARE_VARIABLE_WITH_SYMBOL(Fixnum_time_at_start_of_current_long_notification, Qfixnum_time_at_start_of_current_long_notification);
+DECLARE_VARIABLE_WITH_SYMBOL(Get_object_on_kb_workspace_for_item, Qget_object_on_kb_workspace_for_item);
+extern Object Height_for_prominent_notification_workspaces;
+DECLARE_VARIABLE_WITH_SYMBOL(Hfep_capability_qm, Qhfep_capability_qm);
+DECLARE_VARIABLE_WITH_SYMBOL(Kana_to_ascii_map, Qkana_to_ascii_map);
+DECLARE_VARIABLE_WITH_SYMBOL(Kfep_capability_qm, Qkfep_capability_qm);
+DECLARE_VARIABLE_WITH_SYMBOL(Kfep_converters_have_been_initialized_qm, Qkfep_converters_have_been_initialized_qm);
+extern Object Kfep_index_filename;
+extern Object Kfep_kojin_filename;
+extern Object Kfep_main_filename;
+DECLARE_VARIABLE_WITH_SYMBOL(Last_roman_kana_g2_length, Qlast_roman_kana_g2_length);
+DECLARE_VARIABLE_WITH_SYMBOL(Last_roman_kata_g2_length, Qlast_roman_kata_g2_length);
+DECLARE_VARIABLE_WITH_SYMBOL(Long_operation_notification_has_been_put_up_qm, Qlong_operation_notification_has_been_put_up_qm);
+DECLARE_VARIABLE_WITH_SYMBOL(Maximum_length_of_ascii_string, Qmaximum_length_of_ascii_string);
+DECLARE_VARIABLE_WITH_SYMBOL(Maximum_length_of_kana_string, Qmaximum_length_of_kana_string);
+DECLARE_VARIABLE_WITH_SYMBOL(Reclaim_fonts_stack, Qreclaim_fonts_stack);
+DECLARE_VARIABLE_WITH_SYMBOL(Specified_kfep_index_filename_qm, Qspecified_kfep_index_filename_qm);
+DECLARE_VARIABLE_WITH_SYMBOL(Specified_kfep_kojin_filename_qm, Qspecified_kfep_kojin_filename_qm);
+DECLARE_VARIABLE_WITH_SYMBOL(Specified_kfep_main_filename_qm, Qspecified_kfep_main_filename_qm);
+DECLARE_VARIABLE_WITH_SYMBOL(Unicode_to_jis_x_0208_map, Qunicode_to_jis_x_0208_map);
+extern Object Width_for_prominent_notification_workspaces;
