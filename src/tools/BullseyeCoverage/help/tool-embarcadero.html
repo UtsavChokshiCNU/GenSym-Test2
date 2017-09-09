@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_platform.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>Embarcadero C++Builder</h1>
+<p>
+The Embarcadero C++Builder IDE cannot be configured to build using BullseyeCoverage.
+However, you can build from the command prompt using a script as described below.
+This information applies to Embarcadero C++Builder 2010.
+
+<h2>Convert Project to a Script</h2>
+<p>
+These steps show how to convert an IDE project to a script.
+To make sure the conversion is correct, do not enable BullseyeCoverage until you have the script working. 
+<ol>
+<li>
+From the <code>Start</code> menu, choose <code>Programs</code>, then <code>Embarcadero RAD Studio</code>, then <code>RAD Studio Command Prompt</code>.
+<p>
+<li>
+Run <code>msbuild</code> to obtain a log containing the compile and link commands.
+<pre>
+msbuild <i>project</i>.cbproj /t:Rebuild >log.txt
+</pre>
+<li>
+Extract the compile and link command lines from the log.
+These lines begin with <code>C:\Program Files\Embarcadero\</code>.
+You can use the windows <code>find</code> command to extract these lines as shown below. 
+<pre>
+c:\windows\system32\find " C:\Program Files\Embarcadero\" &lt;log.txt &gt;build.bat
+</pre>
+<p>
+The command above is run with the <code>cmd.exe</code> console shell.
+Note that the quotes <code>"</code> are part of the <code>find</code> command syntax.
+<p>
+<li>
+Using an editor, modify <code>build.bat</code> to change all invocations of the compiler and linker from absolute to relative.
+For example, remove the lined-through text below. 
+<pre>
+<span style=text-decoration:line-through>C:\Program Files\Embarcadero\RAD Studio\7.0\bin\</span>bcc32.exe -D_DEBUG <i>...</i>
+<span style=text-decoration:line-through>C:\Program Files\Embarcadero\RAD Studio\7.0\bin\</span>ilink32.exe -L<i>...</i>
+</pre>
+<p>
+<li>
+Invoke <code>build.bat</code> to verify you can build your project.
+<pre>
+.\build.bat
+</pre>
+</ol>
+
+<h2>Build Project</h2>
+<p>
+Make sure the <i>BullseyeCoverage</i><code>/bin</code> is first in the PATH environment variable.
+Enable coverage and run the script.
+<pre>
+set PATH=%ProgramFiles%\BullseyeCoverage\bin;%PATH%
+cov01 -1
+.\build.bat
+</pre>
+
+<p style="font-size:xx-small">
+Last reviewed: 8 Sep 2009
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
