@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="01/11/02 11:08:09">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Creating a Custom Probe</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="customa2.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="customa4.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/ReThink/custom-manual/stylesets/Customizing%20ReThink/Output/html/customig.htm">  
+        Customizing Instruments  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Creating a Custom Probe
+</h2>
+<p>Suppose you want to create a custom probe that signals an alarm when a value exceeds a threshold. When the value exceeds a threshold, the probe pauses the simulation, displays a message to the user, and displays an arrow next to the probe. This probe is similar to a Sample Value probe because it must obtain a value from the model. <a name="17329"></a></p>
+<p>For general information on how to customize the behavior of instruments, see <a href="how-to22.htm#15859">Customizing the Default Behavior of Blocks or Instruments</a>.<a name="14586"></a></p>
+<h4 >	 To create a probe that signals an alarm when a value exceeds a threshold:<a name="14590"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>1	</b></td>    <td valign="top" width="580">Create a subclass of <code>bpr-sample-probe</code>, the probe subclass most similar to the custom probe.<a name="14591"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>2	</b></td>    <td valign="top" width="580">Edit the <code>class-name</code> to be a name that reflects the behavior of the new probe, such as <code>alarm-probe</code>. <a name="14592"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>3	</b></td>    <td valign="top" width="580">Assign the probe an attribute to store a threshold value.<a name="14593"></a></td>  </tr></table><blockquote>  <a name="14594">The class definition looks like this:</a></blockquote>
+<p >
+  <a name="14612"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="14597"><div >Attribute</a></div></th>
+    <th><a name="14599"><div >Value</a></div></th>
+  </tr>
+  <tr>
+    <td><code>class-name<a name="14601"> </a></code></blockquote></td>
+    <td><code>alarm-probe<a name="14603"> </a></code></blockquote></td>
+  </tr>
+  <tr>
+    <td><code>direct-superior-classes<a name="14605"> </a></code></blockquote></td>
+    <td><code>bpr-sample-probe<a name="14607"> </a></code></blockquote></td>
+  </tr>
+  <tr>
+    <td><code>class-specific-attributes<a name="14609"> </a></code></blockquote></td>
+    <td><code>threshold initially is 1.0<a name="14611"> </a></code></blockquote></td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<blockquote>  <a name="14616">The class-specific attribute appears on the User Tab of the properties dialog for the custom probe.</a></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>4	</b></td>    <td valign="top" width="580">To define the behavior of the custom probe, copy the <code>bpr-sample-probe::<br>bpr-stop-method,</code> the default stop method for a Sample Value probe, and modify the method:<a name="36132"></a></td>  </tr></table><blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>a	</b></td>    <td valign="top" width="560">Edit the first argument to the method to refer to the custom subclass.<a name="14617"></a></td>  </tr></table></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>b	</b></td>    <td valign="top" width="560">Delete the existing body of the method.<a name="14618"></a></td>  </tr></table></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>c	</b></td>    <td valign="top" width="560">Add a <code>call next method</code> statement to call the default stop method for the Sample Value probe at the beginning of the custom method.<a name="14619"></a></td>  </tr></table></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>d	</b></td>    <td valign="top" width="560">Edit the procedure to check if the probed value exceeds the threshold value, and, if so, pause the simulation, display a message to the user, and display an arrow next to the probe. <a name="14620"></a></td>  </tr></table></blockquote>
+<h6><b>Tip: </b>To pause the simulation and display an arrow next to the probe, use the ReThink 
+API procedures bpr-pause and bpr-indicate.
+<a name="14621"></a></h6><p>For information on these procedures, see <a href="api.htm#20761">Application Programmer's Interface</a>.<a name="23332"></a></p>
+<p>Here is the class definitions and stop method for the <code>alarm-probe</code>:<a name="14625"></a></p>
+<p >
+  <a name="14632"> </a>
+<div style="color: #000000;  font-size: 4pt; font-style: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: justify; text-decoration: none; text-indent: 0pt; text-transform: none; vertical-align: baseline">
+<a name="14631"> </a><div align="left"><img src="images/customb4.gif" border="0" hspace="0" vspace="0">
+</div><br>
+</div>
+
+
+
+</p>
+<h4 >	 To test the custom probe:<a name="14633"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>1	</b></td>    <td valign="top" width="580">Create a model with a Source block, Task block, and Sink block. <a name="14634"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>2	</b></td>    <td valign="top" width="580">Attach the alarm probe to the Task block.<a name="14635"></a></td>  </tr></table><blockquote>  <a name="14636">You can test the alarm by probing the <code>current-activities</code> of the Task block. The alarm signals when the number of concurrent activities of the block exceeds the threshold.</a></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>3	</b></td>    <td valign="top" width="580">On the User Tab of the custom probe, configure the Threshold, for example, <code>3</code>.<a name="14637"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>4	</b></td>    <td valign="top" width="580">Configure the Source Attribute Name of the probe to be <code>current-activities</code>.<a name="14638"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>5	</b></td>    <td valign="top" width="580">Configure the Apply to Class Name attribute of the probe to be <code>bpr-task</code>.<a name="14639"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>6	</b></td>    <td valign="top" width="580">Configure the duration of the Source block to be 1 hour.<a name="14640"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>7	</b></td>    <td valign="top" width="580">Configure the duration of the Task block to be 3 hours.<a name="14641"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>8	</b></td>    <td valign="top" width="580">Run the simulation.<a name="14642"></a></td>  </tr></table><p>When the value the probe receives exceeds the threshold, the simulation pauses, and ReThink notifies the operator and displays an arrow next to the probe:<a name="14643"></a></p>
+<p >
+  <a name="35559"> </a>
+<div style="color: #000000;  font-size: 4pt; font-style: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: justify; text-decoration: none; text-indent: 0pt; text-transform: none; vertical-align: baseline">
+<a name="35558"> </a><div align="left"><img src="images/customb5.gif" border="0" hspace="0" vspace="0">
+</div><br>
+</div>
+
+
+
+</p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="customa2.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="customa4.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
