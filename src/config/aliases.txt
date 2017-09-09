@@ -1,0 +1,140 @@
+#
+# Standard .aliases, to be sourced from .cshrc, for Gensym's Unix systems
+#
+
+# ALIASes
+
+alias f			finger
+alias h			history
+alias j			jobs
+
+alias ls	'ls -C'
+alias ll	'ls -CaF'
+alias dir	'ls -CalF'
+
+if ($machine =~ hp*) then
+	alias df 'bdf'
+	alias l50 'setenv LINES 50'
+else
+	alias l50 'stty rows 50'
+endif
+alias xs	'eval `resize` ; stty echoe ; stty susp ^\Z ; stty dsusp ^\Z'
+
+
+# The alias "listing" is useful for printing listings of computer, especially
+# Lisp, program listings.  It prints upright (portrait-style) with a 7-point
+# font, with a header at the top giving the file name, page number, date, etc.
+# It requires a filename argument, and it may take a -P<printer name> argument
+# in front of the filename argument. It is built on top of a2ps, which should
+# be accessible from every machine at Gensym (as of 7/19/93), and should have
+# a man page.
+#
+# Usage example:
+#
+# To print the file /home/mhd/lisp-init.lisp on the printer fiji, I would
+# type at the prompt (#):
+#
+#    # listing -Pfiji /home/mhd/lisp-init.lisp
+#
+# (MHD 7/19/93)
+
+if ( "$SPARC_TYPE" == "ultra" ) then
+  alias listing /gensym/bin/a2ps -F7 -ns -p
+  alias new-listing a2ps --columns=1 --portrait --fontsize=7 --media=Letter --borders=no
+else
+  alias listing a2ps -F7 -ns -p
+endif
+
+
+################################################################################
+# PROMPTS  -  assumes that this is a C shell.
+#
+if ($machine == 0) then
+  alias setprompt 'set prompt = "${user}:${hostname}:`echo $cwd `:\\!> "'
+else
+  alias setprompt 'set prompt = "${user}:${machine}:${hostname}:`echo $cwd `:\\!> "'
+endif
+alias cd      'cd \!* ; setprompt'
+alias chdir   'chdir \!* ; dirs ; setprompt'
+alias popd    'popd \!* ; setprompt'
+alias pushd   'pushd \!* ; setprompt'
+
+################################################################################
+
+# jh, 1/31/92 from man page for shelltool.  Other goodies are probably there.
+
+if ($machine == sun4 || $machine == sparcsol) then
+          # dynamically set the name stripe of the tool:
+          alias header 'echo -n "]l\!*\"'
+          # dynamically set the label on the icon:
+          alias iheader 'echo -n "]L\!*\"'
+
+          # dynamically set both the name stripe and the icon label:
+          alias allheader 'header \!* ; iheader \!*'
+
+          # dynamically set the image on the icon:
+          alias icon 'echo -n "]I\!*\"'
+
+          #dynamically iconize - for a good time, try iconize;sleep 3;uniconize
+          alias iconize 'echo -n "[2t"'
+          alias uniconize 'echo -n "[1t"'
+
+          alias nxemacs /usr/local/bin/xemacs
+
+# jh, 1/31/92.  Start up dbx on G2, only loading symbols from the specified modules.
+# If no modules are specified, then load all symbols.  Needs to be in g2dst-o to work
+# properly.  The .o suffixes are mandatory until we can make this alias smarter.
+# Example:
+#  dbxg2 f80.o f151.o
+# will only load the symbols from these two objects files (currently foreign and kb-load1).
+# jh, 2/5/92.  Also loads dbx-specific aliases from dbx.aliases.  Look in that file for
+# them; what they do should be fairly clear.
+          alias dbxg2 'echo "modules select \!*" > dbxinit.temp; echo "source dbx.aliases" >> dbxinit.temp ; dbx g2 -sr dbxinit.temp'
+endif
+
+
+
+alias sandbox     "set srcbx = \!:1; \\
+                   source ${SOURCE_HOME}/use-this-sandbox.txt"
+
+alias use-sandbox "set srcbx = \!:1; \\
+                   set suggested_repos = \!:2; \\
+                   source ${SOURCE_HOME}/use-this-sandbox.txt"
+
+alias usb         "set srcbx = \!:1; \\
+                   source ${SOURCE_HOME}/use-this-sandbox.txt"
+
+alias mrunmake    "${SOURCE_HOME}/sbrunmake /bt/\!:1 /bt/\!:1 \!:2*"
+
+
+# A few more useful aliases:  (started by MHD, 9/10/93)
+
+if ($machine == sparcsol) then
+  alias helpdesk '(cd /gensym/ut/tw-test; tw helpdesk 1300 -background /home/ab/bug.xbm)'
+else
+  alias helpdesk '(cd /gensym/ut/tw-shipping ; tw helpdesk 1300)'
+endif
+
+
+# When connecting to Gensym through the VPN, you are assigned an IP address of
+# the form 172.16.19.x.  Actually, ipconfig doesn't seem to be able to tell you
+# this address, but you can just bring up the window for the Cisco VPN dialer
+# and find it there.  The alias "homepc" makes it easier to use your home PC as
+# an X server.  Call it, from a Unix shell, with the last component of your IP
+# address as an argument, and it sets your DISPLAY to your home machine.  So, if
+# your IP is 172.16.19.12, and you are running an X server on your PC, you can
+# telnet to a Unix machine, and then just say, "homepc 12", then run xterm or
+# xemacs or whatever, and it will connect to your machine.
+
+alias homepc 'setenv VPNIP 172.16.19.\!:1; setenv DISPLAY "${VPNIP}:0.0"'
+
+# Grep for Lisp Symbol (more descriptive of what it actually does).
+alias gls /home/ab/scripts/grep-for-lisp-symbol
+
+# Run the lucid which lemacs usually runs.
+if ($machine == sparcsol) alias lucid /home/lucid/liquid50/lisp-clos-50
+if ($machine == sun4) alias lucid /home/lucid/lucid41/lisp-clos-411
+
+# For ease of use in build and porting environments
+alias sms source /home/mes/.mesrc
+alias yduj source /home/yduj/.ydujextracshrc
