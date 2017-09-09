@@ -1,0 +1,58 @@
+Known Bugs in G2 WebLink
+************************
+
+See also: @l("home.htm", G2 Link Homepage)
+
+________________________________________________________________________________
+
+
+Tendering URLs
+--------------
+
+If you tender a URL with a procedure P in G2 and P is unavailable when
+the user requests the URL the bridge will report and error and then shutdown.
+The most common senario where this arises is when P is inactive and has
+notes because it was just revised.
+
+Netscape problem with Single Line Resources
+-------------------------------------------
+
+Some Browsers, Netscape Navigator 2.0 for example, will report that
+they recieved no data if they fetch a text resource containing no
+line terminators at all.  It is easy to work around the problem
+making sure your resources have more than one line in them.
+
+
+Post Method
+-----------
+
+The HTTP protocol is usually used to "get" resources.  It may also be used
+to "post" resources.  Posting is not currently supported.
+
+G2 problems with Images
+-----------------------
+
+G2 doesn't like interlaced GIF files.  G2 doesn't like JPEG files.
+
+G2 problem with Drawing Parameters
+----------------------------------
+
+Do not set the drawing pallet in drawing parameters to custom colors
+from a particular image-definition when that image-definition has
+notes.  If you do the drawing parameters will become inactive and
+you will have to restart to clear that state.
+
+Cache Refresh
+-------------
+
+The bridge currently does not check that cache entries are uptodate.
+For example if you fetch the a resource once the cache entry will
+be returned from then on.  You can workaround this problem by
+setting the fetch style to ignore the cache.
+
+
+Cache Overflow
+--------------
+
+The cache is not currently flushed to clear old entries.
+
