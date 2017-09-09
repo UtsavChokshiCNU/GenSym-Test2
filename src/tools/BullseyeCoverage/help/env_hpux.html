@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_platform.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>HP-UX</h1>
+<p>
+BullseyeCoverage supports HP-UX 11.0 and later.
+<h2>PARISC 32-bit Shared Objects</h2>
+<p>
+The patches listed below are required for measuring coverage of PARISC 32-bit shared objects.
+<p>
+<table border=1>
+<tr><th>OS revision<th>Required patches
+<tr><td>11.23
+<td>
+<a href="http://www2.itrc.hp.com/service/patch/patchDetail.do?patchid=PHSS_35978">PHSS_35978</a>
+s700_800 11.23 aC++ Runtime
+<tr><td rowspan=2>11.11
+<td>
+<a href="http://www2.itrc.hp.com/service/patch/patchDetail.do?patchid=PHSS_33945">PHSS_33945</a>
+s700_800 11.11 HP aC++ -AA runtime libraries
+<tr><td>
+<a href="http://www2.itrc.hp.com/service/patch/patchDetail.do?patchid=PHSS_35381">PHSS_35381</a>
+s700_800 11.11 ld(1) and linker tools cumulative patch
+<tr><td rowspan=2>11.0
+<td>
+<a href="http://www2.itrc.hp.com/service/patch/patchDetail.do?patchid=PHSS_33943">PHSS_33943</a>
+s700_800 11.x HP aC++ -AA runtime libraries
+<tr><td>
+<a href="http://www2.itrc.hp.com/service/patch/patchDetail.do?patchid=PHSS_35380">PHSS_35380</a>
+s700_800 11.00 ld(1) and linker tools cumulative patch
+</table>
+<h2>Kernel</h2>
+<p>
+BullseyeCoverage supports measuring coverage of the HP-UX kernel.
+<ol>
+<li>
+Enable <a href=build_coverageBuild.html>coverage build</a>
+and build as usual.
+<li>
+Link with one of the libraries listed below.
+<ul>
+<li><code>libcov-hpKernel-ia64.a</code>.
+<li><code>libcov-hpKernel-pa64.a</code>.
+</ul>
+<li>
+After testing your kernel code, run the command listed below
+to save coverage measurements from memory to the coverage file.
+Use the command corresponding to the libraries listed above.
+<ul>
+<li><code>covgetkernel-ia64</code>
+<li><code>covgetkernel-pa64</code>
+</ul>
+<li>
+View a <a href=index_report.html>coverage report</a> as usual.
+</ol>
+<p>
+Environment variable
+<a href="ref_environment.html#COVAUTOSAVE">COVAUTOSAVE</a>
+has no effect.
+
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
