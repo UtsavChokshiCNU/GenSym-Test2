@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_platform.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+FreeBSD Kernel
+</h1>
+<p>
+BullseyeCoverage supports measuring coverage of the FreeBSD kernel
+and kernel modules.
+However, the module exit function <code>_fini</code> cannot be measured.
+This documentation was verified using FreeBSD 7.1.
+<h2>Build Procedure</h2>
+<ol>
+<li>
+Modify <code>/usr/src/Makefile</code> to add <i>BullseyeCoverage</i><code>/bin</code> to the front of <code>PATH</code>.
+For example:
+<pre>
+PATH=/opt/BullseyeCoverage/bin:/sbin:/bin:/usr/sbin:/usr/bin
+</pre>
+<li>
+If you instrument the kernel image, modify <code>/usr/src/sys/conf/kern.pre.mk</code> to add <code>libcov-kernel.a</code> to <code>SYSTEM_LD</code>.
+<pre>
+SYSTEM_LD= ... /opt/BullseyeCoverage/lib/libcov-kernel.a
+</pre>
+<li>
+For a module, if you build with a makefile that includes
+<a href="http://www.freebsd.org/doc/en_US.ISO8859-1/books/arch-handbook/driverbasics-kld.html#AEN8661">bsd.kmod.mk</a>,
+add the lines shown underlined below to your makefile.
+<pre>
+SRCS=skeleton.c
+KMOD=skeleton
+<span style="text-decoration:underline">EXPORT_SYMS=cov_array</span>
+.include &lt;bsd.kmod.mk&gt;
+<span style="text-decoration:underline">OBJS+=<i>BullseyeCoverage</i>/lib/libcov-kernel.a</span>
+</pre>
+<li>
+Enable <a href=build_coverageBuild.html>coverage build</a>
+and build as usual.
+<li>
+After testing your kernel code, run the command <a href=ref_covgetkernel.html>covgetkernel</a>
+to save coverage measurements from memory to the coverage file.
+<li>
+View a <a href=index_report.html>coverage report</a> as usual.
+</ol>
+<h2>Notes</h2>
+<p>
+Environment variable
+<a href="ref_environment.html#COVAUTOSAVE">COVAUTOSAVE</a>
+has no effect.
+<p>
+You cannot use <code>covgetkernel</code> after unloading a module that
+was instrumented for coverage measurement.
+<p style="font-size:xx-small">
+Last reviewed: 5 Mar 2009
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
