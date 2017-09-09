@@ -1,0 +1,70 @@
+<HTML>
+<TITLE>Gensym Workspace View Control Example</TITLE>
+<BODY BGCOLOR="#b9eeb9">
+
+<CENTER><H1>Gensym Workspace View Control Example</H1></CENTER>
+
+This example demonstrates the use of <b><i>workspace view controls</i></b>.<P>
+
+<HR>
+
+<P>
+<!-- Users must have the Workspace View Control 1.0r0 installed on their machine
+     for the following to work.
+  -->
+
+<!-- Begin Gensym code -->
+<OBJECT CLASSID="clsid:AC4C85D0-B16C-11d1-A718-006008C5F933" ID=Gateway1>
+</OBJECT>
+
+<OBJECT CLASSID="clsid:A02C8A0F-46E9-450f-B173-FBC85F1F5E91"
+        ID=WorkstationView1 HEIGHT=300 WIDTH=325 HSPACE=85>
+</OBJECT>
+<P>
+<br>
+
+<OBJECT CLASSID="clsid:A02C8A0F-46E9-450f-B173-FBC85F1F5E91"
+        ID=WorkstationView2 HEIGHT=650 WIDTH=550 HSPACE=320>
+</OBJECT>
+
+<SCRIPT LANGUAGE=VBScript>
+Gateway1.G2Location = "localhost:1112"
+
+WorkstationView1.WorkspaceName = "ACTIVEX-DEMO-WS"
+WorkstationView2.WorkspaceUUID = "98136ed72a6211d68ff80080e9028c67"
+
+WorkstationView1.ConnectToG2Gateway(Gateway1)
+WorkstationView2.ConnectToG2Gateway(Gateway1)
+</SCRIPT>
+<!-- End TW code -->
+
+<P>Notes/requirements:
+
+<ul>
+
+<li>In this example, the (invisible) G2 ActiveX Link control connects to host
+"<b>localhost</b>" at TCP/IP port <b>1112</b>.  The workspace view controls each
+use the G2Gateway object to help them communicate with G2.  Before running this
+example, you should run G2 on the same computer as your browser.  Make sure G2
+uses port 1112. You can see which port is being used by running the command
+<i>Main Menu</i> -> <i>Miscellany</i> -> <i>Network Info</i>.  Alternatively,
+change the host and port settings specified in the VB Script code in this HTML
+document so that they specify the desired G2 host and port.
+
+<li>The WorkspaceView example kb should be loaded into G2 prior to viewing this
+example web page.  That KB contains the two workspaces that are to be called up
+in this example.
+
+<li>This example uses ActiveX, and therefore needs to run on
+Microsoft's Internet Explorer web browser.
+
+</ul>
+
+Other useful links:
+<UL>
+<LI><A HREF="http://www.gensym.com">Gensym Home Page</A>
+<LI><A HREF="http://www.gensym-support.com">Gensym Support</A><P>
+</UL>
+
+</BODY>
+</HTML>
