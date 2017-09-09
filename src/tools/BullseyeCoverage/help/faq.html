@@ -1,0 +1,306 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_faq.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+Frequently Asked Questions
+</h1>
+<hr>
+<h2>
+<a name=1></a>
+How do I interpret condition/decision coverage numbers?</h2>
+<p>
+The condition/decision coverage number is the sum of the following.
+<ul>
+<li>The number of true/false outcomes of each condition and each decision
+<li>The number of switch labels selected
+<li>The number of C++ try-blocks that finished with no exception
+<li>The number of C++ catch clauses entered
+</ul>
+<p>
+The condition/decision coverage percentage is the ratio of the number of
+events described above divided by the total possible.
+<p>
+Because conditions are always contained within decisions, there is some
+overlap in the measurement which may result in larger numbers than you
+might expect.
+For example,
+consider the code fragment below.
+<pre>
+if (a &amp;&amp; b)
+</pre>
+<p>
+BullseyeCoverage reports coverage as <i>n</i>/6 although only 3 possible
+combinations of <code>a</code> and <code>b</code> exist.
+Condition/decision coverage counts the two possible outcomes (true and
+false) for each of <code>a</code>, <code>b</code>, and the overall
+decision outcome, for a total of 6 possible events.
+<p>
+If the first test case you choose to exercise this fragment is
+<code>a</code> = false, the condition/decision coverage is 2/6=33%
+(<code>a</code> = false, <code>b</code> not evaluated, and decision
+outcome false).
+However if the first test case you choose is <code>a</code> = true
+<code>b</code> = false, the condition/decision coverage is 3/6=50%.
+Condition/decision coverage reports lower coverage when <code>b</code>
+is not evaluated.
+<p>
+For a detailed discussion of condition/decision coverage and other coverage
+measures, see
+<a href="http://www.bullseye.com/coverage.html">www.bullseye.com/coverage.html</a>.
+<hr>
+<h2>
+<a name=3></a>
+How do I merge coverage files?</h2>
+<p>
+You can merge coverage files that created in the same directory and refer to the same versions of source files.
+You can do this with:
+<ul>
+<li> with the
+<a href=coverageBrowser.html>Coverage Browser</a>
+command <code>File Insert</code>, or
+<li> with the command line program
+<a href=ref_covmerge.html>covmerge</a>.
+</ul>
+<p>
+For example, to use covmerge to merge two files into a new file you can use
+the command below.
+<pre>
+covmerge -c -f output.cov input1.cov input2.cov
+</pre>
+<hr>
+<h2>
+<a name=4></a>
+How do I compare coverage files?</h2>
+<p>
+You can compare coverage files by generating text reports from the
+coverage files and then using a text file comparator such as Unix-style
+<code>diff</code> or the Windows <code>fc.exe</code>.
+When generating the text reports, sort by region name to minimize differences.
+<p>
+You can compare the coverage of two coverage files by directory using
+the commands below.
+<pre>
+covdir --by-name -f file1.cov >file1.txt
+covdir --by-name -f file2.cov >file2.txt
+diff file1.txt file2.txt
+</pre>
+<hr>
+<h2>
+<a name=5></a>
+How do I export coverage data?</h2>
+<ul>
+<li>The Coverage Browser menu command <code>File Export as XML</code>
+<li>The Coverage Browser menu command <code>Edit Copy</code>.
+To copy all coverage measurements, follow these steps:
+<ol>
+<li>From the <code>View</code> menu, choose the <code>Queries</code> command
+<li>Select the query named <code>all regions</code>
+<li>Press the tab key to move the focus to the right-side pane
+<li>From the <code>Edit</code> menu, choose <code>Select All</code>
+<li>From the <code>Edit</code> menu, choose <code>Copy</code>
+<li>In the destination program, use <code>Edit Paste</code>
+</ol>
+<li>The Coverage Browser menu command <code>File Save View as HTML</code>.
+To save all coverage measurements, follow these steps:
+<ol>
+<li>From the <code>View</code> menu, choose the <code>Queries</code> command
+<li>Select the query named <code>all regions</code>
+<li>From the <code>File</code> menu, choose <code>Save View as HTML</code>
+</ol>
+<li>The <a href=ref-covxml.html>covxml</a> command
+<li>
+Use option <code>--csv</code> with <a href=ref_covbr.html>covbr</a>,
+<a href=ref_summary.html>covclass, covdir, covfn, or covsrc</a>
+</ul>
+<p>
+The Coverage Browser command <code>Edit Copy</code>
+uses HTML format and rich text format (RTF) as well as plain text format
+to preserve graphics and formatting.
+<p>
+To export coverage data at the command line, you must use the command shell
+redirection syntax <code>&gt;</code>.  For example,
+<pre>
+covfn --base --by-name --csv >functionReport.txt
+</pre>
+<hr>
+<h2>
+<a name=7></a>
+Can BullseyeCoverage measure statement coverage?</h2>
+<p>
+No.
+See also <a href="http://www.bullseye.com/statementCoverage.html">What is Wrong with Statement Coverage</a>.
+<hr>
+<h2>
+<a name=8></a>
+How are C++ templates handled?</h2>
+<p>
+BullseyeCoverage measures coverage in template functions the same way as regular functions.
+Coverage is measured by instrumenting the source code.
+Therefore, all template coverage in all instantiations is combined and reported together.
+<hr>
+<h2>
+<a name=9></a>
+How are macros handled?</h2>
+<p>
+By default, BullseyeCoverage does not instrument code resulting from macro expansions.
+You can enable instrumentation of macro expansions with
+<a href=ref_covc.html>covc</a>
+option <code>--macro</code>.
+<p>
+The rationale for not measuring macro expansions is that macros often contain logic
+that is impossible to fully cover at every invocation.
+These impossible paths add up quickly with each invocation, producing a large
+amount of unreachable code that overwhelms coverage measurements of the
+surrounding code.
+<p>
+We recommend using inline functions rather than macros where possible.
+<hr>
+<h2>
+<a name=10></a>
+Does BullseyeCoverage work with Xoreax IncrediBuild?</h2>
+<p>
+Xoreax IncrediBuild 3.10 and later is compatible with BullseyeCoverage.
+Xoreax achieved compatibility with BullseyeCoverage by building non-distributed when BullseyeCoverage is enabled.
+<hr>
+<h2>
+<a name=11></a>
+Can BullseyeCoverage be qualified for DO-178B?</h2>
+<p>
+Bullseye Testing Technology has partnered with
+the aviation verification services firm
+<a href="http://www.certtech.com/">CertTech</a>
+to provide qualification support for FAA Order 8110.49 / RTCA DO-178B.
+<p>
+The coverage measurement provided by BullseyeCoverage meets the DO-178B requirements.
+For level C, DO-178B requires statement coverage.
+BullseyeCoverage does not measure statement coverage,
+however if you achieve full decision or condition/decision coverage
+and your code does not use any facility that might interrupt execution before the end of a basic block, such as
+exception handling,
+then all statements are covered.
+For level B, DO-178B requires decision coverage and statement coverage.
+BullseyeCoverage can report decision coverage directly.
+For level A, DO-178B requires MC/DC and statement coverage.
+BullseyeCoverage measures condition/decision coverage, which is equivalent to MC/DC for C and C++.
+<p>
+For C and C++, MC/DC is equivalent to condition/decision coverage.
+This is because C and C++ use short circuit logical operators.
+The definition of MC/DC implies that a truth table report is required,
+but full condition/decision coverage is achieved by the same tests as full MC/DC
+for C and C++.
+MC/DC was created with languages such as Ada in mind that have logical operators
+that do not short-circuit (in addition to those that do short-circuit).
+The "modified" part of MC/DC is focused on reducing the exponential number of
+tests required for very complex Boolean expressions using non-short circuit
+operators.
+But by definition short circuit operators never evaluation a condition if it
+does not affect the decision outcome.
+If you only use short-circuit operators, and you exercise all conditions, you
+must have demonstrated that they affect the decision outcome.
+
+<hr>
+<h2>
+<a name=2></a>
+Can BullseyeCoverage output HTML?</h2>
+<p>
+BullseyeCoverage can create simple HTML reports with the <a href=coverageBrowser.html>Coverage Browser</a>
+menu command <code>File Save View as HTML</code>
+and with the command line report programs <a href=ref_summary.html>covclass, covdir, covfn, covsrc</a> and
+<a href=ref_covbr.html>covbr</a> option <code>--html</code>.
+The resulting HTML has no links and is intended for taking a static snapshot.
+To browse the coverage information dynamically requires using the Coverage Browser,
+which has many options for sorting, navigating and searching.
+
+<hr>
+<h2>
+<a name=12></a>
+Can the Coverage Browser save an HTML report containing everything?</h2>
+<p>
+Yes.
+Use the menu command <code>View Queries</code> and enable the query named <code>all regions</code>.
+Then use <code>File Save View as HTML</code>.
+
+<hr>
+<h2>
+<a name=13></a>
+Does BullseyeCoverage support C++/CLI?</h2>
+<p>
+Yes, we support Microsoft C++ option <code>/clr</code> (native mode).
+However we cannot support <code>/clr:pure</code> and <code>/clr:safe</code> (MSIL mode)
+because those options do not allow our run-time to record the coverage due to security restrictions.
+When BullseyeCoverage is invoked with <code>/clr:pure</code> or <code>/clr:safe</code>,
+it changes the option to <code>/clr</code>.
+BullseyeCoverage does not instrument the <code>for each</code> statement, event definitions, or
+property definitions.
+
+<hr>
+<h2>
+<a name=14></a>
+Does BullseyeCoverage support Keil uVision?</h2>
+<p>
+No, the Keil uVision IDE (v3.62c) does not provide a way for BullseyeCoverage to
+intercept compile commands.  Additionally, Keil uVision does not provide a way
+to view standard output and standard error diagnostic messages.
+
+<hr>
+<h2>
+<a name=15></a>
+Can I disable measurement of switch default labels?</h2>
+<p>
+BullseyeCoverage has neither an option
+to exclude measurement of <code>switch</code>
+statement <code>default</code> labels,
+nor exclude the branch that occurs when
+there is no <code>default</code> label and
+the controlling expression matches no <code>case</code> expression.
+Although many <code>switch</code> statements are written so that these branches are purposely unreachable,
+BullseyeCoverage cannot gauge their importance.
+We will not add an option to ignore these branches because the purpose of BullseyeCoverage is to find unreached branches.
+<p>
+You can exclude switch <code>default</code> labels by inserting BullseyeCoverage pragma directives.
+For example:
+<pre>
+switch (expr) {
+case <i>...</i>
+case <i>...</i>
+<i>...</i>
+#pragma BullseyeCoverage save off
+}
+#pragma BullseyeCoverage restore
+</pre>
+
+<p style="font-size:xx-small">
+Last reviewed: 9 Dec 2009
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
