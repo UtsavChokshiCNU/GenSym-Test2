@@ -1,0 +1,50 @@
+#!/bin/csh
+
+# the purpose of this script is to apply except to the build process to ensure
+# that UNIX permissions are correct on UNIX scripts
+
+# also, fix the promote script.
+
+# Requires:  SRCBOX set and one parameter:  version ID.
+
+if ( ! $?SRCBOX ) then
+  echo SRCBOX not set!
+  exit 1
+endif
+
+if ($#argv < 1) then
+  echo No version argument supplied!  
+  echo Example usage:  fixupbuild 20r0
+  exit 1
+endif
+
+if (! -d ${SRCBOX}/g2i/builds/g2i-$1 ) then
+  echo No preexisting build in ${SRCBOX}/g2i/builds/g2i-$1
+  exit 1
+endif
+
+cd ${SRCBOX}/g2i/builds/g2i-$1/iship
+
+foreach file (*/intelnt/bin/*.bat)
+  unix2dos $file $file
+end
+
+chmod 755 */*/bin/start*
+chmod 755 sockman/*/bin/socketmanager
+
+dos2unix script-to-promote-to-iship script-to-promote-to-iship
+
+
+if ( -e ${SRCBOX}/build/build-date ) then
+  set build_date=`$SRCBOX/build/build-date`
+else
+  set build_date=`/bt/ab/build/build-date`
+endif
+
+sed s/\$/-$build_date/ script-to-promote-to-iship > /tmp/tmp-g2i$$
+
+mv /tmp/tmp-g2i$$ script-to-promote-to-iship
+
+chmod 775 script-to-promote-to-iship
+
+echo chmodded unix startup scripts and dos2unix-d promote scripts in ${cwd}
