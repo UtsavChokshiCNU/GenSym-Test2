@@ -1,0 +1,100 @@
+G2 Benchmarks
+- cpm, 10/31/95
+
+This directory contains files used to run G2, GSI, and other benchmarks.  Note
+that other files (e.g. basetime and GSI C files) are in other directories, as
+described below.
+
+
+Note that other benchmark-related information (spreadsheet results, reports,
+charts, instructions, etc.) is currently stored on the development Macintosh
+fileserver.
+
+
+Running New Benchmarks:
+
+When benchmarks are run on new platforms or new versions of G2, the results
+should be stored in the benchmark spreadsheets (mentioned above).
+
+
+Types of Benchmarks:
+
+0. Benchmark Versions
+
+Note that most of the benchmarks are organized by version of G2 or GSI
+(exceptions are the basetime test).  Currently, these directories are:
+
+  /bt/ab/tests/bench/bench-2-1
+  /bt/ab/tests/bench/bench-3-0
+  /bt/ab/tests/bench/bench-4-0
+  /bt/ab/tests/bench/gsi-2-1
+  /bt/ab/tests/bench/gsi-3-0
+  /bt/ab/tests/bench/gsi-4-0
+
+Also, note that the currently, main G2 benchmark, G2-BENCH.KB is located in
+/bt/ab/tests and not in a /bt/ab/tests/bench subdirectory.
+
+1. G2 Benchmark
+
+The current, main G2 benchmark (benchmark of rules, procedure, actions, etc.)
+is located in /bt/ab/tests/g2-bench.kb
+
+If there are changes to the KB that prevent it from being backward compatible,
+then an archive should be placed in the /bt/ab/tests/bench/bench-<version>.
+Currently, there are archives in bench/bench-2-1 and bench-3-0.
+
+Putting g2-bench.kb in this location was necessary so that the currently G2
+benchmark is available in the same directory as the regression tests and so that
+there is only one copy of this benchmark KB.
+
+Note that g2-bench.kb is now modularized and requires ts-driver.kb.
+
+2. GSI benchmarks
+   /bt/ab/gsi/c/gsi_bench.c	- GSI 4.0 Benchmark bridge
+   /bt/ab/ext/c/gsi_bench.c	- GSI 3.2 Benchmark bridge
+   /bt/ab/ext/c/gsi_benchmark.c	- GSI pre-3.2 (3.0?) Benchmark bridge
+
+   Note that the corresponding KB is in either:
+   /bt/ab/tests/bench/gsi-3-0/
+   /bt/ab/tests/bench/gsi-4-0/
+
+   Note that the GSI benchmark bridges are now compiled as part of the G2/GSI
+   builds.  See gsi/opt for the GSI 4.0 benchmark bridge executable.
+
+3. Load/Save KB
+
+4. Simulator
+
+5. RPC (remote procedure calls) between two G2's
+
+6. Basetime - C program, which measures machine speed.
+
+   Benchmark C arithmetic operations and pointer following.
+   Provides a measure of machine speed.
+   Used in computing a "quality of port" measurement.
+
+   See /bt/ab/ext/c/basetime.c and /bt/ab/ext/opt/basetime.
+
+   Note that the basetime benchmark is now compiled as part of the G2
+   builds.  The name of the executable is ext/opt/basetime.
+
+7. basetime.lisp
+   Benchmark Lisp arithmetic operations and pointer following.
+   Provides a measure of machine speed.
+
+8. sim-new.kb
+   Simulator benchmark, modified generic-simulation-formulas.
+   The results of sim-new.kb are currently *not used* in the benchmark reports.
+
+
+Notes:
+
+1. Note that the benchmark files originally lived on MA (a lispm).  These
+  were moved off of MA on 3/30/94 and checked into the CVS sandbox.  The
+  file names have changed to, in many cases, fit within an eight character file
+  name limit (not counting the file extension).
+   Also, note that some of these files have been removed from CVS and are now
+  only accesible from the CVS "attic", if necessary.  These files have either
+  been renamed or removed because the files are obsolete.  For example, there
+  were several versions of the G2 benchmark KB, depending on what version of G2
+  it ran in and whether it could run stand-alone.
