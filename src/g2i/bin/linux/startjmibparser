@@ -1,0 +1,21 @@
+#!/bin/csh -f
+
+# If the following command does not contain the expanded G2 install home, then a problem 
+# occurred with the installer, and you should edit it to create the proper value
+setenv G2_HOME %ROOTDIR%
+
+setenv JAVA_HOME ${G2_HOME}/jre
+setenv JAVALINK_HOME ${G2_HOME}/javalink
+
+setenv PATH ${JAVA_HOME}/bin:${JAVALINK_HOME}/bin:${PATH}
+
+setenv JAVALINK_CLASSPATH ${JAVALINK_HOME}/classes/core.jar:${JAVALINK_HOME}/classes/javalink.jar:${JAVALINK_HOME}/classes/classtools.jar:${JAVALINK_HOME}/classes
+
+if ( $?CLASSPATH ) then
+  setenv CLASSPATH ${JAVALINK_CLASSPATH}:.:${G2_HOME}/g2mibparser/classes:${G2_HOME}/g2mibparser/classes/jmibparser.jar:${G2_HOME}/g2mibparser/classes/AdventNetSnmpLLAPI.jar:${G2_HOME}/g2mibparser/classes/AdventNetSnmpHLAPI.jar:${G2_HOME}/g2mibparser/classes/MibBrowser.jar:${CLASSPATH}
+else
+  setenv CLASSPATH ${JAVALINK_CLASSPATH}:.:${G2_HOME}/g2mibparser/classes:${G2_HOME}/g2mibparser/classes/jmibparser.jar:${G2_HOME}/g2mibparser/classes/AdventNetSnmpLLAPI.jar:${G2_HOME}/g2mibparser/classes/AdventNetSnmpHLAPI.jar:${G2_HOME}/g2mibparser/classes/MibBrowser.jar
+endif
+
+echo Starting JMibParser...
+java -Djava.library.path=${JAVALINK_HOME}/bin com.gensym.JMibParser.JMibParser -port 22090 -debug 6 $*
