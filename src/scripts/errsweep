@@ -1,0 +1,47 @@
+#!/bin/sh
+# Usage: errsweep { -init | -finish | <filename> }
+#   options:
+#     -init:   remove errors.log, current.log and any file referenced by it
+#     -finish: add contents of current.log to errors.log and remove current.log
+#     <filename>:  see description below
+#
+#   This script monitors errors encountered during makefile target creation
+# and removes potentially malformed files.  The script proceeds in two stages.
+#   As each target in the makefile is processed, the target is "registered" by
+# calling this script, which stores its name, <filename>, in current.log in
+# the current directory.  When target creation is complete, the makefile
+# removes current.log.  If target creation fails, current.log is not removed,
+# thereby indicating an error in target creation.
+#   This script first checks for previous errors by looking for current.log,
+# and if found, adds the file named in it to errors.log and deletes
+# current.log.  errors.log provides a convenient list of files that
+# had creation errors.
+#   A makefile should call errsweep -init initially and errsweep -finish
+# just before completion.
+
+if [ $# != 1 ]; then
+	echo "error: usage: errsweep {-init | -finish | <filename>}"
+fi
+
+  # If current.log exists, it contains the name of an erroneous file, so
+  # store the name and remove both the file and current.log.
+if [ -f current.log ]; then         # Existence indicates previous error.
+    filename=`head -1 current.log`  # Get filename currently in <status-file>.
+    echo "$filename: `date`" >> errors.log
+    if [ -f "$filename" ]; then
+        rm $filename
+    fi
+    rm -f current.log
+fi
+
+if [ "$1" = "-init" ]; then
+    if [ -f errors.log ]; then
+        rm -f errors.log
+    fi
+    exit 0;
+fi
+
+  # if -finish option is given we're done, otherwise store the file name
+if [ "$1" != "-finish" ]; then
+    echo $1 > current.log           # Store name of file being created.
+fi
