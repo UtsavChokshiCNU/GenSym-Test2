@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="02/06/02 18:38:40">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Configuring Source Category Parameters: Consumer Role</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="level2t2.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="level2t4.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+      <div align="center"><b>e-SCOR Tutorials</b></div>
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/e-SCOR/OnlineHelpFiles/Tutorials/html/level2tu.htm">  
+        Configuring Level 2 SCOR: Simplest Model  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Configuring Source Category Parameters: Consumer Role
+</h2>
+<p>The Source category of a role is responsible for placing orders with upstream suppliers for source products, receiving shipments from suppliers, and making payments to suppliers. You configure timing parameters related to receiving source products and placing them in inventory, and cost parameters related to creating orders, receiving shipments, and making payments.<a name="124113"></a></p>
+<p>Normally, when a role receives source products, it places them in inventory. However, a Consumer role does not keep an inventory; therefore, you do not configure the <b>Receive and Putaway Time</b> parameter for a Consumer role, which defines the time it takes to receive source products and place them in inventory.<a name="229280"></a></p>
+<p>Distributor and Manufacturer roles use source planning to determine the size of each replenishment order for source products and when to place an order, based on orders for its delivery products. However, because a Consumer role has no downstream buyers, it places orders for its source products, based on parameters that you configure in the Sc: Source Consumer category. You configure the Start Time and Stop Time, and the Order Period and Order Size for generating orders. <a name="125718"></a></p>
+<p>You configure the Order Period and Order Size parameters by using any one of a number of mathematical distributions. By default, you configure the Min, Mode, and Max of a random triangular distribution. If you have initial order demand data in tabular format, you can also configure these and other parameters through a Demand Input Report.<a name="291013"></a></p>
+<p>If the buyer role sources the same product from multiple upstream suppliers, you can also configure the Source category of the buyer role to choose suppliers, based on contracts. You configure the award criteria for choosing suppliers, the number of suppliers to choose, and timing parameters related to the length of the contract. In the simplest e-SCOR model, the Consumer role has a single upstream supplier, so contracts are not relevant.<a name="289622"></a></p>
+<p>Configure the Sc category so that it:<a name="228749"></a></p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Generates orders once a week, using a random exponential distribution.<a name="288959"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Generates orders for 10 product families, plus or minus 5 units, using the default start and stop times. <a name="228751"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Costs $10 to receive the product family, create an order, and make a payment.<a name="228752"></a></td>  </tr></table><h4 >	 To configure Source category parameters for the Consumer role:<a name="123723"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td valign="top" width="20"><img src="images/arrow1.gif"></td>
+    <td valign="top" width="580">Configure these parameters for the Sc: Source Consumer category on the Consumer role detail:<a name="144110"></a></td>
+  </tr>
+</table><p >
+  <a name="290780"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="290752"><div >Tab</a></div></th>
+    <th><a name="290754"><div >Group/Parameter</a></div></th>
+    <th><a name="290756"><div >Value</a></div></th>
+  </tr>
+  <tr>
+    <td><p>Order<a name="290758"></a></p>
+</td>
+    <td><p><a href="../../UsersGuide/html/level247.htm#296760">Order Period<br></a>   Mode Type<br>   Mean<a name="290761"></a></p>
+</td>
+    <td><p><code><br>Random-Exponential<br>1 week</code><a name="290763"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Order<a name="290765"></a></p>
+</td>
+    <td><p><a href="../../UsersGuide/html/level247.htm#296773">Order Size<br></a>   Mode Type<br>   Min<br>   Mode<br>   Max<a name="290768"></a></p>
+</td>
+    <td><p><code><br>Random-Triangular<br>5<br>10<br>15</code><a name="290770"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Cost<a name="290772"></a></p>
+</td>
+    <td><p>Costs per Transaction<br>   <a href="../../../UsersGuide/chapters/level2.htm#"Material Acquisition"">Product Acquisition<br></a>   <a href="../../UsersGuide/html/level247.htm#296821">Create Customer Order<br></a>   <a href="../../UsersGuide/html/level247.htm#296830">Supply Chain Finance</a><a name="290774"></a></p>
+</td>
+    <td><p><code><br>10<br>10<br>10</code><a name="290779"></a></p>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<p><b>Related help topics:</b><a name="314528"></a></p>
+<p><a href="../../UsersGuide/html/level241.htm#133337">Configuring the Source Category</a><a name="314532"></a></p>
+<p><a href="../../UsersGuide/html/level215.htm#376483">Configuring the Mathematical Distribution</a><a name="314536"></a></p>
+<p><a href="../../UsersGuide/html/level219.htm#273006">Configuring Initial Order Demand through a Report</a><a name="314540"></a></p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="level2t2.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="level2t4.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
