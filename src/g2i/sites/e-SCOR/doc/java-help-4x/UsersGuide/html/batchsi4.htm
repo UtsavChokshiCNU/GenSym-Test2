@@ -1,0 +1,47 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="02/06/02 18:48:39">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Determining the Impact of Seasonal Demand</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="batchsi3.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="batchsi5.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+      <div align="center"><b>e-SCOR User's Guide</b></div>
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/e-SCOR/OnlineHelpFiles/UsersGuide/html/batchsim.htm">  
+        Using the Scenario Manager  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Determining the Impact of Seasonal Demand
+</h2>
+<p>Suppose you want to model seasonal demand by increasing initial order demand during the course of the simulation, for example, during the holiday season.<a name="1007103"></a></p>
+<p>You could create a Simulation Manager that runs a single simulation for one year, where the Order Size and Order Period parameters of the Sc: Source Consumer category increase after 11 months (44 weeks) into the simulation, as this script shows:<a name="1007104"></a></p>
+<blockquote>  <a name="1007105"><code>select-scenario(scenario-1)<br>set-order-size-parameter(consumer,Sc: Source Consumer,<br>   triangular,10,15,20,0)<br>set-order-period-parameter(consumer,Sc: Source Consumer,<br>   triangular,6 days,7 days,8 days,0)<br>set-order-size-parameter(consumer,Sc: Source Consumer,<br>   triangular,15,20,25,44 weeks)<br>set-order-period-parameter(consumer,Sc: Source Consumer,<br>   triangular,4 days,5 days,6 days,44 weeks)<br>start-simulation(45 weeks)<br>wait-simulation<br>set-file-reporting(level 2 output,true,<br>   Level 2 Output Report 1.csv)<br>save-report(role-output)</code></a></blockquote> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="batchsi3.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="batchsi5.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
