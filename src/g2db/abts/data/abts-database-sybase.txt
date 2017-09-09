@@ -1,0 +1,856 @@
+#-------------------------------------------------------------
+#   AUTOMATED BRIDGE TESTING SYSTEM DATABASE
+#
+#   Target Database: SYBASE
+#
+#   Updated: 10 Feb 1999  3:57:00 p.m.
+#
+#-------------------------------------------------------------
+#
+
+X-ROWS-PROCESSED-NON-QUERY-TEST
+     abts_scratch
+     insert into abts_scratch (ename) values ('Zipperhead')
+
+X-DEFINE-SET-FETCH-SET-FETCH-BIND-TEST
+     select * from abts_emp where ename =?
+     SMITH
+     JONES
+
+X-DEFINE-SET-EXEC-SET-EXEC-SQL-OBJ-TEST
+     insert into abts_scratch (ename) values (?)
+     abts_emp_syb
+     ename
+     job
+
+X-DEFINE-SET-EXEC-SET-EXEC-SQL-TEST
+     insert into abts_scratch (ename) values (?)
+     Jones
+     Thomson
+
+X-LARGE-STRINGS-TEST
+     abts_scratch
+     insert into abts_scratch (message) values (?) 
+     111111111111111111111111111111
+     111111111111111111111111111111111111111111111111111111111111111111111111111111111
+     11111111111111111111111111111111111111111111111111111111111111111111111111111111 11111111111111111111111111111111111111111111111111111111111111111111111111111111 11111111111111111111111111111111111111111111111111111111111111111111111111111111 11111111111111111111111111111111111111111111111111111111111111111111111111111111 11111111111111111111111111111111111111111111111111111111111111111111111111111111 11111111111111111111111111111111111111111111111111111111111111111111111111111111 11111111111111111111111111111111111111111111111111111111111111111111111111111111 11111111111111111111111111111111111111111111111111111111111111111111111111111111 11111111111111111111111111111111111111111111111111111111111111111111111111111111 11111111111111111111111111111111111111111111111111111111111111111111111111111111 11111111111111111111111111111111111111111111111111111111111111111111111111111111 11111111111111111111111111111111111111111111111111111111111111111111111111111111 11111111111111111111111111111111111111111111111111111111111111111111111111111111 11111111111111111111111111111111111111111111111111111111111111111111111111111111 11111111111111111111111111111111111111111111111111111111111111111111111111111111 11111111111111111111111111111111111111111111111111111111111111111111111111111111 11111111111111111111111111111111111111111111111111111111111111111111111111111111 11111111111111111111111111111111111111111111111111111111111111111111111111111111 11111111111111111111111111111111111111111111111111111111111111111111111111111111 
+
+X-FETCH-GT-MAXROWS-WITH-BATCH-EQ-MAXROWS-TEST
+     select v1 from abts_rows10k where v1 < 202
+     200
+     201
+
+X-FETCH-EQ-MAXROWS-WITH-BATCH-EQ-MAXROWS-TEST
+     select v1 from abts_rows10k where v1 < 201
+     200
+     200
+
+X-FETCH-LT-MAXROWS-WITH-BATCH-EQ-MAXROWS-TEST
+     select v1 from abts_rows10k where v1 < 200
+     200
+     199
+
+X-FETCH-EXCEEDS-MAXROWS-WITH-BATCH-TEST
+     select v1 from abts_rows10k where v1 < 202
+     10
+     201
+
+X-FETCH-EQUALS-MAXROWS-WITH-BATCH-TEST
+     select v1 from abts_rows10k where v1 < 201
+     10
+     200
+
+X-FETCH-LESS-THAN-MAXROWS-WITH-BATCH-TEST
+     select v1 from abts_rows10k where v1 < 200
+     10
+     199
+
+X-FETCH-EXCEEDS-MAXROWS-TEST
+     select v1 from abts_rows10k where v1 < 202
+     0
+     201
+
+X-FETCH-EQUALS-MAXROWS-TEST
+     select v1 from abts_rows10k where v1 < 201
+     0
+     200
+
+X-FETCH-LESS-THAN-MAXROWS-TEST
+     select v1 from abts_rows10k where v1 < 200
+     0
+     199
+
+X-FETCH-STRUCTURE-TEST
+     select * from abts_emp
+     abts_emp_syb
+
+X-UPDATE-OBJECT-SEQUENCES-TEST
+     select * from abts_emp_x2
+     abts_emp_sequence-class
+     abts_emp_x2_syb
+
+X-UPDATE-OBJECT-UNSUPPORTED-DTYPES-TEST
+     abts_unsupported_dtypes-class
+     u
+     2
+     select empno {x} from abts_emp where empno = 7499 
+     select sal {x} from abts_emp where empno = 7499
+     select ename {x} from abts_emp where empno = 7499 
+
+X-UPDATE-OBJECT-SUPPORTED-DTYPES-TEST
+     abts_supported_dtypes-class
+     i,f,q,t,s
+     6
+     select empno {x} from abts_emp where empno = 7499
+     7499
+     select sal {x} from abts_emp where empno = 7499 
+     1600.0
+     select comm {x} from abts_emp where empno = 7499 
+     300.0
+     select ename {x} from abts_emp where empno = 7499 
+     ALLEN
+     select job {x} from abts_emp where empno = 7499 
+     SALESMAN
+
+X-FETCH-OBJECT-SUPPORTED-DTYPES-TEST
+     abts_supported_dtypes-class
+     i,f,q,t,s
+     6
+     select empno {x} from abts_emp where empno = 7499
+     7499
+     select sal {x} from abts_emp where empno = 7499
+     1600.0
+     select comm {x} from abts_emp where empno = 7499
+     300.0
+     select ename {x} from abts_emp where empno = 7499
+     ALLEN
+     select job {x} from abts_emp where empno = 7499
+     SALESMAN
+
+X-ROWS-PROCESSED-DML-TEST
+     abts_scratch
+     insert into abts_scratch (ename) values ('Zipperhead')
+
+X-DEFINE-SQL-DEFINE-BIND-NULL-FIRST-TEST
+     insert into abts_scratch (ename,sal) values (?,?)
+     ,2500
+
+X-DEFINE-MANY-SQL-REDEFINE-BIND-TEST
+     40
+     insert into abts_scratch (ename,sal) values (?,?)
+     SMITH,4500
+     JONES,6600
+
+X-DEFINE-MANY-CURSOR-REDEFINE-BIND-TEST
+     40
+     select * from abts_emp where ename =? and sal >?
+     SMITH,12000
+     JONES,5000
+
+X-FETCH-LIST-OF-OBJECTS-WITH-COMPLEX-ATTRS-TEST
+     select * from abts_emp
+     abts_emp_sequence-class
+
+X-FETCH-OBJECT-UNSUPPORTED-DTYPES-TEST
+     abts_unsupported_dtypes-class
+     u
+     2
+     select empno {x} from abts_emp where empno = 7499
+     select sal {x} from abts_emp where empno = 7499
+     select ename {x} from abts_emp where empno = 7499
+
+X-FETCH-OBJECT-SEQUENCES-TEST
+     select * from abts_emp_x2
+     abts_emp_sequence-class
+     abts_emp_x2_syb
+
+X-REDIRECT-TRIGGER-MESSAGE-TEST
+     abts_trig_pipe1
+     insert into abts_trigger_table values ('This is a test')
+     Trigger Alert INSERT
+
+X-REDIRECT-RECEIVE-MESSAGE-TEST
+     G2-Sybase: Context-0: INFO: Callback 'DB-CONTEXT-EVENT-MSG' has been redefined to 'REDIRECT-RECEIVE-MESSAGE-PROC'.
+
+X-INVALID-NUMBER-TEST
+     insert into abts_scratch (empno) values ('This is a test')
+
+X-EXCEED-INT-SIZE-TEST
+     insert into abts_scratch (empno) values (123456789123456789)
+
+X-EXCEED-FLOAT-SIZE-TEST
+     insert into abts_scratch (sal) values (123456789123456789.123456789123456789)
+
+X-EXCEED-TEXT-SIZE-TEST
+     insert into abts_scratch (ename) values ('1234567890123456789012345678901234567890')
+
+X-PROCEDURE-INSERT-TEST
+     abts_scratch
+     abts_add_name ('Manba Club')
+     select ename from abts_scratch
+     Manba Club
+
+X-PROCEDURE-INSERT4-TEST
+     abts_scratch
+     execute procedure abts_add_name ('Doctor Spock is not a Vulcan he is a doctor')
+     select message from abts_scratch
+     Doctor Spock is not a Vulcan he is a doctor
+
+X-PROCEDURE-INSERT3-TEST
+     abts_scratch
+     execute procedure abts_add_name ('x')
+     select message from abts_scratch
+     x
+
+X-PROCEDURE-INSERT2-TEST
+     abts_scratch
+     execute procedure abts_add_name ('This is another test dude') 
+     select message from abts_scratch
+     This is another test dude
+
+X-REFRESH-WITH-NO-CURSOR-TEST
+     
+
+X-MULTI-REFRESH-WITH-CURSOR-TEST
+     select * from abts_emp
+     50
+
+X-LOADED-DATABASE
+     SYBASE
+
+X-DEFINE-SQL-SET-LARGE-BIND-TEST
+     insert into abts_scratch (ename) values (?)
+     aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+X-DEFINE-SQL-DEFINE-LARGE-BIND-TEST
+     insert into abts_scratch (ename) values (?) 
+     aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+X-DEFINE-CURSOR-DEFINE-LARGE-BIND-TEST
+     select * from abts_emp where ename =?
+     aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+X-SET-LOGFILE-FILTER-TEST
+     INFO,ERROR,WARN,FATAL 
+
+X-MAX-CURSORS-TEST
+     201
+     10
+
+X-MAX-CONTEXT-NAME-LENGTH-TEST
+     abcdefghijklmnopqrstuvwxyz
+
+X-RECEIVE-MESSAGE-TEST
+     abts_scratch
+
+X-INVOKE-TRIGGER-FOR-TRIGGER-BY-NAME-TEST
+     abts_trig_pipe1
+     insert into abts_trigger_table values ('This is a test')
+     xxx
+
+X-INVOKE-TRIGGER-FOR-TRIGGER-OBJECT-TEST
+     ABTS_TRIG_PIPE1
+     insert into abts_trigger_table values ('Trigger Test')
+     Trigger Alert INSERT
+
+X-DISABLE-TRIGGER-OBJECT-TEST
+     abts_trig_pipe1
+     UNDEFINED
+
+X-ENABLE-TRIGGER-OBJECT-TEST
+     abts_trig_pipe1
+
+X-DISABLE-TRIGGER-TEST
+     abts_trig_pipe1
+
+X-ENABLE-TRIGGER-TEST
+     abts_trig_pipe1
+
+X-DISABLE-ALL-TRIGGERS-TEST
+     10
+
+X-GET-TRIGGERS-TEST
+     5
+
+X-EXEC-SQL-SET-OBJECT-AUTO-COMMIT-BIND-TEST
+     abts_scratch
+     insert into abts_scratch (ename) values (?) 
+     ename
+     abts_emp_syb
+     select * from abts_emp
+     ename
+
+X-EXEC-SQL-SET-MANY-OBJECT-BIND-TEST
+     abts_scratch
+     insert into abts_scratch (ename,sal,deptno,hiredate,comm,mgr,job) values (?,?,?,?,?,?,?)
+     ename,sal,deptno,hiredate,comm,mgr,job
+     abts_emp2_syb
+     select * from abts_scratch
+     ename
+     sal
+     deptno
+     hiredate
+     comm
+     mgr
+     job
+
+X-DEFINE-SQL-SET-TOO-FEW-OBJECT-BIND-TEST
+     insert into abts_scratch (deptno,sal,ename) values (?,?,?)
+     deptno
+     abts_emp_syb
+
+X-DEFINE-SQL-SET-TOO-MANY-OBJECT-BIND-TEST
+     insert into abts_scratch (deptno) values (?)
+     deptno,sal,ename
+     abts_emp_syb
+
+X-EXEC-REDEFINE-SQL-SET-OBJECT-BIND-TEST
+     abts_scratch
+     insert into abts_scratch (sal) values (?)
+     sal
+     abts_emp_syb
+     abts_emp2_syb
+     select * from abts_scratch
+     sal
+
+X-REDEFINE-SQL-SET-OBJECT-BIND-TEST
+     insert into abts_scratch (ename) values (?)
+     ename
+     abts_emp_syb
+     abts_emp2_syb
+
+X-EXEC-SQL-SET-OBJECT-BIND-TEST
+     abts_scratch
+     insert into abts_scratch (ename) values (?) 
+     ename
+     abts_emp_syb
+     select * from abts_emp
+     ename
+
+X-DEFINE-SQL-SET-OBJECT-BIND-TEST
+     insert into abts_scratch (ename) values (?)
+     ename
+     abts_emp_syb
+
+X-EXEC-SQL-SET-MANY-BIND-TEST
+     abts_scratch
+     insert into abts_scratch (ename,sal) values (?,?)
+     JollyMan,55.78
+     select * from abts_scratch 
+     ename
+     JollyMan
+     sal
+     55.78
+
+X-DEFINE-SQL-SET-TOO-FEW-BIND-TEST
+     delete from abts_scratch where ename =? and sal =?
+     5
+
+X-DEFINE-SQL-SET-TOO-MANY-BIND-TEST
+     delete from abts_emp where ename =?
+     SMITH,1400,345.67,JACKSONVILLE,400,10,1,33.44
+
+X-EXEC-REDEFINE-SQL-SET-BIND-TEST
+     abts_scratch
+     insert into abts_scratch (sal) values (?)
+     97000.50
+     35700.25
+     select * from abts_scratch
+     sal
+     35700.25
+
+X-REDEFINE-SQL-SET-BIND-TEST
+     delete from abts_scratch where ename =? and hiredate =?
+     JEFFERSON,77-03-10
+     MASSACHUSSETTS,97-12-09
+
+X-EXEC-SQL-SET-BIND-TEST
+     abts_scratch
+     insert into abts_scratch (sal) values (?)
+     76777.33
+     select * from abts_scratch
+     sal
+     76777.33
+
+X-DEFINE-SQL-SET-BIND-TEST
+     insert into abts_scratch (deptno,hiredate) values (?,?)
+     30,96-12-12
+
+X-EXEC-SQL-DEFINE-MANY-BIND-TEST
+     abts_scratch
+     insert into abts_scratch (ename,sal) values (?,?)
+     JollyMan,55.78
+     select * from abts_scratch 
+     ename
+     JollyMan
+     sal
+     55.78
+
+X-DEFINE-SQL-DEFINE-TOO-FEW-BIND-TEST
+     delete from abts_scratch where ename = :x1 and sal = :x2
+     5
+
+X-DEFINE-SQL-DEFINE-TOO-MANY-BIND-TEST
+     delete from abts_emp where ename = :x1
+     SMITH,1400,345.67,JACKSONVILLE,400,10,1,33.44
+
+X-EXEC-REDEFINE-SQL-DEFINE-BIND-TEST
+     abts_scratch
+     insert into abts_scratch (sal) values (?)
+     97000.50
+     35700.25
+     select * from abts_scratch
+     sal
+     35700.25
+
+X-REDEFINE-SQL-DEFINE-BIND-TEST
+     delete from abts_scratch where ename =?
+     SMITH
+     JACK-O-LANTERN
+
+X-EXEC-SQL-DEFINE-BIND-TEST
+     abts_scratch
+     insert into abts_scratch (ename) values (?)
+     PerverseP
+     select * from abts_scratch
+     ename
+     PerverseP
+
+X-DEFINE-SQL-DEFINE-BIND-TEST
+     insert into abts_scratch (ename) values (?)
+     JACKSON
+
+X-FETCH-CURSOR-SET-MANY-BIND-TEST
+     select * from abts_emp where ename =? and job =? and sal >? and mgr =? and comm =? and deptno =?
+     SMITH,MANAGER,100.25,7666,100,20
+     JAMES,CLERK,200.50,7698,200,30
+     ename
+     JAMES
+     job
+     CLERK
+     sal
+     950.0
+     mgr
+     7698
+     comm
+     200.0
+     deptno
+     30
+
+X-DEFINE-CURSOR-SET-TOO-FEW-BIND-TEST
+     select * from abts_emp where ename =? and sal >?
+     KING
+
+X-DEFINE-CURSOR-SET-TOO-MANY-BIND-TEST
+     select * from abts_emp where ename =?
+     KING,MILLER,SMITH,JONES,23.45,1000,JACKSON,97-01-10,222.55
+
+X-FETCH-REDEFINE-CURSOR-SET-BIND-TEST
+     select * from abts_emp where ename =?
+     MILLER
+     KING
+     ename
+     KING
+     empno
+     7839
+     hiredate
+     Nov 17 1981 12:00:00:000AM
+     sal
+     5000.0
+
+X-FETCH-REDEFINE-CURSOR-DEFINE-BIND-TEST
+     select * from abts_emp where ename =?
+     MILLER
+     KING
+     ename
+     KING
+     empno
+     7839
+     hiredate
+     Nov 17 1981 12:00:00:000AM
+     sal
+     5000.0
+
+X-REDEFINE-CURSOR-SET-BIND-TEST
+     select * from abts_emp where ename =?
+     KING
+     MILLER
+
+X-FETCH-CURSOR-SET-BIND-TEST
+     select * from abts_emp where ename =?
+     KING
+     ename
+     KING
+     empno
+     7839
+     hiredate
+     Nov 17 1981 12:00:00:000AM
+     sal
+     5000.0
+
+X-DEFINE-CURSOR-SET-BIND-TEST
+     select * from abts_emp where ename =?
+     JONES
+
+X-FETCH-CURSOR-DEFINE-MANY-BIND-TEST
+     select * from abts_emp where ename =? and job =? and sal >? and mgr =? and comm =? and deptno =?
+     JAMES,CLERK,200.50,7698,200,30
+     ename
+     JAMES
+     job
+     CLERK
+     sal
+     950.0
+     mgr
+     7698
+     comm
+     200.0
+     deptno
+     30
+
+X-DEFINE-CURSOR-DEFINE-TOO-FEW-BIND-TEST
+     select * from abts_emp where ename =? and sal >?
+     KING
+
+X-DEFINE-CURSOR-DEFINE-TOO-MANY-BIND-TEST
+     select * from abts_emp where ename =?
+     KING,MILLER,SMITH,JONES,23.45,1000,JACKSON,97-01-10,222.55
+
+X-REDEFINE-CURSOR-DEFINE-BIND-TEST
+     select * from abts_emp where ename =?
+     KING
+     MILLER
+
+X-FETCH-CURSOR-DEFINE-BIND-TEST
+     select * from abts_emp where ename =?
+     KING
+     ename
+     KING
+     empno
+     7839
+     hiredate
+     Nov 17 1981 12:00:00:000AM
+     sal
+     5000.0
+
+X-FETCH-CURSOR-NO-DEFINE-BIND-TEST
+     select * from abts_emp where ename =?
+     
+
+X-DEFINE-CURSOR-DEFINE-BIND-TEST
+     select * from abts_emp where ename =?
+     KING
+
+X-DEFINE-CURSOR-NO-DEFINE-BIND-TEST
+     select * from abts_emp where ename =?
+
+X-EXEC-SQL-AT-SIGN-TEST
+     abts_scratch
+     insert into abts_scratch (ename) values ('lhensym')
+     select * from abts_scratch
+     abts_emp-class
+     ename
+     lhensym
+
+X-QI-AT-SIGN-TEST
+     abts_scratch
+     insert into abts_scratch (ename) values ('lhensym')
+     select * from abts_scratch
+     ename
+     lhensym
+
+X-AT-SIGN-TEST
+     abts_scratch
+     insert into abts_scratch (ename) values ('lhensym')
+     select ename from abts_scratch
+     lhensym
+
+X-EXEC-SQL-AUTO-COMMIT-TEST
+     abts_scratch
+     insert into abts_scratch (ename,sal,deptno) values ('Jackhammer',345.67,30)
+     select * from abts_scratch
+     ename
+     Jackhammer
+     sal
+     345.67
+     deptno
+     30
+
+X-EXEC-SQL-TEST
+     abts_scratch
+     insert into abts_scratch (ename,sal) values ('Dry Heave',2.75)
+     select * from abts_scratch
+     ename
+     Dry Heave
+     sal
+     2.75
+
+X-EXCEED-MAXIMUM-SQL-OBJECT-TEST
+     200
+     insert into abts_scratch (ename) values ('hello') 
+
+X-DEFINE-SQL-INVALID-DTYPE-TEST
+     select * from abts_unsupported_dtypes
+
+X-DEFINE-SQL-INVALID-STMT-TEST
+     insert into xyz values ('This should fail')
+     insert into abts_scratch (xyz) values ('This should fail')
+
+X-REPEAT-SQL-WITH-DELETE-TEST
+     5
+     insert into abts_scratch (ename) values ('Zipperman')
+     delete from abts_emp where sal > 345.67
+     insert into abts_personnel(last_name,first_name) values ('Rubble','Barney')
+     delete from abts_personnel where last_name = 'Stink Man'
+
+X-REDEFINE-SQL-VALID-STMT-TEST
+     5
+     insert into abts_personnel (last_name,first_name) values ('Cass','Mama')
+     delete from abts_scratch where ename = 'Jonesing'
+     insert into abts_emp_x2 (sal) values (384884.33)
+     insert into abts_emp (ename) values ('Zipperman') 
+
+X-DEFINE-SQL-VALID-STMT-TEST
+     insert into abts_scratch (ename,sal,deptno) values ('Smith',967.45,30)
+
+X-FO-CURSOR-POSITION-TEST
+     select * from abts_rows10k
+     abts_rows10k-class
+
+X-QI-CURSOR-POSITION-TEST
+     select * from abts_rows10k
+     abts_rows10k
+
+X-UPDATE-REPLACE-RECORDS-TO-FETCH-TEST
+     select * from abts_emp
+     abts_emp-class
+     abts_emp_syb
+     select * from abts_emp2
+     7
+     abts_emp2_syb
+
+X-UPDATE-APPEND-ROWS-PROCESSED-TEST
+     select * from abts_emp
+     abts_emp_array-class
+     abts_emp_syb
+     select * from abts_emp2
+
+X-UPDATE-REPLACE-ROWS-PROCESSED-TEST
+     select * from abts_emp
+     abts_emp-class
+     abts_emp_syb
+     select * from abts_emp2
+
+X-UPDATE-APPEND-OBJECT-ARRAYS-TEST
+     select * from abts_emp
+     abts_emp_array-class
+     abts_emp_syb
+     abts_emp_x2_syb
+
+X-UPDATE-APPEND-OBJECT-LISTS-TEST
+     select * from abts_emp
+     abts_emp-class
+     abts_emp_syb
+     abts_emp_x2_syb
+
+X-UPDATE-REPLACE-OBJECT-ARRAYS-TEST
+     select * from abts_emp
+     abts_emp_array-class
+     abts_emp_syb
+     select * from abts_emp2
+     abts_emp2_syb
+
+X-UPDATE-REPLACE-OBJECT-LISTS-TEST
+     select * from abts_emp
+     abts_emp-class
+     abts_emp_syb
+     select * from abts_emp2
+     abts_emp2_syb
+
+X-FETCH-OBJECT-ARRAYS-TEST
+     select * from abts_emp_x2
+     abts_emp_array-class
+     abts_emp_x2_syb
+
+X-FETCH-LIST-OF-OBJECTS-TEST
+     select * from abts_emp
+     abts_simple_emp-class
+     abts_emp_syb
+
+X-FO-RECORDS-TO-FETCH-TEST
+     select * from abts_personnel
+     abts_personnel-class
+     37
+     abts_personnel
+
+X-FETCH-OBJECT-LISTS-TEST
+     select * from abts_emp_x2
+     abts_emp_x2-class
+     abts_emp_x2_syb
+
+X-QI-APPEND-RECORDS-TO-FETCH-TEST
+     select * from abts_emp_x2
+     10
+     38
+     abts_emp_x2
+
+X-QI-REPLACE-RECORDS-TO-FETCH-TEST
+     select * from abts_emp_x2
+     10
+     10
+     abts_emp_x2
+
+X-UPDATE-APPEND-QI-ARRAYS-TEST
+     select * from abts_emp
+     abts_emp_x2
+
+X-UPDATE-APPEND-QI-LISTS-TEST
+     select * from abts_emp
+     abts_emp_x2
+     <undefined>
+
+X-UPDATE-REPLACE-QI-ARRAYS-TEST
+     select * from abts_personnel where last_name = 'Toliver'
+     select * from abts_float
+     abts_float
+
+X-UPDATE-REPLACE-QI-LISTS-TEST
+     select * from abts_personnel where last_name = 'Villari'
+     select * from abts_emp
+     abts_emp_syb
+
+X-QI-RECORDS-TO-FETCH-TEST
+     select * from abts_personnel
+     75
+     abts_personnel
+
+X-QUERY-ITEM-ARRAYS-TEST
+     select * from abts_emp
+     abts_emp_syb
+
+X-QUERY-ITEM-LISTS-TEST
+     select * from abts_emp
+     abts_emp_syb
+
+X-REFRESH-TEST
+     select * from abts_emp
+     5
+     abts_emp_syb
+
+X-PROCEDURE-INSERT1-TEST
+     abts_scratch
+     execute procedure abts_add_name ('Manba Club')
+     select message from abts_scratch
+     Manba Club
+
+X-RECORDS-TO-FETCH-TEST
+     select * from abts_personnel
+     1000
+
+X-ROWS-PROCESSED-DML-TEST
+     abts_scratch
+     insert into abts_scratch (ename) values ('Zipperhead')
+
+X-ROLLBACK-TEST
+     abts_scratch
+     insert into abts_scratch (ename,sal) values ('Wanker',78.567)
+     select * from abts_scratch
+
+X-COMMIT-TEST
+     abts_scratch
+     insert into abts_scratch (ename,sal,deptno) values ('Jones',95000.75,25)
+     select * from abts_scratch
+     ename
+     Jones
+     sal
+     95000.75
+     deptno
+     25
+
+X-AUTO-COMMIT-TEST
+     abts_scratch
+     insert into abts_scratch (ename,sal,deptno) values ('Zonkers',98.35,20)
+     select * from abts_scratch
+     ename
+     Zonkers
+     sal
+     98.35
+     deptno
+     20
+
+X-CURSOR-POSITION-TEST
+     select * from abts_personnel
+
+X-ROWS-PROCESSED-QUERY-TEST
+     select * from abts_emp
+     empno
+     ename
+     job
+     mgr
+     hiredate
+     sal
+     comm
+     deptno
+
+X-EXECUTE-QUERY-TEST
+     select * from abts_personnel
+
+X-EXCEED-MAXIMUM-CURSORS-TEST
+     201
+     select * from abts_emp 
+
+X-DEFINE-CURSOR-INVALID-DTYPE-TEST
+     select * from abts_unsup_dtypes 
+
+X-DEFINE-CURSOR-INVALID-SQL-TEST
+     select * from XYZ
+     select xyz from abts_scratch
+
+X-REPEAT-CURSOR-WITH-DELETE-TEST
+     10
+     select * from abts_emp
+     select * from abts_personnel
+     select ename,sal,deptno from abts_emp_x2
+     select avg(sal) from abts_emp
+
+X-REDEFINE-CURSOR-VALID-SQL-TEST
+     10
+     select * from abts_personnel
+     select ename from abts_emp
+     select avg(sal) from abts_emp_x2
+     select distinct last_name from abts_personnel
+     select * from abts_emp
+
+X-DEFINE-CURSOR-VALID-SQL-TEST
+     select * from abts_personnel
+
+X-SQL-FUNCTION-NULL-TEST
+     select * from abts_emp where empno = 99999
+
+X-SQL-FUNCTION-STR-TEST
+     select ename from abts_emp where empno = 7788
+     Scott
+
+X-FETCH-MIXED-VALUES-TEST
+     select * from abts_emp
+     abts_emp_syb
+
+X-FETCH-INT-VALUES-TEST
+     select * from abts_int
+     abts_int
+
+X-FETCH-TEXT-VALUES-TEST
+     select * from abts_text
+     abts_text_syb
+
+X-FETCH-FLOAT-VALUES-TEST
+     select * from abts_float
+     abts_float
+
+X-SQL-FUNCTION-FLOAT-TEST
+     select avg(sal) from abts_emp
+     2101
+
+X-SQL-FUNCTION-INT-TEST
+     select empno from abts_emp where ename = 'MILLER'
+     7934
