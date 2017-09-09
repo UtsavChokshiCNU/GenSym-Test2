@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="02/06/02 18:48:29">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Configuring the Stock Planning Strategy</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="stockpla.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="stockpl3.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+      <div align="center"><b>e-SCOR User's Guide</b></div>
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/e-SCOR/OnlineHelpFiles/UsersGuide/html/stockpla.htm">  
+        Using Stock Planning Strategies  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Configuring the Stock Planning Strategy
+</h2>
+<p >
+  <a name="76869"> </a>
+<p><div align="left"><img src="images/stockplb.gif" border="0" hspace="0" vspace="0">
+</div><a name="76868"></a></p>
+
+
+
+</p>
+<p>To determine the planning strategy for sourcing, making, and delivering stock products, you configure the Plan Type of a role's Plan category. <a name="6253"></a></p>
+<p>You configure different Plan categories for each role, which has different effects on planning, as this table describes:<a name="6258"></a></p>
+<p >
+  <a name="6284"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="7625"><div ><br>For this role...</a></div></th>
+    <th><a name="7627"><div >You configure <br>the Plan Type for the...</a></div></th>
+    <th><a name="7629"><div ><br>Which determines...</a></div></th>
+  </tr>
+  <tr>
+    <td><p>Base <br>Manufacturer<a name="7631"></a></p>
+</td>
+    <td><p>P3: Plan Make category<a name="7633"></a></p>
+</td>
+    <td><p>The size of build orders for delivery products, which determines how many delivery products the role makes and delivers. The role determines the size of build orders, based on the size of customer or replenishment orders for delivery products from downstream buyers.<a name="7635"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Distributor<a name="7637"></a></p>
+</td>
+    <td><p>P2: Plan Source category<a name="7639"></a></p>
+</td>
+    <td><p>The size of replenishment orders for source products, which determines how many delivery products the role delivers. The role determines the size of replenishment orders for source products, based on the size of customer or replenishment orders for delivery products from downstream buyers.<a name="28304"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><p>Manufacturer<a name="7643"></a></p>
+</td>
+    <td><p>The P3: Plan Make category; the role ignores the Plan Type for the P2: Plan Source category<a name="7645"></a></p>
+</td>
+    <td><p>The size of build orders for delivery products, which determines how many delivery products the role makes and delivers. The role determines the size of build orders, based on the size of customer or replenishment orders for delivery products from downstream buyers. The role determines the size of replenishment orders for source products, based on the size of its build orders.<a name="7647"></a></p>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<p>By default, when using a stock planning strategy, the role creates orders each source or make planning cycle, depending on the role. It waits to create replenishment orders for source products or build orders for delivery products until the next planning cycle, even if orders from downstream buyers come in during the planning cycle.<a name="44640"></a></p>
+<p>You can configure a role to create orders on demand, which means it creates replenishment orders for source products and build orders for delivery products whenever the role receives an order from a downstream buyer for delivery products. You can configure the role to create orders on demand in addition to creating orders each planning cycle or instead of each planning cycle.<a name="45288"></a></p>
+<h4 >	 To configure the stock planning strategy for a role:<a name="44577"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>1	</b></td>    <td valign="top" width="580">Show the detail for each Base Manufacturer, Distributor, and Manufacturer role in the model for which you want to configure the stock planning strategy.<a name="6727"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>2	</b></td>    <td valign="top" width="580">Display the properties dialog for the P2: Plan Source and P3: Plan Make categories, as appropriate for the role, and configure the <a href="level233.htm#185044">Plan Type</a> parameter to be either <code>Replenishment</code> or <code>Forecast Customer</code>. <a name="6728"></a></td>  </tr></table><blockquote>  <a name="67451">For details on which planning strategy to use, see:</a></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="560"><a href="stockpl3.htm#6730">Using a Stock/Replenishment Planning Strategy</a>.<a name="67500"></a></td>  </tr></table></blockquote><blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="560"><a href="stockp11.htm#5787">Using a Stock/Forecast Planning Strategy</a>.<a name="67579"></a></td>  </tr></table></blockquote><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>3	</b></td>    <td valign="top" width="580">Configure the <a href="level233.htm#185055">Planning Period</a> and <a href="level233.htm#185077">Initial Plan Delay</a> parameters to determine the frequency with which the role creates orders and when the first plan goes into effect.<a name="46315"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>4	</b></td>    <td valign="top" width="580">To configure the role to create orders on demand, enable the <a href="level233.htm#286142">Replenishment Planning</a> option for the same Plan category whose Plan Type you configured.<a name="73869"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>5	</b></td>    <td valign="top" width="580">To configure the role to compensate for expected loss due to yield, enable the <a href="level233.htm#1061103">Compensate for Yield</a> option for the same Plan category whose Plan Type you configured.<a name="46395"></a></td>  </tr></table><h6><b>Tip: </b>To configure the role to create replenishment orders on demand only, configure 
+the Planning Period to be a very large number, such as 10 years, so that cyclical 
+planning never takes place.
+<a name="46324"></a></h6><p><b>Related topics</b><a name="76891"></a></p>
+<p><a href="stockpl3.htm#6730">Using a Stock/Replenishment Planning Strategy</a><a name="76895"></a></p>
+<p><a href="stockp11.htm#5787">Using a Stock/Forecast Planning Strategy</a><a name="76899"></a></p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="stockpla.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="stockpl3.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
