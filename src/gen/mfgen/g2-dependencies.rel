@@ -1,0 +1,85 @@
+;;; -*- Mode: LISP; Syntax: Common-Lisp; Base: 10; Package: USER -*-
+(in-package "USER")
+
+;;;; Makefile generator relational database: g2-dependencies.rel
+
+;;; Copyright (c) 1986-2017 Gensym Corporation.
+;;; All Rights Reserved.
+
+;;; author: Mark E. Staknis
+
+;;; This file contains the relation that maintains dependencies
+;;; for the creation and installation of g2.  Most local dependencies
+;;; are in the g2 subdirectories.  During makefile generation, the
+;;; dependencies in this relation are augmented by dependencies
+;;; created from file roots listed in g2/c/g2-files.txt, which is
+;;; generated during g2 translation.  For each root in g2-files.txt,
+;;; a row of form
+;;;    (g2            exe  _all        <root>        obj  y     )
+;;; is generated.
+
+(setq g2-dependency-relation
+ '(( target-group  type-group
+                        platform-group
+                                    dependency    dependency-type
+                                                       local )
+;;   ------------  ---- ----------- ------------  ---- -----
+   ((all           dum  _all        g2            exe  y     )
+    ; nonlocal libs are unsorted in the link line and appear in the order here
+    (g2            exe  _all        libfnt        lib  n     )
+    (g2            exe  _all        libcprim      lib  n     )
+    (g2            exe  _all        libjpeg       lib  n     )
+    (g2            exe  _all        librtl        lib  n     )
+    (g2            exe  _all        liblsxml      lib  n     )
+    (g2            exe  unix        libxml2       lib  n     )
+    (g2            exe  intelnt     libxml2_a     lib  n     )
+    (g2            exe  intelnt     g2            res  y     )
+    (g2            exe  intelnt     winmain       obj  y     )
+    (g2            exe  _all        main          obj  y     )
+    (_all          obj  _all        rthfiles      var  y     )
+    (g2            res  intelnt     g2            rc   y     )
+    (rthfiles      var  _all        librtl        h    n     )
+    (rthfiles      var  _all        c-ifuns       h    n     )
+    (rthfiles      var  _all        c-sdefs       h    n     )
+    (rthfiles      var  _all        config        h    n     )
+    (rthfiles      var  _all        core          h    n     )
+    (rthfiles      var  _all        externs       h    n     )
+    (rthfiles      var  _all        ffi           h    n     )
+    (rthfiles      var  _all        gensym        h    n     )
+    (rthfiles      var  _all        ifuns         h    n     )
+    (rthfiles      var  _all        initvars      h    n     )
+    (rthfiles      var  _all        inline        h    n     )
+    (rthfiles      var  _all        instance      h    n     )
+    (rthfiles      var  _all        kernel        h    n     )
+    (rthfiles      var  _all        lisplib       h    n     )
+    (rthfiles      var  _all        longname      h    n     )
+    (rthfiles      var  _all        object        h    n     )
+    (rthfiles      var  _all        smcompat      h    n     )
+    (rthfiles      var  _all        specific      h    n     )
+    (rthfiles      var  _all        svarargs      h    n     )
+    (rthfiles      var  _all        uconfig       h    n     )
+    (rthfiles      var  _all        values        h    n     )
+    (rthfiles      var  _all        varkey        h    n     )
+    (install       dum  _all        fgntest       c    n     )
+    (install       dum  _all        index         dic  y     )
+    (install       dum  _all        kojin         dic  y     )
+    (install       dum  _all        main          dic  y     )
+    (install       dum  _all        g2            exe  y     )
+    (install       dum  _all        g2passwd      exe  n     )
+    (install       dum  _all        hostlookup    exe  n     )
+    (install       dum  _all        overlay       exe  n     )
+    (install       dum  _all        foreign       h    n     )
+    (install       dum  _all        icp           h    n     )
+    (install       dum  _all        libforgn      lib  n     )
+    (install       dum  intelnt     g2            map  y     )
+    (install       dum  unix        g2            ok   y     )
+    (install       dum  intelnt     g2nt          ok   y     )
+    (install       dum  _all        fgntest       tpl  n     )
+    (install       dum  alphaosf    makefgn-alphaosf   mak y )
+    (install       dum  hp9000s700  makefgn-hp9000s700 mak y )
+    (install       dum  hpia64      makefgn-hpia64     mak y )
+    (install       dum  intelnt     makefgn-intelnt    mak y )
+    (install       dum  linux       makefgn-linux      mak y )
+    (install       dum  rs6000      makefgn-rs6000     mak y )
+    (install       dum  sparcsol    makefgn-sparcsol   mak y )
+ )))
