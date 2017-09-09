@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_trouble_build.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+Unresolved Symbol cov_probe
+</h1>
+<H2>SYMPTOMS</H2>
+<p>
+The linker reports unresolved symbols with prefix <CODE>cov_</CODE>,
+such as:
+<PRE>
+cov_probe_<i>x_y_z</i>
+</PRE>
+<H2>CAUSE</H2>
+<p>
+The BullseyeCoverage run-time library is not linked,
+or the BullseyeCoverage run-time
+library version number does not match the <a href=ref_covc.html>covc</a>
+version number.
+<H2>RESOLUTION</H2>
+<p>
+Use one or more of the possible resolutions shown below.
+<ol>
+<li>
+Modify the <code>PATH</code> environment variable so that
+the <i>BullseyeCoverage</i><code>/bin</code> directory occurs in the
+<code>PATH</code> before the real compiler or linker.
+The simplest way to accomplish this is to put
+<i>BullseyeCoverage</i><code>/bin</code> first.
+<p>
+For example, on Windows:
+<pre>
+PATH=%ProgramFiles%\BullseyeCoverage\bin;%ProgramFiles%\Microsoft&nbsp;Visual&nbsp;Studio\VC\bin;<i>...</i>
+</pre>
+<p>
+For example, on Unix:
+<pre>
+PATH=/opt/BullseyeCoverage/bin:/usr/bin/:<i>...</i>
+</pre>
+<p>
+<li>
+Modify your makefile or build script to invoke your compiler rather than the
+linker to perform linking.
+This resolution does not apply to Microsoft C++, Intel C++, and CodeWarrior.
+For example, in a makefile:
+<pre>
+ld ...    # wrong
+$(CC) ... # right
+</pre>
+<li>
+Modify your makefile or build script to use the basename of the compiler or linker rather
+than its absolute path.
+For example, in a makefile:
+<pre>
+CC=/usr/bin/cc       # wrong
+CC=cc                # right
+LINK=c:\bin\link.exe # wrong
+LINK=link            # right
+</pre>
+<li>Do not use <a href="ref_covc.html">covc</a> option <code>--no-lib</code>.
+<li>Remove all BullseyeCoverage run-time libraries then reinstall
+BullseyeCoverage.
+This will solve the problem if it is due to a version mismatch.
+<li>Explicitly add the BullseyeCoverage run-time library to your link command.
+This is a last resort
+unless you have a specially built version of the BullseyeCoverage run-time library.
+The BullseyeCoverage compiler and linker interceptors automatically modify the link command to
+add the correct run-time library for the target platform,
+add required system libraries,
+and ensure proper ordering of libraries.
+For Windows DLLs in particular, BullseyeCoverage makes numerous non-trivial changes.
+</ol>
+<p style="font-size:xx-small">
+Last reviewed: 24 Apr 2008
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
