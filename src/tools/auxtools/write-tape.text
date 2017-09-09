@@ -1,0 +1,207 @@
+		 How to Enable a Promoted Package for Shipping
+				 April 18, 1994
+
+Once a package has promoted to the external shipment directories, it must be
+authorized for shipment.  Before a product is authorized for shipment, you can
+still make tapes using make-gensym-tape directly, but write-tape, the standard
+tool for making distribution tapes, will not work until the steps below have
+been followed.
+
+In this packet you can find directions for the following:
+
+  Authorizing Write Tape for UNIX Distributions
+
+  Enabling VAX and Alpha Distributions of Promoted Products
+
+  Restoring Products from an Archive Tape
+		 Authorizing Write Tape for UNIX Distributions
+
+In the steps below you will be editing a file called write-tape.dat within
+source code control, and then you will update the directory which is used by
+the tape making tools with the newly checked-in version.  To do this you will
+check out the file, edit the file, commit the edited file, release the checked
+out file you just committed, and then update the tape making utilities with the
+new version of the file.
+
+1.  Log in to to FE or WA in your own account, supplying your password when it
+is requested, go to your home directory.  (Dorothy is used as an example.)
+
+  su dmj
+  cd /home/dmj
+
+2.  Set a variable used by the CVS source code control system.
+
+  setenv CVSROOT /gensym/ab-repos
+
+3.  Check out the file that we want to edit.
+
+  cvs checkout util/write-tape.dat
+
+4.  Enter the directory that was just created.
+
+  cd util
+
+5.  Start the Sun text editor with the following command, which will load the
+file util/write-tape.dat into the editor.  Edit the file to contain the new
+products or releases necessary, making sure you also make any needed edits to
+the Sales distributions.  When done, save the file using the menus in the
+editor, and then quit from this editor.
+
+  $OPENWINHOME/bin/xview/textedit write-tape.dat
+
+6.  Commit your edited file into the source code control system.  The message
+between the double quotes should be changed to reflect the changes you just
+made.
+
+  cvs commit -m "Enabled GDA 10b53 for shipping." write-tape.dat
+
+7.  Release the checkout version of the file that you are now done editing and
+have commited.  The "cvs release" command should inform you that there are no
+modified files, and then you can answer "yes" when it asks if it should really
+release and delete that directory.
+
+  cd ..
+  cvs release -d util
+
+8.  Next we will log in as AB, and update the changed file into the directory
+that holds tape making utilities.
+
+  su ab
+  cd /st/ab/indep/util
+  cvs update write-tape.dat
+
+9.  Log out of the two "su" commands by typing exit twice.
+
+  exit
+  exit
+
+10.  In the same directory where write-tape would be used, use Write-archive to
+make an archive of the products you have just enabled.  The first argument is a
+no-rewind path to any of the UNIX tape drives local to that machine.  The
+remaining arguments are the names of the products you want to archive.  Many
+products can be archived onto the same tape, and the script will offer you
+instructions.  These tapes can be read using the read-archive command
+(described later in this file).  Note that write-archive will prompt you with
+the products about to be archived, asking for a yes/no confirmation.  Also,
+this script will print a list of contents and restoration instructions to the
+standard printer.  This sheet of paper must be kept with the archive tape.
+
+  write-archive /dev/nrst3 nol-demo-10b0 gda-demo-10b10 tw-30r2
+
+11.  If, while editting write-tape.dat, you have changed any of the products
+which are sent out with a manifest, such as Sales or Saleskbs, you can write
+out a new manifest using the following command.  Like write-archive,
+write-manifest is executed in the same directory where write-tape is run.  You
+should change the command below to contain the product name you want and the
+correct release of that product.  Note that you can use any valid part number
+for the product when writing the manifest.
+
+  write-manifest saleskbs 10r1 740
+	   Enabling VAX and Alpha Distributions of Promoted Products
+
+There are separate facilities for making distribution tapes on the UNIX
+machines versus the VMS machines (the VAX and the Alpha are VMS machines).
+Once an application package has been promoted on the UNIX machines, you should
+follow the steps below to enable tapes to be made for the VAX and the Alpha.
+
+In these steps you will create a directory from UNIX containing the product,
+write a file called version.txt into that directory, then on a VAX you will
+move any old versions of that product, copy the directory we previously created
+into the VAX distribution directory, then back in UNIX we will delete the
+directory we had previously made.
+
+1.  On the normal distribution machine (currently WA), from within the normal
+distribution tools directory (currently /st/ab/indep/util) run the following
+command to create a directory containing the product.  In the command below,
+you should replace "dsp" with the appropriate product, and "10b7" with the
+appropriate release.
+
+  cd /st/ab/indep/util
+  make-gensym-tape -p dsp -r 10b7 -c sun4 -m unix-directory -t /vmsdisc/public/promote/dsp
+
+2.  Change directories into the newly created directory.
+
+  cd /vmsdisc/public/promote/dsp
+
+3.  Create a file named version.txt containing one line with the version number
+of the product, a second line with the full product name, and a third line
+containing the product name that will appear on customer tapes. This information
+is shown while making tapes from VMS.  Use your correct version numbers and
+product names, but follow the format used in these examples.
+
+Note, you should use 1 ">" for the first command, and 2 (">>") for the second 
+and third commands!
+
+  echo "V1.0B7" > version.txt
+  echo "Dynamic Scheduling Package" >> version.txt
+  echo "DSP010" >> version.txt
+
+4.  Go to the VAX used for tape making, where the following commands should
+followed.  At VAX create a new DECterm from under the "Applications" menu
+within the Session Manager.
+
+5.  Click on the new DECterm, then type the following command to go to the
+directory containing promoted products.
+
+  set def dist$root:[bridges]
+
+Currently shipping products in this directory on the VAX should use the
+following naming convention.
+
+ <short-name><two-digits-major-release><one-digit-minor-release>r<revision>
+
+For example, DSP Version 1.0 revision 1 is given the name "DSP010R1", and 
+TW Version 2.1 revision 0 is "TW021R0". 
+
+6.  Create the new directory for this product, using the short form of the
+release name.
+
+  create/dir [.dsp010r2]
+
+7.  Copy the contents of the product into this newly created directory, using
+log to report each file as it is copied.  Again, make sure you use the correct
+product name and release number to replace "dsp010r2" in the example below.
+
+  copy vmsdisc:[public.promote.dsp]*.* [.dsp010r2] /log
+
+8.  Confirm that the new product is correctly installed by listing it with the
+make command.
+
+  make
+
+9.  Close the DECterm you created with the following command.
+
+  logout
+
+10.  Return to the UNIX machine where you started this process to run these
+final commands.  Use the following commands to remove the copy of the package
+that you had made.  Replace "dsp" in the example below with the appropriate
+product name.
+
+  cd /vmsdisc/public/promote
+  rm -r dsp
+
+11.  QA should now dry run the VAX tape before it is shipped.
+		    Restoring Products from an Archive Tape
+
+On the rare occasion that a product must be retrieved from an archive tape and
+reinstalled back into the tape making and testing environment, you should
+follow the directions below.
+
+1.  On the normal distribution machine (currently WA), from within the normal
+distribution tools directory (currently /st/ab/indep/util).
+
+  cd /st/ab/indep/util
+
+2.  Insert the archive tape into a tape drive on this machine.
+
+3.  Run the read-archive command, giving it the no-rewind device name of the
+drive holding the archive tape as its only argument.  For example, on a Sparc
+if the tape drive is named /dev/rst3, use /dev/nrst3.  Read-archive will prompt
+you with a list of the products archived on this tape, and will ask if any or
+all products should be fetched from the tape.
+
+  read-archive /dev/nrst3
+
+4.  Remove the tape from the drive and replace it in its safe storage spot.
+
