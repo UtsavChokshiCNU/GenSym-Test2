@@ -1,0 +1,196 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+<style type="text/css">
+code {
+	white-space: normal;
+}
+</style>
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_trouble_build.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+Error on Expression Using Overloaded Logical Operator
+</h1>
+<h2>SYMPTOMS</h2>
+<p>
+<table border=1>
+<colgroup><col style="white-space: nowrap">
+<tr><td rowspan=7>
+Microsoft C++
+<td>
+<code>error C2440: '=' : cannot convert from 'bool' to '</code><i>type</i><code>'</code>
+<tr><td>
+<code>error C2593: 'operator ||' is ambiguous</code>
+<tr><td>
+<code>error C2666: '</code><i>class</i><code> &&' : </code><i>n</i><code> overloads have similar conversions</code>
+<tr><td>
+<code>error C2676: binary '&&' : '</code><i>type</i><code>' does not define this operator or a conversion to a type acceptable to the predefined operator</code>
+<tr><td>
+<code>error C2678: binary '&&' : no operator defined which takes a left-hand operand of type '</code><i>type</i><code>'</code> ...
+<tr><td>
+<code>error C2679: binary '&&' : no operator found which takes a right-hand operand of type 'int'</code> ...
+<tr><td>
+<code>error C2784: '</code>...<code>operator &&</code>...<code> : could not deduce template argument</code> ...
+<tr><td rowspan=3>
+GNU C++
+<td>
+<code>error: cannot convert `bool' to `</code><i>type</i><code>' in initialization</code>
+<tr><td>
+<code>error: conversion from 'bool' to non-scalar type '</code><i>type</i><code>' requested</code>
+<tr><td>
+<code>error: no match for 'operator&&'</code>
+<tr><td rowspan=2>
+Sun C++
+<td>
+<code>Error: Cannot use bool to initialize </code><i>type</i>
+<tr><td>
+<code>Error: The operation "</code><i>type</i><code> && int" is illegal.</code>
+<tr><td rowspan=3>
+Intel C++
+<td>
+<code>error: a value of type "bool" cannot be used to initialize an entity of type "</code><i>type</i><code>"</code>
+<tr><td>
+<code>error: more than one operator "||" matches these operands</code>
+<tr><td>
+<code>error: no operator "&&" matches these operands operand types are: </code><i>type</i><code> && int</code>
+<tr><td rowspan=2>
+Borland C++
+<td>
+<code>Error E2094 'operator&&' not implemented in type '</code><i>type</i><code>' for arguments of type 'int'</code> ...
+<tr><td>
+<code>Warning W8006 Initializing </code><i>type</i><code> with bool</code>
+<tr><td rowspan=2>
+CodeWarrior
+<td>
+<code>Error: illegal implicit conversion from 'bool' to '</code><i>type</i><code>'</code>
+<tr><td>
+<code>Error: illegal operands '</code><i>type</i><code>' && 'int'</code>
+<tr><td rowspan=5>
+HP C++
+<td>
+<code>Error 166: Arithmetic or pointer type expected for operator '&&'; types found were '</code><i>type</i><code>' and 'int'.</code>
+<tr><td>
+<code>Error 226: No appropriate function found for call of 'operator &&'</code> ...
+<tr><td>
+<code>Error 440: Cannot initialize '</code><i>type</i><code>' with 'bool'.</code>
+<tr><td>
+<code>error #2144: a value of type "bool" cannot be used to initialize an entity of type "</code><i>type</i><code>"</code>
+<tr><td>
+<code>error #2349: no operator "&&" matches these operands</code>
+<tr><td rowspan=2>
+IBM C++
+<td>
+<code>1540-0218 (S) The call does not match any parameter list for "operator&&".</code>
+<tr><td>
+<code>1540-0257 (S) An object or reference of type "</code><i>type</i><code>" cannot be initialized with an expression of type "bool".</code>
+</table>
+<h2>CAUSE</h2>
+<p>
+Your code declares <code>operator &&</code> or <code>operator ||</code> in a way
+that is incompatible with operands or a result of type <code>bool</code>.
+Defining these operators with operand type or return type other than <code>bool</code> conflicts
+with condition/decision coverage at a basic level, and is not compatible with BullseyeCoverage.
+<h2>RESOLUTION</h2>
+<p>
+Alternative options are listed below.
+<ul>
+<li>
+Rename your overloaded operators <code>&&</code> and <code>||</code> to
+conventional function names.
+<li>
+Modify your source code to invoke the overloaded operators using the names <code>operator&&</code> and <code>operator||</code>.
+For example, 
+<pre>
+class C {
+public:
+	C operator&&(const C&) const;
+};
+...
+	C c1, c2;
+	C c3 = c1.operator&&(c2);	// c3 = c1 && c2
+</pre>
+<li>
+Modify your source code so that instead of defining your own
+<code>operator &&</code> or <code>operator ||</code>,
+you define <code>operator bool()</code> to convert all expressions to
+boolean values,
+and then use the built-in <code>&&</code> and <code>||</code> operators
+on the boolean values.
+For example,
+<pre>
+class C {
+public:
+	bool operator&&(const C&) const;	// remove
+	bool operator||(const C&) const;	// remove
+	operator bool() const;	// add
+};
+...
+	C c1, c2;
+	if (c1 && c2)
+	if (c1 || c2)
+</pre>
+<li>
+Modify your source code so that
+in addition to your existing <code>operator &&</code>, you define another
+<code>operator &&</code> that takes an operand of type <code>bool</code>.
+For example,
+<pre>
+class C {
+public:
+	bool operator&&(const C&) const;
+	bool operator&&(bool) const;	// add
+	bool operator||(const C&) const;
+};
+...
+	C c1, c2;
+	if (c1 && c2)
+</pre>
+<li><a href=build_exclude.html>Exclude</a> all code that uses overloaded
+operator <code>&&</code> or operator <code>||</code>.
+</ul>
+<h2>MORE INFORMATION</h2>
+<p>
+Issues with BullseyeCoverage aside,
+overloading operators <code>&&</code> and <code>||</code> is not
+recommended due to semantic differences.
+<ul>
+<li>
+The order of operand evaluation is guaranteed left to right
+with the built-in operators, but not with the overloaded operators.
+<li>
+The overloaded operators do not short-circuit.
+</ul>
+
+<p style="font-size:xx-small">
+Last reviewed: 20 Dec 2008
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
