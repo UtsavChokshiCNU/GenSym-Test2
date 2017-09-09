@@ -1,0 +1,151 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_trouble_build.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+Coverage Build Does Not Take Effect
+</h1>
+<H2>SYMPTOMS</H2>
+<p>
+After enabling <a href=build_coverageBuild.html>Coverage Build</a> and
+rebuilding your project, you do not see any entries in the coverage file.
+During the build, you do not see the startup banner below.
+<pre>
+BullseyeCoverage Compile C++ <i>version platform</i>
+Copyright (c) Bullseye Testing Technology 1990-<i>year</i>
+</pre>
+<H2>CAUSE</H2>
+<p>
+One or more of the following conditions can cause this problem.
+<p>
+<ol>
+<li>
+The Microsoft Visual Studio <code>Executable Directories</code> setting is missing the
+<i>BullseyeCoverage</i><code>/bin</code> directory.
+<li>
+The <code>PATH</code> environment variable is not set properly.
+<li>
+Your makefile or build script invokes the real compiler with its absolute path.
+<li>
+A compiler interceptor is not installed.
+</ol>
+<H2>RESOLUTION</H2>
+<p>
+Resolutions listed below correspond to the issues listed above, by number.
+<ol>
+<li>
+Reinstall BullseyeCoverage.
+If that does not solve the problem,
+manually add the <i>BullseyeCoverage</i><code>/bin</code>
+to the <code>Executable Directories</code> list in Visual Studio.
+To do this:
+<p>
+<img alt="Executable Directories" src=tool_microsoft_path.png style=float:right>
+<ol style=list-style:lower-alpha>
+<li>Launch Visual Studio
+<li>use the <code>Tools Options</code> command
+<li>Navigate to <code>Projects and Solutions</code> (8.0) or <code>Projects</code> (7.1)
+<li>Select <code>VC++ Directories</code>
+<li>Add the <i>BullseyeCoverage</i><code>\bin</code> to the top of the list
+</ol>
+<p style=clear:both>
+<li>
+The <i>BullseyeCoverage</i><code>/bin</code> directory must occur in the
+<code>PATH</code> before the real compiler.
+The simplest way to accomplish this is to put
+<i>BullseyeCoverage</i><code>/bin</code> first.
+<p>
+For example, on Windows:
+<pre>
+set PATH=%ProgramFiles%\BullseyeCoverage\bin;%ProgramFiles%\Microsoft&nbsp;Visual&nbsp;Studio\VC\bin;<i>...</i>
+</pre>
+<p>
+For example, on Unix:
+<pre>
+PATH=/opt/BullseyeCoverage/bin:/usr/bin/:<i>...</i>
+</pre>
+<p>
+<li>
+Modify your makefile or build script to use the basename of the compiler rather
+than its absolute path.
+For example, in a makefile:
+<pre>
+CC=/usr/bin/cc   # wrong
+CC=cc            # right
+</pre>
+<p>
+If you cannot modify environment variable <code>PATH</code>,
+you can set environment variable <code>BULLSEYE_PATH</code> to the directory of the real compiler and
+invoke the BullseyeCoverage compiler interceptor directly.
+<p>
+For example on Windows, at the command prompt:
+<pre>
+set BULLSEYE_PATH=%ProgramFiles%/Microsoft Visual Studio 8/VC/bin
+</pre>
+<p>
+In your makefile:
+<pre>
+CC="c:/Program Files/BullseyeCoverage/bin/cl"
+</pre>
+For example on Unix, at the command prompt:
+<pre>
+export BULLSEYE_PATH=/usr/bin
+</pre>
+<p>
+In your makefile:
+<pre>
+CC=/opt/BullseyeCoverage/bin/cc
+</pre>
+<p>
+<li>
+On Windows, the setup program creates compiler interceptors for the compilers
+selected on the <code>Choose Compilers</code> page.
+On Unix, the <code>install</code> script creates compiler interceptors for all
+known compilers found in the <code>PATH</code> environment variable.
+<p>
+To manually create a compiler interceptor on Windows:
+<pre>
+cd %ProgramFiles%\BullseyeCoverage\bin
+copy covc.exe <i>compiler.exe</i>
+</pre>
+<p>
+To manually create a compiler interceptor on Unix:
+<pre>
+cd <i>BullseyeCoverage</i>/bin
+ln covc <i>compiler</i>
+</pre>
+</ol>
+<p style="font-size:xx-small">
+Last reviewed: 5 Sep 2008
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
