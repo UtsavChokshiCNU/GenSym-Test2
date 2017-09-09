@@ -1,0 +1,147 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="01/11/02 11:07:23">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Creating New Attributes for Subobjects</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="how-to34.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="how-to36.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/ReThink/custom-manual/stylesets/Customizing%20ReThink/Output/html/how-to-c.htm">  
+        How to Customize ReThink  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Creating New Attributes for Subobjects
+</h2>
+<p>Suppose you are adding a new attribute to a subobject, for example, a new color for the animation procedure of a resource. In this case, you must replace the default subobject with a new subobject in the definition of the class. That way, each new instance has the custom attributes in its subtable. <a name="16324"></a></p>
+<h4 >	 To create new attributes for a subobject:<a name="16325"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>1	</b></td>    <td valign="top" width="580">Create a subclass of an existing subobject, whose attributes you want to customize.<a name="16326"></a></td>  </tr></table><blockquote>  <a name="16327">For example, you might create a new animation subobject for a custom resource class, as follows:</a></blockquote>
+<p >
+  <a name="16341"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="16330"><div >Attribute</a></div></th>
+    <th><a name="16332"><div >Value</a></div></th>
+  </tr>
+  <tr>
+    <td><p>Name<a name="16334"></a></p>
+</td>
+    <td><code>custom-person-animation-subtable<a name="16336"> </a></code></blockquote></td>
+  </tr>
+  <tr>
+    <td><p>Direct Superior Classes<a name="16338"></a></p>
+</td>
+    <td><code>bpr-object-animation-subtable<a name="16340"> </a></code></blockquote></td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>2	</b></td>    <td valign="top" width="580">Configure new attributes with default values for the custom subobject in the Class Specific Attributes of the custom subobject's class definition.<a name="16342"></a></td>  </tr></table><blockquote>  <a name="16343">For example, you might define a new color attribute named <code>custom-color</code>, which a custom animation procedure named <code>custom-animate-person</code> uses:</a></blockquote>
+<p >
+  <a name="16353"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="16346"><div >Attribute</a></div></th>
+    <th><a name="16348"><div >Value</a></div></th>
+  </tr>
+  <tr>
+    <td><p>Class Specific Attributes<a name="16350"></a></p>
+</td>
+    <td><code>custom-color initially is green<a name="16352"> </a></code></blockquote></td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>3	</b></td>    <td valign="top" width="580">Edit the existing attributes of the subobject, as needed, by configuring Attribute Initializations for the class.<a name="16354"></a></td>  </tr></table><blockquote>  <a name="16355">For example, you might define a default animation procedure by using a custom procedure named <code>custom-animate-resource</code>:</a></blockquote>
+<p >
+  <a name="16365"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="16358"><div >Attribute</a></div></th>
+    <th><a name="16360"><div >Value</a></div></th>
+  </tr>
+  <tr>
+    <td><p>Attribute Initializations<a name="16362"></a></p>
+</td>
+    <td><code>procedure-name initially is custom-animate-person<a name="16364"> </a></code></blockquote></td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<blockquote><h6><b>Note: </b>If you define the existing attributes in the Class Specific Attributes of the class, rather than in the Attribute Initializations, the instance creates a class-qualified attribute name for the original attribute, according to G2's multiple inheritance mechanism. However, the internal ReThink procedures use the unqualified attribute name. For more information, see <i>G2 Reference Manual</i>. <a name="16368"></a></h6></blockquote><blockquote>  <a name="16370">You must also create the custom procedure by creating and editing an existing procedure, for example, <code>bpr-animate-object</code>. The new procedure might use the new attributes that the custom subobject defines, in this example, <code>custom-color</code>.</a></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>4	</b></td>    <td valign="top" width="580">Create a custom subclass of ReThink object, whose Attribute Initializations refers to the custom subobject class.<a name="16371"></a></td>  </tr></table><blockquote>  <a name="16372">For example, your class definition might define these attributes:</a></blockquote>
+<p >
+  <a name="16390"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="16375"><div >Attribute</a></div></th>
+    <th><a name="16377"><div >Value</a></div></th>
+  </tr>
+  <tr>
+    <td><p>Name<a name="16379"></a></p>
+</td>
+    <td><code>custom-animation-person-resource<a name="16381"> </a></code></blockquote></td>
+  </tr>
+  <tr>
+    <td><p>Direct Superior Classes<a name="16383"></a></p>
+</td>
+    <td><code>bpr-resource<a name="16385"> </a></code></blockquote></td>
+  </tr>
+  <tr>
+    <td><p>Attribute Initializations<a name="16387"></a></p>
+</td>
+    <td><code>animation-subtable initially is an
+instance of a custom-person-animation-subtable<a name="16389"> </a></code></blockquote></td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>5	</b></td>    <td valign="top" width="580">Create an instance of the custom class.<a name="16395"></a></td>  </tr></table><p>This figure shows this example:<a name="122891"></a></p>
+<p >
+  <a name="122898"> </a>
+<p><div align="left"><img src="images/creating.gif" border="0" hspace="0" vspace="0">
+</div><a name="122897"></a></p>
+
+
+
+</p>
+<p>For information about adding custom attributes to tab pages of the properties dialog, see <a href="customf3.htm#34765">Customizing Properties Dialogs</a>.<a name="122842"></a></p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="how-to34.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="how-to36.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
