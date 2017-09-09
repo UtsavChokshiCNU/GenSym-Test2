@@ -1,0 +1,197 @@
+#!/bin/sh
+
+if [ $# -lt 1 ]; then
+   echo "usage: update-cvs-dir [-r | -print] [-trashonly | -notrash] [-quiet] <path>"
+   exit 1
+fi
+
+#   This program uses cvs to bring all files in the <path> directory up to date.
+# Using cvs, a check is first made to determine whether any files have been
+# added or modified, and such files are moved to a "trash" subdirectory.
+# Then "cvs update" is used to update all files.
+#   Arguments:
+#     <path>:  The full path to the directory to which cvs is to be applied.
+#     -r:      Apply this script recursively to all subdirectories controlled
+#              by cvs (which contain a CVS subdirectory). Symbolic links are
+#              followed.
+#     -trashonly: Move modified or new files to "trash" subdirectory, but don't
+#              update files.
+#     -notrash: Update files without first checking for trash.
+#     -print:  Echo on a single line the basename of all files updated. By
+#              default, prints names of all updated files.  With the -trashonly
+#              option, names of files placed in the trash are printed.
+#     -quiet:  When files are moved to the trash, an error message listing the
+#              files is output.  This option suppresses that error message.
+# Bugs or enhancements:
+#  1) Could apply to current directory by default if <path> were omitted.
+#  2) Symbolic links are assumed to be directory links
+#  3) No check is made for cyclic symbolic links; infinite looping is possible
+#  4) This assumes that $CVSROOT and $EDITOR are set properly for CVS.
+#
+#-----------------------------------------------------------------
+# Variables that must be set for testing, since normally this script
+# is in a fixed, known location.  Be sure to change it back before committing.
+# SCRIPTDIR=$SRCBOX/scripts
+
+SCRIPTDIR=/home/development/scripts
+
+#-----------------------------------------------------------------
+# The following are essentially variable declarations
+
+recursive=""                 # Indicates presence of -r option
+print=""                     # Indicates presence of -print option
+trashoption=""               # -trashonly, -notrash or null
+quiet=""                     # Indicates presence of -quiet option
+
+#-----------------------------------------------------------------
+# Process the command line and set appropriate variables
+
+while [ TRUE ]; do             # loop exits when case does not match option
+  case "$1" in
+    -r) recursive=$1; shift
+             ;;
+    -print) print=$1; shift
+             ;;
+    -trashonly | -notrash) trashoption=$1; shift
+             ;;
+    -quiet) quiet=$1; shift
+             ;;
+    -*)                        # check for strange options just in case
+        echo "Error: $0: illegal option $1" 1>&2;  exit 1
+             ;;
+    *)  break                  # must be pathname so leave loop
+             ;;
+  esac
+done
+
+#-----------------------------------------------------------------
+# Check for pathname argument, extract it, and check it
+
+if [  $# = 0 ]; then
+    echo "Error: $0: missing directory path argument" 1>&2; exit 1
+elif [  $# != 1 ]; then
+    shift; echo "Error: $0: unexpected arguments $*" 1>&2; exit 1
+else
+    pathname="$1"
+fi
+
+  # Check that pathname begins with "/"
+case $pathname in
+   /*) # looks like a full pathname, so accept it
+       ;;
+   *)  echo "Error: $0: full path required as argument: $pathname" 1>&2;
+       exit 1
+       ;;
+esac
+
+  # Check that pathname is a directory managed by CVS
+if [ ! -d "$pathname" -a ! -h "$pathname" ]    # check for directory or link
+then
+    echo "Error: $0: $pathname is not a directory" 1>&2; exit 1
+elif [ ! -d "$pathname/CVS" ]; then
+    echo "Error: $0: $pathname not a cvs directory (has no CVS subdirectory)" 1>&2
+    exit 1
+fi
+
+#-----------------------------------------------------------------
+# Check arguments for anomalies
+
+if [  "$recursive" != "" -a "$print" != "" ]; then
+    echo "Error: $0: -print option is not available with -r option" 1>&2
+    exit 1
+fi
+
+#-----------------------------------------------------------------
+# All subsequent work is done in the argument <path> directory
+
+cd $pathname
+
+#-----------------------------------------------------------------
+# Identify and store "trash" files
+
+if [ "$trashoption" != "-notrash" ]; then   # i.e., if true make trash
+      # Use "cvs -nq update -l" to generate list of files to put in trash. Note
+      # the presence of backquotes for the assignment.
+
+    trashlist=`cvs -nq update -l | while read type name rest
+                  do
+                    case "$type" in
+                      M | "?" | C)
+                         echo -n "$name "   # add to trashlist (-n: no newline)
+                         ;;
+                      A)   # Print warning to standard error.
+                           # Message is not suppressed by -quiet option.
+                         echo -n "warning: $0: $pathname/$name " 1>&2
+                         echo "has been added to cvs but not committed" 1>&2
+                         ;;
+                    esac
+                  done`
+
+
+    # If there are trashfiles, store them in ./trash
+    if [ "$trashlist" != "" ]; then
+
+        if [ -f trash ]; then   # If "trash" file exists but is not a directory,
+            rm trash            # delete it.
+        fi
+
+        if [ ! -d trash ]; then # If no trash directory exists, create one.
+            mkdir trash        
+        fi
+
+        mv $trashlist trash     # Move all trashfiles into trash subdirectory
+        
+        if [ "$quiet" != "-quiet" ]; then   # Print trash list to standard error
+            echo "warning: $0:  $trashlist --> moved to $pathname/trash" 1>&2
+        fi
+
+    fi
+fi
+
+#-----------------------------------------------------------------
+# Perform the cvs update
+
+if [ "$trashoption" != "-trashonly" ]; then     # skip for -trashonly option
+
+      # Use "cvs -q update -l" to update files and generate list of their names.
+      # Note the presence of backquotes for the assignment.
+
+    updatelist=`cvs -q update -l | while read type name rest
+                    do
+                        if [ "$type" = U ]; then
+                            echo -n "$name "
+                        fi
+                    done`
+fi
+
+#-----------------------------------------------------------------
+# Take final action.  Either
+#   i)   print the name of files that were put in the trash, or
+#   ii)  print the name of files that were updated, or
+#   iii) invoke the script recursively if -r option is present, or
+#   iv)  return without printing anything
+
+if [ "$recursive" != "-r" ]; then      # If invocation is not recursive
+
+    if [ "$print" = "-print" ]; then   # Process -print option.
+
+        if [ "$trashoption" = "-trashonly" ]; then
+            echo "$trashlist"
+        else
+            echo "$updatelist"
+        fi
+    fi
+else                                   # If invocation is recursive
+    for name in *                      # examine each file in current directory
+    do
+        if [ -d $name -o -h $name ]    # If it is a directory (or symbolic link)
+        then
+            if [ -d $name/CVS ]; then  # and it contains a CVS subdirectory
+                                       # (and is therefore managed by cvs)
+                # Invoke command recursively for it.  The full path obviates
+                # the need to have this script's directory in the search path.
+                $SCRIPTDIR/update-cvs-dir -r $trashoption $quiet $pathname/$name
+            fi
+        fi
+    done
+fi
