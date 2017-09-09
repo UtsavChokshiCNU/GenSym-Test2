@@ -1,0 +1,78 @@
+#!/bin/sh
+# usage: generate-family-files <scriptname> <stage-dir> <famfilename> family
+#    where <scriptname> is the file name to give the script
+#    where <stage-dir> a pathname to a directory in which the bundle directory
+#      trees will be placed
+#    where <famfilename> is the name of the G2.fam file
+#    NB: family should be a family name with its version tag. i.e., there must
+#    be a family metafile named <family>-family.lisp, e.g., g2-52r1-family.lisp
+#
+#   Examples:
+#     % generate-family-files   make-g2-52r1-stage.sh   /bt/mhd5/junk   g2-52r1.fam  g2-52r1
+#
+# Copyright (c) 1986-2017 Gensym Corporation
+# All Rights Reserved.
+#
+# By Mark David and Judy Anderson, Gensym Corporation
+
+# A subdirectory "sbin" is needed to hold the binaries, so first create one if
+# it doesn't exist
+if [ ! -d "sbin" ]; then mkdir sbin; fi
+
+if [ -z "$4" ]
+then
+  echo "usage: $0 <scriptname> <stage-dir> <famfilename> <family>"
+  echo "Example:   % generate-family-files   make-g2-52r1-stage.sh   /bt/mhd5/junk   g2-52r1.fam  g2-52r1"
+  exit 1
+fi
+sunos="/home/lucid/lucid41/lisp-clos-411 -no-init-file"
+solaris="/home/lucid/liquid50/lisp-clos-50 -no-init-file"
+sbcl="/usr/bin/sbcl --no-userinit"
+
+if [ "$MACHINE" = "sparcsol" ]; then
+  lisp=$solaris
+  fi
+
+if [ "$MACHINE" = "sun4" ]; then
+  lisp=$sunos
+fi
+
+if [ "$MACHINE" = "linux" -o "$MACHINE" = "linux64" ]; then
+    lisp=$sbcl
+fi
+
+if [ -z "$lisp" ]; then
+    echo "Warning: unknown architecture: $MACHINE"
+    echo "Trying $sbcl."
+    exit 1
+fi
+
+scriptname=$1
+stagedir=$2
+famfilename=$3
+family=$4
+
+#echo scriptname=$scriptname
+#echo stagedir=$stagedir
+#echo famfilename=$famfilename
+
+$lisp > $famfilename.log <<EOS
+(load "fam-script-loader.lisp")
+(in-package "BUNDLE")
+(new-fam-script-loader '$family)
+(make-$family-fam-script "$scriptname" "$stagedir")
+(make-$family-fam "$famfilename")
+(quit)
+EOS
+
+if [ $? -ne 0 ]; then
+    echo "Failed creating script $scriptname and family file $famfilename from family $family"
+    exit 1
+fi
+
+chmod a+x $scriptname
+echo
+echo
+echo created script $scriptname and family file $famfilename.
+echo log file in $famfilename.log
+echo ALLDONE
