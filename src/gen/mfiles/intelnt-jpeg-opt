@@ -1,0 +1,334 @@
+PRODUCT = jpeg
+ODIR = opt
+PLATFORM = intelnt
+CDIR = $(SRCBOX)\$(PRODUCT)\c
+MFDIR = $(DSTBOX)\$(PRODUCT)\$(ODIR)
+NODEBUG = 1
+SCRIPTSDIR = $(SCRIPTSBOX)\scripts\nt
+CC_FLAGS = $(cflags) $(cvarsmt) -D_CTYPE_DISABLE_MACROS
+
+# The include file ntwin32.mak defines macros to provide independence
+# macro      Intel NT             Alpha NT      Definition
+# =====      ========             ========      ===========
+# $(cc)      cl                   claxp         compiler
+# $(ccommon) -c -W3               same          standard compiler flags
+# $(cdebug)  -Od -Zi              -Od -Zi -Zh   standard debug flags*
+# $(cflags)  $(ccommon) -D_X86_=1 -c -DALPHA=1  to identify platform
+# $(cvarsdll) -DWIN32 $(noansi)    same          to identify o.s.
+# $(link)    link32               same          linker
+# $(ldebug)  -debug:full          same          linker debug flags*
+#            -debugtype:cv              
+# $(guilflags) -subsystem:windows same          GUI link flags
+#             -entry:WinMainCRTStartup  
+#
+# (*) A NODEBUG option or macro turns off debugging and specifies
+#    full optimization.
+
+!include <ntwin32.mak>
+
+JPEGHFILES = $(CDIR)\cderror.h $(CDIR)\jchuff.h $(CDIR)\jconfig.h \
+  $(CDIR)\jdct.h $(CDIR)\jdhuff.h $(CDIR)\jerror.h $(CDIR)\jinclude.h \
+  $(CDIR)\jmemsys.h $(CDIR)\jmorecfg.h $(CDIR)\jpegint.h
+
+all : _mfenter libjpeg.lib _mfexit
+
+_mfenter : 
+	@- $(SCRIPTSDIR)\errsweep.bat -init
+
+_mfexit : 
+	@- $(SCRIPTSDIR)\errsweep.bat -finish
+
+libjpeg.lib : jcapimin.obj jcapistd.obj jccoefct.obj jccolor.obj \
+  jcdctmgr.obj jchuff.obj jcinit.obj jcmainct.obj jcmarker.obj jcmaster.obj \
+  jcomapi.obj jcparam.obj jcphuff.obj jcprepct.obj jcsample.obj jctrans.obj \
+  jdapimin.obj jdapistd.obj jdatadst.obj jdatasrc.obj jdcoefct.obj \
+  jdcolor.obj jddctmgr.obj jdhuff.obj jdinput.obj jdmainct.obj jdmarker.obj \
+  jdmaster.obj jdmerge.obj jdphuff.obj jdpostct.obj jdsample.obj jdtrans.obj \
+  jerror.obj jfdctflt.obj jfdctfst.obj jfdctint.obj jidctflt.obj jidctfst.obj \
+  jidctint.obj jidctred.obj jmemmgr.obj jmemnobs.obj jquant1.obj jquant2.obj \
+  jutils.obj
+	- del libjpeg.lib
+	@- $(SCRIPTSDIR)\errsweep.bat libjpeg.lib
+	$(implib) /out:libjpeg.lib   jcapimin.obj jcapistd.obj jccoefct.obj jccolor.obj jcdctmgr.obj jchuff.obj jcinit.obj jcmainct.obj jcmarker.obj jcmaster.obj jcomapi.obj jcparam.obj jcphuff.obj jcprepct.obj jcsample.obj jctrans.obj jdapimin.obj jdapistd.obj jdatadst.obj jdatasrc.obj jdcoefct.obj jdcolor.obj jddctmgr.obj jdhuff.obj jdinput.obj jdmainct.obj jdmarker.obj jdmaster.obj jdmerge.obj jdphuff.obj jdpostct.obj jdsample.obj jdtrans.obj jerror.obj jfdctflt.obj jfdctfst.obj jfdctint.obj jidctflt.obj jidctfst.obj jidctint.obj jidctred.obj jquant1.obj jquant2.obj jutils.obj jmemmgr.obj jmemnobs.obj
+	@- del current.bat
+
+jcapimin.obj : $(CDIR)\jcapimin.c $(JPEGHFILES)
+	- del jcapimin.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jcapimin.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jcapimin.c
+	@- del current.bat
+
+jcapistd.obj : $(CDIR)\jcapistd.c $(JPEGHFILES)
+	- del jcapistd.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jcapistd.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jcapistd.c
+	@- del current.bat
+
+jccoefct.obj : $(CDIR)\jccoefct.c $(JPEGHFILES)
+	- del jccoefct.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jccoefct.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jccoefct.c
+	@- del current.bat
+
+jccolor.obj : $(CDIR)\jccolor.c $(JPEGHFILES)
+	- del jccolor.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jccolor.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jccolor.c
+	@- del current.bat
+
+jcdctmgr.obj : $(CDIR)\jcdctmgr.c $(JPEGHFILES)
+	- del jcdctmgr.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jcdctmgr.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jcdctmgr.c
+	@- del current.bat
+
+jchuff.obj : $(CDIR)\jchuff.c $(JPEGHFILES)
+	- del jchuff.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jchuff.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jchuff.c
+	@- del current.bat
+
+jcinit.obj : $(CDIR)\jcinit.c $(JPEGHFILES)
+	- del jcinit.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jcinit.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jcinit.c
+	@- del current.bat
+
+jcmainct.obj : $(CDIR)\jcmainct.c $(JPEGHFILES)
+	- del jcmainct.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jcmainct.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jcmainct.c
+	@- del current.bat
+
+jcmarker.obj : $(CDIR)\jcmarker.c $(JPEGHFILES)
+	- del jcmarker.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jcmarker.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jcmarker.c
+	@- del current.bat
+
+jcmaster.obj : $(CDIR)\jcmaster.c $(JPEGHFILES)
+	- del jcmaster.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jcmaster.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jcmaster.c
+	@- del current.bat
+
+jcomapi.obj : $(CDIR)\jcomapi.c $(JPEGHFILES)
+	- del jcomapi.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jcomapi.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jcomapi.c
+	@- del current.bat
+
+jcparam.obj : $(CDIR)\jcparam.c $(JPEGHFILES)
+	- del jcparam.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jcparam.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jcparam.c
+	@- del current.bat
+
+jcphuff.obj : $(CDIR)\jcphuff.c $(JPEGHFILES)
+	- del jcphuff.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jcphuff.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jcphuff.c
+	@- del current.bat
+
+jcprepct.obj : $(CDIR)\jcprepct.c $(JPEGHFILES)
+	- del jcprepct.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jcprepct.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jcprepct.c
+	@- del current.bat
+
+jcsample.obj : $(CDIR)\jcsample.c $(JPEGHFILES)
+	- del jcsample.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jcsample.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jcsample.c
+	@- del current.bat
+
+jctrans.obj : $(CDIR)\jctrans.c $(JPEGHFILES)
+	- del jctrans.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jctrans.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jctrans.c
+	@- del current.bat
+
+jdapimin.obj : $(CDIR)\jdapimin.c $(JPEGHFILES)
+	- del jdapimin.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jdapimin.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jdapimin.c
+	@- del current.bat
+
+jdapistd.obj : $(CDIR)\jdapistd.c $(JPEGHFILES)
+	- del jdapistd.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jdapistd.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jdapistd.c
+	@- del current.bat
+
+jdatadst.obj : $(CDIR)\jdatadst.c $(JPEGHFILES)
+	- del jdatadst.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jdatadst.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jdatadst.c
+	@- del current.bat
+
+jdatasrc.obj : $(CDIR)\jdatasrc.c $(JPEGHFILES)
+	- del jdatasrc.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jdatasrc.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jdatasrc.c
+	@- del current.bat
+
+jdcoefct.obj : $(CDIR)\jdcoefct.c $(JPEGHFILES)
+	- del jdcoefct.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jdcoefct.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jdcoefct.c
+	@- del current.bat
+
+jdcolor.obj : $(CDIR)\jdcolor.c $(JPEGHFILES)
+	- del jdcolor.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jdcolor.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jdcolor.c
+	@- del current.bat
+
+jddctmgr.obj : $(CDIR)\jddctmgr.c $(JPEGHFILES)
+	- del jddctmgr.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jddctmgr.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jddctmgr.c
+	@- del current.bat
+
+jdhuff.obj : $(CDIR)\jdhuff.c $(JPEGHFILES)
+	- del jdhuff.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jdhuff.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jdhuff.c
+	@- del current.bat
+
+jdinput.obj : $(CDIR)\jdinput.c $(JPEGHFILES)
+	- del jdinput.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jdinput.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jdinput.c
+	@- del current.bat
+
+jdmainct.obj : $(CDIR)\jdmainct.c $(JPEGHFILES)
+	- del jdmainct.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jdmainct.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jdmainct.c
+	@- del current.bat
+
+jdmarker.obj : $(CDIR)\jdmarker.c $(JPEGHFILES)
+	- del jdmarker.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jdmarker.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jdmarker.c
+	@- del current.bat
+
+jdmaster.obj : $(CDIR)\jdmaster.c $(JPEGHFILES)
+	- del jdmaster.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jdmaster.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jdmaster.c
+	@- del current.bat
+
+jdmerge.obj : $(CDIR)\jdmerge.c $(JPEGHFILES)
+	- del jdmerge.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jdmerge.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jdmerge.c
+	@- del current.bat
+
+jdphuff.obj : $(CDIR)\jdphuff.c $(JPEGHFILES)
+	- del jdphuff.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jdphuff.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jdphuff.c
+	@- del current.bat
+
+jdpostct.obj : $(CDIR)\jdpostct.c $(JPEGHFILES)
+	- del jdpostct.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jdpostct.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jdpostct.c
+	@- del current.bat
+
+jdsample.obj : $(CDIR)\jdsample.c $(JPEGHFILES)
+	- del jdsample.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jdsample.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jdsample.c
+	@- del current.bat
+
+jdtrans.obj : $(CDIR)\jdtrans.c $(JPEGHFILES)
+	- del jdtrans.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jdtrans.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jdtrans.c
+	@- del current.bat
+
+jerror.obj : $(CDIR)\jerror.c $(JPEGHFILES)
+	- del jerror.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jerror.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jerror.c
+	@- del current.bat
+
+jfdctflt.obj : $(CDIR)\jfdctflt.c $(JPEGHFILES)
+	- del jfdctflt.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jfdctflt.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jfdctflt.c
+	@- del current.bat
+
+jfdctfst.obj : $(CDIR)\jfdctfst.c $(JPEGHFILES)
+	- del jfdctfst.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jfdctfst.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jfdctfst.c
+	@- del current.bat
+
+jfdctint.obj : $(CDIR)\jfdctint.c $(JPEGHFILES)
+	- del jfdctint.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jfdctint.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jfdctint.c
+	@- del current.bat
+
+jidctflt.obj : $(CDIR)\jidctflt.c $(JPEGHFILES)
+	- del jidctflt.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jidctflt.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jidctflt.c
+	@- del current.bat
+
+jidctfst.obj : $(CDIR)\jidctfst.c $(JPEGHFILES)
+	- del jidctfst.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jidctfst.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jidctfst.c
+	@- del current.bat
+
+jidctint.obj : $(CDIR)\jidctint.c $(JPEGHFILES)
+	- del jidctint.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jidctint.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jidctint.c
+	@- del current.bat
+
+jidctred.obj : $(CDIR)\jidctred.c $(JPEGHFILES)
+	- del jidctred.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jidctred.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jidctred.c
+	@- del current.bat
+
+jmemmgr.obj : $(CDIR)\jmemmgr.c $(JPEGHFILES)
+	- del jmemmgr.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jmemmgr.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jmemmgr.c
+	@- del current.bat
+
+jmemnobs.obj : $(CDIR)\jmemnobs.c $(JPEGHFILES)
+	- del jmemnobs.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jmemnobs.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jmemnobs.c
+	@- del current.bat
+
+jquant1.obj : $(CDIR)\jquant1.c $(JPEGHFILES)
+	- del jquant1.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jquant1.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jquant1.c
+	@- del current.bat
+
+jquant2.obj : $(CDIR)\jquant2.c $(JPEGHFILES)
+	- del jquant2.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jquant2.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jquant2.c
+	@- del current.bat
+
+jutils.obj : $(CDIR)\jutils.c $(JPEGHFILES)
+	- del jutils.obj
+	@- $(SCRIPTSDIR)\errsweep.bat jutils.obj
+	$(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\jutils.c
+	@- del current.bat
+
+clean : 
+	- del *.obj
+	- del *.lib
+	- del *.exe
