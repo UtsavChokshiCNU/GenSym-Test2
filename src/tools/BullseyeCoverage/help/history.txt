@@ -1,0 +1,4132 @@
+Release History
+
+Version 7.13.38 - 26 Mar 2010
+  Change source level report to show blank lines before unmatched code rather than after,
+    giving better results with for-statements
+  Add documentation for TASKING Software Development Tools
+  Add documentation for National Instruments LabWindows/CVI
+  Recognize GreenHills PPC compiler name ecomppc
+  Recognize Freescale CodeWarrior for StarCore keyword 'asm'
+  Fix covc for CodeWarrior option -o with directory. Symptom: run-time error 4
+  Add support for Cygwin "!<symlink>" files. Symptom: "Exception: unknown compiler" or "gcc: Access is denied."
+  Fix covc for K&R function parameter with implicit 'int' type. Symptom: "error: syntax error, near ';'"
+
+Version 7.13.37 - 11 Mar 2010
+  Add support for IAR Systems SuperH compiler (no integration with IAR Embedded Workbench)
+
+Version 7.13.36 - 10 Mar 2010
+  For IAR Systems compiler, put data into .covbss, .covdata
+
+Version 7.13.35 - 5 Mar 2010
+  Do not require home directory. Symptom: "Exception: cannot determine home directory"
+  Support Microsoft Visual Studio 2010 RC
+
+Version 7.13.34 - 2 Mar 2010
+  Fix run-time for errors 15, 16. Symptom: incorrect error 5 after 15 or 16
+  Automatically disable Microsoft C++ warning C4710
+  For MetaWare ARC, put data into .covbss, .covdata
+  Additional C++0x support
+
+Version 7.13.33 - 20 Feb 2010
+  Add support for C++0x 'enum class'
+
+Version 7.13.32 - 19 Feb 2010
+  Recognize Freescale CodeWarrior for StarCore extended keywords
+  Update support for Analog Devices VisualDSP++
+
+Version 7.13.31 - 15 Feb 2010
+  Add support for C++0x function-definition with '= default' or '= delete'
+  Recognize GCC option -std=c++0x
+  Reporting engine identifies sources by CRC of contents rather than timestamp.
+
+Version 7.13.30 - 5 Feb 2010
+  Fix covc on Windows for carriage return at end of command line.
+    Symptom: no instrumentation
+
+Version 7.13.29 - 3 Feb 2010
+  Fix covlmgr --clear. Symptom: no effect, or crash. Broken in 7.13.21
+  Support Intel C++ 11 on Linux. Symptom: "error: omission of exception
+    specification is incompatible with previous function"
+
+Version 7.13.28 - 27 Jan 2010
+  Fix covc for Microsoft Visual Studio 2003 and earlier with command line >4K.
+    Symptom: compile error due to command line truncated.  Broken in 7.13.26
+  Fix covc for GCC precompiled header name of the form *.gch/*.
+    Symptom: "cc1plus: error: <PCH-file>: No such file or directory"
+  Improve speed performance with Microsoft C++ and Boost C++ Libraries.
+    Symptom: long compile time, perhaps seemingly infinite
+
+Version 7.13.27 - 13 Jan 2010
+  Run-time again requires pthread_join(), it is necessary for some environments
+    such as Windows Kernel. Reverses change in 7.13.24
+  Add support for Texas Instruments TMS320C3x/TMS320C4x compiler
+
+Version 7.13.26 - 12 Jan 2010
+  Fix run-time file locking for systems with mandatory locking. Symptom: "error 5: File i/o error"
+  Fix run-time for Windows with WDK Application Verifier.
+    Symptom: APPLICATION_VERIFIER_LOCKS_LOCK_ALREADY_INITIALIZED
+  With Microsoft C++, recognize keyword _forceinline. Symptom: "syntax error"
+  covc recognizes erroneous member-specification beginning with "(" for bug compatibility with
+    Microsoft C++.  Symptom: "error: syntax error"
+  Improve performance for reporting and compiling with coverage files that have been used for many builds
+  On Unix, $HOME/.BullseyeCoverage is a directory rather than a regular file
+
+Version 7.13.25 - 11 Dec 2009
+  Support ARC MetaWare Direct Register Assignment for Variables.
+    Symptom: "expected ';' or ',' or '=', near '=='"
+  Define instrumentation data before first function but after last pragma.
+    Symptom: link error with ARC MetaWare and #pragma Code or #pragma Data.
+  Support Freescale CodeWarrior for Power Architecture
+  Support MetaWare High C/C++ for PowerPC
+  covc recognizes erroneous member-specification "()" for bug compatibility with
+    Microsoft C++.  Symptom: "error: syntax error, near ')'"
+  Drop support for Solaris 7
+
+Version 7.13.24 - 24 Nov 2009
+  Recognize LynxWorks GCC. Symptom: "Exception: unknown compiler"
+  Add support for Intel C++ 11 on Windows
+  Fix for eMbedded Visual C++. Symptom: cl.exe not found
+  Run-time no longer requires pthread_join(), it was unnecessary
+
+Version 7.13.23 - 23 Nov 2009
+  With IAR Systems compiler, recognize keywords __code, __memory_of.
+    Symptom: "iutility(333): error: expected ';' or ',' or '=', near '_MemHolder'"
+  Apple Xcode documentation update
+  On Solaris SPARC build run-time with SS12u1 rather than FD6u2
+
+Version 7.13.22 - 19 Nov 2009
+  Fix CoverageBrowser for unknown function due to #line directive. Symptom: crash. Broken in 7.12.8
+
+Version 7.13.21 - 17 Nov 2009
+  With Sun C/C++, remove .il files from preprocessor command. Symptom: compiler error
+  Support Microsoft Visual Studio 2010 beta
+  covlmgr --clear releases all licenses
+  XML output escapes quotes, to work around function name containing Microsoft attributes in parameters, fixed in 7.13.17
+
+Version 7.13.20 - 12 Nov 2009
+  On Unix, run-time also looks for environment variables in /etc/BullseyeCoverageEnv.txt
+  Fix Coverage Browser command Region Reset Measurements only available on directory and source file
+  Remove covselect option -c/--create. covselect automatically creates the coverage file if needed
+
+Version 7.13.19 - 9 Nov 2009
+  Fix covc for Microsoft C++ and Intel C++ with CTRL+Z character in source. Symptom: crash
+  covc reports "compiler not found" for compiler specified with directory but not found.
+    Symptom: "unknown compiler"
+  Fix covc for call to process termination function (for example _Exit) within excluded function.
+    Symptom: unresolved symbol cov_term. Broken in 7.13.17
+  Fix covc for ARC MetaWare 8.3.47. Symptom: "stdlib.h(29): error: syntax error, near 'wchar_t'"
+  Coverage Browser loads files with wildcard selections much faster
+
+Version 7.13.18 - 28 Oct 2009
+  Add covc option --const to instrument constant expressions
+  Add support for PowerPC e200z with Wind River Diab compiler. Symptom:
+    building run-time "error: not part of selected instruction set architecture"
+  Work around IAR Embedded Workbench for ARM simulator not recognizing
+    instructions ldrex, strex. Symptom: run-time hang
+  covc identifies compilers in a more efficient order, first checking those that
+    do not require spawning. Symptom: with verbose mode, messages such as
+    "running ...", "  result ...", followed by inconsequential compiler error
+    messages
+  Fix covc for Microsoft C++ multiple compile simultaneous compile commands.
+    Symptom: "c1083: cannot open PredefineCache entry file"
+
+Version 7.13.17 - 20 Oct 2009
+  Freshen support for IAR Embedded Workbench for ARM
+  Add support for Linux embedded kernel on SH4
+  Fix covc for syntax error resembling a function definition in an uninstantiated
+    template function where the compiler defers syntax checking.
+  Symptom: "Exception: Vector index out of bounds in get" or crash
+  Fix covc for function definition using Microsoft attributes in parameters.
+    Symptom: attributes incorrectly included in function name
+  Fix covc for Freescale CodeWarrior for ColdFire 6.3. Symptom:
+    ".../string.cf.h(32): error: expected expression, near 'const'"
+  Support Microsoft C++ 16
+
+Version 7.13.16 - 12 Oct 2009
+  Fix covc for Microsoft C++ precompiled header ending with empty declaration. Symptom: compiler error
+  Fix run-time for Symbian OS on ARM with old SDK due to RDebug::RawPrint not available
+  Fix run-time for GCC ARM. Symptom: unpredictable behavior. Broken in 7.13.15
+
+Version 7.13.15 - 7 Oct 2009
+  Fix covc for Freescale CodeWarrior for ColdFire 6.3. Symptom: #pragma have no effect
+  Fix covc for Cygwin GCC installed in directory containing spaces. Symptom:
+    "Exception: error running ..."
+  Fix run-time for Mac OS X prior to 10.6. Symptom: link errors. Broken in 7.13.13
+
+Version 7.13.14 - 1 Oct 2009
+  Add Microsoft C++ compiler interceptor clthumb.exe
+  For compatibility with a Microsoft C++ language extension, allow a condition
+    to begin with a decl-specifier-seq.  Symptom: "error: expected expression,
+    near 'static'".  Broken in 7.13.5
+
+Version 7.13.13 - 22 Sep 2009
+  Support Mac OS X 10.6. Symptom: crash
+  Fix covc for GCC command containing .h together with other sources.
+    Symptom: sources not instrumented or undefined symbol cov_probe_...
+  Fix run-time for GCC on MIPS. Symptom: crash
+
+Version 7.13.12 - 15 Sep 2009
+  Support Freescale CodeWarrior for ColdFire
+
+Version 7.13.11 - 10 Sep 2009
+  With Wind River Diab C, allow assignment-operator as two tokens, for example
+    "a * = b". Symptom: "error: syntax error, near '='"
+  Recognize calls to _Exit as program termination. Symptom: coverage not saved
+
+Version 7.13.10 - 9 Sep 2009
+  Support Microsoft C++ "extern template" inside class. Symptom: compiler error
+  Support TI Code Composer Studio 4
+
+Version 7.13.9 - 8 Sep 2009
+  Support Embarcadero C++Builder 2010
+  Support Microsoft C++ "extern template" inside class. Symptom: "syntax error, near 'template'"
+
+Version 7.13.8 - 4 Sep 2009
+  covc recognizes GCC versions 2.7 and 2.8. Symptom: "Exception: unknown compiler"
+  Add support for Tensilica Xtensa C/C++
+
+Version 7.13.7 - 2 Sep 2009
+  Fix covc for identifier followed by '<' resembling either a template-id or relational-expression.
+    Symptom: parse error
+
+Version 7.13.6 - 28 Aug 2009
+  covc instruments conditional operators within decisions - for example "if (a?b:c)"
+  Fix covc for expressions of the form (e1)&&e2. Symptom: parse error.  Broken in 7.13.0
+  covlink does not add kernel32.lib with -nodefaultlib:kernel32, user32.lib with
+    -nodefaultlib:user32.  Symptoms: "kernel32.lib(KERNEL32.dll) : error LNK2005",
+	"user32.lib(USER32.dll) : error LNK2005"
+  Support C++0x late-specified return type and lambda expressions
+  Fix run/libcov-analogDevices.c. Symptom: "cc0020: error: identifier O_RDONLY is undefined"
+
+Version 7.13.5 - 24 Aug 2009
+  covc identifies Texas Instruments compilers on Linux. Symptom: "Exception: unknown compiler"
+  Support C++0x keyword decltype
+
+Version 7.13.4 - 19 Aug 2009
+  covc implements some C++0x variadic template syntax, enough to parse GCC <tuple>
+  covc supports Diab sizeof extension. Symptom: "parse error near ','"
+  Provide kernel32.lib and user32.lib for last resort search by covlink.
+    Symptom: LNK1181 on kernel32.lib or user32.lib
+  Remove error cov139 and warning cov815 in favor of a simpler warning message
+
+Version 7.13.3 - 14 Aug 2009
+  covc supports Diab sizeof extension. Symptom: "error: expected '('"
+  Fix covc for Microsoft #import with incorrect "version" or "lcid". Symptom: c3506
+
+Version 7.13.2 - 11 Aug 2009
+  Fix covc for Microsoft CLI attributes injecting code referencing one of "VERSP_RELEASE", "VERSP_TEST", "V_ARRAY".
+    Symptom: C3861
+  Add support for Freescale CodeWarrior for StarCore, Windows and Linux
+  With Microsoft C++ covc automatically excludes compiler-generated .tli files
+
+Version 7.13.1 - 6 Aug 2009
+  covc recognizes GreenHills keyword __va_vector. Symptom: "error: expected ')', near '?'"
+  covc mimics Microsoft behavior for operator "defined" in macro replacement,
+    rather than issuing warning c5998.
+
+Version 7.13.0 - 5 Aug 2009
+  Function parameters are part of function names for C, for compatibility with
+    code compiled as both C and C++
+  Fix covc for GCC Label as Value cast to type other than void. Symptom:
+    "error: expected expression, near '&&'"
+  covc mimics Microsoft C++ #pragma push_macro and pop_macro having no effect in
+    files included by code injected from #import. Symptom: error in Microsoft
+    header on definition or usage of operator new
+
+Version 7.12.9 - 27 Jul 2009
+  Fix covbr for more than 1000 probes on one line. Symptom: crash
+
+Version 7.12.8 - 23 Jul 2009
+  Fix covc for Sun cc 5.4. Symptom: "unknown compiler"
+  Fix covc for GCC __attribute__ with unclosed '('. Symptom: crash upon memory allocation failure
+  Fix install for Mac OS. Symptom: "Exception: text file bin/CoverageBrowser (562): found 0 licenses"
+
+Version 7.12.7 - 16 Jul 2009
+  Coverage Browser total for Query Results does not count excluded regions
+  License manager file tracks filename only (not file serial number). File serial numbers are not reliable. Symptom:
+    "License manager file ... was copied (expected serial ..., got ...). Use the original file or recreate the file"
+
+Version 7.12.6 - 14 Jul 2009
+  Fix covc for ARM RVCT enabling and disabling keyword 'restrict'. Symptom: parse error
+
+Version 7.12.5 - 9 Jul 2009
+  Fix Linux kernel support for kernels newer than 2.6.24. Symptom: undefined symbol: init_mm
+  Add memory barriers to run-time atomic functions
+  Add support for NEC V850 CA850
+  Freshen support for Renesas C/C++ for SuperH
+  Fix covc for "using typename ...". Symptom: "error: expected id-expression, near 'typename'". Broken in 7.8.45
+  Add support for TI Code Composer on Linux x86, Linux x64
+
+Version 7.12.4 - 1 Jul 2009
+  Improved source code level reporting for covc option --macro with source lines containing macros.
+    Symptom: no column information after macro
+  Add run-time errors 21, 22
+  In covxml output, remove probe element attribute seq, add attribute col_seq
+  Fix covc --symbolic. Symptom: symbolic links in the basename not resolved
+  Fix covgetkernel for FreeBSD. Symptom: run-time version mismatch
+  Fix covc for -machine:ppcbe. Symptom: LNK2001 on _cov_DllMain@12
+
+Version 7.12.3 - 17 Jun 2009
+  Fix covc for GCC __label__ at beginning of function in C++. Symptom: "error: '__label__' not at the beginning of a block"
+  Add run-time error 20, remove error 14
+
+Version 7.12.2 - 16 Jun 2009
+  Add support for lcc-win32 version 2.4.1 MathWorks patch 1.35. Symptom: "<source>-pp.i: No such file or directory"
+
+Version 7.12.1 - 15 Jun 2009
+  Fix covc for Microsoft C++ -clr with property-definition containing access-specifier. Symptom: "error: expected expression"
+  With Microsoft Visual C++ 6, do not treat __FUNCTION__, __FUNCSIG__, __FUNCDNAME__ specially. Symptom: c4117 followed by C2065
+  Drop support for Mac OS X 10.3
+
+Version 7.12.0 - 10 Jun 2009
+  Coverage Browser View Query does not display classes and namespaces that contain just one class or namespace
+  covclass shows classes and namespaces containing just classes and namespaces
+  On Unix, covc does not change umask for spawned processes.  Symptom: instrumented
+    executable with permissions -rwxrwxrwx
+  Add pthread_atfork to run/stub-pthread.h. Symptom: linker unresolved symbol for systems using stub-pthread.h. Missing since 7.11.25
+
+Version 7.11.32 - 4 Jun 2009
+  Coverage Browser View Query does not display folders that contain just one folder
+  Coverage Browser View Query considers the top level region a folder if it contains a source
+  covdir shows directories that contain just directories, in addition to directions containing sources
+  covdir shows the current directory as ./ rather than .
+  Fix run-time hang in child after fork() on Unix
+  On FreeBSD, covgetkernel retrieves coverage from all instances of the BullseyeCoverage runtime
+  With Microsoft C++ -clr, recognize "internal" as an identifier rather than a
+    keyword, at the beginning of a declaration.  Symptom: "error: expected ':'"
+  Fix covc for Cygwin compiler installed as Windows shortcut.  Symptom: "Exception: unknown compiler g++"
+
+Version 7.11.31 - 21 May 2009
+  With TI Code Composer, recognize keywords '__cregister' '__inline' '_far' '_near' 'restrict'. Symptom: parse error
+  Remove AIX covgetkernel option -r/--reset
+
+Version 7.11.30 - 19 May 2009
+  Fix covc for IBM C++ and xlC used to compile file with suffix .c. Symptom: compiler error due to incorrect language mode
+  covc recognizes erroneous declarator beginning with 'typename' for bug compatibility with Microsoft C++.
+    Symptom: "error: syntax error, near 'typename'"
+  For AIX, add additional diagnostics for covgetkernel --debug
+  On FreeBSD, automatically exclude /usr/src/lib/libc/
+
+Version 7.11.29 - 18 May 2009
+  Add Coverage Browser command View Column Details for keyboard accessibility
+  Coverage Browser total for Query Results does not count duplicate functions
+  Fix covselect -i/--import for input file missing terminating new line. Symptom: incorrect selection
+  On FreeBSD, automatically exclude /usr/src/lib/libc/
+  Fix covc for IBM C++ version 6 and earlier. Symptom: "Exception: unknown compiler"
+  Fix covc for precompiled header out of date and PCH included via -FI. Symptom: crash
+
+Version 7.11.28 - 5 May 2009
+  Fix covc for Microsoft C++ -showIncludes with -Yc. Symptom: -showIncludes output printed twice
+  Fix covc for keyword alignof, __alignof__, etc, with expression operand. Symptom: parser error. Broken in 7.11.13
+
+Version 7.11.27 - 29 Apr 2009
+  Add covc option --lib
+  Match compiler behavior for deferring syntax check of template constructor ctor-initializer.
+    Symptom: syntax error in template function (containing syntax error)
+  Fix covc for Microsoft C++ and Intel C++ mismatched quote ' or " inside __asm definition.
+    Symptom: c2001.  Broken in 7.11.17
+  covc interprets compiler arguments *.o* as object files. Symptom: with Sun C++, "null character in input"
+  On Linux, remove CoverageBrowser dependency on libpng12.so.0. Symptom: "no version information available"
+
+Version 7.11.26 - 21 Apr 2009
+  Fix run-time hang in child after fork() on Unix
+  Fix covc for Intel C++ icpc on Linux.  Symptom: incorrect language mode,
+    typically "error: linkage-specification not allowed in C, near 'extern'"
+  covc recognizes keyword '__declspec' with Intel C++ on Linux.  Symptom: parse error
+  covselect recognizes comments beginning with '#' when importing
+  Fix covc for IBM "#pragma option" that cannot be converted to command line -q.
+    Symptom: "1506-261 (W) Suboption ...  is not valid for option ..."
+
+Version 7.11.25 - 17 Apr 2009
+  Fix run-time hang in child after fork() on Unix
+
+Version 7.11.24 - 15 Apr 2009
+  Fix covc for Sun C++ options -xMD and -xMMD. Symptom: "make: *** No rule to make target '/tmp/covc-<number>/<filename>.i'"
+  Enhance covc to reduce coverage file i/o by 90% when compiling multiple sources, as Visual Studio does
+
+Version 7.11.23 - 9 Apr 2009
+  Fix covc for IAR Systems compiler option -o specifying a directory. Symptom: run-time error 4 "Object missing"
+  Fix covlink for Windows device driver entry GsDrvEnableDriver. Symptom: link error
+  Fix annotated source code reports for decision and condition probes at the same line and column. Symptom: probes reversed
+
+Version 7.11.23 - 8 Apr 2009
+  Fix covc for HP C++ not installed in /opt. Symptom: "cpp: warning 2021: Possibly incorrect message catalog."
+  With IBM C++, covc automatically adds -qfuncsect to work around the linker
+    improperly pulling in objects from libraries that are unreferenced and
+    instrumented.  Symptom: "ld: 0711-317 ERROR: Undefined symbol"
+
+Version 7.11.22 - 7 Apr 2009
+  Fix covc for Borland/CodeGear C++ option "-o path". Symptom: incorrect object filename in coverage file
+  Fix covc for HP C++ not installed in /opt. Symptom: preprocessor error
+
+Version 7.11.21 - 6 Apr 2009
+  Remove warning cov813 "source modified".
+
+Version 7.11.20 - 2 Apr 2009
+  Fix covc for Sun C++ preprocessor introducing newline between ':' and '::'.
+    Symptom: compile error
+  Coverage file retains 3 previous entries for each object file, to reduce
+    likelihood of run-time error 4 "Object missing"
+
+Version 7.11.19 - 30 Mar 2009
+  Fix instrumentation of C++ for-statement with condition using declarator.
+    Symptom: incorrect run-time behavior; assignment-expression evaluated only
+    once before loop. Broken in 7.4.22
+  For HP-UX IA64, add "@(#)" to run-time library for the "what" command
+
+Version 7.11.18 - 27 Mar 2009
+  Match compiler behavior for deferring syntax check of template functions with HP aC++ 6.
+    Symptom: syntax error in template function (containing syntax error)
+  Run-time error messages 2, 4, and 7 include object file build time
+
+Version 7.11.17 - 11 Mar 2009
+  Suppress GCC "warning: inlining failed in call to 'f'" due to instrumentation increasing code size
+  Freshen support for FreeBSD (7.1)
+
+Version 7.11.16 - 5 Mar 2009
+  Freshen support for ARC MetaWare
+  Add covlmgr action --remove
+
+Version 7.11.15 - 2 Mar 2009
+  Windows setup additional -compiler command line options
+  Fix Coverage Browser on Unix with inaccessible permissions on $HOME/.BullseyeCoverage.
+    Symptom: menu Tools Options crashes upon OK button
+
+Version 7.11.14 - 27 Feb 2009
+  Mimic Microsoft preprocessor for __VA_ARGS__ containing ',' used as macro
+    argument. Symptom: c4002
+
+Version 7.11.13 - 25 Feb 2009
+  With Microsoft C++, prevent enabling C4297. Symptom: C4297
+  Support C++0x rvalue references
+  Support C++0x keyword alignof
+  Work around IBM preprocessor incorrectly removing line splice after C style
+    comment with no space between. Symptom: syntax error, near '}'
+  Allow conditional operator with omitted operand (a ? : b) with all compilers,
+    not just GCC.
+
+Version 7.11.12 - 23 Feb 2009
+  Fix covc for Microsoft C++ option -ZI and -Ob0. Symptom: D8016
+
+Version 7.11.11 - 19 Feb 2009
+  With Microsoft C++, output from -showIncludes goes to standard output, not standard error
+  Fix Coverage Browser crash with function excluded
+
+Version 7.11.10 - 18 Feb 2009
+  Fix Windows installer for Windows Vista User Access Control. Symptom: "File
+    create error: bin/cov01.exe: Permission denied"
+  Add support for /usr/ucb/cc on Solaris
+  Fix "Warning: set modification time failure: operation not permitted"
+  Fix Coverage Browser fonts on Solaris. Symptom: text rendered as boxes
+
+Version 7.11.9 - 6 Feb 2009
+  Fix recognition of ARM RVCT armcc. Symptom: "Exception: unknown compiler"
+  Fix covc for Wind River / Diab C++ option -Xmake-dependency.  Symptom: build
+    error due to dependency on intermediate instrumented source
+  For Linux x86 and x64, add covgetkernel-mips-be-32
+  covc temporary directory depends on login name, for ClearCase. Symptom: build
+    failure when simultaneously building the same object file
+  License manager file tracks filename only (not file serial number) on Windows
+
+Version 7.11.8 - 27 Jan 2009
+  covc recognizes Microsoft C++ type trait keywords "__has_assign", etc.
+    Symptom: "error: expected '(', near ')'"
+  Fix Coverage Browser bottom pane for command Region Include/Exclude not
+    immediately updating measurements.
+  Recognize undocumented Microsoft C++/CLI "for each" syntax with missing
+    type-specifier-seq "for each ( declarator in ..."
+
+Version 7.11.7 - 22 Jan 2009
+  Remove KeGetCurrentIrql from libcov-windowsKernel-x64.lib. Symptom: LNK2005 on KeGetCurrentIrql
+  Fix Coverage Browser File Import Exclusions. Symptom: exclusions not imported.
+    Broken in 7.11.0
+  Fix Coverage Browser Region Reset Measurements when region is a drive letter.
+    Symptom: measurements not reset in file
+
+Version 7.11.6 - 21 Jan 2009
+  License manager file tracks filename as well as file serial number on Windows.
+  Unlimited licenses allow all platforms current and future, automatically
+
+Version 7.11.5 - 20 Jan 2009
+  Fix covclear and Coverage Browser Region Reset Measurements.
+    Symptom: corrupted file.  Broken in 7.11.0
+  With Microsoft C++, covc ignores invalid -D and -U arguments like Microsoft C++ does.
+    Symptom: warning d9020
+
+Version 7.11.4 - 16 Jan 2009
+  covc recognizes ARM RVCT option --memaccess -UL41. Symptom: "Error: C3057E: bad option"
+  Remove covmin command
+  For coverage files created by versions older than 7.5.0 with compilers other
+    than Microsoft C++ or Intel C++, drop support for source level reports showing
+    source lines split by probe onto multiple output lines
+
+Version 7.11.3 - 15 Jan 2009
+  covc correctly recognizes macros on source lines that expand to more than 1000
+    tokens per line
+  covxml output includes probe column
+  Windows installation does not disable coverage build
+
+Version 7.11.2 - 13 Jan 2009
+  Fix covc for function name matching a namespace name.  Symptom: function name garbled
+  Remove support for Intel C++ for XScale which was sold to Marvell in 2006,
+    apparently no longer available
+
+Version 7.11.1 - 9 Jan 2009
+  Add support for Green Hills compiler and INTEGRITY OS
+  Fix creating license manager file.  Symptom: upon copying the license manager
+    file, error missing path "Exception: License manager file must be , not ..."
+  Fix command line report directory name wildcard matching. Symptom: wildcard
+    selections have no effect
+
+Version 7.11.0 - 7 Jan 2009
+  New coverage file format is smaller and processed faster
+  Fix for covc --macro. Symptom: some measurements from macro expansions not counted
+  License manager prevents copying the license manager file by tracking the file
+    serial number only, and not the filename
+  Recognize ARC MetaWare C/C++ compiler command hcarc. Symptom: "Exception: unknown compiler"
+  Work around Green Hills compiler implicit include of reg.h. Symptom:
+    error #247: variable "__ghs_threadlocalstorage" has already been defined
+
+Version 7.10.8 - 19 Dec 2008
+  Fix covc for GCC on SuSE. Symptom: "Exception: unknown compiler"
+
+Version 7.10.7 - 18 Dec 2008
+  Fix run/libcov-linuxKernel.c missing atomic.h include
+  covc identifies Diab compiler by "Diab Data". Symptom: "Exception: unknown compiler"
+  Fix covc for GCC on SuSE. Symptom: "Exception: unknown compiler"
+
+Version 7.10.6 - 11 Dec 2008
+  Fix covc for switch statement containing nested compound statement. Symptom: crash
+  Added covlmgr option -f/--file.  covlmgr does not implicitly add its license
+    to files specified with -f/--file
+  Creating a license manager file during installation does not serialize the
+    installation; the license file must be used
+  Fix covc for Microsoft C++/CLI expressions such as "int::typeid". Symptom:
+    "error: expected id-expression, near 'typeid'"
+
+Version 7.10.5 - 8 Dec 2008
+  Fix for ccache. Symptom: "Exception: unknown compiler .../ccache/g++"
+
+Version 7.10.4 - 1 Dec 2008
+  Fix armlink for Symbian OS. Symptom: "Fatal error: L6002U: Could not open file
+    c:/Program Files/BullseyeCoverage/lib/libcov-armRvct.a"
+
+Version 7.10.3 - 27 Nov 2008
+  For Symbian OS, link with libcov-windows-x86.lib rather than
+    libcov-windows-x86-noThread.lib. Symptom: "mwldsym2.exe: Specified file
+    'c:/Apps/bullseyecoverage/lib/libcov-windows-x86-noThread.lib' not found"
+
+Version 7.10.2 - 26 Nov 2008
+  Run-time interface version 3 - all functions must be defined rather than
+    defining feature test macros
+  Documentation for QNX Windows host
+  Fix covc warning c4819. Symptom: incorrect message number, c4821
+  Fix covc warnings c4819, c4821. Symptom: filename missing
+
+Version 7.10.1 - 20 Nov 2008
+  For Microsoft C++, relocate predefine cache from BullseyeCoverage/bin to
+    user/Application Data/BullseyeCoverage
+  Fix covc crash for Microsoft C++ option -Yc when the rightmost three object
+    filename components length exceeds approximately 32.  Broken in 7.9.38
+  Fix run-time to create only one auto-save thread
+  covc no longer defines macro CCOVER - use _BullseyeCoverage
+
+Version 7.10.0 - 19 Nov 2008
+  New run-time architecture for Windows with Microsoft C++, Intel C++, CodeWarrior for Symbian OS
+  Fix covc for Microsoft C++ -Yc argument file included from a header itself
+    included in precompiled header. Symptom: compile error, such as C2027
+  Fix Coverage Browser crash upon exit with function excluded before rebuild.
+    Broken in 7.7.8
+
+Version 7.9.38 - 14 Nov 2008
+  Fix Coverage Browser and covxml for source filenames containing more than 100
+    subdirectories.  Symptom: crash
+  Fix covc for Microsoft C++ option -Yc and command line source file duplicated.
+    Symptom: C2369 on cov_o_data_<n>, C2371 on cov_o_<n>
+  Fix covc for Microsoft C++ token paste producing "/*". Symptom: "<string>(1):
+    error: end of file in comment"
+
+Version 7.9.37 - 7 Nov 2008
+  For Green Hills compilers, recognize stdarg.h keywords.
+    Symptom: "error: expected ')', near '?'"
+  Recognize Analog Devices extra keywords. Symptom: parse error
+  Fix covc for GCC with language setting other than English. Symptom:
+    "Exception: unknown compiler"
+
+Version 7.9.36 - 31 Oct 2008
+  Add support for Analog Devices VisualDSP++
+  Add Windows install option for CodeWarrior
+  For Green Hills compilers, recognize GNU keywords regardless of -ansi option.
+    Symptom: parse error
+
+Version 7.9.35 - 27 Oct 2008
+  Fix covc on Windows for characters >=0x80. Symptom: compiler error, perhaps C2015
+  Fix run-time for Symbian OS emulator running an EXE. Symptom: hang
+  For Green Hills compilers, recognize GNU keywords by default. Symptom: parse error
+
+Version 7.9.34 - 24 Oct 2008
+  Fix covc for Microsoft C++ #import generating #pragma start_map_region.
+    Symptom: compiler error, perhaps C2535
+  With Microsoft C++ -Yc and multiple sources in one command, use the
+    precompiled header for 2nd and subsequent sources for behavior closer to
+    Microsoft C++ and better performance. Symptom: c1070
+
+Version 7.9.33 - 21 Oct 2008
+  Fix Unix install for set-group-ID on installation directory. Symptom:
+    set-group-ID not propagated to subdirectories
+  covc recognizes "#pragma once;". Symptom: "warning c4081: expected 'newline'"
+  Add run/libcov-smxfs.c
+
+Version 7.9.32 - 20 Oct 2008
+  Fix covc for GCC precompiled header created in different directory than the
+    header, as with Apple Xcode.  Symptom: "No such file or directory" on header
+  Fix Unix install for file i/o error such as out of disk space.  Symptom:
+    "Unhandled exception, contact Technical Support"
+  On Unix, run-time no longer looks for /tmp/covfile.  If getenv fails, look for
+    environment variables in /tmp/BullseyeCoverageEnv.txt
+  Fix covlink for Microsoft link option /errorReport and link command longer
+    than 32K. Symptom: "LNK4044: unrecognized option '/errorReport:...'"
+
+Version 7.9.31 - 15 Oct 2008
+  Improvements to the run-time for Symbian OS for ARM: (1) no longer use
+    estlib.lib but rather efsrv.lib, (2) file locking is implemented, (3)
+    environment variables are read from \BullseyeCoverageEnv.txt
+  Fix covc on Windows with object filename beginning with slash (/ or \) without
+    --retain. Symptom: cov813
+  Installation on Windows recognizes Visual Studio 2005,2008 VCComponents.dat
+    in ASCII format. Symptom: enabling coverage build has no effect
+  Automatically work around bug in Microsoft Visual C++ Express vcbuild.exe.
+    Symptom: enabling coverage build has no effect
+  Reduce run-time data memory usage
+
+Version 7.9.30 - 9 Oct 2008
+  Fix covc for Visual C++ 6 creating precompiled header. Symptom: C2496
+  Fix covc for Microsoft C++ multiple -FI naming the same file.  Symptom:
+    redefinition errors such as C2084 and C2011
+  Add region exclusion syntax !object to exclude by object file
+
+Version 7.9.29 - 7 Oct 2008
+  Fix covc to remove limitation of 64k items in lists such as compound statement,
+    enum, initializer
+  Add covc warning c5997: import attributes inconsistent
+
+Version 7.9.28 - 7 Oct 2008
+  Fix Coverage Browser command Region Reset Measurements with top level tree
+    node (document) selected.  Symptom: measurements cleared in memory but not
+    in the coverage file
+
+Version 7.9.27 - 6 Oct 2008
+  Fix covc for IAR Systems data placement at an absolute location
+    unparenthesized expression. Symptom: "error: syntax error"
+
+Version 7.9.26 - 3 Oct 2008
+  Fix covc for IAR Systems v4. Symptom: "Exception: unknown compiler"
+  Fix covc for source file containing no code compiled simultaneously with
+    others that do. Symptom: run-time error 4.
+
+Version 7.9.25 - 2 Oct 2008
+  Fix covc for IAR Systems data placement at an absolute location parenthesized
+    expression. Symptom: "error: syntax error, near '@'"
+
+Version 7.9.24 - 1 Oct 2008
+  Fix covc for Microsoft C++ with argument suffix .res. Symptom: build error,
+    perhaps C4821
+  Fix covc for Microsoft link option -idlout.  Symptom: "atliface.h(2653): error:
+    expected ';' or ',' or '=', near '{'"
+
+Version 7.9.23 - 30 Sep 2008
+  Fix covc for Microsoft C++ object file creating precompiled header (commonly
+    named stdafx.obj) either (a) not included in project or (b) containing
+    duplicate symbols.  Symptoms: (a) LNK2001 or LNK2019 on cov_o_<number>, or
+    (b) LNK2005
+
+Version 7.9.22 - 30 Sep 2008
+  Fix covc for Microsoft C++ 13 (Visual C++ 2003) for non-ASCII source file encoding.
+    Symptom: compiler error
+  Updated run/Makefile commands for Symbian OS ARM. Symptom: "Error: #65" on IMPORT_C
+
+Version 7.9.21 - 23 Sep 2008
+  When processing coverage files created by versions prior to 7.4.18, display
+    C++ overloaded operators with no unnecessary whitespace, as "operator@"
+    rather than "operator @"
+  For Windows, fix include/exclude selection processing drive letters other than the
+    current drive.  Symptom: some selections do not take effect. Broken in 7.9.15
+
+Version 7.9.20 - 19 Sep 2008
+  Fix covc for IBM C/C++ command requiring -F. Symptom: "Exception: unknown compiler"
+
+Version 7.9.19 - 17 Sep 2008
+  IBM C/C++ commands start with any of c89 c99 cc xlC xlc. Symptom:
+    "Exception: unknown compiler"
+
+Version 7.9.18 - 16 Sep 2008
+  Mimic Microsoft preprocessor for ", __VA_ARGS__" as macro arguments with
+    empty __VA_ARGS__. Symptom: c4003
+  Fix Windows setup program for creating license manager file. Symptom:
+    "Exception: License manager file must be accessed as ..."
+  Automatically exclude functions named boost::*. Some Boost headers cannot
+    be measured
+
+Version 7.9.17 - 12 Sep 2008
+  Fix covc crash upon coverage file error
+  Fix covc for -Yc with multiple sources. Symptoms: poor performance or "C2079:
+    'cov_o_...' uses undefined struct 'cov_O_...2_Yc_...'"
+  Support IBM C keyword _inline. Symptom: syntax error
+
+Version 7.9.16 - 10 Sep 2008
+  Fix covc for IBM pragma that must occur before the first declaration.
+    Symptom: warning 1506-262 or 1540-2709
+  Support Microsoft C++ pragma setlocale
+  On Windows, reports always use forward slash for directory separator
+  Support Microsoft Visual C++ 2008 Express
+
+Version 7.9.15 - 3 Sep 2008
+  Fix covc for non-ASCII non-UTF-8 source files. Symptom: build error
+  Automatically remove Microsoft option -openmp. Symptom: C3017
+  On Mac OS X, filename comparisons are case insensitive, according to files in /tmp
+  cov01 recognizes environment variable COVBUILDZONE
+
+Version 7.9.14 - 27 Aug 2008
+  On AIX increased process data memory limit from 128MB to 512MB. Symptom: out
+    of memory or crash
+  Recognize IBM C++ keyword _Pragma in C++ mode. Symptom: syntax error
+
+Version 7.9.13 - 22-Aug-2008
+  Fix covc for multibyte input with Visual C++ 6. Symptom: C2018
+  Fix Coverage Browser for excluding the same function from duplicate source
+    files.  Symptom: only the most recent exclusion is kept
+  Fix Coverage Browser crash upon deselecting a query.
+  Add Coverage Browser command Region Reset Measurements, remove command
+    File Clear
+  covclear command can reset specified sources and directories
+  Fix Unix install program for existing installation directory. Symptom:
+    directory missing last letter
+  Work around Win32 API bug writing more than 49061 bytes to standard output.
+    Symptom: File write error: Not enough space
+
+Version 7.9.12 - 12 Aug 2008
+  Recognize GCC even with same name as system compiler, such as "cc" on Solaris.
+    Symptom: build error
+
+Version 7.9.11 - 5 Aug 2008
+  Fix covc for multiple simultaneous compile. Symptom: compiler cannot open
+    source file, for example Microsoft C1083
+  Fix covc for Xcode GCC with -fwritable-strings. Symptom: error "initializer
+    element is not constant"
+  Added distribution for NetBSD PowerPC
+  Dropped support for CAD-UL compiler
+  Dropped NetBSD x86
+
+Version 7.9.10 - 4 Aug 2008
+  With Microsoft C++ -ZI, preserve -GF.  Symptom: string literals not pooled
+  With Microsoft C++ -Yc and multiple sources in one command, use the
+    precompiled header for 2nd and subsequent sources for behavior closer to
+    Microsoft C++ and better performance. Symptom: c1070
+  Improve covc processor utilization on Windows by spawning just one compile
+    command with all instrumented sources
+  covc temporary directory name is based on object file paths rather than PID,
+    for better performance with ccache
+
+Version 7.9.9 - 24 Jul 2008
+  Fix covc for source file containing byte greater than 0x7f (in comment or
+    literal).  Symptom: "Unicode translation failure, CP=n"
+  Fix covc for __declspec(naked) on declarator rather than decl-specifier-seq.
+    Symptom: run-time crash or behavior change
+  Add Coverage Browser command Files Export Exclusions and File Import Exclusions
+  Fix file locking bug for source file containing no instrumented code.
+    Symptom: poor multiprocessor utilization
+  Minor improvement to Microsoft option -MP multiprocessor utilization
+
+Version 7.9.8 - 18 Jul 2008
+  Fix covlink for object files named other than .obj. Symptom: "error LNK2019:
+    unresolved external symbol _cov_probe_6_4_7"
+  Fix for GCC #line processing. Symptom: "line-map.c: file ... left but not entered"
+  Reverse coverage file directory to put most recent entries first, for better
+    run-time performance
+
+Version 7.9.7 - 15 Jul 2008
+  Critical fix to run-time. Symptom: not all coverage measurements saved.
+    Broken in 7.8.51. This is a critical fix affecting all platforms,
+    environments and compilers.
+  Fix covbr, covdir, covclass, covfn, covsrc for region excluded in coverage
+    file and region included on command line.  Symptom: command line has no
+    effect
+  covc mimics Microsoft option -MP for better multiprocessor utilization
+  Add covlmgr action --use
+  Fix Coverage Browser command Region Include.  Symptom: excluding then
+    including a region does not remove exclusion from coverage file.  Broken
+    in 7.8.39
+
+Version 7.9.6 - 2 Jul 2008
+  covlink does not add run-time library to link command producing DLL with no
+    code. Symptom: LoadLibrary from different architecture fails
+
+Version 7.9.5 - 25 Jun 2008
+  Fix run-time for Unix shared library containing static destructor unloaded via
+    dlclose. Symptom: crash on app termination
+
+Version 7.9.4 - 24 Jun 2008
+  Fix covc for Microsoft C++ and Intel C++ options -TP, -TC without standard
+    C/C++ suffix.  Symptom: build error
+  Fix Windows setup for Microsoft Visual C++ 2003.  Symptom: "File open error:
+    .../atlprov.dll: No such file or directory"
+  Fix covlink for -machine:ppcbe. Symptom: "Exception: unrecognized machine
+    -machine:ppcbe".  Broken in 7.9.2
+  Fix covc for GCC with -x without -c. Symptom: libcov.a taken as C/C++ source
+  Fix covc for GCC undocumented language (-x) "cpp-output". Symptom: no effect
+  Fix covc for GCC using standard input "-". Symptom: input not compiled
+  covc removes BullseyeCoverage/bin from PATH (or BULLSEYE_PATH) when spawning compiler, to
+    eliminate the possibility of infinite recursion.  Symptom: infinite
+    recursion with ccache in PATH after BullseyeCoverage/bin
+
+Version 7.9.3 - 20 Jun 2008
+  Fix covc for Microsoft C++ and Intel C++ use of __FUNCSIG__, __FUNCTION__,
+    __FUNCTION__. Symptom: "error: expected expression, near '__FUNCTION__'".
+    Broken in 7.9.2
+  For ARM RealView Compilation Tools, add armlink interceptor
+
+Version 7.9.2 - 19 Jun 2008
+  covc recognizes erroneous expression-statement beginning with 'typename' for
+    bug compatibility with Microsoft C++.  Symptom: "C2065:
+    'BullseyeCoverageTemplateSyntaxError'"
+  With Microsoft C++ and Intel C++, covc issues c4117 upon definition of
+    __FUNCSIG__, __FUNCTION__, __FUNCTION__.  Symptom: compile error such as C2065
+  Add support for Windows CE on MIPS
+  covbr --html output is 30% smaller
+
+Version 7.9.1 - 17 Jun 2008
+  covc recognizes erroneous ctor-initializer beginning with 'typename' for bug
+    compatibility with Microsoft C++.  Symptom: "error: expected identifier, near
+    'typename'"
+  covc recognizes erroneous ctor declarator 'class C' for bug compatibility with
+    Borland C++, Microsoft C++, Intel C++.  Symptom: "error: expected ')'"
+  Remove limitation in covbr/Coverage Browser of 32/26 probes reported per line
+  Fix covfn HTML output with --no-source. Symptom: table cells containing "td>"
+  With ARM RVCT, add --no_implicit_include, -D_RWSTD_COMPILE_INSTANTIATE.
+    Symptom: "Error: L6218E: Undefined symbol __rw::..."
+  Do not mimic GCC bug allowing decl-specifier-seq to contain a typename
+    followed by a simple-type-specifier
+
+Version 7.9.0 - 11 Jun 2008
+  New type system accurately tracks namespace names
+  Fix covc for source files with multibyte encoding other than UTF-8.  Symptom:
+    compiler error
+  Fix covc for Microsoft C++/CLI statements "default[i] = expr",
+    "default::set(...);".  Symptom: "error: expected ':'"
+  Fix covc for ctor-initializer containing logical operators.  Symptom: function
+    named "(unknown)"
+  Fix covc for C++ function name containing parameter with pointer to member. Symptom
+    "::*" instead of "T::*"
+  Fix covc for template class C1 containing non-template class C2. Symptom:
+    function name C1<T>::C2<T>::f rather than C1<T>::C2::f
+  Fix for GCC #line processing. Symptom: "line-map.c: file ... left but not entered"
+  covc recognizes erroneous expressions beginning with 'typename' for
+    bug compatibility with CodeWarrior, Microsoft C++, and Sun C++.  Symptoms:
+    "error: expected '::'", "error: expected '('", or "error C2065:
+    'BullseyeCoverageTemplateSyntaxError'"
+  Fix covc for multiple Microsoft C++ projects using same precompiled header
+    source and same output directory.  Symptom: build error.
+  Fix covc for Microsoft C++ precompiled header created multiple times with same
+    object file path.  Symptom: "error LNK2005: struct cov_o_data_..."
+
+Version 7.8.51 - 30 May 2008
+  Fix covc for Microsoft C++ __identifier(...) as namespace name. Symptom:
+    "error: expected '{', near '__identifier'"
+  Fix run-time error 1, affecting Unix projects with shared libraries.
+    Symptom: "error 1: Memory corrupted".  Introduced 7.8.15
+
+Version 7.8.50 - 28 May 2008
+  Fix covc for Intel C++ option -FR. Symptom: "icl: warning: problem with
+    Microsoft compilation of '...'"
+  Retry file operations upon networked license manager i/o failure.  Symptom:
+    "File read error: ...: Permission denied"
+
+Version 7.8.49 - 24 May 2008
+  Recognize ARM RVCT keyword '__restrict'. Symptom: "error: expected '(', near '*'"
+  Fix covc for Intel C++ with Microsoft Visual C++ 8 math.h. Symptom:
+    "math.h(135): error: expected an expression, near 'struct'"
+
+Version 7.8.48 - 22 May 2008
+  Mimic Intel C++, Microsoft C++ and others for elaborated-type-specifier
+    beginning with 'typename' but not followed by nested-name-specifier.  Symptom:
+    "error: expected '::'"
+  Mimic Microsoft preprocessor macro redefinition whitespace equality for
+    preprocessor operators.  Symptom: c4005
+
+Version 7.8.47 - 15 May 2008
+  Work around file locking limitation with Mac OS SMB client. Symptom: "File
+    lock error: ...: Operation not supported"
+
+Version 7.8.46 - 14 May 2008
+  With Microsoft C++ recognize modifier _w64. Symptom: "error: expected ';' or
+    ',' or '='"
+  With Microsoft C++, allow "#pragma warning(push, 0)". Symptom: "warning
+    c4616: warning number '0' not a valid compiler warning"
+
+Version 7.8.45 - 12 May 2008
+  Installing on Unix no longer requires the ./extract step
+  Fix for GCC with -x followed by option requiring argument. Symptom: compiler
+    command line error. Broken in 7.8.29
+  Added run/libcov-unixKernel.c
+
+Version 7.8.44 - 8 May 2008
+  For Linux, restore missing symbolic links in run/linuxKernel-*/.  Broken in
+    7.8.32
+  Added run/linuxKernel-2.4/sample/
+
+Version 7.8.43 - 6 May 2008
+  CoverageBrowser on Linux requires GTK+ 2.0 or later
+  Mimic Microsoft behavior when error C4430 disabled.  Symptom: parse error on
+    declaration with missing type
+  Suppress GCC "warning: '...' might be used uninitialized in this function",
+    "warning: control reaches end of non-void function"
+
+Version 7.8.42 - 1 May 2008
+  Fix covc for Apple Xcode framework header precompiled to
+    /Library/Caches/*/SharedPrecompiledHeaders/.  Symptom: "No such file or
+    directory" on subframework header
+  Suppress GCC v3 "warning: '...' might be used uninitialized in this function"
+
+Version 7.8.41 - 29 Apr 2008
+  Run-time interface version 2 - dropped error_write_screen in favor of
+    write(2,...), renamed macros with COVRT_ prefix to Libcov_
+  Added new command covlmgr for license manager administration. Removed license
+    manager operations from covmgr
+  Recognize GCC '__builtin_types_compatible_p'. Symptom: parse error
+
+Version 7.8.40 - 23 Apr 2008
+  Fix CoverageBrowser for Windows selecting text shows white, broken in 7.8.36
+  Probe data goes in .bss, reverting change in 7.8.32
+
+Version 7.8.39 - 17 Apr 2008
+  Improved support and documentation for IAR Systems ARM
+  Sidestep CoverageMeter. Symptom: "Exception: An installed product is
+    incompatible with BullseyeCoverage: ...\CoverageMeter\visualstudio\cl.exe"
+  Fix covc for source line containing large number of tokens, approximately 64k.
+    Symptom: crash
+  Fix covc for Borland/CodeGear 5.82 and later. Symptom: build error
+  Fix Coverage Browser command Region Include. Symptom: only the included
+    region is selected, rather than cancelling the exclusion
+  Added documentation for CodeGear C++Builder
+
+Version 7.8.38 - 9 Apr 2008
+  Added diagnostic mode output "Diag=" to aide locating the diagnostic file
+  Fix covc for GCC "#pragma GCC system_header". Symptom: pragma sometimes has
+    no effect.
+
+Version 7.8.37 - 8 Apr 2008
+  Fix covc for function declarator ending in array dimension followed by
+    pure-specifier, for example "virtual void (*f(void))[2] = 0".
+    Symptom: "error: expected function body or ';' or ',', near '='"
+
+Version 7.8.36 - 7 Apr 2008
+  Add support on Windows for Unicode source files. Symptom: "Exception: Unicode
+    characters unsupported"
+  Fix covc for GCC "#pragma GCC system_header". Symptom: pragma sometimes has
+    no effect
+  Fix covlink for link command containing only x64 libraries (no object files)
+    Symptom: LNK1112
+
+Version 7.8.35 - 1 Apr 2008
+  Fix covc for switch body not a compound statement. Symptom: crash
+  Suppress Microsoft warning C4616 for BullseyeCoverage warning c5998
+
+Version 7.8.34 - 1 Apr 2008
+  Recognize GCC keyword _Complex in C++ mode. Symptom: parse error
+
+Version 7.8.33 - 31 Mar 2008
+  Add support for Intel C++ v9.1 and later integration with Visual Studio and
+    Intel C++ x64 all versions.  Symptom: coverage build does not take effect
+
+Version 7.8.32 - 27 Mar 2008
+  Freshen Linux kernel 2.6 support
+  Improved covgetkernel diagnostics
+  Restore run-time variable cov_syscall. Someone is using it
+  Work around bug in CodeWarrior for Symbian OS.  Symptom: "internal compiler
+    error ...  Asm.c: 'OperandError' (line 572)"
+  Installation makes interceptors for all GCC compilers named *-gcc, *-g++, *-c++
+  Fix covc option --symbolic for region selections.  Symptom: region selection
+    performed without resolving symbolic links
+  Fix cov_check for kernel mode. Symptom: returns success even when data corrupt
+  With Linux and GCC C mode, all instrumentation data goes into .data, none in
+    .bss. To work around .bss data corruption in embedded kernel module.
+  Support for QNX hosted on Windows
+
+Version 7.8.31 - 12 Mar 2008
+  Fix covc for multiple simultaneous processes on Windows. Symptom: "File open
+    error: ...: Permission denied" or "covc: cannot open ...: Permission
+    denied". Introduced in 7.8.22
+
+Version 7.8.30 - 11 Mar 2008
+  Add covc option --symbolic to resolve symbolic links
+
+Version 7.8.29 - 10 Mar 2008
+  Recognize GCC option -x with non-standard suffix. Symptom: sources not
+    instrumented
+  Digitally sign BullseyeCoverageAtexit-x86.dll and BullseyeCoverageAtexit-x64.dll
+
+Version 7.8.28 - 5 Mar 2008
+  With Microsoft C++, uninitialized instrumentation data always goes into
+    bss_seg .covbss. Symptom: interaction with custom bss_seg
+  Added bin-embeddedLinuxKernel/covgetkernel-mips-le-32
+
+Version 7.8.27 - 29 Feb 2008
+  Added run-time error 19
+  With Microsoft C++, initialized instrumentation data always goes into data_seg
+    .covdata. Symptom: interaction with custom data_seg
+
+Version 7.8.26 - 28 Feb 2008
+  Fix command line report commands for class or namespace region selection with
+    nested class or namespace. Symptom: nested class or namespace missing from
+    output
+
+Version 7.8.25 - 26 Feb 2008
+  Fix license manager.  Symptom: "Exception: License manager file must be
+    accessed as ..., not  ()".  Introduced in 7.8.23
+  Replace run-time error 12 with errors 2 and 4
+  Add missing file run/libcov-iar.c
+  Run-time allows for more than one instance of the same instrumented object
+    file in a process, as on HP-UX. Symptom: error 12
+
+Version 7.8.24 - 12 Feb 2008
+  Fix license manager. Symptom: crash. Introduced in 7.8.23
+
+Version 7.8.23 - 12 Feb 2008
+  Added support for SuperH with GCC in run/atomic.h
+  Replicate Intel C++ bug in postfix-expression explicit type conversion
+    (functional notation) allowing multiple simple-type-specifier. Symptom:
+    "error: expected '(', near <simple-type-specifier>". Replicated for
+    Microsoft C++ in 7.5.20
+  License manager prevents copying the license manager file by tracking its
+    filename and file serial number, with version 5 format
+
+Version 7.8.22 - 6 Feb 2008
+  Fix covc for Intel C++ with Visual C++ 6 integration.  Symptom: build warning
+    or error indicating incorrect Visual C++ version, such as "warning: option
+    '/Qvc8' or higher used with '/ML[d]' is not supported", LNK2001 on
+    __RTC_CheckEsp
+
+Version 7.8.21 - 31 Jan 2008
+  covc detects SDK header paths containing "Microsoft SDKs" and also named
+    commctrl.h
+  Fix Coverage Browser crash on File New
+  Fix Coverage Browser File Save View as HTML image width for uncovered
+    conditions/decisions
+  Changed Coverage Browser computation of image width for uncovered
+    conditions/decisions
+  Fix covc for GCC. Symptom: "BullseyeCoverage_definitions:...  warning: missing
+    initializer"
+  Enhance covc for Microsoft C++: Do not dump macros inside templates
+
+Version 7.8.20 - 28 Jan 2008
+  For covc, added diagnostics to error "Exception: cannot find compiler"
+  Fix libcov-windows-x86*.lib for Visual Studio 2005 SP1. Symptom: LNK1103
+
+Version 7.8.19 - 24 Jan 2008
+  Add run-time environment variable COVNOSAVE
+  Fix covc for modifier such as __pragma followed by directive such as #pragma.
+    Symptom: directive not passed to real compiler
+  Fix covc for Visual Studio 2008 headers.  Do not dump macros for attributes
+    in sal.h.  Symptom: "afxwin.h(2470) : error C2572: 'CWnd::MessageBoxA'"
+  Fix covc for GCC 2.95 -MD. Symptom: "g++: unrecognized option `-MF'"
+  Fix covc for GCC "warning: padding struct to alignment boundary"
+  Built with Visual Studio 2008
+  License manager version 5 adds encrypted binary format
+
+Version 7.8.18 - 10 Jan 2008
+  Mimic both Microsoft C++ and GCC for ", ## __VA_ARGS__". Symptom: "error:
+    expected '(', near ')''"
+  cov01 option -s/--status returns status code 1 if coverage build disabled
+  Recognize ARC MetaWare C/C++ compiler command hcarc
+  Remove run-time variable cov_syscall. We think no one is using it
+
+Version 7.8.17 - 4 Jan 2008
+  Fix covgetkernel, broken in 7.8.15. Symptom: "Error 1: Memory corrupted 1430"
+  Reduce run-time data memory associated with getenv
+  Remove run-time support for fcntl F_RDLCK failure.  If read locking is not
+    available, it should be implemented with write locking at lower level
+
+Version 7.8.16 - 19 Dec 2007
+  Fix covc for '#' token not at begin of line, such as in embedded assembler.
+    Symptom: compiler or assembler error
+
+Version 7.8.15 - 18 Dec 2007
+  Fix Unix extract.  Symptom: "Exception: bin-embeddedLinuxKernel/: directory
+    open failure"
+  Additional run-time diagnostics to detect memory corruption
+  Drop support for CodeWarrior Mac mwpefcc CFM/PEF
+
+Version 7.8.14 - 16 Dec 2007
+  Fix covc, broken in 7.8.13. Symptom: C3174
+
+Version 7.8.13 - 13 Dec 2007
+  Fix for Microsoft link option -idlout. Symptom: MIDL2003
+  Add IAR Systems ARM C++ support for run-time
+  Fix Linux ARM covgetkernel. Symptom: "File read error:
+    /proc/BullseyeCoverage: Bad address"
+
+Version 7.8.12 - 7 Dec 2007
+  Fix for Microsoft link option -idlout. Symptom: MIDL2003
+  Fix for Microsoft link option -lib with command line >32K. Symptom: "LNK4044:
+    unrecognized option '-lib'"
+  Fix run-time symbol error_report not private (static). Introduced in 7.8.0
+    Symptom: duplicate symbol
+  Added distribution Linux for PowerPC
+  Fix covc for ARM RVCT very long command line
+  Fix covc for ARM RVCT option --depend. Symptom: multiple L6218E
+
+Version 7.8.11 - 4 Dec 2007
+  Automatically exclude the Boost library.  Header tribool.hpp contains
+    overloaded logical operators
+  For IBM C++ recognize keyword __ExternStaticData
+
+Version 7.8.10 - 26 Nov 2007
+  Fix covc for Microsoft __asm keyword as statement separator.  Symptom: parse error
+  Fix run/covrt.c for stdarg.h, stddef.h built into toolchain
+  Linux x86,x64 distributions contain bin-embeddedLinuxKernel/covgetkernel-*.
+
+Version 7.8.9 - 20 Nov 2007
+  Fix covc for ARM RVCT broken in 7.8.8.  Symptom "Warning: C0010W: Old syntax,
+    please use '--via'."
+  Link native ARM distributions statically, dynamic since 7.8.6
+
+Version 7.8.8 - 13 Nov 2007
+  Fix covc for ARM RVCT very long command line.
+
+Version 7.8.7 - 12 Nov 2007
+  Fix for Microsoft link option -idlout. Symptom: C4129
+
+Version 7.8.6 - 7 Nov 2007
+  Fix covc for Microsoft #import mixed with .NET attribute blocks. Symptom: C3861
+  Fix instrumentation for GCC v4+ template static const members.  Symptom:
+    undefined reference
+
+Version 7.8.5 - 26 Oct 2007
+  With TI Code Composer, recognize 'asm' keyword. Symptom: parse error
+  Unix install script installs run/ subdirectory
+
+Version 7.8.4 - 24 Oct 2007
+  Remove Tru64 kernel mode support due to lack of demand
+  Environment variable BULLSEYE_LIB specifies directory to find run-time library
+
+Version 7.8.3 - 17 Oct 2007
+  For Intel C++ on Linux, recognize keyword __unaligned and others.  Symptom:
+    parse error
+  For VxWorks, the default coverage file path is /tgtsvr/test.cov.
+  Fix covlink for Microsoft cl.exe,link.exe not in PATH (or BULLSEYE_PATH).
+    Symptom: recursive spawning of link.exe, covx.exe
+  Documented run-time function cov_eventCount
+
+Version 7.8.2 - 3 Oct 2007
+  Add support for TI Code Composer Studio
+
+Version 7.8.1 - 1 Oct 2007
+  Fix covc for multiple precompiled headers created simultaneously.  Symptom:
+    LNK2005 on cov_o_*
+  For Windows CE linking, add coredll.lib if it does not already occur.
+    Symptom: many LNK2005 on Windows APIs
+
+Version 7.8.0 - 20 Sep 2007
+  Run-time error handling overhaul. Symbol cov_write_join removed
+  With Microsoft C++, do not recognize keywords _export, _fortran, _pascal.
+    Symptom: parse error
+  Add covmgr option -b/--build-id
+
+Version 7.7.26 - 6 Sep 2007
+  Fix Windows setup program corrupting Visual Studio 2005 VCComponents.dat file.
+    Symptom: enabling coverage build has no effect.  Problem introduced in
+    7.7.21
+
+Version 7.7.25 - 6 Sep 2007
+  Add covxml command
+  Add Coverage Browser command File Export as XML
+  Implement covgetkernel option -r/--reset for AIX and Tru64
+  Support for ARM RealView Compilation Tools Version 3.1
+  Fix covc for ARM RVCT options -MD, --depend, --md.  Symptom: no
+    instrumentation
+  Automatically exclude Microsoft Windows Template Library 7.1
+  Compatibility with Xoreax IncrediBuild (3.10)
+
+Version 7.7.24 - 28 Aug 2007
+  covc recognizes patterns such as "0xe+macro" as three tokens, not one.
+    Symptom: "invalid suffix".  This revokes the changes in 7.7.23
+  For GCC, covc preserves a #line at beginning of output naming the input source.
+    Symptom: "multiple definition of `_GLOBAL__I__..._BullseyeCoverage_definitionsbaaaaa"
+
+Version 7.7.23 - 16 Aug 2007
+  covc issues error on valid preprocessing numbers that are invalid constants.
+    Symptom: compiler error on text such as "0xe+macro"
+
+Version 7.7.22 - 9 Aug 2007
+  With HP C/C++ use external preprocessor.  Symptom: detailed report line
+    numbers misaligned
+  Match compiler behavior for deferring syntax check of template functions.
+    Symptom: syntax error in template function (containing syntax error)
+
+Version 7.7.21 - 3 Aug 2007
+  Support for AIX kernel
+  Add support for NXP Nexperia/TriMedia
+
+Version 7.7.20 - 30 Jul 2007
+  Workaround Microsoft C++ option -analyze (Team Studio) causing bogus warnings
+  Fix covc for unterminated quote in #if 0 section.  Symptom: "error: newline in
+    quoted literal"
+  Support for Visual Studio 2008 beta 2
+
+Version 7.7.19 - 27 Jul 2007
+  Microsoft link option -entry: overrides -noentry.  Symptom: user DLL entry
+    point not called
+  With Microsoft C++, automatically increase -Zm limit by 20% even when not
+    using or creating precompiled header.  Symptom: C1076
+  With Intel C++ Linux, correct language mode for icpc with .c file
+
+Version 7.7.18 - 20 Jul 2007
+  covc catches EOF in unterminated quoted literals with GCC prior to 3.2.
+    Symptom: crash or hang
+  covc disallows unterminated quoted literals, except with GCC prior to 3.2
+  Implemented covgetkernel -r/--reset for Linux
+
+Version 7.7.17 - 19 Jul 2007
+  Fix covc for null preprocessor directive, as output by IBM C++ v9.  Symptom:
+    "Exception: Vector index out of bounds in get"
+
+Version 7.7.16 - 18 Jul 2007
+  covc checks for BULLSEYE_PATH to find the real compiler instead of PATH
+  Recognize IBM compiler name cc_64. Symptom: compile error
+
+Version 7.7.15 - 17 Jul 2007
+  Fix covc for #line inside of function naming different non-existent source
+    file. Symptom: "Exception: ...  cannot find <source>"
+
+Version 7.7.14 - 16 Jul 2007
+  Add diagnostics to license manager
+
+Version 7.7.13 - 11 Jul 2007
+  Fix covc for Intel C++ on Linux. Symptom: "error: incomplete type is not
+    allowed" on __cdecl
+
+Version 7.7.12 - 3 Jul 2007
+  Run-time avoids calling getenv from static destructor. Symptom: crash
+  Add support for Sun Studio 12 compiler option -m64. Symptom:
+    "ld: warning: file .../libcov.a(libcov.o): wrong ELF class: ELFCLASS32"
+  Add automatic workaround to covc for Sun preprocessor breaking source lines
+    longer than 120 characters.  Symptom: code near macro expansion not measured
+  Support FreeBSD x64
+
+Version 7.7.11 - 12 Jun 2007
+
+Version 7.7.10 - 11 Jun 2007
+  Run-time error 12 includes coverage file ID number
+
+Version 7.7.9 - 8 Jun 2007
+  Add Coverage Browser commands File Export Queries and File Import Queries
+  Fix covc for Intel C++ for Windows option -Qmspp-. Symptom: build error
+  Fix covc for compound statement with more than 64K statements.  Symptom:
+    error "Token sequence limit reached"
+  covc ignores error removing temporary directory $TMPDIR/covc*. Symptom:
+    "Exception: .../covc.../: remove directory failure"
+  Fix Coverage Browser crash upon closing the coverage file with empty right
+    pane, introduced in 7.7.8
+
+Version 7.7.8 - 6 Jun 2007
+  Automatically work around bug in Microsoft Visual C++ 7.0 <list>.
+    Symptom: "list(867): error: expected declaration specifier"
+  Automatically work around bug in Microsoft Visual C++ 7.0 <xtree>.
+    Symptom: "xtree(1129): error: expected declaration specifier"
+  Coverage Browser maintains right pane selection by name rather than index.
+    Symptom: new coverage data or sorting method changes selected item
+  Add interceptor for IBM High C/C++ (Metaware) on AIX
+  The covbr command defers error messages until after the successful output
+
+Version 7.7.7 - 18 May 2007
+  The Coverage Browser applies wildcarded selections (to source files)
+  Many files in run/linuxKernel-2.?/ are symbolic links, not copies.  Broken in
+    7.5.62
+
+Version 7.7.6 - 11 May 2007
+  Fix for Linux x64 GCC option -m64.  Symptom: "libcov64.a: No such file or
+    directory"
+  Add support for Unix kernel code written in C++. Symptom: unresolved symbols
+    cov_countDown, cov_countUp
+
+Version 7.7.5 - 10 May 2007
+  Fix Coverage Browser menu commands incorrectly disabled, broken in 7.7.4
+
+Version 7.7.4 - 4 May 2007
+  Support ARC MetaWare C/C++ alloca.h. Symptom: unresolved symbol alloca
+  Fix Coverage Browser tool bar and status bar when maximized.  Symptom:
+    incorrect window layout
+
+Version 7.7.3 - 30 Apr 2007
+  Fix Windows setup program for incomplete Microsoft Visual Studio registry
+    settings.  Symptom: crash
+  Add support for MetaWare keyword "pragma". Symptom: parse error
+  Support for QNX dropped due to lack of demand
+  Fix Linux kernel support for 64-bit
+  Linux covgetkernel checks for 32-bit/64-bit mismatch
+
+Version 7.7.2 - 23 Apr 2007
+  Fix Windows setup program for very long line in Visual Studio 2005
+    VCComponents.dat.  Symptom: crash
+  Add run-time function cov_check
+
+Version 7.7.1 - 18 Apr 2007
+  Recognize Microsoft C++ keyword __thiscall with version 13. Symptom: parse error
+  Fix Coverage Browser for MacOS garbled text in right pane with many rows.
+  Fix Coverage Browser slow scrolling in right pane with many rows.
+  Support Windows kernel mode driver entry point (DriverEntry) with C++ linkage.
+    Symptom: "LNK2001: unresolved external symbol _DriverEntry@8"
+
+Version 7.7.0 - 6 Apr 2007
+  Add support for ARC MetaWare C/C++
+  covdir --checkmin specifies two separate thresholds for function and
+    condition/decision coverage
+
+Version 7.6.27 - 5 Apr 2007
+  Fix covc parser for expressions of the form (a)&&b which are ambiguous with
+    the GNU unary && operator. Introduced 7.4.16. Symptom: incomplete
+    instrumentation
+  Fix Coverage Browser automatic name column width adjustment
+  Coverage Browser total window shows subtotal for current selection, rather
+    than grand total
+
+Version 7.6.26 - 20 Mar 2007
+  With Borland C++ and Microsoft C++, exclude patched compiler headers.
+    Symptom: coverage results shown for files in BullseyeCoverage/patch/.
+  Compiler interceptors for all VxWorks Gnu compilers
+
+Version 7.6.25 - 15 Mar 2007
+  Fix license manager. Symptom: versions older than 7.5.60 fail with "Invalid file"
+
+Version 7.6.24 - 14 Mar 2007
+  Fix covc for Microsoft C++ pragma deprecated with more than one identifier.
+    Symptom: warning c4081: expected ')'
+  Do not resolve symbolic links.  Symptom: with some source code control systems
+    that rely heavily on symbolic links such as Telelogic Synergy, coverage
+    reports contain cluttered or meaningless source filenames
+
+Version 7.6.23 - 12 Mar 2007
+  Add support for Nokia Carbide.c++
+  For CodeWarrior C++, do not ignore compile commands containing -MD or -MMD.
+    Symptom: no instrumentation
+  For Windows, run-time retries opening coverage file upon sharing violation.
+    Symptom: run-time error 16, errno=32
+  Fix covbr --csv. Symptom: some string values not quoted
+
+Version 7.6.22 - 5 Mar 2007
+  For IBM C++, do not ignore compile commands containing -M
+    Symptom: no instrumentation
+
+Version 7.6.21 - 23 Feb 2007
+  covc runs preprocess command without filenames ending with .s.  Symptom: build
+    error with Diab compiler
+
+Version 7.6.20 - 19 Feb 2007
+  Fixed syntax recognition for ambiguous expressions containing
+    template-id and operators '<' and '>'. Symptom: parse error
+  Fixed Coverage Browser crash upon File Insert
+
+Version 7.6.19 - 14 Feb 2007
+  Fix recognition of Diab compiler option -W:c++:.c.  Symptom: all files taken
+    as C++, even .s
+  Expansion of __FILE__ matches Microsoft C++ with regard to forward versus back
+    slashes, and -Zi option causing included files to be absolute
+  Better parsing of ambiguous '<' tokens.  Symptom: parse error on expression
+    with more than 4 '<'
+  Recognize IBM keyword __alignof, GNU keyword __inline
+
+Version 7.6.18 - 2 Feb 2007
+  Fix covc for multiple processes attempting to creating the coverage file
+    simultaneously. Symptom: coverage file corrupted immediately at beginning
+    of build
+  For AIX, libcov.a contains both 32-bit and 64-bit objects
+  Automatically work around bug in Microsoft Visual C++ 7.1 <list>.
+    Symptom: "list(920): error: expected declaration specifier"
+  Automatically work around bug in Microsoft Visual C++ 8, 7.1 <xmemory>.
+    Symptom: "error: expected declaration specifier"
+
+Version 7.6.17 - 23 Jan 2007
+  Support for AIX 64-bit.  Symptom: linker error "XCOFF32 object files are not
+    allowed in 64-bit mode."
+  Recognize Diab compiler option -W:c++:.c. Symptom: "Undefined symbol cov_..."
+
+Version 7.6.16 - 17 Jan 2007
+  Support for Diab compiler option -Xkeywords=. Symptom: compile error
+  Support for Diab asm Macros. Symptom: compile error
+  Fix Coverage Browser on Windows opening more than two files. Symptom: crash
+
+Version 7.6.15 - 16 Jan 2007
+  Better support for Diab compiler keywords. Symptom: assembler error
+  For Windows run-time, remove references to LockFile, UnlockFile
+
+Version 7.6.14 - 10 Jan 2007
+  Fix covc for Microsoft __if_exists statement immediately prior to the first
+    function in the translation unit.  Symptom: "error C2065: 'cov_o_...'"
+  Add support for Diab compiler targeting ARM, ColdFire, M32R, MC68K, MIPS,
+    PowerPC, SuperH, SPARC
+
+Version 7.6.13 - 2 Jan 2007
+  Support for Visual Studio 2005 SP1. Symptom: syntax error in atldb.h
+
+Version 7.6.12 - 30 Dec 2006
+  On Unix, resolve all symbolic links.  Symptom: "cov139: no coverage
+    information for <region>"
+  On Windows, add missing file libcov-symbian-arm.cpp
+
+Version 7.6.11 - 19 Dec 2006
+  covc automatically works around problem in STLport 4.6-4.6.3 _locale.h with
+    Microsoft C++. Symptom: "_locale.h(127): error: expected declaration
+    specifier"
+  Fix covc for Microsoft C++ response file containing \\". Symptom: build error
+  Fix for Microsoft link option -idlout. Symptom: build error, perhaps MIDL2003
+  On Windows, add lib/libcov-symbian-arm.a for Symbian OS with GCC ARM
+
+Version 7.6.10 - 7 Dec 2006
+  With Intel C++ for Windows, suppress all warnings during compilation.
+    Symptom: several warnings in the Microsoft PlatformSDK headers with -W1 (the
+    default), -W2, and -W3.  With -W4, hundreds of remarks also
+  Fix covc for Microsoft C++ on Windows Vista x64.  Symptom: "Exception: An
+    installed product is incompatible with BullseyeCoverage"
+
+Version 7.6.9 - 5 Dec 2006
+  Fix Coverage Browser command View All Numbers bug introduced in 7.6.3.
+    Symptom: hang
+
+Version 7.6.8 - 30 Nov 2006
+  Fix covc for switch statement containing using-directive. Symptom: compiler error
+  Automatically work around bug in Microsoft Visual C++ 8, 7.1 <xtree>
+    Symptom: "error: expected ';', near '_Node'"
+  Recognize Microsoft Visual C++ 2005 "for each", even without -clr.  Symptom:
+    "error: expected '(', near 'each'"
+  Avoid exceeding Windows filename length limit with -Yc.  Symptom: "c1083:
+    cannot open precompiled header file"
+  Fix command line programs for excluding filenames with symbolic links or
+    missing drive letter.  Symptom: exclusions have no effect
+
+Version 7.6.7 - 22 Nov 2006
+  Fix covc for Borland C++ header file named same as a compiler header. Symptom:
+    build error due to wrong header included
+
+Version 7.6.6 - 16 Nov 2006
+  Fix Coverage Browser opening read-only file, introduced in 7.6.3.  Symptom:
+    "File open error"
+  Critical fix for covc instrumentation of try-catch.  Symptom: incorrect
+    coverage measurement, run-time behavior change or crash. This is a critical
+    fix affecting all platforms, environment, and C++ compilers.
+
+Version 7.6.5 - 9 Nov 2006
+  With Microsoft C++, remove -Oy to work around code generation bug in compiler
+    version 13.10.3077.0 related to EBP register.  Symptom: crash
+  Fix Coverage Browser error when HOME environment variable not set (and on
+    Windows, HOMEDIR and HOMEPATH are not set).  Symptom: "Exception: cannot
+    determine home directory"
+
+Version 7.6.4 - 8 Nov 2006
+  Mac OS run-time library processed with ranlib. Symptom: "libcov.a is out of
+    date; rerun ranlib ..."
+  Coverage Browser automatically adjusts name column width to fit.  Symptom:
+    with very long region names, numbers not visible
+
+Version 7.6.3 - 2 Nov 2006
+  Fix covc to instrument expressions in a ctor-initializer
+  For Coverage Browser, add tool tips to right pane summary display
+  Mac OS run-time libraries combined into universal file libcov.a
+  Fix covselect for function name ending "()".  Symptom: function name added
+    without "()"
+  Added support for VxWorks 6.3, Wind River Workbench 2.5, Downloadable Kernel Modules
+
+Version 7.6.2 - 23 Oct 2006
+  With Microsoft C++, allow identifier "pascal". Symptom: parse error
+  With Intel C++ and Microsoft C++, recognize long-long-suffix LL. Symptom: c2059
+
+Version 7.6.1 - 18 Oct 2006
+  Add back most support for Intel C++ with Microsoft Visual C++ 6 removed in
+    7.5.71.  Didn't think anyone was still using it
+  Fix for IBM AIX C preprocessor preserving backslashes, as with
+    sys/atomic_op.h.  Symptom: parse error
+
+Version 7.6.0 - 12 Oct 2006
+  Added support for VxWorks 6.2, Wind River Workbench 2.4
+  Coverage Browser saves settings from Tools Options Build in $HOME/covc.cfg if
+    BullseyeCoverage/bin/ is not writable. Symptom: settings do not save
+  For Mac OS, parsing of AltiVec data types. Symptom: parse error
+  Added support documentation for Eclipse
+
+Version 7.5.71 - 20 Sep 2006
+  Add support for Intel Software Development Tool Suite for XScale
+  Fix covc for compatibility with Microsoft C++ 13.10.4035 included with Windows
+    Server 2003 with SP1 DDK (3790.1830), broken in 7.5.66.  Symptom: "error
+    C1007: unrecognized flag '-zm0x79140000' in 'c1'"
+  Remove support for Intel C++ with Microsoft Visual C++ 5 and 6
+
+Version 7.5.70 - 11 Sep 2006
+  For Xbox, do not automatically add xbdm.lib, xapid.lib to link commands
+
+Version 7.5.69 - 8 Sep 2006
+  Fix covc for multiple processes writing the coverage file on Windows.
+    Symptom: coverage file deleted and recreated
+  With Symbian OS, do not automatically exclude epoc32/include/ due to
+    bld.inf prj_exports
+  Recognize delete-expression specifying an expression inside the [ ], for
+    example "delete[sizeof(T)]". Symptom: "error: expected ']'"
+  Fix for Cygwin GCC test program launched from a Cygwin program, such as bash.
+    Symptom: run-time error 15
+  Fix licensing check for Mac OS x86. Symptom: "License error: ... Valid for
+    MacOS x86"
+
+Version 7.5.68 - 5 Sep 2006
+  Add integration with Intel C++ 9 and Visual Studio.  Symptom: Coverage Build
+    has no effect
+  For Mac OS, parsing of AltiVec data types. Symptom: parse error
+
+Version 7.5.67 - 29 Aug 2006
+  For Windows CE 5, automatically disable file locking upon ERROR_NOT_SUPPORTED.
+    Symptom: "File locking failure"
+  Fox Xbox, automatically add xapid.lib to link commands
+  With Microsoft C++, automatically increase -Zm limit by 20%.  Symptom: C3859
+
+Version 7.5.66 - 24 Aug 2006
+  Added Mac OS x86 native distribution
+  Added 64-bit support for Mac OS
+  For Windows CE 5, add file locking
+
+Version 7.5.65 - 22 Aug 2006
+  Fix Coverage Browser source code view file timestamp off by one month, broken
+    in 7.5.62.
+  For Xbox, automatically add xbdm.lib to link commands
+
+Version 7.5.64 - 21 Aug 2006
+  Add more support for Green Hills compilers inline assembler,
+    --no_alternative_tokens. Symptoms: parse errors
+  Improve performance of covc invoked without --macro for compilers other than
+    Microsoft C++ or Intel C++, especially with function-style macros that
+    expand to the same name.  Symptom: extremely poor performance (hang)
+
+Version 7.5.63 - 14 Aug 2006
+  Fix Coverage Browser menu items incorrectly disabled at startup
+  Fix covc for sizeof followed by a postfix-expression that begins with a
+    parenthesized identifier such as "sizeof(a)[0]". Symptom: parse error
+  Removed covc option -i/--ignore.  Use option -t/--select instead
+  Recognize Green Hills Enhanced asm Macro Facility for C and C++
+  covc creates multiple BullseyeCoverageDiag files for multiple
+    simultaneous compiles
+
+Version 7.5.62 - 9 Aug 2006
+  For HP-UX, fixed extract program.  Symptom: "BullseyeCoverage: Installation
+    problem, contact technical support"
+  Add Visual Studio integration for Windows Mobile 5.0 SDKs
+  Fix Visual Studio integration for VCComponents.dat missing "Path Dirs".
+    Symptom: coverage build setting has no effect
+  Improve performance of merging coverage files
+  Add support for IntelliMouse XBUTTONs to Coverage Browser for Windows
+  Add Green Hills compiler keyword __noinline.  Symptom: error: expected ';' or
+    ',' or '='
+  With Microsoft C++ -Zm, silence D9025
+
+Version 7.5.61 - 26 Jul 2006
+  With Microsoft C++, automatically increase -Zm limit by 2%.  Symptom: C3859
+  For Windows x64 device drivers, remove symbol reference to KeGetCurrentIrql
+  Add some IBM C++ keywords and compiler commands, including _Packed
+  For HP-UX kernel, build with libp4 9.176
+
+Version 7.5.60 - 16 Jul 2006
+  Fix covc for Microsoft C++ response file containing carriage-return with no
+    subsequent line-feed.  Symptom: compiler error
+  Add integration for Itanium compiler in Visual Studio 2005 Team System
+  Add Visual Studio 2005 integration for Windows CE STANDARDSDK_500
+  Add support for IAR Systems ARM compiler (no integration with IAR Embedded Workbench)
+  Read Windows CE environment variables from \BullseyeCoverageEnv.txt rather
+    than registry
+  On Windows, do not record a folder named /, but rather the current drive such as c:/
+  Add to license manager status a list of all known users under "User log"
+  covc option -l/--leave leaves temporary files in uniquely named directories
+    $TMPDIR/covc*/ rather than $TMPDIR/covc/.  The diagnostic file is
+    $TMPDIR/BullseyeCoverageDiag
+
+Version 7.5.59 - 29 Jun 2006
+  Fix covc for Microsoft C++ with nested argument files. Symptom: build error
+  Add support for Windows User Mode Kernel Drivers.  Symptom: "warning cov817:
+    no driver entry point specified" followed by LNK2001 on _cov_probe_6_4_7
+  Add support for Renesas C/C++ for SuperH and documentation for High-performance
+    Embedded Workshop
+
+Version 7.5.58 - 28 Jun 2006
+  Add support for Diab compiler targeting x86
+  Fix covc for 'typeid' result being variable.  Symptom: expression not measured
+    (type 'k')
+  Fix covc for template arguments containing logical operators.  Symptom:
+    compiler error such as Microsoft C2975.
+  Fix covlink for no -machine option with Microsoft anonymous object file format
+    Symptom: LNK2001 on "cov_DllMain"
+
+Version 7.5.57 - 26 Jun 2006
+  Fix covc for 'typeid' of expression beginning with type-id. Symptom:
+    "error: expected ')'"
+
+Version 7.5.56 - 26 Jun 2006
+  With Microsoft C++, recognize keyword __restrict. Symptom: parse error
+  Fix covc for Microsoft #pragma warning for Intel C++ numbers 1-999.  Symptom: c4616
+  Documentation for simpler interoperability with Apple Xcode
+
+Version 7.5.55 - 9 Jun 2006
+  On Mac OS with GCC, recognize function-level assembly language.
+    Symptom: "error: assembly not expected"
+  Fix Coverage Browser for Mac crash on collapsing a tree item when no item
+    is selected, introduced in 7.5.52
+  Added covdir option --checkmin
+  On Windows, the '\' in region filename wildcards is taken as the directory
+    separator rather than an escape character
+  Fix Coverage Browser for unix context menu commands not working,
+    broken in 7.5.52
+  Fix HP-UX covgetkernel for DLKMs broken in 6.9.2.  Symptom: "File write error:
+    /dev/kmem"
+
+Version 7.5.54 - 31 May 2006
+  Fix covlink for -machine:ppcbe. Symptom: "link error: -machine:ppcbe not supported"
+  On Unix, add run-time library only once (not twice) if all static library
+    members are loaded.  Symptom: "ld: multiple definitions of symbol _cov_..."
+  Added Help searching via www.bullseye.com/cgi-bin/searchHelp
+  Smaller distributions from better compression
+
+Version 7.5.53 - 26 May 2006
+  Fix covc for Microsoft C++ response file containing \"""\"
+  Add support for Green Hills compilers
+  With Freescale CodeWarrior, remove "-inline off".  Symptom: no coverage for
+    some inline functions
+  With Borland C++, remove -vi-. Symptom: no coverage for some inline functions
+  With Symbian OS DLLs, link with libcov-windows-x86-noThread.lib.  Symptom: hang
+  Fix linux kernel support for recent 2.6 releases.  Symptoms: "Warning:
+    cov_probe_6_4_7 ...  undefined", "Unknown symbol cov_probe_6_4_7"
+
+Version 7.5.52 - 18 May 2006
+  New Coverage Browser commands Region Browse in Class View and Region Browse
+    in Files View
+  Fix covc for initializer containing more than 64K tokens.  Symptom:
+    "ParseTree: Token sequence limit reached"
+  Remove last vestiges of HP-UX 10.20
+
+Version 7.5.51 - 11 May 2006
+  Fix covc for Microsoft C++/CLI unary % operator. Symptom: parse error
+
+Version 7.5.50 - 10 May 2006
+  Automatically work around token pasting bug in Spatial entity.hxx.
+    Symptom: "entity.hxx: error: expected ';' or ',' or '=', near 'int'"
+  Fix instrumentation of declaration within for-statement condition referencing
+    variable defined in the for-init-statement.  Symptom: compiler error on
+    undeclared identifier
+  Fix covlink for Microsoft link making DLL with no -machine and no object files
+    (only libraries).  Symptom: LNK2001 on cov_DllMain
+
+Version 7.5.49 - 4 May 2006
+  Fix covc for Microsoft managed extensions 'new' with array-init. Symptom: syntax error
+  Fix covc for Microsoft managed extensions precedence of '__typeof'. Symptom: syntax error
+
+Version 7.5.48 - 3 May 2006
+  Fix covc for Microsoft C++/CLI expressions containing simple-type-specifier '::',
+    for example double::Parse.  Symptom: "error: expected '(', near '::'"
+
+Version 7.5.47 - 1 May 2006
+  Fix crash in Coverage Browser upon displaying source code, introduced in 7.5.46
+
+Version 7.5.46 - 26 Apr 2006
+  With Microsoft C++, issue c4081 for extra tokens following #pragma directives
+  With Microsoft C++, do not issue c1021 for #ident
+  For Linux x86, FreeBSD x86, NetBSD x86, run-time binary targets i586 rather
+    than i686. Symptom: multiply defined symbol error on __i686.get_pc_thunk
+
+Version 7.5.45 - 20 Apr 2006
+  With Microsoft Visual C++ .NET 2003, suppress LNK4243.
+  Fix covc for Microsoft C++ precompiled header named by option -FI and macro
+    with differing definitions on command line and in the PCH. Symptom: compile
+    error
+  Fix covc for Microsoft C++ precompiled header, introduced in 7.5.36. Symptom: c4003
+
+Version 7.5.44 - 13 Apr 2006
+  Fix covc for Microsoft managed C++ syntax '[ ... ] extern "C" ...'. Symptom:
+    error: syntax error, near '"C"'
+
+Version 7.5.43 - 4 Apr 2006
+  Ignore errors truncating license manager file.  Symptom:
+    "File write error: ...: Permission denied"
+
+Version 7.5.42 - 3 Apr 2006
+  For Microsoft eMbedded Visual C++ 4, added support for CPU "x86", in addition
+    to "emulator"
+
+Version 7.5.41 - 3 Apr 2006
+  Restore covc option -l/--leave diagnostic mode, broken in 7.5.39
+
+Version 7.5.40 - 20 Mar 2006
+  Additional diagnostics for HP-UX covgetkernel
+
+Version 7.5.39 - 17 Mar 2006
+  Add support for Microsoft Kernel Mode Driver Framework (KMDF) entry point
+    FxDriverEntry.  Symptom: crash
+  Fix covc for Microsoft C++ precompiled header named by option -FI. Symptom: c1010
+
+Version 7.5.38 - 16 Mar 2006
+  Fix covc for Rogue Wave rw/tpslist.h. Symptom: "error: syntax error, near ';'"
+  For Microsoft C++, added warning c5998
+  Improved performance of loading coverage file when there are many region
+    selections
+
+Version 7.5.37 - 7 Mar 2006
+  Recognize the token '>>' as two '>' tokens at the end of template parameter
+    and argument lists.  Symptom: "error: expected '>'"
+  Fix covc for template arguments using the '<' and '>' operators. Symptom:
+    syntax error
+  With Microsoft C++, covc only issues c5999 for pasting ')' and identifier
+  On Unix, resolve some symbolic links.  Symptom: compiler include directory not
+    excluded
+
+Version 7.5.36 - 22 Feb 2006
+  For Microsoft C++, implemented macro variable arguments.  Symptom: "error
+    c2010: '...': unexpected in macro formal parameter list"
+
+Version 7.5.35 - 15 Feb 2006
+  Fix covc for concatenating adjacent wide string literals with predefined
+    identifiers such as __func__ and __FUNCTION__. Symptom: syntax error
+  Fix Coverage Browser menu command View All Numbers check mark status. Symptom:
+    Check mark out of sync between menu and toolbar
+  With Microsoft C++, covc suppresses duplicate c5999 warnings
+
+Version 7.5.34 - 10 Feb 2006
+  Fix covc for Microsoft C++ precompiled header named by option -FI. Symptom: c1010
+  Fix covc for Microsoft C++/CLI two-token keywords such as "interface class".
+    Symptom: "error: syntax error, near 'class'"
+
+Version 7.5.33 - 8 Feb 2006
+  Fix covc for Microsoft C++/CLI 'default' in a nested-name-specifier. Symptom:
+    "error: expected ';' or ',' or '=', near '::'"
+  Fix Coverage Browser for unix graphics not rendering properly on some displays
+
+Version 7.5.32 - 31 Jan 2006
+  Fixed Windows setup for Microsoft Visual C++ 2005 Express. Symptom: crash.
+    VCExpress does not supply user32.lib, you must obtain it yourself
+  Added support for Apple Xcode 2.2, including creating x86 executables
+
+Version 7.5.31 - 26 Jan 2006
+  Fix covc for initializer containing more than 32K values, broken in 7.5.23.
+    Symptom: crash
+  Fix covc for COVSRCDIR environment variable not ending with slash.  Symptom:
+    incorrect paths stored in coverage file, exclusions not taking effect
+
+Version 7.5.30 - 23 Jan 2006
+  With Microsoft C++, fix __COUNTER__ macro for multiple uses in the same macro.
+    Symptom: __COUNTER__ value differs from Microsoft C++
+  Fix support for Solaris kernel on x86 and x64.  Symptom: undefined symbol
+    _GLOBAL_OFFSET_TABLE_
+  Fix for Borland C++Builder 6.  Symptom: E2268 on __strcmp__ or __strcpy__
+
+Version 7.5.29 - 20 Jan 2006
+  Work around Borland cpp32 bug with line splices and new-lines consisting of
+    line feed only with no carriage return. Symptom: parse error
+  Recognize GCC option -x with joined argument, as in -xc++. Symptom: parse error
+  When converting coverage files created prior to 7.1.0 with other than
+    Microsoft C++ to the newest format, preserve column position information.
+    Broken in 7.5.7
+
+Version 7.5.28 - 18 Jan 2006
+  Add support for Solaris kernel on x86 and x64
+  Add support for HP C++ compiler name taCC
+
+Version 7.5.27 - 12 Jan 2006
+  With Microsoft C++, suppress warning about suppressing c5999.  Symptom: C4616
+  Mimic Microsoft C++ bug allowing elaborated-type-specifier in a
+    postfix-expression cast
+
+Version 7.5.26 - 6 Jan 2006
+  Add support for LCC-Win32
+
+Version 7.5.25 - 4 Jan 2006
+  Fix Coverage Browser crash upon viewing a folder, then viewing a function,
+    then View Refresh, then Region Exclude
+
+Version 7.5.24 - 3 Jan 2006
+  Fix covc for large Microsoft C++ precompiled header, introduced in 7.5.23.
+    Symptom: "error C2079: 'cov_o_...' uses undefined struct 'cov_O_Yc_...'
+
+Version 7.5.23 - 29 Dec 2005
+  Fix covc for Microsoft C++ precompiled header created multiple times with same
+    object file path.  Symptom: "error LNK2005: struct cov_O_Yc_..."
+  Fix retail license validation for clock set earlier than build date.  Symptom:
+    "License error: Serial ... maintenance paid through ..."
+  With Microsoft C++, covc no longer reports c4010
+
+Version 7.5.22 - 22 Dec 2005
+  With Microsoft C++ 14, recognize context-sensitive keywords "abstract",
+    "override", "sealed" without -clr. Symptom: parse error
+
+Version 7.5.21 - 21 Dec 2005
+  Fixed covc for error condition not resulting in non-zero exit status
+
+Version 7.5.20 - 20 Dec 2005
+  Added support for the lcc compiler
+  Replicate Microsoft C++ bug in postfix-expression explicit type conversion
+    (functional notation) allowing multiple simple-type-specifier. Symptom:
+    "error: expected '(', near <simple-type-specifier>"
+  Windows graphic drivers save coverage upon DrvDisableDriver, DrvSynchronize
+
+Version 7.5.19 - 15 Dec 2005
+  Fix Microsoft C++ bug replication for L#x.  Symptom: parse error with adjacent
+    L#x expressions
+  covlink recognizes -machine:x64.  Symptom: "link error: -machine:x64 not
+    supported"
+  On LynxOS, add -mthreads to the link command rather than /lib/libpthread.so.0
+
+Version 7.5.18 - 6 Dec 2005
+  Fix covc for Borland C++ sysvari.h. Symptom: "error: syntax error, near ';'"
+  covc replicates Microsoft C++ bug with token paste and stringize operator L#x.
+    Symptom: parse error
+  On Solaris covc adds -lc to link command for making shared object.
+    Symptom: undefined symbols ___errno, atexit, getcwd, getenv, getpid, lseek
+
+Version 7.5.17 - 5 Dec 2005
+  Fix covc option -l/--leave for Unix. Symptom: crash
+  Fix covc for certain template-id syntax. Symptom: parse error
+  covc automatically works around syntax errors in Microsoft Visual C++
+    8.0 headers afxcomctl32.h, afxcomctl32.inl
+
+Version 7.5.16 - 30 Nov 2005
+  For HP-UX PARISC use instruction set 1.1 rather than 2.0, except for
+    CoverageBrowser.  Symptom: "Executable file incompatible with hardware"
+  Run-time for Windows x86 and x64 built with Visual Studio 2005
+
+Version 7.5.15 - 29 Nov 2005
+  If covlink cannot find the compiler in PATH, and the linker is
+    specified with an absolute path, look for the compiler in the linker
+    directory. Symptom: "Compiler command error: cannot find compiler cl"
+
+Version 7.5.14 - 23 Nov 2005
+  For unix distributions, restored script/ subdirectory, missing
+    in 7.5.13
+
+Version 7.5.13 - 21 Nov 2005
+  Fix license manager for multiple platforms in one file.  Symptom:
+    licenses for one platform restricted by licenses held on others
+  License manager file format version 4
+  Fix covc for Visual Studio 2005 compatibility.  Symptoms: c4616 on
+    '26000', c4615, "syntax error ... near 'default'"
+  Fix integration with Visual Studio 2005.  Symptom: "Compiler
+    integration error: Cannot open .../VCComponents.dat"
+
+Version 7.5.12 - 10 Nov 2005
+  Fix covlink for Metrowerks CodeWarrior creating Symbian OS -share .exe.
+    Symptom: undefined symbol on entry point symbol
+  Fix covlink for Symbian OS DLLs.  Symptom: user DLL entry point not called
+
+Version 7.5.11 - 10 Nov 2005
+  Support for running CoverageBrowser on Solaris 9 x86
+
+Version 7.5.10 - 8 Nov 2005
+  Command line reporting performance improvements, especially covfn
+
+Version 7.5.9 - 2 Nov 2005
+  Add distribution for Linux ARM big endian
+  For Win32, remove run-time call to IsBadWritePtr
+
+Version 7.5.8 - 26 Oct 2005
+  Fix covc for ARM RealView Compilation Tools Version 2.2 va_arg.
+    Symptom: "error: expected an expression, near ')'"
+
+Version 7.5.7 - 20 Oct 2005
+  Fix covc for Microsoft C++ __if_exists syntax.  Symptom: syntax error
+  Automatically exclude GCC STL headers. Symptom: compiler error
+  Fix covc for multiple #import of same type library with and without
+    implementation_only, introduced in 6.3.6. Symptom: crash
+
+Version 7.5.6 - 14 Oct 2005
+  Fix covc for ATL attributed DLL without "module" attribute.
+    Symptom: C3174
+
+Version 7.5.5 - 10 Oct 2005
+  Fix covc for overloaded operator ->*.  Symptom: "error: expected a
+    conversion-type-id or an operator, near '->*"
+  BullseyeCoverageAtexit DLL saves coverage upon DLL_THREAD_DETACH
+    for Symbian OS EKA2 emulator
+
+Version 7.5.4 - 5 Oct 2005
+  Fix covc for GCC precompiled header as in 7.5.3 for header named .pch++
+  covc automatically works around syntax errors in Microsoft Visual C++
+    7.0 and 7.1 headers atldb.h, atlhttp.inl
+
+Version 7.5.3 - 4 Oct 2005
+  Fix covc for GCC precompiled header created in different directory
+    than the header, as with Apple Xcode 2.2.  Symptom: "No such file or
+    directory" on header
+
+Version 7.5.2 - 30 Sep 2005
+  Fix covc for identifier followed by C style comment beginning at end
+    of line, with compilers other than Microsoft.  Symptom:
+    "IndexOutOfBoundsException: get"
+
+Version 7.5.1 - 28 Sep 2005
+  Some support files for running on Symbian OS ARM devices added in
+    run/SymbianOS-ARM/
+
+Version 7.5.0 - 26 Sep 2005
+  Automatically exclude macro expansions with all compilers, not just
+    Microsoft C++
+  Annotated source code coverage reports have correct column position
+    separation between probes containing macros with all compilers,
+    not just Microsoft C++
+  Fix covc for compiler name given with suffix .EXE (in upper case)
+  Fix covc for expressions of the form "( identifier ) unary-operator
+    constant-expression", where unary-operator is also a binary operator.
+    Symptom: expression incorrectly considered constant
+
+Version 7.4.22 - 25 Aug 2005
+  Fix instrumentation of declaration within for-statement condition.
+    Symptom: compiler syntax error
+
+Version 7.4.21 - 18 Aug 2005
+  Automatically exclude Symbian OS SDK headers
+  Improved syntax recognition for ambiguous expressions containing
+    template-id and operators '<' and '>'
+
+Version 7.4.20 - 16 Aug 2005
+  For Symbian OS emulator, run-time uses "#pragma data_seg" to make
+    BullseyeCoverage data invisible.  Symptom: crash upon "Close
+    (debug)" after first run
+  Added partial support for Symbian OS on ARM devices
+
+Version 7.4.19 - 11 Aug 2005
+  Fix covc for ARM RealView Compilation Tools Version 2.2 option
+    --preinclude.  Symptom: compiler error
+  Fix covc for GCC "Controlling Names Used in Assembler Code" syntax,
+    broken in 7.4.17.  Symptom: "expected ';' or ',' or '=', near ';'"
+  Added support for ARM thumb mode in run/atomic.h
+  Added support for Microsoft C++/CLI with v14 -clr (not -clr:pure nor
+    -clr:safe)
+
+Version 7.4.18 - 10 Aug 2005
+  Fix covc for concatenation of predefined string macro with string
+    literal.  Symptom: syntax error
+  Unix install script makes directories permission 755 rather than 777
+  On Unix, compiler version cache information moved into
+    $HOME/.BullseyeCoverage rather than bin/versionCach2 or
+    /tmp/BullseyeCoverage-versionCache2
+    On Windows, compiler version cache information moved into registry
+  Fix Coverage Browser for Windows missing column headings in right pane
+    on Windows 2000
+  Fix for GCC precompiled headers. Symptom: build error
+
+Version 7.4.17 - 8 Aug 2005
+  Fix console report commands for region selections manually added to
+    the coverage file via covselect.  Symptom: all regions included
+    regardless of command line selection
+  Display C++ overloaded operators with no unnecessary whitespace, as
+    "operator@" rather than "operator @"
+  Add support for Microsoft C++ option -u.  Symptom: "Compiler command
+    error: option not supported: -u"
+  Add support for ARM RealView Compilation Tools Version 2.2
+
+Version 7.4.16 - 15 Jul 2005
+  With Microsoft C++ without -Zc:wchar_t, wchar_t is not a keyword.
+    Symptom: syntax error
+  Coverage Browser for Windows displays source files with characters
+    128-255 that are not UTF-8
+  With Microsoft C++ response files, covc interprets two consecutive
+    double quotes within quotes the same way as Microsoft C++.  Symptom:
+    compile error
+  Fix Coverage Browser source code display glitch. Symptom: last char
+    of each line not displayed
+  Fix covlink. Symptom: "link error: -machine:i386 not supported"
+  More detailed expression parsing
+
+Version 7.4.15 - 12 Jul 2005
+  Ignore UTF-8 Byte Order Mark/ZERO-WIDTH NO-BREAK SPACE at beginning of
+    source files.  Symptom: "syntax error" at line 1
+  Coverage Browser for Windows displays UTF-8 source files.  This is now
+    the only multibyte encoding supported on Windows
+  Added support for Windows CE 4 on ARMV4I
+
+Version 7.4.14 - 7 Jul 2005
+  For Cygwin GCC, covc converts /cygdrive/X to X: on the command line.
+    Symptom: no coverage file entries
+  Fix for Cygwin GCC when Coverage Build disable.  Symptom: gcc behaves
+    erratically
+  On HP-UX, covgetkernel writes all measurements, not just the new
+
+Version 7.4.13 - 30 Jun 2005
+  Fixed Coverage Browser for unix crash when showing tool tip.
+  Added warning c5999 for improper ## usage with Microsoft C++
+  Automatically work around token pasting bug in Spatial entity.hxx.
+    Symptom: "entity.hxx: error: expected ';' or ',' or '=', near 'int'"
+  Support for Apple Xcode 2
+  Removed support for Solaris 2.6
+
+Version 7.4.12 - 20 Jun 2005
+  Support for Windows CE DLLs using __cdecl entry point such as
+    _DllMainCRTStartup.  Symptom: crash
+
+Version 7.4.11 - 16 Jun 2005
+  Fix for Microsoft C++ linking a DLL from static libraries with no
+    object files named on command line.  Symptom: LNK2001 on cov_DllMain
+
+Version 7.4.10 - 15 Jun 2005
+  Support for Windows CE DLLs using __cdecl entry point such as
+    _DllMainCRTStartup.  Symptom: LNK2001
+
+Version 7.4.9 - 14 Jun 2005
+  Increased compatibility with IBM C/C++ versions 6 and 7.  Symptom:
+    keyword not recognized
+
+Version 7.4.8 - 8 Jun 2005
+  With Microsoft C++, unparenthesized commas in replacement list sometimes
+    delimit macro arguments.  Symptom: c4002
+  Automatically work around bug in Microsoft Visual C++ 6 comdef.h(264).
+    Symptom: c1012
+  Fix support for Linux kernel on x64.  Symptom: covgetkernel crash
+  Add libcov-kernel.a for Tru64.
+  Fix covlink for Metrowerks CodeWarrior creating import library.
+    Symptom: "Multiply defined symbol" in kernel32.lib, user32.lib
+
+Version 7.4.7 - 31 May 2005
+  With Microsoft C++, unparenthesized commas in replacement list cannot
+    delimit macro arguments.  Symptom: c4002 or c4003
+  Remove run-time error 98 "Unable to map shared file handles"
+  Support for Solaris x64
+
+Version 7.4.6 - 25 May 2005
+  Support TASKING TriCore C/C++
+
+Version 7.4.5 - 23 May 2005
+  Fix covc for empty macro arguments with Microsoft C++ 13.1 and Intel
+    C++ 8.0.  Symptom: c4003.
+  Fix covc for labelled statement using special keyword such as "abort".
+    Symptom: "error: expected ';', near ':'"
+  Recognize Microsoft C++ extension "try { ... } __if_exist(v) ...".
+    Symptom: "expected 'catch', near '__if_exists'"
+  Fix covc for expression containing abstract declarator containing
+    logical or conditional operator.  Symptom: compiler error
+  Fix Windows setup for Microsoft Visual C++ 7.x registry partially
+    present.  Symptom: "Compiler integration error: Cannot create
+    ...\VCComponents.dat"
+  Fix support for Borland C++.  Symptom: "error: ...-pp.i: No such file
+    or directory"
+
+Version 7.4.4 - 13 May 2005
+  Support Sun Studio 10 C++ keyword __global, #pragma disable_ldscope
+
+Version 7.4.3 - 11 May 2005
+  Fix covc for identifier beginning with $ then digit.  Symptom: "error:
+    syntax error"
+
+Version 7.4.2 - 5 May 2005
+  Fix covc for nested-name-specifier ending in template-id.  Symptom:
+    "error: expected '::'"
+  Recognize SGI CC option -ar.  Symptom: "nm: ...:libcov.a: invalid file type"
+  on FreeBSD, libcov-noPthread.a removed in favor of libcov-noThread.a
+  Add support for auto-save on NetBSD x86 2.0 and later
+  Fix covc option -l/--leave.  Symptom: "File create error:
+    .../BullseyeCoverageDiag0"
+
+Version 7.4.1 - 2 May 2005
+  Add distribution for NetBSD x64
+  Fixed Coverage Browser for unix source location.  Symptom: "Cannot
+    open file" attempting to view source code
+
+Version 7.4.0 - 26 Apr 2005
+  Coverage Browser for Windows new menu command File Save View as HTML.
+    Removed menu command File Print
+  On Mac OS, Coverage Browser menu Help commands fixed.  Symptom: crash
+  On Mac OS, Coverage Browser command Coverage Build fixed.  Symptom:
+    "no compiler interceptors"
+  On Unix, Coverage Browser menu command fatal errors show error
+    message.  Symptom: "Exception during stack unwinding"
+  Unix install unconditionally creates interceptors for native compilers.
+    Symptom: interceptors not created for compiler not in PATH
+  covmgr option -m/--compact tolerates missing option block.  Symptom:
+    "unexpected EOF at ..."
+  Remove support for IRIX 6.2
+  Remove support for Numega BoundsChecker
+  Remove support for installing on Windows 95, Windows 9x, Windows ME
+
+Version 7.3.30 - 7 Apr 2005
+  Fix covselect for class names.  Symptom: class selections made by the
+    CoverageBrowser have no effect, covselect displays them with suffix "::::"
+  Restore HP-UX command covgetkernel-pa32 removed in 7.1.0
+  Improved speed performance loading coverage file
+
+Version 7.3.29 - 1 Apr 2005
+  With Microsoft C++, covc ignores invalid syntax with keyword
+    "typename".  Symptom: "error: expected 'identifier'"
+  Fix covc for switch statement containing variable declaration in
+    controlling expression.  Symptom: compiler error on undeclared
+    identifier
+  On Mac OS X, automatically exclude /Developer/, /Library/, /System/.
+  Fix covc to delete overwritten coverage file when object file path is
+    absolute.  Symptom: coverage file grows large
+
+Version 7.3.28 - 25 Mar 2005
+  Work around GNU #pragma implementation "objects.h".  Symptom:
+    "`#pragma implementation' can only appear at top-level"
+  covc does not instrument non-type template arguments.  Symptom with
+    Microsoft C++: C2975
+
+Version 7.3.27 - 25 Mar 2005
+  Fix cov_reset for race condition. Symptom: infinite loop in run-time
+  Fix covc for bin directory writable then later unwritable.  Symptom:
+    "File create error: versionCache2"
+  covc reports a specific error for misplacement of 'typename'
+
+Version 7.3.26 - 21 Mar 2005
+  Automatically work around bug in GCC #ident handling.  Symptom:
+    "warning: extra tokens at end of #ident directive"
+  For unix, added libcov-noThread.a
+  Added documentation for Apple Xcode 1.5
+  Renamed Windows x64 libraries
+
+Version 7.3.25 - 14 Mar 2005
+  covc recognizes embedded source code commands "save" and "restore" for
+    excluding code in macros
+
+Version 7.3.24 - 8 Mar 2005
+  Compatibility between FreeBSD 4.x and 5.x.  Symptom: ".../ld-elf.so.1:
+    Shared object ...  not found"
+
+Version 7.3.23 - 3 Mar 2005
+  Fix covc for command line -U overrides predefined macro. Symptoms: C4117, d4025
+  Fix covc for Microsoft managed C++ attribute -Zc:wchar_t. Symptom: C4117
+  Fix interceptor for Windows buffer overwrite. Symptom: crash
+  Added lib/libcov-windows-amd64-noThread.lib
+  For compatibility with IRIX 6.5.16 and earlier, CoverageBrowser does
+    not use mbrtowc, mbsrtowcs, wcrtomb, wcsrtombs.
+    Symptom: "rld: Error: unresolvable symbol"
+
+Version 7.3.22 - 22 Feb 2005
+  covlink recognizes device driver regardless of -DLL option.  Symptom:
+    LNK2001: unresolved external symbol _cov_DllMain@12
+  For Symbian OS 8, covlink does not hook the invalid Windows DLL entry
+    point "__E32Dll".  Symptom: run-time crash
+  cov_write reads comma-separated list of coverage file paths from
+    /tmp/covfile, rather than using the single coverage file path
+    /tmp/test.cov
+
+Version 7.3.21 - 16 Feb 2005
+  Add support for Microsoft C++ compilers for ARM, SH4 named cl.exe.
+    Symptom: "Compiler command error: cannot find compiler clarm"
+
+Version 7.3.20 - 15 Feb 2005
+  covc reproduces Microsoft C++ behavior token pasting L with
+    __FUNCTION__, etc.  Symptom: C2065 on L__FUNCTION__
+  covc supports Microsoft C++ Unicode argument files.  Symptom: D9024
+  For IRIX, remove dependence on patch 5377. Symptom: "Assertion failed
+    ... throw.cxx ..."
+
+Version 7.3.19 - 1 Feb 2005
+  covc suppresses extraneous C4297 in "WinMain"
+
+Version 7.3.18 - 31 Jan 2005
+  Add support for GCC keyword __thread.  Symptom: "error: expected ';'
+    or ',' or '='"
+  Fix FreeBSD covgetkernel. Symptom: "cov_array corrupt, count = 4096"
+  Add CAD-UL compiler to Windows setup program compiler selection
+
+Version 7.3.17 - 27 Jan 2005
+  Support for CAD-UL compiler
+  On HP-UX, covc inserts -lpthread before -lc, due to gethostbyaddr
+
+Version 7.3.16 - 18 Jan 2005
+  Fixed unix kernel run-time support for reloading a module. Symptom:
+    Error 12.
+  On FreeBSD, automatically link shared objects with libcov-noPthread.a.
+    Symptom: undefined symbols pthread_create, pthread_exit, pthread_join
+
+Version 7.3.15 - 14 Jan 2005
+  When rebuilding, preserve measurements for unmodified source files
+  Fixed CoverageBrowser for Unix warning dialog, introduced in 7.3.11.
+    Symptom: "... Can't load ... 'messageBox.png'"
+
+Version 7.3.14 - 10 Jan 2005
+  Disable GCC #pragma implementation.  Symptom: "`#pragma
+    implementation' can only appear at top-level"
+  Fix covgetkernel license error message handling.  Symptom: "Exception
+    during stack unwinding"
+  Fix covmerge for Sun C++. Symptom: summary coverage calculation errors
+
+Version 7.3.13 - 5 Jan 2005
+  Fix uninstall bug on Windows introduced in 7.1.8.  Symptom: "File
+    create error: ...\BullseyeCoverage\bin/"
+
+Version 7.3.12 - 5 Jan 2005
+  Compatibility with Metrowerks CodeWarrior for Symbian OS 2.8.  Symptom:
+    undefined symbol errors naming Win32 API functions
+  Fix for Microsoft C++ keyword __hook.  Symptom: "C2146: syntax error :
+    missing ';' before identifier 'Invoke'"
+  CoverageBrowser for Unix tree control automatically expands items
+    containing only one item, for better usability
+
+Version 7.3.11 - 23 Dec 2004
+  covc matches Microsoft C++ expansion of __LINE__ macro.  Symptom:
+    compile error with tracewpp
+  Coverage Browser for Unix renamed Find tab to Queries
+  Coverage Browser for Unix now uses integrated find-text window,
+    instead of dialog
+  Fix covc for Microsoft C++ typedef with attributed type.  Symptom:
+    "error: syntax error, near '['"
+  covc option --retain always retains coverage information, even if some
+    sources changed
+  Integration with Visual Studio 2005 beta
+
+Version 7.3.10 - 15 Dec 2004
+  Fix covc for GCC and ~4000 consecutive #line directives. Symptom: crash
+  Fix problem with Microsoft C++ #import attribute embedded_idl. Symptom:
+    "C2059: syntax error : '__uuidof'"
+  Fix Coverage Browser for Unix intermittent crash upon showing source code
+  Fix Coverage Browser for Unix main window tab order
+
+Version 7.3.9 - 22 Nov 2004
+  Recognize Sun C++ option -xM. Symptom: "source-pp.i(1): error:
+    expected ';' or ',' or '=', near '.'"
+  Sun C option +w invalid for preprocessor.  Symptom: "command line:
+    fatal: cannot open +w"
+  Support for Intel C++ on Linux
+  Fix Coverage Browser for Mac OS X scroll bars, focus rectangle, selection color
+  Fix Coverage Browser View Classes duplicate "Globals" folder
+  Add support for Microsoft C++ managed extension enum Underlying Type.
+    Symptom: error: expected ';' or ',' or '=', near '{'
+  Improved support for Microsoft C++ managed extensions
+  Fix Coverage Browser for Unix focus problem.
+    Symptom: window does not accept focus after using "Find Text..." dialog
+  Fix Coverage Browser for Unix crash on Go To Line... when cursor
+    is beyond last line
+
+Version 7.3.8 - 9 Nov 2004
+  Fix instrumentation of try-__finally with no catch.  Symptom: C2713
+  Compatibility with Redhat Enterprise Linux 3 Itanium. Symptom:
+    "elf_machine_rela: Assertion `! unexpected dynamic reloc type"
+
+Version 7.3.7 - 9 Nov 2004
+  Fix instrumentation of try-block for Microsoft C++ precompiled header
+    containing no code.  Symptom: C2065 on 'cov_tryBlock'
+
+Version 7.3.6 - 8 Nov 2004
+  Add support for Microsoft C++ managed extension syntax "try ...  catch
+    ...  __finally".  Symptom: "error: expected 'catch', near '__finally'"
+  Fixed Coverage Browser for Unix painting glitches when resizing
+
+Version 7.3.5 - 2 Nov 2004
+  Reduce size of instrumentation for Microsoft managed C++ attribute syntax.
+    Symptom: C1060 or C1076.
+  Coverage Browser released for Linux on Itanium
+  Diagnostic log file format 4 handles files larger than 24MB
+
+Version 7.3.4 - 29 Oct 2004
+  Fix license manager bug for one user running multiple processes
+    introduced in 7.2.0.  Symptom "Installation problem, contact
+    technical support"
+  Fix linking Windows CE DLLs on SH4.  Symptom: "LNK1112: module machine
+    type 'SH3' conflicts with target machine type 'SH4'"
+  Fix for Redhat Enterprise Server 3 Itanium.  Symptom: "version
+    `GLIBC_2.2.3' not found"
+  Coverage Browser released for HP-UX on Itanium
+
+Version 7.3.3 - 27 Oct 2004
+  Fix support for Windows CE emulation with eMbedded Visual C++ 3 and 4
+    Symptom: "First-chance exception ...  0xC0000005: Access Violation"
+  Preliminary support for Windows CE on SH4
+
+Version 7.3.2 - 22 Oct 2004
+  Simplified instrumentation of try-block to avoid Microsoft C1001
+    'msc1.cpp' line 1794
+  Do not transform or measure C++98 function-try-block.  Symptom:
+    exception in ctor-initializer not caught
+  Fix Unix Coverage Browser command View Refresh when invoked repeatedly
+    and quickly.  Symptom: crash
+  Fix Unix Coverage Browser tree control mouse context menu display glitch
+  Unix Coverage Browser wxWidgets version bump to 2.5.3
+
+Version 7.3.1 - 13 Oct 2004
+  Fix measurement of try-blocks.  Symptom: error LNK2005 on
+    __cov_tryBlock::__cov_tryBlock(void)
+
+Version 7.3.0 - 12 Oct 2004
+  Measurement of the end of exception handling try-blocks and Microsoft
+    try-except, try-finally
+  Dropped measurement of Microsoft __finally termination handlers,
+    because they are executed unconditionally
+  On IRIX, fixed the extract program.  Symptom: "GZIPInputStream error:
+    incorrect data check".  Problem introduced in 7.0.5
+
+Version 7.2.0 - 24 Sep 2004
+  Support for Linux kernel 2.6
+  Add distribution for Linux ARM little endian
+  Automatically work around bug in output from Microsoft SDK program
+    tracewpp.  Symptom: "error C2065: 'WPP_' : undeclared identifier"
+  Support for building on LynxOS. Symptom: -lpthread not found
+
+Version 7.1.8 - 15 Sep 2004
+  Workaround problem with Visual Studio command Project Add Class with
+    ATL Simple Object.  Symptom: dialog stating "ATL classes can only be
+    added to ATL,MFC EXE and MFC Regular DLL projects"
+  Added Intel C++ predefined macro __BASE_FILE__
+  Fix crash in Coverage Browser on Unix systems when you collapse then
+    expand a tree node containing the current selection
+  Coverage Browser for Unix totals update immediately when a region is
+    included or excluded
+
+Version 7.1.7 - 10 Sep 2004
+  Fixed covc for language options specified after source filenames, including
+    Microsoft C++ option -TC, -TP; Metrowerks -dialect, -lang, IBM -+
+    Symptom: language set to C rather than C++
+
+Version 7.1.6 - 9 Sep 2004
+  Added support for Symbian OS 8.  Symptom: "mwldsym2: Undefined symbol:
+    ...  __E32Dll ..."
+
+Version 7.1.5 - 7 Sep 2004
+  Fix covc for managed C++ attribute when using precompiled header.
+    Symptom: warning C4117
+  Revoked measurement of the end of exception handling try-block
+    introduced in 7.1 pending rework.  Symptom: incorrectly reported
+    as uncovered when control leaves via a jump-statement
+
+Version 7.1.4 - 30 Aug 2004
+  Suppress Microsoft C4702 caused by probe at end of try-block containing "return"
+
+Version 7.1.3 - 27 Aug 2004
+  Fixed crash in Coverage Browser upon exploring a function, on Solaris SPARC
+  Coverage Browser on Unix displays "please wait" message when
+    initializing fontconfig cache
+  Coverage Browser released for Solaris x86
+
+Version 7.1.2 - 23 Aug 2004
+  Fixed auto-save.  Symptom: coverage not saved after a recoverable error
+  Unix install sets executable file permissions to allow copying,
+    r-xr-xr-x rather than r-x--x--x.
+  Coverage Browser on Unix does not set TrueColor visual.  Symptom:
+    dramatically incorrect colors for everything on screen except for
+    Coverage Browser
+  Correctly parse compiler option -I followed by a non-directory argument.
+    Symptom: build error
+  With Microsoft C++ do not recognize #pragma hdrstop unless -Yu has no argument.
+    Symptom: compile error
+  Coverage Browser also looks for HTML browser at /usr/sfw/bin/mozilla,
+    for Solaris 10
+
+Version 7.1.1 - 10 Aug 2004
+  Fix covc compiler version caching for multiple users.  Symptom: "File
+    system error: .../versionCache2: set file permission failure: Not owner"
+
+Version 7.1.0 - 6 Aug 2004
+  New measurement of the end of exception handling try-blocks.  File
+    format version number revised to support this.
+  Recognize GCC option -x arguments cpp-output and c++-cpp-output,
+    broken in 6.8.9.  Symptom: no instrumentation performed
+  Fix run-time for Windows CE reading Environment Variables from registry.
+    Symptom: settings have no effect
+  Support for Linux on x64
+
+Version 7.0.5 - 29 Jul 2004
+  Coverage Browser released for IRIX
+  For HP-UX PARISC DLKMs, compile run-time with +ES1.Xindirect_calls. Symptom:
+    "Illegal relocation type 72"
+  Restored libcov-hpKernel-pa32.a
+  Dropped support for SCO UnixWare due to lack of interest
+
+Version 7.0.4 - 28 Jul 2004
+  For HP-UX Itanium DLKMs, compile run-time with +Oshortdata=0. Symptom:
+    "Illegal relocation type R_IA_64_GPREL22"
+
+Version 7.0.3 - 27 Jul 2004
+  Removed libcov-hpKernel-pa32.a, 10.20 is no longer supported
+  With GCC in C mode, define macro __NO_STRING_INLINES. Symptom: many
+    probes for a simple string function, and "warning: operation on `...'
+    may be undefined"
+  On Windows CE, read environment variables from registry on Windows CE
+  On Windows CE, output error messages to debugger prior to MessageBox
+
+Version 7.0.2 - 22 Jul 2004
+  Coverage Browser released for HP-UX PA, FreeBSD, and NetBSD
+  On Unix, the License manager setting is located in $HOME/.BullseyeCoverage
+    rather than COVLM environment variable
+  Automatically work around token pasting problem with gcc 2.95.4 on FreeBSD.
+    Symptom: behavior change in switch, or "duplicate label `case...'"
+  Fixed Coverage Browser for Unix caret redrawing and scrolling, column
+    header alignment, scroll bar updating, Find mode Go Back and Go Forward
+  Removed undocumented and obsolete run-time function cov_init
+  Unix extract program uses command line arguments rather than stdin and
+    can now create the license manager file
+
+Version 7.0.1 - 9 Jul 2004
+  Fix Coverage Browser for Unix font. Symptom: small serif font
+  Fix Coverage Browser for Unix right pane header and column alignment
+  For Mac OS X, added bin/CoverageBrowser command to launch from command prompt
+  Run-time also checks for /tmp/test.cov if COVFILE not set
+  Support for Windows on x64 kernel mode
+  Removed HP-UX covgetkernel-pa32
+  For Coverage Browser for Unix, added Options dialog context menu help
+  Automatically work around syntax errors in Borland C++Builder
+    rwlocale.h.  Symptom: ".../rwlocale.h(140): error: expected '>',
+    near ';'" or "Too few arguments passed to template"
+
+Version 7.0.0 - 29 Jun 2004
+  CoverageBrowser released on Linux x86, Solaris SPARC, Mac OS
+  Fix Coverage Browser View Sort Lock. Symptoms: functions not locked in place,
+    turning off Sort Lock did not resort immediately
+  Fix Coverage Browser self-licensing broken in 6.8.5.  Symptom: one incorrect error
+    after entering valid cross-platform license key
+  Serialize Unix kernel data collection programs
+
+Version 6.9.7 - 22 Jun 2004
+  Fix for Borland C++Builder 6 with -O2, -Oi, and -Ox. Symptom: build error
+
+Version 6.9.6 - 15 Jun 2004
+  Support Windows CE DLLs with user-defined entry.  Symptom: "link
+    error: Windows CE DLL user defined entry point not supported"
+  Recognize gcc options -dump, -print-*, --version
+
+Version 6.9.5 - 3 Jun 2004
+  For HP-UX kernel run-time, removed undefined reference to cov_list symbol
+  Support for Windows on x64 user mode
+
+Version 6.9.4 - 1 Jun 2004
+  covc does not add libraries to compiler commands with no arguments.
+    Symptom: "gcc -v" attempts to link, unresolved reference to "main"
+  On Unix, convert backslashes in paths from the coverage file to forward
+
+Version 6.9.3 - 19 May 2004
+  For Compaq C++, covc always adds -tlocal.  Symptom: undefined symbol
+    naming a template function.
+
+Version 6.9.2 - 10 May 2004
+  Fix HP-UX kernel data collection program covgetcrash
+  Support for Borland C++Builder 6 keyword __classid.  Symptom:
+    "Error E2242 __delphirtti requires VCL style class type"
+  Documentation for C++Builder 5 and 6 describes using bpr2mak
+  Support for ccache
+
+Version 6.9.1 - 3 May 2004
+  Removed dependency on CRT function atexit for Metrowerks CodeWarrior and
+    Intel C++ on Windows.  Symptom: No coverage saved with Symbian OS
+    console mode programs built with CodeWarrior.
+  Automatically work around bug in Microsoft Visual C++ 6 xstring.h when
+    _Nullstr is instrumented.  Symptom: LNK2001 on
+    std::basic_string<...>::_Nullstr()::5::_C
+
+Version 6.9.0 - 30 Apr 2004
+  Support for HP-UX dynamically loadable kernel modules (DLKMs)
+
+Version 6.8.11 - 26 Apr 2004
+  With Microsoft C++, removed dependency on CRT function atexit.  Symptom:
+    No coverage saved with Symbian OS console mode programs.
+  Remove output line number limit for GCC.  Symptom: large intermediate file
+
+Version 6.8.10 - 9 Apr 2004
+  covmgr option -m/--compact performs some repairs
+  Fix for GCC #line processing. Symptom: "line-map.c: file left but not
+    entered"
+  Disable GCC #pragma interface. Symptom: undefined reference to inline
+    function
+
+Version 6.8.9 - 6 Apr 2004
+  Recognize GCC option -MF. Symptom: build error
+
+Version 6.8.8 - 6 Apr 2004
+  Recognize GCC options -MT and -MQ. Symptom: build error
+  Fix Coverage Browser command File Merge. Symptom: source paths incorrectly
+    modified
+
+Version 6.8.7 - 1 Apr 2004
+  On Unix, covc creates BullseyeCoverage-versionCache2 with permission
+    rw-rw-rw-. Symptom: permission denied
+  On Solaris, automatically enable dynamic linking. Symptom: "-lposix4:
+    not found", "-lpthread: not found"
+
+Version 6.8.6 - 30 Mar 2004
+  On Unix, insert the run-time library both before and after existing
+    libraries to support both dynamically linked executables and linking
+    instrumented libraries.  Symptom: unresolved symbol cov_probe_...
+
+Version 6.8.5 - 26 Mar 2004
+  Recognize HP-UX C command line option -AC99
+  Fix Win32 Coverage Browser for non-Windows license.  Symptom: "License
+    error"
+
+Version 6.8.4 - 23 Mar 2004
+  Recognize HP-UX compilers keyword __attribute__
+    Symptom: "error: expected ')', near '('"
+  Recognize HP-UX compilers command line option +e
+
+Version 6.8.3 - 16 Mar 2004
+  Fixed instrumentation of definition within while-statement condition.
+    Symptom: run-time infinite loop.  Broken since 6.8.2
+  Change named of diagnostic archives from BullseyeCoverageLog* to
+    BullseyeCoverageData* to avoid confusion with "build log"
+
+Version 6.8.2 - 15 Mar 2004
+  Fixed instrumentation of definition within condition and dependency on
+    constructor initialization rather than assignment.  Example syntax:
+    "class T { T(int); } ...  if (T t = 0)".  Symptom: compiler error
+    such as Microsoft C2512 "no appropriate default constructor available"
+    or C2451 "conditional expression of type is illegal".
+
+Version 6.8.1 - 8 Mar 2004
+  To support Linux dynamically linked executables, insert the default
+    run-time library before any specified library.  Symptom: "relocation
+    error: ...: undefined symbol: cov_probe_6_4_7 at runtime"
+  The default run-time library is specified as .../libcov.a rather than
+    "-L...  -lcov"
+  Fix covmgr --lm-create for IRIX. Symptom: core dump
+  Fix run/configure for Mac OS with no mwpefcc installed.  Symptom:
+    "mwpefcc: command not found"
+
+Version 6.8.0 - 4 Mar 2004
+  Installation requires either a license key or a license manager file, but
+    not both
+  License manager queueing prevents worst-case behavior
+  License manager file format version 3
+  Recognize Metrowerks compiler option -include
+  On unix, the default run-time library is specified as "-L...  -lcov"
+    rather than .../libcov.a
+
+Version 6.7.24 - 18 Feb 2004
+  Recognize keyword "asm" with SCO UnixWare C. Symptom: syntax error
+
+Version 6.7.23 - 12 Feb 2004
+  Fix parsing of GCC va_dcl macro. Symptom: "error: syntax error, near '...'"
+  With GCC 3 option -MD or -MMD, covc places the .d file where the object
+    file goes
+
+Version 6.7.22 - 11 Feb 2004
+  Fix Coverage Browser for COVSRCDIR set to directory not ending with slash.
+    Symptom: "Substitute: cannot substitute "..." to "..."
+  Fix command line region matching for function parameters containing "::".
+    Symptom: "cov139: no coverage information for function ..."
+
+Version 6.7.21 - 4 Feb 2004
+  Fixed interceptor for compatibility with Metrowerks CodeWarrior for
+    Symbian OS.  Symptom: undefined array allocator symbols such as
+    ___construct_array, ___construct_new_array, ___destroy_new_array,
+    ___destroy_arr
+
+Version 6.7.20 - 16 Jan 2004
+  Recognize Metrowerks CodeWarrior for MacOS function-level assembly language
+    syntax "extern asm" and "static asm".  Symptom: "error: syntax error,
+    near 'asm'"
+
+Version 6.7.19 - 14 Jan 2004
+  Fix covc argument parsing for Metrowerks CodeWarrior. Symptom: build error
+
+Version 6.7.18 - 13 Jan 2004
+  Fix Windows setup for Microsoft Visual Studio .NET with VCComponents.dat
+    present but incomplete. Symptom: enabling Coverage Build has no effect
+
+Version 6.7.17 - 13 Jan 2004
+  Fix covc for Metrowerks CodeWarrior mwpefcc -prefix with precompiled header.
+    Symptom: "Error : illegal use of precompiled header"
+
+Version 6.7.16 - 12 Jan 2004
+  Recognize many more Metrowerks CodeWarrior options including -prefix and
+    -trigraphs.  Symptom: build error
+
+Version 6.7.15 - 12 Jan 2004
+  cov_reset unlinks run-time data structures.
+  Recognize GCC option -trigraphs. Symptom: syntax error
+  Do not instrument functions with __declspec(naked). Symptom: crash
+
+Version 6.7.14 - 23 Dec 2003
+  Fix cov_reset. Symptom: coverage incorrectly not saved afterward
+  cov_reset returns a diagnostic code.
+
+Version 6.7.13 - 11 Dec 2003
+  On Mac, link libcov-pef.a with console.stubs.c.  Symptom: "Error :
+    undefined: 'WriteCharsToConsole'"
+  Added parsing of AltiVec data types
+
+Version 6.7.12 - 10 Dec 2003
+  On Mac, link libcov-pef.a with MSL_Extras_Carbon_D.Lib. Symptom: "Error :
+    undefined: 'open'"
+  With CodeWarrior for Mac, recognize __terminate as an exit function
+
+Version 6.7.11 - 3 Dec 2003
+  Fix covc parsing of Metrowerks CodeWarrior command line options. Symptom:
+    "mwcc: Specified file 'off' not found"
+
+Version 6.7.10 - 3 Dec 2003
+  Recognize Metrowerks CodeWarrior for Mac assembler syntax "asm" preceding
+    function and "asm volatile" block.  Symptom: "syntax error, near '{'" and
+    "expected '(', near '{'", respectively
+
+Version 6.7.9 - 1 Dec 2003
+  Fix Windows uninstall, broken in 6.7.5. Symptom: "File system error: ..."\:
+    directory open failure: No such file or directory"
+
+Version 6.7.8 - 25 Nov 2003
+  Updated run/buildForLinuxKernel.sh for recent kernel versions (circa 2.4.22)
+
+Version 6.7.7 - 25 Nov 2003
+  Remove /defaultlib:uuid.lib from default Windows run-time.  Symptom:
+    Metrowerks 'Cannot locate library "uuid" ...'
+
+Version 6.7.6 - 24 Nov 2003
+  Added support for CodeWarrior Mac mwpefcc CFM/PEF
+
+Version 6.7.5 - 13 Nov 2003
+  Support for Metrowerks CodeWarrior for Mac
+  Fix covc for extended keywords immediately preceding function body.  Symptom:
+    compiler syntax error
+  Fix Unix install script for compiler directory containing spaces
+
+Version 6.7.4 - 30 Oct 2003
+  Fix covc parsing of backslash and quote inside Microsoft C++ argument files.
+    Symptom: build error
+
+Version 6.7.3 - 24 Oct 2003
+  Add support for BloodshedSoftware Dev-C++
+
+Version 6.7.2 - 22 Oct 2003
+  Fix covc for input containing the sequence (a) a single 1-character token,
+    (b) a #line indicating the previous line number, then (c) a #pragma.
+    Symptom: C2014
+  With Microsoft C++, ignore arguments inside indirect file (@file syntax)
+    containing only white-space.  Symptom: "D4024: unrecognized source
+    file type ' '", D4027, C1083
+
+Version 6.7.1 - 17 Oct 2003
+  For Unix, make versionCache file permissions 666. Symptom: "File create error:
+    /tmp/BullseyeCoverage-versionCache2: Permission denied"
+
+Version 6.7.0 - 16 Oct 2003
+  Support for Renesas H8 C/C++
+
+Version 6.6.31 - 13 Oct 2003
+  Preliminary support for Renesas H8 C/C++
+
+Version 6.6.30 - 10 Oct 2003
+  Preliminary support for Renesas H8 C/C++
+
+Version 6.6.29 - 10 Oct 2003
+  Fix covc for GCC option -ansi in GCC prior to version 3.  Symptom with '$'
+    in identifier: "error: expected ';' or ',' or '=', near '$'"
+
+Version 6.6.28 - 9 Oct 2003
+  Fix run-time for Windows graphic drivers, broken since 6.6.1. Symptom: crash
+
+Version 6.6.27 - 6 Oct 2003
+  Add automatic workaround to covc for Sun CC breaking #pragma lines
+    longer than 79 characters.  Symptom: syntax error
+  On Windows, increase buffers for filenames from 256 to 512. Symptom:
+    report programs fail with "invalid time"
+
+Version 6.6.26 - 25 Sep 2003
+  Fix covc for template explicit instantiation syntax. Symptom: crash
+
+Version 6.6.25 - 18 Sep 2003
+  Fix covc for GCC and #line inside { }.  Symptom: "warning: This file
+    contains more `{'s than `}'s."
+
+Version 6.6.24 - 12 Sep 2003
+  Fix covc for #pragma immediately preceding switch. Symptom: compiler error
+  Improved diagnostics for failure of Intel C++ xicl6
+
+Version 6.6.23 - 10 Sep 2003
+  Fix covc for C++ template parameter beginning with "class", "typename",
+    or "template".  Symptom: "error: expected '>'"
+  Fix run-time interpretation of COVAUTOSAVE. Symptom: value taken as
+    tenths of a second in hexadecimal, broken since 6.4.7
+  Fix run-time auto-save to prevent touching coverage file even when no
+    new data, broken since 6.4.0
+
+Version 6.6.22 - 8 Sep 2003
+  Fix covc for GCC needing line-marker 4, as on AIX 5.1.  Symptom:
+    unresolved C system function given as C++ function.
+  Recognize non-standard template syntax for C++98 base-clause and
+    ctor-initializer ":: template <class-name>".
+  Fix Coverage Browser crash upon displaying source code in right pane
+
+Version 6.6.21 - 28 Aug 2003
+  Fix integration with Visual Studio 7.x. Symptom: if no changes ever made to
+    Tools.Options.Projects.VC++ Directories, Coverage Build has no effect
+
+Version 6.6.20 - 25 Aug 2003
+  Increase function name length limit from 1K to 10K in coverage file
+    processing programs. Symptom: report programs produce "invalid function
+    name", covmerge truncates output
+
+Version 6.6.19 - 25 Aug 2003
+  License maintenance expiration report wording improved
+
+Version 6.6.18 - 12 Aug 2003
+  Fix instrumentation of code in precompiled header when creating it with
+    no code in the .cpp.  Symptom: LNK2001: ... struct cov_O_Yc_...
+
+Version 6.6.17 - 12 Aug 2003
+  For Windows, add missing files lib/libcov-windowsGraphic-entry0-*.obj
+    and remove invalid file lib/libcov-windowsGraphic-entry0.obj
+  For Intel C++, _purecall is not a keyword
+
+Version 6.6.16 - 11 Aug 2003
+  With Visual C++ 6, #import, and precompiled header, avoid incorrect C2855
+
+Version 6.6.15 - 4 Aug 2003
+  Added license manager utilization data in status output
+  Measure code in precompiled headers
+  Coverage Browser does not disable command View All Numbers when in
+    source code view
+  Coverage Browser license manager wait dialog shows license status
+
+Version 6.6.14 - 30 Jul 2003
+  Fix extended keyword recognition for ARM Developer Suite 1.2, for
+    example __swi
+  Added to license manager status the list of waiting users, the total
+    wait minutes, and peak users waiting
+  License manager file format version 2
+
+Version 6.6.13 - 28 Jul 2003
+  Fix instrumentation of GCC conditional operator with omitted operand (a ? : b).
+    Symptom: "initialization of non-const reference type `T&' from
+    rvalue of type `T'
+
+Version 6.6.12 - 22 Jul 2003
+  Avoid instrumentation of termination functions (abort, _exit, exec) inside
+    "#pragma BullseyeCoverage off" and precompiled headers.  Symptom:
+    error C2065 on cov_write_join
+
+Version 6.6.11 - 21 Jul 2003
+  Disable obsolete exclusion directives unless undocumented covc option -C
+
+Version 6.6.10 - 18 Jul 2003
+  Disable obsolete exclusion directives for buggy HP-UX compiler versions
+
+Version 6.6.9 - 10 Jul 2003
+  Fix Coverage Browser "Uncovered ..." bar graph length.  Symptom: some
+    start out too long, then get corrected to shorter lengths after redraw
+  Added for Unix sample/test.cov
+
+Version 6.6.8 - 1 Jul 2003
+  Recognize calls to "operator&&()" and "operator||()".  Symptom:
+    compiler syntax error
+  Fix Unix check script for evaluation license. Symptom: incorrect failures
+  Do not add run-time library to Windows CE static libraries. Symptom: LNK4006
+  Unix configure script simplified
+  Tentative support for Windows CE 4 on ARM
+
+Version 6.6.7 - 25 Jun 2003
+  Do not instrument bit-field widths
+  Select correct library when linking with Metrowerks compiler.  Symptom:
+    run-time crash
+  Fix Coverage Browser for Windows command File New. Symptom: first time
+    has no effect
+
+Version 6.6.6 - 20 Jun 2003
+  Support for ARM Developer Suite 1.2
+  Added covc option --macro
+
+Version 6.6.5 - 19 Jun 2003
+  Support for ARM Developer Suite 1.2
+  Updated libcov-user.h
+  Windows setup removes run-time libraries named prior to 6.6.0
+
+Version 6.6.4 - 18 Jun 2003
+  covlink Detects kernel vs graphic driver using presence of
+    ntoskrnl.lib and win32k.lib, respectively.  Symptom: "warning
+    cov818: driver entry GsDriverEntry not supported"
+
+Version 6.6.3 - 17 Jun 2003
+  Run-time for Windows CE allows both auto-save and DLLs. Symptom: hang
+  Add support for ARM Developer Suite 1.2
+
+Version 6.6.2 - 16 Jun 2003
+  Add support for Intel C++ 7 and Intel C++ 8 beta with Visual Studio .NET 7.x.
+    Symptom: Coverage Build has no effect
+  Add support for NetBSD
+
+Version 6.6.1 - 11 Jun 2003
+  Support for Interix (Microsoft Windows Services for UNIX)
+  Match Microsoft link argument file mismatched quote handling.
+    Symptom: link error
+  Added back support for Sun C++ 4.2, dropped in 6.0.0
+
+Version 6.6.0 - 6 Jun 2003
+  Support for Windows CE 3.0 on Pocket PC / ARM
+  Fix for eMbedded Visual C++ 3.0 not reading .cfg files
+  Run-time distribution for Windows builds with makefile rather than batch file
+  Run-time libraries in Windows distribution renamed libcov-*
+  Fix covc for function name longer than 1280. Symptom: crash
+
+Version 6.5.10 - 29 May 2003
+  Compatible with Visual C++ .NET 7.0RC1 (v12.99). Symptom: compile error
+
+Version 6.5.9 - 22 May 2003
+  Fix instrumentation of GCC conditional with omitted operand (a ? : b).
+    Symptom: "uninitialized const `_Tmp'", "assignment of read-only
+    variable `_Tmp'"
+
+Version 6.5.8 - 20 May 2003
+  Fix covc for Borland C++ 4.5 and 5.0.  Symptom: "Error: Incorrect
+    command line option: -R"
+
+Version 6.5.7 - 19 May 2003
+  Added covgetkernel for Tru64.
+
+Version 6.5.6 - 14 May 2003
+  Support for Microsoft Visual Studio .NET 2003
+  Support for Mac OS X PowerPC
+  Fix instrumentation of GCC conditional with omitted operand (a ? : b).
+    Symptom: compiler error
+  Fix Linux ARM kernel support. Symptom: crash
+
+Version 6.5.5 - 8 May 2003
+  Support for Sun option -dn. Symptom: -lposix4,-lpthread not found
+  Recognize obsolete exclusion directives
+  Fix Coverage Browser Edit Copy broken in 6.5.1.  Symptom: "File write
+    error: zero returned"
+
+Version 6.5.4 - 23 Apr 2003
+  Fix covc being invoked by absolute path to interceptor with Coverage Build
+    enabled.  Symptom: infinite recursion, on Linux "Too many open files
+    in system"
+  On Unix, covc accepts already-preprocessed sources with suffix .i or .ii
+
+Version 6.5.3 - 22 Apr 2003
+  Fix buildForLinuxKernel.sh to not exclude arch/ and include/
+  Support for Intel C++ 7 with VC++6.  Symptom: "Compiler command error:
+    Cannot read Intel C++ registry"
+  Fix covc for GCC -g3. Symptom: __STDC__, __STDC_HOSTED__ redefined
+
+Version 6.5.2 - 15 Apr 2003
+  Fix buildForLinuxKernel.sh for 2.4.20. Symptom:
+    misc.o(.text+0x1b): undefined reference to `cov_probe_6_4_7'
+  Fix instrumentation for GNU ?: operator with omitted second operand.
+    Symptom: test program behavior change
+
+Version 6.5.1 - 7 Apr 2003
+  covc mimics GCC incorrect recognition of typename followed by simple
+    type specifier. Symptom: "error: simple-type-specifier invalid after type"
+  Fix Linux kernel run-time access to errno, broken in 6.4.16.  Symptom:
+    "undefined reference to '__errno_location'"
+  Fix Linux kernel probe symbol, broken in 6.4.6.  Symptom: "conflicting
+    types for 'cov_probe_6_4_7'"
+  Better diagnostics for HP-UX kernel covgetcrash libp4 failure
+
+Version 6.5.0 - 26 Mar 2003
+  Documentation for kernel mode on Solaris, HP-UX, FreeBSD
+  Support for Microsoft C++ #import libid: and progid:
+  Fix run-time for NT kernel mode drivers written in C++.  Symptom:
+    crash on unload
+  Fix HP-UX covgetcrash, broken since 6.0.0
+  Combined covgetcrash 32 and 64 bit versions
+
+Version 6.4.17 - 21 Mar 2003
+  Save coverage before exit functions written with leading ::.  Symptom: coverage not saved after fork/exec.
+  Additional diagnostics for covget* programs
+
+Version 6.4.16 - 18 Mar 2003
+  Fix instrumentation for multiple similar type conversion operators.
+    Symptom: C2593: 'operator &&' is ambiguous
+  Fix instrumentation parsing of GCC extension __attribute((unused)) followed
+    by switch.  Symptom: compiler error
+  Fix GCC #line limit for -pedantic. Symptom: warning: line number out of range
+  Do not instrument first operand of ?: unless it contains logical
+    operators or is outside a decision
+  Run-time library tolerates POSIX signals during i/o
+  Run-time uses multi-threaded errno
+
+Version 6.4.15 - 17 Mar 2003
+  HP-UX kernel commands renamed from get*cov to covget*
+  Fix Symbian OS emulator access violation with dynamically loaded DLL and
+    auto-save enabled.
+  Command covmerge accepts comma-separated arguments as with COVFILELIST
+
+Version 6.4.14 - 11 Mar 2003
+  For Solaris, link with -lpthread rather than -mt. Symptom: run-time error 5
+  For GCC, do not preserve #-directive flag "3" with -pedantic.  Symptom:
+    "warning: style of line directive is a GCC extension"
+
+Version 6.4.13 - 7 Mar 2003
+  covc handles gcc option -oPath. Symptom: no instrumentation
+  Fix report generation for same function compiled in both C and C++.
+    Symptom: crash or duplicate entries, one with function arguments,
+    one without
+
+Version 6.4.12 - 6 Mar 2003
+  HP-UX run-time libraries renamed for uniqueness across all platforms.
+
+Version 6.4.11 - 4 Mar 2003
+  covc does not include parameter-declaration default argument in function name
+  covc has improved syntax error reporting.  Symptom: error reported at
+    function head actually occurs in function body
+
+Version 6.4.10 - 28 Feb 2003
+  Preliminary support for Solaris kernel
+
+Version 6.4.9 - 28 Feb 2003
+  For compatibility with GCC, allow case and default labels at the end
+    of a compound statement, with no intervening statement
+  For compatibility with GCC, recognize cast followed by address-of-label
+    operator. Symptom: syntax error
+
+Version 6.4.8 - 26 Feb 2003
+  Added support for Metrowerks CodeWarrior for Symbian OS compiler
+    command name mwccsym2
+
+Version 6.4.7 - 25 Feb 2003
+  Auto-save now controlled by environment variable COVAUTOSAVE, rather than
+    covmgr -a/--autosave.  This makes covc option --delay-io useless, so
+    it is removed
+  Fix run-time thread synchronization.  Symptom: various run-time errors
+
+Version 6.4.6 - 21 Feb 2003
+  Added back support for Borland C++ prior to 5.2, dropped in 6.0.
+    Symptom: "version not supported"
+  Preliminary support for FreeBSD kernel
+  Distribution for Solaris SPARC now compatible with all OS versions,
+    special distribution for 2.6 removed
+  For GCC, preserve #-directive flag "3" denoting system headers.  Symptom:
+    error in system header
+  Run-time for Microsoft C++ platforms saves ecx and edx registers
+
+Version 6.4.5 - 18 Feb 2003
+  Fix run-time thread synchronization.  Symptom: various run-time errors
+
+Version 6.4.4
+  Withdrawn
+
+Version 6.4.3 - 11 Feb 2003
+  covc fixes problem with cl.exe caused by Software Research TCAT
+  Support for device drivers on Windows Itanium
+  Support for Borland C++Builder 6. Symptom: _str.h 361:
+    '__strcmp__' is not a member of 'std'
+  Additional diagnostics for run-time error 6
+
+Version 6.4.2 - 5 Feb 2003
+  Fix Coverage Browser for function name longer than 260. Symptom: crash
+
+Version 6.4.1 - 3 Feb 2003
+  GCC 3.0 and later does not recognize keyword __wchar_t. Symptom: syntax error
+  Fixed cov01 --off and --on, broken in 6.1.2. Symptom: no effect
+  Fix class name reporting for "::" in function template argument.  Symptom:
+    class name garbled with function name
+  Fix covc on Unix for source files and compiler in /usr. Symptom: source not
+    instrumented
+
+Version 6.4.0 - 29 Jan 2003
+  Run-time performance improvement.  Time was 1.7x, now 1.2x.  Size was
+    1.5x, now 1.4x.  covc option -g/--debug removed
+  Unix configure and install options --prefix= allow ~/ taken as $HOME/
+  Updated Coverage Browser dialog Tools Options Build
+  For Windows, added covntm-noThread.lib
+
+Version 6.3.13 - 22 Jan 2003
+  Increase maximum function name length from 512 to 1024. Symptom: report time
+    error "invalid function name at ..."
+
+Version 6.3.12 - 15 Jan 2003
+  Correction for Symbian OS entry point wrong="int __cdecl E32Dll(TDllReason)",
+    right="int __stdcall _E32Dll(void*,unsigned,void*)".  Symptom:
+    run-time crash
+  covc removes from preprocessor command arguments ending .so.1. Symptom:
+    with Sun C++, "String/char constants may not include line separator."
+
+Version 6.3.11 - 14 Jan 2003
+  covc processes both $HOME/*.cfg and the file named by environment
+    variable COV*CFG.  Symptom: COV*CFG overrides $HOME/*.cfg
+
+Version 6.3.10 - 13 Jan 2003
+  Support for building run-time with GCC on PARISC
+  covc Recognizes Microsoft managed extension keywords only with -clr
+
+Version 6.3.9 - 7 Jan 2003
+  HP getdumpcov omitted by install script
+  covc option -i/--ignore allows directories and wildcards
+  Windows setup and Unix install automatically add the current license into
+    the license manager file
+  Handle Microsoft link command line length >128K. Symptom: LNK1170
+
+Version 6.3.8 - 30 Dec 2002
+  Fix covc for Intel C++ 5. Symptom: c1083: ...\Compiler50\ia32\bin\xicl6.exe
+
+Version 6.3.7 - 30 Dec 2002
+  Increase diagnostic mode command line length limit from 16K to 1M.
+    Symptom: crash
+
+Version 6.3.6 - 24 Dec 2002
+  For Windows add run-time source atomic.h, missing since 6.3.0
+  For Windows kernel mode, run-time only initializes at IRP PASSIVE_LEVEL.
+    Symptom: bug check
+
+Version 6.3.5 - 19 Dec 2002
+  Fix covc for multiple differing #import of the same DLL in the same
+    compile command. Symptom: build error
+
+Version 6.3.4 - 19 Dec 2002
+  Fix covc for multiple differing #import of the same DLL. Symptom:
+    build error and severe performance degradation
+
+Version 6.3.3 - 18 Dec 2002
+  Fix Coverage Browser Tools Options context help crash
+
+Version 6.3.2 - 17 Dec 2002
+  Fix covc for multiple differing #import of the same DLL. Symptom:
+    build error
+  Fix run-time for spurious error 12, conceivable but not likely
+
+Version 6.3.1 - 13 Dec 2002
+  Fix covc for Microsoft C++ multiple consecutive attribute blocks.
+    Symptom: "syntax error, near '['"
+
+Version 6.3.0 - 12 Dec 2002
+  For Visual Studio .NET 7, create VCComponents.dat if it does not exist.
+    Symptom: enabling Coverage Build has no effect
+  Run-time does not require pthread mutex functions
+  Add HP-UX kernel tool getdumpcov and run-time function cov_dump
+  License manager does not restrict disabling Coverage Build
+  Recognize Microsoft C++ option -AI. Symptom: build error
+  Fix covc option -a/--abs. Symptom: no effect
+  Fix covc for Microsoft precompiled header ending with #using. Symptom:
+    build error
+  Support for HP C long pointer ^ syntax. Symptom: syntax error
+  Fix covc for excluded function containing for-loop. Symptom: for-loop
+    incorrectly instrumented.  Introduced in 6.0.0
+
+Version 6.2.2 - 5 Dec 2002
+  Setup for Windows recognizes command line options.  Use -help for details
+  For Compaq C++, do not recognize keyword "asm". Symptom: syntax error
+
+Version 6.2.1 - 3 Dec 2002
+  Fixes for function parameters containing "::". Symptom: Coverage Browser
+    displays incorrect function name, region selection mismatches
+
+Version 6.2.0 - 2 Dec 2002
+  Function parameters are part of function names for C++
+  Remove string literal directives before compiling.  Symptom: GCC:
+    warning: statement with no effect
+  For HP-UX 11.00, add getcrashcov-pa32
+
+Version 6.1.7 - 22 Nov 2002
+  For QNX, system compilers recognized as GCC. Symptom: syntax error
+  For QNX, path buffer sizes increased.  Symptom: crash with path length > 80
+  For QNX, install script makes compiler interceptors for qcc and QCC
+
+Version 6.1.6 - 20 Nov 2002
+  Fix HP-UX getcrashcov.  Symptom: 'id' is not a member of 'struct t'
+
+Version 6.1.5 - 19 Nov 2002
+  Fix HP-UX getcrashcov.  Symptom: 'id' is not a member of 'OBJECT'
+
+Version 6.1.4 - 19 Nov 2002
+  Smart preprocessor regenerates .tlh when #import attributes change.
+    Symptom: for no_namespace, compiler error
+  Fix parser for cast expression containing "...". Symptom:
+    "error: expected an expression"
+
+Version 6.1.3 - 15 Nov 2002
+  Windows run-time shares file handles within a process using CreateFileMapping
+    rather than a DLL
+
+Version 6.1.2 - 14 Nov 2002
+  Fixed run-time hang in child after fork() on Linux
+  License manager documentation added
+  License manager for Unix added
+  Fix covc for compiling assembly source files only. Symptom: assembly
+    files not built, .o file not found
+
+Version 6.1.1 - 8 Nov 2002
+  Do not use Borland cpp32 -P-, it is broken.
+  Suppress warnings with HP C preprocessor, to prevent them from going
+    into the source code
+
+Version 6.1.0 - 7 Nov 2002
+  License manager for Windows added
+  Instead of environment variable COVCFGDIR naming a directory, COV*CFG
+    names a file
+  Condition and decision instrumentation performance improved
+
+Version 6.0.34 - 1 Nov 2002
+  Support for Windows ia64 applications
+  Support for mingw32 GCC
+  Support for Intel C++ ia64 ecl
+  Add covc option --no-autox
+
+Version 6.0.33 - 30 Oct 2002
+  Configuration files can be located in a directory named by environment
+    variable COVCFGDIR
+
+Version 6.0.32 - 25 Oct 2002
+  Do not recognize keywords introduced by Microsoft C++ 13 when using 12.
+    Symptom: syntax error
+
+Version 6.0.31 - 24 Oct 2002
+  Support for Symbian OS DLLs.  Symptom: access violation upon loading DLL
+
+Version 6.0.30 - 23 Oct 2002
+  Recognize Intel C++ command line directive _USE_INTEL_COMPILER, broken
+    in 6.0.13. Symptom: Microsoft compiler used rather than Intel
+  Recognize language extensions and modifiers anywhere
+  Fix Coverage Browser dialog Region Source Details button Browse for
+    operating systems prior to Windows 2000.  Symptom: button has no effect
+  Automatically work around NuMega DriverStudio kdevice.h reliance on
+    macro token pasting in MAYBE_MEMBER.  Symptom: "kfilter.h(52): error:
+    expected ';' or ',' or '='"
+
+Version 6.0.29 - 22 Oct 2002
+  Recognize #pragma anywhere
+  Take Symbian OS DLL entry point name _E32Dll to be E32Dll.  Symptom:
+    LNK2001: on __DllMainCRTStartup@12
+
+Version 6.0.28 - 18 Oct 2002
+  covc parser displays diagnostic location upon error
+  Handle #pragma within constructor initializer.  Symptom: C4081
+
+Version 6.0.27 - 17 Oct 2002
+  Recognize keyword volatile with HP C option -Ac.  Symptom: error:
+    expected ';' or ',' or '='
+
+Version 6.0.26 - 16 Oct 2002
+  Windows kernel mode library refers to ExFreePool rather than
+    ExFreePoolWithTag, as in 6.0.22 and prior
+
+Version 6.0.25 - 15 Oct 2002
+  covc does not produce c4010 when splice followed by C++ comment
+  Recognize #pragma within constructor initializer.  Symptom: "error:
+  On Windows covc and covlink automatically work around 32KB command
+    line limit.  Symptom: cov113: ...: Invalid argument
+
+Version 6.0.24 - 14 Oct 2002
+  Remove covc option --epoc in favor of check for __SYMBIAN32__
+  Unix extract inputs license key rather than from BullseyeCoverageLicense.txt
+
+Version 6.0.23 - 14 Oct 2002
+  Unix licenses permitted to run the Coverage Browser for Windows
+  Added covc option --epoc, for Symbian OS
+
+Version 6.0.22 - 4 Oct 2002
+  Recognize #pragma within constructor initializer.  Symptom: "error:
+    expected '{'"
+  Recognize Metrowerks CodeWarrior keywords __3dcall, __sse2call, __ssecall,
+    _except, _finally, _leave, _try, pascal.
+  Fix Coverage Browser for class excluded from excluded source.  Symptom:
+    duplicate class names, one excluded one not
+
+Version 6.0.21 - 3 Oct 2002
+  covc recognizes type conversion operator with Microsoft modifier. Symptom:
+    "error: expected a conversion-type-id or an operator"
+
+Version 6.0.20 - 2 Oct 2002
+  Removed covc option -C/--cond, useless since 6.0.0
+  Added Unix configure option --runIpc
+
+Version 6.0.19 - 27 Sep 2002
+  Fix covc for linking with Microsoft cl.exe version 12 (VC6). Symptom:
+    LNK1181: cannot open input file "C:\Program.obj"
+  Fix Coverage Browser Filter dialog for minor blemishes
+
+Version 6.0.18 - 17 Sep 2002
+  Build libcov-hpKernel-ia64 with +kernel for EF_IA_64_REDUCEDFP
+  Removed limitation of 4096 command line arguments.
+
+Version 6.0.17 - 13 Sep 2002
+  Fix covc for GCC extension ({ }) containing non-expression keywords.
+    Symptom: syntax error
+
+Version 6.0.16 - 12 Sep 2002
+  Restore indirect argument file processing (@filename), removed in 6.0.14
+
+Version 6.0.15 - 10 Sep 2002
+  Fix covlink for object file not relative to current directory.
+    Symptom: File open error
+
+Version 6.0.14 - 6 Sep 2002
+  Fix covc for Intel C++ with -Gr or -Gz. Symptom: LNK2001 on
+    BullseyeCoverage symbols
+
+Version 6.0.13 - 5 Sep 2002
+  Add 35 HP C and C++ extended keywords
+
+Version 6.0.12 - 4 Sep 2002
+  Fix covc for Borland #pragma link. Symptom: E2047
+  Fix license key incompatibility bug. Symptom: "Cannot recognize
+    license key, software outdated"
+
+Version 6.0.11 - 3 Sep 2002
+  Fix run-time for exec on Linux PPC and Linux SPARC.  Symptom: hang
+  Fix run-time for HP-UX kernel without --delay-io. Symptom: "No coverage info"
+    covc option --delay-io obsolete
+  Run-time failure to open coverage file is a recoverable error.
+  Fix covc for Intel C++ creating precompiled header. Symptom: "recursive spawn: xicl6"
+  Support HP C type qualifiers __non_sequential, etc
+  Preliminary support for Windows on ia64
+
+Version 6.0.10 - 19 Aug 2002
+  Fix Windows setup for read-only setup.exe. Symptom: "File open error:
+    ...\uninstall.exe: Permission denied"
+  Enabled string literal directive processing, omitted since 6.0.0
+
+Version 6.0.9 - 14 Aug 2002
+  Fix covc for Microsoft C++ and long command line. Symptom: crash
+  covc properly handles #pragma preceding switch. Symptom: syntax error
+
+Version 6.0.8 - 8 Aug 2002
+  Recognize Microsoft keyword _try. Symptom: "error: expected ';' or ',' or '='"
+  Fix covc for GCC C++ mode and -Wall.  Symptom: "warning: left-hand
+    operand of comma expression has no effect"
+  covc gathers all C++ template parameters as part of function names
+  Recognize Microsoft cl option -EP. Symptom: build error
+  covlink tolerates resource-only DLL link commands to contain .LIBs
+  Re-enable covc option -g/--debug, disabled in 6.0.0
+
+Version 6.0.7 - 31 Jul 2002
+  Fix covc for source file missing.  Symptom: compile error or crash
+  Removed covc option -s/--shell
+
+Version 6.0.6 - 30 Jul 2002
+  Windows kernel driver linking requires hal.lib rather than wdm.lib
+  Fix Coverage Browser source pane vertical scroll bar sometimes not present
+  Windows run-time error reporting uses MessageBox according to subsystem of
+    calling EXE, not the DLL. Symptom: no error message from DLL
+  Automatically work around GCC bug with parens around constructor and then ()
+    "(ctor()())". Symptom: GCC "parse error"
+
+Version 6.0.5 - 25 Jul 2002
+  Fix Coverage Browser crash upon View Refresh
+  Fix Windows kernel driver run-time for raised IRQL.  Symptom: assertion
+    failure or bug check
+  Drop support for UnixWare 2.1
+  Support for Solaris 2.6 in a separate distribution
+
+Version 6.0.4 - 18 Jul 2002
+  Warning c4010 is warning level 1, not 3
+  Compatibility with HP-UX 11.22 ia64
+  Added troubleshooting topic "Error LNK2001 Unresolved Symbol from DLL"
+  Added troubleshooting topic "Sun C++ Undefined Symbol in SunWS_cache"
+  Support GCC 3.2 experimental release
+  Support Sun C++ 5.4
+  Support GCC on HP-UX ia64
+  Add HP-UX kernel development tool getcrashcov
+
+Version 6.0.3 - 11 Jul 2002
+  covc recognizes non-standard syntax operator-function-id with template
+    parameters.  Symptom: error: expected ';' or ',' or '=' with Rogue
+    Wave Tools.h++
+  Work around Sun C++ definitions-separate template organization
+    Symptom: undefined symbols during link
+  Fix Unix install script.  Symptom: "Directory .../bin contains files
+    other than BullseyeCoverage"
+
+Version 6.0.2 - 8 Jul 2002
+  Fix switch-statement transformation in precompiled header. Symptom: C2143
+
+Version 6.0.1 - 1 Jul 2002
+  Process #import in precompiled header.  Symptom: compiler error
+  Compiler interceptors for arm-elf-c++, arm-elf-gcc
+  Recognize Microsoft "enum __declspec()".  Symptom: expected 'identifier'
+  Recognize suffix .ixx as C++
+  Setup removes C-Cover files and registry entries
+  Update documentation
+
+Version 6.0.0 - 25 June 2002
+  New parser and instrumenter
+  Fix check.sh hang on Unix, introduced in 5.8.0
+  Improved diagnostic messages printed by HP-UX getkernelcov
+  Handle Microsoft v13 option -Zc:wchar_t. Symptom: C1001
+  On PARISC, add libcov-hpKernel.a
+  Product renamed from C-Cover to BullseyeCoverage
+
+Version 5.8.1 - 24 May 2002
+  On Unix, remove trailing slash from interceptors created by install
+  Add support for Intel C++ 6.0
+  Compatible with Visual C++ 6.0 Standard Edition.  Symptom: c1083 on c2.exe
+  Distribution file for Windows renamed to contain the word "Windows"
+  For HP-UX aCC, suppress warning 67 "Invalid pragma name"
+  Remove from preprocessor command arguments with suffix .o64. Symptom:
+    build error
+  Add support for GCC 3.1.  Symptom: on Unix, 2 check.sh failures
+  Remove covc option --comment.  Use #pragma C-Cover instead
+  Remove covc option -n/--function
+  Recognize Microsoft keywords __if_exists, __if_not_exists. Symptom:
+    C2501 on cov_f_
+
+Version 5.8.0 - 14 May 2002
+  Enabling and disabling Coverage Build no longer requires write access to
+    C-Cover bin directory
+  Automatic workaround for token pasting bugs in Microsoft rpcproxy.h.
+    Symptom: c4003 "Rpcproxy_paste1", then C2014
+  Add option --html to covclass, covdir, covfn, covsrc
+  covbr --html output updated to HTML 4.01 Strict
+  Add support for Windows CE DLLs
+  Provide HP-UX kernel run-time pre-built
+  Support for Linux on IA-64
+
+Version 5.7.2 - 3 May 2002
+  Support for Microsoft eMbedded Visual C++ 4 and Windows CE 4
+  For GCC on Windows, do not add -ladvapi32 -luser32. No longer needed
+  covc no longer reports diagnostics 904, 915, 922, 924. Not used
+  On Unix, allow license key to occur anywhere within ccoverLicense.txt.
+    Symptom: Invalid license key
+  Restore empty cov_write to for HP-UX kernel
+
+Version 5.7.1 - 26 Apr 2002
+  Fix covbr ignoring selection list from coverage file
+  Unspecified license security countermeasures
+  Added HP-UX getkernelcov64
+
+Version 5.7.0 - 18 Apr 2002
+  Unix source distribution no longer available
+  Help updated to HTML 4.01
+  HP-UX distribution contains getkernelcov executable pre-built
+  Add support for Microsoft C++ 13.01.2035
+  Fix Microsoft C++ predefine macro cache for compiler version updated
+
+Version 5.6.9 - 11 Apr 2002
+  For Microsoft C++, handle quoted newlines in response files.
+    Symptom: LNK1000: Internal error during ParseCommandLine
+  Fix Windows setup Coverage File Path: Browse button. Symptom: no browse
+    dialog on NT 4.0
+  Removed Coverage Browser menu command Tools Update this Product by Internet
+    due to security concern
+  Unix install creates compiler interceptors for argument to --runcc
+  Remove covc option -x/--suffix.  Obsolete.
+  Smart preprocessor allows using commas as macro arguments, like Microsoft.
+    Symptom: c4002
+  Fix covc for Unix compiler command as script.  Symptom: hang
+  Reduced size of ccoverLog diagnostic files
+  HP-UX getkernelcov.c added and updated
+
+Version 5.6.8 - 1 Apr 2002
+  Fix covc for options beginning -E. Symptom: cov908: no source files specified
+  Remove covc option --no-Ob1. There is no good reason for it.
+  Add link interceptor for Metrowerks CodeWarrior, mwld
+  Automatic workaround for bug in Borland C++: cpp32 prevents
+    "using std::xxx;" for abs, strcpy, and strcmp. Symptom: with -O2,
+    "'__...__' is not a member of 'std'"
+  Support for Borland C++ prior to 5.2 dropped (due to cpp32 weakness)
+  Enable Setup Uninstall Finish button.  Symptom: no effect
+  Fix covc for sources in /usr introduced in 5.3.1.  Symptom: some
+    sources excluded
+
+Version 5.6.7 - 11 Mar 2002
+  covc works around bug in Metrowerks compiler with source path starting with
+    backslash. Symptom: warning: the file '...' cannot be opened
+  Coverage Browser menu command Help: Help Topics fixed, broken in 5.6.5
+
+Version 5.6.6 - 8 Mar 2002
+  For Sun Forte C++, covc always adds -template=no%extdef. Symptom: various
+    compilation errors with templates
+  Fix covc for Sun C++/C used with absolute path. Symptom: -mt not used
+  Coverage Browser sorts member functions case insensitive, like Visual Studio
+  Automatically work around Metrowerks CodeWarrior 2.4.7 bug with #line
+    Symptom: syntax error
+  Remove accidental unused dependence on oleacc.dll
+  Support for Symbian OS DLL entry point protocol E32Dll
+  Setup for Windows overwrites read-only files.  Symptom: permission denied
+  fix covc for Microsoft C++ with -I /D.... Symptom: build error
+
+Version 5.6.5 - 20 Feb 2002
+  For Windows 9x, increased run-time file lock time-out from 60 to 120 seconds.
+    Symptom: error 3 "File locking failure"
+  Added support for Metrowerks CodeWarrior for Windows 7.2
+  For Windows graphic drivers, there is a new object file to prevent
+    hooking driver functions
+  Coverage Browser saves and restores scroll position in right pane
+
+Version 5.6.4 - 8 Feb 2002
+  Automatically workaround bug in HP aCC 3.30 and later. Symptom: "Undeclared
+    variable 'cov_c_'"
+  Fix smart preprocessor for token paste operator generating C++ style
+    comment followed by line splice.  Symptom: syntax error
+  Windows uninstaller does not require license key
+
+Version 5.6.3 - 28 Jan 2002
+  covc with -C avoids instrumenting ?: inside enum.  Symptom: syntax error
+  Fix Coverage Browser minor display glitch occurring when "Show window
+    contents while dragging" off
+  Changed run-time data structure for compatibility with one-pass parser
+  Unix install was missing covmin and covselect
+  Fix covc for GNU __asm followed by construct on same line. Symptom:
+    construct not measured
+  covc does not measure switch (sizeof...)
+
+Version 5.6.2 - 14 Jan 2002
+  Fix covc for overriding Microsoft intrinsic. Symptom: C2169
+  Fix covc for C++ source calling shl_unload.  Symptom: error cov_unlink
+    not declared
+  Updated run-time symbol version number for run-time incompatibilities in
+    previous releases
+
+Version 5.6.1 - 19 Dec 2001
+  Fix Coverage Browser Edit Copy for high color mode.  Symptom: Unknown
+    exception
+
+Version 5.6.0 - 27 Nov 2001
+  Coverage Browser increased conformance to Windows XP Visual Guidelines
+  Support for Microsoft Visual C++ .NET 7 Release Candidate 1
+  For Windows console programs, run-time writes errors to standard error
+    rather than with MessageBox
+  Setup for Windows handles exceptions creating Start menu entry more
+    gracefully
+  Setup for Windows has file copy progress indicator
+  Setup for Windows integrates with MSVC7 vsvars32.bat
+  Added support for obsolete source exclusion directives, for compatibility
+  Coverage Browser source code window scroll bar fixes
+
+Version 5.5.9 - 30 Oct 2001
+  New setup program integrates with Microsoft Visual C++.NET 7 Beta 2
+  For Unix, increase maximum command line arguments from 1024 to 4096
+  Fix covc for #pragma inside excluded function, with all previous
+    functions excluded.  Symptom: C2598
+  covc allows unwritable bin directory.  Symptom: "File create error" or
+    segmentation fault
+  covc initializes beginning object id for new coverage file more randomly.
+    Symptom: run-time error 7
+  Fix Linux kernel SMP support. Symptom: hang
+  Document how to save coverage for NT Graphic drivers loaded via EngLoadImage.
+  covc suppresses C4711 caused by inline expansion of probe functions
+
+Version 5.5.8 - 15 Oct 2001
+  Smart preprocessor emulates Microsoft non-standard behavior with ## and
+    left operand a pp-number. Symptom: syntax error
+  Fix Setup to restore Microsoft Visual Studio integration, broken in 5.5.7
+
+Version 5.5.7 - 11 Oct 2001
+  Better support and documentation for VxWorks. Symptoms: coverage not saved,
+    hang or crash upon app termination
+  New Coverage Browser command View Sort Lock
+  If covc cannot find Microsoft compiler, do not report "compiler
+    version not supported"
+  Unix "make check" allowed by super user. Symptom: 4 failures
+  Support for IBM VisualAge on Windows dropped.  IBM has "withdrawn from
+    marketing" with no replacement product
+  Automatic workaround for token pasting bugs in Microsoft rpcproxy.h.
+    Symptom: C4229, C2061, C2282
+  Add back support for cl386
+  Support C99 hexadecimal-floating-constant
+  covlink uses absolute path to C-Cover library rather than -libpath
+  C-Cover version stored in coverage file object entries for diagnostics
+  Microsoft -ZI makes __FILE__ absolute
+
+Version 5.5.6 - 5 Sep 2001
+  Fix Coverage Browser command Edit Repeat Find Text Find Backwards.  Symptom:
+    command does not move the text selection
+  Windows UNC computer replaced with net-directory (computer + shared directory)
+  Coverage Browser gets new 256 color icons and toolbar
+  Fix data collection for switch labels and C++ catch clauses.  Symptom:
+    data not immediately saved to file.  Problem introduced in 5.4.9
+  Unix pic and PIC run-time libraries are no longer needed nor supplied
+
+Version 5.5.5 - 10 Aug 2001
+  Automatically work around Microsoft C++ -Ob1 has no effect with -O1. Symptom:
+    inline functions incorrectly reported as not covered
+  Added compiler command cc386 for GNU on Win32.
+
+Version 5.5.4 - 1 Aug 2001
+  Distinguish column 0 from no column info.  Symptom: probe detail misaligned
+    on for-statement with multiple conditions on separate text line
+  Fix covc on NT for compiler name in upper case.  Symptom: "Compiler
+    handler error: Internal error"
+  Support for Microsoft C++ 13 __pragma
+  Support Intel C++ _USE_INTEL_COMPILER. Symptom: syntax error
+
+Version 5.5.3 - 18 Jul 2001
+  Fix covmin for sources in ../../dir1/dir2/.... Symptom: empty output file
+  covc automatically searches Intel/compiler50/ia32/include for include files
+    when invoked as xicl6.  Symptom: c1083 on ivec.h
+  Run-time variable cov_syscall adds support for measuring coverage of
+    Unix standard C run-time library
+  Fix Linux kernel system call error code reporting
+  Fix covc recursive spawning with Intel C++
+  Help category Setup replaced with Building with Specific Tools and Platforms
+
+Version 5.5.2 - 5 July 2001
+  C-Cover definitions use placeholder file C-Cover_definitions.
+    Symptom: debugger steps into probe code, or C1083
+  Automatic workaround for bug in Borland C++Builder 4 and 5: cpp32 prevents
+    "using std::xxx;" for abs, strcpy, and strcmp.  Symptom: "Call to
+    undefined function 'xxx'
+  Support for Intel C++ 4.5-5 "Makefile Utility" iselect/bin6/cl.exe. Symptom:
+    "compiler version not supported"
+
+Version 5.5.1 - 30 Jun 2001
+  NT run-time environment variable length limit increased from 128 to 4096,
+    to accommodate long COVFILELIST
+  Remove limitation of 16 pseudo compilers
+  Support for Intel C++ 4.5-5
+
+Version 5.5.0 - 20 Jun 2001
+  Coverage Browser Region Include of document does not override command line
+    inclusion of regions.  Symptom: command line region inclusion no effect
+  Fix covmerge for line numbers in non-increasing order. Symptom:
+    probes missing from result coverage file
+
+Version 5.4.9 - 23 May 2001
+  Faster, smaller instrumentation of case, default, and catch
+  Fix Solaris distribution for Solaris 2.6 and earlier.  Symptom:
+    "ld.so.1: ./extract: fatal: librt.so.1: open failed"
+
+Version 5.4.8 - 16 May 2001
+  Fix Coverage Browser class view Region Explore, broken in 5.4.6.  Symptom:
+    "Tree view control error: GetItem failure"
+  Command line report programs sorting puts functions with no control
+    structures at the bottom, like Coverage Browser
+
+Version 5.4.7 - 1 May 2001
+  Fix cov_reset, broken in 5.3.9.  Symptom: coverage in memory not reset
+  Fix covc to recognize GNU __attribute (no trailing __). Symptom:
+    syntax error
+
+Version 5.4.6 - 18 Apr 2001
+  covc puts paths in coverage file as relative rather than absolute when
+    absolute path contains same first level directory as current directory.
+    Symptom: duplicate source file entries in coverage file, some in ..
+  Fix Coverage Browser default tab width at 4 not 0, broken in 5.4.0
+  Support for embedded Linux
+  Support for Microsoft eMbedded Visual C++ 3.0 (for Windows CE)
+  Object id numbers are initialized by random number seeded to milliseconds
+    or nanoseconds rather than seconds.  Symptom: covmerge loses object files
+  Coverage Browser address bar class name includes suffix ::
+  Unix install contains pseudo compilers cxx and ccc for Compaq C++ and C.
+
+Version 5.4.5 - 5 Apr 2001
+  Fix smart preprocessor for undef in precompiled header.  Symptom: c4005
+  Support for Linux kernel
+  Unix building uses different system header fixes for hosted and cross
+    compilers.  Symptom: build error on system header
+  Remove diagnostic for mismatched quote, cov155 due to quotes within comments
+    within asm blocks
+  HP-UX binary distribution contains 64-bit library
+  On Windows ME, setup puts environment variables in registry rather than
+    autoexec.bat.  Symptom: Windows ME removes changes to autoexec.bat
+  Unix configure option --cross for cross-compiling
+  Unix install script option --prefix=
+  Fix Unix configure for run-time compiler command containing -E.  Symptom
+    on HP-UX: "time.h is broken"
+  Fix Unix configure for cross compiling.  Symptom: "atexit not working",
+    "fcntl not working"
+  Unix configure does not require write access to config.c
+
+Version 5.4.4 - 7 Mar 2001
+  Fix command covselect.exe missing
+  Add covselect actions -e/--export and -i/--import
+  Fix covc for Unix with C-Cover bin directory not in PATH.  Symptom:
+    covc.cfg not processed and link error due to run-time library not found
+
+Version 5.4.3 - 27 Feb 2001
+  Add new command covselect
+  Fix covmerge to preserve source and object directories
+  Fix covmerge and covmgr -m/--compact for unknown function name.  Symptom:
+    function entry measurement shown
+  Add support for compiler Tasking Software CC166
+
+Version 5.4.2 - 16 Feb 2001
+  Fix Windows DLL run-time bug causing deadlock file locking.  Symptom: test
+    program hang upon exit
+  Fix unix install script for not using configure --default but no
+    install directory specified.  Symptom: attempts and refuses to
+    install to /.
+  Fix unix install script run as super user.  Symptom: no
+    pseudo-compilers created
+
+Version 5.4.1 - 6 Feb 2001
+  Support for HP-UX IA-64
+  Fix performance impediment in Coverage Browser Region Include/Exclude
+
+Version 5.4.0 - 31 Jan 2001
+  Fix covc faulty handling of Microsoft #import.  Symptom: excessive memory
+    usage followed by build error
+  covc allows newline in quoted literal with GNU CC.
+  Fix covc with --comment for "/* .../**/". Symptom: syntax error
+  Coverage Browser allows setting tab width with Tools Options View
+  Coverage Browser keeps several lines in view above or below lines
+    found with Edit.Find Text and Go.To Next/Previous Uncovered Item
+
+Version 5.3.9 - 10 Jan 2001
+  Fix Coverage Browser for source line longer than 504.  Symptom: line
+    numbers off by 1
+  Fix covlink for DLL with atexit defined outside the C run-time library
+    with custom entry point.  Symptom: LNK2001 on __DllMainCRTStartup@12
+  Fix auto exclusion of Microsoft headers for NT DDK, Platform SDK, MFC
+  Add support for Intel C++ 5.0
+  Remove covc option --no-cpp
+  Add "C-Cover" to the names setup creates in Visual Studio Tools menu
+
+Version 5.3.8 - 13 Dec 2000
+  Fix covc for template specialization with nested template type.
+    Symptom: cov825
+  Release binaries for Compaq Tru64 UNIX
+  Release binaries for FreeBSD x86
+  Release binaries for Linux SPARC
+  Release binaries for SGI IRIX
+  For VxWorks/Tornado use taskDelay rather than nanosleep
+  Fix Unix configure for --prefix.  Symptom: redundant prompt
+  Unix configuration does not assume system headers in /usr/include.
+
+Version 5.3.7 - 15 Nov 2000
+  covc added cov926 for INCLUDE
+  Fix Unix configuration bug for systems with broken fnmatch
+
+Version 5.3.6 - 8 Nov 2000
+  Fixed Unix install script for csh.  Symptom: script error.
+  Support for Compaq C++
+  Coverage Browser silently ignores source file timestamp discrepancy of
+    exactly one hour, to avoid daylight savings issues
+  Add covmin command
+  Release binaries for AIX
+
+Version 5.3.5 - 27 Oct 2000
+  Fix for Redhat 7.0 GCC 2.96.  Symptom: incorrect line numbers reports,
+    check.sh fails #243 #251 #271
+  Fix old Borland C++ link "Error: Unable to open file 'PROGRAM
+    FILESCCOVEIN..LIBCOVNTB.LIB'"
+  Fix old Borland C++ link "Error: Unable to open file 'UUID.LIB'"
+  Fix covc for SCO UnixWare cc option -W.  Symptom: "UX:cc: ERROR:
+    Invalid subargument: -W-E"
+  Fix smart preprocessor for #import with preceding "using namespace"
+    affecting the .tlh.  Symptom: compile error
+  Fix smart preprocessor macro marking /*N\*/.  Symptom: cov825
+
+Version 5.3.4 - 6 Oct 2000
+  Binary distributions for Unix
+  Licensing by individual Unix platform
+  Fix Unix distribution for make programs not named "make"
+  Support for QNX 6.0
+
+Version 5.3.3 - 27 Sep 2000
+  Fix covc for Borland C++ on Windows 9x.  Symptom: "Fatal: Unable to open
+    file COVNTB.LIB"
+  Workaround Unix systems with broken exception handling.  Symptom:
+    check.sh failure #216
+  Improved configuration diagnostics for IRIX
+  Additional diagnostics for run-time error 99
+  Support for IRIX 6.2
+  Support for AIX 4.1.5
+  New diagnostic for mismatched quote, cov155
+  Support for Microtec C 4.3k
+
+Version 5.3.2 - 10 Aug 2000
+  Fix bug in Coverage Browser Tools Coverage Build.  Symptom: "no pseudo
+    compilers"
+
+Version 5.3.1 - 2 Aug 2000
+  Support for Debian 2.1
+  Support for FreeBSD 4.0
+  Support for Microsoft Visual C++ 6.0SP4.  Symptom: _MSC_FULL_VER not defined
+  Fix Coverage Browser Region Source Details.  Symptom: change made with
+    Browse button not saved
+  Enhance smart preprocessor errors.  Symptom: cpp1002 rather than cpp1001
+  Support for IBM C and C++ prior to 4.0
+  Fix covc for pure virtual function with body.  Symptom: function entry
+    not measured
+
+Version 5.3.0 - 21 Jul 2000
+  File format changed for increased reliability.  Symptom: interrupted build
+    results in corrupted coverage file
+  Fix Win32 covc for coverage file and source not on current disk volume.
+    Symptom: absolute path in coverage file rather than relative
+  Fix covc for command line macro containing comment -Dmacro=/**/
+  Fix smart preprocessor for #import inside precompiled header. Symptom: C2065
+  Fix covc for GCC with broken system header (Debian 2.1).
+    Symptom: compile error on system header syntax
+  Fix run-time bogus error 7
+
+Version 5.2.9 - 15 May 2000
+  Fix Windows setup for OS later than Windows 2000.  Symptom: "Unable to
+    create program menu entry"
+  Fix covlink for quoting problem.  Symptom: link errors
+
+Version 5.2.8 - 12 May 2000
+  Removed dependence on readdir_r
+  Fix run-time for NT kernel mode driver DriverEntry returning failure.
+    Symptom: target system crash
+
+Version 5.2.7 - 10 May 2000
+  Extended diagnostic capability
+
+Version 5.2.6 - 8 May 2000
+  Fix covc for switch and case with no following whitespace.  Symptom: C4102
+  Support for linking non-shared on Tru64.  Symptom: unresolved symbols exc_...
+  On Solaris, use -lposix4 before -lrt for compatibility between Solaris
+    versions.  Symptom: "fatal: librt.so.1: open failed"
+
+Version 5.2.5 - 21 Apr 2000
+  Compatible with Windows CE Platform SDK 2.11
+  Compatible with Sun C++ ild.  Symptom: undefined symbol
+  Fix covc for multiple source with options following.  Symptom:
+    compile error
+  Fix smart preprocessor for empty source.  Symptom: covx.exe crash
+  Compatible with Visual C++ 6.0 Standard Edition.  Symptom: D4002 on -Ob1
+
+Version 5.2.4 - 14 Apr 2000
+  Fix covc for compiler containing dot.  Symptom: cov01 does not detect
+    pseudo compiler
+  Fix smart preprocessor for #import with absolute path.  Symptom: c1083
+
+Version 5.2.3 - 11 Apr 2000
+  Fix covc for compiler containing dot.  Symptom: cov147
+  Fix readdir_r failure on Solaris.
+
+Version 5.2.2 - 7 Apr 2000
+  Fix smart preprocessor for #include <> with leading and trailing spaces.
+    Symptom: c1083
+  Fix covc for GNU option -fhandle-signatures.  Symptom: parse error before ';'
+  Added back support for switch expressions of type __int64, disabled in 5.2.0
+  Comma separated values format shows n% rather than n.nn, for example
+    100% rather than 1.00, for better import into Excel
+  Fix Coverage Browser for system setting "Show window content while
+    dragging" turned off.  Symptom: vertical lines accumulate in right pane.
+
+Version 5.2.1 - 28 Mar 2000
+  Fix smart preprocessor for Visual C++ German.  Symptom: C1064
+  Fix covc for #line short form with trailing space. Symptom: .i filename
+    used instead of true source
+
+Version 5.2.0 - 21 Mar 2000
+  Branch forcing removed as scheduled, to allow for other features
+  Added support for GNU compiler name powerpc-wrs-vxworks-gcc
+  Temporarily disabled support for switch expressions of type __int64,
+    due to sign extension incompatibility with 32-bit values.  Symptom:
+    test program behavior change
+
+Version 5.1.5 - 15 Mar 2000
+  Fix covx for Windows 98 German.  Symptom: crash upon building
+  New covfn and covsrc options -b/--base
+  New covfn option -n/--no-source
+  Fix smart preprocessor for #import with macro attributes
+  covc automatically works around bug in Borland C++ pragma resource.
+    Symptom: Error E2047 Bad pragma directive syntax
+
+Version 5.1.4 - 25 Feb 2000
+  On Win32, allow FreeLibrary to unload DLLs when autosave disabled.
+  Fix smart preprocessor for precompiled header including header containing
+    #pragma once multiple times.  Symptom: c1083
+
+Version 5.1.3 - 21 Feb 2000
+  Fix smart preprocessor for missing newline at end of file.  Symptom:
+    compiler error
+
+Version 5.1.2 - 18 Feb 2000
+  Friend function defined inside granting class has same scope as
+    granting class.  Symptom: function name scoped inside granting class.
+  Fix Coverage Browser on Windows 9x error "Device context error:
+    DrawTextW failure"
+
+Version 5.1.1 - 15 Feb 2000
+  Fix covc for function declaration with exception specification.
+    Symptom: cov825
+  Fix smart preprocessor message for c4005 with precompiled header.
+    Symptom: line number 32 always shown
+  covc issues cov810 rather than cov825 for function head excluded.
+    Better line number for unknown functions.
+  Fix smart preprocessor c1083 too many open files
+  Fix smart preprocessor for -I with UNC path.  Symptom: c1083
+  Fix smart preprocessor for header with all but one line guarded,
+    included twice.  Symptom: C2014
+  covc uses the actual name of partially excluded functions, rather than
+    using "(Unknown)"
+
+Version 5.1.0 - 3 Feb 2000
+  Fix covc for input lines longer than 4096. Symptom: cov118
+  Fix covc option --leave for smart preprocessor.  Symptom: .i file not
+    generated
+
+Version 5.0.9 - 1 Feb 2000
+  covc recognizes additional template specialization syntax.  Symptom:
+    member functions not measured
+  Coverage Browser displays multibyte source code correctly
+  Unix install requires gunzip
+  Fix covc to display smart preprocessor error message.  Symptom: no
+    error message
+  Fix covc for compiler with permission sticky bit.  Symptom: cov113
+
+Version 5.0.8 - 19 Jan 2000
+  Support for Tasking embedded compiler ccxa
+  Reduced number of coverage data file accesses during building
+  Retry fcntl upon EDEADLK
+  covc recognizes #pragma directive generated from macro
+  Fix Coverage Browser crash upon F1 with menu down
+  Fix smart preprocessor for -Yc with no argument and no pragma hdrstop.
+    Symptom: c1010
+  Avoid COM stub proxy access violation by not updating memory when virtual
+    pages marked read-only
+  Support for Borland C++Builder 4
+  Support for Visual C++ 4.x.  Symptom: "LINK: error: Internal error
+    during Pass1", libpath not recognized
+  Setup fixes problem with cl.exe caused by Software Research TCAT
+  Fixed Coverage Browser for F1 while menu down.  Symptom: exception
+
+Version 5.0.7 - 21 Dec 1999
+  covc recognizes option -DCCoverDisable to disable coverage build
+  Coverage Browser Edit Copy in HTML format
+  Coverage Browser Tools Options View allows changing source code font
+  Fix smart preprocessor for #include <...> with space in filename.
+    Symptom: c1083
+  Fix covc for namespace containing extern "C" containing last #pragma before
+    function.  Symptom: C2065
+  Coverage Browser has better performance displaying source code
+  covc recognizes more template syntax variations, including specialization
+    and multiple type parameters
+  covc option -t directory does not have to end with slash if it exists and
+    contains a slash
+  Fix covc for gcc options -MD and -MMD.  Symptom: source not instrumented
+  Fix covc for selection made in coverage file.  Symptom: some sources
+    incorrectly treated as excluded
+  Support Microsoft compiler names cl386, clarm, clmips, clppc, clthumb
+  Setup makes only a single Start menu entry for conformance to Windows 2000
+    Application Specification 1.0
+
+Version 5.0.6 - 22 Oct 1999
+  covc recognizes Microsoft C++ pragma hdrstop. Symptom: cov149
+  covc recognizes -PIC. Symptom: -PIC taken as -P
+  Help files updated from HTML 3.2 to HTML 4.0 and renamed without
+    ccoverHelp prefix
+  Fix covc for Solaris sparc readdir_r.  Symptom: File system error:
+    directory read failure: Invalid argument
+  Run-time fixes for VxWorks.  Symptom: coverage not saved without call
+    to cov_write
+  covc puts temporary files in uniquely named temporary, for multi-user support
+  Branch forcing slated for removal, to allow for other features
+
+Version 5.0.5 - 17 Sep 1999
+  Fix covc for source in temporary directory. Symptom: cov120
+
+Version 5.0.4 - 10 Sep 1999
+  Fix covc for __asm block containing comment with brace. Symptom:
+    cov118: unbalanced {.
+  Setup checks for required system DLL versions
+  Fix Coverage Browser crash on exit after using dialog help
+  Unix self test does not fail due to evaluation license message
+
+Version 5.0.3 - 24 Jun 1999
+  Automatically work around C1001 related to optimization -O2
+  Coverage Browser supports excluding functions
+  Coverage Browser delegates region selection for ".." to child regions.
+    Symptom: excluding ".." excludes everything in the project
+  Fix obscure Coverage Browser crash when viewing source code and all functions are excluded
+
+Version 5.0.2 - 18 Jun 1999
+  Coverage Browser chooses icons and fonts based on system settings
+  Coverage Browser command Region Source Details dialogs combined into one
+  Coverage Browser has web browser style address bar
+  Coverage Browser option for source code font size
+  Coverage Browser source code header uses hyperlink rather than button
+  Coverage Browser tracks place within source code for Go Back and Go Forward
+  Fix Coverage Browser region exclusion conflict resolution.  Symptom:
+    some exclusion actions not saved in coverage file
+  Fix Coverage Browser splitter. Symptom: crash on double click
+  Fix covc for static destructors.  Symptom: coverage not saved for some
+    destructors
+  Help section Troubleshooting separated into three subsections
+  New Coverage Browser command Edit Repeat Find Text Backward
+  New Coverage Browser command File Properties
+  New run-time error 18
+  On NT, covc automatically excludes functions defined in winnt.h
+  On NT, run-time error shows executable (module) path.
+  Restored run-time error 12 since it can be diagnosed easier now
+  Unknown function event is ??? rather than arrow
+  covc detects unknown functions after the first and warns about them
+
+Version 5.0.1 - 5 Jun 1999
+  Fix covc for coverage not saved in destructors of statically defined objects
+  Run-time version symbol changes between releases only when incompatible
+  For Unix, fixed build error due to inline function used before defined
+  Setup program allows being renamed
+  On HP-UX kernel, cov_write has no effect.
+  Coverage Browser filter name without Match Case not forced to lower case
+  Coverage Browser Find tab wraps filter text rather than truncating
+  Coverage Browser Find Text dialog resets options after changing windows
+  Coverage Browser Shift+F3 repeats Find Text Up in source code
+  Coverage Browser new option Tools Options View Edit Copy includes
+    column headings
+  Fix Coverage Browser splitter respects system setting "Show window
+    contents while dragging"
+
+Version 5.0.0 - 24 May 1999
+  Coverage Browser enhancements
+  Fix Coverage Browser for excluded nested class. Symptom: duplicate
+    region in left pane
+  Support for Sun Workshop C++ 5.0
+  Fix covclear and Coverage Browser File Clear. Symptom: invalid probe
+
+Version 4.4.3 - 4 May 1999
+  Fix covc to recognize _declspec as __declspec. Symptom: inline functions
+    in class body not measured
+
+Version 4.4.2 - 30 Apr 1999
+  Fix run-time file locking for Win9x. Symptom: error 5
+  Fix covc for Microsoft C++ with CL environment variable more than 1K.
+    Symptom: compile error such as c1083
+  Fix covc for C++ function declaration followed by struct. Symptom: C2501
+  covlink performs atexit and C++ entry point workaround silently
+  covc with compiler -E defines macro CCOVER
+
+Version 4.4.0 - 27 Mar 1999
+  New Coverage Viewer commands File Print and File Print Preview
+  Fix Coverage Viewer toolbar
+  Fix Unix covmgr command. Symptom: pause before exit
+  Compatibility with NuMega BoundsChecker 6.0
+  Smart preprocessor allows '$' in macro names like Microsoft C++.
+    Symptom: c2008
+
+Version 4.3.7 - 15 Mar 1999
+  Fix Coverage Viewer exclusion. Symptom: duplicate regions in left pane
+  For Windows fix PATH environment variable short paths. Symptom: coverage
+    file entries for functions in winnt.h
+  Automatic conversion of old coverage files
+  New Coverage Viewer command File Compact and covmgr option -m/--compact
+  Compatibility with Software Research TCAT overwriting cl.exe. Symptom:
+    cpp1003 or cpp1005
+
+Version 4.3.6 - 9 Mar 1999
+  Fix covclear. Symptom: not all coverage cleared
+  With Microsoft C++, add -Ob1 if no optimization implies it.  Symptom:
+    inline functions in .h files show no coverage
+
+Version 4.3.5 - 2 Mar 1999
+  Speed improvements
+  Fix syntax errors for AIX C++ compiler
+
+Version 4.3.4 - 26 Feb 1999
+  Fix covc for HP-UX library selection.  Symptom: libcov64.a: "Not a
+    valid library"
+  New Coverage Viewer command Tools Update this Product by Internet
+  Fix smart preprocessor bug introduced in 4.3.3. Symptom: c1083
+
+Version 4.3.3 - 23 Feb 1999
+  External symbols only on Solaris
+  Fix smart preprocessor handling of #import. Symptom: C1083 on comdef.h
+  Fix covmerge for Unix. Symptom: "Cross-device link"
+  Make pseudo compilers aCC for HP-UX, xlC for IBM AIX C++
+  Only set environment variable NMCL if Numega BoundsChecker installed
+
+Version 4.3.2 - 17 Feb 1999
+  Fix covc segmentation fault in evaluation.
+
+Version 4.3.1 - 16 Feb 1999
+  Prevent debugger stepping into switch statement probe code.  Symptom:
+    breakpoint anomaly
+
+Version 4.3.0 - 12 Feb 1999
+  Command line report programs count unknown function same as Coverage Viewer
+  New Coverage Viewer command Source Open
+  Setup does not disable NT system PATH entries containing %SystemRoot%
+  Support for GNU option -include. Symptom: compile error
+  Smart preprocessor supports macro naming precompiled header. Symptom: c2006
+  Coverage Viewer tip of the day contains hypertext links
+  Setup can accept installKey to set license
+  Fix smart preprocessor for precompiled header recursively including
+    itself.  Symptom: compile error
+  Fix for AIX with xlC. Symptom: cannot include sys/utime.h
+  Fix smart preprocessor for precompiled header created with pch
+    inconsistency.  Symptom: compile error
+
+Version 4.2.8 - 15 Jan 1999
+  Support for Solaris 2.6 and 7 and Solaris cc, CC with latest jumbo patch
+  Coverage Viewer uses environment variable COVSRCDIR
+  Added Coverage Viewer Tip of the Day dialog
+  Correctly recognize unnamed namespace. Symptom: function named "(unknown)"
+  Fix cpp for -D on command line with #undef in precompiled header and #define
+    later in source file, all naming the same macro.  Symptom: c4005
+
+Version 4.2.7 - 5 Jan 1999
+  Support for HP-UX shl_unload inside condition
+  Coverage Viewer Edit Copy generates smaller RTF
+  Error numbers formatted for compatibility with Microsoft Visual Studio
+
+Version 4.2.6 - 22 Dec 1998
+  Fix covlink for EXEs which do not use the CRT
+  Fix stack overflow on NT5beta3 (Windows 2000)
+  For Unix, fix covc not linking with C-Cover run-time library
+  For Unix, fix garbled info 923
+  For Unix, remove memory leaks
+  On HP-UX, link with libcov-pic.a upon +z and libcov-PIC.a upon +Z
+  With Microsoft C++, retry with atexit for EXE as well as DLL
+
+Version 4.2.5 - 9 Dec 1998
+  Smart preprocessor mimics Microsoft C++ command line macro definitions
+    with precompiled headers.  Symptom: c4652
+  Fix covc for Microsoft Platform SDK link.  Symptom: covlink error 113
+  Fix Coverage Viewer Edit Copy Unknown exception
+  Fix covc wrong line number for first condition in decision
+  Fix covc for macro containing ?:. Symptom: syntax error
+  covlink assumes device driver when entry point is DriverEntry or
+    DrvEnableDriver. Symptom: LNK1120
+  Executables and library contain "@(#)" for Unix command "what"
+
+Version 4.2.4 - 4 Dec 1998
+  Smart preprocessor does not treat char 0xff as end of input
+  Smart preprocessor ignores char 0x00
+  Smart preprocessor does not put -FC into precompiled header. Symptom: c4652
+  Smart preprocessor puts "#pragma once" data into precompiled header.
+    Symptom: #error
+  Smart preprocessor verifies precompiled header up to date
+  Smart preprocessor supports characters with high bit set
+  Turning off back-end precompiled header does not turn off front-end pch
+  Support for DEC OSF1
+  Set COVFILELIST for multiple coverage files at run-time
+  Allow source file timestamp difference of exactly one hour to allow for
+    daylight timezone change anomaly
+  Fix for case label expression of the form "type(Class::name)". Symptom:
+    syntax error.
+  Compatibility with Borland option -A. Symptom: "Non-ANSI keyword used"
+    and "Undefined symbol 'asm'"
+  For Borland C++, do not require modifying [it]link32.cfg option -L
+  Coverage Viewer performs diagnostics when unable to enable Coverage Build
+  Coverage Viewer has context sensitive help for Tools Options
+  Fix covc for "#pragma C-Cover ..." beginning in other than column 0.
+    Symptom: syntax error
+  Support for HP-UX compiler producing either 32 or 64-bit output.
+  Setup puts C-Cover bin in system PATH rather than user PATH
+  Support for Inprise/Borland C++Builder 3.0
+
+Version 4.2.3 - 6 Nov 1998
+  Preprocessor mimics Microsoft ## operator behaviour when paste produces
+    invalid token. Symptom: compile error
+  Support for Microsoft link 5.02.7132 and GNU make. Symptom: LNK4044
+  New Coverage Viewer command Edit Next Uncovered Probe
+
+Version 4.2.2 - 3 Nov 1998
+  Preprocessor mimics Microsoft non-ANSI rescanning. Symptom: compile error
+  Fix preprocessor warning on multiple definition from command line.
+    Symptom: c4005
+  Fix covlink to not add kernel32.lib, user32.lib if already specified.
+    Symptom: LNK1104
+
+Version 4.2.1 - 22 Oct 1998
+  Smart preprocessor for Microsoft C++
+  Fix covc to recognize user functions named like terminate function
+    abort, exit, etc
+  On HP-UX, define cov_class::operator new and include stddef.h
+
+Version 4.2.0 - 8 Oct 1998
+  Fix covc for Microsoft C++ option -LD together with -c. Symptom:
+    error 153
+  Compatible with HP-UX pragma align. Symptom: cc error 1657
+
+Version 4.1.9 - 6 Oct 1998
+  Fix covc erroneous warning 809
+
+Version 4.1.8 - 5 Oct 1998
+  Fix covlink for cl.exe not in PATH. Symptom: error 147
+  Work around Visual C++ 6 -ZI.  Symptom: source filenames in lower case.
+  Compatible with all Unix compilers not supporting bool, false, true
+  covbr option --html
+  covc option --comment always adds -C to Unix style preprocessor
+  Fix covc option -i/--ignore with -Yc. Symptom: C1010
+  Environment variables recognized in --select with $variable or %variable%
+  Support for HP-UX shl_unload
+  Support for Win32 DLL entry point in C++. Symptom: LNK2001
+  Fix covc for K+R style function with parameter struct { ... }
+  Fix Internal Error msdos.c line 200
+
+Version 4.1.7 - 3 Sep 1998
+  Fixes for Watcom C++
+  Fix covlink for multiple simultaneous builds
+  Fixes for K&R C
+  Silence warnings with HP aCC
+  Fix for space in object file path
+  Command line option -? shows usage
+  Command line help option not sensitive to error status
+
+Version 4.1.6 - 24 Aug 1998
+  Fix covc for structure packing <8. Symptom: run-time crash
+
+Version 4.1.5 - 21 Aug 1998
+  Fix for Visual C++ 4.x affecting 4.1.2-4.1.4. Symptom: run-time crash
+  Support for HP-UX kernel
+  Fix for K&R C. Symptom error on "#"
+
+Version 4.1.4 - 19 Aug 1998
+  Automatically work around Microsoft C++ C4049 when creating precompiled header
+  No longer require C compiler on Unix; only C++
+  Merge ignores column check sum. Symptom: duplicate function or probe
+
+Version 4.1.3 - 31 July 1998
+  Fix Unix file stdFcntrl.cpp. Symptom: unable to make fnmatch.o
+  Fix covc for GNU __attribute__. Symptom: warning 810
+  Compatibility with Linux Redhat 5.1
+
+Version 4.1.2 - 23 July 1998
+  Fix covc for Microsoft __except. Symptom: syntax error
+  Fix covc for switch with Microsoft __int64.  Symptom: C4178
+  Coverage Viewer loads large source files faster
+  Better help navigation
+
+Version 4.1.1 - 10 Jul 1998
+  Fix Coverage Viewer to not always display decision coverage
+  Fix covc for precompiled header with .c style suffix. Symptom: D2003
+  Command line programs can report decision coverage
+  Fix crash in Coverage Viewer.
+  Compatibility with Microsoft cl option -FC. Symptom: warning 820
+  Fix covc to delete object files created by failure analysis. Symptom:
+    compile error yet object created
+  Fix backend precompiled header with cl option -FI. Symptom: compiler error
+
+Version 4.1.0 - 3 Jul 1998
+  Added support for Microsoft #import.  Symptom: error C2065: 'FAILED'
+  Fixed crash in Coverage Viewer when viewing coverage by number uncovered
+  Prevent C4112 in backend precompiled header
+  Coverage Viewer can view decision coverage
+  Coverage Viewer Edit Copy includes column headings
+  Visual C++ 6.0 is released
+
+Version 4.0.9 - 26 Jun 1998
+  Removed run-time error 12.
+  Workaround NuMega BoundsChecker conflict.  Symptom: Error executing cl.exe
+  Fix setup for Microsoft Visual C++ 4.x.  Symptom: Cannot locate msdev.exe
+
+Version 4.0.8 - 15 Jun 1998
+  Workaround NuMega BoundsChecker conflict.  Symptom: LNK2001 on
+    _ccover_Link_with_coverage_build_enabled
+  Fix covc to avoid error with goto into switch.  Symptom with Microsoft
+    C++: C2362
+  Fix covc for Microsoft option -Tc,-Tp and unknown suffix.  Symptom: C2857.
+  covc option -x recognizes ! to ignore a suffix.
+  Fix Coverage Viewer Tools Options Build.  Symptom: error 137: unknown option
+
+Version 4.0.7 - 27 May 1998
+  Fix covc #line output for Unix.  Symptom: coverage collected for wrong
+    source or warning 801 "no probes added".
+
+Version 4.0.6 - 22 May 1998
+  Increase reliability of run-time on Win32.  Symptom: error 3 or crash
+  Compatibility with Microsoft link .exp files.  Symptom: LNK4077
+  Build NT run-time without -Z7. Symptom: LNK1103
+  Do not strip Unix executable. Symptom: "Writing ELF dynamic objects is
+    not supported"
+  Default pthread for HP-UX 10.20. Symptom: compile error on covrt.c
+  Increased limit of nested switch from 16 to 32.  Symptom: Internal
+    error covparse.c 1269
+  Fix Coverage Viewer menu Help commands for Netscape browser. Symptom:
+    garbled html path
+  Fix backend precompiled header.  Symptom: compile error.
+
+Version 4.0.5 - 12 May 1998
+  Added compiler command ccppc for GNU on Win32.
+  Fixed Coverage Viewer command File Clear to clear probe events.
+  Fixed Win32 setup. Symptom: error or no "Setup complete" dialog.
+
+Version 4.0.4 - 7 May 1998
+  Fix backend precompiled header for incorrect source files which do not
+    include the backend precompiled header first.  Symptom: syntax error.
+
+Version 4.0.3 - 29 Apr 1998
+  Fix covlink for C++ DLL entry function.  Symptom: LNK2001
+  covlink adds -libpath with C-Cover lib directory. Symptom: LNK1181
+  covlink takes -dll over -subsystem:native. Symptom: warning 818.
+
+Version 4.0.2 - 23 Apr 1998
+  With Microsoft C++, covc uses a back-end precompiled header to decrease
+    build time 50%
+  Added Coverage Viewer Tools Options Build Delay I/O
+
+Version 4.0.1 - 10 Apr 1998
+  Command line programs measure c/d coverage same way as Coverage Viewer.
+  Unix fix for libcov.a not in ../lib.  Symptom: unresolved pthread symbols
+
+Version 4.0.0 - 30 Mar 1998
+  New Win32 Coverage Viewer
+  Support removed for MS-DOS and Windows 3.x
+  Fix Win32 setup.  Symptom: No changes to Developer Studio
+  covc only outputs #line directives with line number in valid range 1..32767.
+    Symptom: C4112
+  Fixed recognition of -KPIC.  Symptom: libcov1-PIC.a not found
+  Fixed parser for line splice before function body. Symptom: syntax error
+    on cov_f_
+  Setup notifies NT system of environment variable change.  Symptom: unable
+    to enable Coverage Build.
+  Fixed setup for installing C-Cover immediately after Visual C++.  Symptom:
+    only the C-Cover bin directory appears in Tools Options Directories
+  Fix for NT file locking during build and reporting.  Symptom: "...
+    lock failed at ..."
+  Remove branch coverage.
