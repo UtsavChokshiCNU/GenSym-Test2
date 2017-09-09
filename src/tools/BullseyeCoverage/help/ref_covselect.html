@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_reference.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+covselect - Select Regions
+</h1>
+<pre>
+covselect -a|--add [<i>options</i>] <i><a href=ref_regions.html>region</a></i> ...
+covselect -d|--deleteAll [<i>options</i>]
+covselect -ePath|--export Path [<i>options</i>]
+covselect -h|--help [<i>options</i>]
+covselect -iPath|--import Path [<i>options</i>]
+covselect -l|--list [<i>options</i>]
+covselect -r|--remove [<i>options</i>] <i><a href=ref_regions.html>region</a></i> ...
+</pre>
+<h2>DESCRIPTION</h2>
+<p>
+<code>covselect</code> adds and removes source
+<a href=ref_regions.html>region</a>
+inclusions and exclusions that are stored in the coverage file.
+Changes immediately affect <a href=ref_covc.html><code>covc</code></a>
+and the reporting commands <a href=ref_covbr.html><code>covbr</code></a>,
+<a href=ref_summary.html><code>covclass</code>, <code>covdir</code>, <code>covfn</code>, <code>covsrc</code></a>.
+<p>
+Action <code>-a</code> (<code>--add</code>) adds to the coverage file
+the specified <a href=ref_regions.html>region</a> selections on the
+command line.
+<p>
+Action <code>-d</code> (<code>--deleteAll</code>) removes all
+<a href=ref_regions.html>region</a> selections
+from the coverage file.
+If you specify <code>-v</code> (<code>--verbose</code>), <code>covselect</code>
+shows the regions as they are added, in a human-readable format.
+<p>
+Action <code>-e</code> (<code>--export</code>) writes the list of selections
+in the coverage file to a new plain text file with the specified <i>Path</i>.
+The list is written in the same format as <code>-l</code> (<code>--list</code>).
+<p>
+Action <code>-h</code> (<code>--help</code>) displays a summary of options.
+<p>
+Action <code>-i</code> (<code>--import</code>) reads the list of selections
+from the file named by <i>Path</i> and adds them into the coverage file.
+Selections already in the coverage file are not removed.
+To replace the selections in the coverage file you must first perform
+action <code>-d</code> (<code>--deleteAll</code>).
+The expected file format is that written by action <code>-e</code>
+(<code>--export</code>) or <code>-l</code> (<code>--list</code>).
+In file named by <i>Path</i>, text beginning with the <code>#</code> character
+up to the end of line is discarded.
+<p>
+Action <code>-l</code> (<code>--list</code>) prints all
+<a href=ref_regions.html>region</a> selections in the coverage file.
+If you specify <code>-v</code> (<code>--verbose</code>), <code>covselect</code>
+shows the regions in a more human-readable format.
+<p>
+Action <code>-r</code> (<code>--remove</code>) removes from the coverage file
+the specified <a href=ref_regions.html>region</a> selections
+on the command line.
+If you specify <code>-v</code> (<code>--verbose</code>), <code>covselect</code>
+shows the regions as they are removed, in a human-readable format.
+
+<h2>OPTIONS</h2>
+<table cellspacing=12 summary="">
+<colgroup><col span=2 style=white-space:nowrap></colgroup>
+<tr><td><code>-c</code><td><code>--create</code>
+<td>Create the coverage file if it does not exist.
+<tr><td><code>-f</code><i>Path</i><td><code>--file</code> <i>Path</i>
+<td>The coverage file is specified by <i>Path</i>. The default is <code>test.cov</code>.
+<tr><td><code>-q</code><td><code>--quiet</code>
+<td>Suppress warnings and the copyright message.
+<tr><td><code>-v</code><td><code>--verbose</code>
+<td>Show informational messages.
+<tr><td><code>--no-banner</code><td>
+<td>
+Suppress startup banner
+</table>
+<h2>FILES</h2>
+<table cellspacing=12 summary="">
+<tr><td>
+<i>BullseyeCoverage</i><code>/bin/covselect.cfg</code><br>
+<code>$COVSELECTCFG</code><br>
+<i>home-directory</i><code>/covselect.cfg</code>
+<td>If these files exist, they contain initial options separated by white space.
+</table>
+
+<h2>NOTES</h2>
+<p>
+Specify source file names relative to the location of the coverage file,
+not the current directory.
+If in doubt, specify source file names as absolute paths.
+<p style="font-size:xx-small">
+Last reviewed: 21 Apr 2009
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
