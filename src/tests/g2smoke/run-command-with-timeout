@@ -1,0 +1,60 @@
+#!/bin/sh
+
+if [ $# -lt 2 ]; then
+    echo "usage: run-command-with-timeout <interval> <cmd> [args]"
+    exit 1  
+fi
+
+# Description: This script executes <cmd> [args] as a background
+#   process and allows it to execute for up to <interval> seconds.  If
+#   the command fails to complete in the specified interval, it is terminated.
+# Return values:
+#   0 if <cmd-line> completes normally
+#   1 if <interval> is exceeded and the <cmd-line> is terminated
+# Bugs:
+#   No attempt is made to verify that <interval> is a number.
+#   <cmd> [args] should be kept simple; i.e., a command and expanded
+#   arguments.  One should not rely on the shell for interpretation.
+
+ # Process the input arguments.
+
+timeout=$1
+shift
+cmd="$* &"     # The & is appended so the command will run in the background.
+
+ # We create a file $pidfile that has a unique name and that serves both
+ # as an indicator of a process's existence and as means of storing its pid.
+
+pidfile="/tmp/$$.pid"     
+touch $pidfile         # Create it if it doesn't exist (which it shouldn't).
+
+ # Now for the fun. Execute $cmd, which runs in the background, store
+ # its pid (given by $!) into the pidfile, wait until $cmd completes execution,
+ # then remove $pidfile to indicate that the process has completed.  All of
+ # this is done in the background, which allows $cmd to be monitored below.
+
+(eval $cmd;
+ echo $! > $pidfile
+ wait $!
+ rm -f $pidfile) &
+
+ # While $cmd is running, check for the presence of its existence file
+ # while decrementing the timeout counter.
+
+while [ -f $pidfile -a $timeout -gt 0 ]
+do
+        sleep 2
+        timeout=`expr $timeout - 2`
+done
+
+ # If $pidfile is still around, then $cmd needs to be terminated.
+
+if [ -f $pidfile ]; then
+    childpid=`cat $pidfile`    # $pidfile contains the pid of $cmd
+    echo "$0: killing process $childpid after timeout interval elapsed." 1>&2
+    kill $childpid
+    rm -f $pidfile
+    exit 1
+else
+    exit 0
+fi
