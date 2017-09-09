@@ -1,0 +1,39 @@
+#!/bin/sh
+
+# This script must be run on Unix.
+
+# Set ishipid and eshipid to the proper build id for your release; these
+# should be parameterizable from the command line
+eshipid=83r1
+cvsflag=-A
+dopromote=no
+
+stagedir=${SRCBOX}/stage/twax
+
+if [ "$1" = "-promote" ]
+then
+  dopromote=yes
+fi
+
+
+cd ${SRCBOX}
+echo "Checking out promote and activex into `pwd`"
+cvs co ${cvsflag} promote activex
+
+echo "Copying signed cab file from promote"
+cp ${SRCBOX}/promote/TwControl.cab ${stagedir}
+
+if [ "$dopromote" = "yes" ]
+then
+  buildid=`egrep BUILD_ID_STRING activex/control/src/defs-twax.h | awk '{print $3}' | awk -F'"' '{print $2}'`
+  ishipid=${eshipid}-${buildid}
+  echo "Promoting, eship = ${eshipid}, iship = ${ishipid}"
+  echo "Stage directory complete, removing any old promotions"
+  /gensym/tools/remove-product -noconfirm -e twax $eshipid
+  /gensym/tools/remove-product -noconfirm -i twax $ishipid
+  echo "Promoting twax to iship and eship"
+  /gensym/tools/promote-product -noconfirm -i twax intelnt ${stagedir} $ishipid
+  /gensym/tools/promote-product -noconfirm -e twax intelnt ${ishipid} ${eshipid}
+else
+  echo "Not promoting to iship or eship; run $0 -promote to perform promotion."
+fi
