@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_trouble_report.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+Measurements Show No Coverage for .NET DLL
+</h1>
+<h2>SYMPTOMS</h2>
+<p>
+BullseyeCoverage shows 0% coverage or less than actual coverage for the
+functions in a DLL built with Microsoft Visual C++ .NET 2003 using the
+Common Language Runtime (<code>cl</code> option <code>-clr</code>).
+<h2>CAUSE</h2>
+<p>
+The Common Language Runtime prevents the DLL entry point
+call with argument
+<code>DLL_PROCESS_DETACH</code>.
+BullseyeCoverage normally intercepts this call to save coverage from memory to file.
+<h2>RESOLUTION</h2>
+<p>
+Add a call to <code><a href=ref_cov_write.html>cov_write</a></code> after
+the last executable statement in the DLL.
+<h2>MORE INFORMATION</h2>
+<p>
+The BullseyeCoverage
+<a href=ref_environment.html#COVAUTOSAVE>auto-save</a>
+background thread might save some or all coverage measurements before
+the DLL is unloaded.
+<p>
+The DLL entry point function is documented by Microsoft under the name
+<code>DllMain</code>.
+<p style="font-size:xx-small">
+Last reviewed: 19 May 2006
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
