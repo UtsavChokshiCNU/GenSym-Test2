@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<!--
+ Copyright (C) Unpublished Trilogy Software, Inc. All rights reserved.
+ Trilogy Software, Inc., Confidential and Proprietary. Unless otherwise
+ explicitly stated in writing, this software may not be used by or
+ disclosed to any third party. This software is subject to copyright
+ protection under the laws of the United States and other countries.
+ Unless otherwise explicitly stated, this software is provided
+ by Trilogy "AS IS".
+-->
+
+<!-- ============= build file for ANT v1.x [requires v1.4+] ========= -->
+<!-- ================================================================ -->
+<!-- Targets should only have a description attribute if they're      -->
+<!-- useful to run independently, otherwise they just get a comment.  -->
+<!-- ================================================================ -->
+
+<!-- G2 project -->
+
+<project name="ODBC" default="resolve" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">  
+    <!-- read enviroment variables first -->
+	<property file="./build.properties"/>
+    <property name="ivy.lib.dir" value="."/>
+    <property name="ivy.vc-lib.dir" value="${ivy.lib.dir}/vc-lib"/>
+    
+
+        <!-- ivy properties used -->
+    <property name="ivy.settings.dir" value="."/>
+    <property file="${ivy.settings.dir}/ivysettings.properties"/>
+	<property name="ivy.dep.file" value="ivy_odbc.xml"/>
+    <ivy:settings file="${ivy.settings.dir}/ivysettings.xml"/>
+
+    <!-- =================================
+            target: resolve
+     ================================= -->
+    <target name="resolve" description="--&gt; retreive dependencies with ivy">
+        <ivy:retrieve pattern="${ivy.pattern}"/>        
+    </target>
+    <!-- =================================
+    
+          target: clean-cache
+     ================================= -->
+    <target name="clean-cache" description="--&gt; clean the ivy cache">
+        <ivy:cleancache/>
+    </target>
+
+    <!-- =================================
+    target: publish
+    ================================= -->
+
+    <target name="publish">
+        <ivy:resolve revision="1.0"/>
+        <delete file="./mak/ivy.xml"/>
+        <ivy:publish artifactspattern="./mak/[artifact].[ext]"
+                     srcivypattern="./mak/ivy.xml"
+                     resolver="libg2dbvc"
+                     pubrevision="${sftp.version}"
+                     status="release"
+                     overwrite="true"/>
+    </target>
+
+    <target name="vc" depends="resolve">
+        <copy tofile="${rtl.vc.dst.dir}/librtl.lib" overwrite="true">
+            <fileset dir="${basedir}/vc-lib" includes="librtl-${librtl.revision}.lib" />
+        </copy>
+        <copy tofile="${ext.vc.dst.dir}/libnogsec.lib" overwrite="true">
+            <fileset dir="${basedir}/vc-lib" includes="libnogsec-${libnogsec.revision}.lib" />
+        </copy>
+        <copy tofile="${ext.vc.dst.dir}/libtcp.lib" overwrite="true">
+            <fileset dir="${basedir}/vc-lib" includes="libtcp-${libtcp.revision}.lib" />
+        </copy>
+        <copy tofile="${gsi.vc.dst.dir}/libgsi.lib" overwrite="true">
+            <fileset dir="${basedir}/vc-lib" includes="libtcp-${libgsi.revision}.lib" />
+        </copy>
+    </target>
+</project>
