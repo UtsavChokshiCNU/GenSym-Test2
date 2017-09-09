@@ -1,0 +1,1464 @@
+<?xml version="1.0"?>
+<rdf:RDF
+ xmlns:rdf="http://www.w3.org/TR/WD-rdf-syntax#"
+ xmlns:g2="g2-12-0-9.rdf"
+ xmlns="">
+
+<g2:Module ID="FLOAT-VARIABLE-OVERFLOW--TEST">
+  <g2:version>
+    <g2:Structure>
+      <g2:sa.MAJOR-VERSION g2:type="Integer">12</g2:sa.MAJOR-VERSION>
+      <g2:sa.MINOR-VERSION g2:type="Integer">0</g2:sa.MINOR-VERSION>
+      <g2:sa.RELEASE-QUALITY g2:type="Text"></g2:sa.RELEASE-QUALITY>
+      <g2:sa.REVISION g2:type="Integer">9</g2:sa.REVISION>
+      <g2:sa.BUILD-IDENTIFICATION g2:type="Text">SI11</g2:sa.BUILD-IDENTIFICATION></g2:Structure></g2:version>
+  <g2:systemtables>
+    <g2:Sequence>
+      <rdf:li>
+      <g2:c.MODULE-INFORMATION ID="a2959dce619b11e38a79c0a0bb7b4871">
+        <g2:a.AUTHORS>
+          <g2:Structure>
+            <g2:sa.AUTHORS>
+              <g2:Sequence>
+                <rdf:li g2:type="Symbol">BUDDEN73</rdf:li></g2:Sequence></g2:sa.AUTHORS>
+            <g2:sa.TIMESTAMP>
+              <g2:Structure>
+                <g2:sa.YEAR g2:type="Integer">2016</g2:sa.YEAR>
+                <g2:sa.MONTH g2:type="Integer">8</g2:sa.MONTH>
+                <g2:sa.DATE g2:type="Integer">29</g2:sa.DATE>
+                <g2:sa.HOURS g2:type="Integer">20</g2:sa.HOURS>
+                <g2:sa.MINUTES g2:type="Integer">21</g2:sa.MINUTES></g2:Structure></g2:sa.TIMESTAMP></g2:Structure></g2:a.AUTHORS>
+        <g2:a.TOP-LEVEL-MODULE g2:type="Symbol">FLOAT-VARIABLE-OVERFLOW--TEST</g2:a.TOP-LEVEL-MODULE>
+        <g2:a.DIRECTLY-REQUIRED-MODULES>
+          <g2:Sequence>
+            <rdf:li g2:type="Symbol">TSDRIVER</rdf:li></g2:Sequence></g2:a.DIRECTLY-REQUIRED-MODULES>
+        <g2:a.ICON-VARIABLES>
+          <g2:Structure>
+            <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+            <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES></g2:c.MODULE-INFORMATION></rdf:li>
+      <rdf:li>
+      <g2:c.DEBUGGING-PARAMETERS ID="a2959dd0619b11e38a79c0a0bb7b4871">
+        <g2:a.ICON-VARIABLES>
+          <g2:Structure>
+            <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+            <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES></g2:c.DEBUGGING-PARAMETERS></rdf:li>
+      <rdf:li>
+      <g2:c.TIMING-PARAMETERS ID="a2959dd4619b11e38a79c0a0bb7b4871">
+        <g2:a.ICON-VARIABLES>
+          <g2:Structure>
+            <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+            <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES></g2:c.TIMING-PARAMETERS></rdf:li>
+      <rdf:li>
+      <g2:c.INFERENCE-ENGINE-PARAMETERS ID="a2959ddd619b11e38a79c0a0bb7b4871">
+        <g2:a.ICON-VARIABLES>
+          <g2:Structure>
+            <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+            <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES></g2:c.INFERENCE-ENGINE-PARAMETERS></rdf:li>
+      <rdf:li>
+      <g2:c.DATA-SERVER-PARAMETERS ID="a2959dde619b11e38a79c0a0bb7b4871">
+        <g2:a.ICON-VARIABLES>
+          <g2:Structure>
+            <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+            <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES></g2:c.DATA-SERVER-PARAMETERS></rdf:li>
+      <rdf:li>
+      <g2:c.G2GL-PARAMETERS ID="a2959de2619b11e38a79c0a0bb7b4871">
+        <g2:a.ICON-VARIABLES>
+          <g2:Structure>
+            <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+            <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES></g2:c.G2GL-PARAMETERS></rdf:li>
+      <rdf:li>
+      <g2:c.SIMULATION-PARAMETERS ID="a2959de0619b11e38a79c0a0bb7b4871">
+        <g2:a.ICON-VARIABLES>
+          <g2:Structure>
+            <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+            <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES></g2:c.SIMULATION-PARAMETERS></rdf:li>
+      <rdf:li>
+      <g2:c.KB-CONFIGURATION ID="a2959de3619b11e38a79c0a0bb7b4871">
+        <g2:a.ICON-VARIABLES>
+          <g2:Structure>
+            <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+            <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES></g2:c.KB-CONFIGURATION></rdf:li>
+      <rdf:li>
+      <g2:c.PRINTER-SETUP ID="a2959dd1619b11e38a79c0a0bb7b4871">
+        <g2:a.ICON-VARIABLES>
+          <g2:Structure>
+            <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+            <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES></g2:c.PRINTER-SETUP></rdf:li>
+      <rdf:li>
+      <g2:c.MESSAGE-BOARD-PARAMETERS ID="a2959dd7619b11e38a79c0a0bb7b4871">
+        <g2:a.ICON-VARIABLES>
+          <g2:Structure>
+            <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+            <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES></g2:c.MESSAGE-BOARD-PARAMETERS></rdf:li>
+      <rdf:li>
+      <g2:c.LOGBOOK-PARAMETERS ID="a2959dd6619b11e38a79c0a0bb7b4871">
+        <g2:a.ICON-VARIABLES>
+          <g2:Structure>
+            <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+            <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES></g2:c.LOGBOOK-PARAMETERS></rdf:li>
+      <rdf:li>
+      <g2:c.LOG-FILE-PARAMETERS ID="a2959dd8619b11e38a79c0a0bb7b4871">
+        <g2:a.ICON-VARIABLES>
+          <g2:Structure>
+            <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+            <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES></g2:c.LOG-FILE-PARAMETERS></rdf:li>
+      <rdf:li>
+      <g2:c.COLOR-PARAMETERS ID="a2959dda619b11e38a79c0a0bb7b4871">
+        <g2:a.ICON-VARIABLES>
+          <g2:Structure>
+            <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+            <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES></g2:c.COLOR-PARAMETERS></rdf:li>
+      <rdf:li>
+      <g2:c.LANGUAGE-PARAMETERS ID="a2959dd3619b11e38a79c0a0bb7b4871">
+        <g2:a.ICON-VARIABLES>
+          <g2:Structure>
+            <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+            <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES></g2:c.LANGUAGE-PARAMETERS></rdf:li>
+      <rdf:li>
+      <g2:c.FONTS ID="a2959dd2619b11e38a79c0a0bb7b4871">
+        <g2:a.ICON-VARIABLES>
+          <g2:Structure>
+            <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+            <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES></g2:c.FONTS></rdf:li>
+      <rdf:li>
+      <g2:c.EDITOR-PARAMETERS ID="a2959ddb619b11e38a79c0a0bb7b4871">
+        <g2:a.ICON-VARIABLES>
+          <g2:Structure>
+            <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+            <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES></g2:c.EDITOR-PARAMETERS></rdf:li>
+      <rdf:li>
+      <g2:c.MENU-PARAMETERS ID="a2959dd9619b11e38a79c0a0bb7b4871">
+        <g2:a.ICON-VARIABLES>
+          <g2:Structure>
+            <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+            <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES></g2:c.MENU-PARAMETERS></rdf:li>
+      <rdf:li>
+      <g2:c.MISCELLANEOUS-PARAMETERS ID="a2959de1619b11e38a79c0a0bb7b4871">
+        <g2:a.ICON-VARIABLES>
+          <g2:Structure>
+            <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+            <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES></g2:c.MISCELLANEOUS-PARAMETERS></rdf:li>
+      <rdf:li>
+      <g2:c.DRAWING-PARAMETERS ID="a2959dd5619b11e38a79c0a0bb7b4871">
+        <g2:a.ICON-VARIABLES>
+          <g2:Structure>
+            <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+            <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES></g2:c.DRAWING-PARAMETERS></rdf:li>
+      <rdf:li>
+      <g2:c.SAVING-PARAMETERS ID="a2959ddc619b11e38a79c0a0bb7b4871">
+        <g2:a.KB-FILE-COMMENT><![CDATA[
+2013-06-17: added 2nd return value (bias: integer) for g2-get-current-time-zone. (GENSYMCID-1034)
+
+]]></g2:a.KB-FILE-COMMENT>
+        <g2:a.ENABLE-KB-CHANGE-LOGGING g2:type="TruthValue">true</g2:a.ENABLE-KB-CHANGE-LOGGING>
+        <g2:a.ICON-VARIABLES>
+          <g2:Structure>
+            <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+            <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES></g2:c.SAVING-PARAMETERS></rdf:li>
+      <rdf:li>
+      <g2:c.VERSION-CONTROL-PARAMETERS ID="a2959ddf619b11e38a79c0a0bb7b4871">
+        <g2:a.ICON-VARIABLES>
+          <g2:Structure>
+            <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+            <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES></g2:c.VERSION-CONTROL-PARAMETERS></rdf:li></g2:Sequence></g2:systemtables>
+  <g2:externaldefinitions>
+    <g2:Sequence>
+      <rdf:li>
+      <g2:c.CONNECTION-DEFINITION>
+        <g2:a.CLASS-NAME g2:type="Symbol">NEXT-BENCHMARK</g2:a.CLASS-NAME>
+        <g2:a.DIRECT-SUPERIOR-CLASSES>
+          <g2:Sequence>
+            <rdf:li g2:type="Symbol">CONNECTION</rdf:li></g2:Sequence></g2:a.DIRECT-SUPERIOR-CLASSES>
+        <g2:a.CROSS-SECTION-PATTERN>
+          <g2:Structure>
+            <g2:sa.CROSS-SECTION-REGIONS>
+              <g2:Sequence>
+                <rdf:li>
+                <g2:Structure>
+                  <g2:sa.REGION-NAME g2:type="Symbol">OUTLINE</g2:sa.REGION-NAME>
+                  <g2:sa.REGION-COLOR g2:type="Symbol">RED</g2:sa.REGION-COLOR></g2:Structure></rdf:li>
+                <rdf:li>
+                <g2:Structure>
+                  <g2:sa.REGION-NAME g2:type="Symbol">INSIDE</g2:sa.REGION-NAME>
+                  <g2:sa.REGION-COLOR g2:type="Symbol">TURQUOISE</g2:sa.REGION-COLOR></g2:Structure></rdf:li></g2:Sequence></g2:sa.CROSS-SECTION-REGIONS>
+            <g2:sa.CROSS-SECTION-STRIPES>
+              <g2:Sequence>
+                <rdf:li>
+                <g2:Structure>
+                  <g2:sa.REGION-NAME g2:type="Symbol">OUTLINE</g2:sa.REGION-NAME>
+                  <g2:sa.REGION-SIZE g2:type="Integer">1</g2:sa.REGION-SIZE></g2:Structure></rdf:li>
+                <rdf:li>
+                <g2:Structure>
+                  <g2:sa.REGION-NAME g2:type="Symbol">INSIDE</g2:sa.REGION-NAME>
+                  <g2:sa.REGION-SIZE g2:type="Integer">2</g2:sa.REGION-SIZE></g2:Structure></rdf:li>
+                <rdf:li>
+                <g2:Structure>
+                  <g2:sa.REGION-NAME g2:type="Symbol">OUTLINE</g2:sa.REGION-NAME>
+                  <g2:sa.REGION-SIZE g2:type="Integer">1</g2:sa.REGION-SIZE></g2:Structure></rdf:li></g2:Sequence></g2:sa.CROSS-SECTION-STRIPES></g2:Structure></g2:a.CROSS-SECTION-PATTERN>
+        <g2:a.STUB-LENGTH g2:type="Integer">5</g2:a.STUB-LENGTH>
+        <g2:a.JUNCTION-BLOCK g2:type="Symbol">NEXT-BENCHMARK-JUNCTION-DEFINITION</g2:a.JUNCTION-BLOCK></g2:c.CONNECTION-DEFINITION></rdf:li>
+      <rdf:li>
+      <g2:c.OBJECT-DEFINITION>
+        <g2:a.AUTHORS>
+          <g2:Structure>
+            <g2:sa.AUTHORS>
+              <g2:Sequence>
+                <rdf:li g2:type="Symbol">ADMINISTRATOR</rdf:li></g2:Sequence></g2:sa.AUTHORS>
+            <g2:sa.TIMESTAMP>
+              <g2:Structure>
+                <g2:sa.YEAR g2:type="Integer">2009</g2:sa.YEAR>
+                <g2:sa.MONTH g2:type="Integer">10</g2:sa.MONTH>
+                <g2:sa.DATE g2:type="Integer">22</g2:sa.DATE>
+                <g2:sa.HOURS g2:type="Integer">10</g2:sa.HOURS>
+                <g2:sa.MINUTES g2:type="Integer">58</g2:sa.MINUTES></g2:Structure></g2:sa.TIMESTAMP></g2:Structure></g2:a.AUTHORS>
+        <g2:a.CLASS-NAME g2:type="Symbol">START-FLOW</g2:a.CLASS-NAME>
+        <g2:a.DIRECT-SUPERIOR-CLASSES>
+          <g2:Sequence>
+            <rdf:li g2:type="Symbol">BENCHMARK-NODE</rdf:li></g2:Sequence></g2:a.DIRECT-SUPERIOR-CLASSES>
+        <g2:a.CLASS-SPECIFIC-ATTRIBUTES>
+          <g2:Sequence>
+            <rdf:li>
+            <g2:Structure>
+              <g2:sa.ATTRIBUTE-NAME g2:type="Symbol">NUMBER-OF-EXECUTED-TESTS</g2:sa.ATTRIBUTE-NAME>
+              <g2:sa.ATTRIBUTE-INITIAL-VALUE g2:type="Integer">0</g2:sa.ATTRIBUTE-INITIAL-VALUE></g2:Structure></rdf:li>
+            <rdf:li>
+            <g2:Structure>
+              <g2:sa.ATTRIBUTE-NAME g2:type="Symbol">TOTAL-NUMBER-OF-TESTS</g2:sa.ATTRIBUTE-NAME>
+              <g2:sa.ATTRIBUTE-INITIAL-VALUE g2:type="Integer">0</g2:sa.ATTRIBUTE-INITIAL-VALUE></g2:Structure></rdf:li></g2:Sequence></g2:a.CLASS-SPECIFIC-ATTRIBUTES>
+        <g2:a.ATTRIBUTE-INITIALIZATIONS>
+          <g2:Sequence>
+            <rdf:li>
+            <g2:Structure>
+              <g2:sa.USER-ATTRIBUTE-NAME g2:type="Symbol">TEST-PROCEDURE</g2:sa.USER-ATTRIBUTE-NAME>
+              <g2:sa.INITIALIZATION>
+                <g2:Structure>
+                  <g2:sa.INITIAL-VALUE g2:type="Symbol">START-START-FLOW</g2:sa.INITIAL-VALUE></g2:Structure></g2:sa.INITIALIZATION></g2:Structure></rdf:li></g2:Sequence></g2:a.ATTRIBUTE-INITIALIZATIONS>
+        <g2:a.ICON-DESCRIPTION>
+          <g2:Structure>
+            <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+            <g2:sa.HEIGHT g2:type="Integer">25</g2:sa.HEIGHT>
+            <g2:sa.LAYERS>
+              <g2:Sequence>
+                <rdf:li>
+                <g2:Structure>
+                  <g2:sa.REGION-OR-COLOR g2:type="Symbol">RED</g2:sa.REGION-OR-COLOR>
+                  <g2:sa.LINE-DRAWING-ELEMENTS>
+                    <g2:Sequence>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.TYPE g2:type="Symbol">LINES</g2:sa.TYPE>
+                        <g2:sa.POINTS>
+                          <g2:Sequence>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">13</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">15</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">11</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">23</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">1</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">23</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">6</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">1</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">16</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">1</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">14</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">9</g2:sa.Y></g2:Structure></rdf:li></g2:Sequence></g2:sa.POINTS></g2:Structure></rdf:li>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.TYPE g2:type="Symbol">LINES</g2:sa.TYPE>
+                        <g2:sa.POINTS>
+                          <g2:Sequence>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">9</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">15</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">16</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">15</g2:sa.Y></g2:Structure></rdf:li></g2:Sequence></g2:sa.POINTS></g2:Structure></rdf:li>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.TYPE g2:type="Symbol">LINES</g2:sa.TYPE>
+                        <g2:sa.POINTS>
+                          <g2:Sequence>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">24</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">1</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">33</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">1</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">28</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">23</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">19</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">23</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">24</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">1</g2:sa.Y></g2:Structure></rdf:li></g2:Sequence></g2:sa.POINTS></g2:Structure></rdf:li>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.TYPE g2:type="Symbol">LINES</g2:sa.TYPE>
+                        <g2:sa.POINTS>
+                          <g2:Sequence>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">41</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">2</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">37</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">19</g2:sa.Y></g2:Structure></rdf:li></g2:Sequence></g2:sa.POINTS></g2:Structure></rdf:li>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.TYPE g2:type="Symbol">LINES</g2:sa.TYPE>
+                        <g2:sa.POINTS>
+                          <g2:Sequence>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">36</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">21</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">36</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">22</g2:sa.Y></g2:Structure></rdf:li></g2:Sequence></g2:sa.POINTS></g2:Structure></rdf:li></g2:Sequence></g2:sa.LINE-DRAWING-ELEMENTS></g2:Structure></rdf:li></g2:Sequence></g2:sa.LAYERS></g2:Structure></g2:a.ICON-DESCRIPTION>
+        <g2:a.STUBS>
+          <g2:Sequence>
+            <rdf:li>
+            <g2:Structure>
+              <g2:sa.CONNECTION-CLASS g2:type="Symbol">NEXT-BENCHMARK</g2:sa.CONNECTION-CLASS>
+              <g2:sa.EDGE-LOCATION g2:type="Symbol">BOTTOM</g2:sa.EDGE-LOCATION>
+              <g2:sa.COORDINATE-LOCATION g2:type="Integer">25</g2:sa.COORDINATE-LOCATION></g2:Structure></rdf:li></g2:Sequence></g2:a.STUBS></g2:c.OBJECT-DEFINITION></rdf:li>
+      <rdf:li>
+      <g2:c.OBJECT-DEFINITION>
+        <g2:a.CLASS-NAME g2:type="Symbol">END-FLOW</g2:a.CLASS-NAME>
+        <g2:a.DIRECT-SUPERIOR-CLASSES>
+          <g2:Sequence>
+            <rdf:li g2:type="Symbol">BENCHMARK-NODE</rdf:li></g2:Sequence></g2:a.DIRECT-SUPERIOR-CLASSES>
+        <g2:a.ATTRIBUTE-INITIALIZATIONS>
+          <g2:Sequence>
+            <rdf:li>
+            <g2:Structure>
+              <g2:sa.USER-ATTRIBUTE-NAME g2:type="Symbol">TEST-PROCEDURE</g2:sa.USER-ATTRIBUTE-NAME>
+              <g2:sa.INITIALIZATION>
+                <g2:Structure>
+                  <g2:sa.INITIAL-VALUE g2:type="Symbol">END-TEST</g2:sa.INITIAL-VALUE></g2:Structure></g2:sa.INITIALIZATION></g2:Structure></rdf:li></g2:Sequence></g2:a.ATTRIBUTE-INITIALIZATIONS>
+        <g2:a.ICON-DESCRIPTION>
+          <g2:Structure>
+            <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+            <g2:sa.HEIGHT g2:type="Integer">25</g2:sa.HEIGHT>
+            <g2:sa.LAYERS>
+              <g2:Sequence>
+                <rdf:li>
+                <g2:Structure>
+                  <g2:sa.REGION-OR-COLOR g2:type="Symbol">RED</g2:sa.REGION-OR-COLOR>
+                  <g2:sa.LINE-DRAWING-ELEMENTS>
+                    <g2:Sequence>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.TYPE g2:type="Symbol">LINES</g2:sa.TYPE>
+                        <g2:sa.POINTS>
+                          <g2:Sequence>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">10</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">23</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">2</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">23</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">4</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">2</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">12</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">2</g2:sa.Y></g2:Structure></rdf:li></g2:Sequence></g2:sa.POINTS></g2:Structure></rdf:li>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.TYPE g2:type="Symbol">LINES</g2:sa.TYPE>
+                        <g2:sa.POINTS>
+                          <g2:Sequence>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">3</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">12</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">8</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">12</g2:sa.Y></g2:Structure></rdf:li></g2:Sequence></g2:sa.POINTS></g2:Structure></rdf:li>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.TYPE g2:type="Symbol">LINES</g2:sa.TYPE>
+                        <g2:sa.POINTS>
+                          <g2:Sequence>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">25</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">2</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">22</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">23</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">17</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">2</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">14</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">23</g2:sa.Y></g2:Structure></rdf:li></g2:Sequence></g2:sa.POINTS></g2:Structure></rdf:li>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.TYPE g2:type="Symbol">LINES</g2:sa.TYPE>
+                        <g2:sa.POINTS>
+                          <g2:Sequence>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">30</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">2</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">27</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">23</g2:sa.Y></g2:Structure></rdf:li></g2:Sequence></g2:sa.POINTS></g2:Structure></rdf:li>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.TYPE g2:type="Symbol">LINES</g2:sa.TYPE>
+                        <g2:sa.POINTS>
+                          <g2:Sequence>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">30</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">2</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.ARC g2:type="TruthValue">true</g2:sa.ARC>
+                              <g2:sa.X g2:type="Integer">34</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">4</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">34</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">9</g2:sa.Y></g2:Structure></rdf:li></g2:Sequence></g2:sa.POINTS></g2:Structure></rdf:li>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.TYPE g2:type="Symbol">LINES</g2:sa.TYPE>
+                        <g2:sa.POINTS>
+                          <g2:Sequence>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">27</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">22</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.ARC g2:type="TruthValue">true</g2:sa.ARC>
+                              <g2:sa.X g2:type="Integer">31</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">21</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">33</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">18</g2:sa.Y></g2:Structure></rdf:li></g2:Sequence></g2:sa.POINTS></g2:Structure></rdf:li>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.TYPE g2:type="Symbol">LINES</g2:sa.TYPE>
+                        <g2:sa.POINTS>
+                          <g2:Sequence>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">34</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">8</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">33</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">18</g2:sa.Y></g2:Structure></rdf:li></g2:Sequence></g2:sa.POINTS></g2:Structure></rdf:li>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.TYPE g2:type="Symbol">LINES</g2:sa.TYPE>
+                        <g2:sa.POINTS>
+                          <g2:Sequence>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">41</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">3</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">38</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">20</g2:sa.Y></g2:Structure></rdf:li></g2:Sequence></g2:sa.POINTS></g2:Structure></rdf:li>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.TYPE g2:type="Symbol">LINES</g2:sa.TYPE>
+                        <g2:sa.POINTS>
+                          <g2:Sequence>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">38</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">22</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">38</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">24</g2:sa.Y></g2:Structure></rdf:li></g2:Sequence></g2:sa.POINTS></g2:Structure></rdf:li></g2:Sequence></g2:sa.LINE-DRAWING-ELEMENTS></g2:Structure></rdf:li></g2:Sequence></g2:sa.LAYERS></g2:Structure></g2:a.ICON-DESCRIPTION>
+        <g2:a.STUBS>
+          <g2:Sequence>
+            <rdf:li>
+            <g2:Structure>
+              <g2:sa.CONNECTION-CLASS g2:type="Symbol">NEXT-BENCHMARK</g2:sa.CONNECTION-CLASS>
+              <g2:sa.STUB-DIRECTION g2:type="Symbol">INPUT</g2:sa.STUB-DIRECTION>
+              <g2:sa.EDGE-LOCATION g2:type="Symbol">TOP</g2:sa.EDGE-LOCATION>
+              <g2:sa.COORDINATE-LOCATION g2:type="Integer">25</g2:sa.COORDINATE-LOCATION></g2:Structure></rdf:li></g2:Sequence></g2:a.STUBS></g2:c.OBJECT-DEFINITION></rdf:li>
+      <rdf:li>
+      <g2:c.OBJECT-DEFINITION>
+        <g2:a.CLASS-NAME g2:type="Symbol">TEST-RESULT-PARAMETER</g2:a.CLASS-NAME>
+        <g2:a.DIRECT-SUPERIOR-CLASSES>
+          <g2:Sequence>
+            <rdf:li g2:type="Symbol">SYMBOLIC-PARAMETER</rdf:li></g2:Sequence></g2:a.DIRECT-SUPERIOR-CLASSES>
+        <g2:a.CLASS-SPECIFIC-ATTRIBUTES>
+          <g2:Sequence>
+            <rdf:li>
+            <g2:Structure>
+              <g2:sa.ATTRIBUTE-NAME g2:type="Symbol">TEST-INFO</g2:sa.ATTRIBUTE-NAME>
+              <g2:sa.ATTRIBUTE-INITIAL-ITEM-CLASS g2:type="Symbol">TEXT-PARAMETER</g2:sa.ATTRIBUTE-INITIAL-ITEM-CLASS>
+              <g2:sa.ATTRIBUTE-INITIAL-ITEM-CLASS-RESTRICTED-TO-VARIABLE-OR-PARAMETER g2:type="TruthValue">true</g2:sa.ATTRIBUTE-INITIAL-ITEM-CLASS-RESTRICTED-TO-VARIABLE-OR-PARAMETER></g2:Structure></rdf:li>
+            <rdf:li>
+            <g2:Structure>
+              <g2:sa.ATTRIBUTE-NAME g2:type="Symbol">PREVIOUS-TEST-RESULT</g2:sa.ATTRIBUTE-NAME>
+              <g2:sa.ATTRIBUTE-INITIAL-VALUE g2:type="Symbol">UNKNOWN</g2:sa.ATTRIBUTE-INITIAL-VALUE></g2:Structure></rdf:li></g2:Sequence></g2:a.CLASS-SPECIFIC-ATTRIBUTES>
+        <g2:a.ATTRIBUTE-INITIALIZATIONS>
+          <g2:Sequence>
+            <rdf:li>
+            <g2:Structure>
+              <g2:sa.SYSTEM-ATTRIBUTE-DESIGNATION g2:type="Symbol">INITIAL-VALUE</g2:sa.SYSTEM-ATTRIBUTE-DESIGNATION>
+              <g2:sa.INITIALIZATION g2:type="Symbol">NOT-YET-RUN</g2:sa.INITIALIZATION></g2:Structure></rdf:li></g2:Sequence></g2:a.ATTRIBUTE-INITIALIZATIONS></g2:c.OBJECT-DEFINITION></rdf:li>
+      <rdf:li>
+      <g2:c.OBJECT-DEFINITION>
+        <g2:a.AUTHORS>
+          <g2:Structure>
+            <g2:sa.AUTHORS>
+              <g2:Sequence>
+                <rdf:li g2:type="Symbol">ADMINISTRATOR</rdf:li></g2:Sequence></g2:sa.AUTHORS>
+            <g2:sa.TIMESTAMP>
+              <g2:Structure>
+                <g2:sa.YEAR g2:type="Integer">2009</g2:sa.YEAR>
+                <g2:sa.MONTH g2:type="Integer">10</g2:sa.MONTH>
+                <g2:sa.DATE g2:type="Integer">22</g2:sa.DATE>
+                <g2:sa.HOURS g2:type="Integer">10</g2:sa.HOURS>
+                <g2:sa.MINUTES g2:type="Integer">57</g2:sa.MINUTES></g2:Structure></g2:sa.TIMESTAMP></g2:Structure></g2:a.AUTHORS>
+        <g2:a.CLASS-NAME g2:type="Symbol">BENCHMARK-TEST</g2:a.CLASS-NAME>
+        <g2:a.DIRECT-SUPERIOR-CLASSES>
+          <g2:Sequence>
+            <rdf:li g2:type="Symbol">BENCHMARK-NODE</rdf:li></g2:Sequence></g2:a.DIRECT-SUPERIOR-CLASSES>
+        <g2:a.CLASS-SPECIFIC-ATTRIBUTES>
+          <g2:Sequence>
+            <rdf:li>
+            <g2:Structure>
+              <g2:sa.ATTRIBUTE-NAME g2:type="Symbol">COUNTED</g2:sa.ATTRIBUTE-NAME>
+              <g2:sa.ATTRIBUTE-INITIAL-VALUE g2:type="TruthValue">false</g2:sa.ATTRIBUTE-INITIAL-VALUE></g2:Structure></rdf:li></g2:Sequence></g2:a.CLASS-SPECIFIC-ATTRIBUTES>
+        <g2:a.ICON-DESCRIPTION>
+          <g2:Structure>
+            <g2:sa.WIDTH g2:type="Integer">30</g2:sa.WIDTH>
+            <g2:sa.HEIGHT g2:type="Integer">24</g2:sa.HEIGHT>
+            <g2:sa.REGIONS>
+              <g2:Sequence>
+                <rdf:li>
+                <g2:Structure>
+                  <g2:sa.REGION-NAME g2:type="Symbol">DONE-CHECK-MARK</g2:sa.REGION-NAME>
+                  <g2:sa.COLOR-NAME g2:type="Symbol">TRANSPARENT</g2:sa.COLOR-NAME></g2:Structure></rdf:li></g2:Sequence></g2:sa.REGIONS>
+            <g2:sa.LAYERS>
+              <g2:Sequence>
+                <rdf:li>
+                <g2:Structure>
+                  <g2:sa.REGION-OR-COLOR g2:type="Symbol">BLUE</g2:sa.REGION-OR-COLOR>
+                  <g2:sa.LINE-DRAWING-ELEMENTS>
+                    <g2:Sequence>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.TYPE g2:type="Symbol">FILLED-POLYGON</g2:sa.TYPE>
+                        <g2:sa.POINTS>
+                          <g2:Sequence>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">15</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">3</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">6</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">12</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">15</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">21</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">12</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">24</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">0</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">12</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">12</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">0</g2:sa.Y></g2:Structure></rdf:li></g2:Sequence></g2:sa.POINTS></g2:Structure></rdf:li></g2:Sequence></g2:sa.LINE-DRAWING-ELEMENTS></g2:Structure></rdf:li>
+                <rdf:li>
+                <g2:Structure>
+                  <g2:sa.REGION-OR-COLOR g2:type="Symbol">BLUE</g2:sa.REGION-OR-COLOR>
+                  <g2:sa.LINE-DRAWING-ELEMENTS>
+                    <g2:Sequence>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.TYPE g2:type="Symbol">OUTLINE</g2:sa.TYPE>
+                        <g2:sa.POINTS>
+                          <g2:Sequence>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">18</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">0</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">30</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">12</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">18</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">24</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">6</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">12</g2:sa.Y></g2:Structure></rdf:li></g2:Sequence></g2:sa.POINTS></g2:Structure></rdf:li></g2:Sequence></g2:sa.LINE-DRAWING-ELEMENTS></g2:Structure></rdf:li>
+                <rdf:li>
+                <g2:Structure>
+                  <g2:sa.REGION-OR-COLOR g2:type="Symbol">BLUE</g2:sa.REGION-OR-COLOR>
+                  <g2:sa.LINE-DRAWING-ELEMENTS>
+                    <g2:Sequence>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.TYPE g2:type="Symbol">FILLED-CIRCLE</g2:sa.TYPE>
+                        <g2:sa.POINTS>
+                          <g2:Sequence>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">21</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">14</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">22</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">12</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">23</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">13</g2:sa.Y></g2:Structure></rdf:li></g2:Sequence></g2:sa.POINTS></g2:Structure></rdf:li>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.TYPE g2:type="Symbol">FILLED-CIRCLE</g2:sa.TYPE>
+                        <g2:sa.POINTS>
+                          <g2:Sequence>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">15</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">14</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">16</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">12</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">17</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">13</g2:sa.Y></g2:Structure></rdf:li></g2:Sequence></g2:sa.POINTS></g2:Structure></rdf:li></g2:Sequence></g2:sa.LINE-DRAWING-ELEMENTS></g2:Structure></rdf:li>
+                <rdf:li>
+                <g2:Structure>
+                  <g2:sa.REGION-OR-COLOR g2:type="Symbol">BLUE</g2:sa.REGION-OR-COLOR>
+                  <g2:sa.LINE-DRAWING-ELEMENTS>
+                    <g2:Sequence>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.TYPE g2:type="Symbol">FILLED-POLYGON</g2:sa.TYPE>
+                        <g2:sa.POINTS>
+                          <g2:Sequence>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">12</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">13</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">13</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">11</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">17</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">11</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">18</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">8</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">22</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">8</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">21</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">11</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">25</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">11</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">24</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">13</g2:sa.Y></g2:Structure></rdf:li></g2:Sequence></g2:sa.POINTS></g2:Structure></rdf:li></g2:Sequence></g2:sa.LINE-DRAWING-ELEMENTS></g2:Structure></rdf:li>
+                <rdf:li>
+                <g2:Structure>
+                  <g2:sa.REGION-OR-COLOR g2:type="Symbol">BLUE</g2:sa.REGION-OR-COLOR>
+                  <g2:sa.LINE-DRAWING-ELEMENTS>
+                    <g2:Sequence>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.TYPE g2:type="Symbol">LINES</g2:sa.TYPE>
+                        <g2:sa.POINTS>
+                          <g2:Sequence>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">16</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">8</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">14</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">8</g2:sa.Y></g2:Structure></rdf:li></g2:Sequence></g2:sa.POINTS></g2:Structure></rdf:li>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.TYPE g2:type="Symbol">LINES</g2:sa.TYPE>
+                        <g2:sa.POINTS>
+                          <g2:Sequence>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">15</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">9</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">12</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">9</g2:sa.Y></g2:Structure></rdf:li></g2:Sequence></g2:sa.POINTS></g2:Structure></rdf:li>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.TYPE g2:type="Symbol">LINES</g2:sa.TYPE>
+                        <g2:sa.POINTS>
+                          <g2:Sequence>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">12</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">11</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">9</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">11</g2:sa.Y></g2:Structure></rdf:li></g2:Sequence></g2:sa.POINTS></g2:Structure></rdf:li>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.TYPE g2:type="Symbol">LINES</g2:sa.TYPE>
+                        <g2:sa.POINTS>
+                          <g2:Sequence>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">11</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">12</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">8</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">12</g2:sa.Y></g2:Structure></rdf:li></g2:Sequence></g2:sa.POINTS></g2:Structure></rdf:li></g2:Sequence></g2:sa.LINE-DRAWING-ELEMENTS></g2:Structure></rdf:li>
+                <rdf:li>
+                <g2:Structure>
+                  <g2:sa.REGION-OR-COLOR g2:type="Symbol">DONE-CHECK-MARK</g2:sa.REGION-OR-COLOR>
+                  <g2:sa.LINE-DRAWING-ELEMENTS>
+                    <g2:Sequence>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.TYPE g2:type="Symbol">FILLED-POLYGON</g2:sa.TYPE>
+                        <g2:sa.POINTS>
+                          <g2:Sequence>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">24</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">2</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">24</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">1</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">26</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">3</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">28</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">1</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">28</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">2</g2:sa.Y></g2:Structure></rdf:li>
+                            <rdf:li>
+                            <g2:Structure>
+                              <g2:sa.X g2:type="Integer">25</g2:sa.X>
+                              <g2:sa.Y g2:type="Integer">4</g2:sa.Y></g2:Structure></rdf:li></g2:Sequence></g2:sa.POINTS></g2:Structure></rdf:li></g2:Sequence></g2:sa.LINE-DRAWING-ELEMENTS></g2:Structure></rdf:li></g2:Sequence></g2:sa.LAYERS></g2:Structure></g2:a.ICON-DESCRIPTION>
+        <g2:a.STUBS>
+          <g2:Sequence>
+            <rdf:li>
+            <g2:Structure>
+              <g2:sa.PORTNAME g2:type="Symbol">NEXT-TEST-PORT</g2:sa.PORTNAME>
+              <g2:sa.CONNECTION-CLASS g2:type="Symbol">NEXT-BENCHMARK</g2:sa.CONNECTION-CLASS>
+              <g2:sa.EDGE-LOCATION g2:type="Symbol">BOTTOM</g2:sa.EDGE-LOCATION>
+              <g2:sa.COORDINATE-LOCATION g2:type="Integer">15</g2:sa.COORDINATE-LOCATION></g2:Structure></rdf:li></g2:Sequence></g2:a.STUBS></g2:c.OBJECT-DEFINITION></rdf:li></g2:Sequence></g2:externaldefinitions>
+  <g2:panes>
+    <g2:Sequence>
+      <rdf:li>
+      <g2:Structure>
+        <g2:sa.WORKSPACE><g2:c.KB-WORKSPACE rdf:resource="#920db78d409011de87c5005056c00008"/></g2:sa.WORKSPACE>
+        <g2:sa.X-IN-WORKSPACE g2:type="Integer">-255</g2:sa.X-IN-WORKSPACE>
+        <g2:sa.Y-IN-WORKSPACE g2:type="Integer">37</g2:sa.Y-IN-WORKSPACE>
+        <g2:sa.X-MAGNIFICATION g2:type="Integer">256</g2:sa.X-MAGNIFICATION>
+        <g2:sa.Y-MAGNIFICATION g2:type="Integer">256</g2:sa.Y-MAGNIFICATION></g2:Structure></rdf:li></g2:Sequence></g2:panes>
+  <g2:checksums>
+    <g2:Structure>
+      <g2:sa.ATTRIBUTE-NAME g2:type="Text">d684b2f80d877ae35698f3dd2f0d7463</g2:sa.ATTRIBUTE-NAME>
+      <g2:sa.UUID g2:type="Text">754a13fe04d2bb6791715f10bebe1aa1</g2:sa.UUID>
+      <g2:sa.VALUE g2:type="Text">034232fa771f37cf515bd194c972f728</g2:sa.VALUE>
+      <g2:sa.TEXT g2:type="Text">deaab130f2a173ce52fd8cc0bcde292a</g2:sa.TEXT>
+      <g2:sa.BINARY g2:type="Text">d41d8cd98f00b204e9800998ecf8427e</g2:sa.BINARY></g2:Structure></g2:checksums></g2:Module>
+
+<g2:c.KB-WORKSPACE ID="920db78d409011de87c5005056c00008">
+  <g2:a.NAMES g2:type="Symbol">FLOAT-VARIABLE-OVERFLOW-TOP-LEVEL</g2:a.NAMES>
+  <g2:a.MODULE-ASSIGNMENT g2:type="Symbol">FLOAT-VARIABLE-OVERFLOW--TEST</g2:a.MODULE-ASSIGNMENT>
+  <g2:a.EDGES-OF-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.LEFT g2:type="Integer">-536</g2:sa.LEFT>
+      <g2:sa.TOP g2:type="Integer">335</g2:sa.TOP>
+      <g2:sa.RIGHT g2:type="Integer">481</g2:sa.RIGHT>
+      <g2:sa.BOTTOM g2:type="Integer">-538</g2:sa.BOTTOM></g2:Structure></g2:a.EDGES-OF-WORKSPACE>
+  <g2:a.NAME-BOX>
+    <g2:Structure>
+      <g2:sa.COLOR>
+        <g2:Structure>
+          <g2:sa.BACKGROUND-COLOR g2:type="Symbol">BLACK</g2:sa.BACKGROUND-COLOR>
+          <g2:sa.TEXT-COLOR g2:type="Symbol">WHITE</g2:sa.TEXT-COLOR></g2:Structure></g2:sa.COLOR>
+      <g2:sa.POSITION>
+        <g2:Structure>
+          <g2:sa.X-OFFSET g2:type="Integer">-478</g2:sa.X-OFFSET>
+          <g2:sa.Y-OFFSET g2:type="Integer">406</g2:sa.Y-OFFSET></g2:Structure></g2:sa.POSITION></g2:Structure></g2:a.NAME-BOX></g2:c.KB-WORKSPACE>
+
+<g2:c.RULE ID="2aa077c0449c11deb142005056c00008">
+  <g2:a.OPTIONS>
+    <g2:Structure>
+      <g2:sa.BACKWARD-CHAIN g2:type="TruthValue">true</g2:sa.BACKWARD-CHAIN>
+      <g2:sa.FORWARD-CHAIN g2:type="TruthValue">true</g2:sa.FORWARD-CHAIN>
+      <g2:sa.DATA-SEEKING g2:type="TruthValue">true</g2:sa.DATA-SEEKING>
+      <g2:sa.CAUSE-FORWARD g2:type="TruthValue">true</g2:sa.CAUSE-FORWARD></g2:Structure></g2:a.OPTIONS>
+  <g2:a.AUTHORS>
+    <g2:Structure>
+      <g2:sa.AUTHORS>
+        <g2:Sequence>
+          <rdf:li g2:type="Symbol">BUDDEN73</rdf:li>
+          <rdf:li g2:type="Symbol">CITY</rdf:li></g2:Sequence></g2:sa.AUTHORS>
+      <g2:sa.TIMESTAMP>
+        <g2:Structure>
+          <g2:sa.YEAR g2:type="Integer">2016</g2:sa.YEAR>
+          <g2:sa.MONTH g2:type="Integer">8</g2:sa.MONTH>
+          <g2:sa.DATE g2:type="Integer">29</g2:sa.DATE>
+          <g2:sa.HOURS g2:type="Integer">20</g2:sa.HOURS>
+          <g2:sa.MINUTES g2:type="Integer">52</g2:sa.MINUTES></g2:Structure></g2:sa.TIMESTAMP></g2:Structure></g2:a.AUTHORS>
+  <g2:a.TEXT><![CDATA[initially conclude that test-suite-name = "float-variable-overflow"]]></g2:a.TEXT>
+  <g2:a.TEXT-FONT>
+    <g2:Structure>
+      <g2:sa.FONT-SIZE g2:type="Symbol">LARGE</g2:sa.FONT-SIZE></g2:Structure></g2:a.TEXT-FONT>
+  <g2:a.TEXT-ALIGNMENT g2:type="Symbol">LEFT</g2:a.TEXT-ALIGNMENT>
+  <g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING><c.BENCHMARK-TEST rdf:resource="#2aa077c1449c11deb142005056c00008"/></g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING>
+  <g2:a.POSITION-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.X g2:type="Integer">252</g2:sa.X>
+      <g2:sa.Y g2:type="Integer">208</g2:sa.Y>
+      <g2:sa.SUPERIOR><g2:c.KB-WORKSPACE rdf:resource="#920db78d409011de87c5005056c00008"/></g2:sa.SUPERIOR></g2:Structure></g2:a.POSITION-IN-WORKSPACE>
+  <g2:a.SIZE-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">353</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">66</g2:sa.HEIGHT></g2:Structure></g2:a.SIZE-IN-WORKSPACE></g2:c.RULE>
+
+<c.BENCHMARK-TEST ID="2aa077c1449c11deb142005056c00008">
+  <g2:a.NAMES g2:type="Symbol">FLOAT-VARIABLE-OVERFLOW-BY-VALUE</g2:a.NAMES>
+  <ua.TEST-RESULT>
+    <c.TEST-RESULT-PARAMETER ID="2aa077c3449c11deb142005056c00008">
+      <g2:a.OPTIONS>
+        <g2:Structure>
+          <g2:sa.FORWARD-CHAIN g2:type="TruthValue">true</g2:sa.FORWARD-CHAIN>
+          <g2:sa.FORWARD-CHAIN-EVEN-FOR-SAME-VALUE g2:type="TruthValue">false</g2:sa.FORWARD-CHAIN-EVEN-FOR-SAME-VALUE></g2:Structure></g2:a.OPTIONS>
+      <ua.TEST-INFO>
+        <g2:c.TEXT-PARAMETER ID="2aa077c4449c11deb142005056c00008">
+          <g2:a.OPTIONS>
+            <g2:Structure>
+              <g2:sa.FORWARD-CHAIN g2:type="TruthValue">false</g2:sa.FORWARD-CHAIN>
+              <g2:sa.FORWARD-CHAIN-EVEN-FOR-SAME-VALUE g2:type="TruthValue">false</g2:sa.FORWARD-CHAIN-EVEN-FOR-SAME-VALUE></g2:Structure></g2:a.OPTIONS>
+          <g2:a.ICON-VARIABLES>
+            <g2:Structure>
+              <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+              <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES></g2:c.TEXT-PARAMETER></ua.TEST-INFO>
+      <g2:a.ICON-VARIABLES>
+        <g2:Structure>
+          <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+          <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES></c.TEST-RESULT-PARAMETER></ua.TEST-RESULT>
+  <ua.TIMEOUT-LIMIT g2:type="Integer" g2:unit="SECONDS">10</ua.TIMEOUT-LIMIT>
+  <ua.COUNTED g2:type="TruthValue" g2:unit="TRUTH-VALUE">false</ua.COUNTED>
+  <g2:a.ICON-VARIABLES>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">30</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">24</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES>
+  <g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING><c.NEXT-BENCHMARK rdf:resource="#ea41bfcc6e1211e6bfa0005056365ec5"/></g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING>
+  <g2:a.POSITION-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.X g2:type="Integer">-159</g2:sa.X>
+      <g2:sa.Y g2:type="Integer">176</g2:sa.Y>
+      <g2:sa.SUPERIOR><g2:c.KB-WORKSPACE rdf:resource="#920db78d409011de87c5005056c00008"/></g2:sa.SUPERIOR></g2:Structure></g2:a.POSITION-IN-WORKSPACE>
+  <g2:a.SIZE-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">30</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">24</g2:sa.HEIGHT></g2:Structure></g2:a.SIZE-IN-WORKSPACE>
+  <g2:a.NAME-BOX>
+    <g2:Structure>
+      <g2:sa.COLOR>
+        <g2:Structure>
+          <g2:sa.BACKGROUND-COLOR g2:type="Symbol">TRANSPARENT</g2:sa.BACKGROUND-COLOR>
+          <g2:sa.TEXT-COLOR g2:type="Symbol">FOREGROUND</g2:sa.TEXT-COLOR></g2:Structure></g2:sa.COLOR>
+      <g2:sa.POSITION>
+        <g2:Structure>
+          <g2:sa.X-OFFSET g2:type="Integer">-331</g2:sa.X-OFFSET>
+          <g2:sa.Y-OFFSET g2:type="Integer">9</g2:sa.Y-OFFSET></g2:Structure></g2:sa.POSITION></g2:Structure></g2:a.NAME-BOX></c.BENCHMARK-TEST>
+
+<g2:c.KB-WORKSPACE ID="2aa077c5449c11deb142005056c00008">
+  <g2:a.NAMES g2:type="Symbol">SUB-WS-OF-FLOAT-VARIABLE-OVERFLOW-BY-VALUE</g2:a.NAMES>
+  <g2:a.DEFAULT-WINDOW-POSITION-AND-SCALE>
+    <g2:Structure>
+      <g2:sa.X g2:type="Integer">529</g2:sa.X>
+      <g2:sa.Y g2:type="Integer">645</g2:sa.Y></g2:Structure></g2:a.DEFAULT-WINDOW-POSITION-AND-SCALE>
+  <g2:a.EDGES-OF-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.LEFT g2:type="Integer">-313</g2:sa.LEFT>
+      <g2:sa.TOP g2:type="Integer">273</g2:sa.TOP>
+      <g2:sa.RIGHT g2:type="Integer">592</g2:sa.RIGHT>
+      <g2:sa.BOTTOM g2:type="Integer">-164</g2:sa.BOTTOM></g2:Structure></g2:a.EDGES-OF-WORKSPACE>
+  <g2:a.PARENT-OF-SUBWORKSPACE><c.BENCHMARK-TEST rdf:resource="#2aa077c1449c11deb142005056c00008"/></g2:a.PARENT-OF-SUBWORKSPACE>
+  <g2:a.NAME-BOX>
+    <g2:Structure>
+      <g2:sa.COLOR>
+        <g2:Structure>
+          <g2:sa.BACKGROUND-COLOR g2:type="Symbol">BLACK</g2:sa.BACKGROUND-COLOR>
+          <g2:sa.TEXT-COLOR g2:type="Symbol">WHITE</g2:sa.TEXT-COLOR></g2:Structure></g2:sa.COLOR>
+      <g2:sa.POSITION>
+        <g2:Structure>
+          <g2:sa.X-OFFSET g2:type="Integer">-422</g2:sa.X-OFFSET>
+          <g2:sa.Y-OFFSET g2:type="Integer">188</g2:sa.Y-OFFSET></g2:Structure></g2:sa.POSITION></g2:Structure></g2:a.NAME-BOX></g2:c.KB-WORKSPACE>
+
+<g2:c.PROCEDURE ID="920db793409011de87c5005056c00008">
+  <g2:a.AUTHORS>
+    <g2:Structure>
+      <g2:sa.AUTHORS>
+        <g2:Sequence>
+          <rdf:li g2:type="Symbol">BUDDEN73</rdf:li>
+          <rdf:li g2:type="Symbol">CITY</rdf:li>
+          <rdf:li g2:type="Symbol">YTARANT</rdf:li></g2:Sequence></g2:sa.AUTHORS>
+      <g2:sa.TIMESTAMP>
+        <g2:Structure>
+          <g2:sa.YEAR g2:type="Integer">2016</g2:sa.YEAR>
+          <g2:sa.MONTH g2:type="Integer">8</g2:sa.MONTH>
+          <g2:sa.DATE g2:type="Integer">29</g2:sa.DATE>
+          <g2:sa.HOURS g2:type="Integer">21</g2:sa.HOURS>
+          <g2:sa.MINUTES g2:type="Integer">3</g2:sa.MINUTES></g2:Structure></g2:sa.TIMESTAMP></g2:Structure></g2:a.AUTHORS>
+  <g2:a.TEXT><![CDATA[
+float-variable-overflow-by-value-test(node: class benchmark-node)
+status: truth-value; 
+status-text: text;
+begin
+status, status-text = call float-variable-overflow-by-value-test-inner();
+if status then
+    call fail(node, status-text)
+else
+    call pass(node); 
+end
+]]></g2:a.TEXT>
+  <g2:a.ICON-VARIABLES>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES>
+  <g2:a.POSITION-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.X g2:type="Integer">240</g2:sa.X>
+      <g2:sa.Y g2:type="Integer">146</g2:sa.Y>
+      <g2:sa.SUPERIOR><g2:c.KB-WORKSPACE rdf:resource="#2aa077c5449c11deb142005056c00008"/></g2:sa.SUPERIOR></g2:Structure></g2:a.POSITION-IN-WORKSPACE>
+  <g2:a.SIZE-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.SIZE-IN-WORKSPACE>
+  <g2:a.NAME-BOX>
+    <g2:Structure>
+      <g2:sa.COLOR>
+        <g2:Structure>
+          <g2:sa.BACKGROUND-COLOR g2:type="Symbol">TRANSPARENT</g2:sa.BACKGROUND-COLOR>
+          <g2:sa.TEXT-COLOR g2:type="Symbol">FOREGROUND</g2:sa.TEXT-COLOR></g2:Structure></g2:sa.COLOR>
+      <g2:sa.POSITION>
+        <g2:Structure>
+          <g2:sa.X-OFFSET g2:type="Integer">-34</g2:sa.X-OFFSET>
+          <g2:sa.Y-OFFSET g2:type="Integer">-23</g2:sa.Y-OFFSET></g2:Structure></g2:sa.POSITION></g2:Structure></g2:a.NAME-BOX></g2:c.PROCEDURE>
+
+<g2:c.FLOAT-VARIABLE ID="a2959ded619b11e38a79c0a0bb7b4871">
+  <g2:a.OPTIONS>
+    <g2:Structure>
+      <g2:sa.FORWARD-CHAIN g2:type="TruthValue">false</g2:sa.FORWARD-CHAIN>
+      <g2:sa.FORWARD-CHAIN-EVEN-FOR-SAME-VALUE g2:type="TruthValue">false</g2:sa.FORWARD-CHAIN-EVEN-FOR-SAME-VALUE>
+      <g2:sa.BACKWARD-CHAIN g2:type="Symbol">BREADTH-FIRST</g2:sa.BACKWARD-CHAIN></g2:Structure></g2:a.OPTIONS>
+  <g2:a.NAMES g2:type="Symbol">FLOAT-VAR</g2:a.NAMES>
+  <g2:a.VALIDITY-INTERVAL g2:type="Symbol">INDEFINITE</g2:a.VALIDITY-INTERVAL>
+  <g2:a.FORMULA>none</g2:a.FORMULA>
+  <g2:a.ICON-VARIABLES>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES>
+  <g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING><g2:c.PROCEDURE rdf:resource="#5e6a792c6e0e11e6bfa0005056365ec5"/></g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING>
+  <g2:a.POSITION-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.X g2:type="Integer">-148</g2:sa.X>
+      <g2:sa.Y g2:type="Integer">102</g2:sa.Y>
+      <g2:sa.SUPERIOR><g2:c.KB-WORKSPACE rdf:resource="#2aa077c5449c11deb142005056c00008"/></g2:sa.SUPERIOR></g2:Structure></g2:a.POSITION-IN-WORKSPACE>
+  <g2:a.SIZE-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.SIZE-IN-WORKSPACE>
+  <g2:a.NAME-BOX>
+    <g2:Structure>
+      <g2:sa.COLOR>
+        <g2:Structure>
+          <g2:sa.BACKGROUND-COLOR g2:type="Symbol">TRANSPARENT</g2:sa.BACKGROUND-COLOR>
+          <g2:sa.TEXT-COLOR g2:type="Symbol">FOREGROUND</g2:sa.TEXT-COLOR></g2:Structure></g2:sa.COLOR>
+      <g2:sa.POSITION>
+        <g2:Structure>
+          <g2:sa.X-OFFSET g2:type="Integer">-54</g2:sa.X-OFFSET>
+          <g2:sa.Y-OFFSET g2:type="Integer">-29</g2:sa.Y-OFFSET></g2:Structure></g2:sa.POSITION></g2:Structure></g2:a.NAME-BOX></g2:c.FLOAT-VARIABLE>
+
+<g2:c.PROCEDURE ID="5e6a792c6e0e11e6bfa0005056365ec5">
+  <g2:a.AUTHORS>
+    <g2:Structure>
+      <g2:sa.AUTHORS>
+        <g2:Sequence>
+          <rdf:li g2:type="Symbol">BINGHE</rdf:li>
+          <rdf:li g2:type="Symbol">BUDDEN73</rdf:li></g2:Sequence></g2:sa.AUTHORS>
+      <g2:sa.TIMESTAMP>
+        <g2:Structure>
+          <g2:sa.YEAR g2:type="Integer">2016</g2:sa.YEAR>
+          <g2:sa.MONTH g2:type="Integer">9</g2:sa.MONTH>
+          <g2:sa.DATE g2:type="Integer">16</g2:sa.DATE>
+          <g2:sa.HOURS g2:type="Integer">21</g2:sa.HOURS>
+          <g2:sa.MINUTES g2:type="Integer">55</g2:sa.MINUTES></g2:Structure></g2:sa.TIMESTAMP></g2:Structure></g2:a.AUTHORS>
+  <g2:a.TEXT><![CDATA[
+float-variable-overflow-by-value-test-inner()  = (truth-value, text)
+x : float; 
+begin
+    conclude that float-var has no value; 
+    conclude that the formula of float-var = "none"; 
+    conclude that float-var = 200L*100*200*100*300*30;
+    collect data
+        x = float-var; 
+    end;
+    if x /= 3.6e12 then
+        return true, "Variable value overflow";
+    return false, "";
+end
+]]></g2:a.TEXT>
+  <g2:a.ICON-VARIABLES>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES>
+  <g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING><g2:c.PROCEDURE rdf:resource="#920db793409011de87c5005056c00008"/></g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING>
+  <g2:a.POSITION-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.X g2:type="Integer">188</g2:sa.X>
+      <g2:sa.Y g2:type="Integer">5</g2:sa.Y>
+      <g2:sa.SUPERIOR><g2:c.KB-WORKSPACE rdf:resource="#2aa077c5449c11deb142005056c00008"/></g2:sa.SUPERIOR></g2:Structure></g2:a.POSITION-IN-WORKSPACE>
+  <g2:a.SIZE-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.SIZE-IN-WORKSPACE>
+  <g2:a.NAME-BOX>
+    <g2:Structure>
+      <g2:sa.COLOR>
+        <g2:Structure>
+          <g2:sa.BACKGROUND-COLOR g2:type="Symbol">TRANSPARENT</g2:sa.BACKGROUND-COLOR>
+          <g2:sa.TEXT-COLOR g2:type="Symbol">FOREGROUND</g2:sa.TEXT-COLOR></g2:Structure></g2:sa.COLOR>
+      <g2:sa.POSITION>
+        <g2:Structure>
+          <g2:sa.X-OFFSET g2:type="Integer">-181</g2:sa.X-OFFSET>
+          <g2:sa.Y-OFFSET g2:type="Integer">-29</g2:sa.Y-OFFSET></g2:Structure></g2:sa.POSITION></g2:Structure></g2:a.NAME-BOX></g2:c.PROCEDURE>
+
+<c.END-FLOW ID="2aa077c6449c11deb142005056c00008">
+  <ua.TEST-RESULT>
+    <c.TEST-RESULT-PARAMETER ID="2aa077c7449c11deb142005056c00008">
+      <g2:a.OPTIONS>
+        <g2:Structure>
+          <g2:sa.FORWARD-CHAIN g2:type="TruthValue">true</g2:sa.FORWARD-CHAIN>
+          <g2:sa.FORWARD-CHAIN-EVEN-FOR-SAME-VALUE g2:type="TruthValue">false</g2:sa.FORWARD-CHAIN-EVEN-FOR-SAME-VALUE></g2:Structure></g2:a.OPTIONS>
+      <ua.TEST-INFO>
+        <g2:c.TEXT-PARAMETER ID="2aa077c8449c11deb142005056c00008">
+          <g2:a.OPTIONS>
+            <g2:Structure>
+              <g2:sa.FORWARD-CHAIN g2:type="TruthValue">false</g2:sa.FORWARD-CHAIN>
+              <g2:sa.FORWARD-CHAIN-EVEN-FOR-SAME-VALUE g2:type="TruthValue">false</g2:sa.FORWARD-CHAIN-EVEN-FOR-SAME-VALUE></g2:Structure></g2:a.OPTIONS>
+          <g2:a.ICON-VARIABLES>
+            <g2:Structure>
+              <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+              <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES></g2:c.TEXT-PARAMETER></ua.TEST-INFO>
+      <g2:a.ICON-VARIABLES>
+        <g2:Structure>
+          <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+          <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES></c.TEST-RESULT-PARAMETER></ua.TEST-RESULT>
+  <ua.TIMEOUT-LIMIT g2:type="Integer" g2:unit="SECONDS">10</ua.TIMEOUT-LIMIT>
+  <g2:a.ICON-VARIABLES>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">25</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES>
+  <g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING><c.START-FLOW rdf:resource="#2aa077ca449c11deb142005056c00008"/></g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING>
+  <g2:a.POSITION-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.X g2:type="Integer">-157</g2:sa.X>
+      <g2:sa.Y g2:type="Integer">-90</g2:sa.Y>
+      <g2:sa.SUPERIOR><g2:c.KB-WORKSPACE rdf:resource="#920db78d409011de87c5005056c00008"/></g2:sa.SUPERIOR></g2:Structure></g2:a.POSITION-IN-WORKSPACE>
+  <g2:a.SIZE-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">25</g2:sa.HEIGHT></g2:Structure></g2:a.SIZE-IN-WORKSPACE></c.END-FLOW>
+
+<c.START-FLOW ID="2aa077ca449c11deb142005056c00008">
+  <ua.TEST-RESULT>
+    <c.TEST-RESULT-PARAMETER ID="2aa077cb449c11deb142005056c00008">
+      <g2:a.OPTIONS>
+        <g2:Structure>
+          <g2:sa.FORWARD-CHAIN g2:type="TruthValue">true</g2:sa.FORWARD-CHAIN>
+          <g2:sa.FORWARD-CHAIN-EVEN-FOR-SAME-VALUE g2:type="TruthValue">false</g2:sa.FORWARD-CHAIN-EVEN-FOR-SAME-VALUE></g2:Structure></g2:a.OPTIONS>
+      <ua.TEST-INFO>
+        <g2:c.TEXT-PARAMETER ID="2aa077cc449c11deb142005056c00008">
+          <g2:a.OPTIONS>
+            <g2:Structure>
+              <g2:sa.FORWARD-CHAIN g2:type="TruthValue">false</g2:sa.FORWARD-CHAIN>
+              <g2:sa.FORWARD-CHAIN-EVEN-FOR-SAME-VALUE g2:type="TruthValue">false</g2:sa.FORWARD-CHAIN-EVEN-FOR-SAME-VALUE></g2:Structure></g2:a.OPTIONS>
+          <g2:a.ICON-VARIABLES>
+            <g2:Structure>
+              <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+              <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES></g2:c.TEXT-PARAMETER></ua.TEST-INFO>
+      <g2:a.ICON-VARIABLES>
+        <g2:Structure>
+          <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+          <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES></c.TEST-RESULT-PARAMETER></ua.TEST-RESULT>
+  <ua.TIMEOUT-LIMIT g2:type="Integer" g2:unit="SECONDS">10</ua.TIMEOUT-LIMIT>
+  <ua.NUMBER-OF-EXECUTED-TESTS g2:type="Integer">2</ua.NUMBER-OF-EXECUTED-TESTS>
+  <ua.TOTAL-NUMBER-OF-TESTS g2:type="Integer">2</ua.TOTAL-NUMBER-OF-TESTS>
+  <g2:a.ICON-VARIABLES>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">25</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES>
+  <g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING><c.NEXT-BENCHMARK rdf:resource="#2aa077cd449c11deb142005056c00008"/></g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING>
+  <g2:a.POSITION-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.X g2:type="Integer">-159</g2:sa.X>
+      <g2:sa.Y g2:type="Integer">222</g2:sa.Y>
+      <g2:sa.SUPERIOR><g2:c.KB-WORKSPACE rdf:resource="#920db78d409011de87c5005056c00008"/></g2:sa.SUPERIOR></g2:Structure></g2:a.POSITION-IN-WORKSPACE>
+  <g2:a.SIZE-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">25</g2:sa.HEIGHT></g2:Structure></g2:a.SIZE-IN-WORKSPACE></c.START-FLOW>
+
+<c.NEXT-BENCHMARK ID="2aa077cd449c11deb142005056c00008">
+  <g2:a.CONNECTION-VERTICES>
+    <g2:Sequence>
+      <rdf:li g2:type="Integer">-15</rdf:li>
+      <rdf:li g2:type="Integer">0</rdf:li></g2:Sequence></g2:a.CONNECTION-VERTICES>
+  <g2:a.CONNECTION-STYLE g2:type="Symbol">ORTHOGONAL</g2:a.CONNECTION-STYLE>
+  <g2:a.CONNECTION-OUTPUT>
+    <g2:Structure>
+      <g2:sa.ITEM><c.BENCHMARK-TEST rdf:resource="#2aa077c1449c11deb142005056c00008"/></g2:sa.ITEM>
+      <g2:sa.SIDE g2:type="Symbol">TOP</g2:sa.SIDE>
+      <g2:sa.POSITION g2:type="Integer">15</g2:sa.POSITION></g2:Structure></g2:a.CONNECTION-OUTPUT>
+  <g2:a.CONNECTION-INPUT>
+    <g2:Structure>
+      <g2:sa.ITEM><c.START-FLOW rdf:resource="#2aa077ca449c11deb142005056c00008"/></g2:sa.ITEM>
+      <g2:sa.SIDE g2:type="Symbol">BOTTOM</g2:sa.SIDE>
+      <g2:sa.POSITION g2:type="Integer">25</g2:sa.POSITION></g2:Structure></g2:a.CONNECTION-INPUT>
+  <g2:a.ITEM-COLOR-PATTERN>
+    <g2:Structure>
+      <g2:sa.OUTLINE g2:type="Symbol">RED</g2:sa.OUTLINE>
+      <g2:sa.INSIDE g2:type="Symbol">TURQUOISE</g2:sa.INSIDE></g2:Structure></g2:a.ITEM-COLOR-PATTERN></c.NEXT-BENCHMARK>
+
+<g2:c.FREE-TEXT ID="ea41bfc16e1211e6bfa0005056365ec5">
+  <g2:a.TEXT><![CDATA[
+RELEASE NOTES
+This is test case for GENSYMCID-1172 'Float-variable value limited ?'
+
+BACKGROUND
+Overflow was observed when assigning a formula or value to float-variable in G2 2011 STD (observed in December release). Our goal was to write a regression test for that
+
+SOLUTION 
+We just implemented the test.
+
+IMPLEMENTATION DETAILS
+We started with test kb attached to CID. But that kb was obviously defective. Result of TestRail test case might differ depending on if the operator is smart enough to press "post float" action in less then 1 second after pressing "conclude float" button, because of validity interval and formula present in the variable. After 1 second formula is recalculated and in fact what test operator sees is a value from random source - either freshly concluded one, or calculated from formula. They coincided in test kb, but this is only happened by chance. 
+So we first of all modify validity-inteval to indefinite and default update interval to none.
+
+TESTING
+Both tests fail in G2 2011 December release and pass at some point in HIP2016-08
+
+NOTES
+Bug was observed in G2 Standard Edition while test suite is run in Enterprise Edition. So we are unlikely to ever detect the regression. 
+]]></g2:a.TEXT>
+  <g2:a.TEXT-FONT>
+    <g2:Structure>
+      <g2:sa.FONT-SIZE g2:type="Symbol">SMALL</g2:sa.FONT-SIZE></g2:Structure></g2:a.TEXT-FONT>
+  <g2:a.TEXT-ALIGNMENT g2:type="Symbol">LEFT</g2:a.TEXT-ALIGNMENT>
+  <g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING><c.BENCHMARK-TEST rdf:resource="#ea41bfc26e1211e6bfa0005056365ec5"/></g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING>
+  <g2:a.POSITION-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.X g2:type="Integer">-18</g2:sa.X>
+      <g2:sa.Y g2:type="Integer">-316</g2:sa.Y>
+      <g2:sa.SUPERIOR><g2:c.KB-WORKSPACE rdf:resource="#920db78d409011de87c5005056c00008"/></g2:sa.SUPERIOR></g2:Structure></g2:a.POSITION-IN-WORKSPACE>
+  <g2:a.MINIMUM-SIZE-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">934</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">344</g2:sa.HEIGHT></g2:Structure></g2:a.MINIMUM-SIZE-IN-WORKSPACE>
+  <g2:a.SIZE-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">938</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">384</g2:sa.HEIGHT></g2:Structure></g2:a.SIZE-IN-WORKSPACE></g2:c.FREE-TEXT>
+
+<c.BENCHMARK-TEST ID="ea41bfc26e1211e6bfa0005056365ec5">
+  <g2:a.NAMES g2:type="Symbol">FLOAT-VARIABLE-OVERFLOW-BY-FORMULA</g2:a.NAMES>
+  <ua.TEST-RESULT>
+    <c.TEST-RESULT-PARAMETER ID="ea41bfc46e1211e6bfa0005056365ec5">
+      <g2:a.OPTIONS>
+        <g2:Structure>
+          <g2:sa.FORWARD-CHAIN g2:type="TruthValue">true</g2:sa.FORWARD-CHAIN>
+          <g2:sa.FORWARD-CHAIN-EVEN-FOR-SAME-VALUE g2:type="TruthValue">false</g2:sa.FORWARD-CHAIN-EVEN-FOR-SAME-VALUE></g2:Structure></g2:a.OPTIONS>
+      <ua.TEST-INFO>
+        <g2:c.TEXT-PARAMETER ID="ea41bfc56e1211e6bfa0005056365ec5">
+          <g2:a.OPTIONS>
+            <g2:Structure>
+              <g2:sa.FORWARD-CHAIN g2:type="TruthValue">false</g2:sa.FORWARD-CHAIN>
+              <g2:sa.FORWARD-CHAIN-EVEN-FOR-SAME-VALUE g2:type="TruthValue">false</g2:sa.FORWARD-CHAIN-EVEN-FOR-SAME-VALUE></g2:Structure></g2:a.OPTIONS>
+          <g2:a.ICON-VARIABLES>
+            <g2:Structure>
+              <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+              <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES></g2:c.TEXT-PARAMETER></ua.TEST-INFO>
+      <g2:a.ICON-VARIABLES>
+        <g2:Structure>
+          <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+          <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES></c.TEST-RESULT-PARAMETER></ua.TEST-RESULT>
+  <ua.TIMEOUT-LIMIT g2:type="Integer" g2:unit="SECONDS">10</ua.TIMEOUT-LIMIT>
+  <ua.COUNTED g2:type="TruthValue" g2:unit="TRUTH-VALUE">false</ua.COUNTED>
+  <g2:a.ICON-VARIABLES>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">30</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">24</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES>
+  <g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING><c.NEXT-BENCHMARK rdf:resource="#ea41bfcd6e1211e6bfa0005056365ec5"/></g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING>
+  <g2:a.POSITION-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.X g2:type="Integer">-159</g2:sa.X>
+      <g2:sa.Y g2:type="Integer">25</g2:sa.Y>
+      <g2:sa.SUPERIOR><g2:c.KB-WORKSPACE rdf:resource="#920db78d409011de87c5005056c00008"/></g2:sa.SUPERIOR></g2:Structure></g2:a.POSITION-IN-WORKSPACE>
+  <g2:a.SIZE-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">30</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">24</g2:sa.HEIGHT></g2:Structure></g2:a.SIZE-IN-WORKSPACE>
+  <g2:a.NAME-BOX>
+    <g2:Structure>
+      <g2:sa.COLOR>
+        <g2:Structure>
+          <g2:sa.BACKGROUND-COLOR g2:type="Symbol">TRANSPARENT</g2:sa.BACKGROUND-COLOR>
+          <g2:sa.TEXT-COLOR g2:type="Symbol">FOREGROUND</g2:sa.TEXT-COLOR></g2:Structure></g2:sa.COLOR>
+      <g2:sa.POSITION>
+        <g2:Structure>
+          <g2:sa.X-OFFSET g2:type="Integer">-347</g2:sa.X-OFFSET>
+          <g2:sa.Y-OFFSET g2:type="Integer">15</g2:sa.Y-OFFSET></g2:Structure></g2:sa.POSITION></g2:Structure></g2:a.NAME-BOX></c.BENCHMARK-TEST>
+
+<g2:c.KB-WORKSPACE ID="ea41bfc66e1211e6bfa0005056365ec5">
+  <g2:a.NAMES g2:type="Symbol">SUB-WS-OF-FLOAT-VARIABLE-OVERFLOW-BY-FORMULA</g2:a.NAMES>
+  <g2:a.DEFAULT-WINDOW-POSITION-AND-SCALE>
+    <g2:Structure>
+      <g2:sa.X g2:type="Integer">764</g2:sa.X>
+      <g2:sa.Y g2:type="Integer">516</g2:sa.Y></g2:Structure></g2:a.DEFAULT-WINDOW-POSITION-AND-SCALE>
+  <g2:a.EDGES-OF-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.LEFT g2:type="Integer">-375</g2:sa.LEFT>
+      <g2:sa.TOP g2:type="Integer">273</g2:sa.TOP>
+      <g2:sa.RIGHT g2:type="Integer">78</g2:sa.RIGHT>
+      <g2:sa.BOTTOM g2:type="Integer">-141</g2:sa.BOTTOM></g2:Structure></g2:a.EDGES-OF-WORKSPACE>
+  <g2:a.PARENT-OF-SUBWORKSPACE><c.BENCHMARK-TEST rdf:resource="#ea41bfc26e1211e6bfa0005056365ec5"/></g2:a.PARENT-OF-SUBWORKSPACE>
+  <g2:a.NAME-BOX>
+    <g2:Structure>
+      <g2:sa.COLOR>
+        <g2:Structure>
+          <g2:sa.BACKGROUND-COLOR g2:type="Symbol">BLACK</g2:sa.BACKGROUND-COLOR>
+          <g2:sa.TEXT-COLOR g2:type="Symbol">WHITE</g2:sa.TEXT-COLOR></g2:Structure></g2:sa.COLOR>
+      <g2:sa.POSITION>
+        <g2:Structure>
+          <g2:sa.X-OFFSET g2:type="Integer">-134</g2:sa.X-OFFSET>
+          <g2:sa.Y-OFFSET g2:type="Integer">177</g2:sa.Y-OFFSET></g2:Structure></g2:sa.POSITION></g2:Structure></g2:a.NAME-BOX></g2:c.KB-WORKSPACE>
+
+<g2:c.PROCEDURE ID="ea41bfc86e1211e6bfa0005056365ec5">
+  <g2:a.AUTHORS>
+    <g2:Structure>
+      <g2:sa.AUTHORS>
+        <g2:Sequence>
+          <rdf:li g2:type="Symbol">BINGHE</rdf:li>
+          <rdf:li g2:type="Symbol">BUDDEN73</rdf:li></g2:Sequence></g2:sa.AUTHORS>
+      <g2:sa.TIMESTAMP>
+        <g2:Structure>
+          <g2:sa.YEAR g2:type="Integer">2016</g2:sa.YEAR>
+          <g2:sa.MONTH g2:type="Integer">9</g2:sa.MONTH>
+          <g2:sa.DATE g2:type="Integer">16</g2:sa.DATE>
+          <g2:sa.HOURS g2:type="Integer">21</g2:sa.HOURS>
+          <g2:sa.MINUTES g2:type="Integer">56</g2:sa.MINUTES></g2:Structure></g2:sa.TIMESTAMP></g2:Structure></g2:a.AUTHORS>
+  <g2:a.TEXT><![CDATA[
+float-variable-overflow-by-formula-test-inner()  = (truth-value, text)
+x : float; 
+begin
+    conclude that float-var has no value; 
+    conclude that the formula of float-var = "200L*100*200*100*300*33";
+    collect data
+        x = float-var;
+    end;
+    if x /= 3.96e12 then
+        return true, "Variable formula overflow";
+    return false, ""
+end
+]]></g2:a.TEXT>
+  <g2:a.ICON-VARIABLES>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES>
+  <g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING><g2:c.PROCEDURE rdf:resource="#ea41bfca6e1211e6bfa0005056365ec5"/></g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING>
+  <g2:a.POSITION-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.X g2:type="Integer">-143</g2:sa.X>
+      <g2:sa.Y g2:type="Integer">-30</g2:sa.Y>
+      <g2:sa.SUPERIOR><g2:c.KB-WORKSPACE rdf:resource="#ea41bfc66e1211e6bfa0005056365ec5"/></g2:sa.SUPERIOR></g2:Structure></g2:a.POSITION-IN-WORKSPACE>
+  <g2:a.SIZE-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.SIZE-IN-WORKSPACE>
+  <g2:a.NAME-BOX>
+    <g2:Structure>
+      <g2:sa.COLOR>
+        <g2:Structure>
+          <g2:sa.BACKGROUND-COLOR g2:type="Symbol">TRANSPARENT</g2:sa.BACKGROUND-COLOR>
+          <g2:sa.TEXT-COLOR g2:type="Symbol">FOREGROUND</g2:sa.TEXT-COLOR></g2:Structure></g2:sa.COLOR>
+      <g2:sa.POSITION>
+        <g2:Structure>
+          <g2:sa.X-OFFSET g2:type="Integer">-192</g2:sa.X-OFFSET>
+          <g2:sa.Y-OFFSET g2:type="Integer">-29</g2:sa.Y-OFFSET></g2:Structure></g2:sa.POSITION></g2:Structure></g2:a.NAME-BOX></g2:c.PROCEDURE>
+
+<g2:c.PROCEDURE ID="ea41bfca6e1211e6bfa0005056365ec5">
+  <g2:a.AUTHORS>
+    <g2:Structure>
+      <g2:sa.AUTHORS>
+        <g2:Sequence>
+          <rdf:li g2:type="Symbol">BUDDEN73</rdf:li></g2:Sequence></g2:sa.AUTHORS>
+      <g2:sa.TIMESTAMP>
+        <g2:Structure>
+          <g2:sa.YEAR g2:type="Integer">2016</g2:sa.YEAR>
+          <g2:sa.MONTH g2:type="Integer">8</g2:sa.MONTH>
+          <g2:sa.DATE g2:type="Integer">29</g2:sa.DATE>
+          <g2:sa.HOURS g2:type="Integer">21</g2:sa.HOURS>
+          <g2:sa.MINUTES g2:type="Integer">1</g2:sa.MINUTES></g2:Structure></g2:sa.TIMESTAMP></g2:Structure></g2:a.AUTHORS>
+  <g2:a.TEXT><![CDATA[
+float-variable-overflow-by-formula-test(node: class benchmark-node)
+status: truth-value; 
+status-text: text;
+begin
+status, status-text = call float-variable-overflow-by-formula-test-inner();
+if status then
+    call fail(node, status-text)
+else
+    call pass(node); 
+end
+]]></g2:a.TEXT>
+  <g2:a.ICON-VARIABLES>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES>
+  <g2:a.POSITION-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.X g2:type="Integer">-156</g2:sa.X>
+      <g2:sa.Y g2:type="Integer">140</g2:sa.Y>
+      <g2:sa.SUPERIOR><g2:c.KB-WORKSPACE rdf:resource="#ea41bfc66e1211e6bfa0005056365ec5"/></g2:sa.SUPERIOR></g2:Structure></g2:a.POSITION-IN-WORKSPACE>
+  <g2:a.SIZE-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.SIZE-IN-WORKSPACE>
+  <g2:a.NAME-BOX>
+    <g2:Structure>
+      <g2:sa.COLOR>
+        <g2:Structure>
+          <g2:sa.BACKGROUND-COLOR g2:type="Symbol">TRANSPARENT</g2:sa.BACKGROUND-COLOR>
+          <g2:sa.TEXT-COLOR g2:type="Symbol">FOREGROUND</g2:sa.TEXT-COLOR></g2:Structure></g2:sa.COLOR>
+      <g2:sa.POSITION>
+        <g2:Structure>
+          <g2:sa.X-OFFSET g2:type="Integer">-189</g2:sa.X-OFFSET>
+          <g2:sa.Y-OFFSET g2:type="Integer">-29</g2:sa.Y-OFFSET></g2:Structure></g2:sa.POSITION></g2:Structure></g2:a.NAME-BOX></g2:c.PROCEDURE>
+
+<c.NEXT-BENCHMARK ID="ea41bfcc6e1211e6bfa0005056365ec5">
+  <g2:a.CONNECTION-VERTICES>
+    <g2:Sequence>
+      <rdf:li g2:type="Integer">-79</rdf:li>
+      <rdf:li g2:type="Integer">0</rdf:li></g2:Sequence></g2:a.CONNECTION-VERTICES>
+  <g2:a.CONNECTION-STYLE g2:type="Symbol">ORTHOGONAL</g2:a.CONNECTION-STYLE>
+  <g2:a.CONNECTION-OUTPUT>
+    <g2:Structure>
+      <g2:sa.ITEM><c.BENCHMARK-TEST rdf:resource="#ea41bfc26e1211e6bfa0005056365ec5"/></g2:sa.ITEM>
+      <g2:sa.SIDE g2:type="Symbol">TOP</g2:sa.SIDE>
+      <g2:sa.POSITION g2:type="Integer">15</g2:sa.POSITION></g2:Structure></g2:a.CONNECTION-OUTPUT>
+  <g2:a.CONNECTION-INPUT>
+    <g2:Structure>
+      <g2:sa.ITEM><c.BENCHMARK-TEST rdf:resource="#2aa077c1449c11deb142005056c00008"/></g2:sa.ITEM>
+      <g2:sa.SIDE g2:type="Symbol">BOTTOM</g2:sa.SIDE>
+      <g2:sa.POSITION g2:type="Integer">15</g2:sa.POSITION>
+      <g2:sa.PORT-NAME g2:type="Symbol">NEXT-TEST-PORT</g2:sa.PORT-NAME></g2:Structure></g2:a.CONNECTION-INPUT>
+  <g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING><c.END-FLOW rdf:resource="#2aa077c6449c11deb142005056c00008"/></g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING>
+  <g2:a.ITEM-COLOR-PATTERN>
+    <g2:Structure>
+      <g2:sa.OUTLINE g2:type="Symbol">RED</g2:sa.OUTLINE>
+      <g2:sa.INSIDE g2:type="Symbol">TURQUOISE</g2:sa.INSIDE></g2:Structure></g2:a.ITEM-COLOR-PATTERN></c.NEXT-BENCHMARK>
+
+<c.NEXT-BENCHMARK ID="ea41bfcd6e1211e6bfa0005056365ec5">
+  <g2:a.CONNECTION-VERTICES>
+    <g2:Sequence>
+      <rdf:li g2:type="Integer">-85</rdf:li>
+      <rdf:li g2:type="Integer">1</rdf:li></g2:Sequence></g2:a.CONNECTION-VERTICES>
+  <g2:a.CONNECTION-STYLE g2:type="Symbol">ORTHOGONAL</g2:a.CONNECTION-STYLE>
+  <g2:a.CONNECTION-OUTPUT>
+    <g2:Structure>
+      <g2:sa.ITEM><c.END-FLOW rdf:resource="#2aa077c6449c11deb142005056c00008"/></g2:sa.ITEM>
+      <g2:sa.SIDE g2:type="Symbol">TOP</g2:sa.SIDE>
+      <g2:sa.POSITION g2:type="Integer">24</g2:sa.POSITION></g2:Structure></g2:a.CONNECTION-OUTPUT>
+  <g2:a.CONNECTION-INPUT>
+    <g2:Structure>
+      <g2:sa.ITEM><c.BENCHMARK-TEST rdf:resource="#ea41bfc26e1211e6bfa0005056365ec5"/></g2:sa.ITEM>
+      <g2:sa.SIDE g2:type="Symbol">BOTTOM</g2:sa.SIDE>
+      <g2:sa.POSITION g2:type="Integer">15</g2:sa.POSITION>
+      <g2:sa.PORT-NAME g2:type="Symbol">NEXT-TEST-PORT</g2:sa.PORT-NAME></g2:Structure></g2:a.CONNECTION-INPUT>
+  <g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING><g2:c.RULE rdf:resource="#2aa077c0449c11deb142005056c00008"/></g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING>
+  <g2:a.ITEM-COLOR-PATTERN>
+    <g2:Structure>
+      <g2:sa.OUTLINE g2:type="Symbol">RED</g2:sa.OUTLINE>
+      <g2:sa.INSIDE g2:type="Symbol">TURQUOISE</g2:sa.INSIDE></g2:Structure></g2:a.ITEM-COLOR-PATTERN></c.NEXT-BENCHMARK>
+</rdf:RDF>
