@@ -1,0 +1,641 @@
+#!/bin/csh -f2
+set debug = 0 
+set nointeract = 0
+
+##########################################################################
+### GENSYM BRIDGES (WRITE-TAPE)
+##########################################################################
+
+
+##########################################################################
+### CONFIGURATION
+##########################################################################
+
+  #-----------------------------------------------------------------------
+  # Set internal environment variables
+  #-----------------------------------------------------------------------
+
+  ## NOTE: These vars must match those defined in do-cd-rom 
+  ##
+  set promote_machine = "franklin"
+  set bridge_cd_script = "makecd_bridges"
+  set g2_cd_script = "makecd_disk"
+  set product_tree = "/st/ab"
+  set cdrom_home = "/mnt/sd1c/cdrom"
+  set premaster_root = "$cdrom_home/premaster"
+  set product_key = "bridges"
+  set jump_state = 0
+  set fail = 0
+  set jump_to = "write_tape,installer,doc,kbs,uinst,premaster"
+
+  ### set these vars for debugging only
+#  if ($HOSTNAME != $promote_machine) then
+#    set product_tree = "/home/rjf/tmp"
+#    set cdrom_home = "$product_tree/cdrom"
+#    set premaster_root = "$cdrom_home/premaster"
+#  endif
+
+  set dep_ship_dir = "$product_tree/eship/dep"
+  set indep_ship_dir = "$product_tree/eship/indep"
+
+  set key_versions = (10r0-a 10r0-b 10r0-c 10r0-d 10r0-e 10r0-f 10r0-g)
+  # set key_versions = (10r0-x)
+
+  switch ($1)
+    case "quiet":
+      set nointeract = 1
+    breaksw
+    case "debug":
+      set debug = 1
+      if ($#argv > 1) then
+        if ("`echo $jump_to | grep $2`" != "") then
+          set jump_to = $2
+          set jump_state = 1
+          echo "Jumping to '$2'"
+          goto $2
+        endif
+      endif
+    breaksw
+    case "jump":
+      if ($#argv > 1) then
+        if ("`echo $jump_to | grep $2`" != "") then
+          set jump_to = $2
+          set jump_state = 1
+          echo "Jumping to '$2'"
+          goto $2
+        endif
+      endif
+    breaksw
+    case "show":
+      goto show_sw
+    breaksw
+  endsw
+
+##########################################################################
+### INTRODUCTION
+##########################################################################
+
+a1:
+  clear
+  echo ""
+  echo "==================================================================="
+  echo "  Gensym Bridges CD ROM Master Utility               (rev.3/99)"
+  echo "==================================================================="
+  echo ""
+  echo "  You are about to generate the premaster area for the Gensym"
+  echo "  bridge CD. This area will contain all Gensym bridge products for"
+  echo "  every supported platform as well as installers, doc, and kb's."
+  echo ""
+
+  echo -n "Enter 'go' to begin (q=quit): "
+  set answer = "$<"
+  echo ""
+
+  if ("$answer" != "go" && "$answer" != "q") then
+    echo ""
+    goto a1
+  else
+    if ("$answer" == "q") goto abort
+  endif
+  
+
+##########################################################################
+### WRITE-TAPE
+###    - Locates each eship product and copies it to staging area
+###    - Staging area indicated by $premaster_root
+###    - If any product fails, this program is terminated
+##########################################################################
+
+write_tape:
+  set version = ""
+  set platform_code = 760
+
+  while ($#key_versions > 0)
+    set version = $key_versions[1]
+    shift key_versions
+
+    if (! $debug) then
+      write-tape $product_key $version $platform_code
+      set fail=$status
+      if ( $fail ) then
+        echo "ERROR: write-tape failed with errors"
+        goto premaster_exit
+      endif
+    else
+      echo "write-tape $product_key $version $platform_code"
+    endif
+
+    set platform_code = 761  # if its a multi set then write cdrom-no-erase
+  end
+  if ($jump_state) exit 0 
+
+##########################################################################
+### MODIFY PREMASTER AREA
+###    - Remove any files not applicable to CDROM
+###    - Copy installer for intel & alpha NT to staging area
+###    - Copy doc directory tree
+###    - Copy KB's
+##########################################################################
+
+  #-----------------------------------------------------------------------
+  # delete NA files - delete any crap in premaster root
+  #-----------------------------------------------------------------------
+  
+  # This will get rid of Generic Gensym InstallShield 
+
+  echo ""
+  echo "Purging Gensym files not applicable to bridge install"
+  echo "   rm -f $premaster_root/*"
+
+  if (! $debug) then
+    rm -f $premaster_root/*
+  endif
+
+  #-----------------------------------------------------------------------
+  # copy installer for NT
+  #-----------------------------------------------------------------------
+
+installer:
+  set platforms = (intelnt alphant)
+  set product = bridge
+  set release_id = installer
+  
+  while ($#platforms > 0)
+
+    set platform = $platforms[1]
+    shift platforms
+    set release_directory = "$dep_ship_dir/$platform/${product}-${release_id}/tape"
+    set premaster_target = $premaster_root/$platform
+
+    echo ""
+    if ( ! -e $release_directory ) then
+      echo "ERROR: There is no product release directory for '$product-$release_id'."
+      echo "       $release_directory"
+      if (! $debug) set fail=1
+    endif
+    if ($fail) goto premaster_exit
+
+    # verify directory
+    if (! -e "$premaster_target" && ! $debug) mkdir $premaster_target
+
+    echo "Copying '$product-$release_id' from: $release_directory"
+    echo "  to: $premaster_target"
+
+    if (! $debug) then
+      cp $release_directory/* $premaster_root/$platform
+      if (-e $premaster_root/parts.list) rm $premaster_root/parts.list
+    else
+      echo "done"
+    endif
+
+  end # while
+  if ($jump_state) exit 0 
+
+
+  #-----------------------------------------------------------------------
+  # copy doc
+  #-----------------------------------------------------------------------
+
+doc:
+  set product = bridge
+  set release_id = docs
+  set release_directory = "$indep_ship_dir/${product}-${release_id}/tape"
+  set prem_target_root = "$premaster_root/doc"
+  set premaster_target = "$prem_target_root/books"
+
+  echo ""
+  if ( ! -e $release_directory ) then
+    echo "ERROR: There is no product release directory for '$product-$release_id'."
+    echo "       $release_directory"
+    if (! $debug) set fail=1
+  endif
+  if ($fail) goto premaster_exit
+
+  # verify directory
+  if (! -e "$premaster_target" && ! $debug) then
+    echo "Creating $premaster_target"
+    mkdir -p $premaster_target
+    echo ""
+  endif
+
+  echo "Copying '$product-$release_id' from: $release_directory"
+  echo "  to: $premaster_target   (This may take a while...)"
+  echo ""
+
+  if (! $debug) then
+    cp -r $release_directory/* $premaster_target
+    # make sure master-contents .html page is in 'doc' dir
+    echo "Copying $release_directory/books.htm to $prem_target_root"
+    cp $release_directory/books.htm $prem_target_root
+    # move the product matrix to the CD root
+    echo "Copying $release_directory/products.htm to $premaster_root"
+    cp $release_directory/products.htm $premaster_root
+    echo "Coping $release_directory/readme.htm to $premaster_root"
+    cp $release_directory/readme.htm $premaster_root
+    if (-e $premaster_target/parts.list) rm $premaster_target/parts.list
+  else
+    echo "Copying $release_directory/books.htm to $prem_target_root"
+    echo "Copying $release_directory/products.htm to $premaster_root"
+    echo "Coping $release_directory/readme.htm to $premaster_root"
+  endif
+
+  if ($jump_state) exit 0 
+
+  #-----------------------------------------------------------------------
+  # copy KB's
+  #-----------------------------------------------------------------------
+
+kbs:
+  set product = bridge
+  set release_id = kbs
+  set release_directory = "$indep_ship_dir/${product}-${release_id}/tape"
+  set premaster_target = $premaster_root/kbs
+  
+  echo ""
+  if ( ! -e $release_directory ) then
+    echo "ERROR: There is no product release directory for '$product-$release_id'."
+    echo "       $release_directory"
+    if (! $debug) set fail=1
+  endif
+  if ($fail) goto premaster_exit
+
+  # verify directory
+  if (! -e "$premaster_target" && ! $debug) mkdir $premaster_target
+
+  echo "Copying '$product-$release_id' from: $release_directory"
+  echo "  to: $premaster_target"
+
+  if (! $debug) then
+    cp -r $release_directory/* $premaster_target
+    if (-e $premaster_target/parts.list) rm $premaster_target/parts.list
+  endif
+
+  if ($jump_state) exit 0 
+
+  ## remove prodver.txt - recursively
+  #rm -fr "$premaster_root/prodver.txt"
+
+  #-----------------------------------------------------------------------
+  # copy installer for unix
+  #-----------------------------------------------------------------------
+
+uinst:
+  set product = bridge
+  set release_id = docs
+  set release_directory = "$indep_ship_dir/${product}-${release_id}/tape/misc"
+  set prem_target_root = "$premaster_root"
+  set source_pname = "bridge-unixinst"
+  set target_pname = "unixinst"
+
+  echo ""
+  if ( ! -e $release_directory ) then
+    echo "ERROR: Could not find product release directory for '$source_pname'."
+    echo "       $release_directory"
+    if (! $debug) set fail=1
+  endif
+  if ($fail) goto premaster_exit
+
+  if ( ! -e $release_directory/$source_pname ) then
+    echo "ERROR: Could not find '$source_pname'."
+    echo "       $release_directory"
+    if (! $debug) set fail=1
+  endif
+  if ($fail) goto premaster_exit
+
+  echo "Copying '$source_pname' from: $release_directory"
+  echo "  to: $prem_target_root/$target_pname"
+  echo ""
+
+  if (! $debug) then
+    cp $release_directory/$source_pname $prem_target_root/$target_pname
+    chmod +x $prem_target_root/$target_pname
+  endif
+
+  if ($jump_state) exit 0 
+
+  #-----------------------------------------------------------------------
+  # finished preparing premaster area
+  #-----------------------------------------------------------------------
+
+  done_premaster:
+
+  echo ""
+  echo ""
+  echo "-------------------------------------------------------"
+  if (! $fail) then
+    echo "                   -- SUCCESS --"
+    echo ""
+    echo "         *** PREMASTER AREA IS NOW READY ***"
+    echo "-------------------------------------------------------"
+    echo ""
+  else
+    goto premaster_exit
+  endif
+
+##########################################################################
+### PREPARE THE CD FILE 
+##########################################################################
+
+  if ($fail) goto premaster_exit
+
+premaster:
+  echo ""
+  echo "  You are about to compile the premaster area into a staging file"
+  echo "  (bridgeCD.iso) that will be used by the 'Easy CD Creator' utility"
+  echo "  to write the CD. If you choose not to compile the premaster area"
+  echo "  now, you MUST use the script: '$cdrom_home/$bridge_cd_script'"
+  echo "  instead of: 'makecd_disk' when you are ready in order to provide"
+  echo "  appropriate CD file structure and labels."
+  echo "  "
+  echo ""
+
+  if (! $nointeract) then
+    a2:
+    echo -n "Enter 'go' to create premaster staging file (q=quit): "
+    set answer = "$<"
+    echo ""
+    if ("$answer" != "go" && "$answer" != "q") then
+      echo ""
+      goto a2
+    else
+      if ("$answer" == "q") goto abort
+    endif
+  endif
+
+  set user_home = `pwd`
+  
+  echo "Changing dirs to '$cdrom_home'"
+  cd $cdrom_home
+
+  if (-e $cdrom_home/$bridge_cd_script) then
+    echo ""
+    echo "Invoking '$cdrom_home/$bridge_cd_script'"
+    echo ""
+    echo "This may take a while..."
+    echo ""
+
+    if (! $debug) $cdrom_home/$bridge_cd_script ## execute
+
+    set fail=0
+    goto general_exit
+
+  else if (-e "$user_home/$bridge_cd_script") then
+    echo ""
+    echo "Found $bridge_cd_script in $user_home"
+    echo "   copying $user_home/$bridge_cd_script to $cdrom_home"
+    cp $user_home/$bridge_cd_script $cdrom_home
+    chmod +x $cdrom_home/$bridge_cd_script
+    echo ""
+    echo "Invoking '$cdrom_home/$bridge_cd_script'"
+    echo ""
+    echo "This may take a while..."
+    echo ""
+
+    if (! $debug) $cdrom_home/$bridge_cd_script ## execute
+
+    set fail=0
+    goto general_exit    
+
+  else if (-e $cdrom_home/$g2_cd_script) then
+    echo ""
+    echo "WARNING: Could not find '$cdrom_home/$bridge_cd_script'"
+    echo ""
+    # check for cd script in current dir
+    if (! -e "$user_home/$bridge_cd_script") then
+      echo ""
+      echo "Found '$bridge_cd_scrip't in '$user_home'"
+      echo "   copying '$user_home/$bridge_cd_script' to '$cdrom_home'"
+      cp $user_home/$bridge_cd_script $cdrom_home
+    else
+      echo ""
+      echo "WARNING: Could not find '$user_home/$bridge_cd_script'"
+      echo ""
+    endif
+
+    echo "Trying '$cdrom_home/$g2_cd_script'"
+    echo ""
+    echo "This may take a while..."
+    echo ""
+
+    if (! $debug) $cdrom_home/$g2_cd_script ## execute
+
+    set fail=0
+    goto general_exit
+  else
+    echo ""
+    echo "ERROR: Could not find script '$cdrom_home/$bridge_cd_script'"
+    echo "       or: '$cdrom_home/$g2_cd_script'"
+    set fail=1
+    goto general_exit
+  endif
+
+##########################################################################
+### FINISH-UP
+##########################################################################
+
+premaster_exit:
+  echo ""
+  echo ""
+  echo "-------------------------------------------------------"
+  if (! $fail) then
+    echo "                    -- SUCCESS --"
+    echo ""
+    echo "     *** BRIDGE CD IS NOW READY FOR PRODUCTION ***"
+  else
+    echo "                     -- ERROR --"
+    echo ""
+    echo "  *** PREMASTER AREA IS INCOMPLETE DO TO ERRORS ***"
+    echo "           DO NOT DISTRIBUTE THIS CD \!\!\!"
+  endif
+  echo "-------------------------------------------------------"
+  echo ""
+  exit $fail
+
+general_exit:
+  echo ""
+  echo ""
+  echo "-------------------------------------------------------"
+  if (! $fail) then
+    echo "                    -- SUCCESS --"
+    echo ""
+    echo "     *** BRIDGE CD IS NOW READY FOR PRODUCTION ***"
+  else
+    echo "                     -- ERROR --"
+    echo ""
+    echo "*** COULD NOT COMPLETE BRIDGE CD MASTERING OPERATION ***"
+  endif
+  echo "-------------------------------------------------------"
+  echo ""
+  exit $fail
+
+abort:
+  echo ""
+  echo "Program terminated at user request."
+  echo ""
+  exit 0
+
+
+##########################################################################
+### Show Software that will be placed on CDROM
+##########################################################################
+
+show_sw:
+
+  #-----------------------------------------------------------------------
+  # setup
+  #-----------------------------------------------------------------------
+  set source = "../datafiles/write-tape.dat"
+  set products = ""
+  set release_ids = ""
+  set platforms = ""
+  set column = "........................."
+
+  while ($#key_versions > 0)
+
+    set release = $key_versions[1]
+    shift key_versions
+
+#    set product_info = `grep "^$product_key-$release " write-tape.dat`
+    set product_info = `grep "^$product_key-$release " $source`
+    shift product_info
+    shift product_info
+
+    while ($#product_info > 0)
+
+      switch (${product_info[1]})
+
+        case "-p" : 
+            set products = ($products ${product_info[2]})
+            shift product_info
+            breaksw
+        case "-r" :
+            set release_ids = ($release_ids ${product_info[2]})
+            shift product_info
+            breaksw
+        case "-c" :
+            set platforms = ($platforms ${product_info[2]})
+            set media_platform = ${product_info[2]}
+            shift product_info
+            breaksw
+        default :
+	    echo ""
+            echo "Invalid switch: ${product_info[1]}
+	    echo ""
+            goto usage
+      endsw
+
+      shift product_info
+
+    end  # while (${#product_info} > 0)
+
+  end # while ($#key_versions > 0)
+
+  #-----------------------------------------------------------------------
+  # Show all products
+  #-----------------------------------------------------------------------
+
+  set last_prod = ""
+
+  echo ""
+  echo "Software Contents on Bridge CD"
+  echo "=============================="
+  echo ""
+
+  while ($#products > 0)
+
+    set c1 = `echo "$products[1] $column" | cut -c1-15` 
+    set c2 = `echo "$platforms[1] $column" | cut -c1-15` 
+
+    if ( ($last_prod != $products[1]) && ($last_prod != "")) echo ""
+    set last_prod = $products[1]
+
+    echo "$c1 $c2 $release_ids[1]"
+
+    shift products
+    shift platforms
+    shift release_ids
+
+  end # while ($#products > 0)
+
+  echo ""
+
+  #-----------------------------------------------------------------------
+  # Show Intel Installer
+  #-----------------------------------------------------------------------
+
+  set products=(g2aag g2aag g2aag g2abi_ei g2abplc g2april corbalink g2geplc g2informix g2modbus g2modbus+ g2odbc g2opclink g2oracle g2pi g2serial g2sybase g2tcpflex gservice)
+  set release_ids=(20b2 10r4 10r4 60r2 35r6 60r0 10r1 60r0 60r4 60r0 60r0 60r4 10r0 60r4 23r0 10b2 60r4 10r1 10r0)
+  echo ""
+  echo "Bridge Installer (Intel NT)"
+  echo "=============================="
+  echo ""
+
+  while ($#products > 0)
+
+    set c1 = `echo "$products[1] $column" | cut -c1-15` 
+    set c2 = `echo "installer $column" | cut -c1-15` 
+
+    echo "$c1 $c2 $release_ids[1]"
+
+    shift products
+    shift release_ids
+
+  end # while ($#products > 0)
+
+  #-----------------------------------------------------------------------
+  # Show Alpha Installer
+  #-----------------------------------------------------------------------
+
+  set products=(g2odbc g2oracle gservice)
+  set release_ids=(60r4 60r4 10r0)
+  echo ""
+  echo "Bridge Installer (Alpha NT)"
+  echo "=============================="
+  echo ""
+
+  while ($#products > 0)
+
+    set c1 = `echo "$products[1] $column" | cut -c1-15` 
+    set c2 = `echo "installer $column" | cut -c1-15` 
+
+    echo "$c1 $c2 $release_ids[1]"
+
+    shift products
+    shift release_ids
+
+  end # while ($#products > 0)
+
+
+  echo ""
+  echo ""
+  exit 0
+
+
+
+
+
+#### WRITE-TAPE.DAT entry for BRIDGE CD ###############
+
+
+#### BRIDGE CD (1024 = max line length) ###############
+ 
+bridges-10r0-a Bridge-CD-(ORACLE) -p g2oracle -r 60r4 -c sparcsol -p g2oracle -r 60r4 -c sun4 -p g2oracle -r 60r4 -c hp9000s700 -p g2oracle -r 60r4 -c alphaosf -p g2oracle -r 60r4 -c rs6000
+
+bridges-10r0-b Bridge-CD-(SYBASE) -p g2sybase -r 60r4 -c sparcsol -p g2sybase -r 60r4 -c sun4 -p g2sybase -r 60r4 -c hp9000s700 -p g2sybase -r 60r4 -c alphaosf -p g2sybase -r 60r4 -c rs6000
+ 
+bridges-10r0-c Bridge-CD-(INFORMIX) -p g2informix -r 60r4 -c sparcsol -p g2informix -r 60r4 -c hp9000s700 -p g2informix -r 60r4 -c alphaosf -p g2informix -r 60r4 -c rs6000
+
+bridges-10r0-d Bridge-CD-(DEVICES) -p g2abi_ei -r 60r0 -c sparcsol -p g2abi_ei -r 60r0 -c hp9000s700 -p g2abplc -r 35r5 -c rs6000 -p g2abplc -r 35r5 -c hp9000s700 -p g2abplc -r 35r5 -c sun4 -p g2abplc -r 35r5 -c alphaosf -p g2geplc -r 60r0 -c alphaosf -p g2modbus -r 60r0 -c alphaosf -p g2mistic -r 40r5 -c sparcsol -p g2sqd -r 50b1 -c hp9000s700 -p g2serial -r 10b2 -c sparcsol -p g2-tcpflex -r 10r0 -c hp9000s700
+
+bridges-10r0-e Bridge-CD-(CORBA) -p corbalink -r 10r1 -c sparcsol -p corbalink -r 10r1 -c hp9000s700 -p corbalink -r 10r1 -c rs6000 
+ 
+bridges-10r0-f Bridge-CD-(WEBLINK) -p gw -r 10r1 -c hp9000s700 -p gw -r 10r1 -c intelnt -p gw -r 10r1 -c mips -p gw -r 10r1 -c sgi -p gw -r 10r1 -c sparcsol -p gw -r 10r1 -c sun4
+
+#######################################################
+
+
+
+
+
+
+
