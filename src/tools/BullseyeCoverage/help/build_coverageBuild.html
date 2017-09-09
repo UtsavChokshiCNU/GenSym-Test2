@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_build.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+Coverage Build
+</h1>
+<h2>Enabling and Disabling</h2>
+<p>
+To measure coverage, enable <dfn>Coverage Build</dfn>, then rebuild
+the source code you want to measure.
+You can enable and disable Coverage Build by any of the methods below.
+<ul>
+<li><a href=coverageBrowser.html>Coverage Browser</a> menu
+command <code>Tools Coverage Build</code>.
+<li>Microsoft Visual Studio menu command <code>Tools Enable/Disable BullseyeCoverage Build</code>.
+<li>The command line program
+<a href=ref_cov01.html>cov01</a>.
+To enable, use <code>cov01 -1</code>.
+To disable, use <code>cov01 -0</code>.
+</ul>
+<p>
+When Coverage Build is enabled, BullseyeCoverage instruments any project you build.
+You need not use the same method to enable as you use to disable Coverage Build.
+The Coverage Build setting is per-user; when one user changes the Coverage Build setting it does not affect the setting for other users.
+This is true regardless of whether you build from the
+command prompt or from within an integrated development environment.
+Enabling or disabling Coverage Build does not remove any object files or intermediate files.
+<h2>Compiler Interceptors</h2>
+<p>
+The BullseyeCoverage <code>bin</code> directory contains
+<dfn>compiler interceptors</dfn>,
+which are programs named the same as a compiler program.
+When you build,
+control passes to the compiler interceptor instead of the real compiler.
+With Coverage Build enabled,
+the compiler interceptor invokes <a href=ref_covc.html>covc</a>,
+which adds probes and then invokes the real compiler on the instrumented source.
+With Coverage Build disabled,
+the compiler interceptor simply passes control directly to the real compiler.
+You know Coverage Build is enabled
+when you see the startup banner below.
+<pre>
+BullseyeCoverage Compile C++ <i>version platform</i>
+Copyright (c) Bullseye Testing Technology 1990-<i>year</i>
+</pre>
+<p style="font-size:xx-small">
+Last reviewed: 20 May 2009
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
