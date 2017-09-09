@@ -1,0 +1,26 @@
+HKCR
+{
+	G2Com.G2Workspace.1 = s 'G2Workspace Class'
+	{
+		CLSID = s '{4F6FF39F-793B-4BC5-8413-657F7BA99F57}'
+	}
+	G2Com.G2Workspace = s 'G2Workspace Class'
+	{
+		CLSID = s '{4F6FF39F-793B-4BC5-8413-657F7BA99F57}'
+		CurVer = s 'G2Com.G2Workspace.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {4F6FF39F-793B-4BC5-8413-657F7BA99F57} = s 'G2Workspace Class'
+		{
+			ProgID = s 'G2Com.G2Workspace.1'
+			VersionIndependentProgID = s 'G2Com.G2Workspace'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{AC4C85D1-B16C-11d1-A718-006008C5F933}'
+		}
+	}
+}
