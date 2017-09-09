@@ -1,0 +1,225 @@
+SHELL = /bin/sh
+PRODUCT = jpeg
+ODIR = o
+PLATFORM = sun4
+CDIR = $(SRCBOX)/$(PRODUCT)/c
+HELPERDIR = /home/development/helpers
+MFDIR = $(DSTBOX)/$(PRODUCT)/$(ODIR)
+SCRIPTSDIR = /home/development/scripts
+CC_FLAGS = -Wimplicit
+JPEGHFILES = $(CDIR)/cderror.h $(CDIR)/jchuff.h $(CDIR)/jconfig.h \
+  $(CDIR)/jdct.h $(CDIR)/jdhuff.h $(CDIR)/jerror.h $(CDIR)/jinclude.h \
+  $(CDIR)/jmemsys.h $(CDIR)/jmorecfg.h $(CDIR)/jpegint.h
+
+all : _mfenter libjpeg.a _mfexit
+
+_mfenter : 
+	@- $(SCRIPTSDIR)/errsweep -init
+
+_mfexit : 
+	@- $(SCRIPTSDIR)/errsweep -finish
+
+libjpeg.a : jcapimin.o jcapistd.o jccoefct.o jccolor.o jcdctmgr.o \
+  jchuff.o jcinit.o jcmainct.o jcmarker.o jcmaster.o jcomapi.o jcparam.o \
+  jcphuff.o jcprepct.o jcsample.o jctrans.o jdapimin.o jdapistd.o jdatadst.o \
+  jdatasrc.o jdcoefct.o jdcolor.o jddctmgr.o jdhuff.o jdinput.o jdmainct.o \
+  jdmarker.o jdmaster.o jdmerge.o jdphuff.o jdpostct.o jdsample.o jdtrans.o \
+  jerror.o jfdctflt.o jfdctfst.o jfdctint.o jidctflt.o jidctfst.o jidctint.o \
+  jidctred.o jmemmgr.o jmemnobs.o jquant1.o jquant2.o jutils.o
+	@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)
+	@- if [ -f libjpeg.a ] ; then rm -f libjpeg.a ; fi
+	ar qc libjpeg.a  jcapimin.o jcapistd.o jccoefct.o jccolor.o \
+  jcdctmgr.o jchuff.o jcinit.o jcmainct.o jcmarker.o jcmaster.o jcomapi.o \
+  jcparam.o jcphuff.o jcprepct.o jcsample.o jctrans.o jdapimin.o jdapistd.o \
+  jdatadst.o jdatasrc.o jdcoefct.o jdcolor.o jddctmgr.o jdhuff.o jdinput.o \
+  jdmainct.o jdmarker.o jdmaster.o jdmerge.o jdphuff.o jdpostct.o jdsample.o \
+  jdtrans.o jerror.o jfdctflt.o jfdctfst.o jfdctint.o jidctflt.o jidctfst.o \
+  jidctint.o jidctred.o jquant1.o jquant2.o jutils.o jmemmgr.o jmemnobs.o
+	ranlib libjpeg.a
+
+jcapimin.o : $(CDIR)/jcapimin.c $(JPEGHFILES)
+	@- if [ -f jcapimin.o ] ; then rm -f jcapimin.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jcapimin.c
+
+jcapistd.o : $(CDIR)/jcapistd.c $(JPEGHFILES)
+	@- if [ -f jcapistd.o ] ; then rm -f jcapistd.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jcapistd.c
+
+jccoefct.o : $(CDIR)/jccoefct.c $(JPEGHFILES)
+	@- if [ -f jccoefct.o ] ; then rm -f jccoefct.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jccoefct.c
+
+jccolor.o : $(CDIR)/jccolor.c $(JPEGHFILES)
+	@- if [ -f jccolor.o ] ; then rm -f jccolor.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jccolor.c
+
+jcdctmgr.o : $(CDIR)/jcdctmgr.c $(JPEGHFILES)
+	@- if [ -f jcdctmgr.o ] ; then rm -f jcdctmgr.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jcdctmgr.c
+
+jchuff.o : $(CDIR)/jchuff.c $(JPEGHFILES)
+	@- if [ -f jchuff.o ] ; then rm -f jchuff.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jchuff.c
+
+jcinit.o : $(CDIR)/jcinit.c $(JPEGHFILES)
+	@- if [ -f jcinit.o ] ; then rm -f jcinit.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jcinit.c
+
+jcmainct.o : $(CDIR)/jcmainct.c $(JPEGHFILES)
+	@- if [ -f jcmainct.o ] ; then rm -f jcmainct.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jcmainct.c
+
+jcmarker.o : $(CDIR)/jcmarker.c $(JPEGHFILES)
+	@- if [ -f jcmarker.o ] ; then rm -f jcmarker.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jcmarker.c
+
+jcmaster.o : $(CDIR)/jcmaster.c $(JPEGHFILES)
+	@- if [ -f jcmaster.o ] ; then rm -f jcmaster.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jcmaster.c
+
+jcomapi.o : $(CDIR)/jcomapi.c $(JPEGHFILES)
+	@- if [ -f jcomapi.o ] ; then rm -f jcomapi.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jcomapi.c
+
+jcparam.o : $(CDIR)/jcparam.c $(JPEGHFILES)
+	@- if [ -f jcparam.o ] ; then rm -f jcparam.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jcparam.c
+
+jcphuff.o : $(CDIR)/jcphuff.c $(JPEGHFILES)
+	@- if [ -f jcphuff.o ] ; then rm -f jcphuff.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jcphuff.c
+
+jcprepct.o : $(CDIR)/jcprepct.c $(JPEGHFILES)
+	@- if [ -f jcprepct.o ] ; then rm -f jcprepct.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jcprepct.c
+
+jcsample.o : $(CDIR)/jcsample.c $(JPEGHFILES)
+	@- if [ -f jcsample.o ] ; then rm -f jcsample.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jcsample.c
+
+jctrans.o : $(CDIR)/jctrans.c $(JPEGHFILES)
+	@- if [ -f jctrans.o ] ; then rm -f jctrans.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jctrans.c
+
+jdapimin.o : $(CDIR)/jdapimin.c $(JPEGHFILES)
+	@- if [ -f jdapimin.o ] ; then rm -f jdapimin.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jdapimin.c
+
+jdapistd.o : $(CDIR)/jdapistd.c $(JPEGHFILES)
+	@- if [ -f jdapistd.o ] ; then rm -f jdapistd.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jdapistd.c
+
+jdatadst.o : $(CDIR)/jdatadst.c $(JPEGHFILES)
+	@- if [ -f jdatadst.o ] ; then rm -f jdatadst.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jdatadst.c
+
+jdatasrc.o : $(CDIR)/jdatasrc.c $(JPEGHFILES)
+	@- if [ -f jdatasrc.o ] ; then rm -f jdatasrc.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jdatasrc.c
+
+jdcoefct.o : $(CDIR)/jdcoefct.c $(JPEGHFILES)
+	@- if [ -f jdcoefct.o ] ; then rm -f jdcoefct.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jdcoefct.c
+
+jdcolor.o : $(CDIR)/jdcolor.c $(JPEGHFILES)
+	@- if [ -f jdcolor.o ] ; then rm -f jdcolor.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jdcolor.c
+
+jddctmgr.o : $(CDIR)/jddctmgr.c $(JPEGHFILES)
+	@- if [ -f jddctmgr.o ] ; then rm -f jddctmgr.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jddctmgr.c
+
+jdhuff.o : $(CDIR)/jdhuff.c $(JPEGHFILES)
+	@- if [ -f jdhuff.o ] ; then rm -f jdhuff.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jdhuff.c
+
+jdinput.o : $(CDIR)/jdinput.c $(JPEGHFILES)
+	@- if [ -f jdinput.o ] ; then rm -f jdinput.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jdinput.c
+
+jdmainct.o : $(CDIR)/jdmainct.c $(JPEGHFILES)
+	@- if [ -f jdmainct.o ] ; then rm -f jdmainct.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jdmainct.c
+
+jdmarker.o : $(CDIR)/jdmarker.c $(JPEGHFILES)
+	@- if [ -f jdmarker.o ] ; then rm -f jdmarker.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jdmarker.c
+
+jdmaster.o : $(CDIR)/jdmaster.c $(JPEGHFILES)
+	@- if [ -f jdmaster.o ] ; then rm -f jdmaster.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jdmaster.c
+
+jdmerge.o : $(CDIR)/jdmerge.c $(JPEGHFILES)
+	@- if [ -f jdmerge.o ] ; then rm -f jdmerge.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jdmerge.c
+
+jdphuff.o : $(CDIR)/jdphuff.c $(JPEGHFILES)
+	@- if [ -f jdphuff.o ] ; then rm -f jdphuff.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jdphuff.c
+
+jdpostct.o : $(CDIR)/jdpostct.c $(JPEGHFILES)
+	@- if [ -f jdpostct.o ] ; then rm -f jdpostct.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jdpostct.c
+
+jdsample.o : $(CDIR)/jdsample.c $(JPEGHFILES)
+	@- if [ -f jdsample.o ] ; then rm -f jdsample.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jdsample.c
+
+jdtrans.o : $(CDIR)/jdtrans.c $(JPEGHFILES)
+	@- if [ -f jdtrans.o ] ; then rm -f jdtrans.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jdtrans.c
+
+jerror.o : $(CDIR)/jerror.c $(JPEGHFILES)
+	@- if [ -f jerror.o ] ; then rm -f jerror.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jerror.c
+
+jfdctflt.o : $(CDIR)/jfdctflt.c $(JPEGHFILES)
+	@- if [ -f jfdctflt.o ] ; then rm -f jfdctflt.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jfdctflt.c
+
+jfdctfst.o : $(CDIR)/jfdctfst.c $(JPEGHFILES)
+	@- if [ -f jfdctfst.o ] ; then rm -f jfdctfst.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jfdctfst.c
+
+jfdctint.o : $(CDIR)/jfdctint.c $(JPEGHFILES)
+	@- if [ -f jfdctint.o ] ; then rm -f jfdctint.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jfdctint.c
+
+jidctflt.o : $(CDIR)/jidctflt.c $(JPEGHFILES)
+	@- if [ -f jidctflt.o ] ; then rm -f jidctflt.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jidctflt.c
+
+jidctfst.o : $(CDIR)/jidctfst.c $(JPEGHFILES)
+	@- if [ -f jidctfst.o ] ; then rm -f jidctfst.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jidctfst.c
+
+jidctint.o : $(CDIR)/jidctint.c $(JPEGHFILES)
+	@- if [ -f jidctint.o ] ; then rm -f jidctint.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jidctint.c
+
+jidctred.o : $(CDIR)/jidctred.c $(JPEGHFILES)
+	@- if [ -f jidctred.o ] ; then rm -f jidctred.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jidctred.c
+
+jmemmgr.o : $(CDIR)/jmemmgr.c $(JPEGHFILES)
+	@- if [ -f jmemmgr.o ] ; then rm -f jmemmgr.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jmemmgr.c
+
+jmemnobs.o : $(CDIR)/jmemnobs.c $(JPEGHFILES)
+	@- if [ -f jmemnobs.o ] ; then rm -f jmemnobs.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jmemnobs.c
+
+jquant1.o : $(CDIR)/jquant1.c $(JPEGHFILES)
+	@- if [ -f jquant1.o ] ; then rm -f jquant1.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jquant1.c
+
+jquant2.o : $(CDIR)/jquant2.c $(JPEGHFILES)
+	@- if [ -f jquant2.o ] ; then rm -f jquant2.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jquant2.c
+
+jutils.o : $(CDIR)/jutils.c $(JPEGHFILES)
+	@- if [ -f jutils.o ] ; then rm -f jutils.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/jutils.c
+
+clean : 
+	- rm -f *.[oa]
