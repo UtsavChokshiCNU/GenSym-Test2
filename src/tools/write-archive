@@ -1,0 +1,295 @@
+#!/bin/csh -f
+
+# Write-archive
+
+# Jim Allard
+
+# This C shell script is used to write archive tapes of products that have been
+# promoted into the external shipment area of the Gensym tape making facility.
+# This script should be run as part of the enabling process for newly promoted
+# products.  Though this script has been written to be as generic as possible,
+# this script has only been tested on Sparcs.  There is an automated facility
+# for recovering products from these archive tapes, called read-archive.  For a
+# description of the format of these tapes, see the description below that is
+# emitted into the data file on the tape.
+
+# The arguments to this script are the no-rewind device name for the device to
+# write the archive files to, and then a set of product names hyphenated with
+# the release number.
+
+# E.g. "write-archive /dev/nrst0 g2-30r1 tw-30r1 gda-10b10"
+
+# This script will then find those products, whether they are
+# independent or machine dependent, query the user about the set of products to
+# be written onto the tape, and then write the tape.
+
+goto main
+
+usage:
+
+echo "Usage: write-archive <no-rewind-device> <product-release> ..."
+echo " E.g.: write-archive /dev/nrst0 g2-30r1 tw-30r1 gda-10b10"
+
+exit 1
+
+fail:
+
+echo "ERROR:  The last command failed.  DO NOT USE THIS ARCHIVE\!"
+if ($fail == 0) set fail = 1
+goto exit
+
+main:
+
+# Set up a command checking alias.
+
+alias check 'set fail = $status ; if ($fail != 0) goto fail'
+set fail = 0
+
+# Set up variables with directory locations.
+
+set tools_dir = /gensym/tools
+set indep_dir = /st/ab/eship/indep
+set dep_dir = /st/ab/eship/dep
+set tmp_dir = `pwd`
+cd $dep_dir
+set deps = `/bin/ls -d *`
+if ($#deps == 0) then
+  echo "ERROR: Unable to find dependent directories in ${dep_dir}."
+  goto fail
+endif
+echo
+
+# Fetch arguments from argv into local variables.
+
+if ($#argv < 2) goto usage
+set device = $1
+shift
+set products = ($argv)
+
+# Allow the user to specify a subset of dependent directories for archiving
+# and check that all exist.
+
+echo ""
+echo "The following platforms will be archived IF they contain the"
+echo "specified product(s)."
+echo "    $deps"
+echo ""
+echo "Press <return> to archive all platforms or type a (subset of the)"
+echo -n "list of platforms to archive: "
+set userinput = "$<"
+set platforms = ($userinput)
+if ($#platforms > 0) then
+  set deps = ($platforms)
+  while ($#platforms > 0)
+    set platform = $platforms[1]
+    if (! -d ${dep_dir}/${platform}) then
+      echo "ERROR: $platform not found (i.e., directory ${dep_dir}/${platform})"
+      set fail = 1
+      goto exit
+    endif
+    shift platforms
+  end
+endif
+
+echo ""
+cd $tmp_dir
+
+# Check that the device looks like a no-rewind device.  If it does not, then
+# verify with the user that they really want to use this device.
+
+if ($device !~ *n*) then
+  echo ""
+  echo "The given device name, $device, does not have the letter n in it, as most"
+  echo "no-rewind device names do."
+  deviceok:
+  echo ""
+  echo -n "Are you sure you want to use this device name? (yes or no): "
+  set answer = $<
+  if ("$answer" == "yes") then
+    echo "Log:  Continuing with device name ${device}."
+  else if ("$answer" ==  "no") then
+    echo "ERROR:  Device not accepted, exiting."
+    goto usage
+  else
+    echo "Please enter yes or no."
+    goto deviceok
+  endif
+endif
+
+# Set up temporary file which will become archive.dat.
+
+echo "Log:  Creating archive data file."
+
+set archive_dir = /tmp/write-archive$$
+
+if (-e $archive_dir) then
+  rmdir $archive_dir
+  set fail = $status
+  if ($fail != 0) then
+    echo "ERROR: Unable to remove temp file ${archive_dir}.  Please remove it and try again."
+    goto fail
+  endif
+endif
+
+mkdir $archive_dir
+check
+
+set archive_name = archive.dat
+set tmp_archive = ${archive_dir}/$archive_name
+
+echo "# Gensym Product Archive for ${products}." > $tmp_archive
+check
+echo -n "# Written on " >> $tmp_archive
+check
+date >> $tmp_archive
+check
+
+cat <<'EOF' >> $tmp_archive
+
+# This tape was written using the write-archive tool, and can be read using
+# read-archive.  Both of these scripts are normally found with the tape making
+# utilities, but are also included in the first archive of this tape is case
+# they had been somehow lost.  To read this archive, call read-archive with a
+# single argument, the no-rewind path to the tape drive holding the archive
+# tape.  This tool will then prompt you with further instructions.
+
+# The tapes made by this utility are multi-archive tar tapes.  The first tar
+# archive on the tape contains a single file called archive.dat.  This file
+# contains one line per additional tar archive on the tape, plus blank lines
+# and comment lines preceeded by pound signs.  Each product line is formatted
+# as follows.
+
+#   <number> product <product-release> <dep or indep> (<platform-name>)
+
+# The number is how many archives must be skipped over from the beginning of
+# the tape to get to the archive for this line.  The product-release field
+# contains the name and the short version of the release number for that
+# product, such as "g2-30r1".  The word dep or indep indicates if this product
+# is machine dependent, or machine independent.  If it is machine dependent,
+# then there will be one additional field which is the name of the platform
+# that this product runs on.
+
+# The product archives on the tape are the product directories for that
+# product, as would be found in the /st/ab/eship/indep or the
+# /st/ab/dep/<platform> directory.
+
+'EOF'
+
+# Search for promotions products with the given names.  For each one found, add
+# a line to the tmp_archive.  If none can be found for a product, issue an
+# error message and exit.
+
+@ count = 0
+
+while ($#products > 0)
+  set product = $products[1]
+  shift products
+  echo "Log:  Collecting promotions for ${product}."
+  @ cached_count = $count
+  # Check for an independent product.
+  if (-d ${indep_dir}/$product) then
+    @ count ++
+    echo "$count $product" | \
+      awk '{printf "%-3s product %-19s indep\n",$1,$2}' >> $tmp_archive
+    check
+  endif
+  # Check for dependent products.
+  foreach dep ( $deps )
+    if (-d ${dep_dir}/${dep}/$product) then
+      @ count ++
+      echo "$count $product $dep" | \
+        awk '{printf "%-3s product %-19s dep   %s\n",$1,$2,$3}' >> $tmp_archive
+      check
+    endif
+  end
+  # Exit if we got no promotions for this product.
+  if ($cached_count == $count) then
+    echo "ERROR: No promotions could be found for ${product}."
+    set fail = 1
+    goto exit
+  endif
+end
+
+# Verify with the user that the discovered products are the desired ones.
+
+echo ""
+echo "The following log will be included in the archive."
+echo ""
+cat $tmp_archive
+
+archiveok:
+
+echo ""
+echo -n "Is this the correct set of products for the archive? (yes or no):  "
+set answer = $<
+
+if ("$answer" == "yes") then
+  echo "Log:  Beginning to write archive."
+else if ("$answer" ==  "no") then
+  echo "ERROR:  Archive not accepted, exiting."
+  set fail = 1
+  goto exit
+else
+  echo "Please enter yes or no."
+  goto archiveok
+endif
+
+# Rewind the tape, write out the archive file to the tape, then loop over the
+# lines in the archive data file, writing out promotions.
+
+echo "Log:  Rewinding tape on device ${device}."
+mt -f $device rewind
+check
+
+echo "Log:  Writing archive data file to tape."
+tar cf $device -C $archive_dir $archive_name -C $tools_dir write-archive -C $tools_dir read-archive
+check
+
+foreach line_raw ( " `cat $tmp_archive` ")
+  set line = ( $line_raw )
+  if ($#line >= 4) then
+    if ("$line[1]" != "#") then
+      # Line = product <promotion> dep|indep [dep-name]
+      echo "Log:  Writing #${line}."
+      if ($line[4] == indep) then
+        tar cf $device -C $indep_dir $line[3]
+        check
+      else if ($line[4] == dep) then
+        tar cf $device -C ${dep_dir}/$line[5] $line[3]
+        check
+      else
+        echo "ERROR:  Malformed line\!"
+        goto fail
+      endif
+    endif
+  endif
+end
+
+#  Rewind and offline the tape, then print the archive for labeling purposes.
+
+echo "Log:  Placing $device offline."
+mt -f $device offl
+check
+
+echo "Log:  Printing archive contents to ${PRINTER}.  Keep this sheet with the tape. "
+lpr -Pproduction $tmp_archive
+check
+
+goto exit
+
+exit:
+
+if ($fail == 0) then
+  echo "Log:  Archive written successfully.  Please REMOVE, LABEL, and WRITE PROTECT the tape."
+else
+  echo "ERROR:  Archive not written\!  Try again."
+endif
+
+if ($?tmp_archive) then
+  if (-e $tmp_archive) rm $tmp_archive
+endif
+if ($?archive_dir) then
+  if (-d $archive_dir) rmdir $archive_dir
+endif
+
+exit $fail
