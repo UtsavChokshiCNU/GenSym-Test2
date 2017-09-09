@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="02/06/02 18:48:32">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Modeling Seasonal Demand for Consumer Products</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="roledet7.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="multiple.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+      <div align="center"><b>e-SCOR User's Guide</b></div>
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/e-SCOR/OnlineHelpFiles/UsersGuide/html/roledeta.htm">  
+        Configuring Role Details for Multiple Products  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Modeling Seasonal Demand for Consumer Products
+</h2>
+<p>You can configure a Consumer role to model seasonal demand for a single consumer product. To do this, you create multiple Sc: Source Consumer categories on the role detail and configure each category to have different order timing, period, and size parameters. In addition, you configure the Product Selection parameters and the Source ID parameter of the Sc category to uniquely identify each source product.<a name="116882"></a></p>
+<p>This table shows how you might configure two Sc categories associated with the same consumer product for normal and holiday season demand:<a name="133266"></a></p>
+<p >
+  <a name="133276"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="133269"><div >Default Consumer Product</a></div></th>
+    <th><a name="133271"><div >Holiday Season Consumer Product</a></div></th>
+  </tr>
+  <tr>
+    <td><p>Source ID = <code>Normal Demand<br></code>Start Time = <code>1 week<br></code>Stop Time = <code>46 weeks<br></code>Order Period = <code>4</code>, <code>5</code>, <code>6<br></code>Order Size = <code>8</code>, <code>10</code>, <code>12</code><a name="133273"></a></p>
+</td>
+    <td><p>Source ID = <code>Holiday Demand<br></code>Start Time = <code>47 weeks<br></code>Stop Time = <code>52 weeks<br></code>Order Period = <code>7</code>, <code>8</code>, <code>9<br></code>Order Size = <code>23</code>, <code>25</code>, <code>28</code><a name="133275"></a></p>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<h6><b>Note: </b>If the Consumer role's Source Type is Push, the role cannot source multiple 
+products of the same type, which means it cannot have multiple Sc: Source 
+Consumer categories on its detail. In this case, the Consumer role receives 
+products regardless of consumer demand. 
+<a name="116884"></a></h6><h6><b>Caution: </b>Whenever you add categories to the role detail, you should click the Upgrade 
+option for the role "off;" otherwise, when you install a new version of e-SCOR, 
+the new version of e-SCOR will overwrite your changes to the role detail to use 
+the default role template.
+<a name="142623"></a></h6><h4 >	 To model seasonal demand for consumer products:<a name="116879"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>1	</b></td>    <td valign="top" width="580">Follow the steps under <a href="roledet5.htm#110814">Adding Multiple Source Categories to Buyer Role Details</a>.<a name="113273"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>2	</b></td>    <td valign="top" width="580">Display the properties dialog for each Sc: Source Consumer category on the role detail.<a name="116951"></a></td>  </tr></table><blockquote>  <a name="116952">When modeling seasonal demand, you must uniquely identify each source product by configuring the Source ID parameter. </a></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>3	</b></td>    <td valign="top" width="580">Configure the <a href="level247.htm#296717">Source ID</a> parameter on the Source tab of the Sc category to be a unique name.<a name="116967"></a></td>  </tr></table><blockquote>  <a name="116973">For example, you might use <code>Holiday Demand</code> for one Sc category's Source ID and <code>Normal Demand</code> for the other.</a></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>4	</b></td>    <td valign="top" width="580">Configure the <a href="level247.htm#296743">Start Time</a>, <a href="level247.htm#296752">Stop Time</a>, <a href="level247.htm#296760">Order Period</a>, and <a href="level247.htm#296773">Order Size</a> parameters on the Order tab of each Sc: Source Consumer category to reflect the timing, frequency, and size of orders for each unique product specification.<a name="116985"></a></td>  </tr></table><p>This figure shows the Products pool detail and the detail of a Consumer role with two Sc: Source Consumer categories, where one sources computers under conditions of normal demand and the other sources computers during the holiday season. The role uses separate Sc: Source Consumer categories for each finished product, because each has a different value for the Start Time, Stop Time, Order Period, and Order Size parameters. The Source ID parameters uniquely identify each source product. <a name="158643"></a></p>
+<p >
+  <a name="184259"> </a>
+<p><div align="left"><img src="images/roledea5.gif" border="0" hspace="0" vspace="0">
+</div><a name="184258"></a></p>
+
+
+
+</p>
+<p><b>Related topics:</b><a name="184260"></a></p>
+<p><a href="roledet5.htm#110814">Adding Multiple Source Categories to Buyer Role Details</a><a name="184264"></a></p>
+<p><a name="152417"></a></p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="roledet7.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="multiple.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
