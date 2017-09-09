@@ -1,0 +1,50 @@
+/* G2 resources $Id: g2.rc,v 1.1302 2008/03/01 05:26:04 ab Exp $ */
+
+#include "windows.h"
+
+App     ICON "g2.ico"		/* The alphabetically first icon is used by Explorer */
+g2      ICON "g2.ico"
+paused  ICON "g2-paused.ico"
+reset   ICON "g2-reset.ico"
+running ICON "g2-running.ico"
+
+/* Version info is nice to have because you can read it without launching the
+   app. It can include other useful flags such as VS_FF_PRIVATEBUILD, etc.
+
+   The magic "040904E4" means that the strings to follow are in
+   US English, Windows MultiLingual character set:
+   04------        = SUBLANG_ENGLISH_USA
+   --09----        = LANG_ENGLISH
+   ----04E4 = 1252 = Codepage for Windows:Multilingual.
+
+   The fileversion is major, minor, quality, rev
+*/
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION    2015,20,32,0
+PRODUCTVERSION 2015,20,32,0
+FILEOS          VOS_NT_WINDOWS32
+FILETYPE        VFT_APP
+BEGIN
+   BLOCK "StringFileInfo"
+      BEGIN
+        BLOCK "040904E4"
+        BEGIN
+            VALUE "Build ID", "TH27\0"
+            VALUE "Comments", "\0"
+            VALUE "CompanyName", "Gensym Corporation\0"
+            VALUE "FileDescription", "Gensym G2\0"
+            VALUE "FileVersion", "2015\0"
+            VALUE "InternalName", "g2\0"
+            VALUE "LegalCopyright", "Copyright \251 1986-2017 Gensym Corporation.\0"
+            VALUE "OriginalFilename", "g2.exe\0"
+            VALUE "ProductName", "G2\0"
+            VALUE "ProductVersion", "2015\0"
+            VALUE "SpecialBuild", "\0"
+        END
+      END
+
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1252
+    END
+END
