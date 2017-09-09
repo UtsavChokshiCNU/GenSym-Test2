@@ -1,0 +1,226 @@
+#!/bin/sh
+#
+# usage: do-test [-g2 <g2image>] [-display <X display>] [-ok <g2 ok file>]
+#
+#   This script performs a minimal test to determine whether g2 can properly
+# load and save a modularized kb and write simple output to a file.  This test
+# actually exercises  a large part of g2 and can often successfully identify
+# a bad image.  The test proceeds as follows.
+#    1) Copy smoke1.kb to the current directory.
+#    2) Start g2 and load and start smoke1.kb.  The sys-mod.kb module, on which
+#       it depends, is also loaded from the default module path.  The kb
+#       creates and writes lines to smoke.out to indicate its progress.  It
+#       changes the value of a parameter (which causes a different procedure
+#       to be executed on startup), saves its main module as smoke2.kb, then
+#       shuts down g2.
+#    3) Start g2 again but this time load and start smoke2.kb, which
+#       appends lines to smoke.out, then shuts down g2.
+#    4) Compare the output in smoke.out to the output in expected.out
+#       to determine whether the test worked properly.
+#   To make the test more effective, g2 is run within a special script called
+# run-command-with-timeout that will terminate g2 if it does not exit in a
+# reasonable amount of time.
+#   The organization of this script follows the steps desribed above.  Whenever
+# an error is detected, a variable smoke_error is set to TRUE.  The script is
+# divided into sections as follows.
+# + Assign default values to command-line parameters and other useful variables.
+# + Process command-line arguments to override defaults.
+# + Check for existence of an executable g2.
+#   Check for existence of smoke1.kb, to be loaded and run by g2, and copy it
+#     to the current directory.
+# + Run g2 with smoke1.kb and redirect output to a temporary file for analysis.
+#   Print the temporary file so that g2's output can be seen.
+#   Search the temporary file for error strings, report errors if found, and
+#     delete the temporary file.
+#   Check for existence of smoke2.kb and report an error if it is not found.
+# + Run g2 with (the newly written) smoke2.kb.  The steps are much like those
+#     for smoke1.kb above.
+# + Compare the lines that g2 wrote into smoke.out with those in expected.out
+#   and report errors if they differ.
+# + Delete all files that have been copied or created.
+# + Check the smoke_error variable for error occurrences and print
+#   "Smoke Test Failed" or "Smoke Test Passed" appropriately.
+
+#---------------------------------------------------------------------------
+# Assign default default values command-line parameters and other useful
+# variables.
+
+  # Default values.
+g2=./g2
+ok=/home/ab/ok/g2sitev83.ok
+modpath=$SRCBOX/kbs
+display=" "
+
+  # Flag to indicate whether an error occurred.
+smoke_error=FALSE
+
+  # Other useful variables.
+tmpfile=/tmp/smoke$$
+smoke_sources=$SRCBOX/tests/g2smoke
+smoke_scripts=$SRCBOX/tests/g2smoke
+usage="usage: do-test [-g2 <g2image>] [-display <X display>] [-ok <g2 ok file>] -modpath <module path>"
+
+#---------------------------------------------------------------------------
+# Process command-line arguments to override defaults.
+
+while [ $# -gt 1 ]; do
+    if [ "$2" = "" ]; then
+        echo $usage
+        echo "Error: $0: badly formed arguments" 1>&2; exit 1
+    fi
+    case "$1" in
+        -g2)
+            g2=$2
+            ;;
+        -ok)
+            ok=$2
+            ;;
+        -display)
+            display="-display $2"
+            ;;
+        -modpath)
+            modpath=$2
+            ;;
+        *)
+            echo $usage
+            echo "Error: $0: badly formed arguments" 1>&2; exit 1
+    esac
+    shift; shift     # remove the option and its value
+done
+
+#---------------------------------------------------------------------------
+# Check that the g2 image exists and is executable (on all Unix platforms
+# except the DecStation with ultrix, which doesn't provide a test for
+# the executable bit), check for the existence of smoke1.kb, then
+# copy it to the current directory (copying is needed because loading the
+# file from $smoke_sources directly with g2's -kb option causes the working
+# directory to be reset).
+
+if [ ! -f $g2 ]; then
+   echo "smoke test error: no g2 image $g2 found"
+   smoke_error=TRUE
+elif [ ! "`/usr/local/bin/machine`" = "mips" ]; then     # ultrix has no -x
+    if [ ! -x $g2 ]; then
+        echo "g2 image $g2 is not executable"
+        smoke_error=TRUE
+    fi
+fi
+
+if [ ! -f $smoke_sources/smoke1.kb ]; then
+   echo "smoke test error: cannot find $smoke_sources/smoke1.kb"
+   smoke_error=TRUE
+fi
+
+cp $smoke_sources/smoke1.kb .
+
+#---------------------------------------------------------------------------
+# Because smoke2.kb is written by smoke1.kb it should not exist prior to
+# the test
+
+if [ -f smoke2.kb ]; then
+    rm -f smoke2.kb
+fi
+
+#---------------------------------------------------------------------------
+# + Run g2 with smoke1.kb and check for errors.
+
+if [ ! $smoke_error = TRUE ]; then
+
+      # Run g2 and redirect standard output and error to $tmpfile for analysis.
+      # Smoke1.kb should save smoke2.kb.
+    echo "LOG: running g2 with smoke1.kb"
+    $smoke_scripts/run-command-with-timeout 600 $g2 \
+             -module_search_path $modpath \
+              $display -ok $ok -kb smoke1.kb -start 1> $tmpfile 2>&1
+
+      # Make output visible to users.
+    cat $tmpfile
+
+      # Search output for indicators of error or abnormal termination.  Egrep
+      # returns status ($?) 0 if there was a match. Standard output and error
+      # are redirected to the bit bucket. Note that tr 'A-Z' 'a-z' could be
+      # replaced by egrep -i except that the DecStation Ultrix does not
+      # support the -i option for egrep.
+    tr 'A-Z' 'a-z' < $tmpfile | egrep "error|killing" 1> /dev/null 2>&1
+    if [ $? = 0 ]; then
+       echo "smoke test error: running smoke1.kb resulted in an error"
+       smoke_error=TRUE
+    fi
+
+    rm -f $tmpfile
+
+      # Check that smoke2.kb was saved.
+    if [ ! -f smoke2.kb ]; then
+       echo "smoke test error: smoke1.kb failed to write smoke2.kb"
+       smoke_error=TRUE
+    fi
+fi
+
+#---------------------------------------------------------------------------
+# + Run g2 with smoke2.kb, which was saved by smoke1.kb.
+
+if [ ! $smoke_error = TRUE ]; then
+
+      # Run g2 and redirect output to $tmpfile for analysis.
+    echo "LOG: running g2 with smoke2.kb"
+    $smoke_scripts/run-command-with-timeout 600 $g2 \
+             -module_search_path $modpath \
+              $display -ok $ok -kb smoke2.kb -start 1> $tmpfile 2>&1
+
+      # Make output visible to users.
+    cat $tmpfile
+
+      # Search output for indicators of error or abnormal termination and
+      # print an error message if found.  Discard output.
+    tr 'A-Z' 'a-z' < $tmpfile | egrep "error|killing" 1> /dev/null 2>&1
+    if [ $? = 0 ]; then
+       echo "smoke test error: running smoke2.kb resulted in an error"
+       smoke_error=TRUE
+    fi
+
+    rm -f $tmpfile
+fi
+
+#---------------------------------------------------------------------------
+# + Compare the lines that g2 wrote into smoke.out with expected output.
+#   If they differ, print an error message and diff the files so that the
+#   user can see the differences.
+
+if [ ! $smoke_error = TRUE ]; then
+
+    cmp -s smoke.out $smoke_sources/expected.out
+
+    if [ ! $? = 0 ]; then
+       echo "smoke test error: g2 output differed from expected output"
+       smoke_error=TRUE
+       echo "diff smoke.out $smoke_sources/expected.out" | sh -v
+    fi
+fi
+
+#---------------------------------------------------------------------------
+# + Remove files that have been copied or created.
+
+if [ -f smoke.out ]; then
+    rm -f smoke.out
+fi
+
+if [ -f smoke1.kb ]; then
+    rm -f smoke1.kb
+fi
+
+
+if [ -f smoke2.kb ]; then
+    rm -f smoke2.kb
+fi
+
+#---------------------------------------------------------------------------
+# + Check for occurrence of an error.  Print status message and exit
+#   with appropriate status.
+
+if [ $smoke_error = TRUE ]; then
+    echo "Smoke Test Failed"
+    exit 1
+else
+    echo "Smoke Test Passed"
+    exit 0
+fi
