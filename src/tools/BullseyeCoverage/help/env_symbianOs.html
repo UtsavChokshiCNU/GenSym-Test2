@@ -1,0 +1,209 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_platform.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>Symbian OS</h1>
+<p>
+<a href="#7">Carbide.c++ 2.0</a><br>
+<a href="#0">Carbide.c++ 1.3</a><br>
+<a href="#1">Carbide.c++ 1.2</a><br>
+<a href="#2">Carbide.c++ 1.1</a><br>
+<a href="#3">CodeWarrior</a><br>
+<a href="#4">Command Line</a><br>
+<a href="#5">Emulator</a><br>
+<a href="#6">ARM</a><br>
+<p>
+If you are unable to build within the Carbide.c++ environment, build at the <a href="#4">Command Line</a>.
+<p>
+BullseyeCoverage does not support Nokia Carbide.vs.
+<h2><a name=7></a>Carbide.c++ 2.0</h2>
+<p>
+<img alt="Carbide.c++ Preferences" src="env-symbianOs-carbideC++-2.0.png" style="float:right;margin-left:1em">
+<ol>
+<li>
+From the <code>Start</code> menu, choose <code>Programs</code>:
+<code>Carbide.c++ v2.0</code>:
+<code>Configure environment for WINSCW command line</code>.
+Do this only one time.
+Then close Carbide.c++.
+<li>
+Install BullseyeCoverage after step 1.
+<li>
+Use the Carbide.c++ menu command <code>Window Preferences</code>.
+Navigate to <code>Carbide.c++</code>: <code>Build</code>.
+Turn off the option <code>Use built-in Nokia x86 environment variables for WINSCW builds</code>.
+</ol>
+<h2><a name=0></a>Carbide.c++ 1.3</h2>
+<p>
+<img alt="Carbide.c++ Preferences" src="env-symbianOs-carbideC++-1.3.png" style="float:right;margin-left:1em">
+<ol>
+<li>
+From the <code>Start</code> menu, choose <code>Programs</code>:
+<code>Carbide.c++ v1.3</code>:
+<code>Configure environment for WINSCW command line</code>.
+Do this only one time.
+Then close Carbide.c++.
+<li>
+Install BullseyeCoverage after step 1.
+<li>
+Use the Carbide.c++ menu command <code>Window Preferences</code>.
+Navigate to <code>Carbide.c++</code>: <code>Build</code>.
+Turn off the option <code>Use built-in Nokia x86 environment variables for WINSCW builds</code>.
+</ol>
+<h2><a name=1></a>Carbide.c++ 1.2</h2>
+<p>
+<img alt="Carbide.c++ Preferences" src="env-symbianOs-carbideC++-1.2.png" style="float:right;margin-left:1em">
+Use the Carbide.c++ menu command <code>Window Preferences</code>.
+Navigate to <code>Carbide.c++</code>.
+Turn off the option <code>Use built-in Nokia x86 environment variables for WINSCW builds</code>.
+<h2><a name=2></a>Carbide.c++ 1.1</h2>
+<p>
+<img alt="Carbide.c++ project properties" src="env-symbianOs-carbideC++-1.1.png" style="float:right;margin-left:1em">
+To configure Carbide.c++, follow the steps below.
+<ol>
+<li>
+Use the Carbide.c++ menu command <code>Project Properties</code>.
+<li>
+Select <code>C/C++ Build</code>
+<li>
+Choose a <code>Configuration</code> setting for your emulator
+<li>
+Select <code>Tool Settings</code>
+<li>
+Select <code>WINSCW C/C++ Compiler</code>.
+Change the <code>Command</code> setting from
+<code>mwccsym2.exe</code> to
+<span style=white-space:nowrap>
+<code>"</code><i>BullseyeCoverage</i><code>/bin/mwccsym2.exe"</code>.
+</span>
+<li>
+Select <code>WINSCW C/C++ Linker</code>.
+Change the <code>Command</code> setting from
+<code>mwldsym2.exe</code> to
+<span style=white-space:nowrap>
+<code>"</code><i>BullseyeCoverage</i><code>/bin/mwldsym2.exe"</code>.
+</span>
+</ol>
+<p style=clear:both>
+<h2><a name=3></a>CodeWarrior</h2>
+<p>
+<img alt="" src=env_symbianOs-codeWarrior.png style="float:right;margin-left:1em">
+CodeWarrior for Symbian OS incorrectly interprets messages from
+BullseyeCoverage as warnings.
+You can safely ignore these messages.
+<h2><a name=4></a>Command Line</h2>
+<p>
+Before running <code>abld</code>, make sure the
+<i>BullseyeCoverage</i><code>\bin</code> directory is first in the
+<code>PATH</code> environment variable.
+<pre>
+set PATH=%ProgramFiles%\BullseyeCoverage\bin;%PATH%
+cd <i>project-directory</i>\group
+bldmake bldfiles
+abld clean winscw
+cov01 -1
+abld build winscw
+</pre>
+<h2><a name=5></a>Emulator</h2>
+<p>
+BullseyeCoverage supports running under the Symbian OS emulator.
+<p>
+Diagnostic messages are written to the emulator log file <code>%TEMP%/epocwind.out</code>.
+To enable logging, from the emulator menu choose
+<code>File</code>: <code>Preferences</code>: <code>C++ Debugging</code>:
+<code>Enable EPOCWIND.OUT debugging</code>.
+<h2><a name=6></a>ARM</h2>
+<p>
+There are several requirements for using BullseyeCoverage on ARM devices.
+<ol>
+<li>
+If you use <a href="http://www.arm.com/products/DevTools/RVCT.html">ARM RVCT</a>
+then you must build and link with the BullseyeCoverage run-time as describe below.
+For <a href="http://www.codesourcery.com/gnu_toolchains/arm">GCC</a>,
+skip this step; BullseyeCoverage automatically links with a pre-built run-time.
+<p>
+<ol style="list-style-type:lower-alpha">
+<li>
+Build the run-time.
+<pre>
+cd %ProgramFiles%\BullseyeCoverage\run
+rem <b>Adjust the setting of %idir% for your SDK version</b>
+set idir=/S60/devices/S60_3rd_FP2_SDK_v1.1/epoc32/include
+rem <b>Enter the following 3 lines as one command</b>
+armcc -I%idir% -I%idir%/libc -I%idir%/variant --preinclude rvct2_2/rvct2_2.h --apcs /inter --cpu 5T -D__ARMCC__ -D__EABI__ -D__EPOC32__ -D__SYMBIAN32__
+	--diag_suppress 66,161,550,611,654,997,1152,1300,1464,1488,1566,6318,6331 --dllimport_runtime --enum_is_int --exceptions --exceptions_unwind
+	--export_all_vtbl --fpmode ieee_no_fenv --fpu softvfp --no_vfe --thumb -O2 -Ono_known_library -c libcov-symbian.cpp
+armar --create ../lib/libcov-symbian-rvct.lib libcov-symbian.o
+</pre>
+
+<li>
+Copy <i>BullseyeCoverage</i><code>/lib/libcov-symbian-rvct.lib</code> to the SDK directory
+containing <code>efsrv.lib</code>.
+<li>
+Add the following to your MMP file:
+<pre>
+STATICLIBRARY libcov-symbian-rvct.lib
+LIBRARY efsrv.lib
+</pre>
+</ol>
+<p>
+<li>
+DLL projects must enable writable static data.
+To do this, add the following to your MMP file:
+<pre>
+EPOCALLOWDLLDATA
+</pre>
+<li>
+Add a call to <a href=ref_cov_write.html>cov_write</a> at the last
+possible statement in your program.
+This is necessary because Symbian OS does not support the termination
+processing required by BullseyeCoverage.
+<p>
+<li>
+Symbian OS does not support environment variables so the
+BullseyeCoverage run-time reads environment variables from the file
+<code>\BullseyeCoverageEnv.txt</code>, on any accessible drive.
+This ASCII text file has the format below:
+<pre>
+<i>name1</i>=<i>value1</i>
+<i>name2</i>=<i>value2</i>
+<i>...</i>
+</pre>
+<p>
+The default value for the <code>COVFILE</code> environment variable is <code>e:\test.cov</code>.
+</li>
+</ol>
+<p style="font-size:xx-small">
+Last reviewed: 11 Jan 2010
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
