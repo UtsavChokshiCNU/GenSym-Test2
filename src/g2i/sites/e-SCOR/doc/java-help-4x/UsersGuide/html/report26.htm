@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="02/06/02 18:48:16">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Configuring the Excel Macros for Formatting the Report</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="report25.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="report27.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+      <div align="center"><b>e-SCOR User's Guide</b></div>
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/e-SCOR/OnlineHelpFiles/UsersGuide/html/reports.htm">  
+        Using Reports  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Configuring the Excel Macros for Formatting the Report
+</h2>
+<p>The default Excel report defines two macros, which e-SCOR uses to format the report:<a name="282447"></a></p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580"><code>DefaultFormatSheet</code>, which is the default macro for formatting the report template when you choose Create Report on a report object in e-SCOR. <a name="109047"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580"><code>DefaultFormatData</code>, which you can use to format the report data when the report updates.<a name="109136"></a></td>  </tr></table><p>The <code>DefaultFormatSheet</code> macro creates the column headers and other header text. <a name="109191"></a></p>
+<p>To save computational resources, the default Excel report does not use the <code>DefaultFormatData</code> macro to format the report data. The macro exists, however, in the default report, as an empty macro.<a name="131955"></a></p>
+<p>You use Visual Basic to customize the macros, which have these signatures:<a name="109219"></a></p>
+<blockquote>  <a name="109263"><code>DefaultFormatSheet (SheetName As String, Activate As Boolean, <br>                   InputReport As Boolean)</code></a></blockquote>
+<blockquote>  <a name="109273"><code>DefaultFormatData (SheetName As String, Activate As Boolean, <br>                  InputReport As Boolean)</code></a></blockquote>
+<p>If you edit the macro, you can either create the report again to format it, using the new macro, or you can explicitly format the report in Excel.<a name="282018"></a></p>
+<h4 >	 To configure the Excel macros for formatting the report:<a name="282360"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td valign="top" width="20"><img src="images/arrow1.gif"></td>
+    <td valign="top" width="580">Display the properties dialog for the report, click the Excel tab, and configure the Excel Macro to Format Sheet and Excel Macro to Format Data parameters.<a name="109309"></a></td>
+  </tr>
+</table><p>This figure shows the default dialog for configuring the Excel macros of a Role Output Report:<a name="1139732"></a></p>
+<p >
+  <a name="1139743"> </a>
+<p><div align="left"><img src="images/excel-38.gif" border="0" hspace="0" vspace="0">
+</div><a name="1139742"></a></p>
+
+
+
+</p>
+<h4 >	 To format an existing report, using the new macro:<a name="281994"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td valign="top" width="20"><img src="images/arrow1.gif"></td>
+    <td valign="top" width="580">Choose Report &gt; Format from the e-SCOR floating toolbar:<a name="281996"></a></td>
+  </tr>
+</table><p >
+  <a name="282003"> </a>
+<p><div align="left"><img src="images/escor-to.gif" border="0" hspace="0" vspace="0">
+</div><a name="282002"></a></p>
+
+
+
+</p>
+<h4 >	 To display the VB code that calls the default macros:<a name="281988"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>1	</b></td>    <td valign="top" width="580">In Excel, choose Tools &gt; Macro &gt; Visual Basic Editor.<a name="188354"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>2	</b></td>    <td valign="top" width="580">In the Project tree view in the upper-left of the editor, expand the Modules node under the <code>VBAProject</code> for the <code>Default-Summary-Reports.xls</code>, then double-click the <code>ReThinkModule</code>. <a name="188361"></a></td>  </tr></table><blockquote>  <a name="188398">Visual Basic displays an editor that shows the VB code associated with the default spreadsheet. </a></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>3	</b></td>    <td valign="top" width="580">Choose the <code>DefaultFormatSheet</code> macro from the scroll list at the upper-right of the code window to view the default macro.<a name="188414"></a></td>  </tr></table><blockquote>  <a name="189105">The Visual Basic Editor looks like this:</a></blockquote>
+<p >
+  <a name="1150700"> </a>
+<p><div align="left"><img src="images/vb-edito.gif" border="0" hspace="0" vspace="0">
+</div><a name="1150699"></a></p>
+
+
+
+</p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>4	</b></td>    <td valign="top" width="580">Choose the <code>DefaultFormatData</code> macro from the scroll list to view the arguments to the macro that formats data when the report updates.<a name="188436"></a></td>  </tr></table><p>Using Visual Basic, you would record a new macro for formatting the report template and/or report data, which would appear in this code file. See the Visual Basic documentation for details.<a name="188993"></a></p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="report25.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="report27.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
