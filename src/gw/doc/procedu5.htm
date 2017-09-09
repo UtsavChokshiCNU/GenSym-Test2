@@ -1,0 +1,101 @@
+<html><head><title>Remote Procedures</title></head>
+<body bgcolor="#ffffff">
+<a href="procedu4.htm"><h5>| Prev </a> <a href="procedu6.htm">| Next </a> <a href="procedur.htm">| Start of Chapter </a> <a href="proced11.htm">| End of Chapter </a> <a href="booktoc.htm">| Contents </a> <a href="bookix.htm">| Index |</a> (6 out of 12)</h5> <br>
+
+
+<a name="2911">
+<h1> gw-finish-url-reply 
+</h1>
+</a><a name="2912">
+Called by a response procedure when it has finished generating the resource 
+requested of it. 
+<p>
+</a><a name="2913">
+<h2> Synopsis </h2>
+</a><ul><a name="2914">
+<pre><code>gw-finish-url-reply (</code><em>fetch-id</em><code>: integer) 
+</code></pre>
+</a><a name="2925">
+<table border=4>
+<tr><th align="left" valign="middle"><a name="2917">
+<strong>Argument 
+</strong>
+</a><th align="left" valign="middle"><a name="2919">
+<strong>Description 
+</strong>
+</a>
+<tr><td valign="middle"><a name="2921">
+ <em>fetch-id 
+</em><p>
+</a><br><td valign="middle"><a name="2923">
+Should match the number provided when 
+G2 WebLink invoked the routine specified 
+with the URL pattern in the call to <a href="proced11.htm#3253">gw-
+tender-resources()</a>. 
+<p>
+</a><br>
+
+</table>
+
+<p></a></ul><a name="2926">
+<h2> Description </h2>
+</a><a name="2927">
+When a response procedure finishes generating a resource in response to a 
+request from the bridge, it must call <a href="procedu5.htm#2911"></a>gw-finish-url-reply(). This procedure closes the 
+connection to the Internet client requesting that resource and performs clean up 
+tasks associated with the closing of that connection. 
+<p>
+</a><a name="2929">
+Any response procedure must either call <code>gw-finish-url-reply()</code> when it has successfully generated a resource, or <a href="procedu4.htm#2774"></a>gw-decline-to-serve-url() if it cannot generate the 
+resource. 
+<p>
+</a><a name="2931">
+Response procedures are invoked through the procedure <code>gw-tender-resources()</code>. 
+A response procedure in G2 generates a resource by making one or more calls to 
+<a href="procedu2.htm#5708">gw-add-to-url-reply()</a>. 
+<p>
+</a><a name="2933">
+<h2> Return Values </h2>
+</a><a name="2934">
+None. 
+<p>
+</a><a name="2935">
+
+
+<p></a><a name="2936">
+<h2> Signals </h2>
+</a><a name="2946">
+<table border=4>
+<tr><th align="left" valign="middle"><a name="2939">
+<strong>Signal 
+</strong>
+</a><th align="left" valign="middle"><a name="2941">
+<strong>Description 
+</strong>
+</a>
+<tr><td valign="middle"><a name="2943">
+<code>invalid-url-request-
+number
+</code><p>
+</a><br><td valign="middle"><a name="5928">
+Indicates that when the call was received 
+by G2 WebLink, no client request with this 
+ID was in progress. This may indicate that 
+the client closed the connection before G2 
+finished it. 
+<p>
+</a><br>
+
+</table> 
+
+<p></a><a name="2947">
+
+
+<p></a><a name="2966">
+
+
+<p></a>
+
+<a href="procedu4.htm"><h5>| Prev </a> <a href="procedu6.htm">| Next </a> <a href="procedur.htm">| Start of Chapter </a> <a href="proced11.htm">| End of Chapter </a> <a href="booktoc.htm">| Contents </a> <a href="bookix.htm">| Index |</a> (6 out of 12)</h5> <br>
+<A HREF="titlepa1.htm"><h6>Copyright &#169; 1996, Gensym Corporation, Inc.</h6></A>
+</body></html>
