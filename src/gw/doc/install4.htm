@@ -1,0 +1,321 @@
+<html><head><title>Installing and Running G2 WebLink</title></head>
+<body bgcolor="#ffffff">
+<a href="install3.htm"><h5>| Prev </a> <a href="install5.htm">| Next </a> <a href="installi.htm">| Start of Chapter </a> <a href="install6.htm">| End of Chapter </a> <a href="booktoc.htm">| Contents </a> <a href="bookix.htm">| Index |</a> (5 out of 7)</h5> <br>
+
+
+<a name="2785">
+<h1> Installing G2 WebLink</h1>
+</a><a name="2786">
+To install G2 WebLink on any platform, you must follow these steps:
+<p>
+</a><ol><a name="2787">
+<li>Create a subdirectory into which you can install G2 WebLink.<p>
+</a><a name="3695">
+On VMS systems, you install the product using the VMSINSTAL utility, which creates required subdirectories automatically.
+<p></a><a name="2789">
+<li>Download the G2 WebLink archive file into that subdirectory, following the steps listed in <a href="install2.htm#2561">"Downloading G2 WebLink by FTP"</a>.<p>
+</a><a name="2793">
+<li>Unpack G2 WebLink files. The following table summarizes the unpacking commands used on the platforms where G2 WebLink is supported:<p>
+</a><a name="3698">
+<table border=4>
+<tr><th align="left" valign="middle"><a name="2796">
+<strong>Platform 
+</strong>
+</a><th align="left" valign="middle"><a name="2798">
+<strong>Unpack Command 
+</strong>
+</a>
+<tr><td valign="middle"><a name="2800">
+Unix
+<p>
+</a><br><td valign="middle"><a name="2802">
+<code>tar xvf &lt;</code><em>filename</em><code>&gt;.tar
+</code><p>
+</a><br>
+<tr><td valign="middle"><a name="2804">
+Windows
+<p>
+</a><br><td valign="middle"><a name="2806">
+<code>pkunzip &lt;</code><em>filename</em><code>&gt;.zip
+</code><p>
+</a><br>
+<tr><td valign="middle"><a name="2808">
+VMS
+<p>
+</a><br><td valign="middle"><a name="2810">
+$ @sys$update:vmsinstal 
+&lt;<em>product</em>&gt;-&lt;<em>version</em>&gt; &lt;<em>pathname</em>&gt; 
+<p>
+</a><br>
+
+</table>
+
+<p></a></ol><a name="2812">
+The following sections list the steps for installing G2 WebLink on Unix, Windows, 
+and VMS systems. 
+<p>
+</a><a name="2813">
+<h2> Installing on Unix Systems </h2>
+</a><a name="2814">
+<dt><img src="diamond.gif">
+<strong>To install G2 WebLink on a Unix system, follow these steps: 
+
+</strong></dt><p></a><ol><a name="2815">
+<li>Create a target directory, using a command of the following form: <p>
+</a><a name=3699">
+<pre><code>% mkdir /usr/</code><em>product 
+</em></pre>
+</a><a name=3700">
+<pre>For example: 
+</pre>
+</a><a name=3701">
+<pre><code>% mkdir /usr/gwl0</code> 
+</pre>
+</a><a name="2819">
+<li>Set the current working directory to the target directory, using a command of the following form: <p>
+</a><a name=3702">
+<pre><code>% cd /usr/</code><em>product 
+</em></pre>
+</a><a name="3703">
+For example: 
+<p></a><a name=3704">
+<pre><code>% cd /usr/gwl0</code> 
+</pre>
+</a><a name="2825">
+<li>Download the product, following the steps listed in <a href="install2.htm#2561">"Downloading G2 WebLink by FTP"</a>. <p>
+</a><a name="2827">
+<li>Unpack the downloaded archive file, which is in Unix <code>tar</code> format: <p>
+</a><a name=3705">
+<pre><code>tar xvf</code> &lt;<em>product</em>&gt;&lt;<em>rev</em>&gt;.<code>tar</code> 
+</pre>
+</a></ol><a name="2830">
+<h2> Installing on Windows Systems</h2>
+</a><a name="2831">
+<dt><img src="diamond.gif">
+<strong>To install G2 WebLink on a Windows system, follow these steps:
+
+</strong></dt><p></a><ol><a name="2832">
+<li>Create a target directory: <p>
+</a><a name=3706">
+<pre><code>mkdir gensym</code><em>product 
+</em></pre>
+</a><a name="2834">
+<li>Set the current working directory to the target directory: <p>
+</a><a name=3707">
+<pre><code>&gt; cd gensym</code><em>product</em> 
+</pre>
+</a><a name="2838">
+<li>Download the product, following the steps listed in <a href="install2.htm#2561">"Downloading G2 WebLink by FTP"</a>. <p>
+</a><a name="2840">
+<li>Unpack the downloaded archive file, which is in PKZIP format. Utilities which pack and unpack this format are widely available. For example: <p>
+</a><a name=3708">
+<pre><code>&gt; pkunzip </code>&lt;<em>product</em>&gt;&lt;<em>rev</em>&gt;<code>.zip 
+</code></pre>
+</a></ol><a name="2842">
+<h2> Installing on VMS Systems</h2>
+</a><a name="2843">
+<dt><img src="diamond.gif">
+<strong>To install G2 WebLink on a VMS system, follow these steps:
+
+</strong></dt><p></a><ol><a name="2844">
+<li>Login as <code>system</code>. <p>
+</a><a name="2845">
+<li>Run the VMSINSTAL utility, providing as parameters the name of the downloaded product archive (without the <code>.a</code> extension) and the full path of the directory into which it was downloaded. Use a command of the following form:<p>
+</a><a name=3709">
+<pre><code>$ @sys$update:vmsinstal</code> &lt;<em>product</em>&gt;-&lt;<em>version</em>&gt; &lt;<em>pathname</em>&gt;
+</pre>
+</a><a name="3710">
+For example:
+<p></a><a name=3711">
+<pre><code>$ @sys$update:vmsinstal gw-10b4-c18<br>
+mydisc:[myhome.ftpdir]
+</code></pre>
+</a><a name="2849">
+<li>When queried about whether you are satisfied with your system disk backup, accept the default, Yes, by pressing the Return key: <p>
+</a><a name=3716">
+<pre><code>Are you satisfied with the backup of your system 
+disk[Yes]?
+</code></pre>
+</a><a name="3717">
+The program responds with:
+<p></a><a name=3718">
+<pre><code>The following products will be processed:<br>
+GW V1.0
+</code></pre>
+</a><a name=3719">
+<pre><code>Beginning installation of GW V1.0 at 10:09
+</code></pre>
+</a><a name=3720">
+<pre><code>VMSINSTAL-I-RESTORE, Restoring product save set A ...<br>
+GW V1.0
+</code></pre>
+</a><a name="2856">
+<li>The program determines whether a directory location already exists for G2 WebLink files and sample knowledge base (KB) files. The default directory for G2 WebLink is &lt;system-disk&gt;:[gw10], where &lt;system-disk&gt; is the name of your system disk. <p>
+</a><a name="3721">
+If the directory exists, the program queries whether it should replace the existing contents of the directory. If you want to overwrite the old contents with G2 WebLink files from the tape, enter Yes. 
+<p></a><ul><a name="3722">
+<pre><code>Prior GW found - replace[n]?
+</code></pre>
+</a></ul><a name="3723">
+If you answer <code>No</code>, the program displays the name of the default directory for version 1.0 and prompts you to enter the name of another directory. <br>If you are installing G2 WebLink for the first time, or the directory does not exist, the program displays the name of the default directory: 
+<p></a><ul><a name="3724">
+<pre><code>&lt;system-disk&gt;:[gw10]
+</code></pre>
+</a></ul><a name="3725">
+and prompts you either to accept the default directory or to enter a new directory location. In this example, the system disk name is <code>dka300</code>:
+<p></a><ul><a name="3726">
+<pre>*<code>GW directory [DKA300:[gw10]]:
+</code></pre>
+</a></ul><a name="3727">
+To accept the default directory, press the Return key. Otherwise, enter the name of the directory where you want G2 WebLink executable files to be stored. 
+<p></a><a name="2868">
+<li>For the next several minutes the program continues, placing the correct disk name in G2 WebLink startup file, gw10-startup.com, and storing the file in sys$startup. <p>
+</a><a name="3434">
+<li>The program checks the sizes of the VMS parameters PAGEFILE, WSMAX, and VIRTUALPAGECNT. If changes are required, the installation issues one or more of the following prompts, and builds a file called gensym_modparams.dat. By default, gensym_modparams.dat is stored in sys$specific:[sysexe]. <p>
+</a><ol type=a><a name="3728">
+<li>If the size of the PAGEFILE parameter does not meet or exceed the minimum size required by G2 WebLink, you are prompted to specify a new page file size or accept the default (50000). 
+<p></a><ul><a name="3734">
+<pre><code>PAGEFILE size to use [50000]:
+</code></pre>
+</a></ul><a name="3737">
+<li>If the size of the WSMAX parameter does not meet or exceed the default minimum (2000) required by G2 WebLink, you are prompted either to accept the default by pressing the Return key or to specify a new size. If the new size is below the minimum, you are prompted again until the size specified meets or exceeds the minimum: 
+<p></a><ul><a name="3744">
+<pre><code>WSMAX size to use [2000]: 
+</code></pre>
+</a></ul><a name="3747">
+<li>If the size of the VIRTUALPAGECNT parameter does not meet or exceed the minimum, you are prompted either to accept the default (30000) by pressing the Return key or to specify a new size. If the new size is below the minimum, you are prompted again until the size specified meets or exceeds the minimum: 
+<p></a><ul><a name="3748">
+<pre><code>VIRTUALPAGECNT size to use [30000]:
+</code></pre>
+</a></ul><a name="3751">
+<li>The program records the following action items concerning modifying PAGEFILE, WSMAX, and/or VIRTUALPAGECNT in a file called<br>installation_action_items.com. The file is stored in gw10$dir.
+<p></a><ul><a name="3752">
+<pre><code>$! Increase PAGEFILE size to &lt;pagefile-size&gt;
+</code></pre>
+</a><a name="3753">
+<pre><code>$ sysgen create pagefile-name/size=&lt;pagefile-size&gt;
+</code></pre>
+</a><a name="3754">
+<pre><code>$ rename SYS$SPECIFIC:[SYSEXE]GENSYM_MODPARAMS.DAT 
+MODPARAMS.DAT.
+</code></pre>
+</a><a name="3755">
+<pre><code>$!Run AUTOGEN from SYS$UPDATE:</code> 
+</pre>
+</a><a name="3756">
+<pre><code>$ @AUTOGEN GETDATA REBOOT NOFEEDBACK.
+</code></pre>
+</a><a name="3757">
+<pre>&lt;pagefile-size&gt; is the page file size you 
+specified at the prompt, or the default if you 
+accepted the default. pagefile-name is the 
+directory specification of your system's page file. 
+</pre>
+</a></ul><a name=3758">
+After you complete the installation, look at the file:<p>
+</a><ul><a name="3759">
+<pre><code>installation_action_items.com</code> 
+</pre>
+</a></ul><a name=3760">
+to complete each recommended action that may be listed there (further instructions appear in step 12 of this procedure). Note that the file is created even if no actions are recorded in it; the file is empty if you do not need to reset any of the parameters. <p>
+</a></ol><a name="2902">
+<li>The program prompts for the proper location to place the call to G2 WebLink start-up command procedure. Gensym recommends that you accept the default when installing G2 WebLink for the first time, sylogin.com, which is located in sys$manager. To accept the default, press the Return key:<p>
+</a><ul><a name="3761">
+<pre><code>*Place startup call in SYLOGIN.COM [Y]</code>:
+</pre>
+</a></ul><a name="2906">
+<li>The next few prompts concern the building of a standard G2 WebLink user account, with the correct set of quotas, privileges, and permissions. The account has the default home directory of gw10$dir. If you do not have an account correctly set up to run G2 WebLink, Gensym recommends that you let the installation program create this standard account. Answer the prompts as follows:<p>
+</a><ol type=a><a name="3762">
+<li>When asked whether you want to create the account, press the Return key to accept the default, YES:
+<p></a><ul><a name="3765">
+<pre><code>Create a GW user account [Y]?
+</code></pre>
+</a></ul><a name="3766">
+<li>When prompted for the name of the user account, press the Return key to accept the default, GWUSER, or specify another name:
+<p></a><ul><a name="3769">
+<pre><code>Name of account [GWUSER]</code>:
+</pre>
+</a></ul><a name="3770">
+<li>When prompted for the UIC for the account, press the Return key to accept the default ([200, 110]), or specify your own limits:
+<p></a><ul><a name="3773">
+<pre><code>UIC of account [[200,110]]:
+</code></pre>
+</a></ul><a name="3776">
+<li>When prompted for the password of the account, press the Return key to accept the default (gensym), or specify another password:
+<p></a><ul><a name="3779">
+<pre><code>Password of account [gensym]</code>:
+</pre>
+</a></ul><a name=3780">
+If messages are displayed outside the Motif window that push the window down the screen, you can enter a Control/F2 key sequence to pull the window back into position.<p>
+</a></ol><a name="2916">
+<li>The following applies if: <p>
+</a><a name="3783">
+&#175; You did NOT create a new account in step 8, and if
+<p></a><a name="3784">
+&#175; You specified a new, non-existent directory in step 6.
+<p></a><a name="3785">
+If so, you will need system privileges to change the directory and file ownership. You will see the following message, which describes what to do once the installation is complete:
+<p></a><ul><a name="3786">
+<pre><code>When the installation script is complete, you should 
+set the ownership of the installed files 
+appropriately. Use the "set file/owner=" command to 
+do this. For example, if you have installed the files 
+in dka300:[gensym], type both of the following 
+commands, replacing &lt;owner&gt; with the account of your 
+choice. 
+</code></pre>
+</a><a name="3787">
+<pre><code>$ set file/owner=&lt;owner&gt; dka300:[000000]gensym.dir
+</code></pre>
+</a><a name="3788">
+<pre><code>$ set file/owner=&lt;owner&gt; dka300:[gensym...]*.*
+</code></pre>
+</a></ul><a name="3789">
+The message is followed by the prompt:
+<p></a><ul><a name="3790">
+<pre><code>Press RETURN to acknowledge [OK]?
+</code></pre>
+</a></ul><a name="3791">
+Respond by pressing the Return key.
+<p></a><a name="2926">
+<li>The program displays on the screen the action items, if any, that it recorded in the installation_action_items.com file, preceded by this message:<p>
+</a><ul><a name="3792">
+<pre><code>The following action items file was produced. If the 
+file is not empty (there are items to perform), you 
+can type the file out and perform the actions 
+manually or you can run the file when you are 
+finished with VMSINSTAL.
+</code></pre>
+</a><a name="3793">
+<pre><code>To type the file, from the "$" prompt, type
+</code></pre>
+</a><a name="3799">
+<pre><code>$type gw10$dir:installation_action_items.com
+</code></pre>
+</a><a name="3798">
+<pre>To perform the actions automatically, from the "$" 
+prompt, type
+</pre>
+</a><a name="3794">
+<pre><code>$ @gw10$dir:installation_action_items
+</code></pre>
+</a><a name="3795">
+<pre><code>****NOTE: running the file will REBOOT YOUR 
+MACHINE****
+</code></pre>
+</a><a name="3796">
+<pre><code>Installation complete<br>
+<br>
+*Products:
+</code></pre>
+</a></ul><a name="3797">
+Remove the tape from the tape drive. If you want to terminate the installation program, press the return key. 
+<p></a><a name="2937">
+<li>You have now installed G2 WebLink.<p>
+</a><a name="3805">
+Look at the installation_action_items.com file and perform any tasks that it lists, either manually or automatically, as explained in step 10 of this procedure. For information about how to run the autogen utility, see the Installation Guide for G2, Telewindows, GSI, and G2 GUIDE/UIL. 
+<p></a></ol>
+
+<a href="install3.htm"><h5>| Prev </a> <a href="install5.htm">| Next </a> <a href="installi.htm">| Start of Chapter </a> <a href="install6.htm">| End of Chapter </a> <a href="booktoc.htm">| Contents </a> <a href="bookix.htm">| Index |</a> (5 out of 7)</h5> <br>
+<A HREF="titlepa1.htm"><h6>Copyright &#169; 1996, Gensym Corporation, Inc.</h6></A>
+</body></html>
