@@ -1,0 +1,151 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="01/11/02 11:08:27">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Customizing Attribute Properties</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="customd4.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="customd6.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/ReThink/custom-manual/stylesets/Customizing%20ReThink/Output/html/customil.htm">  
+        Customizing the User Interface  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Customizing Attribute Properties
+</h2>
+<p>To customize the properties of attributes that appear on custom tabs, you implement the <code>bpr-get-attribute-properties</code> method for a custom class. This method returns a structure, which sets various properties for each attribute, including its label, type, whether it is read-only, whether it is available in developer mode only, and its minimum and maximum values. <a name="41315"></a></p>
+<p>For details on the signature of this method, see <a href="api11.htm#64516">bpr-get-attribute-properties</a>.<a name="45147"></a></p>
+<h4 >	 To customize the attribute properties:<a name="41582"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>1	</b></td>    <td valign="top" width="580">Choose View &gt; Toolbars &gt; New Item and click the Rules and Definitions tab:<a name="41583"></a></td>  </tr></table><p >
+  <a name="41590"> </a>
+<p><div align="left"><img src="images/rules-an.gif" border="0" hspace="0" vspace="0">
+</div><a name="41589"></a></p>
+
+
+
+</p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>2	</b></td>    <td valign="top" width="580">Create a method and place it on your customization workspace with your custom class definition.<a name="41591"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>3	</b></td>    <td valign="top" width="580">Create a method named <code>bpr-get-attribute-properties</code> for your custom class, which returns a structure, according to the signature given above.<a name="41592"></a></td>  </tr></table><p>For example, here is the text of the <code>bpr-get-attribute-properties</code> method for the <code>my-task</code> class whose custom dialog is shows in <a href="customd4.htm#37131">Creating Custom Tabs</a>:<a name="43153"></a></p>
+<blockquote><code>bpr-get-attribute-properties (Object: class my-task , Subtable: symbol, Attribute: symbol, UiClientItem: class ui-client-item) = (structure)
+
+struct: structure;
+
+begin
+	if Attribute = the symbol my-text then begin 
+
+    struct = structure(
+            attribute: Attribute,
+            label: &quot;My Text Decription:&quot;,                     
+            type: the symbol text,
+            read-only: true,
+            development-only: false,
+            choices: the symbol none);
+
+    end else if Attribute = the symbol my-integer then begin
+
+        struct = structure(
+            attribute: Attribute,
+            label: &quot;My Integer Description:&quot;,                     
+            type: the symbol integer,                
+            read-only: false,
+            development-only: false,                
+            min: 0,                           
+            max: 64, 
+            precision: 0,
+            units: &quot;candies&quot;,
+            choices: the symbol none);
+
+    end else if Attribute = the symbol my-float then begin
+
+        struct = structure(
+            attribute: Attribute,
+            label: &quot;My Float Description:&quot;,                     
+            type: the symbol float,                
+            read-only: false,
+            development-only: false,                
+            min: 0,                           
+            max: 64, 
+            {precision: 4,
+            units: &quot;candies&quot;,}
+            choices: the symbol none);
+
+    end else if Attribute = the symbol my-duration then begin
+
+        struct = structure(
+            attribute: Attribute,
+            label: &quot;My Duration Description:&quot;,                     
+            type: the symbol duration,                
+            read-only: false,
+            development-only: false,
+            {units: &quot;candies&quot;,}
+            choices: the symbol none);
+
+    end else if Attribute = the symbol my-symbol then begin
+
+        struct = structure(
+            attribute: Attribute,
+            label: &quot;My Symbol Description:&quot;,                     
+            type: the symbol symbol,                
+            read-only: false,
+            development-only: false,
+            {units: &quot;candies&quot;,}
+            choices: the symbol bprnui-get-a-list);
+
+    end else if Attribute = the symbol my-color then begin
+
+        struct = structure(
+            attribute: Attribute,
+            label: &quot;My Color Description:&quot;,                     
+            type: the symbol color,                
+            read-only: false,
+            development-only: false,
+            choices: the symbol none);
+
+    end else if Attribute = the symbol my-file then begin
+
+        struct = structure(
+            attribute: Attribute,
+            label: &quot;My File Description:&quot;,                     
+            type: the symbol file,                
+            read-only: false,
+            development-only: false,
+            choices: the symbol none);
+    end else begin 
+	struct = call next method;
+    end;
+    return struct;
+end<a name="43349"> </a></code></blockquote></blockquote><p>Here is the definition of <code>bprhui-get-a-list</code>, which the attribute <code>my-symbol</code> uses to specify its <code>choices</code> procedure:<a name="43416"></a></p>
+<blockquote><code>bprnui-get-a-list (item: class object) = (sequence) 
+
+begin
+
+	return sequence ( the symbol choice-1, the symbol choice-2, 
+		the symbol choice-3 );
+
+end<a name="43756"> </a></code></blockquote></blockquote> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="customd4.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="customd6.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
