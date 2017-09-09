@@ -1,0 +1,161 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_platform.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+Windows DDK
+</h1>
+<P>
+There are a few special instructions and limitations for measuring
+coverage of Windows kernel mode code. Apart from the exceptions
+below, you can use BullseyeCoverage the same way with a kernel mode project
+as with a regular project.
+<P>
+The DDK modifies the <CODE>PATH</CODE> environment
+variables.
+Be sure the BullseyeCoverage <CODE>bin</CODE> directory is first in <CODE>PATH</CODE>.
+For example, run the command below before building.
+<PRE>
+set PATH=%ProgramFiles%\BullseyeCoverage\bin;%PATH%
+</PRE>
+<P>
+The coverage file must be stored on the target computer file system.
+Copy the coverage file from the host system to the target system
+whenever you copy your driver executable.
+<P>
+If you view coverage from the copy of the coverage file which
+is located on the target system using the command line program
+<a href=ref_covbr.html>covbr</a>,
+set the BullseyeCoverage source directory
+to the directory where the coverage file was originally created
+on the host system.
+From the command prompt, do this by setting environment
+variable <CODE>COVSRCDIR</CODE>. For more information, see <a href=build_locateFile.html>Locating Files</a>.
+<P>
+Please read the following sections for specific instructions on
+specific types of device drivers.
+<H2>Kernel Mode Device Drivers</H2>
+<p>
+Your entry point function must be named <code>DriverEntry</code>, <code>FxDriverEntry</code>, or <code>GsDriverEntry</code>.
+<p>
+On the target computer, environment variable <CODE>COVFILE</CODE>
+must be set to the (fully qualified) path of the coverage file
+(<CODE>test.cov</CODE>). One way to do this is to install BullseyeCoverage
+on the target system as well as the host system since the BullseyeCoverage
+setup program sets <CODE>COVFILE</CODE>. If you set this environment
+variable manually, be sure to set it as a system variable, not
+a user variable.
+<P>
+Run-time error messages are normally displayed in the host debugger
+Command window (using the kernel mode support routine <CODE>DbgPrint</CODE>).
+If no debugger is connected and environment variable
+<a href=ref_environment.html#COVERR>COVERR</a>
+is unset, run-time error messages are lost.
+<h3>Export Drivers</h3>
+<p>
+For an export driver, you must add a call to the BullseyeCoverage
+run-time function <code>cov_term</code> in your <code>DllUnload</code> function.
+For example:
+<pre>
+void __cdecl cov_term(void);
+NTSTATUS DllUnload()
+{
+    #if _BullseyeCoverage
+        cov_term();
+    #endif
+    return STATUS_SUCCESS;
+}
+</pre>
+<H2>Graphics Drivers</H2>
+<p>
+Your entry point function must be named <code>DrvEnableDriver</code>.
+<p>
+The coverage file must be stored in the target computer
+<i>SystemRoot</i><code>\system32</code>
+directory and must be named <CODE>test.cov</CODE>. For example,
+<code>c:\windows\system32\test.cov</code>.
+<P>
+Due to limitations of the graphics system,
+<a href=ref_environment.html>environment variables</a>
+have no effect.
+Coverage saves automatically immediately after one of the functions
+below is called.
+To save coverage manually, move the mouse pointer or add
+a call to <a href=ref_cov_write.html>cov_write</a>
+into your source code.
+<ul>
+<li><code>DrvDisableDriver</code>
+<li><code>DrvEndDoc</code>
+<li><code>DrvMovePointer</code>
+<li><code>DrvNextBand</code>
+<li><code>DrvSynchronize</code>
+<li><code>DrvTextOut</code>
+</ul>
+<p>
+If you load a DLL with <code>EngLoadImage</code>, you must save coverage data
+for that DLL explicitly.
+There are two ways to do this.
+<ul>
+<li>Call <a href=ref_cov_write.html>cov_write</a> from inside the loaded DLL.
+For example, you could make the call at the end of every function in the DLL.
+If there is no new coverage, <a href=ref_cov_write.html>cov_write</a>
+does not perform any file i/o,
+so this technique should not pose a performance problem.
+<li>Call <a href=ref_cov_write.html>cov_write</a> from the main driver.
+For example, at the end of <code>DrvTextOut</code>, add this code:
+<pre>
+#if _BullseyeCoverage
+{
+    int (__cdecl* fp)(void) = EngFindImageProcAddress(dllHandle, "cov_write")
+    int status = fp();
+    DebugPrint("cov_write returned %d\n", status);
+}
+#endif
+</pre>
+</ul>
+<p>
+You can link explicitly with the BullseyeCoverage object file
+<code>libcov-windowsGraphic-entry0-</code><i>cpuType</i><code>.obj</code>
+to prevent the BullseyeCoverage run-time from
+hooking driver functions.
+In this case, you must save coverage manually with <a href=ref_cov_write.html>
+cov_write</a>.
+<P>
+Run-time error messages are only displayed in the host debugger
+Command window (using the kernel mode support routine <CODE>EngDebugPrint</CODE>).
+If no debugger is connected, run-time error messages are lost.
+
+<p style="font-size:xx-small">
+Last reviewed: 18 Dec 2008
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
