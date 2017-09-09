@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_trouble_build.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+Error LNK2001 or LNK2019 Unresolved Symbol on Inline Function
+</h1>
+<H2>SYMPTOMS</H2>
+<p>
+When building with Microsoft Visual C++ and Coverage Build enabled, you
+get error <code>LNK2001</code> or <code>LNK2019</code>
+on a function symbol (that is not a
+BullseyeCoverage symbol).
+The error does not occur with Coverage Build disabled.
+Your compile settings do not include any optimization option which
+expands inline functions.
+<pre>
+<i>object</i>: error LNK2001: unresolved external symbol "<i>F</i>"
+<i>object</i>: error LNK2019: unresolved external symbol "<i>F</i>" referenced in function "<i>G</i>"
+</pre>
+<H2>CAUSE</H2>
+<p>
+The function <i>F</i> is defined <code>inline</code>, but its definition is not
+included in the translation unit for the <i>object</i> file mentioned in the
+error.
+<p>
+You can confirm this as the cause by reproducing the error with Coverage
+Build disabled and inline function expansion enabled.
+<H2>RESOLUTION</H2>
+<p>
+Remove the <code>inline</code> keyword from the function definition.
+<h2>MORE INFORMATION</h2>
+<p>
+To enable inline function expansion with
+Visual Studio 2008,
+Visual Studio 2005 or
+Visual Studio 7 .NET,
+select your project, choose menu command <code>Project Properties</code>,
+navigate to <code>C/C++ Optimization</code>,
+and set <code>Inline Function Expansion</code> to
+<code>Any Suitable (/Ob2)</code>.
+<p>
+To enable inline function expansion with Visual Studio 6, use command
+<code>Project Settings</code> choose <code>Category Optimizations</code>
+and set <code>Inline function expansion</code> to <code>Any Suitable</code>.
+This is equivalent to <code>cl</code> option <code>-Ob2</code>.
+<p style="font-size:xx-small">
+Last reviewed: 26 Mar 2009
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
