@@ -1,0 +1,30 @@
+#!/bin/sh
+
+# Usage: post-process-opt-intc-makefiles makefile
+
+# The purpose of this script is to edit in place the Intel compiler makefiles.
+# We need to add the lines
+
+# cc = icl
+# link = xilink
+
+# AFTER the line 
+# !include <ntwin32.mak>
+
+# in the comments-prologue section (see gen/mfgen/templates.rel).  However there
+# does not appear to be any pre-existing mechanism in the makefile generator to
+# make changes at this location.  Previously, we were manually editing the files,
+# after creating these variable declarations in the "variables" section.  But
+# that section goes before comments-prologue, and the variable declarations
+# don't work unless they are done after the include.  The script is "temporary"
+# until we figure out how to change the makefile generator.
+
+# --yduJ, 6/7/04.  (Perl code below from fmw, 6/6/04.)
+
+for PRODUCT in $*
+do
+  perl -i -ne 'print; print "cc = icl\nlink = xilink\n" if /^!include <ntwin32.mak>/' $SRCBOX/gen/mfiles/intelnt-$PRODUCT-opt-intc
+done
+
+
+
