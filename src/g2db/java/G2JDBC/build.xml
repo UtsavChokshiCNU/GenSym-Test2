@@ -1,0 +1,207 @@
+<?xml version="1.0" ?>
+
+<project name="G2-JDBC" default="build-jar">
+	
+	<property environment="env" />
+	<property name="JAVA_HOME" value="${env.JAVA_HOME}"/>
+	<property name="basedir" value="${env.SRCBOX}/g2db/java/G2JDBC" />
+    <property name="SRCBOX" value="../../.."/>
+    <property name="DSTBOX" value="../../../../dst"/>
+    <property name="G2DB_HOME" value="${SRCBOX}/g2db"/>
+    <property name="JAVALINKBOX" value="${DSTBOX}/javalink"/>
+
+	<property name="coverage.dir" value="${basedir}/coverage" />
+	<property name="instr.dir" value="${basedir}/build/instrumented-classes" />
+	<property name="debug.dir" value="${basedir}/build/debug-classes" />
+	<property name="release.dir" value="${basedir}/build/classes" />
+    <property name="dist.dir" value="${DSTBOX}/jdbc"/>
+	<property name="src.dir" value="${basedir}/src" />
+	<property name="testbin.dir" value="${basedir}/test-classes" />
+	<property name="testraw.dir" value="${basedir}/test-results-raw" />
+	<property name="testresult.dir" value="${basedir}/test-results" />
+	<property name="testtmp.dir" value="${basedir}/test-results-tmp" />
+	<property name="test.dir" value="${basedir}/tests" />
+	<property name="lib.dir" value="${basedir}/libs" />
+	
+    <condition property="isLinux" value="true">
+        <os name="linux"/>
+    </condition>
+    <condition property="isWindows">
+        <os family="windows"/>
+    </condition>
+
+	 <path id="emma.lib" >
+	    <pathelement location="libs/emma.jar" />
+	    <pathelement location="libs/emma_ant.jar" />
+	 </path>
+	
+	<path id="emma.coverage.classes" >
+		<pathelement location="${debug.dir}" />
+	</path>	
+	
+	<taskdef resource="emma_ant.properties" classpathref="emma.lib" />
+	
+	<target name="clean">
+		<delete dir="${release.dir}" />
+		<delete dir="${debug.dir}" />
+		<delete dir="${dist.dir}" />
+	</target>
+	
+	<target name="init" depends="clean">
+		<mkdir dir="${release.dir}" />
+		<mkdir dir="${debug.dir}" />
+		<mkdir dir="${dist.dir}" />
+	</target>	
+	
+	<target name="init-coverage">
+		<delete dir="${coverage.dir}" />
+		<delete dir="${instr.dir}" />
+		<delete dir="${debug.dir}" />
+		<delete dir="${debug.dir}" />
+		<mkdir dir="${coverage.dir}" />
+		<mkdir dir="${instr.dir}" />
+	</target>
+	
+	<target name="compile" depends="init">
+		<javac srcdir="${src.dir}" destdir="${release.dir}" fork="true" executable="${JAVA_HOME}/bin/javac" >
+			<classpath>
+				<pathelement location="${JAVALINKBOX}/classes/javalink.jar" />
+			</classpath>
+		</javac>
+	</target>	
+
+	<target name="compile-debug" depends="init">
+		<javac debug="true" srcdir="${src.dir}" destdir="${debug.dir}">
+			<classpath>
+				<pathelement location="${JAVALINKBOX}/classes/javalink.jar" />
+			</classpath>
+		</javac>
+	</target>
+	
+	<target name="build-jar" depends="compile">
+		<jar destfile="${dist.dir}/g2jdbc.jar"
+		     manifest="${src.dir}/Manifest.txt"
+			 basedir="${release.dir}" />
+	</target>	
+
+    <target name="make-stage" depends="clean, build-jar">
+        <mkdir dir="${dist.dir}/bin"/>
+        <mkdir dir="${dist.dir}/classes"/>
+        <mkdir dir="${dist.dir}/kbs"/>
+        <copy file="${G2DB_HOME}/kbs/g2-database.kb" todir="${dist.dir}/kbs"/>
+        <copy file="${basedir}/libs/log4j-1.2.15.jar" todir="${dist.dir}/classes"/>
+        <copy file="${basedir}/libs/postgresql-8.3-604.jdbc3.jar" todir="${dist.dir}/classes"/>
+        <move file="${dist.dir}/g2jdbc.jar" todir="${dist.dir}/classes"/>
+
+        <antcall target="make-stage-windows"/>
+        <antcall target="make-stage-linux"/>
+    </target>
+
+    <target name="make-stage-windows" if="isWindows">
+        <copy file="${SRCBOX}/java/products/jdbc/intelnt/bin/envvars.bat" todir="${dist.dir}/bin"/>
+        <copy file="${SRCBOX}/java/products/jdbc/intelnt/bin/g2jdbc.bat" todir="${dist.dir}/bin"/>
+    </target>
+
+    <target name="make-stage-linux" if="isLinux">
+        <copy file="${SRCBOX}/java/products/jdbc/linux/bin/set-envvars" todir="${dist.dir}/bin"/>
+        <copy file="${SRCBOX}/java/products/jdbc/linux/bin/run-g2jdbc.sh" todir="${dist.dir}/bin"/>
+    </target>
+
+	<target name="init-tests">
+		<mkdir dir="${testbin.dir}" />
+		<mkdir dir="${testraw.dir}" />
+		<mkdir dir="${testresult.dir}" />
+		<mkdir dir="${testtmp.dir}" />
+	</target>
+	
+	<target name="compile-tests" depends="init-tests">
+		<javac srcdir="${test.dir}" destdir="${testbin.dir}" >
+			<classpath>
+				<pathelement location="${debug.dir}" />
+				<pathelement location="${lib.dir}/junit-4.6.jar" />
+				<pathelement location="${lib.dir}/easymock-2.5.1.jar" />
+				<pathelement location="${lib.dir}/easymockclassextension.jar" />
+				<pathelement location="${lib.dir}/cglib-nodep-2.2.jar" />
+				<pathelement location="${JAVALINKBOX}/classes/javalink.jar" />
+				<pathelement location="${JAVALINKBOX}/classes/core.jar" />
+				<pathelement location="${JAVALINKBOX}/classes/classtools.jar" />
+			</classpath>	
+		</javac>	
+	</target>
+	
+	<target name="test" depends="compile-debug, compile-tests">
+		
+		<emma enabled="true" >
+			<instr instrpathref="emma.coverage.classes"
+				destdir="${instr.dir}"
+				metadatafile="${coverage.dir}/metadata.emma"
+				mode="fullcopy"
+				merge="true" >
+			</instr>	
+		</emma>
+		
+		<junit printsummary="yes" haltonerror = "off">
+			<classpath>
+				<pathelement location="${lib.dir}/junit-4.6.jar" />
+				<pathelement location="${instr.dir}/classes" />
+				<pathelement location="${testbin.dir}" />
+				<pathelement location="${lib.dir}/postgresql-8.3-604.jdbc3.jar" />
+				<pathelement location="${lib.dir}/easymock-2.5.1.jar" />
+				<pathelement location="${lib.dir}/easymockclassextension.jar" />
+				<pathelement location="${lib.dir}/cglib-nodep-2.2.jar" />
+				<pathelement location="${JAVALINKBOX}/classes/javalink.jar" />
+				<path refid="emma.lib" />
+			</classpath>
+			<batchtest fork="yes" todir="${testraw.dir}">
+				<fileset dir="${test.dir}">
+					<include name="**/*Test*.java" />
+				</fileset>
+				<formatter type="xml" />
+			</batchtest>
+			<jvmarg value="-Demma.coverage.out.file=${coverage.dir}/coverage.emma" />
+			<jvmarg value="-Demma.coverage.out.merge=true" />
+			<jvmarg value="-Djava.library.path=c:\\g2\\dst\javalink\\lib" />
+		</junit>
+		<junitreport todir="${testtmp.dir}">
+			<fileset dir="${testraw.dir}" />
+			<report todir="${testresult.dir}" />
+		</junitreport>	
+	</target>	
+	
+	<target name="coverage" depends="init-coverage, test">
+		<emma  enabled="true">
+			<report sourcepath="${src.dir}" sort="+block,+name,+method,+class"
+				metrics="method:100,block:90,line:90,class:100">
+				
+			    <fileset dir="${coverage.dir}" >
+			        <include name="*.emma" />
+			    </fileset>
+
+			    <txt outfile="${coverage.dir}/coverage.txt"
+			        depth="package"
+			        columns="class,method,block,line,name" />
+			    
+			    <xml outfile="${coverage.dir}/coverage.xml"
+			        depth="package" />
+			    
+			    <html outfile="${coverage.dir}/coverage.html"
+			        depth="method"
+			        columns="name,class,method,block,line" />
+			    
+			</report>	
+		</emma>	
+	</target>
+	
+	<target name="run" depends="build-jar">
+	     <java classname="core.G2JDBCBridge" fork="true">
+	         <arg value=""/>
+	     	<jvmarg value="-Djava.library.path=c:\\g2\\dst\javalink\\lib"/>
+			<classpath>
+				<pathelement location="${dist.dir}/G2JDBC.jar" />
+				<pathelement location="${JAVALINKBOX}/classes/javalink.jar" />
+				<pathelement location="${JAVALINKBOX}/classes/core.jar" />
+				<pathelement location="${JAVALINKBOX}/classes/classtools.jar" />
+			</classpath>
+	       </java>
+	</target>
+</project>
