@@ -1,0 +1,25 @@
+# -*- Mode: Makefile -*-
+
+# Our widgets library. For now, build via the msdev project, as we do for XTP.
+
+PRODUCT = widgets
+ODIR = o
+MYDIR = $(DSTBOX)\$(PRODUCT)\$(ODIR)
+OUTDIR = $(SRCBOX)\vstudio\widgets\Debug_MFC
+VCWKSP = $(SRCBOX)\vstudio\widgets\widgets.dsw
+MSDEV = msdev.exe
+
+CFG = "$(PRODUCT) - Win32 Debug MFC"
+LIBNAME = $(PRODUCT).lib
+
+default :
+	$(MSDEV) $(VCWKSP) /MAKE $(CFG)
+	copy $(OUTDIR)\$(LIBNAME) $(MYDIR)
+
+clean : 
+	$(MSDEV) $(VCWKSP) /MAKE $(CFG) /CLEAN
+	-@erase $(MYDIR)\$(LIBNAME)
+
+all:
+	$(MSDEV) $(VCWKSP) /MAKE $(CFG)
+	copy $(OUTDIR)\$(LIBNAME) $(MYDIR)
