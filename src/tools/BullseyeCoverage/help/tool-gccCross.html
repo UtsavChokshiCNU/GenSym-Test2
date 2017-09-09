@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_platform.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>GCC Cross Compiler</h1>
+<p>
+This information applies to cross compiling with GCC targeting user mode Linux/Unix or a
+<a href=env_custom.html>custom environment</a>.
+
+<h2>Build Run-Time Library</h2>
+<p>
+Use commands like those shown below to build the BullseyeCoverage run-time library.
+Modify the compile command to use the same compiler options as your project.
+These commands are for a Bourne-compatible shell such as bash.
+<pre>
+cd <i>BullseyeCoverage</i>/run
+cc=arm-linux-gcc    # customize to your tool chain
+ar=arm-linux-ar     # customize to your tool chain
+
+src=libcov-posix.c  # for Linux/Unix
+#src=libcov-user.c  # for custom environment
+
+$cc -c -D_REENTRANT -fPIC -O2 -o libcov-cross.o $src
+$ar -rc ../lib/libcov-`$cc -dumpmachine`.a libcov-cross.o
+</pre>
+
+<h2>Build Project</h2>
+<p>
+Make sure the <i>BullseyeCoverage</i><code>/bin</code> is first in the <code>PATH</code> environment variable.
+Enable Coverage Build and build your project object files.
+For example:
+<pre>
+export PATH=/opt/BullseyeCoverage/bin:$PATH
+cov01 -1
+make
+</pre>
+
+<h2>Running on Linux/Unix</h2>
+<p>
+Before running your test program,
+set environment variable <code>COVFILE</code> on the target device to the path of your coverage file
+located on your host system.
+You must have read and write access to the coverage file.
+For example:
+<pre>
+$ export COVFILE=/host/project/test.cov
+$ ./a.out
+</pre>
+
+<!-- For indexing and searching -->
+<p style="visibility:hidden;font-size:1px;margin:0;padding:0">
+MontaVista 
+LynuxWorks
+LynxOS
+Bluecat
+
+<p style="font-size:xx-small">
+Last reviewed: 25 Nov 2009
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
