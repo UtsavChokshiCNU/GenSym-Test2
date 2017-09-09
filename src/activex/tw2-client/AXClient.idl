@@ -1,0 +1,464 @@
+
+// typelib filename: AXClient.tlb
+
+#include <olectl.h>
+import "oaidl.idl";
+import "ocidl.idl";
+
+const short int LIB_MAJOR_VERSION_GensymTw2 = 1;
+const short int LIB_MINOR_VERSION_GensymTw2 = 0;
+
+[
+  uuid(42B6C7E0-06C1-11d2-8698-00008618F471),
+  // if you change the library version then you must also update the version
+  //    above.
+  version(1.0),
+  helpstring("Telewindows2 Toolkit for ActiveX 1.0 Rev. 2"),
+  helpfile("AXClient.hlp")
+]
+library GensymTw2
+{
+    // TLib :     // TLib : OLE Automation : {00020430-0000-0000-C000-000000000046}
+    importlib("Stdole32.tlb");
+    importlib("Stdole2.tlb");
+
+    typedef enum
+    {
+        g2Reset = 0,
+        g2Paused = 1,
+        g2Running = 2,
+		g2Resumed = 3
+    } G2States;
+
+    typedef enum
+    {
+        g2ValueType = 8,
+        g2ItemOrValueType = 9,
+        g2QuantityType = 10,
+        g2TextType = 4,
+        g2TruthValueType = 5,
+        g2ItemType = 7,
+        g2IntegerType = 1,
+        g2FloatType = 6,
+        g2SymbolType = 3
+    } G2ElementType;
+
+    [
+        object,
+        uuid(2B010C0D-09E5-11D2-869E-00008618F471),
+        dual,
+        helpstring("IG2Symbol Interface"),
+        pointer_default(unique)
+    ]
+    interface IG2Symbol : IDispatch
+    {
+        [propget, id(1), helpcontext(301001), helpstring("String value of symbol.")] HRESULT Value([out, retval] BSTR *pVal);
+        [propput, id(1)] HRESULT Value([in] BSTR newVal);
+        [id(2), hidden, restricted] HRESULT _subObject([out, retval] IDispatch **subObject);
+		[id(3), helpcontext(301003), helpstring("Convert symbol to a string.  This is the same as the Value property.")] HRESULT String([out, retval] BSTR *StringValue);
+		[propget, id(0), hidden, helpstring("default property")] HRESULT Self([out, retval] IG2Symbol **pVal);
+    };
+
+    [
+        object,
+        uuid(2B010C06-09E5-11D2-869E-00008618F471),
+        dual,
+        helpstring("IG2Structure Interface"),
+        pointer_default(unique)
+    ]
+    interface IG2Structure : IDispatch
+    {
+        [propget, id(1), helpcontext(302001), helpstring("List of member names.")] HRESULT MemberNames([out, retval] VARIANT *ListOfNames);
+        [propget, id(2), helpcontext(302002), helpstring("Access a structure member.")] HRESULT Member([in] BSTR MemberName, [out, retval] VARIANT *pVal);
+        [propput, id(2)] HRESULT Member([in] BSTR MemberName, [in] VARIANT newVal);
+        [id(4), helpcontext(302004), helpstring("Remove a structure member.")] HRESULT ClearMember([in] BSTR MemberName);
+        [id(5), hidden, restricted] HRESULT _subObject([out, retval] IDispatch **subObject);
+		[id(6), helpcontext(301003), helpstring("Convert structure to a string.")] HRESULT String([out, retval] BSTR *StringValue);
+		[propget, id(0), hidden, helpstring("default property")] HRESULT Self([out, retval] IG2Structure **pVal);
+    };
+    
+	[
+		object,
+		uuid(2B010C05-09E5-11D2-869E-00008618F471),
+		dual,
+        helpcontext(203001),
+		helpstring("IG2Item Interface"),
+		pointer_default(unique)
+	]
+	interface IG2Item : IDispatch
+	{
+        [propget, id(3), nonbrowsable, helpcontext(303003), helpstring("Access a G2 item Attribute Value.")] HRESULT Attribute([in] BSTR AttributeName, [out, retval] VARIANT *pVal);
+        [propput, id(3), nonbrowsable] HRESULT Attribute([in] BSTR AttributeName, [in] VARIANT newVal);
+        [propget, id(5), nonbrowsable, helpcontext(303004), helpstring("Array of the attribute names of this item.")] HRESULT AttributeNames([out, retval] VARIANT *ListOfNames);
+        [propget, id(7), nonbrowsable, helpcontext(303007), helpstring("Number of elements in this G2 list or G2 array.")] HRESULT ElementCount([out, retval] long *pVal);
+        [propget, id(8), nonbrowsable, helpcontext(303008), helpstring("Type of elements in this G2 list or G2 array.")] HRESULT ElementType([out, retval] G2ElementType *pVal);
+        [propget, id(9), nonbrowsable, helpcontext(303009), helpstring("Access an element in this G2 list or G2 array.")] HRESULT Element([in] long Index, [out, retval] VARIANT *pVal);
+        [propput, id(9), nonbrowsable] HRESULT Element([in] long Index, [in] VARIANT newVal);
+        [propget, id(11), nonbrowsable, helpcontext(303011), helpstring("All elements of G2 list or G2 array as an array")] HRESULT Elements([out, retval] VARIANT *pVal);
+        [propput, id(11), nonbrowsable] HRESULT Elements([in] VARIANT newVal);
+        [id(17), vararg, helpcontext(303017), helpstring("Call one of this item's G2 methods and wait for results.")] HRESULT CallMethod([in] BSTR MethodName, [in] SAFEARRAY(VARIANT) *InputArguments, [out, retval] VARIANT *ReturnArguments);
+        [id(18), vararg, helpcontext(303018), helpstring("Start one of this item's G2 methods and discard results if any")] HRESULT StartMethod([in] BSTR MethodName, [in] SAFEARRAY(VARIANT) *Arguments);
+        [id(19), helpcontext(303019), helpstring("Create a G2 symbol from a string.")] HRESULT Symbol([in] BSTR SymbolName, [out, retval] IG2Symbol **val);
+        [id(20), vararg, helpcontext(303020), helpstring("Create a G2 structure from a set of name/value pairs.")] HRESULT Structure([in] SAFEARRAY(VARIANT) *NameValuePairs, [out, retval] IG2Structure **Structure);
+        [id(21), hidden, restricted] HRESULT _subObject([out, retval] IDispatch **subObject);
+        [propget, id(22), helpcontext(303022), helpstring("Number of seconds to wait for Call to complete.")] HRESULT CallTimeout([out, retval] long *pVal);
+        [propput, id(22)] HRESULT CallTimeout([in] long newVal);
+		[id(23), helpcontext(303023), helpstring("Test if the G2Item is a instance of a given G2 class.")] HRESULT IsInstanceOfClass([in] BSTR ClassName, [out, retval] VARIANT_BOOL *Result);
+		[id(24), helpcontext(301003), helpstring("Convert item to string.")] HRESULT String([out, retval] BSTR *StringValue);
+		[id(25), helpcontext(303025), helpstring("Delete this item from G2.")] HRESULT Delete([in, defaultvalue(TRUE)] VARIANT_BOOL WithPermanencyChecksDisabled, [in, defaultvalue(TRUE)] VARIANT_BOOL WithoutLeavingStubs);
+		[id(26), helpcontext(303026), helpstring("Disable this item in G2.")] HRESULT Disable();
+		[id(27), helpcontext(303027), helpstring("Enable this item in G2.")] HRESULT Enable();
+		[id(28), helpcontext(303028), helpstring("Drop this item to the bottom of the Z order of its parent workspace items.")] HRESULT DropToBottom();
+		[id(29), helpcontext(303029), helpstring("Lift this item to the top of the Z order of its parent workspace items.")] HRESULT LiftToTop();
+		[id(30), helpcontext(303030), helpstring("Make clone of this item in G2.")] HRESULT G2Clone([out, retval] IG2Item ** ReturnedItem);
+		[id(31), helpcontext(303031), helpstring("Make this item transient in G2.")] HRESULT MakeTransient();
+		[id(32), helpcontext(303032), helpstring("Make this item permanent in G2.")] HRESULT MakePermanent();
+		[id(33), helpcontext(303033), helpstring("Move this item relative to its position on its parent workspace.")] HRESULT MoveBy([in] long XDelta, [in] long YDelta, [in, defaultvalue(TRUE)] VARIANT_BOOL EnlargeWorkspaceIfNecessary, [out, retval] VARIANT_BOOL * Successful);
+		[id(34), helpcontext(303034), helpstring("Move this item to an absolute position on its parent workspace.")] HRESULT Move([in] long X, [in] long Y, [in, defaultvalue(TRUE)] VARIANT_BOOL EnlargeWorkspaceIfNecessary, [out, retval] VARIANT_BOOL * Successful);
+		[id(35), helpcontext(303035), helpstring("Set the bounds(size) of the item in G2.")] HRESULT SetBounds([in] long Left, [in] long Top, [in] long Right, [in] long Bottom);
+		[id(36), helpcontext(303036), helpstring("Make this item have no parent workspace.")] HRESULT TransferOff([out, retval] VARIANT_BOOL * Successful);
+		[id(37), helpcontext(303037), helpstring("Transfer this item to an attribute of another item.")] HRESULT TransferToItem([in] IG2Item * Item, [in] BSTR AttributeName, [in, defaultvalue("")] BSTR ClassQualifier, [out, retval] VARIANT_BOOL * Successful);
+		[id(38), helpcontext(303038), helpstring("Transfer this item to a workspace.")] HRESULT TransferToWorkspace([in] IG2Item * Workspace, [in] long X, [in] long Y, [out, retval] VARIANT_BOOL * Successful);
+		[id(39), helpcontext(303039), helpstring("Restores this item to its original size in G2.")] HRESULT RestoreNormalSize();
+		[propget, id(40), helpcontext(303040), helpstring("Has this item been manually disabled in G2?")] HRESULT ManuallyDisabled([out, retval] VARIANT_BOOL *pVal);
+		[propget, id(41), helpcontext(303041), helpstring("Is this item transient in G2?")] HRESULT Transient([out, retval] VARIANT_BOOL *pVal);
+		[propget, id(0), hidden, helpstring("default property")] HRESULT Self([out, retval] IG2Item **pVal);
+    };
+    
+	[
+		object,
+		uuid(4aff90a0-751d-11d2-993c-00609703e60f),
+		dual,
+        helpcontext(203001),
+		helpstring("G2Item2 Interface"),
+		pointer_default(unique)
+	]
+	interface G2Item2 : IG2Item
+	{
+		[id(42), helpcontext(303042), helpstring("Is the given G2Item reference the same item on the G2 server as this G2Item?")] HRESULT Equals([in] IG2Item *Item, [out, retval] VARIANT_BOOL * retVal);
+    };
+    
+	[
+		object,
+		uuid(2B010C04-09E5-11D2-869E-00008618F471),
+		dual,
+        hidden,
+		helpstring("IG2ItemHolder Interface"),
+		pointer_default(unique)
+	]
+	interface IG2ItemHolder : IDispatch
+	{
+        [propget, id(1), helpcontext(304001), helpstring("Persistant Object Address of object to be bound to at startup in the format: namedObject@g2-1")] HRESULT ObjectAddress([out, retval] BSTR *pVal);
+        [propput, id(1)] HRESULT ObjectAddress([in] BSTR newVal);
+        [propget, id(3), nonbrowsable, helpcontext(304003), helpstring("Access a G2Item Attribute Value.")] HRESULT Attribute([in] BSTR AttributeName, [out, retval] VARIANT *pVal);
+        [propput, id(3), nonbrowsable] HRESULT Attribute([in] BSTR AttributeName, [in] VARIANT newVal);
+        [propget, id(5), nonbrowsable, helpcontext(303004), helpstring("Array of attribute names found in the G2 item.")] HRESULT AttributeNames([out, retval] VARIANT *ListOfNames);
+        [propget, id(6), helpcontext(304006), helpstring("Class of object refered to in ObjectAddress.  May be superclass such as ITEM or OBJECT.")] HRESULT ObjectClass([out, retval] BSTR *pVal);
+        [propput, id(6)] HRESULT ObjectClass([in] BSTR newVal);
+        [propget, id(7), nonbrowsable, helpcontext(303007), helpstring("Number of elements in list or array.")] HRESULT ElementCount([out, retval] long *pVal);
+        [propget, id(8), nonbrowsable, helpcontext(303008), helpstring("Type of element in list or array.")] HRESULT ElementType([out, retval] G2ElementType *pVal);
+        [propget, id(9), nonbrowsable, helpcontext(303009), helpstring("Access an element in this G2 list or G2 array.")] HRESULT Element([in] long Index, [out, retval] VARIANT *pVal);
+        [propput, id(9), nonbrowsable] HRESULT Element([in] long Index, [in] VARIANT newVal);
+        [propget, id(11), nonbrowsable, helpcontext(303011), helpstring("All elements of G2List or G2Array as an array.")] HRESULT Elements([out, retval] VARIANT *pVal);
+        [propput, id(11), nonbrowsable] HRESULT Elements([in] VARIANT newVal);
+        [id(13), helpcontext(304013), helpstring("Subscribe to value changes for specific attribute.  New values to subscribed attributes will be sent automatically by the server.")] HRESULT SubscribeToAttribute([in] BSTR AttributeName);
+        [id(15), helpcontext(304015), helpstring("Cancel a previous attribute subscription.")] HRESULT UnsubscribeToAttribute([in] BSTR AttributeName);
+        [id(17), vararg, helpcontext(303017), helpstring("Call one of the G2Item's G2 methods and wait for results.")] HRESULT CallMethod([in] BSTR MethodName, [in] SAFEARRAY(VARIANT) *InputArguments, [out, retval] VARIANT *ReturnArguments);
+        [id(18), vararg, helpcontext(303018), helpstring("Start one of the G2Item's G2 methods, discard results if any.")] HRESULT StartMethod([in] BSTR MethodName, [in] SAFEARRAY(VARIANT) *Arguments);
+        [id(19), helpcontext(303019), helpstring("Create a G2 symbol from a string.")] HRESULT Symbol([in] BSTR SymbolName, [out, retval] IG2Symbol **val);
+        [id(20), vararg, helpcontext(303020), helpstring("Create a G2 structure from a set of name/value pairs.")] HRESULT Structure([in] SAFEARRAY(VARIANT) *NameValuePairs, [out, retval] IG2Structure **Structure);
+        [propget, id(22), helpcontext(303022), helpstring("Number of seconds to wait for method call to complete.")] HRESULT CallTimeout([out, retval] long *pVal);
+        [propput, id(22)] HRESULT CallTimeout([in] long newVal);
+        [propget, id(23), nonbrowsable, helpcontext(304023), helpstring("The G2Item in the holder.")] HRESULT Item([out, retval] IG2Item **Item);
+        [propput, id(23)] HRESULT Item([in] IG2Item *Item);       
+        [propget, id(24), helpcontext(304024), helpstring("Automatically receive events when the item is updated in G2?")]HRESULT AutoDownload([out, retval]VARIANT_BOOL *pVal);
+        [propput, id(24)] HRESULT AutoDownload([in]VARIANT_BOOL newVal);
+        [propget, id(25), helpcontext(304025), helpstring("Are item attribute updates to be automatically uploaded to G2?")]HRESULT AutoUpload([out, retval]VARIANT_BOOL *pVal);
+        [propput, id(25)] HRESULT AutoUpload([in]VARIANT_BOOL newVal);
+        [propget, id(27), helpcontext(304027), helpstring("Comma delimited list (no spaces) of attributes to subscribe to at startup.")] HRESULT SubscribedAttributes([out, retval] BSTR *ListOfNames);
+		[propput, id(27)] HRESULT SubscribedAttributes([in] BSTR ListOfNames);
+ 		[id(28), helpcontext(303023), helpstring("Tests if G2Item is instance of given G2 class.")] HRESULT IsInstanceOfClass([in] BSTR ClassName, [out, retval] VARIANT_BOOL *Result);
+        [id(29), helpcontext(304029), helpstring("Download a fresh set of attributes values from G2.")] HRESULT Download();
+        [id(30), helpcontext(304030), helpstring("Upload the local attribute changes to G2.")] HRESULT Upload();
+    };
+    
+	[
+		object,
+		uuid(5e4378e0-7050-11d2-9933-00609703e60f),
+		dual,
+		helpstring("IG2ItemHolder2 Interface"),
+		pointer_default(unique)
+	]
+	interface IG2ItemHolder2 : IG2ItemHolder
+	{
+        [id(31), helpcontext(304031), helpstring("Releases the item in the holder and sets the item property to NULL.")] HRESULT ReleaseItem();
+        [id(32), helpcontext(304032), helpstring("Is the holder empty?")] HRESULT IsEmpty([out, retval] VARIANT_BOOL *pVal);
+        [id(33), hidden, restricted] HRESULT _subObject([out, retval] IDispatch **subObject);
+    };
+
+    [
+      uuid(D7CE0380-1D21-11d2-86C8-00008618F471),
+      helpstring("Gensym Telewindows2 G2Item Event Source")
+    ]
+    dispinterface _G2ItemEvents
+    {
+        properties:
+        methods:
+            [id(0), helpcontext(305000), helpstring("Fired when subscribed attribute is changed.")] void SubscribedAttributeChanged([in] BSTR AttributeName, [in] VARIANT *NewValue);
+            // These events are added to the old dispinterface for VB use, other languages can use the new interface
+            [id(1), helpcontext(305001), helpstring("Fired when item referenced by the holder is deleted on the G2 server.")] void ItemDeleted();
+    };
+
+    [
+      uuid(6f738c80-bfb0-11d2-b855-0000861e0389),
+      hidden,
+      helpstring("Gensym Telewindows2 G2Item Event Source2")
+    ]
+    dispinterface _G2ItemEvents2
+    {
+        properties:
+        methods:
+            [id(0), helpcontext(305000), helpstring("Fired when subscribed attribute is changed.")] void SubscribedAttributeChanged([in] BSTR AttributeName, [in] VARIANT *NewValue);
+            // These events are added to the old dispinterface for VB use, other languages can use the new interface
+            [id(1), helpcontext(305001), helpstring("Fired when item referenced by the holder is deleted on the G2 server.")] void ItemDeleted();
+    };
+
+    [
+        object,
+        uuid(8850F111-1FFF-11D2-86CC-00008618F471),
+        dual,
+        hidden,
+        helpstring("IG2WorkspacePanel Interface"),
+        pointer_default(unique)
+    ]
+    interface IG2WorkspacePanel : IDispatch
+    {
+        [propget, id(6), helpcontext(308006), helpstring("Keep all, not just the workspace shown, up to date with G2.")] HRESULT UpdateWhileHidden([out, retval] VARIANT_BOOL *pVal);
+        [propput, id(6)] HRESULT UpdateWhileHidden([in] VARIANT_BOOL newVal);
+        [propget, id(7), helpcontext(308007), helpstring("Show new workspaces when they are added or retrieved.")] HRESULT ShowNewWorkspaces([out, retval] VARIANT_BOOL *pVal);
+        [propput, id(7)] HRESULT ShowNewWorkspaces([in] VARIANT_BOOL newVal);
+        [id(8), helpcontext(308008), helpstring("Adds a workspace to the panel.")] HRESULT AddWorkspace([in] IG2Item *Workspace, [in, defaultvalue(FALSE)] VARIANT_BOOL UpdateWhileHidden);
+        [id(9), helpcontext(308009), helpstring("Removes all of the items from the selection.")] HRESULT ClearSelection();
+        [id(10), helpcontext(308010), helpstring("Deletes all of the items in the selection.")] HRESULT DeleteSelection();
+        [id(11), helpcontext(308011), helpstring("Gets the G2Items that are currently selected in the workspace.")] HRESULT GetSelection([out, retval] VARIANT *pSelectedItems);
+        [id(12), helpcontext(308012), helpstring("Moves all of the items in the selection.")] HRESULT MoveSelection([in] long DeltaX, [in] long DeltaY, [in, defaultvalue(TRUE)] VARIANT_BOOL EnlargeWorkspaceIfNecessary);
+        [id(13), helpcontext(308013), helpstring("Shows the next workspace.")] HRESULT NextWorkspace();
+        [id(14), helpcontext(308014), helpstring("Shows the previous workspace.")] HRESULT PreviousWorkspace();
+        [id(15), helpcontext(308015), helpstring("Removes the a workspace from the panel.")] HRESULT RemoveWorkspace([in] IG2Item *Workspace);
+        [id(17), helpcontext(308017), helpstring("Selects all of the items on the workspace.")] HRESULT SelectAll();
+        [id(18), helpcontext(308018), helpstring("Makes the a workspace the one that is shown. The workspace must of previously been added.")] HRESULT ShowWorkspace([in] IG2Item *Workspace);
+        [propget, id(21), helpcontext(308021), helpstring("Address of Initial Workspace to Show in format: myworkspace@g2-1")] HRESULT WorkspaceAddress([out, retval] BSTR *pVal);
+		[propput, id(21)] HRESULT WorkspaceAddress([in] BSTR newVal);
+		[id(22), helpcontext(308022), helpstring("Add a G2Item on the workspace to the workspace selection.")] HRESULT AddElementToSelection([in] IG2Item* Item);
+		[id(23), helpcontext(308023), helpstring("Remove a G2Item from the workspace selection.")] HRESULT RemoveElementFromSelection([in] IG2Item * Item);
+    };
+
+    [
+        object,
+        uuid(93d0b7a0-704b-11d2-9933-00609703e60f),
+        dual,
+        helpstring("IG2WorkspacePanel2 Interface"),
+        pointer_default(unique)
+    ]
+    interface IG2WorkspacePanel2 : IG2WorkspacePanel
+    {
+		[id(24), helpcontext(308024), helpstring("Scrolls the current workspace to the specified location.")] HRESULT ScrollToLocation([in] long X, [in] long Y);
+		[id(25), helpcontext(308025), helpstring("Processes a show workspace event.")] HRESULT ProcessShowWorkspaceEvent([in] IDispatch* WorkspaceShowingEvent);
+		[id(26), helpcontext(308026), helpstring("Processes a hide workspace event.")] HRESULT ProcessHideWorkspaceEvent([in] IDispatch* WorkspaceShowingEvent);
+        [id(27), hidden, restricted] HRESULT _subObject([out, retval] IDispatch **subObject);
+		[id(28), helpcontext(308028), helpstring("Returns an array of all the workspaces (as G2Item objects) in the panel.")] HRESULT GetWorkspaces([out, retval] VARIANT * ArrayOfG2Items);
+		[id(29), helpcontext(308029), helpstring("Removes all the workspaces from the panel.")] HRESULT RemoveAllWorkspaces();
+    };
+
+    [
+      uuid(6fef80a0-7435-11d2-993c-00609703e60f),
+      helpstring("G2 Workspace Panel Source Interface")
+    ]
+    dispinterface _G2WorkspacePanelSource
+    {
+        properties:
+        methods:
+            [id(0), helpcontext(309000), helpstring("Fired when the selection of the panel changes.")] void SelectionChanged(void);
+            [id(0xfffffda4), hidden, helpcontext(309001), helpstring("Fired when a key is released, this is yields a low level key code and alt/cntrl/shift state.")] void KeyUp(short * KeyCode, short shift);
+            [id(0xfffffda5), hidden, helpcontext(309002), helpstring("Fired on a completed key press/release, this is yields a high level key code.")] void KeyPress(short * KeyAscii);
+            [id(0xfffffda6), hidden, helpcontext(309003), helpstring("Fired when a key is pressed, this is yields a low level key code and alt/cntrl/shift state.")] void KeyDown(short * KeyCode, short shift);
+    };
+
+    [
+        object,
+        uuid(42B6C7E1-06C1-11d2-8698-00008618F471),
+        dual,
+        hidden,
+        helpstring("IG2UiGateway Interface"),
+        pointer_default(unique)
+    ]
+    interface IG2UiGateway: IDispatch
+    {
+        [id(2), helpcontext(306002), helpstring("Disconnect from G2.")] HRESULT Disconnect();
+        [id(3), helpcontext(306003), helpstring("Get G2Item for a named object in G2.  A class may be optionally specified.")] HRESULT GetNamedItem([in] BSTR ItemName, [in, defaultvalue("ITEM")] BSTR ItemClass, [out, retval] IG2Item **ReturnItem);
+        [id(4), vararg, helpcontext(306004), helpstring("Start a G2 procedure, do not wait for any results.")] HRESULT StartG2Procedure([in] BSTR ProcedureName, [in] SAFEARRAY(VARIANT) *Arguments);
+        [id(5), vararg, helpcontext(306005), helpstring("Call a G2 procedure and wait for the results.")] HRESULT CallG2Procedure([in] BSTR ProcedureName, [in] SAFEARRAY(VARIANT) *Arguments, [out, retval] VARIANT *ReturnValues);
+        [id(6), helpcontext(306006), helpstring("Connect to G2.")] HRESULT Connect();
+        [id(7), helpcontext(306007), helpstring("Create a item in G2.")] HRESULT CreateItem([in] BSTR ItemClass, [out, retval] IG2Item **ReturnItem);
+        [id(8), helpcontext(306008), helpstring("Post a message to the G2 message board.")] HRESULT PostMessage([in] BSTR Message);
+        [id(9), helpcontext(306009), helpstring("Obtain a list of all instances of a given class.")] HRESULT ClassInstances([in] BSTR ClassName, [in, defaultvalue(TRUE)] VARIANT_BOOL StrictClassOnly, [out, retval] VARIANT *ReturnInstances);
+        [id(10), helpcontext(306010), helpstring("Find the direct subsclasses of a object class.")] HRESULT DirectSubclasses([in] BSTR ClassName, [out, retval] VARIANT *RetArray);
+        [id(11), helpcontext(303019), helpstring("Create a G2 symbol from a string")] HRESULT Symbol([in] BSTR SymbolName, [out, retval] IG2Symbol **ReturnSymbol);
+        [id(12), vararg, helpcontext(303020), helpstring("Create a G2 structure from a set of name/value pairs.")] HRESULT Structure([in] SAFEARRAY(VARIANT) *NameValuePairs, [out, retval] IG2Structure **ReturnStructure);
+        [propget, id(13), helpcontext(306013), helpstring("Automatically attempt to connect to G2 at startup.")] HRESULT ConnectAtStart([out, retval] VARIANT_BOOL *pVal);
+        [propput, id(13)] HRESULT ConnectAtStart([in] VARIANT_BOOL newVal);
+        [propget, id(15), nonbrowsable, helpcontext(306015), helpstring("Current state of G2: running, reset or paused.")] HRESULT G2State([out, retval] G2States *pVal);
+        [propput, id(15), nonbrowsable] HRESULT G2State([in] G2States newVal);
+        [propget, id(17), helpcontext(306017), helpstring("Class of interface object to create in G2.")] HRESULT G2InterfaceClassName([out, retval] BSTR *pVal);
+        [propput, id(17)] HRESULT G2InterfaceClassName([in] BSTR newVal);
+        [propget, id(18), helpcontext(306018), helpstring("Value to place in RemoteInterfaceString in G2 interface object.")] HRESULT RemoteInitializationString([out, retval] BSTR *pVal);
+        [propput, id(18)] HRESULT RemoteInitializationString([in] BSTR newVal);
+        [propget, id(19), helpcontext(306019), helpstring("Location of G2 in the format of hostname:port such as: localhost:1111")] HRESULT G2Location([out, retval] BSTR *pVal);
+        [propput, id(19)] HRESULT G2Location([in] BSTR newVal);
+        [propget, id(20), helpcontext(306020), helpstring("The current user mode.")] HRESULT UserMode([out, retval] BSTR *pVal);
+        [propput, id(20)] HRESULT UserMode([in] BSTR newVal);
+        [id(22), helpcontext(306022), helpstring("Get list of named workspaces.")] HRESULT GetNamedWorkspaces([out, retval] VARIANT *pVal);
+        [propget, id(23), helpcontext(306023), helpstring("The version of G2 software.")] HRESULT G2SoftwareVersion([out, retval] BSTR *pVal);
+        [propget, id(24), helpcontext(306024), helpstring("The number of seconds to wait for a call to complete before giving up.")] HRESULT CallTimeout([out, retval] long *pVal);
+        [propput, id(24)] HRESULT CallTimeout([in] long newVal);
+		[propget, id(27), helpcontext(306027), helpstring("A unique identifier for this gateway.  It may be refered to by G2ItemHolders and G2WorkspacePanel objects.")] HRESULT GatewayId([out, retval] BSTR *pVal);
+		[propput, id(27)] HRESULT GatewayId([in] BSTR newVal);
+		[propget, id(28), helpcontext(306028), helpstring("The username to be used when connecting.")] HRESULT UserName([out, retval] BSTR *pVal);
+		[propput, id(28)] HRESULT UserName([in] BSTR newVal);
+		[id(29), helpcontext(306029), helpstring("Set the password to be used when connecting.")] HRESULT SetUserPassword([in] BSTR Password);
+		[propget, id(30), helpcontext(306030), helpstring("The name of the interface object to create in G2.")] HRESULT G2InterfaceName([out, retval] BSTR *pVal);
+		[propput, id(30)] HRESULT G2InterfaceName([in] BSTR newVal);
+    };
+
+    [
+        object,
+        uuid(b742a840-701e-11d2-9933-00609703e60f),
+        dual,
+        helpstring("IG2UiGateway2 Interface"),
+        pointer_default(unique)
+    ]
+    interface IG2UiGateway2: IG2UiGateway
+    {
+		[id(31), helpcontext(306031), helpstring("Lets specified workspace panel handle show and hide workspace events.")] HRESULT AddWorkspaceShowingListener([in] IG2WorkspacePanel2 * WorkspacePanel);
+		[id(32), helpcontext(306032), helpstring("Remove the specified workspace panel from list of show/hide workspace event listeners.")] HRESULT RemoveWorkspaceShowingListener([in] IG2WorkspacePanel2 * WorkspacePanel);
+        [id(33), hidden, restricted] HRESULT _subObject([out, retval] IDispatch **subObject);
+		[id(34), helpcontext(306034), helpstring("Is this gateway connected to a G2 server?")] HRESULT IsConnected([out, retval] VARIANT_BOOL * pConnected);
+    };
+
+    [
+      uuid(42B6C7E2-06C1-11d2-8698-00008618F471),
+      helpstring("G2 UI Gateway Source Interface")
+    ]
+    dispinterface _G2UiGatewaySource
+    {
+        properties:
+        methods:
+            [id(0), helpcontext(307000), helpstring("Fired when this gateway makes a connection to a G2 server.")] void G2Connected(void);
+            [id(4), helpcontext(307004), helpstring("Fired when this gateway is disconnected from a G2 server.")] void G2Disconnected(void);
+            [id(5), helpcontext(307005), helpstring("Fired when the state of the connected G2 server changes.")] void G2StateChange([in] G2States NewState);
+            [id(6), helpcontext(307006), helpstring("Fired when a message is recieved from the G2 server.")] void GotMessage([in] BSTR Message);
+            [id(7), helpcontext(307007), helpstring("Fired when there is an error.")] void Error([in] BSTR Message);
+
+            // These are the events that do not map to ActiveXLink Events
+            // These are only meaningfull when used with T2
+            [id(8), helpcontext(307008), helpstring("Fired when a user logs in.")] void UserLoggedIn(void);
+            [id(9), helpcontext(307009), helpstring("Fired when a user logs out.")] void UserLoggedOut(void);
+            [id(10), helpcontext(307010), helpstring("Fired when the user mode of the connection changes.")] void UserModeChanged([in] BSTR NewUserMode);
+            // These events are added to the old dispinterface for VB use, other languages can use the new interface
+            [id(11), helpcontext(307011), helpstring("Fired when the G2 server wants a workspace to be shown.")] void ShowWorkspace([in] G2Item2 * Workspace, [in] IG2Structure * Particulars, [in] IDispatch * WorkspaceShowingEvent);
+            [id(12), helpcontext(307012), helpstring("Fired when the G2 server wants a workspace to be hidden.")] void HideWorkspace([in] G2Item2 * Workspace, [in] IDispatch * WorkspaceShowingEvent);
+    };
+
+    [
+      uuid(f108dd60-7436-11d2-993c-00609703e60f),
+      helpstring("G2 UI Gateway Source Interface 2")
+    ]
+    dispinterface _G2UiGatewaySource2
+    {
+        properties:
+        methods:
+            [id(0), helpcontext(307000), helpstring("Fired when this gateway makes a connection to a G2 server.")] void G2Connected(void);
+            [id(4), helpcontext(307004), helpstring("Fired when this gateway is disconnected from a G2 server.")] void G2Disconnected(void);
+            [id(5), helpcontext(307005), helpstring("Fired when the state of the connected G2 server changes.")] void G2StateChange([in] G2States NewState);
+            [id(6), helpcontext(307006), helpstring("Fired when a message is recieved from the G2 server.")] void GotMessage([in] BSTR Message);
+            [id(7), helpcontext(307007), helpstring("Fired when there is an error.")] void Error([in] BSTR Message);
+
+            // These are the events that do not map to ActiveXLink Events
+            // These are only meaningfull when used with T2
+            [id(8), helpcontext(307008), helpstring("Fired when a user logs in.")] void UserLoggedIn(void);
+            [id(9), helpcontext(307009), helpstring("Fired when a user logs out.")] void UserLoggedOut(void);
+            [id(10), helpcontext(307010), helpstring("Fired when the user mode of the connection changes.")] void UserModeChanged([in] BSTR NewUserMode);
+            [id(11), helpcontext(307011), helpstring("Fired when the G2 server wants a workspace to be shown.")] void ShowWorkspace([in] G2Item2 * Workspace, [in] IG2Structure * Particulars, [in] IDispatch * WorkspaceShowingEvent);
+            [id(12), helpcontext(307012), helpstring("Fired when the G2 server wants a workspace to be hidden.")] void HideWorkspace([in] G2Item2 * Workspace, [in] IDispatch * WorkspaceShowingEvent);
+    };
+
+    [
+        uuid(2B010C0E-09E5-11D2-869E-00008618F471),
+        helpcontext(201001),
+        helpstring("The ActiveX equivalent of the a symbol in G2.")
+    ]
+    coclass G2Symbol
+    {
+        [default] interface IG2Symbol;
+    };
+
+    [
+        uuid(2B010C07-09E5-11D2-869E-00008618F471),
+        helpcontext(202001),
+        helpstring("The ActiveX equivalent of the a structure in G2.")
+    ]
+    coclass G2Structure
+    {
+        [default] interface IG2Structure;
+    };
+
+    [
+        uuid(37760295-1CC3-11D2-86C7-00008618F471),
+        helpcontext(203001),
+        helpstring("A direct reference to an item (object) hosted by a G2 server."),
+        noncreatable
+    ]
+    coclass G2Item
+    {
+        [default] interface IG2Item;
+        interface G2Item2;
+    };
+
+    [
+        uuid(37760294-1CC3-11D2-86C7-00008618F471),
+        helpcontext(204001),
+        helpstring("Used to receive attribute update events from a G2 server or optionally buffer attribute changes. Optionally it can automatically retrieve an item from a G2UiGateway at startup."),
+    ]
+    coclass G2ItemHolder
+    {
+        [default] interface IG2ItemHolder2;
+        interface IG2ItemHolder;
+        [default, source] dispinterface _G2ItemEvents;
+        [source] dispinterface _G2ItemEvents2;
+    };
+
+    [
+        uuid(8850F112-1FFF-11D2-86CC-00008618F471),
+        helpcontext(206001),
+        helpstring("Used to interact with KB Workspaces. Optionally it can automatically retrieve a workspace from a G2UiGateway startup."),
+    ]
+    coclass G2WorkspacePanel
+    {
+        [default] interface IG2WorkspacePanel2;
+        interface IG2WorkspacePanel;
+        [default, source] dispinterface _G2WorkspacePanelSource;
+    };
+
+    [
+        uuid(42B6C7E3-06C1-11d2-8698-00008618F471),
+        helpcontext(205001),
+        helpstring("Used to retrieve G2Items and receive events from a G2 server. By default it tries to automatically connect to a G2 server at startup."),
+    ]
+    coclass G2UiGateway
+    {
+        [default] interface IG2UiGateway2;
+        interface IG2UiGateway;
+        [default, source] dispinterface _G2UiGatewaySource;
+        [source] dispinterface _G2UiGatewaySource2;
+    };
+};
