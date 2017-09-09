@@ -1,0 +1,94 @@
+# -*- Mode: Makefile -*-
+
+# Note that this makefile is completely hand-generated, though it is done in a
+# style similar to that of our generated makefiles.
+
+# With Windows, it worked out very nicely because we could use the exact same
+# makefiles and libraries from ext, fnt, and jpeg, as we use to build the C
+# versions.  Things don't go as smoothly on Linux.  First of all, we apparently
+# have to compile all the C files with -fpic or -fPIC.  That's the easy part,
+# especially from a makefile perspective.  The annoying part is (it seems, so
+# far) that we can't use the static libraries.  On Windows, we compile the .lib
+# files together with twcallbacks.obj and make a dll. That didn't work on Linux.
+# But compiling the .so from the individual object files did.  So, for now at
+# least, that's what we'll do.
+
+# Note also that this makefile currently does not "notice" changes to source
+# code files aside from xanalys/twcallbacks.c.  The shared library depends on
+# the object files, but this makefile does not know how to produce those object
+# files, nor even which source files they depend on.  Therefore, the only
+# correct usage of this makefile is after having built ext, fnt, and jpeg.
+
+SHELL = /bin/sh
+PRODUCT = lisp
+ODIR = o
+PLATFORM = linux
+
+CDIR = $(SRCBOX)/xanalys
+GWDIR = $(SRCBOX)/gw/c
+SCRIPTSDIR = /home/development/scripts
+SPFCDIR = $(SRCBOX)/specific/$(PLATFORM)
+CC_FLAGS = -fPIC -g -Wimplicit 
+RTLDIR = $(SRCBOX)/rtl/c
+EXTDIR = $(SRCBOX)/ext/c
+GSIDIR = $(SRCBOX)/gsi/c
+COMDIR = $(SRCBOX)/common/c/include
+GSI_INC = -I$(RTLDIR) -I$(EXTDIR) -I$(GSIDIR) -I$(COMDIR)
+
+LIBCPRIM = $(DSTBOX)/ext/$(ODIR)/backtrac.o $(DSTBOX)/ext/$(ODIR)/nsleep.o $(DSTBOX)/ext/$(ODIR)/clipboard.o $(DSTBOX)/ext/$(ODIR)/cprim.o $(DSTBOX)/ext/$(ODIR)/cprocess.o $(DSTBOX)/ext/$(ODIR)/cstreams.o $(DSTBOX)/ext/$(ODIR)/ctime.o $(DSTBOX)/ext/$(ODIR)/dtoa.o $(DSTBOX)/ext/$(ODIR)/event.o $(DSTBOX)/ext/$(ODIR)/events.o $(DSTBOX)/ext/$(ODIR)/g2ptrs.o $(DSTBOX)/ext/$(ODIR)/g2signal.o $(DSTBOX)/ext/$(ODIR)/g_fmt.o $(DSTBOX)/ext/$(ODIR)/graphics.o $(DSTBOX)/ext/$(ODIR)/icmp.o $(DSTBOX)/ext/$(ODIR)/images.o $(DSTBOX)/ext/$(ODIR)/keypress.o $(DSTBOX)/ext/$(ODIR)/md5_all.o $(DSTBOX)/ext/$(ODIR)/networks.o $(DSTBOX)/ext/$(ODIR)/process.o $(DSTBOX)/ext/$(ODIR)/sckevent.o $(DSTBOX)/ext/$(ODIR)/ssl.o $(DSTBOX)/ext/$(ODIR)/tcp.o $(DSTBOX)/ext/$(ODIR)/trace.o $(DSTBOX)/ext/$(ODIR)/windows.o $(DSTBOX)/ext/$(ODIR)/xwindows.o $(DSTBOX)/ext/$(ODIR)/packaging.o
+
+LIBFNT = $(DSTBOX)/fnt/$(ODIR)/cmt.o $(DSTBOX)/fnt/$(ODIR)/cmtglob.o $(DSTBOX)/fnt/$(ODIR)/do_char.o $(DSTBOX)/fnt/$(ODIR)/do_trns.o $(DSTBOX)/fnt/$(ODIR)/fixed_pt.o $(DSTBOX)/fnt/$(ODIR)/fnt.o $(DSTBOX)/fnt/$(ODIR)/fontrip.o $(DSTBOX)/fnt/$(ODIR)/fontscal.o $(DSTBOX)/fnt/$(ODIR)/frontend.o $(DSTBOX)/fnt/$(ODIR)/fsglue.o $(DSTBOX)/fnt/$(ODIR)/mapstrng.o $(DSTBOX)/fnt/$(ODIR)/msl.o $(DSTBOX)/fnt/$(ODIR)/msst.o $(DSTBOX)/fnt/$(ODIR)/msstglob.o $(DSTBOX)/fnt/$(ODIR)/newscan.o $(DSTBOX)/fnt/$(ODIR)/out_bl2d.o $(DSTBOX)/fnt/$(ODIR)/out_blk.o $(DSTBOX)/fnt/$(ODIR)/out_outl.o $(DSTBOX)/fnt/$(ODIR)/out_scrn.o $(DSTBOX)/fnt/$(ODIR)/out_util.o $(DSTBOX)/fnt/$(ODIR)/out_wht.o $(DSTBOX)/fnt/$(ODIR)/reset.o $(DSTBOX)/fnt/$(ODIR)/set_keys.o $(DSTBOX)/fnt/$(ODIR)/set_spcs.o $(DSTBOX)/fnt/$(ODIR)/set_trns.o $(DSTBOX)/fnt/$(ODIR)/sfntd.o $(DSTBOX)/fnt/$(ODIR)/tt_iface.o $(DSTBOX)/fnt/$(ODIR)/tt_specs.o
+
+LIBJPEG = $(DSTBOX)/jpeg/$(ODIR)/jcapimin.o $(DSTBOX)/jpeg/$(ODIR)/jcapistd.o $(DSTBOX)/jpeg/$(ODIR)/jccoefct.o $(DSTBOX)/jpeg/$(ODIR)/jccolor.o $(DSTBOX)/jpeg/$(ODIR)/jcdctmgr.o $(DSTBOX)/jpeg/$(ODIR)/jchuff.o $(DSTBOX)/jpeg/$(ODIR)/jcinit.o $(DSTBOX)/jpeg/$(ODIR)/jcmainct.o $(DSTBOX)/jpeg/$(ODIR)/jcmarker.o $(DSTBOX)/jpeg/$(ODIR)/jcmaster.o $(DSTBOX)/jpeg/$(ODIR)/jcomapi.o $(DSTBOX)/jpeg/$(ODIR)/jcparam.o $(DSTBOX)/jpeg/$(ODIR)/jcphuff.o $(DSTBOX)/jpeg/$(ODIR)/jcprepct.o $(DSTBOX)/jpeg/$(ODIR)/jcsample.o $(DSTBOX)/jpeg/$(ODIR)/jctrans.o $(DSTBOX)/jpeg/$(ODIR)/jdapimin.o $(DSTBOX)/jpeg/$(ODIR)/jdapistd.o $(DSTBOX)/jpeg/$(ODIR)/jdatadst.o $(DSTBOX)/jpeg/$(ODIR)/jdatasrc.o $(DSTBOX)/jpeg/$(ODIR)/jdcoefct.o $(DSTBOX)/jpeg/$(ODIR)/jdcolor.o $(DSTBOX)/jpeg/$(ODIR)/jddctmgr.o $(DSTBOX)/jpeg/$(ODIR)/jdhuff.o $(DSTBOX)/jpeg/$(ODIR)/jdinput.o $(DSTBOX)/jpeg/$(ODIR)/jdmainct.o $(DSTBOX)/jpeg/$(ODIR)/jdmarker.o $(DSTBOX)/jpeg/$(ODIR)/jdmaster.o $(DSTBOX)/jpeg/$(ODIR)/jdmerge.o $(DSTBOX)/jpeg/$(ODIR)/jdphuff.o $(DSTBOX)/jpeg/$(ODIR)/jdpostct.o $(DSTBOX)/jpeg/$(ODIR)/jdsample.o $(DSTBOX)/jpeg/$(ODIR)/jdtrans.o $(DSTBOX)/jpeg/$(ODIR)/jerror.o $(DSTBOX)/jpeg/$(ODIR)/jfdctflt.o $(DSTBOX)/jpeg/$(ODIR)/jfdctfst.o $(DSTBOX)/jpeg/$(ODIR)/jfdctint.o $(DSTBOX)/jpeg/$(ODIR)/jidctflt.o $(DSTBOX)/jpeg/$(ODIR)/jidctfst.o $(DSTBOX)/jpeg/$(ODIR)/jidctint.o $(DSTBOX)/jpeg/$(ODIR)/jidctred.o $(DSTBOX)/jpeg/$(ODIR)/jmemmgr.o $(DSTBOX)/jpeg/$(ODIR)/jmemnobs.o $(DSTBOX)/jpeg/$(ODIR)/jquant1.o $(DSTBOX)/jpeg/$(ODIR)/jquant2.o $(DSTBOX)/jpeg/$(ODIR)/jutils.o
+
+LIBPNG = $(DSTBOX)/libpng/$(ODIR)/adler32.o $(DSTBOX)/libpng/$(ODIR)/gzio.o $(DSTBOX)/libpng/$(ODIR)/inftrees.o $(DSTBOX)/libpng/$(ODIR)/png.o $(DSTBOX)/libpng/$(ODIR)/pngrtran.o $(DSTBOX)/libpng/$(ODIR)/pngwio.o $(DSTBOX)/libpng/$(ODIR)/trees.o $(DSTBOX)/libpng/$(ODIR)/compress.o $(DSTBOX)/libpng/$(ODIR)/infback.o $(DSTBOX)/libpng/$(ODIR)/pngerror.o $(DSTBOX)/libpng/$(ODIR)/pngpread.o $(DSTBOX)/libpng/$(ODIR)/pngrutil.o $(DSTBOX)/libpng/$(ODIR)/pngwrite.o $(DSTBOX)/libpng/$(ODIR)/uncompr.o $(DSTBOX)/libpng/$(ODIR)/crc32.o $(DSTBOX)/libpng/$(ODIR)/inffast.o $(DSTBOX)/libpng/$(ODIR)/pngget.o $(DSTBOX)/libpng/$(ODIR)/pngread.o $(DSTBOX)/libpng/$(ODIR)/pngset.o $(DSTBOX)/libpng/$(ODIR)/pngwtran.o $(DSTBOX)/libpng/$(ODIR)/zutil.o $(DSTBOX)/libpng/$(ODIR)/deflate.o $(DSTBOX)/libpng/$(ODIR)/inflate.o $(DSTBOX)/libpng/$(ODIR)/pngmem.o $(DSTBOX)/libpng/$(ODIR)/pngrio.o $(DSTBOX)/libpng/$(ODIR)/pngtrans.o $(DSTBOX)/libpng/$(ODIR)/pngwutil.o
+
+LIBLSXML = $(DSTBOX)/xml/$(ODIR)/lispxml.o
+
+LIBMQTT = $(SRCBOX)/mqtt/bin/mqttDataTrace.o $(SRCBOX)/mqtt/bin/mqttSessionTrace.o  $(SRCBOX)/mqtt/bin/mqttSocket.o $(SRCBOX)/mqtt/bin/mqttTraceHelper.o $(SRCBOX)/mqtt/bin/mqttclient.o
+
+all : twlibs.so g2libs.so gsilibs.so
+
+twlibs.so : twcallbacks.o $(LIBCPRIM) $(LIBFNT) $(LIBJPEG) $(LIBPNG)
+	@- if [ -f twlibs.so ] ; then rm -f twlibs.so ; fi
+	$(GCC) -shared -o twlibs.so -L/usr/X11R6/lib twcallbacks.o $(LIBCPRIM) $(LIBFNT) $(LIBJPEG) $(LIBPNG) -lX11 -lm -ldl -lssl -lcrypto
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+twcallbacks.o : $(CDIR)/twcallbacks.c
+	@- if [ -f twcallbacks.o ] ; then rm -f twcallbacks.o ; fi
+	$(CC) -c $(CC_FLAGS) $(CDIR)/twcallbacks.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+g2libs.so : g2callbacks.o $(LIBCPRIM) $(LIBFNT) $(LIBJPEG) $(LIBPNG) $(LIBMQTT)
+	@- if [ -f g2libs.so ] ; then rm -f g2libs.so ; fi
+	$(GCC) -shared -o g2libs.so -L/usr/X11R6/lib g2callbacks.o $(LIBCPRIM) $(LIBFNT) $(LIBJPEG) $(LIBPNG) $(LIBMQTT) -lX11 -lm -ldl -lz -lssl -lcrypto
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+g2callbacks.o : $(CDIR)/g2callbacks.c
+	@- if [ -f g2callbacks.o ] ; then rm -f g2callbacks.o ; fi
+	$(CC) -c $(CC_FLAGS) $(CDIR)/g2callbacks.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+gsilibs.so : gsicallbacks.o gw_tcp.o lgsi_support.o $(LIBCPRIM) $(LIBFNT) $(LIBJPEG) $(LIBPNG) $(LIBMQTT)
+	@- if [ -f gsilibs.so ] ; then rm -f gsilibs.so ; fi
+	$(GCC) -shared -o gsilibs.so -L/usr/X11R6/lib gsicallbacks.o gw_tcp.o lgsi_support.o $(LIBCPRIM) $(LIBFNT) $(LIBJPEG) $(LIBPNG) $(LIBMQTT) -lX11 -lm -ldl -lz -lssl -lcrypto
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+gsicallbacks.o : $(CDIR)/gsicallbacks.c
+	@- if [ -f gsicallbacks.o ] ; then rm -f gsicallbacks.o ; fi
+	$(CC) -c $(CC_FLAGS) $(CDIR)/gsicallbacks.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+gw_tcp.o : $(GWDIR)/gw_tcp.c
+	@- if [ -f gw_tcp.o ] ; then rm -f gw_tcp.o ; fi
+	$(CC) -c $(CC_FLAGS) $(GSI_INC) -DXANALYS $(GWDIR)/gw_tcp.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+lgsi_support.o : $(GWDIR)/lgsi_support.c
+	@- if [ -f lgsi_support.o ] ; then rm -f lgsi_support.o ; fi
+	$(CC) -c $(CC_FLAGS) $(GSI_INC) -DXANALYS $(GWDIR)/lgsi_support.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+clean :
+	- rm -f *.[oa]
+	- rm -f twlibs.so g2libs.so gsilibs.so
