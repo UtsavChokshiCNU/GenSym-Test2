@@ -1,0 +1,409 @@
+PRODUCT = ext
+ODIR = opt
+PLATFORM = intelnt
+CDIR = $(SRCBOX)\$(PRODUCT)\c
+JPEGCDIR = $(SRCBOX)/jpeg/c
+MFDIR = $(DSTBOX)\$(PRODUCT)\$(ODIR)
+NODEBUG = 1
+SCRIPTSDIR = $(SCRIPTSBOX)\scripts\nt
+SPFCDIR = $(SRCBOX)\specific\$(PLATFORM)
+!ifdef USE_VS2008
+ZC_OPT = /Zc:wchar_t- /Zc:forScope-
+!else
+ZC_OPT =
+!endif
+CC_FLAGS = $(cflags) $(cvarsmt) -D_CTYPE_DISABLE_MACROS $(ZC_OPT) -I$(SRCBOX)\common\c\include
+
+# The include file ntwin32.mak defines macros to provide independence
+# macro      Intel NT             Alpha NT      Definition
+# =====      ========             ========      ===========
+# $(cc)      cl                   claxp         compiler
+# $(ccommon) -c -W3               same          standard compiler flags
+# $(cdebug)  -Od -Zi              -Od -Zi -Zh   standard debug flags*
+# $(cflags)  $(ccommon) -D_X86_=1 -c -DALPHA=1  to identify platform
+# $(cvarsdll) -DWIN32 $(noansi)    same          to identify o.s.
+# $(link)    link32               same          linker
+# $(ldebug)  -debug:full          same          linker debug flags*
+#            -debugtype:cv              
+# $(guilflags) -subsystem:windows same          GUI link flags
+#             -entry:WinMainCRTStartup  
+#
+# (*) A NODEBUG option or macro turns off debugging and specifies
+#    full optimization.
+
+!include <ntwin32.mak>
+
+
+all : _mfenter g2libs backtrac.obj nsleep.obj g2passwd.exe hostlookup.exe overlay.exe _mfexit
+
+g2libs : libcprim.lib libforgn.lib libgsec.lib libnogsec.lib libtcp.lib
+
+_mfenter : 
+    @- $(SCRIPTSDIR)\errsweep.bat -init
+
+_mfexit : 
+    @- $(SCRIPTSDIR)\errsweep.bat -finish
+
+libcprim.lib : backtrac.obj $(SPFCDIR)\nsleep.obj \
+  clipboard.obj contain.obj cprim.obj cprocess.obj cstreams.obj ctime.obj \
+  dialogs.obj dtoa.obj event.obj events.obj filedlg.obj g2ptrs.obj \
+  g2signal.obj g_fmt.obj graphics.obj icmp.obj images.obj md5_all.obj mdi.obj \
+  menus.obj msinits.obj msmain.obj networks.obj ntevent.obj packaging.obj process.obj \
+  resizer.obj sckevent.obj sspi.obj tcp.obj trace.obj twpro.obj \
+  w32_dyndlg.obj windows.obj ldap.obj jit_support.obj
+    - del libcprim.lib
+    @- $(SCRIPTSDIR)\errsweep.bat libcprim.lib
+    $(implib) /out:libcprim.lib   cprim.obj cprocess.obj cstreams.obj ctime.obj dtoa.obj events.obj event.obj g2ptrs.obj g2signal.obj g_fmt.obj graphics.obj clipboard.obj images.obj md5_all.obj networks.obj sspi.obj trace.obj packaging.obj process.obj tcp.obj icmp.obj windows.obj contain.obj dialogs.obj mdi.obj msinits.obj msmain.obj twpro.obj resizer.obj menus.obj w32_dyndlg.obj filedlg.obj ntevent.obj sckevent.obj ldap.obj jit_support.obj $(SPFCDIR)\backtrac.obj $(SPFCDIR)\nsleep.obj
+    @- del current.bat
+
+libforgn.lib : $(SPFCDIR)\backtrac.obj cprim.obj packaging.obj cprocess.obj ctime.obj \
+  event.obj extensn.obj fgnevent.obj foreign.obj g2ptrs.obj icp.obj \
+  netstubs.obj networks.obj ntevent.obj pools.obj sckevent.obj sslnoop.obj \
+  tcp.obj trace.obj
+    - del libforgn.lib
+    @- $(SCRIPTSDIR)\errsweep.bat libforgn.lib
+    $(implib) /out:libforgn.lib   cprim.obj cprocess.obj ctime.obj extensn.obj foreign.obj g2ptrs.obj icp.obj networks.obj trace.obj pools.obj fgnevent.obj tcp.obj sslnoop.obj netstubs.obj event.obj ntevent.obj sckevent.obj $(SPFCDIR)\backtrac.obj
+    @- del current.bat
+
+libgsec.lib : sspi.obj
+    - del libgsec.lib
+    @- $(SCRIPTSDIR)\errsweep.bat libgsec.lib
+    $(implib) /out:libgsec.lib   sspi.obj
+    @- del current.bat
+
+libnogsec.lib : sslnoop.obj
+    - del libnogsec.lib
+    @- $(SCRIPTSDIR)\errsweep.bat libnogsec.lib
+    $(implib) /out:libnogsec.lib   sslnoop.obj
+    @- del current.bat
+
+libtcp.lib : $(SPFCDIR)\backtrac.obj cprim.obj packaging.obj cprocess.obj \
+  cstreams.obj ctime.obj event.obj g2ptrs.obj g2signal.obj netstubs.obj \
+  networks.obj ntevent.obj sckevent.obj tcp.obj trace.obj
+    - del libtcp.lib
+    @- $(SCRIPTSDIR)\errsweep.bat libtcp.lib
+    $(implib) /out:libtcp.lib cprim.obj cprocess.obj cstreams.obj ctime.obj event.obj g2ptrs.obj g2signal.obj networks.obj trace.obj tcp.obj netstubs.obj ntevent.obj sckevent.obj $(SPFCDIR)\backtrac.obj
+    @- del current.bat
+
+g2passwd.exe : g2passwd.obj g2pwaux.obj md5_all.obj g2pwd.res
+    - del g2passwd.exe
+    @- $(SCRIPTSDIR)\errsweep.bat g2passwd.exe
+    $(link) -out:g2passwd.exe $(conflags) /machine:IX86  g2passwd.obj g2pwaux.obj md5_all.obj g2pwd.res $(guilibsmt) ws2_32.lib version.lib
+    @- del current.bat
+
+hostlookup.exe : hostlookup.obj
+    - del hostlookup.exe
+    @- $(SCRIPTSDIR)\errsweep.bat hostlookup.exe
+    $(link) -out:hostlookup.exe $(conflags) /machine:IX86  hostlookup.obj $(guilibsmt) ws2_32.lib version.lib
+    @- del current.bat
+
+overlay.exe : overlay.obj
+    - del overlay.exe
+    @- $(SCRIPTSDIR)\errsweep.bat overlay.exe
+    $(link) -out:overlay.exe $(conflags) /machine:IX86  overlay.obj $(guilibsmt) ws2_32.lib version.lib
+    @- del current.bat
+
+g2pwd.res : $(CDIR)\g2pwd.rc
+    - del g2pwd.res
+    @- $(SCRIPTSDIR)\errsweep.bat g2pwd.res
+    rc.exe /fo"$(MFDIR)\g2pwd.res" $(CDIR)\g2pwd.rc
+    @- del current.bat
+
+backtrac.obj : $(CDIR)\backtrac.c 
+    - del backtrac.obj
+    @- $(SCRIPTSDIR)\errsweep.bat backtrac.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\backtrac.c
+    @- del current.bat
+
+clipboard.obj : $(CDIR)\clipboard.c $(CDIR)\cprim.h $(CDIR)\graphics.h
+    - del clipboard.obj
+    @- $(SCRIPTSDIR)\errsweep.bat clipboard.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\clipboard.c
+    @- del current.bat
+
+contain.obj : $(CDIR)\contain.c 
+    - del contain.obj
+    @- $(SCRIPTSDIR)\errsweep.bat contain.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\contain.c
+    @- del current.bat
+
+cprim.obj : $(CDIR)\cprim.c $(CDIR)\cprim.h $(CDIR)\trace.h
+    - del cprim.obj
+    @- $(SCRIPTSDIR)\errsweep.bat cprim.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\cprim.c
+    @- del current.bat
+
+cprocess.obj : $(CDIR)\cprocess.c $(CDIR)\cprim.h $(CDIR)\msincls.h
+    - del cprocess.obj
+    @- $(SCRIPTSDIR)\errsweep.bat cprocess.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\cprocess.c
+    @- del current.bat
+
+cstreams.obj : $(CDIR)\cstreams.c $(CDIR)\cprim.h
+    - del cstreams.obj
+    @- $(SCRIPTSDIR)\errsweep.bat cstreams.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\cstreams.c
+    @- del current.bat
+
+ctime.obj : $(CDIR)\ctime.c $(CDIR)\cprim.h
+    - del ctime.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ctime.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\ctime.c
+    @- del current.bat
+
+dialogs.obj : $(CDIR)\dialogs.c $(CDIR)\cprim.h $(CDIR)\ddrsc.h $(CDIR)\dyndlgs.h $(CDIR)\graphics.h $(CDIR)\msincls.h
+    - del dialogs.obj
+    @- $(SCRIPTSDIR)\errsweep.bat dialogs.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\dialogs.c
+    @- del current.bat
+
+dtoa.obj : $(CDIR)\dtoa.c $(CDIR)\dtoa.h
+    - del dtoa.obj
+    @- $(SCRIPTSDIR)\errsweep.bat dtoa.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\dtoa.c
+    @- del current.bat
+
+event.obj : $(CDIR)\event.c $(CDIR)\cprim.h $(CDIR)\eventfns.h $(CDIR)\netevent.h $(CDIR)\networks.h $(CDIR)\winerr.h
+    - del event.obj
+    @- $(SCRIPTSDIR)\errsweep.bat event.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\event.c
+    @- del current.bat
+
+events.obj : $(CDIR)\events.c $(CDIR)\cprim.h $(CDIR)\graphics.h $(CDIR)\msincls.h $(CDIR)\networks.h
+    - del events.obj
+    @- $(SCRIPTSDIR)\errsweep.bat events.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\events.c
+    @- del current.bat
+
+extensn.obj : $(CDIR)\extensn.c $(CDIR)\cprim.h $(CDIR)\gensym-features.h $(CDIR)\icp.h $(CDIR)\icp_pvt.h $(CDIR)\networks.h
+    - del extensn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat extensn.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\extensn.c
+    @- del current.bat
+
+fgnevent.obj : $(CDIR)\fgnevent.c $(CDIR)\cprim.h $(CDIR)\eventfns.h $(CDIR)\foreign.h $(CDIR)\gensym-features.h $(CDIR)\icp_pvt.h $(CDIR)\netevent.h $(CDIR)\networks.h
+    - del fgnevent.obj
+    @- $(SCRIPTSDIR)\errsweep.bat fgnevent.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\fgnevent.c
+    @- del current.bat
+
+filedlg.obj : $(CDIR)\filedlg.cpp $(CDIR)\filedlg.h
+    - del filedlg.obj
+    @- $(SCRIPTSDIR)\errsweep.bat filedlg.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(CDIR) $(CDIR)\filedlg.cpp
+    @- del current.bat
+
+foreign.obj : $(CDIR)\foreign.c $(CDIR)\ffe_pvt.h $(CDIR)\foreign.h $(CDIR)\gensym-features.h $(CDIR)\icp_pvt.h
+    - del foreign.obj
+    @- $(SCRIPTSDIR)\errsweep.bat foreign.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\foreign.c
+    @- del current.bat
+
+g2passwd.obj : $(CDIR)\g2passwd.c $(CDIR)\cprim.h $(CDIR)\md5_all.h
+    - del g2passwd.obj
+    @- $(SCRIPTSDIR)\errsweep.bat g2passwd.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\g2passwd.c
+    @- del current.bat
+
+g2ptrs.obj : $(CDIR)\g2ptrs.c $(CDIR)\cprim.h
+    - del g2ptrs.obj
+    @- $(SCRIPTSDIR)\errsweep.bat g2ptrs.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\g2ptrs.c
+    @- del current.bat
+
+g2pwaux.obj : $(CDIR)\g2pwaux.c $(CDIR)\cprim.h $(CDIR)\md5_all.h
+    - del g2pwaux.obj
+    @- $(SCRIPTSDIR)\errsweep.bat g2pwaux.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\g2pwaux.c
+    @- del current.bat
+
+g2signal.obj : $(CDIR)\g2signal.c $(CDIR)\cprim.h
+    - del g2signal.obj
+    @- $(SCRIPTSDIR)\errsweep.bat g2signal.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\g2signal.c
+    @- del current.bat
+
+g_fmt.obj : $(CDIR)\g_fmt.c $(CDIR)\dtoa.h
+    - del g_fmt.obj
+    @- $(SCRIPTSDIR)\errsweep.bat g_fmt.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\g_fmt.c
+    @- del current.bat
+
+graphics.obj : $(CDIR)\graphics.c $(CDIR)\cprim.h $(CDIR)\graphics.h $(CDIR)\msincls.h
+    - del graphics.obj
+    @- $(SCRIPTSDIR)\errsweep.bat graphics.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\graphics.c
+    @- del current.bat
+
+hostlookup.obj : $(CDIR)\hostlookup.c 
+    - del hostlookup.obj
+    @- $(SCRIPTSDIR)\errsweep.bat hostlookup.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\hostlookup.c
+    @- del current.bat
+
+icmp.obj : $(CDIR)\icmp.c $(CDIR)\cprim.h $(CDIR)\icmp.h $(CDIR)\msincls.h $(CDIR)\netevent.h $(CDIR)\networks.h
+    - del icmp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat icmp.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\icmp.c
+    @- del current.bat
+
+icp.obj : $(CDIR)\icp.c $(CDIR)\gensym-features.h $(CDIR)\icp.h $(CDIR)\icp_pvt.h
+    - del icp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat icp.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\icp.c
+    @- del current.bat
+
+images.obj : $(CDIR)\images.c $(CDIR)\cprim.h $(CDIR)\graphics.h
+    - del images.obj
+    @- $(SCRIPTSDIR)\errsweep.bat images.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(JPEGCDIR) $(CDIR)\images.c
+    @- del current.bat
+
+jit_support.obj : $(CDIR)\jit_support.c $(CDIR)\jit_support.h
+    - del jit_support.obj
+    @- $(SCRIPTSDIR)\errsweep.bat jit_support.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(JPEGCDIR) $(CDIR)\jit_support.c
+    @- del current.bat	
+	
+ldap.obj : $(CDIR)\ldap.c
+    - del ldap.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ldap.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\ldap.c
+    @- del current.bat
+
+md5_all.obj : $(CDIR)\md5_all.c $(CDIR)\md5_all.h
+    - del md5_all.obj
+    @- $(SCRIPTSDIR)\errsweep.bat md5_all.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\md5_all.c
+    @- del current.bat
+
+mdi.obj : $(CDIR)\mdi.c $(CDIR)\cprim.h $(CDIR)\graphics.h $(CDIR)\msincls.h $(CDIR)\netevent.h $(CDIR)\networks.h
+    - del mdi.obj
+    @- $(SCRIPTSDIR)\errsweep.bat mdi.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(SPFCDIR) $(CDIR)\mdi.c
+    @- del current.bat
+
+menus.obj : $(CDIR)\menus.c $(CDIR)\cprim.h $(CDIR)\graphics.h $(CDIR)\msincls.h $(CDIR)\netevent.h $(CDIR)\networks.h
+    - del menus.obj
+    @- $(SCRIPTSDIR)\errsweep.bat menus.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\menus.c
+    @- del current.bat
+
+msinits.obj : $(CDIR)\msinits.c $(CDIR)\cprim.h $(CDIR)\graphics.h $(CDIR)\msincls.h
+    - del msinits.obj
+    @- $(SCRIPTSDIR)\errsweep.bat msinits.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\msinits.c
+    @- del current.bat
+
+msmain.obj : $(CDIR)\msmain.c $(CDIR)\cprim.h $(CDIR)\eventfns.h $(CDIR)\graphics.h $(CDIR)\msincls.h $(CDIR)\netevent.h $(CDIR)\networks.h
+    - del msmain.obj
+    @- $(SCRIPTSDIR)\errsweep.bat msmain.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\msmain.c
+    @- del current.bat
+
+netstubs.obj : $(CDIR)\netstubs.c 
+    - del netstubs.obj
+    @- $(SCRIPTSDIR)\errsweep.bat netstubs.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\netstubs.c
+    @- del current.bat
+
+networks.obj : $(CDIR)\networks.c $(CDIR)\cprim.h $(CDIR)\eventfns.h $(CDIR)\msincls.h $(CDIR)\netevent.h $(CDIR)\networks.h $(CDIR)\trace.h
+    - del networks.obj
+    @- $(SCRIPTSDIR)\errsweep.bat networks.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\networks.c
+    @- del current.bat
+
+nsleep.obj : $(CDIR)\nsleep.c 
+    - del nsleep.obj
+    @- $(SCRIPTSDIR)\errsweep.bat nsleep.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(SPFCDIR) $(CDIR)\nsleep.c
+    @- del current.bat
+
+ntevent.obj : $(CDIR)\ntevent.c $(CDIR)\cprim.h $(CDIR)\graphics.h $(CDIR)\msincls.h $(CDIR)\netevent.h $(CDIR)\networks.h $(CDIR)\trace.h
+    - del ntevent.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ntevent.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\ntevent.c
+    @- del current.bat
+
+overlay.obj : $(CDIR)\overlay.c 
+    - del overlay.obj
+    @- $(SCRIPTSDIR)\errsweep.bat overlay.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\overlay.c
+    @- del current.bat
+
+packaging.obj : $(CDIR)\packaging.c $(CDIR)\packaging.h 
+    - del packaging.obj
+    @- $(SCRIPTSDIR)\errsweep.bat packaging.obj
+    $(cc) -Gs -Ob1 -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\packaging.c
+    @- del current.bat	
+	
+pools.obj : $(CDIR)\pools.c $(CDIR)\gensym-features.h $(CDIR)\icp.h $(CDIR)\icp_pvt.h $(CDIR)\pools.h
+    - del pools.obj
+    @- $(SCRIPTSDIR)\errsweep.bat pools.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\pools.c
+    @- del current.bat
+
+process.obj : $(CDIR)\process.c $(CDIR)\cprim.h $(CDIR)\netevent.h $(CDIR)\networks.h
+    - del process.obj
+    @- $(SCRIPTSDIR)\errsweep.bat process.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\process.c
+    @- del current.bat
+
+resizer.obj : $(CDIR)\resizer.c 
+    - del resizer.obj
+    @- $(SCRIPTSDIR)\errsweep.bat resizer.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\resizer.c
+    @- del current.bat
+
+sckevent.obj : $(CDIR)\sckevent.c $(CDIR)\cprim.h $(CDIR)\netevent.h $(CDIR)\networks.h $(CDIR)\trace.h
+    - del sckevent.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sckevent.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\sckevent.c
+    @- del current.bat
+
+sslnoop.obj : $(CDIR)\sslnoop.c 
+    - del sslnoop.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sslnoop.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\sslnoop.c
+    @- del current.bat
+
+sspi.obj : $(CDIR)\sspi.c 
+    - del sspi.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sspi.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\sspi.c
+    @- del current.bat
+
+tcp.obj : $(CDIR)\tcp.c $(CDIR)\cprim.h $(CDIR)\netevent.h $(CDIR)\networks.h
+    - del tcp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat tcp.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\tcp.c
+    @- del current.bat
+
+trace.obj : $(CDIR)\trace.c $(CDIR)\cprim.h $(CDIR)\msincls.h $(CDIR)\networks.h $(CDIR)\trace.h
+    - del trace.obj
+    @- $(SCRIPTSDIR)\errsweep.bat trace.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\trace.c
+    @- del current.bat
+
+twpro.obj : $(CDIR)\twpro.c $(CDIR)\cprim.h $(CDIR)\msincls.h $(CDIR)\networks.h
+    - del twpro.obj
+    @- $(SCRIPTSDIR)\errsweep.bat twpro.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\twpro.c
+    @- del current.bat
+
+w32_dyndlg.obj : $(CDIR)\w32_dyndlg.cpp $(CDIR)\cprim.h $(CDIR)\ddrsc.h $(CDIR)\dyndlgs.h $(CDIR)\lispicp.h $(CDIR)\msincls.h
+    - del w32_dyndlg.obj
+    @- $(SCRIPTSDIR)\errsweep.bat w32_dyndlg.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS) -I$(CDIR) $(CDIR)\w32_dyndlg.cpp
+    @- del current.bat
+
+windows.obj : $(CDIR)\windows.c $(CDIR)\cprim.h $(CDIR)\graphics.h
+    - del windows.obj
+    @- $(SCRIPTSDIR)\errsweep.bat windows.obj
+    $(cc) -Gs -Ob1 -Og -Oi -Ot -Zi $(CC_FLAGS)  $(CDIR)\windows.c
+    @- del current.bat
+
+clean : 
+    - del *.obj
+    - del *.lib
+    - del *.exe
