@@ -1,0 +1,77 @@
+// TelewindowsAx.odl : type library source for ActiveX Control project.
+
+// This file will be processed by the Make Type Library (mktyplib) tool to
+// produce the type library (TelewindowsAx.tlb) that will become a resource in
+// TelewindowsAx.ocx.
+
+#include <olectl.h>
+#include <idispids.h>
+
+[ uuid(A29B880C-6A2B-4DF6-A276-BBDD47BAAEC2), version(1.2),
+  helpfile("TelewindowsAx.hlp"),
+  helpstring("TelewindowsAx ActiveX Control module"),
+  control ]
+library TelewindowsAxLib
+{
+	importlib(STDOLE_TLB);
+	importlib(STDTYPE_TLB);
+
+	//  Primary dispatch interface for CTelewindowsAxCtrl
+
+	[ uuid(C2BA2B0A-DD0F-43C8-B7FD-DE4A64B176A7),
+	  helpstring("Dispatch interface for TelewindowsAx Control"), hidden ]
+	dispinterface _DTelewindowsAx
+	{
+		properties:
+			// NOTE - ClassWizard will maintain property information here.
+			//    Use extreme caution when editing this section.
+			//{{AFX_ODL_PROP(CTelewindowsAxCtrl)
+			[id(DISPID_READYSTATE), readonly] long ReadyState;
+			[id(1)] BSTR ServerPort;
+			[id(2)] BSTR ServerName;
+			[id(3)] BSTR UserName;
+			[id(4)] BSTR Password;
+			[id(5)] BSTR SessionId;
+			[id(6)] BSTR UserMode;
+			//}}AFX_ODL_PROP
+
+		methods:
+			// NOTE - ClassWizard will maintain method information here.
+			//    Use extreme caution when editing this section.
+			//{{AFX_ODL_METHOD(CTelewindowsAxCtrl)
+			//}}AFX_ODL_METHOD
+
+			[id(DISPID_ABOUTBOX)] void AboutBox();
+	};
+
+	//  Event dispatch interface for CTelewindowsAxCtrl
+
+	[ uuid(4D5A7878-4420-472D-A218-23177291D1E6),
+	  helpstring("Event interface for TelewindowsAx Control") ]
+	dispinterface _DTelewindowsAxEvents
+	{
+		properties:
+			//  Event interface has no properties
+
+		methods:
+			// NOTE - ClassWizard will maintain event information here.
+			//    Use extreme caution when editing this section.
+			//{{AFX_ODL_EVENT(CTelewindowsAxCtrl)
+			[id(DISPID_READYSTATECHANGE)] void ReadyStateChange();
+			//}}AFX_ODL_EVENT
+	};
+
+	//  Class information for CTelewindowsAxCtrl
+
+	[ uuid(C9ACF70C-5532-4AC3-8AB0-C5127786AB50),
+	  helpstring("TelewindowsAx Control"), control ]
+	coclass TelewindowsAx
+	{
+		[default] dispinterface _DTelewindowsAx;
+		[default, source] dispinterface _DTelewindowsAxEvents;
+	};
+
+
+	//{{AFX_APPEND_ODL}}
+	//}}AFX_APPEND_ODL}}
+};
