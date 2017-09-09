@@ -1,0 +1,153 @@
+SHELL = /bin/sh
+PRODUCT = fnt
+ODIR = o
+PLATFORM = intelsol
+CDIR = $(SRCBOX)/$(PRODUCT)/c
+HELPERDIR = $(SRCBOX)/helpers
+MFDIR = $(DSTBOX)/$(PRODUCT)/$(ODIR)
+SCRIPTSDIR = $(SRCBOX)/scripts
+CC_FLAGS = -Dsparcsol -Wimplicit
+FNTHFILES = $(CDIR)/errcodes.h $(CDIR)/finfotbl.h $(CDIR)/fino.h \
+  $(CDIR)/fixed.h $(CDIR)/fnt.h $(CDIR)/fnt_a.h $(CDIR)/font3004.h \
+  $(CDIR)/font3008.h $(CDIR)/fontmath.h $(CDIR)/fontscal.h $(CDIR)/fscdefs.h \
+  $(CDIR)/fserror.h $(CDIR)/fsglue.h $(CDIR)/hp_readr.h $(CDIR)/hpf.h \
+  $(CDIR)/keys.h $(CDIR)/mapstrng.h $(CDIR)/pcl5fnt.h $(CDIR)/pclhdrs.h \
+  $(CDIR)/privfosc.h $(CDIR)/privsfnt.h $(CDIR)/sc.h $(CDIR)/sfnt.h \
+  $(CDIR)/sfntenum.h $(CDIR)/slavic.h $(CDIR)/spdo_prv.h $(CDIR)/speedo.h \
+  $(CDIR)/stdef.h $(CDIR)/tr_fdata.h $(CDIR)/truetype.h $(CDIR)/type1.h \
+  $(CDIR)/ufe.h $(CDIR)/useropt.h
+
+all : _mfenter libfnt.a _mfexit
+
+_mfenter : 
+	@- $(SCRIPTSDIR)/errsweep -init
+
+_mfexit : 
+	@- $(SCRIPTSDIR)/errsweep -finish
+
+libfnt.a : cmt.o cmtglob.o do_char.o do_trns.o fixed_pt.o fnt.o \
+  fontrip.o fontscal.o frontend.o fsglue.o mapstrng.o msl.o msst.o msstglob.o \
+  newscan.o out_bl2d.o out_blk.o out_outl.o out_scrn.o out_util.o out_wht.o \
+  reset.o set_keys.o set_spcs.o set_trns.o sfntd.o tt_iface.o tt_specs.o
+	@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)
+	@- if [ -f libfnt.a ] ; then rm -f libfnt.a ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) ar qc libfnt.a  cmt.o do_char.o do_trns.o cmtglob.o \
+  fixed_pt.o fnt.o fontrip.o fontscal.o frontend.o fsglue.o mapstrng.o msl.o \
+  msst.o msstglob.o newscan.o out_bl2d.o out_blk.o out_outl.o out_scrn.o \
+  out_util.o out_wht.o reset.o set_keys.o set_spcs.o set_trns.o sfntd.o \
+  tt_iface.o tt_specs.o
+
+cmt.o : $(CDIR)/cmt.c $(FNTHFILES)
+	@- if [ -f cmt.o ] ; then rm -f cmt.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/cmt.c
+
+cmtglob.o : $(CDIR)/cmtglob.c $(FNTHFILES)
+	@- if [ -f cmtglob.o ] ; then rm -f cmtglob.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/cmtglob.c
+
+do_char.o : $(CDIR)/do_char.c $(FNTHFILES)
+	@- if [ -f do_char.o ] ; then rm -f do_char.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/do_char.c
+
+do_trns.o : $(CDIR)/do_trns.c $(FNTHFILES)
+	@- if [ -f do_trns.o ] ; then rm -f do_trns.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/do_trns.c
+
+fixed_pt.o : $(CDIR)/fixed_pt.c $(FNTHFILES)
+	@- if [ -f fixed_pt.o ] ; then rm -f fixed_pt.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/fixed_pt.c
+
+fnt.o : $(CDIR)/fnt.c $(FNTHFILES)
+	@- if [ -f fnt.o ] ; then rm -f fnt.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/fnt.c
+
+fontrip.o : $(CDIR)/fontrip.c $(FNTHFILES)
+	@- if [ -f fontrip.o ] ; then rm -f fontrip.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/fontrip.c
+
+fontscal.o : $(CDIR)/fontscal.c $(FNTHFILES)
+	@- if [ -f fontscal.o ] ; then rm -f fontscal.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/fontscal.c
+
+frontend.o : $(CDIR)/frontend.c $(FNTHFILES)
+	@- if [ -f frontend.o ] ; then rm -f frontend.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/frontend.c
+
+fsglue.o : $(CDIR)/fsglue.c $(FNTHFILES)
+	@- if [ -f fsglue.o ] ; then rm -f fsglue.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/fsglue.c
+
+mapstrng.o : $(CDIR)/mapstrng.c $(FNTHFILES)
+	@- if [ -f mapstrng.o ] ; then rm -f mapstrng.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/mapstrng.c
+
+msl.o : $(CDIR)/msl.c $(FNTHFILES)
+	@- if [ -f msl.o ] ; then rm -f msl.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/msl.c
+
+msst.o : $(CDIR)/msst.c $(FNTHFILES)
+	@- if [ -f msst.o ] ; then rm -f msst.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/msst.c
+
+msstglob.o : $(CDIR)/msstglob.c $(FNTHFILES)
+	@- if [ -f msstglob.o ] ; then rm -f msstglob.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/msstglob.c
+
+newscan.o : $(CDIR)/newscan.c $(FNTHFILES)
+	@- if [ -f newscan.o ] ; then rm -f newscan.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/newscan.c
+
+out_bl2d.o : $(CDIR)/out_bl2d.c $(FNTHFILES)
+	@- if [ -f out_bl2d.o ] ; then rm -f out_bl2d.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/out_bl2d.c
+
+out_blk.o : $(CDIR)/out_blk.c $(FNTHFILES)
+	@- if [ -f out_blk.o ] ; then rm -f out_blk.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/out_blk.c
+
+out_outl.o : $(CDIR)/out_outl.c $(FNTHFILES)
+	@- if [ -f out_outl.o ] ; then rm -f out_outl.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/out_outl.c
+
+out_scrn.o : $(CDIR)/out_scrn.c $(FNTHFILES)
+	@- if [ -f out_scrn.o ] ; then rm -f out_scrn.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/out_scrn.c
+
+out_util.o : $(CDIR)/out_util.c $(FNTHFILES)
+	@- if [ -f out_util.o ] ; then rm -f out_util.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/out_util.c
+
+out_wht.o : $(CDIR)/out_wht.c $(FNTHFILES)
+	@- if [ -f out_wht.o ] ; then rm -f out_wht.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/out_wht.c
+
+reset.o : $(CDIR)/reset.c $(FNTHFILES)
+	@- if [ -f reset.o ] ; then rm -f reset.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/reset.c
+
+set_keys.o : $(CDIR)/set_keys.c $(FNTHFILES)
+	@- if [ -f set_keys.o ] ; then rm -f set_keys.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/set_keys.c
+
+set_spcs.o : $(CDIR)/set_spcs.c $(FNTHFILES)
+	@- if [ -f set_spcs.o ] ; then rm -f set_spcs.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/set_spcs.c
+
+set_trns.o : $(CDIR)/set_trns.c $(FNTHFILES)
+	@- if [ -f set_trns.o ] ; then rm -f set_trns.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/set_trns.c
+
+sfntd.o : $(CDIR)/sfntd.c $(FNTHFILES)
+	@- if [ -f sfntd.o ] ; then rm -f sfntd.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/sfntd.c
+
+tt_iface.o : $(CDIR)/tt_iface.c $(FNTHFILES)
+	@- if [ -f tt_iface.o ] ; then rm -f tt_iface.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/tt_iface.c
+
+tt_specs.o : $(CDIR)/tt_specs.c $(FNTHFILES)
+	@- if [ -f tt_specs.o ] ; then rm -f tt_specs.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -g $(CC_FLAGS)  $(CDIR)/tt_specs.c
+
+clean : 
+	- rm -f *.[oa]
