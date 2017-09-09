@@ -1,0 +1,71 @@
+#! /bin/csh -f
+
+set sunos = "/home/lucid/lucid41/lisp-clos-411"
+set solaris = "/home/lucid/liquid50/lisp-clos-50"
+  
+# repl is a fast starting Common Lisp interpreter, from Chestnut, 
+# but /home/rh is not available; set solaris = "/home/rh/util/sparcsol/repl"
+
+if ( "$MACHINE" == "sun4" ) then
+  set lisp = $sunos
+else
+  if ( "$MACHINE" != "sparcsol" ) then
+    echo "Warning: unknown architecture: $MACHINE"
+    echo "Trying $solaris."
+  endif
+  set lisp = $solaris
+endif
+
+# Go to the current sandbox.
+if ( -z "$LISP_DIR" ) then
+  echo "You must first set LISP_DIR (presumably with 'sandbox')"
+  exit 1
+endif
+
+cd $LISP_DIR
+
+$lisp -no-init-file <<@@@ >& /dev/null
+(let ((not-found nil))
+  (with-open-file (out "files-in-order.dat.new" :direction :output)
+    (dolist (f
+	      ;; Read in the list of listed modules in the
+	      ;; def-all-system-modules form in systems.lisp.  Since we're using
+	      ;; Lisp's READ, we must include in *features* those features used
+	      ;; in the def-all-system-modules form
+              (with-open-file (in "systems.lisp")
+		(do* ((*features*
+			(append '(:allegro :lucid :res-g2-facilities :java-export-facilities) *features*))
+		      (eof '#:eof)
+		      (form (read in nil eof) (read in nil eof)))
+		     ((eq form eof) nil)
+		  (when (and (consp form)
+			     (eq (car form) 'def-all-system-modules))
+		    (return (cdr form))))))
+      (let ((file (format nil "~A.lisp" (string-downcase (car f)))))
+        (if (probe-file file)
+            (format out "~A~%" file)
+            (push file not-found)))))
+  (with-open-file (out "missing-system-files" :direction :output)
+    (when not-found
+      (format out "~%The following files in def-all-system-modules were not found:~%")
+      (format out "~{~A~^ ~}~%" not-found))))
+(quit)
+@@@
+cat missing-system-files
+rm missing-system-files
+/bin/ls *.lisp | sort >! files-list
+sort files-in-order.dat.new >! files-in-order-list
+comm -23 files-list files-in-order-list >! files-not-in-files-in-order
+cmp -s /dev/null files-not-in-files-in-order
+if (1 == $status) then
+  echo ' '
+  echo 'The following lisp files are not in def-all-system-modules:'
+  echo `cat files-not-in-files-in-order`
+  echo ' '
+endif
+rm files-list files-in-order-list files-not-in-files-in-order
+if ((! -f files-in-order.dat) || (! `cmp -s files-in-order.dat.new files-in-order.dat`)) then
+  mv files-in-order.dat.new files-in-order.dat
+else
+  rm files-in-order.dat.new
+endif
