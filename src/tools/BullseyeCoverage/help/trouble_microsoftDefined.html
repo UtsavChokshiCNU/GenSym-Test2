@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_trouble_build.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>Warning c5998: macro generating 'defined' has unreliable behavior</h1>
+<h2>SYMPTOMS</h2>
+<p>
+Warning c5998 occurs, possibly followed by a compiler error.
+<pre>
+warning c5998: macro generating 'defined' has unreliable behavior
+</pre>
+<h2>CAUSE</h2>
+<p>
+The source line indicated contains a <code>#if</code> directive with a macro invocation
+that generates the <code>defined</code> unary operator.
+For example,
+<pre>
+#define macro2 defined(macro1)
+#if macro2
+...
+</pre>
+<h2>RESOLUTION</h2>
+<p>
+Use one of the resolutions listed below.
+<ul>
+<li>
+Update to BullseyeCoverage 7.13.1 or later.
+<p>
+<li>
+Modify your source code so that <code>#if</code> does not expand a macro
+generating <code>defined</code>.
+For example, the code above could be modified as shown below.
+<pre>
+#if defined(macro1)
+...
+</pre>
+</ul>
+<h2>MORE INFORMATION</h2>
+<p>
+BullseyeCoverage 7.13.1 and later mimics the behavior of Microsoft C++ and does not issue warning c5998.
+<p>
+Earlier versions of BullseyeCoverage issue this warning to help diagnose problems caused by a
+difference in behavior from the Microsoft macro preprocessor.
+<p>
+The source code below demonstrates some peculiar behavior with Microsoft C++.
+<p>
+<pre>
+#define macro1
+#define macro2 defined macro1
+#define macro3 defined(macro1)
+#if macro2
+	// Microsoft selects this group
+	int i2;
+#else
+	#error
+#endif
+#if macro3
+	int i3;
+#else
+	// Microsoft selects this group
+	#error
+#endif
+</pre>
+<p>
+According to the C++ and C standards, the behavior is undefined when a macro
+generates the token <code>defined</code> in a <code>#if</code> line.
+The relevant sections of the C++ and C standards are:
+<ul>
+<li>ISO/IEC 14882:2003(E) 16.1 Conditional inclusion
+<li>ISO/IEC 9899:1999 (E) 6.10.1 Conditional inclusion
+</ul>
+
+<p style="font-size:xx-small">
+Last reviewed: 5 Aug 2009
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
