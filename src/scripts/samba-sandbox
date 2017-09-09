@@ -1,0 +1,33 @@
+#!/bin/sh
+
+if [ -z "$1" ]
+then
+  echo "Usage: $0 <sandbox-name>"
+  echo "  e.g., $0 jv-62r2"
+  exit 1
+fi
+
+spinid=$1
+
+cd /bt
+if [ ! -h $spinid ]
+then
+  echo "Error: /bt/$spinid does not exist or is not a symbolic link."
+  echo " "
+  echo "Usage: $0 <sandbox-name>"
+  echo "  e.g., $0 jv-62r2"
+  exit 1
+fi
+
+# Could pipe the following through sed "s,/$spinid,,g"` to strip off the spinid,
+# but would just add it back later, so why bother?
+
+sbloc=`/bin/ls -l $spinid | awk '{print $NF}'`
+
+for btdir in intelnt-mount alphant-mount alpha-mount vax-mount
+do
+  cd /home/${btdir}/bt
+  /bin/rm -f $spinid
+  echo "Creating symlink /home/${btdir}/bt/${spinid} -> $sbloc"
+  /usr/bin/ln -s $sbloc $spinid
+done
