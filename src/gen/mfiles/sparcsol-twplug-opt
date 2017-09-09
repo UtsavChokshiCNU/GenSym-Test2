@@ -1,0 +1,55 @@
+SHELL = /bin/sh
+PRODUCT = twplug
+ODIR = opt
+PLATFORM = sparcsol
+CDIR = $(SRCBOX)/$(PRODUCT)/c
+NPDIR = $(SRCBOX)/twplug/support
+SCRIPTSDIR = /home/development/scripts
+TAPEDST = $(DSTBOX)/$(PRODUCT)/tape
+CC_FLAGS = -O -DXP_UNIX -I$(NPDIR) -I.
+
+install : _mfenter nptwplug.so _mfexit
+	cp nptwplug.so $(TAPEDST)/nptwplug.so
+#	cp nptwplug.so /home/jv/bin/sparcsol/Netscape6/plugins/nptwplug.so
+
+_mfenter : 
+	@- $(SCRIPTSDIR)/errsweep -init
+
+_mfexit : 
+	@- $(SCRIPTSDIR)/errsweep -finish
+
+nptwplug.so : twnpshell.o npunix.o
+	@- if [ -f nptwplug.so ] ; then rm -f nptwplug.so ; fi
+	@- $(SCRIPTSDIR)/errsweep nptwplug.so
+	ld -G -o nptwplug.so twnpshell.o npunix.o
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+twnpshell.o : $(CDIR)/twnpshell.c $(CDIR)/gensym-np.h
+	@- if [ -f twnpshell.o ] ; then rm -f twnpshell.o ; fi
+	@- $(SCRIPTSDIR)/errsweep twnpshell.o
+	gcc -c $(CC_FLAGS) $(CDIR)/twnpshell.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+npunix.o : $(NPDIR)/npunix.c
+	@- if [ -f npunix.o ] ; then rm -f npunix.o ; fi
+	@- $(SCRIPTSDIR)/errsweep npunix.o
+	gcc -c $(CC_FLAGS) $(NPDIR)/npunix.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+twtest : twnpshell_main.o npunix.o
+	@- if [ -f twtest ] ; then rm -f twtest ; fi
+	@- $(SCRIPTSDIR)/errsweep twtest
+	gcc -o twtest  -Xlinker -R -Xlinker /usr/openwin/lib -L/usr/openwin/lib \
+	twnpshell_main.o npunix.o -lX11 -lm -lsocket -lintl -ldl -lnsl
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+twnpshell_main.o : $(CDIR)/twnpshell.c $(CDIR)/gensym-np.h
+	@- if [ -f twnpshell_main.o ] ; then rm -f twnpshell_main.o ; fi
+	@- $(SCRIPTSDIR)/errsweep twnpshell_main.o
+	gcc -c -o twnpshell_main.o $(CC_FLAGS) -DTEST_MAIN $(CDIR)/twnpshell.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+clean :
+	- rm -f *.[oa]
+	- rm -f twtest
+	- rm -f nptwplug.so
