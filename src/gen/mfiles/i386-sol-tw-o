@@ -1,0 +1,565 @@
+SHELL = /bin/sh
+PRODUCT = tw
+ODIR = o
+PLATFORM = intelsol
+CDIR = $(SRCBOX)/$(PRODUCT)/c
+EXTDIR = $(DSTBOX)/ext/$(ODIR)
+FNTDIR = $(DSTBOX)/fnt/$(ODIR)
+JPEGDIR = $(DSTBOX)/jpeg/$(ODIR)
+MFDIR = $(DSTBOX)/$(PRODUCT)/$(ODIR)
+RTHDIR = $(SRCBOX)/rtl/c
+RTLDIR = $(DSTBOX)/rtl/$(ODIR)
+SCRIPTSDIR = $(SRCBOX)/scripts
+SPFCDIR = $(SRCBOX)/specific/$(PLATFORM)
+CC_FLAGS = -Dsparcsol -Wimplicit
+RTHFILES = $(RTHDIR)/c-ifuns.h $(RTHDIR)/c-sdefs.h \
+  $(RTHDIR)/config.h $(RTHDIR)/core.h $(RTHDIR)/externs.h $(RTHDIR)/ffi.h \
+  $(RTHDIR)/gensym.h $(RTHDIR)/ifuns.h $(RTHDIR)/initvars.h \
+  $(RTHDIR)/inline.h $(RTHDIR)/instance.h $(RTHDIR)/kernel.h \
+  $(RTHDIR)/librtl.h $(RTHDIR)/lisplib.h $(RTHDIR)/longname.h \
+  $(RTHDIR)/object.h $(RTHDIR)/smcompat.h $(RTHDIR)/specific.h \
+  $(RTHDIR)/svarargs.h $(RTHDIR)/uconfig.h $(RTHDIR)/values.h \
+  $(RTHDIR)/varkey.h
+
+all : _mfenter libtw.a tw _mfexit
+
+_mfenter : 
+	@- $(SCRIPTSDIR)/errsweep -init
+
+_mfexit : 
+	@- $(SCRIPTSDIR)/errsweep -finish
+
+libtw.a : basics.o btstrp.o chars.o chars2.o clocks.o delta.o \
+  dlogs.o f-keys.o flprse.o fntfls.o fonts.o gbmap.o gbmapr.o glbscs.o hb72.o \
+  hbrw14.o hbrw18.o hbrw24.o hm14.o hm18.o hm24.o int0.o int1.o int2.o \
+  int3a.o int3b.o int4.o is2022.o is8859.o jismap.o ksmap2.o kybrds.o kydfs.o \
+  launch.o load.o loop.o lspimg.o lttrs.o main.o names.o natvtw.o ntrrr.o \
+  ntvnt.o ntwrks.o os-mem.o os-set.o osfrgn.o osrrr.o ostme.o prmtvs.o \
+  ptfms.o pthnms.o rings.o schdle.o slvc14.o slvc18.o slvc24.o sqncs1.o \
+  strms.o symtab.o systm.o telesb.o thai14.o thai18.o thai24.o times.o tlwn.o \
+  tran.o trnscd.o twpts.o uncde.o userfuns.o userinit.o usersyms.o utlts0.o \
+  utlts1.o utlts2.o utlts3.o win1.o win2.o win3.o win3a.o win4.o
+	@- if [ -f libtw.a ] ; then rm -f libtw.a ; fi
+	@- $(SCRIPTSDIR)/errsweep libtw.a
+	ar qc libtw.a  main.o symtab.o userfuns.o userinit.o \
+  usersyms.o names.o load.o btstrp.o systm.o delta.o twpts.o loop.o glbscs.o \
+  osfrgn.o basics.o ostme.o os-set.o os-mem.o prmtvs.o chars.o jismap.o \
+  ksmap2.o gbmap.o gbmapr.o chars2.o kybrds.o kydfs.o utlts0.o utlts1.o \
+  utlts2.o lttrs.o uncde.o is2022.o trnscd.o is8859.o utlts3.o times.o \
+  f-keys.o osrrr.o ptfms.o launch.o pthnms.o flprse.o strms.o schdle.o \
+  clocks.o ntwrks.o int0.o int1.o ntrrr.o ntvnt.o int2.o int3a.o int3b.o \
+  int4.o win1.o win2.o win3.o win3a.o win4.o lspimg.o fonts.o hb72.o hm14.o \
+  hm18.o hm24.o slvc14.o slvc18.o slvc24.o hbrw14.o hbrw18.o hbrw24.o \
+  thai14.o thai18.o thai24.o sqncs1.o telesb.o dlogs.o natvtw.o rings.o \
+  fntfls.o tlwn.o tran.o
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+tw : $(EXTDIR)/libcprim.a $(FNTDIR)/libfnt.a \
+  $(JPEGDIR)/libjpeg.a $(RTLDIR)/librtl.a libtw.a
+	@- if [ -f tw ] ; then rm -f tw ; fi
+	@- $(SCRIPTSDIR)/errsweep tw
+	gcc -o tw -L/usr/X11R6/lib libtw.a $(FNTDIR)/libfnt.a \
+  $(EXTDIR)/libcprim.a $(JPEGDIR)/libjpeg.a $(RTLDIR)/librtl.a -lX11 $(SPFCDIR)/libssl.a $(SPFCDIR)/libcrypto.a -lm -ldl -lsocket -lnsl
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+basics.o : $(CDIR)/basics.c $(CDIR)/basics.h $(RTHFILES)
+	@- if [ -f basics.o ] ; then rm -f basics.o ; fi
+	@- $(SCRIPTSDIR)/errsweep basics.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/basics.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+btstrp.o : $(CDIR)/btstrp.c $(CDIR)/btstrp.h $(RTHFILES)
+	@- if [ -f btstrp.o ] ; then rm -f btstrp.o ; fi
+	@- $(SCRIPTSDIR)/errsweep btstrp.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/btstrp.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+chars.o : $(CDIR)/chars.c $(CDIR)/chars.h $(RTHFILES)
+	@- if [ -f chars.o ] ; then rm -f chars.o ; fi
+	@- $(SCRIPTSDIR)/errsweep chars.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/chars.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+chars2.o : $(CDIR)/chars2.c $(CDIR)/chars2.h $(RTHFILES)
+	@- if [ -f chars2.o ] ; then rm -f chars2.o ; fi
+	@- $(SCRIPTSDIR)/errsweep chars2.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/chars2.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+clocks.o : $(CDIR)/clocks.c $(CDIR)/clocks.h $(RTHFILES)
+	@- if [ -f clocks.o ] ; then rm -f clocks.o ; fi
+	@- $(SCRIPTSDIR)/errsweep clocks.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/clocks.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+delta.o : $(CDIR)/delta.c $(CDIR)/delta.h $(RTHFILES)
+	@- if [ -f delta.o ] ; then rm -f delta.o ; fi
+	@- $(SCRIPTSDIR)/errsweep delta.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/delta.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+dlogs.o : $(CDIR)/dlogs.c $(CDIR)/dlogs.h $(RTHFILES)
+	@- if [ -f dlogs.o ] ; then rm -f dlogs.o ; fi
+	@- $(SCRIPTSDIR)/errsweep dlogs.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/dlogs.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+f-keys.o : $(CDIR)/f-keys.c $(CDIR)/f-keys.h $(RTHFILES)
+	@- if [ -f f-keys.o ] ; then rm -f f-keys.o ; fi
+	@- $(SCRIPTSDIR)/errsweep f-keys.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/f-keys.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+flprse.o : $(CDIR)/flprse.c $(CDIR)/flprse.h $(RTHFILES)
+	@- if [ -f flprse.o ] ; then rm -f flprse.o ; fi
+	@- $(SCRIPTSDIR)/errsweep flprse.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/flprse.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+fntfls.o : $(CDIR)/fntfls.c $(CDIR)/fntfls.h $(RTHFILES)
+	@- if [ -f fntfls.o ] ; then rm -f fntfls.o ; fi
+	@- $(SCRIPTSDIR)/errsweep fntfls.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/fntfls.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+fonts.o : $(CDIR)/fonts.c $(CDIR)/fonts.h $(RTHFILES)
+	@- if [ -f fonts.o ] ; then rm -f fonts.o ; fi
+	@- $(SCRIPTSDIR)/errsweep fonts.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/fonts.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+gbmap.o : $(CDIR)/gbmap.c $(CDIR)/gbmap.h $(RTHFILES)
+	@- if [ -f gbmap.o ] ; then rm -f gbmap.o ; fi
+	@- $(SCRIPTSDIR)/errsweep gbmap.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/gbmap.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+gbmapr.o : $(CDIR)/gbmapr.c $(CDIR)/gbmapr.h $(RTHFILES)
+	@- if [ -f gbmapr.o ] ; then rm -f gbmapr.o ; fi
+	@- $(SCRIPTSDIR)/errsweep gbmapr.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/gbmapr.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+glbscs.o : $(CDIR)/glbscs.c $(CDIR)/glbscs.h $(RTHFILES)
+	@- if [ -f glbscs.o ] ; then rm -f glbscs.o ; fi
+	@- $(SCRIPTSDIR)/errsweep glbscs.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/glbscs.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+hb72.o : $(CDIR)/hb72.c $(CDIR)/hb72.h $(RTHFILES)
+	@- if [ -f hb72.o ] ; then rm -f hb72.o ; fi
+	@- $(SCRIPTSDIR)/errsweep hb72.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/hb72.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+hbrw14.o : $(CDIR)/hbrw14.c $(CDIR)/hbrw14.h $(RTHFILES)
+	@- if [ -f hbrw14.o ] ; then rm -f hbrw14.o ; fi
+	@- $(SCRIPTSDIR)/errsweep hbrw14.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/hbrw14.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+hbrw18.o : $(CDIR)/hbrw18.c $(CDIR)/hbrw18.h $(RTHFILES)
+	@- if [ -f hbrw18.o ] ; then rm -f hbrw18.o ; fi
+	@- $(SCRIPTSDIR)/errsweep hbrw18.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/hbrw18.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+hbrw24.o : $(CDIR)/hbrw24.c $(CDIR)/hbrw24.h $(RTHFILES)
+	@- if [ -f hbrw24.o ] ; then rm -f hbrw24.o ; fi
+	@- $(SCRIPTSDIR)/errsweep hbrw24.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/hbrw24.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+hm14.o : $(CDIR)/hm14.c $(CDIR)/hm14.h $(RTHFILES)
+	@- if [ -f hm14.o ] ; then rm -f hm14.o ; fi
+	@- $(SCRIPTSDIR)/errsweep hm14.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/hm14.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+hm18.o : $(CDIR)/hm18.c $(CDIR)/hm18.h $(RTHFILES)
+	@- if [ -f hm18.o ] ; then rm -f hm18.o ; fi
+	@- $(SCRIPTSDIR)/errsweep hm18.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/hm18.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+hm24.o : $(CDIR)/hm24.c $(CDIR)/hm24.h $(RTHFILES)
+	@- if [ -f hm24.o ] ; then rm -f hm24.o ; fi
+	@- $(SCRIPTSDIR)/errsweep hm24.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/hm24.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+int0.o : $(CDIR)/int0.c $(CDIR)/int0.h $(RTHFILES)
+	@- if [ -f int0.o ] ; then rm -f int0.o ; fi
+	@- $(SCRIPTSDIR)/errsweep int0.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/int0.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+int1.o : $(CDIR)/int1.c $(CDIR)/int1.h $(RTHFILES)
+	@- if [ -f int1.o ] ; then rm -f int1.o ; fi
+	@- $(SCRIPTSDIR)/errsweep int1.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/int1.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+int2.o : $(CDIR)/int2.c $(CDIR)/int2.h $(RTHFILES)
+	@- if [ -f int2.o ] ; then rm -f int2.o ; fi
+	@- $(SCRIPTSDIR)/errsweep int2.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/int2.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+int3a.o : $(CDIR)/int3a.c $(CDIR)/int3a.h $(RTHFILES)
+	@- if [ -f int3a.o ] ; then rm -f int3a.o ; fi
+	@- $(SCRIPTSDIR)/errsweep int3a.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/int3a.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+int3b.o : $(CDIR)/int3b.c $(CDIR)/int3b.h $(RTHFILES)
+	@- if [ -f int3b.o ] ; then rm -f int3b.o ; fi
+	@- $(SCRIPTSDIR)/errsweep int3b.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/int3b.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+int4.o : $(CDIR)/int4.c $(CDIR)/int4.h $(RTHFILES)
+	@- if [ -f int4.o ] ; then rm -f int4.o ; fi
+	@- $(SCRIPTSDIR)/errsweep int4.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/int4.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+is2022.o : $(CDIR)/is2022.c $(CDIR)/is2022.h $(RTHFILES)
+	@- if [ -f is2022.o ] ; then rm -f is2022.o ; fi
+	@- $(SCRIPTSDIR)/errsweep is2022.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/is2022.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+is8859.o : $(CDIR)/is8859.c $(CDIR)/is8859.h $(RTHFILES)
+	@- if [ -f is8859.o ] ; then rm -f is8859.o ; fi
+	@- $(SCRIPTSDIR)/errsweep is8859.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/is8859.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+jismap.o : $(CDIR)/jismap.c $(CDIR)/jismap.h $(RTHFILES)
+	@- if [ -f jismap.o ] ; then rm -f jismap.o ; fi
+	@- $(SCRIPTSDIR)/errsweep jismap.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/jismap.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+ksmap2.o : $(CDIR)/ksmap2.c $(CDIR)/ksmap2.h $(RTHFILES)
+	@- if [ -f ksmap2.o ] ; then rm -f ksmap2.o ; fi
+	@- $(SCRIPTSDIR)/errsweep ksmap2.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/ksmap2.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+kybrds.o : $(CDIR)/kybrds.c $(CDIR)/kybrds.h $(RTHFILES)
+	@- if [ -f kybrds.o ] ; then rm -f kybrds.o ; fi
+	@- $(SCRIPTSDIR)/errsweep kybrds.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/kybrds.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+kydfs.o : $(CDIR)/kydfs.c $(CDIR)/kydfs.h $(RTHFILES)
+	@- if [ -f kydfs.o ] ; then rm -f kydfs.o ; fi
+	@- $(SCRIPTSDIR)/errsweep kydfs.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/kydfs.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+launch.o : $(CDIR)/launch.c $(CDIR)/launch.h $(RTHFILES)
+	@- if [ -f launch.o ] ; then rm -f launch.o ; fi
+	@- $(SCRIPTSDIR)/errsweep launch.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/launch.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+load.o : $(CDIR)/load.c $(CDIR)/load.h $(RTHFILES)
+	@- if [ -f load.o ] ; then rm -f load.o ; fi
+	@- $(SCRIPTSDIR)/errsweep load.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/load.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+loop.o : $(CDIR)/loop.c $(CDIR)/loop.h $(RTHFILES)
+	@- if [ -f loop.o ] ; then rm -f loop.o ; fi
+	@- $(SCRIPTSDIR)/errsweep loop.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/loop.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+lspimg.o : $(CDIR)/lspimg.c $(CDIR)/lspimg.h $(RTHFILES)
+	@- if [ -f lspimg.o ] ; then rm -f lspimg.o ; fi
+	@- $(SCRIPTSDIR)/errsweep lspimg.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/lspimg.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+lttrs.o : $(CDIR)/lttrs.c $(CDIR)/lttrs.h $(RTHFILES)
+	@- if [ -f lttrs.o ] ; then rm -f lttrs.o ; fi
+	@- $(SCRIPTSDIR)/errsweep lttrs.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/lttrs.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+main.o : $(CDIR)/main.c $(CDIR)/main.h $(RTHFILES)
+	@- if [ -f main.o ] ; then rm -f main.o ; fi
+	@- $(SCRIPTSDIR)/errsweep main.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/main.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+names.o : $(CDIR)/names.c $(CDIR)/names.h $(RTHFILES)
+	@- if [ -f names.o ] ; then rm -f names.o ; fi
+	@- $(SCRIPTSDIR)/errsweep names.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/names.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+natvtw.o : $(CDIR)/natvtw.c $(CDIR)/natvtw.h $(RTHFILES)
+	@- if [ -f natvtw.o ] ; then rm -f natvtw.o ; fi
+	@- $(SCRIPTSDIR)/errsweep natvtw.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/natvtw.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+ntrrr.o : $(CDIR)/ntrrr.c $(CDIR)/ntrrr.h $(RTHFILES)
+	@- if [ -f ntrrr.o ] ; then rm -f ntrrr.o ; fi
+	@- $(SCRIPTSDIR)/errsweep ntrrr.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/ntrrr.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+ntvnt.o : $(CDIR)/ntvnt.c $(CDIR)/ntvnt.h $(RTHFILES)
+	@- if [ -f ntvnt.o ] ; then rm -f ntvnt.o ; fi
+	@- $(SCRIPTSDIR)/errsweep ntvnt.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/ntvnt.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+ntwrks.o : $(CDIR)/ntwrks.c $(CDIR)/ntwrks.h $(RTHFILES)
+	@- if [ -f ntwrks.o ] ; then rm -f ntwrks.o ; fi
+	@- $(SCRIPTSDIR)/errsweep ntwrks.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/ntwrks.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+os-mem.o : $(CDIR)/os-mem.c $(CDIR)/os-mem.h $(RTHFILES)
+	@- if [ -f os-mem.o ] ; then rm -f os-mem.o ; fi
+	@- $(SCRIPTSDIR)/errsweep os-mem.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/os-mem.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+os-set.o : $(CDIR)/os-set.c $(CDIR)/os-set.h $(RTHFILES)
+	@- if [ -f os-set.o ] ; then rm -f os-set.o ; fi
+	@- $(SCRIPTSDIR)/errsweep os-set.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/os-set.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+osfrgn.o : $(CDIR)/osfrgn.c $(CDIR)/osfrgn.h $(RTHFILES)
+	@- if [ -f osfrgn.o ] ; then rm -f osfrgn.o ; fi
+	@- $(SCRIPTSDIR)/errsweep osfrgn.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/osfrgn.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+osrrr.o : $(CDIR)/osrrr.c $(CDIR)/osrrr.h $(RTHFILES)
+	@- if [ -f osrrr.o ] ; then rm -f osrrr.o ; fi
+	@- $(SCRIPTSDIR)/errsweep osrrr.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/osrrr.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+ostme.o : $(CDIR)/ostme.c $(CDIR)/ostme.h $(RTHFILES)
+	@- if [ -f ostme.o ] ; then rm -f ostme.o ; fi
+	@- $(SCRIPTSDIR)/errsweep ostme.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/ostme.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+prmtvs.o : $(CDIR)/prmtvs.c $(CDIR)/prmtvs.h $(RTHFILES)
+	@- if [ -f prmtvs.o ] ; then rm -f prmtvs.o ; fi
+	@- $(SCRIPTSDIR)/errsweep prmtvs.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/prmtvs.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+ptfms.o : $(CDIR)/ptfms.c $(CDIR)/ptfms.h $(RTHFILES)
+	@- if [ -f ptfms.o ] ; then rm -f ptfms.o ; fi
+	@- $(SCRIPTSDIR)/errsweep ptfms.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/ptfms.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+pthnms.o : $(CDIR)/pthnms.c $(CDIR)/pthnms.h $(RTHFILES)
+	@- if [ -f pthnms.o ] ; then rm -f pthnms.o ; fi
+	@- $(SCRIPTSDIR)/errsweep pthnms.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/pthnms.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+rings.o : $(CDIR)/rings.c $(CDIR)/rings.h $(RTHFILES)
+	@- if [ -f rings.o ] ; then rm -f rings.o ; fi
+	@- $(SCRIPTSDIR)/errsweep rings.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/rings.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+schdle.o : $(CDIR)/schdle.c $(CDIR)/schdle.h $(RTHFILES)
+	@- if [ -f schdle.o ] ; then rm -f schdle.o ; fi
+	@- $(SCRIPTSDIR)/errsweep schdle.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/schdle.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+slvc14.o : $(CDIR)/slvc14.c $(CDIR)/slvc14.h $(RTHFILES)
+	@- if [ -f slvc14.o ] ; then rm -f slvc14.o ; fi
+	@- $(SCRIPTSDIR)/errsweep slvc14.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/slvc14.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+slvc18.o : $(CDIR)/slvc18.c $(CDIR)/slvc18.h $(RTHFILES)
+	@- if [ -f slvc18.o ] ; then rm -f slvc18.o ; fi
+	@- $(SCRIPTSDIR)/errsweep slvc18.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/slvc18.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+slvc24.o : $(CDIR)/slvc24.c $(CDIR)/slvc24.h $(RTHFILES)
+	@- if [ -f slvc24.o ] ; then rm -f slvc24.o ; fi
+	@- $(SCRIPTSDIR)/errsweep slvc24.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/slvc24.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+sqncs1.o : $(CDIR)/sqncs1.c $(CDIR)/sqncs1.h $(RTHFILES)
+	@- if [ -f sqncs1.o ] ; then rm -f sqncs1.o ; fi
+	@- $(SCRIPTSDIR)/errsweep sqncs1.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/sqncs1.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+strms.o : $(CDIR)/strms.c $(CDIR)/strms.h $(RTHFILES)
+	@- if [ -f strms.o ] ; then rm -f strms.o ; fi
+	@- $(SCRIPTSDIR)/errsweep strms.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/strms.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+symtab.o : $(CDIR)/symtab.c $(CDIR)/symtab.h $(RTHFILES)
+	@- if [ -f symtab.o ] ; then rm -f symtab.o ; fi
+	@- $(SCRIPTSDIR)/errsweep symtab.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/symtab.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+systm.o : $(CDIR)/systm.c $(CDIR)/systm.h $(RTHFILES)
+	@- if [ -f systm.o ] ; then rm -f systm.o ; fi
+	@- $(SCRIPTSDIR)/errsweep systm.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/systm.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+telesb.o : $(CDIR)/telesb.c $(CDIR)/telesb.h $(RTHFILES)
+	@- if [ -f telesb.o ] ; then rm -f telesb.o ; fi
+	@- $(SCRIPTSDIR)/errsweep telesb.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/telesb.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+thai14.o : $(CDIR)/thai14.c $(CDIR)/thai14.h $(RTHFILES)
+	@- if [ -f thai14.o ] ; then rm -f thai14.o ; fi
+	@- $(SCRIPTSDIR)/errsweep thai14.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/thai14.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+thai18.o : $(CDIR)/thai18.c $(CDIR)/thai18.h $(RTHFILES)
+	@- if [ -f thai18.o ] ; then rm -f thai18.o ; fi
+	@- $(SCRIPTSDIR)/errsweep thai18.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/thai18.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+thai24.o : $(CDIR)/thai24.c $(CDIR)/thai24.h $(RTHFILES)
+	@- if [ -f thai24.o ] ; then rm -f thai24.o ; fi
+	@- $(SCRIPTSDIR)/errsweep thai24.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/thai24.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+times.o : $(CDIR)/times.c $(CDIR)/times.h $(RTHFILES)
+	@- if [ -f times.o ] ; then rm -f times.o ; fi
+	@- $(SCRIPTSDIR)/errsweep times.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/times.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+tlwn.o : $(CDIR)/tlwn.c $(CDIR)/tlwn.h $(RTHFILES)
+	@- if [ -f tlwn.o ] ; then rm -f tlwn.o ; fi
+	@- $(SCRIPTSDIR)/errsweep tlwn.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/tlwn.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+tran.o : $(CDIR)/tran.c $(CDIR)/tran.h $(RTHFILES)
+	@- if [ -f tran.o ] ; then rm -f tran.o ; fi
+	@- $(SCRIPTSDIR)/errsweep tran.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/tran.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+trnscd.o : $(CDIR)/trnscd.c $(CDIR)/trnscd.h $(RTHFILES)
+	@- if [ -f trnscd.o ] ; then rm -f trnscd.o ; fi
+	@- $(SCRIPTSDIR)/errsweep trnscd.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/trnscd.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+twpts.o : $(CDIR)/twpts.c $(CDIR)/twpts.h $(RTHFILES)
+	@- if [ -f twpts.o ] ; then rm -f twpts.o ; fi
+	@- $(SCRIPTSDIR)/errsweep twpts.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/twpts.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+uncde.o : $(CDIR)/uncde.c $(CDIR)/uncde.h $(RTHFILES)
+	@- if [ -f uncde.o ] ; then rm -f uncde.o ; fi
+	@- $(SCRIPTSDIR)/errsweep uncde.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/uncde.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+userfuns.o : $(CDIR)/userfuns.c $(CDIR)/userfuns.h $(RTHFILES)
+	@- if [ -f userfuns.o ] ; then rm -f userfuns.o ; fi
+	@- $(SCRIPTSDIR)/errsweep userfuns.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/userfuns.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+userinit.o : $(CDIR)/userinit.c $(CDIR)/userinit.h $(RTHFILES)
+	@- if [ -f userinit.o ] ; then rm -f userinit.o ; fi
+	@- $(SCRIPTSDIR)/errsweep userinit.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/userinit.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+usersyms.o : $(CDIR)/usersyms.c $(CDIR)/usersyms.h $(RTHFILES)
+	@- if [ -f usersyms.o ] ; then rm -f usersyms.o ; fi
+	@- $(SCRIPTSDIR)/errsweep usersyms.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/usersyms.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+utlts0.o : $(CDIR)/utlts0.c $(CDIR)/utlts0.h $(RTHFILES)
+	@- if [ -f utlts0.o ] ; then rm -f utlts0.o ; fi
+	@- $(SCRIPTSDIR)/errsweep utlts0.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/utlts0.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+utlts1.o : $(CDIR)/utlts1.c $(CDIR)/utlts1.h $(RTHFILES)
+	@- if [ -f utlts1.o ] ; then rm -f utlts1.o ; fi
+	@- $(SCRIPTSDIR)/errsweep utlts1.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/utlts1.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+utlts2.o : $(CDIR)/utlts2.c $(CDIR)/utlts2.h $(RTHFILES)
+	@- if [ -f utlts2.o ] ; then rm -f utlts2.o ; fi
+	@- $(SCRIPTSDIR)/errsweep utlts2.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/utlts2.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+utlts3.o : $(CDIR)/utlts3.c $(CDIR)/utlts3.h $(RTHFILES)
+	@- if [ -f utlts3.o ] ; then rm -f utlts3.o ; fi
+	@- $(SCRIPTSDIR)/errsweep utlts3.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/utlts3.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+win1.o : $(CDIR)/win1.c $(CDIR)/win1.h $(RTHFILES)
+	@- if [ -f win1.o ] ; then rm -f win1.o ; fi
+	@- $(SCRIPTSDIR)/errsweep win1.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/win1.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+win2.o : $(CDIR)/win2.c $(CDIR)/win2.h $(RTHFILES)
+	@- if [ -f win2.o ] ; then rm -f win2.o ; fi
+	@- $(SCRIPTSDIR)/errsweep win2.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/win2.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+win3.o : $(CDIR)/win3.c $(CDIR)/win3.h $(RTHFILES)
+	@- if [ -f win3.o ] ; then rm -f win3.o ; fi
+	@- $(SCRIPTSDIR)/errsweep win3.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/win3.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+win3a.o : $(CDIR)/win3a.c $(CDIR)/win3a.h $(RTHFILES)
+	@- if [ -f win3a.o ] ; then rm -f win3a.o ; fi
+	@- $(SCRIPTSDIR)/errsweep win3a.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/win3a.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+win4.o : $(CDIR)/win4.c $(CDIR)/win4.h $(RTHFILES)
+	@- if [ -f win4.o ] ; then rm -f win4.o ; fi
+	@- $(SCRIPTSDIR)/errsweep win4.o
+	gcc -c -g $(CC_FLAGS) -I$(CDIR) -I$(RTHDIR) -I- $(CDIR)/win4.c
+	@- if [ -f current.log ]; then rm -f current.log; fi
+
+clean : 
+	- rm -f *.[oa]
+	- rm -f tw
