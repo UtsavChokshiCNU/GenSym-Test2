@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_reference.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+covlink - BullseyeCoverage Link
+</h1>
+<PRE>
+covlink [<i>options</i>] link ...
+</PRE>
+<H2>DESCRIPTION</H2>
+<P>
+<code>covlink</code> intercepts link commands for the compilers listed below and
+modifies the command to work with the BullseyeCoverage run-time library.
+<ul>
+<li> CodeWarrior for Windows
+<li> Intel C++
+<li> Microsoft C++
+</ul>
+<p>
+Actions taken by <code>covlink</code> include:
+<ul>
+<li>adding the BullseyeCoverage run-time library appropriate for the target architecture and run-time environment,
+unless the command already contains a library named <code>libcov-*</code>.
+<li>adding required system libraries
+<li>intercepting the entry point if the executable is a DLL
+<li>working around known linker problems
+<li>dealing with unusual circumstances such as DLLs containing no code
+</ul>
+
+<H2>OPTIONS</H2>
+<TABLE CELLSPACING=12 summary="">
+<colgroup><col span=2 style=white-space:nowrap></colgroup>
+<tr><td><code>-h</code><td><code>--help</CODE>
+<td>Display a summary of options.
+<tr><td><code>-q</code><td><code>--quiet</code>
+<td>Suppress warnings and the copyright message.
+
+<tr><td><code>-v</code><td><code>--verbose</code>
+<td>Show informational messages.
+<tr><td><code>--no-lib</code><td>
+<td>Do not automatically link with the BullseyeCoverage run-time library.
+
+<tr><td><code>--no-banner</code><td>
+<td>
+Suppress startup banner
+
+</TABLE>
+<h2>ENVIRONMENT VARIABLES</h2>
+<table cellspacing=12>
+<tr><td><code>BULLSEYE_LIB</code><td>
+Specifies a location to find the BullseyeCoverage run-time libraries rather than <i>BullseyeCoverage</i><code>/lib</code>.
+</table>
+<H2>FILES</H2>
+<table cellspacing=12 summary="">
+<tr><td>
+<i>BullseyeCoverage</i><code>/bin/covlink.cfg</code><br>
+<code>$COVLINKCFG</code><br>
+<i>home-directory</i><code>/covlink.cfg</code>
+<td>If these files exist, they contain initial options separated by white space.
+</table>
+<p style="font-size:xx-small">
+Last reviewed: 7 Mar 2008
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
