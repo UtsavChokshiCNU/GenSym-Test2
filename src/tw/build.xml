@@ -1,0 +1,49 @@
+<project name="tw" default="build">
+	<property name="module.name" value="tw"/>
+	<property name="${module.name}.basedir" value=".."/> 
+	<property file="${tw.basedir}/ant/build.properties"/>
+
+	<!-- Build section -->
+	<target name="clean-build">
+		<delete dir="${tw.basedir}/../dst/${module.name}"/>
+	</target>
+
+	<target name="clean-results">
+		<delete dir="${result.dir}/${module.name}"/>
+	</target>
+	
+	<target name="translate">
+		<ant dir="${tw.basedir}/ant" target="sbcl" inheritAll="false">
+			<property name="translator" value="trans-sbcl"/>
+			<property name="type" value="3trpmx"/>
+			<property name="module" value="tw"/>
+		</ant>
+	</target>
+	
+	<target name="build">
+		<ant dir="${tw.basedir}/ant" target="vstudio" inheritAll="false">
+			<property name="type" value="Release|Win32"/>
+			<property name="module" value="tw"/>
+		</ant>
+	</target>
+	<!-- End of Build section -->
+  
+	<!-- Tests section -->
+	<target name="api-tests">
+		<mkdir dir="${result.dir}/${module.name}"/>
+	</target>
+	<!-- End of Tests section -->
+  
+	<!-- Checks section -->
+	<target name="check-coverage">
+    <ant dir="${tw.basedir}/ant" target="check-c-coverage"/>
+	</target>
+  
+	<target name="check-static-metrics" depends="check-findbugs, check-cpd"/>
+  
+	<target name="check-findbugs"/>
+  
+	<target name="check-cpd"/>
+	<!-- End of Checks section -->
+  
+</project>
