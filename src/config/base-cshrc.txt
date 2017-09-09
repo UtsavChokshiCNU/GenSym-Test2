@@ -1,0 +1,298 @@
+# Standard .cshrc for Gensym's Unix systems
+#
+# This sources the following files from SOURCE_HOME, which should be a
+# directory containing the "scripts" CVS module in the latest spin:
+#
+#    path.txt machine.txt aliases.txt stty.txt
+#
+#
+# jv, 11/11/98, 11/26/07
+#
+
+# SCRIPTSBOX is the "driving" environment variable that you should set up in
+# your .cshrc files.  If you want the standard files, you should set it to
+# /home/development, though as you can see, if you don't set it, we'll set it
+# here.  It's good practice to set it and then to make sure you are getting
+# base-cshrc.txt (this file) by specifying the pat using $SCRIPTSBOX.  If you
+# want to work on some changes to the files, you can check out "config", and
+# set SCRIPTSBOX to your local copy in your .cshrc.
+#
+# It used to be that SOURCE_HOME was the primary variable to set, and that's why
+# we check if you've set that one but not SCRIPTSBOX.  Maybe we should issue a
+# warning here, saying to set SCRIPTSBOX explicitly.  -jv, 11/26/07
+
+if !($?SCRIPTSBOX) then
+  if ($?SOURCE_HOME) then
+    setenv SCRIPTSBOX ${SOURCE_HOME}/..
+  else
+    setenv SCRIPTSBOX "/home/development"
+  endif
+endif
+
+# SOURCE_HOME is where we get the other csh configuration files from.  It
+# perhaps could be better named, and furthermore is not really much of an
+# environment variable.  It is used during the dynamic extent of sourcing
+# this file, and then not again.
+
+if !($?SOURCE_HOME) then
+  setenv SOURCE_HOME ${SCRIPTSBOX}/config
+endif
+
+# The environment variable SCRIPTSDIR is not actually used.  We use SCRIPTSDIR
+# in our generated makefiles, but this doesn't really refer to the environment
+# variable, because we always explicitly set the value at the top of the
+# makefile.  Still, have it set to the correct value.
+
+if !($?SCRIPTSDIR) then
+  setenv SCRIPTSDIR ${SCRIPTSBOX}/scripts
+endif
+
+# REF_SBOX is used by the make-sandbox script and by the sandbox aliases
+# (csh and bash)
+
+if !($?REF_SBOX) then
+  setenv REF_SBOX "/bt/ab"
+endif
+
+
+# The following sets the variable machine to the type of machine this is.
+#
+#
+# Possible Machine Types
+#
+# alphaosf hp9000s700 linux rs6000 sparcsol sgi sun4
+# aviion hp9000s300 hp9000s800 mips motorola nec ncr
+#
+#
+# The file /usr/local/bin/machine on every machine should be an executable
+# that prints out the one of the above machine types that corresponds to
+# that machine.
+#
+# Eh.  How about on every machine that uses NFS?  If you use primarily a local
+# filesystem (i.e., a PC) with a unique .cshrc file, you can just set machine
+# in there, and we will pick up on it.  (e.g. set machine=intelnt )
+
+if ! ($?machine) then
+  if (-f /usr/local/bin/machine) then
+    set machine=`/usr/local/bin/machine`
+  else
+    set machine=unknown
+  endif
+endif
+setenv MACHINE $machine
+
+setenv NONDEV_ROOT /bt
+setenv ESHELL csh
+
+# The variable HELPERDIR is used in our sparcsol makefiles.
+setenv HELPERDIR ${SCRIPTSBOX}/helpers
+
+if ( -x "/bin/uname" ) then
+  setenv HARDWARE_NAME `/bin/uname -m`
+else
+  setenv HARDWARE_NAME unknown
+endif
+setenv SPARC_TYPE "not_applicable"
+
+if ($machine == sparcsol) then
+  # For /home/ab/scripts/grep-for-lisp-symbol -- rh 6/26/96
+  # Remove when a newer version of gnu grep is installed in /usr/local/bin
+  setenv GREPPATH /home/ab/bin/gnu/solaris
+
+  # jv, added code to set environment variable ARCH, because ultras have proven
+  #   to be less than perfect in running sparc executables, specifically
+  #   /bt/ab/trans/trans-32b3c-solaris, which is a Lucid disksave.  Changed
+  #   variable name from ARCH to SPARC_TYPE to reduce confusion with auto-
+  #   mounter, 8/20/02.
+    if ("$HARDWARE_NAME" == "sun4u") then
+       setenv SPARC_TYPE "ultra"
+    else
+       setenv SPARC_TYPE "sparc"
+    endif
+  endif
+endif
+
+# Before, tried to verify architectures better, and printed
+# an error, but that proved to be annoying.  For now, let's
+# just believe it's an ultra if it's one of the two kinds
+# we have in house, and otherwise assume it's a Sparc.
+
+# Backwards compatibility: SPARC_TYPE used to be called ARCH
+setenv ARCH $SPARC_TYPE
+
+
+# The following sets up the path environment variable by sourcing the
+# file "path.txt".  (It also sets up some environment variables on the
+# sun: OPENWINHOME, LD_LIBRARY_PATH, and XNEWSHOME.
+
+source ${SOURCE_HOME}/path.txt
+
+
+# The following sets the variable hostname to the name of this host.
+
+set hostname=`hostname | sed 's,.gensym.com,,g'`
+setenv HOSTNAME $hostname
+
+
+# Setting "LANG" -- on Linux, this variable affects the output of "ls" -- or,
+# at least, the output of "ls -a".  It ignores the dot at the beginning of
+# filenames, for example listing the following in the order shown:
+#    config .cshrc .emacs gensym
+# Gee, I wonder why we put periods at the beginning of those filenames?
+# Anyway, this behavior has something to do with internationalization, and
+# setting LANG this way makes ls behave itself.  -jv, 11/20/07
+
+if ( $machine == linux ) then
+  setenv LANG "C"
+endif
+
+
+
+
+# Set TMPDIRs for build machines with special needs and for those that
+# use gcc.
+
+switch ($machine)
+  case 'hp9000s800':
+    if ($hostname == wy) setenv TMPDIR "/tmp"
+    breaksw
+  case 'sgi':
+    setenv TMPDIR "/usr/tmp"
+    breaksw
+  # The Sun4 and Sparcsol use GCC, which uses /usr/tmp unless directed
+  # otherwise by TMPDIR.
+  case 'sun4':
+  case 'sparcsol':
+    setenv TMPDIR /tmp
+    breaksw
+  case 'intelnt':
+    setenv TMPDIR $TEMP
+endsw
+
+
+set history=50
+set savehist=50
+if ($machine == intelnt) then
+  set user=`logname`
+else
+  set user=`whoami`
+endif
+
+setenv USER $user
+if ($user != root) then
+        umask 002
+endif
+
+set runtime_dir=$MACHINE
+
+
+
+# The following sets up standard aliases by sourcing the file "aliases.txt".
+
+source ${SOURCE_HOME}/aliases.txt
+
+
+
+
+
+# The following sets up the PRINTER environment variable, which is where
+# lpr will send output by default -- it can be overridden with the
+# -Pprinter option.  The default is engineering, which I don't think is
+# properly set up any more.  If magically it is, I would imagine it refers
+# to the printer across from Jeff Golden's cube.  -jv, 10/17/05
+
+setenv PRINTER engineering
+
+
+
+
+# The following sets up the NNTPSERVER environment variable from the standard
+# file used by rn, "/usr/local/lib/rn/server".  This environment variable is
+# in turned used by GNUS to set the default value of gnus-nntp-server.
+#  -fmw, 10/1/93 per Wayne.
+
+if ( -f /usr/local/lib/rn/server) then
+  setenv NNTPSERVER `cat /usr/local/lib/rn/server`
+endif
+
+
+
+# The following sets up the terminal characteristics with calls to
+# stty for erase, intr, echoe, susp, and kill, as appropriate for
+# this kind of terminal, as best it can figure out.  The test for
+# prompt being bound assumes that the cshell variable prompt will only
+# be bound for an interactive shell -- thus we avoid sourcing the .stty
+# file unless this is an interactive shell.
+
+# -- NOTE: the following command can cause an EXIT -- this happens
+# under certain circumstances in the course of sourcing the .stty
+# file -- Therefore, do not put things after this that must run.
+
+if ($?prompt != 0) then
+    if ($machine != intelnt) then
+        source ${SOURCE_HOME}/stty.txt
+    endif
+    # The following command, cd ., just invokes the alias established above
+    # for cd (which sets the prompt) in order to set the prompt.
+    cd .
+endif
+
+setenv INFOPATH /usr/local/xemacs/lib/xemacs-19.13/info:/home/rh/gnu/sun4/info/:/home/rh/gnu/info/
+
+# The following sets up the G2_HOME environment variable.  This is where
+# the normally used g2 image should be living.
+
+setenv G2_HOME /gensym/ut/dev/g2-best
+
+# The following sets up the G2_OK environment variable.  This is the pathname
+# of the normally used g2.ok file.  Note that this is used by the g2 image
+# to locate its ok file.  It overrides use of a g2.ok file in the current
+# directory, and it can be overridden by a -ok command line option.
+
+# Similar for the TW_OK environment variable.
+
+# The versions with of these variables that end with "v4" are looked
+# for in newer (version 4) versions of G2 that need new OK files.  These
+# must be in place for users as of 1/20/94. (MHD)
+
+# Node-locked, 5.0 G2.OK file:
+setenv G2V5_OK /home/development/ok/main/g2v5.ok
+
+# Node-locked, 4.0 G2.OK file:
+setenv G2V4_OK /home/development/ok/g2df10v4.ok
+
+# Node-locked, 5.1 - 8.0 G2.OK file:   (NOT USED -- MHD/JPG 5/13/04)
+# setenv G2_OK /home/development/ok/main/g2v8.ok
+# setenv G2V51_OK /home/development/ok/main/g2v51.ok  # ddm 7/17/98
+# setenv G2V6_OK /home/development/ok/main/g2v6.ok    # ddm 9/7/99
+# setenv G2V7_OK /home/development/ok/main/g2v6.ok
+# setenv G2V8_OK /home/development/ok/main/g2v8.ok
+
+# Site-style, time-limited 5.1 - 8.0 G2.OK file:
+setenv G2_OK /home/development/ok/g2site.ok
+setenv G2V51_OK /home/development/ok/g2sitev6.ok
+setenv G2V6_OK /home/development/ok/g2sitev6.ok
+setenv G2V7_OK /home/development/ok/g2sitev6.ok
+# for 8.0b0 & beyond:
+setenv G2V8_OK /home/development/ok/g2sitev8.ok
+setenv G2V83_OK /home/development/ok/g2sitev83.ok
+
+# Node-locked TW.OK file, various versions.
+# NOTE: we are not maintaining this for version 7 or beyond.
+# Mostly, floating TW's licenses are used.
+setenv TW_OK /home/development/ok/main/tw.ok
+setenv TWV4_OK /home/development/ok/main/twv4.ok
+setenv TWV5_OK /home/development/ok/main/twv5.ok
+setenv TWV6_OK /home/development/ok/twdp10v6.ok
+
+# GSI bridges generally look in the $GSI_ROOT directory for gsi.ok.
+# The file /home/ab/gsi.ok has a smattering of authorizations for
+# various bridges.
+if ! ($?GSI_ROOT) then
+  setenv GSI_ROOT  /home/ab      # rjf - 2/6/96
+endif
+
+# The helper system used to be valuable, but now it gets in the way more than it
+# helps.  Turn it off.  (To reenable, unsetenv SUPPRESSHELP after this file is
+# sourced.)  yduJ, 6/28/04
+setenv SUPPRESSHELP 1
