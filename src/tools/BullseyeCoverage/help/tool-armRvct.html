@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_platform.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>ARM RealView Compilation Tools</h1>
+<p>
+BullseyeCoverage supports ARM Developer Suite 1.2 through ARM RealView Compilation Tools Version 3.1.
+
+<h2>Build Run-Time Library</h2>
+<p>
+Use the commands below to build the BullseyeCoverage run-time library. 
+Modify the compile command to use the same compile options as your project.
+<pre>
+cd <i>BullseyeCoverage</i>/run
+armcc -c libcov-armRvct.c
+armar --create ../lib/libcov-armRvct.a libcov-armRvct.o
+</pre>
+
+<h2>Build Project</h2>
+<p>
+Make sure the <i>BullseyeCoverage</i><code>/bin</code> is first in the PATH environment variable.
+Enable Coverage Build.
+Then launch the IDE from the shell where you modified <code>PATH</code>.
+Rebuild your application.
+<pre>
+set PATH=%ProgramFiles%\BullseyeCoverage\bin;%PATH%
+cov01 -1
+<i>(launch IDE/rebuild)</i>
+</pre>
+
+<h2>Saving Coverage</h2>
+<p>
+If your application never exits,
+add a call to <a href=ref_cov_write.html>cov_write</a> to your source code, at a
+point you know to be executed after the code you want to measure.
+<pre>
+#if _BullseyeCoverage
+	cov_write();
+#endif
+</pre>
+
+<h2>Run Semi-Hosted</h2>
+<p>
+Run your application in a semihosted environment.
+BullseyeCoverage run-time error messages are written to standard error.
+
+<p style="font-size:xx-small">
+Last reviewed: 4 Sep 2009
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
