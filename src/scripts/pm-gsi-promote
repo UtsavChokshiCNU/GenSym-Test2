@@ -1,0 +1,61 @@
+#!/bin/sh
+
+# pm-gsi-promote -- poor man's GSI promote
+
+GSIBOX=${DSTBOX}/gsi/tape
+ODIR=opt
+LIBSUF=a
+OBJSUF=o
+
+mkdir -p ${GSIBOX}
+
+# This wants to be better... support opt, o, o-mt, opt-intc, etc.
+# For now, I do the absolute easiest thing
+if [ "$1" = "-opt" ]
+then
+  ODIR=opt
+elif [ "$1" = "-o" ]
+then
+  ODIR=o
+fi
+
+if [ "$MACHINE" = "intelnt" ]
+then
+  LIBSUF=lib
+  OBJSUF=obj
+  cp -p ${DSTBOX}/gsi/${ODIR}/gsi.dll ${GSIBOX}/
+  cp -p ${DSTBOX}/gsi/${ODIR}/gsi.${LIBSUF} ${GSIBOX}/
+fi
+
+cp -p ${DSTBOX}/ext/${ODIR}/libtcp.${LIBSUF} ${GSIBOX}/
+cp -p ${DSTBOX}/ext/${ODIR}/libnogsec.${LIBSUF} ${GSIBOX}/
+cp -p ${DSTBOX}/ext/${ODIR}/libgsec.${LIBSUF} ${GSIBOX}/
+cp -p ${DSTBOX}/rtl/${ODIR}/librtl.${LIBSUF} ${GSIBOX}/
+cp -p ${DSTBOX}/gsi/${ODIR}/libgsi.${LIBSUF} ${GSIBOX}/
+cp -p ${SRCBOX}/gsi/c/gsi_m*.h ${GSIBOX}/
+cp -p ${DSTBOX}/gsi/${ODIR}/gsi_m*.${OBJSUF} ${GSIBOX}/
+cp -p ${SRCBOX}/gsi/c/gsi_main.c ${GSIBOX}/
+cp -p ${SRCBOX}/gsi/c/skeleton.c ${GSIBOX}/
+cp -p ${SRCBOX}/gsi/c/matrix.c ${GSIBOX}/
+cp -p ${SRCBOX}/gsi/sample/Makefile ${GSIBOX}/
+
+BUILDID=`$SRCBOX/build/build-date`
+
+echo "Copied libraries from ${ODIR} into ${GSIBOX}"
+echo "Copied header files from ${SRCBOX}/gsi/c into ${GSIBOX}"
+echo "This script is not yet complete."
+
+$SRCBOX/tools/remove-product -noconfirm -i gsi ${G2_VERSION}-$BUILDID $MACHINE
+$SRCBOX/tools/promote-product -noconfirm -i gsi $MACHINE $GSIBOX ${G2_VERSION}-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e gsi ${G2_VERSION} $MACHINE
+$SRCBOX/tools/promote-product -noconfirm -e gsi $MACHINE ${G2_VERSION}-$BUILDID ${G2_VERSION}
+
+# GW
+GWBOX=${DSTBOX}/gw/tape
+
+cp -p ${SRCBOX}/license/gw/gsi.ok ${GWBOX}/
+
+$SRCBOX/tools/remove-product -noconfirm -i gw ${G2_VERSION}-$BUILDID $MACHINE
+$SRCBOX/tools/promote-product -noconfirm -i gw $MACHINE $GWBOX ${G2_VERSION}-$BUILDID
+$SRCBOX/tools/remove-product -noconfirm -e gw ${G2_VERSION} $MACHINE
+$SRCBOX/tools/promote-product -noconfirm -e gw $MACHINE ${G2_VERSION}-$BUILDID ${G2_VERSION}
