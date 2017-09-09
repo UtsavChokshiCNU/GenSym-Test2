@@ -1,0 +1,150 @@
+#!/bin/csh -f
+
+# build-machines
+
+# This script outputs the machine types of the build machines.  These types
+# match the subdirectory names used in the spin tree.  This script takes several
+# optional arguments.  By default, it shows the names of all Unix architectures
+# in bt-machines.dat, whether they are active or not.  The flag -active shows
+# only active platforms.  To specify the type of Operating System to show,
+# use the flags -unixtypes, -vmstypes, -nttypes, or -alltypes.  If the -alltypes
+# argument is included, then all types (i.e., Unix, VMS, and NT) are output.
+# If the -vmstypes argument is given, the VMS operating systems are given
+# (e.g., alphavms and vax).  If the -vmsnames argument is given, then the hosts'
+# names are output (e.g., iraq and uganda).  It is guaranteed that the hosts and
+# operating systems will correspond; that is, the first host output by -vmsnames
+# will be running the first OS output by -vmstypes, and so on (assuming
+# that the file bt-machines.dat does not change in between the time when the two
+# commands are run.)
+
+# The script takes 0 - 2 arguments.  The -active flag is independent of the other
+# arguments, but the others conflict.  But it is not worth the effort to worry
+# about that.  The script will use the last of any given 'types' or 'names'
+# arguments.
+
+# Defaults
+
+set builduser = ab
+set types = unix
+set active = dontcare
+set host_or_os = os
+
+set fail=0
+goto main
+
+usage:
+
+echo "build-machines [-active] [ -alltypes | -vmstypes | -nttypes | -unixtypes | -nfstypes | -vmsnames]"
+echo "  By default, assumes -unixtypes."
+exit $fail
+
+main:
+
+while ($#argv > 0)
+  switch ($1)
+    case "-active":
+      set active = yes
+      shift
+      breaksw
+    case "-alltypes" : 
+      set types = dontcare
+      shift
+      breaksw
+    case "-unixtypes" :
+      shift
+      breaksw
+    case "-vmstypes":
+      set types = vms
+      shift
+      breaksw
+    case "-nttypes":
+      set types = nt
+      shift
+      breaksw
+    case "-nfstypes":
+      set types = nfs
+      shift
+      breaksw
+    case "-vmsnames":
+      set types = vms
+      set host_or_os = host
+      shift
+      breaksw
+    default :
+      echo ""
+      echo "ERROR:  Invalid argument $1"
+      set fail = 1
+      goto usage
+ endsw
+end # while
+
+# Find the bt-machines.dat file.
+
+if ($?SPIN_ID) then
+  set spin = $SPIN_ID
+else
+  set spin = ${builduser}
+endif
+
+if (! $?SRCBOX) then
+  set SRCBOX = /bt/${builduser}
+endif
+
+if (-e $SRCBOX/build/bt-machines.dat) then
+  set datafile = $SRCBOX/build/bt-machines.dat
+else if (-e /bt/ab/build/bt-machines.dat) then
+  set datafile = /bt/ab/build/bt-machines.dat
+else
+  echo "Error: no $SRCBOX/build/bt-machines.dat file can be found"
+  set fail = 1
+  goto usage
+endif
+
+if ($types == unix) then
+  if ($active == dontcare) then
+    # sort is used to remove duplicate machine types 
+    sort +1 -2 -u $datafile | awk '/unix/ {printf("%s ",$2)}'
+  else
+    awk '/active/ && /unix/ {printf("%s ",$2)}' $datafile
+  endif
+else if ($types == vms) then
+  if ($active == dontcare) then
+     if ($host_or_os == os) then
+       awk '/vms/ {printf("%s ",$2)}' $datafile
+     else
+       awk '/vms/ {printf("%s ",$3)}' $datafile
+     endif
+  else
+     if ($host_or_os == os) then
+       awk '/active/ && /vms/ {printf("%s ",$2)}' $datafile
+     else
+       awk '/active/ && /vms/ {printf("%s ",$3)}' $datafile
+     endif
+  endif
+else if ($types == nt) then
+  if ($active == dontcare) then
+    awk '/ nt / {printf("%s ",$2)}' $datafile
+  else
+    awk '/active/ && / nt / {printf("%s ",$2)}' $datafile
+  endif
+else if ($types == nfs) then
+  if ($active == dontcare) then
+    awk '/ nt / || /unix/ {printf("%s ",$2)}' $datafile
+  else
+    awk '/active/ && (/ nt / || /unix/) {printf("%s ",$2)}' $datafile
+  endif
+else
+  if ($active == dontcare) then
+    awk '{printf("%s ",$2)}' $datafile
+  else
+    awk '/active/ {printf("%s ",$2)}' $datafile
+  endif
+endif
+
+echo ""
+
+# This script used to be just the follwing lines.
+# echo "aviion compaq harris hp9000s300 hp9000s800 masscomp mips next rs6000 \
+#       sco sequent sgi stratus sun3 sun4"
+
+exit $fail
