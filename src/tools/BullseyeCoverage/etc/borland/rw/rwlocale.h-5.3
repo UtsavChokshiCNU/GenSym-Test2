@@ -1,0 +1,616 @@
+#ifndef __RWLOCALE_H
+#define __RWLOCALE_H
+#pragma option push -b -a4 -Vx- -Ve- -w-inl -w-aus -w-sig
+/***************************************************************************
+ *
+ * locale - Declarations for the Standard Library locale classes
+ *
+ *
+ ***************************************************************************
+ *
+ * (c) Copyright 1994, 1995 Rogue Wave Software, Inc.
+ * ALL RIGHTS RESERVED *
+ * The software and information contained herein are proprietary to, and
+ * comprise valuable trade secrets of, Rogue Wave Software, Inc., which
+ * intends to preserve as trade secrets such software and information.
+ * This software is furnished pursuant to a written license agreement and
+ * may be used, copied, transmitted, and stored only in accordance with
+ * the terms of such license and with the inclusion of the above copyright
+ * notice.  This software and information or any other copies thereof may
+ * not be provided or otherwise made available to any other person.
+ *
+ * Notwithstanding any other lease or license that may pertain to, or
+ * accompany the delivery of, this computer software and information, the
+ * rights of the Government regarding its use, reproduction and disclosure
+ * are as set forth in Section 52.227-19 of the FARS Computer
+ * Software-Restricted Rights clause.
+ *
+ * Use, duplication, or disclosure by the Government is subject to
+ * restrictions as set forth in subparagraph (c)(1)(ii) of the Rights in
+ * Technical Data and Computer Software clause at DFARS 252.227-7013.
+ * Contractor/Manufacturer is Rogue Wave Software, Inc.,
+ * P.O. Box 2328, Corvallis, Oregon 97339.
+ *
+ * This computer software and information is distributed with "restricted
+ * rights."  Use, duplication or disclosure is subject to restrictions as
+ * set forth in NASA FAR SUP 18-52.227-79 (April 1985) "Commercial
+ * Computer Software-Restricted Rights (April 1985)."  If the Clause at
+ * 18-52.227-74 "Rights in Data General" is specified in the contract,
+ * then the "Alternate III" clause applies.
+ *
+ **************************************************************************/
+
+#ifndef __STD_RWLOCALE__
+#define __STD_RWLOCALE__ 1
+
+#ifndef __STD_RWCOMPILER_H__
+#include <stdcomp.h>
+#endif
+
+#ifndef __STD_STRING__
+#include <string>
+#endif
+
+#ifndef __STD_IOSFWD__
+#include <iosfwd>
+#endif
+
+#ifndef _RWSTD_NO_NEW_HEADER
+#include <ctime>
+#else
+#include <time.h>
+#endif
+
+#ifndef _RWSTD_NO_BAD_CAST
+#include <typeinfo>
+#endif
+
+// In case these are (wrongly!) defined as macros in <cctype>.
+
+#undef isspace
+#undef isprint
+#undef iscntrl
+#undef isupper
+#undef islower
+#undef isalpha
+#undef isdigit
+#undef ispunct
+#undef isxdigit
+#undef isalnum
+#undef isgraph
+#undef toupper
+#undef tolower
+
+
+#ifndef _RWSTD_NO_NAMESPACE
+namespace __rwstd {
+#endif
+
+extern const char _RWSTDExportFunc(*) __rw_LocaleNotPresent;
+
+#ifndef _RWSTD_NO_NAMESPACE
+ } namespace std {
+#endif
+
+// Forward declarations of functions and classes specified by the locale clause
+// of the C++ Standard Library working paper.
+
+class _RWSTDExport locale;
+
+template <class charT> inline bool isspace  (charT c, const locale&);
+template <class charT> inline bool isprint  (charT c, const locale&);
+template <class charT> inline bool iscntrl  (charT c, const locale&);
+template <class charT> inline bool isupper  (charT c, const locale&);
+template <class charT> inline bool islower  (charT c, const locale&);
+template <class charT> inline bool isalpha  (charT c, const locale&);
+template <class charT> inline bool isdigit  (charT c, const locale&);
+template <class charT> inline bool ispunct  (charT c, const locale&);
+template <class charT> inline bool isxdigit (charT c, const locale&);
+template <class charT> inline bool isalnum  (charT c, const locale&);
+template <class charT> inline bool isgraph  (charT c, const locale&);
+
+template <class charT> inline charT toupper (charT c, const locale&);
+template <class charT> inline charT tolower (charT c, const locale&);
+
+#ifndef _RWSTD_NO_TEMPLATE_ON_RETURN_TYPE
+  template <class Facet> inline const Facet& use_facet (const locale&);
+  template <class Facet>
+    inline bool has_facet (const locale&) _RWSTD_THROW_SPEC_NULL;
+#else
+  template <class Facet> inline const Facet& use_facet (const locale&, Facet*);
+  template <class Facet>
+    inline bool has_facet (const locale&, Facet*) _RWSTD_THROW_SPEC_NULL;
+#endif /* _RWSTD_NO_TEMPLATE_ON_RETURN_TYPE */
+
+class _RWSTDExport ctype_base;
+class _RWSTDExport codecvt_base;
+class _RWSTDExport time_base;
+class _RWSTDExport money_base;
+class _RWSTDExport messages_base;
+
+template <class charT> class _RWSTDExportTemplate ctype;
+_RWSTD_TEMPLATE class _RWSTDExport ctype<char>;
+_RWSTD_TEMPLATE class _RWSTDExport ctype<wchar_t>;
+template <class charT> class _RWSTDExportTemplate ctype_byname;
+template <class internT, class externT, class stateT>
+    class _RWSTDExportTemplate codecvt;
+template <class internT, class externT, class stateT>
+    class _RWSTDExportTemplate codecvt_byname;
+template <class charT,
+    class InputIterator _RWSTD_COMPLEX_DEFAULT(istreambuf_iterator<charT>) >
+    class _RWSTDExportTemplate num_get;
+template <class charT,
+    class OutputIterator _RWSTD_COMPLEX_DEFAULT(ostreambuf_iterator<charT>) >
+    class _RWSTDExportTemplate num_put;
+template <class charT> class _RWSTDExportTemplate numpunct;
+template <class charT> class _RWSTDExportTemplate numpunct_byname;
+template <class charT> class _RWSTDExportTemplate collate;
+template <class charT> class _RWSTDExportTemplate collate_byname;
+template <class charT,
+    class InputIterator _RWSTD_COMPLEX_DEFAULT(istreambuf_iterator<charT>) >
+    class _RWSTDExportTemplate time_get;
+template <class charT,
+    class InputIterator _RWSTD_COMPLEX_DEFAULT(istreambuf_iterator<charT>) >
+    class _RWSTDExportTemplate time_get_byname;
+template <class charT,
+    class OutputIterator _RWSTD_COMPLEX_DEFAULT(ostreambuf_iterator<charT>) >
+    class _RWSTDExportTemplate time_put;
+template <class charT,
+    class OutputIterator _RWSTD_COMPLEX_DEFAULT(ostreambuf_iterator<charT>) >
+    class _RWSTDExportTemplate time_put_byname;
+template <class charT,
+    class InputIterator _RWSTD_COMPLEX_DEFAULT(istreambuf_iterator<charT>) >
+    class _RWSTDExportTemplate money_get;
+template <class charT,
+    class OutputIterator _RWSTD_COMPLEX_DEFAULT(ostreambuf_iterator<charT>) >
+    class _RWSTDExportTemplate money_put;
+template <class charT, bool Intl _RWSTD_SIMPLE_DEFAULT(false)>
+    class _RWSTDExportTemplate moneypunct;
+template <class charT, bool Intl _RWSTD_SIMPLE_DEFAULT(false)>
+    class _RWSTDExportTemplate moneypunct_byname;
+template <class charT> class _RWSTDExportTemplate messages;
+template <class charT> class _RWSTDExportTemplate messages_byname;
+
+
+#ifndef _RWSTD_NO_NAMESPACE
+} // namespace std
+#endif
+
+#ifndef __STD_RW_LOCIMPL__
+#include <rw/locimpl>
+#endif
+
+#ifndef _RWSTD_NO_NAMESPACE
+namespace std {
+#endif
+
+// -------------
+// Class locale.
+// -------------
+
+class _RWSTDExport locale {
+ public:
+  class facet;
+  class id;
+
+  friend class facet;
+  friend class id;
+
+  typedef int category;
+
+  // The following constants identify standard categories of facets.  The
+  // standard specifies them as const members of type category (i.e. as const
+  // ints).  For compilers that can't initialize const members here, we define
+  // them as members of an anonymous enum instead.
+
+  // Some compilers get confused by the name collision of these constants with
+  // the facet templates collate, ctype and messages.  As a work-around, we
+  // also define non-standard names of the form _rw_xxx_category for these
+  // three categories.  If you have one of the confused compilers (i.e. if
+  // _RWSTD_CONFUSED_ENUM_SCOPE is #defined for you), you must use these non-
+  // standard category names.
+
+  #ifndef _RWSTD_CONFUSED_ENUM_SCOPE
+  #define _RWSTD_CATEGORY_NAMES                              \
+    collate = 0x0010, ctype = 0x0020, monetary = 0x0040,    \
+    numeric = 0x0080, time  = 0x0100, messages = 0x0200,    \
+    all     = 0x03f0, none  = 0x0000
+  #else
+  #define _RWSTD_CATEGORY_NAMES                              \
+    monetary = 0x0040, numeric = 0x0080, time  = 0x0100,    \
+    all      = 0x03f0, none  = 0x0000
+  #endif
+
+  #define _RWSTD_IMPLEMENTATION_VALS                                 \
+    _rw_collate_category  = 0x0010, _rw_ctype_category    = 0x0020, \
+    _rw_messages_category = 0x0200, _rw_Clib_LC_constants = 0x000F, \
+    _rw_num_categories    = 6,      _rw_first_category    = 0x0010
+
+  #ifndef _RWSTD_NO_STI_SIMPLE
+  static const category _RWSTD_CATEGORY_NAMES, _RWSTD_IMPLEMENTATION_VALS;
+  #else
+  enum { _RWSTD_CATEGORY_NAMES, _RWSTD_IMPLEMENTATION_VALS };
+  #endif
+
+  #undef _RWSTD_CATEGORY_NAMES
+  #undef _RWSTD_IMPLEMENTATION_VALS
+
+  // The default constructor creates a copy of the current global locale.
+
+  inline locale () _RWSTD_THROW_SPEC_NULL;
+
+  // The copy constructor and assignment operator can be used freely; most of
+  // the locale's contents are in a reference-counted implementation object,
+  // so copying and assignment involve little overhead.
+
+  inline locale (const locale& other) _RWSTD_THROW_SPEC_NULL;
+  const locale& operator = (const locale& other) _RWSTD_THROW_SPEC_NULL;
+
+  // The following constructor creates a locale composed of by-name facets and
+  // assigns it a name.  The valid arguments are "", "C", and a set of strings
+  // defined by the compiler vendor.  These cause all the facets of the locale
+  // to be obtained, respectively, from the current global locale, from the
+  // classic locale, or from the compiler vendor's locale database.  If the
+  // argument is not recognized, the constructor throws runtime_error.
+
+  _EXPLICIT locale (const char* name);
+
+  // The following constructor copies its first argument except for the facets
+  // in the categories identified by the third argument, which are obtained
+  // from the second argument.
+
+  locale (const locale &other, const locale &second, category);
+
+  // The following constructor copies its first argument except for the facets
+  // in the categories identified by the third argument, which are obtained by
+  // name using the second argument.  Can throw runtime_error.
+
+  locale (const locale& other, const char* name, category);
+
+  // The following templatized constructors are only available if your compiler
+  // supports member function templates.  Each copies its first argument except
+  // for the single facet of type Facet, which it get from the second argument.
+
+  #ifndef _RWSTD_NO_MEMBER_TEMPLATES
+
+  template <class Facet>
+  inline locale (const locale& other,Facet* f);
+
+  #ifndef _RWSTD_NO_TEMPLATE_ON_RETURN_TYPE
+  template <class Facet>
+  inline locale (const locale& other, const locale& one);
+  #endif
+
+  #else
+
+  // If your compiler does not support member function templates, we provide
+  // the following work-around to let you accrete facets onto a locale.  This
+  // constructor copies its first argument except for the single facet of the
+  // type of the second argument, for which it uses the second argument.
+  //
+  // To determine the type of the second argument, it calls the non-standard
+  // virtual method get_id() in the second argument.  If you are creating your
+  // own facet types on a compiler that does not support member templates, you
+  // must code a get_id() member as follows in each new base class facet (i.e.
+  // in each facet class that has its own static member id of type locale::id):
+  //
+  //    virtual locale::id &get_id (void) const { return id; }
+  //
+  // See the get_id members in the standard facets below for examples.
+
+  inline locale (const locale& other, facet* f);
+
+  #endif // _RWSTD_NO_MEMBER_TEMPLATES
+
+  // The destructor is non-virtual.  Other classes are not intended to be
+  // derived from locale.
+
+  ~locale ()
+  {
+    __RWSTD::ref_counted::remove_reference(imp_);
+  }
+
+  // The following returns the locale name, or "*" if the locale is unnamed.
+
+  string name () const;
+
+  // Two locales are equal if they are the same object, or one is a copy of the
+  // other (i.e. they have the same implementation object), or both are named
+  // and their names are the same.
+
+  bool operator == (const locale& other) const;
+  bool operator != (const locale& other) const { return !(*this==other); }
+
+  // The following templatized operator () satisfies STL requirements for a
+  // comparator predicate template argument for comparing strings according to
+  // the collating sequence of the locale.  It lets you use a locale directly
+  // as a comparator using syntax like sort(v.begin(),v.end(),loc), where v is
+  // a vector of some string type and loc is a locale.  If your compiler does
+  // not support member function templates, we provide _EXPLICIT support for
+  // string and (if applicable) wstring.
+
+  #ifndef _RWSTD_NO_MEMBER_TEMPLATES
+  template <class charT, class Traits, class Allocator>
+  bool operator() (const basic_string<charT,Traits,Allocator>& s1,
+                   const basic_string<charT,Traits,Allocator>& s2) const;
+  #else
+  bool operator() (const string &s1,const string &s2) const;
+  #ifndef _RWSTD_NO_WIDE_CHAR
+  bool operator() (const wstring &s1,const wstring &s2) const;
+  #endif
+  #endif
+
+  // Static members.
+
+  static locale global (const locale&);  // Replaces the current global locale
+  static const locale &classic ();       // Returns the classic "C" locale
+
+  // class facet -- base class for locale feature sets.
+
+  // Any class deriving from facet that wants to be perceived as a distinct
+  // facet, as opposed to a re-implementation of an existing facet, must
+  // declare a static member: static std::locale::id id;
+
+  class facet: public __RWSTD::facet_imp {
+    friend class __RWSTD::locale_imp;
+    friend class locale;
+   protected:
+    _EXPLICIT facet (size_t refs=0,int cat=0):
+        __RWSTD::facet_imp(refs,cat) { }
+
+    virtual ~facet() { }
+
+    #ifdef _RWSTD_NO_MEMBER_TEMPLATES
+    virtual id &get_id (void) const=0;
+    #endif
+
+   private:
+    facet (const facet&);           // not defined
+    void operator = (const facet&); // not defined
+  };
+
+  // class id -- facet type identifier.
+
+  // This is mostly an implementation class.  It is used internally as an index
+  // to find facets within a locale.  Each distinct facet (i.e. each T that can
+  // be the parameter of a use_facet<T> call) has a unique static member of type
+  // locale::id named id.  The class is made public to enable extension of the
+  // set of standard facets.  Objects of this type don't need to be constructed
+  // or referenced in any other circumstances.
+
+  class id: private __RWSTD::locale_id_imp {
+    _RWSTD_FRIEND_USE_HAS_FACET
+    friend class locale;
+#ifdef  _MSC_VER
+   public:
+#endif
+    #ifndef HPPA_WA
+    operator size_t () const { return id_; }
+    #else
+    operator size_t () const { return __RWSTD::locale_id_imp::id_; }
+    #endif
+
+    // The private copy constructor and assignment operator help restrict the
+    // class to its intended use.  The copy constructor prevents the compiler
+    // from generating a do-nothing default constructor, so we provide one.
+    // We omit the constructors on compilers that don't support static template
+    // members with constructors.
+
+#ifndef _RWSTD_NO_STATIC_DEF3
+   public:
+    id () { }
+   private:
+    id (const id&);
+#endif
+   private:
+    void operator = (const id&);
+  };
+
+ private:
+
+  // Implementation.
+  friend class __RWSTD::locale_imp;
+  _RWSTD_FRIEND_USE_HAS_FACET
+
+#ifdef _MSC_VER
+ public:
+#endif
+  // The only data member is a pointer to a ref-counted implementation object:
+  __RWSTD::locale_imp *imp_;
+  typedef __RWSTD::facet_imp *facet_maker_func (int,const char*,size_t);
+
+  // The following function retrieves an implicit facet from a cache,
+  // or creates one if needed (via call to the passed call-back
+  // function), and makes it an _EXPLICIT facet of the locale.
+
+  __RWSTD::facet_imp * make__EXPLICIT (const id &facet_id,
+    bool ok_implicit, category facet_cat, facet_maker_func maker) const
+  {
+    __RWSTD::facet_imp *f=NULL;
+
+    // Determine whether the implicit facet has by-name or native or classic
+    // behavior, based on its category and flags in the locale_imp that track
+    // how the locale was constructed (i.e. which categories have which kinds
+    // of behavior by default).  And locate the "base" locale_imp where facets
+    // with the indicated kind of behavior are cached.
+
+    __RWSTD::locale_imp *base;
+    if (imp_->named_cats_ & facet_cat)
+      base=NULL;
+    else if (imp_->native_cats_ & facet_cat)
+      base=the_native_locale_;
+    else
+      base=the_classic_locale_;
+
+    if (base) {
+      size_t index(facet_id);
+      if (index >= base->vec_.size())
+        base->vec_.resize(index+1,NULL);
+      f=base->vec_[index];
+    }
+
+    if (!f) {
+      #ifndef _RWSTD_NO_BAD_CAST
+      _RWSTD_THROW_NO_MSG(!ok_implicit,bad_cast);
+      #else
+      _RWSTD_THROW(!ok_implicit,runtime_error,__RWSTD::__rw_LocaleNotPresent);
+      #endif
+
+      #ifdef _RWSTD_MULTI_THREAD
+      // Lock on static mutex that protects last_used_id.
+      #endif
+
+      if (base) {
+        size_t index(facet_id);
+        if (index >= base->vec_.size())
+          base->vec_.resize(index+1,NULL);
+        f=base->vec_[index];
+      }
+
+      if (!f) {
+        int t;
+        const char *name="";
+        if (imp_->named_cats_ & facet_cat) {
+          t=2; name=imp_->category_name(facet_cat);
+        } else if (imp_->native_cats_ & facet_cat)
+          t=1;
+        else
+          t=0;
+
+        f=maker(t,name,0);
+
+        if (base && base!=imp_)
+          locale(base).install(f,facet_id);
+      }
+    }
+
+    install(f,facet_id);
+    return f;
+  }
+
+  inline __RWSTD::facet_imp *get_facet (size_t) const;
+
+#ifdef _MSC_VER
+ private:
+#endif
+
+  void install (__RWSTD::facet_imp *f, const id& i) const;
+
+  static __RWSTD::locale_imp *the_classic_locale_;
+  static __RWSTD::locale_imp *the_native_locale_;
+  static __RWSTD::locale_imp *global_;
+
+  // Construct a locale from an implementation object.
+  inline _EXPLICIT locale (__RWSTD::locale_imp *m);
+
+ private:
+  // We have to say private again in case _RWSTD_FRIEND_USE_HAS_FACET evaluated
+  // to public:
+
+  // Create initial implementation objects.
+  static void init ();
+};
+
+#undef _RWSTD_FRIEND_USE_HAS_FACET
+
+// ----------------------------
+// Class locale inline members.
+// ----------------------------
+
+// Private constructor for use by implementation, constructs a locale from
+// a locale_imp implementation object.
+inline locale::locale (__RWSTD::locale_imp *m): imp_(m) {
+  if (!global_) init();
+  __RWSTD::ref_counted::add_reference(imp_);
+}
+
+// Default constructor, returns a copy of the current global locale.
+inline locale::locale () _RWSTD_THROW_SPEC_NULL {
+  if (!global_) init(); // This is not throw() ... something has to give.
+  __RWSTD::ref_counted::add_reference(imp_=global_);
+}
+
+// Copy constructor.
+inline locale::locale (const locale& other) _RWSTD_THROW_SPEC_NULL {
+  __RWSTD::ref_counted::add_reference(imp_=other.imp_);
+}
+
+#ifndef _RWSTD_NO_MEMBER_TEMPLATES
+
+// Constructor to accrete or replace a single facet.
+template <class Facet>
+inline locale::locale (const locale& other, Facet* f)
+{
+  if (f) {
+    imp_=new __RWSTD::locale_imp (*other.imp_,1);
+    install(f,Facet::id);
+    imp_->named_=false;
+  } else
+    __RWSTD::ref_counted::add_reference(imp_=other.imp_);
+}
+
+#ifndef _RWSTD_NO_TEMPLATE_ON_RETURN_TYPE
+template <class Facet>
+inline locale::locale (const locale& other, const locale& second):
+    imp_(new __RWSTD::locale_imp (*other.imp_,1))
+{
+  const Facet &f=use_facet<Facet>(second);
+  install(&f,Facet::id);
+  imp_->named_=false;
+}
+#endif /* _RWSTD_NO_TEMPLATE_ON_RETURN_TYPE */
+
+#else
+
+inline locale::locale (const locale& other, facet* f):
+    imp_(new __RWSTD::locale_imp (*other.imp_,1))
+{
+  install(f,f->get_id());
+  imp_->named_=false;
+}
+
+#endif // _RWSTD_NO_MEMBER_TEMPLATES
+
+
+// Private implementation helper function.
+inline __RWSTD::facet_imp* locale::get_facet (size_t i) const {
+  return imp_->get_facet(i);
+}
+
+#ifndef _RWSTD_NO_NAMESPACE
+} namespace __rwstd {
+#endif
+
+
+// -------------------------------------------------------
+// Implementation function template -- create_named_facet.
+// -------------------------------------------------------
+// 
+// The default for facets with no derived byname version is to create a facet
+// with classic ("C") behavior, ignoring the passed name.
+
+template <class Facet>
+inline Facet* _RWSTDExport create_named_facet
+    (Facet*,const char*,size_t refs)
+{
+  return new Facet(refs);
+}
+
+#ifndef _RWSTD_NO_NAMESPACE
+} // namespace __rwstd
+#endif
+
+// Get declarations for vendor-defined extensions, such as 
+// declarations of the facets of the native ("") locale.
+#include <rw/vendor>
+
+
+#ifdef _RWSTD_NO_TEMPLATE_REPOSITORY
+#include <rw/rwlocale.cc>
+#endif
+
+#endif // __STD_RWLOCALE__
+
+
+#pragma option pop
+#endif /* __RWLOCALE_H */
