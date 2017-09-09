@@ -1,0 +1,256 @@
+#!/bin/csh -f
+
+# =========================================================================== #
+# make-dstbox : create the destination directories for building the packages  #
+#               specified as command-line arguments                           #
+#                                                                             #
+# Usage: make-dstbox {-g2 | <pkg>} [<pkg> ...]                                #
+#                                                                             #
+#        If the optional "-g2" parameter is included, all the packages for    #
+#        creating g2 (g2, gsi, ext, fnt, jpeg, xml, rtl, & tw) and the        #
+#        Netscape Telewindows plugin (twplug) will be included.               #
+#                                                                             #
+# =========================================================================== #
+
+#  1.0 : 2000-11-02 : David Westen         : Original release
+
+
+    # Initialize variables
+    # --------------------
+    set com = $0
+    set refsrcbx = /bt/ab/src
+    unset mg2
+    unset trouble
+
+    # Make sure the user has specified the packages that will be built
+    # ----------------------------------------------------------------
+    if ($#argv < 1) then
+        echo Usage $com:t '[-use-dstboxes] {-g2 | <pkg>} [<pkg> ...]'
+        exit 1
+    endif
+
+    # Make sure that the starting point for creating the destination
+    # directories has been specified and is valid.
+    # ---------------------------------------------------------------
+    if (! $?SANDBOX) then
+        echo '**' $com:t: SANDBOX not defined.  Run sandbox before running $com:t.
+        exit 2
+    endif
+
+    if (! -d $SANDBOX) then
+        echo '**' $com:t: $SANDBOX \(SANDBOX\) is not a directory.  Cannot continue.
+        exit 3
+    endif
+
+    if (! $?SPIN_ID) then
+        echo '**' $com:t: SPIN_ID not defined.  Run sandbox before running $com:t.
+        exit 2
+    endif
+    
+
+    # Store a list of platforms in plats.  The user can specify the platforms to
+    # use with the file $TOOLSDIR/build/bt-machines.dat (use ${refsrcbx}/build/bt-machines.dat
+    # as a template).  If the custom list file does not exist, the general list in
+    # ${refsrcbx}/build/bt-machines.dat will be used.
+    # ---------------------------------------------------------------------------------
+    if (-f $TOOLSDIR/build/bt-machines.dat) then
+        if (-r $TOOLSDIR/build/bt-machines.dat) then
+            set plats = `grep active $TOOLSDIR/build/bt-machines.dat | awk '{print $2}'`
+        else
+            echo -- $com:t: Unable to read platform list.  Trying ${refsrcbx}/build/bt-machines.dat.
+            goto tryAgain
+        endif
+        set t = ( $plats )
+        if ($#t > 0) goto setLists
+        echo -- $com:t: No platforms specified.  Trying ${refsrcbx}/build/bt-machines.dat.
+    endif
+
+
+tryAgain:
+    if (! -r ${refsrcbx}/build/bt-machines.dat) then
+        echo -- $com:t: Unable to read list of platforms.  Can\'t continue.
+        exit 4
+    endif
+    set plats = `grep active ${refsrcbx}/build/bt-machines.dat | awk '{print $2}'`
+    set t = ( $plats )
+    if ($#t == 0) then
+        echo '**' $com:t: No platforms specified.  Can\'t continue.
+        exit 5
+    endif
+
+
+setLists:
+    # -----------------------------------------------------------------------
+    # Check if we want to use dstboxes instead of directly within the sandbox
+    # -----------------------------------------------------------------------
+    if ( $1 == "-use-dstboxes" || $1 == "-USE-DSTBOXES") then
+        set dstboxes
+        shift
+    endif
+
+    # ----------------------------------------------------------------------
+    # Prepare the list of packages & the list of destination directory types
+    # ----------------------------------------------------------------------
+    if ( $1 == -g2 || $1 == -G2) then
+        set mg2
+        set pkgs = "g2 gsi ext fnt jpeg xml rtl tw twplug "
+        shift
+        set pkgs = "$pkgs$*"
+        set intelpkgs = "twng xtp scintilla widgets gservice g2pi activex"
+    else
+        set pkgs = "$*"
+        set intelpkgs = ""
+    endif
+    set opkgs = "$pkgs"
+    set btyps = "o opt o-mt o-pg test tape"
+    set intelbtyps = "opt-intc"
+
+
+    
+    # -------------------------------------------
+    # We're ready to start making the directories
+    # -------------------------------------------
+    if (! -d $SANDBOX/dst) then
+        if $?dstboxes then 
+            mkdir /gensym/dstboxes/$SPIN_ID
+            set s = $status
+            if ( $s == 0 ) then
+                ln -s /gensym/dstboxes/$SPIN_ID $SANDBOX/dst
+                set s = $status
+            endif
+
+        else
+            mkdir $SANDBOX/dst
+            set s = $status
+        endif
+        if ( $s != 0 ) then
+            echo '**' $com:t: Error while creating $SANDBOX/dst.  Cannot continue.
+            exit 6
+        endif
+    endif
+    @ pass = 1
+
+    # The nested "foreach" loops below can be used to:
+    #   - create the standard build destination directories (pass = 1)
+    #   - create the lisp macro, dst, and dev directories if -g2 was selected (pass = 2)
+    #   - create the profile & util directories if -g2 was selected (pass = 3)
+    # ----------------------------------------------------------------------------
+    while ($pass <= 3)
+    
+       # For each platform:
+       # ------------------
+       foreach p ($plats)    
+           set f = $SANDBOX/dst/$p
+           if ( -d $f) then
+               echo -- $f exists
+           else if (-f $f ) then
+               echo '**' $f is an existing file. CANNOT CREATE DIRECTORY $p.
+               set trouble
+               continue
+           else
+               mkdir $f
+               set s = $status
+               if ($s) then
+                   echo '**' $f NOT CREATED. Error $s.
+                   set trouble
+                   continue
+               else
+                   echo ++ $f created
+               endif
+            endif
+   
+           if ($p == intelnt) then
+               set realpkgs = "$pkgs $intelpkgs"
+               set realbtyps = "$btyps $intelbtyps"
+           else
+               set realpkgs = "$pkgs"
+               set realbtyps = "$btyps"
+           endif
+
+           # For each package:
+           # -----------------
+           foreach pk ( $realpkgs )
+               set tp = $f/$pk
+               if ( -d $tp ) then
+                   echo -- $tp exists
+               else if (-f $tp ) then
+                   echo '**' $tp is an existing file. CANNOT CREATE DIRECTORY $pk.
+                   set trouble
+                   continue
+               else
+                   mkdir $tp
+                   set s = $status
+                   if ($s) then
+                       echo '**' $tp NOT CREATED. Error $s.
+                       set trouble
+                       continue
+                   else
+                       echo ++ $tp created
+                   endif
+               endif
+   
+               # For each destination type:
+               # --------------------------
+               foreach t ($realbtyps)
+                   set b = $tp/$t
+                   if (-d $b) then
+                       echo -- $b exists
+                   else if (-f $b) then
+                       echo '**' $b is an existing file. CANNOT CREATE DIRECTORY $t.
+                       set trouble
+                       continue
+                   else
+                       mkdir $b
+                       set s = $status
+                       if ($s) then
+                           echo '**' $b NOT CREATED. Error $s.
+                           set trouble
+                           continue
+                       else
+                           echo ++ $b created
+                       endif
+                   endif
+                end 
+                # ---- o opt o-mt o-pg test tape ------
+             end
+             # --- pkg ---------------------------
+         end
+         # --- platform --------------------------
+
+
+         # Setup the variables for the next pass through the directory factory
+         # -------------------------------------------------------------------
+         if $?mg2 then
+             @ pass++
+             if $pass == 2 then
+                 set plats = "sparcsol sun4"
+                 set pkgs  = "lisp"
+                 set btyps = "macro dst dev"
+             else if $pass == 3 then
+                 set plats = "sparcsol"
+                 set pkgs  = "util"
+                 set btyps = "profile"
+             else if $pass == 4 then
+		 # Make the kbs build directory in dst
+                 if (-d $SANDBOX/dst/kbs) then
+                     echo -- $SANDBOX/dst/kbs exists
+                 else
+  		     mkdir $SANDBOX/dst/kbs
+		     echo ++ $SANDBOX/dst/kbs created
+		 endif
+             endif
+         else
+             @ pass = 4       # all done
+         endif
+      end
+
+      # Tell the user if there were any problems
+      # ----------------------------------------
+      if $?trouble then
+          echo '**' $com:t: PROBLEMS ENCOUNTERED WHICH MAY INTERFERE WITH BUILD
+          exit 8
+      else
+          echo  ++ $com:t: +++ Ready to Build: $opkgs +++
+          exit 0
+      endif
+
