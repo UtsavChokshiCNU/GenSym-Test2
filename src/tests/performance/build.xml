@@ -1,0 +1,27 @@
+<project name="Tests" default="performance-tests">
+	<property name="module.name" value="performance"/>
+	<property name="${module.name}.basedir" value="../.."/> 
+	<property file="${performance.basedir}/ant/build.properties"/>
+
+	<target name="performance-tests">
+		<mkdir dir="${result.dir}/performancetests" />
+		<parallel>
+			<exec executable="cmd"
+				dir="${performance.basedir}/tests/performance"
+				failonerror="false">
+				<arg line="/c run-performance-tests.bat ${UC.IDs}" />
+				<env key="G2_OK" value="${g2.ok}"/>
+				<env key="INSTALL_DIR" value="${install.dir}"/>
+			</exec>
+			<exec executable="cmd"
+				dir="${performance.basedir}/tests/performance"
+				failonerror="false">
+				<arg line="/c typeperf &quot;\\%COMPUTERNAME%\processor(_Total)\% Processor Time&quot; -si 60" />
+			</exec>
+		</parallel>
+		<copy todir="${result.dir}/performancetests">
+			<fileset dir="${performance.basedir}/tests/performance/results" 
+				includes="*.txt"/>
+		</copy>
+	</target>
+</project>
