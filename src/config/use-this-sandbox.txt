@@ -1,0 +1,229 @@
+
+# use-this-sandbox
+#
+# Author: jv, based on use-sandbox, setup-env, .env, and .bt-alias
+#
+# I wrote this up because I've been wanting to get use-sandbox working
+# on the PC, and it was kind of hard to figure out what use-sandbox did
+# under Unix.  This implementation improves on the old one in that when
+# it fails, the user's environment is not modified.  It also makes an
+# important change from use-sandbox, which can be viewed as an improvement
+# or as a desecration.  The second argument, FROM_SPIN, is not necessary
+# here (and will be ignored if it is supplied.)  The proper repository
+# is determined by reading the Root file under ..
+#       /bt/<requested-spin>/<util_name>/CVS
+# ... as was done previously to validate the requested FROM_SPIN.
+#
+# This is NOT a shell script.  Note the absence of a #! line at the
+# top.  The reason is that a shell script forks a shell, which is
+# a separate process.  That shell script enherits environment variables
+# from its parent (the shell that ran it), and it will pass on
+# environment variables to its children.  But it cannot update its
+# parent.  Therefore, to set up environment variables in the C Shell
+# one must either use aliases or "source".  This file does not solve
+# that problem, but integrates all of the information into one place.
+# The intended usage of this file is:
+#      set srcbx = <new spin id>; source <this file>
+# For example,
+#      alias sandbox 'set srcbx = \!:1; source /gensym/bin/use-this-sandbox'
+#
+# Many of the shell variables now begin with "pt".  That used to be "potential",
+# but that made the variables' names very long and some cshes complained.
+# Read "pt" as "potential".
+
+# This file is only useful if sourced!!!
+
+set util_name=util
+
+setenv TREE_ID bt
+if !($?NONDEV_ROOT) then
+  setenv NONDEV_ROOT /gensym/$TREE_ID
+endif
+set dev_root = /$TREE_ID
+set sb_style = new
+
+setenv SB_ROOT $NONDEV_ROOT
+if ( -d $dev_root ) setenv SB_ROOT $dev_root
+
+if !($?REF_SBOX) then
+  setenv REF_SBOX $SB_ROOT/ab
+endif
+set default_util = $REF_SBOX/$util_name
+
+if !($?srcbx) then
+   echo "ERROR: missing argument.  This file should only be called through "
+   echo "  the 'usb' or 'sandbox' aliases.  (See jv)"
+   goto ERROR
+endif
+
+set pt_srcbox = $SB_ROOT/$srcbx/src
+if !( -d $pt_srcbox ) then
+  set pt_srcbox = $SB_ROOT/$srcbx
+  set sb_style = old
+endif
+
+if !(-d $pt_srcbox) then
+   echo "ERROR: $pt_srcbox does not exist."
+   goto ERROR
+endif
+
+set nonomatch
+set srcdirs = (${pt_srcbox}/*/CVS)
+set sample_module = $srcdirs[1]
+unset nonomatch
+
+if ($sb_style == new) then
+  set modname = `echo $sample_module | awk -F/ '{print $5}'`
+else
+  set modname = `echo $sample_module | awk -F/ '{print $4}'`
+endif
+
+if ("$sample_module" == "${pt_srcbox}/*/CVS") then
+   echo "ERROR: cannot locate any CVS modules in $pt_srcbox"
+   goto ERROR
+endif
+
+if !(-f $sample_module/Root) then
+   echo "ERROR: cannot locate Root in $sample_module"
+   goto ERROR
+endif
+
+set pt_cvsroot = `cat $sample_module/Root | tr -d '\015'`
+set pt_server_dir = `echo $pt_cvsroot | awk -F: '{print $2}'`
+if ("$pt_server_dir" != "") then
+  echo "You are using cvs in rsh mode; will not attempt to verify repository."
+  # One option here might be to run cvs init
+else if !(-d $pt_cvsroot) then
+   echo "ERROR: Spinoff $pt_cvsroot does not exist"
+   echo "  This is a potentially serious problem with your sandbox\!\!\!"
+   goto ERROR
+else
+   set pt_server_dir = $pt_cvsroot
+endif
+
+if ($?suggested_repos) then
+  if ("/gensym/${suggested_repos}-repos" != "$pt_cvsroot") then
+    echo "ERROR: $srcbx is not an $suggested_repos sandbox"
+    goto ERROR
+  endif
+else
+  set suggested_repos = `echo $pt_server_dir | sed 's,/gensym/,,' | sed 's,-repos,,'`
+endif
+
+set pt_dstbox = $SB_ROOT/$srcbx/dst/${MACHINE}
+if !( -d $pt_dstbox ) set pt_dstbox = $pt_srcbox
+
+set pt_tools_dir = $SB_ROOT/$srcbx/tools
+if !( -d $pt_tools_dir ) set pt_tools_dir = $SB_ROOT/$srcbx
+
+set pt_util_dir = $pt_tools_dir/$util_name
+if !( -d $pt_util_dir ) set pt_util_dir = $default_util
+
+# At this point, we're convinced the sandbox is OK.  The rest of the
+# file just sets things up.  There are no more checks to be performed.
+# Note that we do not affect the environment in a failure case.
+
+# The following lines establish a dynamic extent of enviroment variables
+# describing the roots of the build, spin, and mount trees.  This can only be
+# established after establishing the SPIN_ID.
+
+set hostname=`hostname`
+if ( -x /usr/local/bin/machine ) set machine=`/usr/local/bin/machine`
+
+setenv HOSTNAME  $hostname
+setenv MACHINE   $machine
+setenv SPIN_ID   $srcbx
+setenv FROM_SPIN $suggested_repos
+
+setenv SRCBOX   $pt_srcbox
+setenv DSTBOX   $pt_dstbox
+setenv TOOLSDIR $pt_tools_dir
+setenv UTIL_DIR $pt_util_dir
+setenv CVSROOT  $pt_cvsroot
+
+setenv SANDBOX                "$SB_ROOT/$SPIN_ID"
+setenv LISP_DIR               "$SRCBOX/lisp"
+setenv RTL_DIR                "$SRCBOX/rtl"
+setenv G2_C_INCLUDE_DIRECTORY "$RTL_DIR/c"
+
+if ( ! $?CVSEDITOR ) setenv CVSEDITOR "emacs -q"
+
+# The following three only make sense if you happen to be ab.
+setenv ST_ROOT "/st/$SPIN_ID"
+setenv UT_MT_ROOT "/gensym/$SPIN_ID"
+setenv MT_SKEL_ROOT "/st/$SPIN_ID/skeletons/mt-skel"
+
+
+# The path is set to include a wild assortment of things, but <dot>, the
+# util_dir, the auto directory, and the translator directory are included.
+
+# The path should be set correctly for all machines during login.  However,
+# it is necessary to add the util_dir for the current spin id.  The
+# following removes all occurrences of /bt/<anyname>/<util_name> from the
+# existing path and appends the path to the util_dir in the current
+# sandbox.  The pattern to sed allows any spinid as well as a trailing
+# backslash.
+setenv PATH `echo $PATH | sed "s+:${SB_ROOT}/[^/]*/${util_name}/*++g"`:$UTIL_DIR
+
+# LD_LIBRARY_PATH: irrelevant on Windows, but no harm done.
+if ($?LD_LIBRARY_PATH) then
+   setenv LD_LIBRARY_PATH `echo $LD_LIBRARY_PATH | sed "s+:${SB_ROOT}/[^/]*/java/lib/*++g"`
+   if (-d $DSTBOX/java/lib) setenv LD_LIBRARY_PATH "${LD_LIBRARY_PATH}:$DSTBOX/java/lib"
+else
+   if (-d $DSTBOX/java/lib) setenv LD_LIBRARY_PATH $DSTBOX/java/lib
+endif
+
+
+# CLASSPATH: don't modify it on Windows.  Java.exe is a native Windows program
+# and expects CLASSPATH to consist of Windows-style paths (C:\SFU\bt\jv rather
+# than /bt/jv).  We could convert the paths to Windows style (including doing
+# so for SB_ROOT for the "sed" command), but so far, it's not worth it.  I don't
+# think anyone is doing Javalink work on Windows using csh.  -jv, 6/24/07
+
+# Try to remove any previously used sandboxes from the CLASSPATH.
+if ("$MACHINE" != "intelnt") then
+  if ($?CLASSPATH) then
+    setenv CLASSPATH `echo $CLASSPATH | sed "s+${SB_ROOT}/[^/]*/java/*:++g"`
+  endif
+endif
+
+# If this sandbox has java, add it to the CLASSPATH.
+if (-d $SRCBOX/java) then
+  if ("$MACHINE" == "intelnt") then
+    echo "Warning: your sandbox has a java directory, but it is not"
+    echo "  being added to your CLASSPATH."
+  else
+    if ($?CLASSPATH) then
+       setenv CLASSPATH "$SRCBOX/java:${CLASSPATH}"
+    else
+       setenv CLASSPATH "$SRCBOX/java:."
+    endif
+  endif
+endif
+
+alias bt     'cd $SRCBOX/\!:*'
+alias dbt    'cd $DSTBOX/\!:*'
+alias ubt    'cd $TOOLSDIR/\!:*'
+
+
+goto END
+
+
+ERROR:
+
+echo "Your environment has not been modified"
+
+
+END:
+unset srcbx
+unset suggested_repos
+unset srcdirs
+unset sample_module
+unset pt_srcbox
+unset pt_dstbox
+unset pt_tools_dir
+unset pt_util_dir
+unset pt_cvsroot
+unset pt_server_dir
+unset util_name
+unset dev_root
