@@ -1,0 +1,105 @@
+<html><head><title>Remote Procedures</title></head>
+<body bgcolor="#ffffff">
+<a href="procedu1.htm"><h5>| Prev </a> <a href="procedu3.htm">| Next </a> <a href="procedur.htm">| Start of Chapter </a> <a href="proced11.htm">| End of Chapter </a> <a href="booktoc.htm">| Contents </a> <a href="bookix.htm">| Index |</a> (3 out of 12)</h5> <br>
+
+
+<a name="5708">
+<h1> gw-add-to-url-reply 
+</h1>
+</a><a name="5709">
+Builds up a resource in response to a request by G2 WebLink for a particular URL. 
+<p>
+</a><a name="5710">
+<h2> Synopsis </h2>
+</a><ul><a name="5711">
+<pre><code>gw-add-to-url-reply (</code><em>fetch-id</em><code>: integer, </code><em>more-data</em><code>: text)
+</code></pre>
+</a><a name="5728">
+<table border=4>
+<tr><th align="left" valign="middle"><a name="5714">
+<strong>Argument 
+</strong>
+</a><th align="left" valign="middle"><a name="5716">
+<strong>Description 
+</strong>
+</a>
+<tr><td valign="middle"><a name="5718">
+<em>fetch-id 
+</em><p>
+</a><br><td valign="middle"><a name="5720">
+Should match the <em>fetch-id </em>argument of the 
+user-defined response procedure that 
+generates the resource. You specify this 
+procedure in the <em>response</em> argument of the 
+call to <a href="proced11.htm#3253">gw-tender-resources()</a>. 
+<p>
+</a><a name="5722">
+You must reference this same <em>fetch-id</em> in the 
+call to <a href="procedu5.htm#2911">gw-finish-url-reply()</a> that closes the 
+connection when your G2 application has 
+finished building and sending the reply. 
+<p>
+</a><br>
+<tr><td valign="middle"><a name="5725">
+<em>more-data 
+</em><p>
+</a><br><td valign="middle"><a name="5727">
+Text added to the reply sent to the HTTP 
+client. Usually, this data is in HTML 
+format. 
+<p>
+</a><br>
+
+</table>
+
+<p></a></ul><a name="5729">
+<h2> Description </h2>
+</a><a name="5730">
+When the bridge receives a request from an HTTP client, and the URL used in the 
+request matches one of the patterns tendered by your G2 application, the bridge 
+calls the response procedure. 
+<p>
+</a><a name="5731">
+In the response procedure, calls to <code>gw-add-to-url-reply() </code>build up a reply. After 
+each call, the bridge passes the additional data on to the HTTP client, and the 
+client usually displays that additional bit to its user. 
+<p>
+</a><a name="5733">
+When your G2 application has provided the entire reply, it should call <a href="procedu5.htm#2911">gw-finish-
+url-reply()</a>. This procedure closes the connection and performs cleanup tasks associated with the closing of the connection. 
+<p>
+</a><a name="5734">
+<h2> Return Values</h2>
+</a><a name="5735">
+None. 
+<p>
+</a><a name="5736">
+<h2> Signals</h2>
+</a><a name="5746">
+<table border=4>
+<tr><th align="left" valign="middle"><a name="5739">
+<strong>Signal 
+</strong>
+</a><th align="left" valign="middle"><a name="5741">
+<strong>Description 
+</strong>
+</a>
+<tr><td valign="middle"><a name="5743">
+<code>invalid-url-request-
+number
+</code><p>
+</a><br><td valign="middle"><a name="5745">
+
+<p>
+</a><br>
+
+</table> 
+
+<p></a><a name="5766">
+
+
+<p></a>
+
+<a href="procedu1.htm"><h5>| Prev </a> <a href="procedu3.htm">| Next </a> <a href="procedur.htm">| Start of Chapter </a> <a href="proced11.htm">| End of Chapter </a> <a href="booktoc.htm">| Contents </a> <a href="bookix.htm">| Index |</a> (3 out of 12)</h5> <br>
+<A HREF="titlepa1.htm"><h6>Copyright &#169; 1996, Gensym Corporation, Inc.</h6></A>
+</body></html>
