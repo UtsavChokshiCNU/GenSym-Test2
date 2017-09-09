@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_reference.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>Regions</h1>
+<h2>DESCRIPTION</h2>
+<p>
+A region specifies an area of source code to include or exclude
+from processing. A region is one of the following:
+<p>
+<table border=1>
+<tr><td><i>area</i><td>All source code inside the area
+<tr><td><code>!</code><i>area</i><td>All source code outside the area
+<tr><td><code>!</code><i>object</i><td>All source code outside the translation unit for an object file. Object filenames end with <code>.o</code> or <code>.obj</code>
+</table>
+<p>
+An <i>area</i> is made up of the following elements:
+<p>
+<table border=1>
+<tr><td><code>/</code><td>A single forward slash specifies all sources files, including those on all local and network drives.
+<tr><td><i>class-or-namespace</i><code>::</code><td>C++ class and namespace names are written with the suffix <code>::</code> and specify all functions in the named class or namespace.
+<tr><td><i>directory</i><code>/</code><td>Directories are written with a trailing slash <code>/</code> and specify all source files in the directory and all its sub-directories.
+<tr><td><i>function</i><td>C++ functions can be named with or without their parameters. If parameters are specified, they must exactly match the spelling produced in the BullseyeCoverage reports.  C functions are written without parameters.
+<tr><td><i>source</i><td>Source filenames either contain a dot <code>.</code> or end with the suffix <code>:</code>, and specify all the functions in the source.
+</table>
+<p>
+You can concatenate the elements listed above to form more specific regions.
+<p>
+<table border=1>
+<tr><td><i>class-or-namespace</i><code>::</code><i>function</i><td>A function in a specific C++ class or namespace in any source file
+<tr><td><i>directory</i><code>/</code><i>source</i><td>All functions in the specified source within the specified directory
+<tr><td><i>source</i><code>:</code><i>class-or-namespace</i><code>::</code><td>All functions in a specific C++ class or namespace in a specific source file
+<tr><td><i>source</i><code>:</code><i>class-or-namespace</i><code>::</code><i>function</i><td>A function in a specific C++ class or namespace in a specific source
+<tr><td><i>source</i><code>:</code><i>function</i><td>A function in a specific source file
+</table>
+<p>
+You can specify wildcards in filenames as described below.
+<TABLE CELLSPACING=12 summary="">
+<colgroup span=1 width=64>
+</colgroup>
+<tr><td><code>*</code><td>Matches zero or more characters except for <code>/</code>
+
+<tr><td><code>?</code><td>Matches any single character except for <code>/</code>
+
+<tr><td><code>[</code><i>set</i><code>]</code>
+<td>Matches any single character in the <i>set</i> except for <code>/</code>. A set is any combination of a sequence of characters or a range specified by a dash between two characters. For example, <code>[abc0-9]</code> matches <code>a</code>, <code>b</code>, <code>c</code> or a digit. Specify a dash first to include it in the set.
+
+<tr><td><code>[!</code><i>set</i><code>]</code>
+<td>Matches any single character not in the <i>set</i> except for <code>/</code>.
+
+<tr><td><code>\</code><td>Turns off the special meaning of the following character.
+
+<tr><td><code>/</code><td>On Windows, use <code>/</code> to match the path directory separator <code>\</code>.
+
+</table>
+<p>
+Write double quotes around wildcards on the command line.
+Otherwise, the wildcards may match filenames in the file system,
+rather than inside the BullseyeCoverage data file.
+For example, the command <code>covbr p*.c</code>
+first matches any files in the current directory beginning with
+<code>p</code> and ending with <code>.c</code>, then searches
+the BullseyeCoverage data file for those specific filenames. In contrast,
+the command <code>covbr &quot;p*.c&quot;</code> searches
+the BullseyeCoverage data file for filenames beginning with <code>p</code>
+and ending with <code>.c</code> and is unaffected by any filenames
+which may exist in the current directory.
+<p>
+If the first region specification in effect is an exclusion (<code>!</code>),
+then all source is initially included, otherwise all source is initially
+excluded.
+For example, consider the following two sequences.
+<pre>
+!source1.cpp source2.cpp
+source1.cpp !source2.cpp
+</pre>
+<p>
+The first sequence above specifies to include everything except <code>source1.cpp</code>.
+The second sequence specifies to include only <code>source1.cpp</code>.
+In both cases, the second region is redundant.
+<h2>EXAMPLES</h2>
+<TABLE CELLSPACING=12 summary="">
+<tr><td><b>Command</b><td><b>Selected Regions</b>
+
+<tr><td><code>covbr calc1.c</code><td>Code in source <code>calc1.c</code> only
+
+<tr><td><code>covbr dir1/ dir2/</code><td>Sources in directory <code>dir1</code> and directory <code>dir2</code> only
+
+<tr><td><code>covbr calc1.c !main</code><td>All functions in <code>calc1.c</code> except for function <code>main</code>
+
+<tr><td><code>covbr !calc1.c:main</code><td>All functions in all sources except for <code>main</code> in <code>calc1.c</code>
+
+<tr><td><code>covbr stack::</code><td>All functions in class <code>stack</code> in any source file
+
+<tr><td><code>covbr calc1.c:stack::</code><td>Functions in class <code>stack</code> in <code>calc1.c</code> only
+
+<tr><td><code>covbr !stack::push(int)</code><td>All code except the function <code>stack::push(int)</code>
+
+<tr><td><code>covbr p*.c</code><td>Files with names in the current directory beginning with <code>p</code>
+
+<tr><td><code>covbr &quot;p*.c&quot;</code><td>Files with names in the data file beginning with <code>p</code>
+
+<tr><td><code>covc -t!dir1/,!dir2/</code><td>Any source not in directory <code>dir1</code> or directory <code>dir2</code>
+
+<tr><td><code>covc -t!calc3stk.h</code><td>Any source except <code>calc3stk.h</code>
+</table>
+<p style="font-size:xx-small">
+Last reviewed: 8 Oct 2008
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
