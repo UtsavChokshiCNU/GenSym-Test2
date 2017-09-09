@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="01/11/02 11:07:56">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Customizing the Paths of a Block</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="customi9.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="custom11.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/ReThink/custom-manual/stylesets/Customizing%20ReThink/Output/html/customia.htm">  
+        Customizing Blocks  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Customizing the Paths of a Block
+</h2>
+<p>By default, when work backs up in a process, ReThink places work objects in the path queue with the newest work objects at the end of the queue. When ReThink processes work objects from the queue, it processes the oldest work objects first, using a first-in first-out ordering (FIFO). <a name="34043"></a></p>
+<p>You can customize the procedure that ReThink uses to store work objects in the path queue when there are work backups. You customize this procedure for a particular path on a block. You can then copy the block to use it in your model, or you can place the block on a custom palette for general use.<a name="14839"></a></p>
+<p>When you customize the procedure for a particular path, you typically also edit the active and inactive colors of the path to distinguish it from the default paths.<a name="14840"></a></p>
+<h4 >	 To customize the queue behavior of a path:<a name="14845"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>1	</b></td>    <td valign="top" width="580">Display the properties dialog for the path whose procedure you want to edit and click the Customize tab.<a name="14846"></a></td>  </tr></table><blockquote>  <a name="14848">The dialog has paths has an attribute named Enqueue Procedure Name.</a></blockquote>
+<blockquote>  <a name="14850">Internally, ReThink calls the procedure named <code>bpr-enqueue-fifo</code>, which is available for you to customize.</a></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>2	</b></td>    <td valign="top" width="580">Display the Methods workspace and display the Other Methods workspace.<a name="14851"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>3	</b></td>    <td valign="top" width="580">Copy the <code>bpr-enqueue-fifo</code> procedure and place it on your customization workspace.<a name="14852"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>4	</b></td>    <td valign="top" width="580">Edit the procedure to obtain the desired behavior.<a name="14853"></a></td>  </tr></table><blockquote>  <a name="14854">For example, you might edit the procedure to place work objects at the beginning of the path queue, rather than at the end, to create a last-in first-out (LIFO) ordering.</a></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>5	</b></td>    <td valign="top" width="580">In the properties dialog for the path, configure the Enqueue Procedure Name to refer to the custom procedure.<a name="14855"></a></td>  </tr></table><p>ReThink now removes the newest work objects from the path queue first.<a name="14856"></a></p>
+<h4 >	 To customize the default colors of a path:<a name="14857"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>1	</b></td>    <td valign="top" width="580">Display properties dialog for a path and click the Animation tab.<a name="14858"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>2	</b></td>    <td valign="top" width="580">Edit one or more of the following path colors:<a name="14859"></a></td>  </tr></table><p >
+  <a name="14885"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="14862"><div >Path Color</a></div></th>
+    <th><a name="14864"><div >Description</a></div></th>
+  </tr>
+  <tr>
+    <td><code>waiting-color<a name="14867"> </a></code></blockquote></td>
+    <td><p>The path color when work objects back up in the queue or when the path is waiting for an input on another path, for example, when a block synchronizes its inputs.<a name="14869"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><code>empty-color<a name="14872"> </a></code></blockquote></td>
+    <td><p>The path color when no work objects are traveling on the path.<a name="14874"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><code>error-color<a name="14877"> </a></code></blockquote></td>
+    <td><p>The path color when the path is in an error state.<a name="14879"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><code>selected-color<a name="14882"> </a></code></blockquote></td>
+    <td><p>The path color when you select the path for particular block operations, such as selecting the container input path of an Insert block. <a name="14884"></a></p>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<p>This example shows a custom input path to a Task block that specifies a custom Empty Color and a custom Enqueue Procedure Name:<a name="14886"></a></p>
+<p >
+  <a name="91714"> </a>
+<div style="color: #000000;  font-size: 4pt; font-style: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: justify; text-decoration: none; text-indent: 0pt; text-transform: none; vertical-align: baseline">
+<a name="91713"> </a><div align="left"><img src="images/custoa14.gif" border="0" hspace="0" vspace="0">
+</div><br>
+</div>
+
+
+
+</p>
+<p>The <code>bpr-enqueue-lifo</code> procedure inserts waiting work objects at the beginning of the path queue, rather than at the end:<a name="91682"></a></p>
+<p >
+  <a name="14893"> </a>
+<div style="color: #000000;  font-size: 4pt; font-style: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: justify; text-decoration: none; text-indent: 0pt; text-transform: none; vertical-align: baseline">
+<a name="14892"> </a><div align="left"><img src="images/customa3.gif" border="0" hspace="0" vspace="0">
+</div><br>
+</div>
+
+
+
+</p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="customi9.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="custom11.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
