@@ -1,0 +1,39 @@
+#!/bin/csh
+
+#Put additional modules in a preexisting escrow deposit
+
+#Usage:  more-escrow escrow_version tag modules
+
+goto main
+
+usage:
+echo "usage:     make-escrow escrow_version tag modules"
+echo "where version is something like 80r0,"
+echo "      tag is something like JVL_13R0,"
+echo "      and modules are something like java (may be more than one module)"
+exit 1
+
+main:
+
+if ($#argv < 3) then
+  echo "Error: Wrong number of arguments, $#argv supplied, 3 or more required."
+  goto usage
+endif
+
+set escrow_version = $1
+set tag = $2
+
+shift
+shift
+
+set modules = "$*"
+
+cd /gensym/spare/escrow
+if (! -d $escrow_version) then
+  echo Escrow deposit for $escrow_version does not exist.  Please make the rest of the escrow first.
+  exit 1
+endif
+
+cd $escrow_version
+
+cvs checkout -r $tag $modules
