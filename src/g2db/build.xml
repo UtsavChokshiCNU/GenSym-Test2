@@ -1,0 +1,174 @@
+<project name="g2db">
+	<property name="module.name" value="g2db"/>
+	<property name="${module.name}.basedir" value=".."/> 
+	<property file="${g2db.basedir}/ant/build.properties"/>
+
+	<!-- Build section -->
+	<target name="clean-build">
+		<delete dir="${g2db.basedir}/../dst/${module.name}"/>    
+	</target>
+
+	<target name="clean-results">
+		<delete dir="${result.dir}/${module.name}"/>    
+	</target>
+
+	<target name="build_32_std" depends="clean-build" description="Build only the 32-bit components">
+		<antcall target="g2-odbc" />
+		<antcall target="g2-ora10" />
+		<antcall target="g2-ora11" />
+		<antcall target="g2-ora12" />
+		<antcall target="g2-syb150" />
+	</target>
+
+	<target name="build_64_ent_wout_32" description="Build only the 64-bit components">
+		<antcall target="g2-odbc-x64" />
+		<antcall target="g2-ora10-x64" />
+		<antcall target="g2-ora11-x64" />
+		<antcall target="g2-ora12-x64" />
+		<antcall target="g2-syb150-x64" />
+	</target>
+
+	<target name="build_64_ent" depends="build_32_std, build_64_ent_wout_32" description="Builds both 64 bit and 32 bit components" />
+
+	<target name="g2-odbc">
+		<echo>Building G2 Database Bridge - ODBC (32-bit)</echo>
+		<ant dir="${g2db.basedir}/ant" target="vstudio" inheritAll="false">
+			<property name="type" value="Release|Win32"/>
+			<property name="module" value="g2db"/>
+			<property name="solution" value="g2-odbc"/>
+		</ant>
+		<echo></echo>
+		<echo>Building G2 Database Bridge - ODBC (32-bit Unicode)</echo>
+		<ant dir="${g2db.basedir}/ant" target="vstudio" inheritAll="false">
+			<property name="type" value="Release - Unicode|Win32"/>
+			<property name="module" value="g2db"/>
+			<property name="solution" value="g2-odbc"/>
+		</ant>
+	</target>
+
+	<target name="g2-odbc-x64">
+		<echo>Building G2 Database Bridge - ODBC (64-bit)</echo>
+		<ant dir="${g2db.basedir}/ant" target="vstudio" inheritAll="false">
+			<property name="type" value="Release|x64"/>
+			<property name="module" value="g2db"/>
+			<property name="solution" value="g2-odbc"/>
+		</ant>
+		<echo></echo>
+		<echo>Building G2 Database Bridge - ODBC (64-bit Unicode)</echo>
+		<ant dir="${g2db.basedir}/ant" target="vstudio" inheritAll="false">
+			<property name="type" value="Release - Unicode|x64"/>
+			<property name="module" value="g2db"/>
+			<property name="solution" value="g2-odbc"/>
+		</ant>
+	</target>
+
+	<target name="g2-ora10">
+		<echo>Building G2 Database Bridge - Oracle 10g (32-bit)</echo>
+		<exec dir="${basedir}\dbs\win32\oracle\client_10_2\bin"
+		      executable="cmd" failonerror="true">
+		    <env key="ORACLE_HOME" value="${basedir}\dbs\win32\oracle\client_10_2" />
+		    <arg line="/c proc.exe ${basedir}\c\gdb_client_ora.pc oname=${basedir}\c\gdb_client_ora10.c SQLCHECK=SEMANTICS MAXOPENCURSORS=44 HOLD_CURSOR=yes RELEASE_CURSOR=no" />
+		</exec>
+		<ant dir="${g2db.basedir}/ant" target="vstudio" inheritAll="false">
+			<property name="type" value="Release|Win32"/>
+			<property name="module" value="g2db"/>
+			<property name="solution" value="g2-ora10"/>
+		</ant>
+	</target>
+
+	<target name="g2-ora10-x64">
+		<echo>Building G2 Database Bridge - Oracle 10g (64-bit)</echo>
+		<exec dir="${basedir}\dbs\win64\oracle\client_10_2\bin"
+		      executable="cmd" failonerror="true">
+		    <env key="ORACLE_HOME" value="${basedir}\dbs\win64\oracle\client_10_2" />
+		    <arg line="/c proc.exe ${basedir}\c\gdb_client_ora.pc oname=${basedir}\c\gdb_client_ora10.c SQLCHECK=SEMANTICS MAXOPENCURSORS=44 HOLD_CURSOR=yes RELEASE_CURSOR=no" />
+		</exec>
+		<ant dir="${g2db.basedir}/ant" target="vstudio" inheritAll="false">
+			<property name="type" value="Release|x64"/>
+			<property name="module" value="g2db"/>
+			<property name="solution" value="g2-ora10"/>
+		</ant>
+	</target>
+
+	<target name="g2-ora11">
+		<echo>Building G2 Database Bridge - Oracle 11g (32-bit)</echo>
+		<exec dir="${basedir}\dbs\win32\oracle\instantclient_11_2"
+		      executable="cmd" failonerror="true">
+		    <arg line="/c sdk\proc.exe ${basedir}\c\gdb_client_ora.pc oname=${basedir}\c\gdb_client_ora11.c SQLCHECK=SEMANTICS MAXOPENCURSORS=44 HOLD_CURSOR=yes RELEASE_CURSOR=no include=${basedir}/dbs/win32/oracle/instantclient_11_2/sdk/include" />
+		</exec>
+		<ant dir="${g2db.basedir}/ant" target="vstudio" inheritAll="false">
+			<property name="type" value="Release|Win32"/>
+			<property name="module" value="g2db"/>
+			<property name="solution" value="g2-ora11"/>
+		</ant>
+	</target>
+	
+	<target name="g2-ora11-x64">
+		<echo>Building G2 Database Bridge - Oracle 11g (64-bit)</echo>
+		<exec dir="${basedir}\dbs\win64\oracle\instantclient_11_2"
+		      executable="cmd" failonerror="true">
+		    <arg line="/c sdk\proc.exe ${basedir}\c\gdb_client_ora.pc oname=${basedir}\c\gdb_client_ora11.c SQLCHECK=SEMANTICS MAXOPENCURSORS=44 HOLD_CURSOR=yes RELEASE_CURSOR=no include=${basedir}/dbs/win64/oracle/instantclient_11_2/sdk/include" />
+		</exec>
+		<ant dir="${g2db.basedir}/ant" target="vstudio" inheritAll="false">
+			<property name="type" value="Release|x64"/>
+			<property name="module" value="g2db"/>
+			<property name="solution" value="g2-ora11"/>
+		</ant>
+	</target>
+
+	<target name="g2-ora12">
+		<echo>Building G2 Database Bridge - Oracle 12c (32-bit)</echo>
+		<exec dir="${basedir}\dbs\win32\oracle\instantclient_12_1"
+		      executable="cmd" failonerror="true">
+		    <arg line="/c sdk\proc.exe ${basedir}\c\gdb_client_ora.pc oname=${basedir}\c\gdb_client_ora12.c SQLCHECK=SEMANTICS MAXOPENCURSORS=44 HOLD_CURSOR=yes RELEASE_CURSOR=no include=${basedir}/dbs/win32/oracle/instantclient_12_1/sdk/include" />
+		</exec>
+		<ant dir="${g2db.basedir}/ant" target="vstudio" inheritAll="false">
+			<property name="type" value="Release|Win32"/>
+			<property name="module" value="g2db"/>
+			<property name="solution" value="g2-ora12"/>
+		</ant>
+	</target>
+	
+	<target name="g2-ora12-x64">
+		<echo>Building G2 Database Bridge - Oracle 12c (64-bit)</echo>
+		<exec dir="${basedir}\dbs\win64\oracle\instantclient_12_1"
+		      executable="cmd" failonerror="true">
+		    <arg line="/c sdk\proc.exe ${basedir}\c\gdb_client_ora.pc oname=${basedir}\c\gdb_client_ora12.c SQLCHECK=SEMANTICS MAXOPENCURSORS=44 HOLD_CURSOR=yes RELEASE_CURSOR=no include=${basedir}/dbs/win64/oracle/instantclient_12_1/sdk/include" />
+		</exec>
+		<ant dir="${g2db.basedir}/ant" target="vstudio" inheritAll="false">
+			<property name="type" value="Release|x64"/>
+			<property name="module" value="g2db"/>
+			<property name="solution" value="g2-ora12"/>
+		</ant>
+	</target>
+
+	<target name="g2-syb150">
+		<echo>Building G2 Database Bridge - Sybase</echo>
+		<exec dir="${basedir}\dbs\win32\sybase\OCS-15_0\bin"
+		      executable="cmd" failonerror="true">
+			<env key="SYBASE" value="${basedir}\dbs\win32\sybase\OCS-15_0" />
+			<env key="PATH" value="${env.PATH};${basedir}\dbs\win32\sybase\OCS-15_0\dll;${basedir}\dbs\win32\sybase\OCS-15_0\lib3p" />
+			<arg line="/c cpre.exe -I ${basedir}\dbs\win32\sybase\OCS-15_0\include -O ${basedir}\c\gdb_client_syb.c ${basedir}\c\gdb_client_syb.cp"/>
+		</exec>
+		<ant dir="${g2db.basedir}/ant" target="vstudio" inheritAll="false">
+			<property name="type" value="Release|Win32"/>
+			<property name="module" value="g2db"/>
+			<property name="solution" value="g2-syb150"/>
+		</ant>
+	</target>
+
+	<target name="g2-syb150-x64">
+		<echo>Building G2 Database Bridge - Sybase x64</echo>
+		<exec dir="${basedir}\dbs\win64\sybase\OCS-15_0\bin"
+		      executable="cmd" failonerror="true">
+			<env key="SYBASE" value="${basedir}\dbs\win64\sybase\OCS-15_0" />
+			<env key="PATH" value="${env.PATH};${basedir}\dbs\win64\sybase\OCS-15_0\dll;${basedir}\dbs\win64\sybase\OCS-15_0\lib3p64" />
+			<arg line="/c cpre64.exe -I ${basedir}\dbs\win64\sybase\OCS-15_0\include -O ${basedir}\c\gdb_client_syb.c ${basedir}\c\gdb_client_syb.cp"/>
+		</exec>
+		<ant dir="${g2db.basedir}/ant" target="vstudio" inheritAll="false">
+			<property name="type" value="Release|x64"/>
+			<property name="module" value="g2db"/>
+			<property name="solution" value="g2-syb150"/>
+		</ant>
+	</target>
+</project>
