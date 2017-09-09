@@ -1,0 +1,69 @@
+<!-- ActiveX project -->
+
+<project name="activex" default="build_32_std" basedir=".">
+	<property name="module.name" value="activex"/>
+	<property name="${module.name}.basedir" value=".."/> 
+	<property file="${activex.basedir}/ant/build.properties"/>
+
+	<target name="clean-results">
+		<delete dir="${result.dir}/${module.name}"/>
+	</target>
+
+	<target name="build-client">
+		<ant dir="${basedir}\..\tw"/>
+		<ant dir="${basedir}\..\twng"/>
+		<ant dir="${basedir}\..\gsi"/>
+
+		<ant dir="${basedir}\..\scripts" target="build">
+			<property name="module" value="twplug"/>
+		</ant>
+		<ant dir="${basedir}\..\scripts" target="install">
+			<property name="module" value="tw"/>
+		</ant>
+		<ant dir="${basedir}\..\scripts" target="install">
+			<property name="module" value="twng"/>
+		</ant>
+		<ant dir="${basedir}\..\scripts" target="install">
+			<property name="module" value="twplug"/>
+		</ant>
+		<ant dir="${basedir}\..\scripts" target="install">
+			<property name="module" value="gsi"/>
+		</ant>
+		<ant dir="${basedir}\..\scripts" target="build">
+			<property name="module" value="activex"/>
+		</ant>
+	</target>
+
+	<target name="build_32_std" depends="build-al">
+		<ant dir="${basedir}/../ant" target="vstudio" inheritAll="false">
+			<property name="type" value="Release|Win32" />
+			<property name="module" value="ax-link" />
+			<property name="solution" value="ActiveXLink" />
+		</ant>
+	</target>
+
+	<target name="build_64_ent" depends="build_32_std, build_64_ent_wout_32" />
+
+	<target name="build_64_ent_wout_32">
+		<ant dir="${basedir}/../ant" target="vstudio" inheritAll="false">
+			<property name="type" value="Release|x64" />
+			<property name="module" value="ax-link" />
+			<property name="solution" value="ActiveXLink" />
+		</ant>
+	</target>
+
+	<property environment="env"/>
+	<target name="build-al">
+		<exec executable="cmd" failonerror="true">
+			<env key="Path" value="${env.Path};${libiconv.dll}"/>	
+			<env key="DSTBOX" value="${basedir}\..\..\dst"/>
+			<env key="SRCBOX" value="${basedir}\.."/>
+			<env key="G2EXE" value="${basedir}\..\..\dst\g2\opt"/>
+			<env key="JAVA_SRCBOX" value="${basedir}\.."/>
+			<env key="G2_OPCLINK" value="${basedir}\..\g2opc\kbs"/>
+			<env key="G2_OK" value="${g2.ok}"/>
+			<arg line=" /c createbuild.bat" />
+			<arg value="${version}"/>
+		</exec>
+	</target>
+</project>
