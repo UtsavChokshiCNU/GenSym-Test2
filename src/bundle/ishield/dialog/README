@@ -1,0 +1,28 @@
+This contains the definitions for Gensym custom dialogs for install shield.
+
+This project was made by following instructions found in the web page
+http://support.installshield.com/kb/view.asp?articleid=Q104953
+The initial files were found in the InstallShield directory
+C:\Program Files\InstallShield\InstallShield Professional 6.2\Examples\Custom Dialog\VC++ 6 Project
+
+There are two dialogs used:
+
+A modification of SD_NDLG_REGISTERUSEREX, in which we changed the word "serial
+number" to "license key"
+
+A modification of SD_NDLG_SETUPTYPE, in which we hide the "compact" setup type.
+Another note on the web,
+http://www.nathanpralle.com/writings/installshield_custom_dialogs.html,
+suggested not *deleting* the unnecessary controls, but merely marking them
+"invisible".  This makes developing the dialog kind of ugly, unfortunately, but
+he says bad things may occur otherwise.
+
+compile.bat will compile the dll, if SRCBOX is set properly.  Or, load up the
+_IsUser.dsw file to VC++ and build it with the IDE.
+
+Note: the thing I found missing from the first web page that you should renumber
+the dialog, but then you also need to give it a name (after step nine, pasting
+into the _IsUser resources pane).  I ended up first giving it a new number, and
+compiling, and THEN giving it a name.  Nothing got #defined without a name, but
+if I gave it a name before a new number then it #defined as the old number.
+This was very confusing and seemed like it must be wrong.
