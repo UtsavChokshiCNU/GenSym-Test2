@@ -1,0 +1,1001 @@
+<?xml version="1.0"?>
+<project name="Gensym Build Framework" default="build_32_std">
+    <property name="main.basedir" value="${basedir}/.." />
+    <property file="${main.basedir}/ant/build.properties" />
+
+    <import file="${main.basedir}/ant/build-remote.xml"/>
+    <import file="${main.basedir}/ant/build-parallel.xml"/>
+    <import file="${main.basedir}/ant/build-lisp.xml"/>
+
+    <property name="G2_VERSION" value="${env.G2_VERSION}"/>
+    <property name="G2_RELEASE" value="${env.G2_RELEASE}"/>
+
+    <taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" classpath="${pmd.dir}/lib/pmd-4.2.6.jar"/>
+
+    <condition property="isLinux" value="true"><os name="linux"/></condition>
+    <condition property="isWindows"><os family="windows"/></condition>
+    <var name ="os.bitness" value ="unknown"/>
+    <if>
+      <os family="windows"/>
+      <then>
+        <exec dir="." executable="cmd" outputproperty="command.ouput">
+          <arg line="/c SET ProgramFiles(x86)"/>
+	</exec>
+        <if>
+          <contains string="${command.ouput}" substring="Program Files (x86)"/>
+          <then>
+            <var name ="os.bitness" value ="64"/>
+          </then>
+          <else>
+            <var name ="os.bitness" value ="32"/>
+          </else>
+        </if>
+      </then>
+      <elseif>
+        <os family="unix"/>
+        <then>
+          <exec dir="." executable="uname" outputproperty="command.ouput">
+            <arg line=" -m"/>
+          </exec>
+          <if>
+            <contains string="${command.ouput}" substring="_64"/>
+            <then>
+              <var name ="os.bitness" value ="64"/>
+            </then>
+            <else>
+              <var name ="os.bitness" value ="32"/>
+            </else>
+          </if>
+        </then>
+      </elseif>
+    </if>
+    <target name="bitness">
+      <echo>OS bitness: ${os.bitness}</echo>
+    </target>
+
+    <target name="xanalys">
+    <if>
+      <os family="windows"/>
+      <then>
+        <!-- always build 64bit version -->
+        <ant dir="${main.basedir}/xanalys" target="build_64_ent" />
+      </then>
+      <else>
+        <exec executable="${main.basedir}/scripts/linux${os.bitness}/make-xanalys.sh" dir="${main.basedir}/scripts/linux${os.bitness}" failonerror="true" />
+      </else>
+    </if>
+    </target>
+
+    <target name="build_32_std" depends="clean">
+        <property name="version" value="build_32_std"/>
+        <property name="G2_VERSION" value="32_std"/>
+        <copy file="${basedir}/../license/g2sitev2015-std.ok" tofile="${basedir}/../license/g2sitev2015.ok" overwrite="true"/>
+        <if>
+            <os family="windows"/>
+            <then>                
+                <ant target="build_all_components">
+                    <property name="JAVA_HOME" value="${env.JAVA_HOME}"/>
+                </ant>             
+            </then>
+            <else>
+                <antcall target="xanalys"/>
+                <antcall target="translate"/>
+                <antcall target="build_linux_all"/>
+                <antcall target="build-kbs"/>
+                <antcall target="build-layered-products"/>
+            </else>
+         </if>   
+    </target>
+
+    <target name="build_32_ent">
+        <echo>Only next two configurations are supported: build_32_std, build_64_ent</echo>
+    </target>
+
+    <target name="build_64_std">
+        <echo>Only next two configurations are supported: build_32_std, build_64_ent</echo>
+    </target>
+
+    <target name="list_processes_in_system">
+       <mkdir dir="${result.dir}/performancetests"/>
+       <exec executable="cmd" dir="${result.dir}/performancetests"
+           failonerror="false" output="${result.dir}/performancetests/process-list-at-the-start-of-run.txt">
+           <arg line="/c tasklist /v"/>
+        </exec>
+    </target>
+
+    <target name="sys_info">
+        <if><os family="windows"/>
+            <then>
+                <antcall target="list_processes_in_system"/>
+            </then>
+        </if>
+
+        <exec executable="systeminfo.exe" failonerror="true"/>
+
+        <mkdir dir="${result.dir}/performancetests"/>
+
+        <java classpath="${main.basedir}/tools/automation/performance/scimark2lib.jar"
+              classname="jnt.scimark2.commandline"
+              output="${result.dir}/performancetests/performance-index.txt"
+              failonerror="true">
+            <arg value="-large"/>
+        </java>
+
+        <exec executable="cmd" dir="${result.dir}/performancetests"
+              failonerror="true">
+          <arg line="/c type performance-index.txt"/>
+        </exec>
+
+        <echo>
+          SciMark - small amount of data:
+        </echo>
+
+        <java classpath="${main.basedir}/tools/automation/performance/scimark2lib.jar"
+              classname="jnt.scimark2.commandline"
+              output="${result.dir}/performancetests/performance-index-small.txt"
+              failonerror="true"/>
+
+        <exec executable="cmd" dir="${result.dir}/performancetests"
+              failonerror="true">
+          <arg line="/c type performance-index-small.txt"/>
+        </exec>
+    </target>
+
+    <!--target name="type-test">
+        <echo message='/c type "${result.dir}/performancetests/performance-index.txt"'/>
+        <exec executable="cmd" dir="${result.dir}/performancetests"
+              failonerror="true">
+          <arg line="/c type performance-index.txt"/>
+        </exec>
+    </target-->
+
+    <target name="build_64_ent" depends="clean" description="Build ENT with 32-bit components">
+        <property name="version" value="build_64_ent"/>
+        <property name="G2_VERSION" value="64_ent"/>
+        <copy file="${basedir}/../license/g2sitev2015-ent.ok" tofile="${basedir}/../license/g2sitev2015.ok" overwrite="true"/>
+        <if>
+            <os family="windows"/>
+            <then>                
+                <ant target="build_all_components">
+                    <property name="JAVA_HOME" value="${env.JAVA_HOME}"/>
+                </ant>
+                <ant target="build_ent_components">
+                    <property name="JAVA_HOME" value="${env.JAVA_HOME}"/>
+                </ant>
+            </then>
+            <else>
+                <antcall target="xanalys"/>
+                <antcall target="translate"/>
+                <antcall target="build_linux_all"/>
+                <antcall target="build-kbs"/>
+                <antcall target="build-layered-products"/>
+            </else>
+         </if>   
+    </target>
+
+    <target name="build_64_ent_wout_32" depends="clean" description="Build ENT w/only 64 bit components">
+        <property name="version" value="build_64_ent_wout_32"/>
+        <property name="G2_VERSION" value="64_ent_wout_32"/>
+        <copy file="${basedir}/../license/g2sitev2015-ent.ok" tofile="${basedir}/../license/g2sitev2015.ok" overwrite="true"/>
+        <if>
+            <os family="windows"/>
+            <then>                
+                <ant target="build_all_components">
+                    <property name="JAVA_HOME" value="${env.JAVA_HOME}"/>
+                </ant>
+                <ant target="build_ent_components">
+                    <property name="JAVA_HOME" value="${env.JAVA_HOME}"/>
+                </ant>
+            </then>
+            <else>
+                <antcall target="xanalys"/>
+                <antcall target="translate"/>
+                <antcall target="build_linux_all"/>
+                <antcall target="build-kbs"/>
+                <antcall target="build-layered-products"/>
+            </else>
+         </if>   
+    </target>
+
+    <target name="update_gensym_build_version">
+        <javac srcdir="${main.basedir}/ant/tool"
+               destdir="${main.basedir}/ant/tool"
+               debug="true"
+               includeantruntime="false">
+            <include name="UpdateGensymVersion.java"/>
+        </javac>
+        <java classpath="${main.basedir}/ant/tool"
+              classname="UpdateGensymVersion"
+              failonerror="true"/>
+    </target>
+
+    <target name="build_all">
+    <echo>G2_RELEASE: ${G2_RELEASE}</echo>
+    <echo>G2_VERSION: ${G2_VERSION}</echo>
+    <if>
+      <equals arg1="${G2_VERSION}" arg2="32_std"/>
+      <then>
+        <copy file="${basedir}/../license/g2sitev2015-std.ok" tofile="${basedir}/../license/g2sitev2015.ok" overwrite="true"/>
+      </then>
+      <else>
+        <copy file="${basedir}/../license/g2sitev2015-ent.ok" tofile="${basedir}/../license/g2sitev2015.ok" overwrite="true"/>
+      </else>
+    </if>    
+    <if>
+      <os family="windows"/>
+      <then>
+        <property name="version" value="build_${G2_VERSION}"/>
+        <echo>Building Windows: ${version}</echo>
+        
+        <ant target="build_windows_all">
+          <property name="version" value="build_${G2_VERSION}"/>
+          <property name="JAVA_HOME" value="${env.JAVA_HOME}"/>
+        </ant>
+        <ant target="build_windows_ent">
+          <property name="JAVA_HOME" value="${env.JAVA_HOME}"/>
+        </ant>
+      </then>
+      <else>
+        <ant target="build_linux_all"/>
+      </else>
+    </if>
+    </target>
+
+    <target name="build_windows_all">
+    <echo>Build windows all: ${version}</echo>
+    <ant dir="${main.basedir}/ext" target="${version}_tests"/>
+    <ant dir="${main.basedir}/rtl" target="${version}_tests"/>
+    <ant dir="${main.basedir}/g2" target="${version}"/>
+    <ant dir="${main.basedir}/tw" target="build"/>
+    <ant dir="${main.basedir}/twng" target="${version}"/>
+    <ant dir="${main.basedir}/gsi" target="${version}"/>
+    <ant dir="${main.basedir}/gdanol/nol" target="${version}"/>
+    <ant dir="${main.basedir}/gw" target="build"/>
+    <ant dir="${main.basedir}/activex" target="${version}"/>
+    <ant dir="${main.basedir}/g2db" target="${version}"/>
+    <ant dir="${main.basedir}/g2opc" target="${version}"/>
+    <ant dir="${main.basedir}/g2pi" target="build"/>
+    <ant dir="${main.basedir}/java/scripts/JavaLink" target="${version}"/>
+    <echo>G2 JDBC Bridge</echo>
+    <ant dir="${main.basedir}/g2db/java/G2JDBC" target="build-jar" />
+    <exec executable="cmd" dir="${main.basedir}/g2db/java/G2JDBC" failonerror="true">
+      <arg line="/c build-jdbcauth.bat"/>
+    </exec>
+    <ant dir="${main.basedir}/g2fasth" target="${version}"/>
+    <ant dir="${main.basedir}/mqtt" target="${version}"/>
+  </target>
+
+  <target name="build_windows_ent">
+    <echo>Build windows all: ${version}</echo>
+    <!-- No Enterprise components at this time. SymScale was one. -->
+  </target>
+
+  <target name="build_linux_all">
+    <exec executable="${main.basedir}/scripts/linux${os.bitness}/make-g2.sh" dir="${main.basedir}/scripts/linux${os.bitness}" failonerror="true" />
+    <exec executable="${main.basedir}/scripts/linux${os.bitness}/make-tw.sh" dir="${main.basedir}/scripts/linux${os.bitness}" failonerror="true" />
+    <exec executable="${main.basedir}/scripts/linux${os.bitness}/make-gsi.sh" dir="${main.basedir}/scripts/linux${os.bitness}" failonerror="true" />
+    <exec executable="${main.basedir}/scripts/linux${os.bitness}/make-gw.sh" dir="${main.basedir}/scripts/linux${os.bitness}" failonerror="true" />
+    <exec executable="${main.basedir}/scripts/linux${os.bitness}/make-javalink.sh" dir="${main.basedir}/scripts/linux${os.bitness}" failonerror="true" />
+    <exec executable="${main.basedir}/scripts/linux${os.bitness}/make-g2-jdbc.sh" dir="${main.basedir}/scripts/linux${os.bitness}" failonerror="true" />
+    <exec executable="${main.basedir}/scripts/linux${os.bitness}/make-g2-ora10.sh" dir="${main.basedir}/scripts/linux${os.bitness}" failonerror="true" />
+    <exec executable="${main.basedir}/scripts/linux${os.bitness}/make-g2-ora11.sh" dir="${main.basedir}/scripts/linux${os.bitness}" failonerror="true" />
+    <exec executable="${main.basedir}/scripts/linux${os.bitness}/make-g2-ora12.sh" dir="${main.basedir}/scripts/linux${os.bitness}" failonerror="true" />
+    <exec executable="${main.basedir}/scripts/linux${os.bitness}/make-g2-odbc.sh" dir="${main.basedir}/scripts/linux${os.bitness}" failonerror="true" />
+    <exec executable="${main.basedir}/scripts/linux${os.bitness}/make-corbalink.sh" dir="${main.basedir}/scripts/linux${os.bitness}" failonerror="true" />
+    <exec executable="${main.basedir}/scripts/linux${os.bitness}/build-g2fasth.sh" dir="${main.basedir}/scripts/linux${os.bitness}" failonerror="true" />
+    <exec executable="${main.basedir}/scripts/linux${os.bitness}/make-mqtt.sh" dir="${main.basedir}/scripts/linux${os.bitness}" failonerror="true">
+      <arg line="clean"/>
+    </exec>
+    <exec executable="${main.basedir}/scripts/linux${os.bitness}/make-mqtt.sh" dir="${main.basedir}/scripts/linux${os.bitness}" failonerror="true">
+      <arg line="release"/>
+    </exec>
+  </target>
+
+   <target name="make_bundle">
+   <if> <!-- windows -->
+      <os family="windows"/>
+      <then>
+        <property name="version" value="${G2_VERSION}"/>
+        <echo>Windows - make bundle - version: ${version}</echo>       
+        <if>
+          <equals arg1="${version}" arg2="32_std" />
+          <then>
+            <exec executable="cmd" dir="${main.basedir}/bundle/tools" failonerror="true">
+              <arg line="/c make_bundle.bat std"/>
+            </exec>          
+          </then>
+          <else>
+            <exec executable="cmd" dir="${main.basedir}/bundle/tools" failonerror="true">
+              <arg line="/c make_bundle.bat ent"/>
+            </exec>    
+          </else>
+        </if>
+      </then>
+      <else> <!-- linux -->
+        <exec executable="${main.basedir}/scripts/linux${os.bitness}/make-bundle.sh" dir="${main.basedir}/scripts/linux${os.bitness}" failonerror="true" />
+      </else>
+    </if>
+  </target>
+
+  <target name="make_image">
+   <if> <!-- linux -->
+      <os family="unix"/>
+      <then>
+        <property name="version" value="${G2_VERSION}"/>
+        <property name="release" value="${G2_RELEASE}"/>
+        <if>
+          <equals arg1="${version}" arg2="32_std"/>
+          <then>
+            <exec executable="7z" dir="/g2/bundles/g2/${release}/image" failonerror="true">
+              <arg line="a Gensym${release}-STD-Linux.7z linux.iso"/>
+            </exec>
+            <echo>File for checksum: /g2/bundles/g2/${release}/image/Gensym${release}-STD-Linux.7z</echo>
+            <if>
+              <available file="/g2/bundles/g2/${release}/image/Gensym${release}-STD-Linux.7z" />
+              <then>
+                <checksum file="/g2/bundles/g2/${release}/image/Gensym${release}-STD-Linux.7z" format="MD5SUM" fileext=".md5sum"/>
+              </then>
+              <else>
+                 <fail message="Can not find file for checksum" />
+              </else>              
+            </if>            
+          </then>
+          <else>
+            <exec executable="7z" dir="/g2/bundles/g2/${release}/image" failonerror="true">
+              <arg line="a Gensym${release}-ENT-Linux.7z linux64.iso"/>
+            </exec>
+              <echo>File for checksum: /g2/bundles/g2/${release}/image/Gensym${release}-ENT-Linux.7z</echo>
+              <checksum file="/g2/bundles/g2/${release}/image/Gensym${release}-ENT-Linux.7z" format="MD5SUM" fileext=".md5sum"/>            
+          </else>
+        </if>
+      </then>
+  </if>
+  </target>
+
+    <target name="build_all_components" depends="clean, sys_info">
+        <ant dir="${main.basedir}/xanalys" target="build_64_ent"/>
+        <ant target="translate"/>
+        <ant dir="${main.basedir}/ext" target="${version}_tests"/>
+        <ant dir="${main.basedir}/rtl" target="${version}_tests"/>
+        <ant dir="${main.basedir}/g2" target="${version}"/>
+        <ant dir="${main.basedir}/tw" target="build"/>
+        <ant dir="${main.basedir}/twng" target="${version}"/>
+        <ant dir="${main.basedir}/gsi" target="${version}"/>
+        <ant dir="${main.basedir}/gdanol/nol" target="${version}"/>
+        <ant dir="${main.basedir}/gw" target="build"/>
+        <ant dir="${main.basedir}/activex" target="${version}"/>
+        <ant dir="${main.basedir}/g2db" target="${version}"/>
+        <ant dir="${main.basedir}/g2opc" target="${version}"/>
+        <ant dir="${main.basedir}/g2pi" target="build"/>
+        <ant dir="${main.basedir}/java/scripts/JavaLink" target="${version}"/>
+        <antcall target="build-kbs"/>
+        <antcall target="build-layered-products"/>
+
+        <echo>G2 JDBC Bridge</echo>
+        <ant dir="${main.basedir}/g2db/java/G2JDBC" target="build-jar" />
+        <exec executable="cmd" dir="${main.basedir}/g2db/java/G2JDBC" failonerror="true">
+            <arg line="/c build-jdbcauth.bat"/>
+        </exec>
+        <ant dir="${main.basedir}/g2fasth" target="${version}"/>
+        <ant dir="${main.basedir}/mqtt" target="${version}"/>
+    </target>
+
+    <target name="build_ent_components">
+      <!-- No Enterprise components at this time. SymScale was one. -->
+    </target>
+
+    <target name="build_symscale">
+        <ant dir="${main.basedir}/SymScale" target="build_64_ent" />
+    </target>
+
+    <target name="regression_tests">
+      <ant dir="${main.basedir}/tests" target="regression-tests"/>   
+    </target>
+
+    <target name="run-tests" depends="api-tests">
+        <!--ant dir="${main.basedir}/tests" target="smoke-tests" /-->
+        <ant dir="${main.basedir}/tests" target="regression-tests"/>
+    </target>
+
+    <target name="run-regression-tests-lw">
+      <ant dir="${main.basedir}/tests" target="regression-tests-lw"/>
+    </target>
+
+    <!-- Unit Test Quality Gateway - for Java code, needs to be run
+         after the (Java) unit tests, as it relies on having the
+         JaCoCo "exec" file to examine.
+    -->
+    <target name="utqg">
+    </target>
+
+    <target name="metrics" depends="clean-results, check-cpd, check-findbugs, check-coverage" />
+    <target name="verify-metrics" depends="verify-cpd"/>
+
+    <target name="verify-cpd" depends="build-acceptance">
+        <!--
+        <exec executable="cmd" dir="${main.basedir}/tools/automation/threshold-checker" failonerror="true">
+            <arg line="/c wx86cl64.exe - -batch &lt;verify-cpd.lisp" />
+        </exec>
+        -->
+        <exec executable="cmd" dir="${main.basedir}/tools/automation/Acceptance" failonerror="true">
+            <arg line="/c BenchmarkAnalizer.exe -verifyCPD" />
+        </exec>
+    </target>
+
+    <target name="verify_64_ent_metrics" depends="verify-metrics">
+        <antcall target="verify-specific-metrics">
+            <param name="version" value="64_ent"/>
+            <param name="cmd-arg" value="-verifyEntPerformance"/>
+        </antcall>
+    </target>
+
+    <target name="verify_32_std_metrics" depends="verify-metrics">
+        <antcall target="verify-specific-metrics">
+            <param name="version" value="32_std"/>
+            <param name="cmd-arg" value="-verifyStdPerformance"/>
+        </antcall>
+    </target>
+
+    <target name="verify-specific-metrics" depends="summary-benchmarks">
+        <!--
+        <echo>Building [Acceptance] - [Debug]</echo>
+	<exec executable="${msbuild.dir}\msbuild.exe" dir="${main.basedir}/tools/automation/Acceptance" failonerror="true">
+	    <arg line="Acceptance.sln /m /t:Rebuild /p:Configuration=Debug /clp:ErrorsOnly" />
+	</exec>
+
+        <echo>Launching BenchmarkSummarizer.exe</echo>
+        <exec executable="cmd" dir="${main.basedir}/tools/automation/Acceptance" failonerror="true">
+            <arg line="/c BenchmarkSummarizer.exe" />
+        </exec>
+        -->
+
+        <echo>Analizing performace results for ${version}</echo>
+        <!--
+        <exec executable="cmd" dir="${main.basedir}/tools/automation/threshold-checker" failonerror="true">
+            <arg line="/c wx86cl64.exe - -batch &lt;verify-${version}-perf-tests.lisp" />
+        </exec>
+        -->
+        <exec executable="cmd" dir="${main.basedir}/tools/automation/Acceptance" failonerror="true">
+            <arg line="/c BenchmarkAnalizer.exe ${cmd-arg}" />
+        </exec>
+    </target>
+
+    <target name="update-metrics" depends="build-acceptance">
+        <!--
+        <exec executable="cmd" dir="${main.basedir}/tools/automation/threshold-checker" failonerror="true">
+            <arg line="/c wx86cl64.exe - -batch &lt;update-metrics.lisp" />
+        </exec>
+        -->
+        <exec executable="cmd" dir="${main.basedir}/tools/automation/Acceptance" failonerror="true">
+            <arg line="/c BenchmarkAnalizer.exe -updateMetrics" />
+        </exec>
+    </target>
+
+    <target name="build-acceptance">
+        <echo>Building [Acceptance] - [Debug]</echo>
+	<exec executable="${msbuild.dir}\msbuild.exe" dir="${main.basedir}/tools/automation/Acceptance" failonerror="true">
+	    <arg line="Acceptance.sln /m /t:Rebuild /p:Configuration=Debug /clp:ErrorsOnly" />
+	</exec>
+    </target>
+
+    <target name="summary-benchmarks" depends="build-acceptance">
+        <echo>Launching BenchmarkSummarizer.exe</echo>
+        <exec executable="cmd" dir="${main.basedir}/tools/automation/Acceptance" failonerror="true">
+            <arg line="/c BenchmarkSummarizer.exe" />
+        </exec>
+    </target>
+
+    <target name="translate">
+        <mkdir dir="${result.dir}/build-logs"/>
+        <parallel>
+            <translator lisp="ccl" module="g2" type="3rpmx"/>
+            <translator lisp="ccl" module="tw" type="3trpmx"/>
+            <translator lisp="ccl" module="gsi" type="3grpmx"/>
+            <translator lisp="ccl" module="gw" type="3wrpmx"/>
+        </parallel>
+    </target>
+
+    <target name="translate1">
+	<translator module="symscale" lisp="ccl" type="3srpmx" mt="-mt" />
+    </target>
+
+    <target name="translate-mtg2">
+	<translator module="mtg2" lisp="ccl" type="3urpmx" mt="-mt" />
+    </target>
+
+    <target name="translate-mtg2-faster">
+	<translator module="mtg2" lisp="ccl" type="3upmx" mt="-mt" />
+    </target>
+
+    <target name="translate-with-tests">
+        <mkdir dir="${result.dir}/build-logs"/>
+        <parallel>
+            <translator lisp="ccl" module="g2" type="3rpmxy"/>
+            <translator lisp="ccl" module="tw" type="3trpmx"/>
+            <translator lisp="ccl" module="gsi" type="3grpmx"/>
+            <translator lisp="ccl" module="gw" type="3wrpmx"/>
+        </parallel>
+    </target>
+
+    <target name="translate-mtg2-with-tests">
+	<translator module="mtg2" lisp="ccl" type="3urpmxy" mt="-mt" />
+    </target>
+
+    <macrodef name="translator">
+        <attribute name="module"/>
+        <attribute name="type"/>
+        <attribute name="lisp"/>
+        <attribute name="mt" default=""/>
+        <attribute name="program" default="trans@{mt}-@{lisp}"/>
+        <sequential>
+            <echo>Translating [@{module} - @{type} using @{lisp}]</echo>
+            <delete dir="${result.dir}/../dst/lisp/@{module}"/>
+            <mkdir dir="${result.dir}/../dst/lisp/@{module}/macro"/>
+            <if><os family="windows"/>
+		<then>
+			<property name="opt" value="/"/>
+			<property name="executor" value="cmd"/>
+			<property name="osarch" value="win${os.bitness}"/>
+		</then>
+		<else>
+			<property name="opt" value="-"/>
+			<property name="executor" value="sh"/>
+			<property name="osarch" value="linux${os.bitness}"/>
+		</else>
+            </if>
+            <if><equals arg1="@{lisp}" arg2="sbcl" /><then>
+                <property name="lisp-args1.@{lisp}" value="--no-sysinit --no-userinit" />
+                <property name="lisp-args2.@{lisp}" value="--dynamic-space-size 1024 &lt; 123.lisp" />
+		<property name="lisp-args1.ccl" value="" />
+		<property name="lisp-args2.ccl" value="" />
+		<property name="lisp-args1.lw" value="" />
+		<property name="lisp-args2.lw" value="" />
+            </then></if>
+            <if><equals arg1="@{lisp}" arg2="ccl" /><then>
+                <property name="lisp-args1.@{lisp}" value="-n -l 123.lisp --" />
+                <property name="lisp-args2.@{lisp}" value="" />
+		<property name="lisp-args1.sbcl" value="" />
+		<property name="lisp-args2.sbcl" value="" />
+		<property name="lisp-args1.lw" value="" />
+		<property name="lisp-args2.lw" value="" />
+            </then></if>
+            <if><equals arg1="@{lisp}" arg2="lw" /><then>
+                <property name="lisp-args1.@{lisp}" value="-init - -load 123.lisp" />
+                <property name="lisp-args2.@{lisp}" value="" />
+		<property name="lisp-args1.ccl" value="" />
+		<property name="lisp-args2.ccl" value="" />
+		<property name="lisp-args1.sbcl" value="" />
+		<property name="lisp-args2.sbcl" value="" />
+            </then></if>
+            <exec dir="${main.basedir}/lisp" executable="${executor}" failonerror="true">
+		<env key="Path" value="${env.Path};${libiconv.dll}"/>
+                <arg line="${opt}c &quot;..${file.separator}chestnut${file.separator}${osarch}${file.separator}@{program} ${lisp-args1.ccl} ${lisp-args1.sbcl} ${lisp-args1.lw} @{type} ${lisp-args2.sbcl} &gt;${result.dir}${file.separator}build-logs${file.separator}translate-@{lisp}-@{module}.log 2&gt;&amp;1&quot;" />
+            </exec>
+	    <loadfile srcfile="${result.dir}${file.separator}build-logs${file.separator}translate-@{lisp}-@{module}.log" property="translator.output.@{module}.@{type}.@{lisp}" />
+	    <fail message="Lisp->C translation [@{module} - @{type} in @{lisp}] failed">
+	      <condition>
+		<contains string="${translator.output.@{module}.@{type}.@{lisp}}" substring="> Error:" />
+	      </condition>
+	    </fail>
+            <echo>Translation [@{module} - @{type} in @{lisp}] is done.</echo>
+        </sequential>
+    </macrodef>
+
+<target name="api-tests">
+    <if>
+      <os family="windows"/>
+      <then>
+        <ant dir="${main.basedir}/ext" target="api-tests" />
+        <ant dir="${main.basedir}/rtl" target="api-tests" />
+        <ant dir="${main.basedir}/twng" target="api-tests" />
+        <ant dir="${main.basedir}/scintilla" target="api-tests" />
+        <ant dir="${main.basedir}/twng/java/jfreelib" target="test" />
+        <ant dir="${main.basedir}/nolstudio" target="test" />        
+      </then>
+      <else>
+        <mkdir dir="${result.dir}"/>
+      </else>
+    </if>
+    <ant dir="${main.basedir}/java/scripts/JavaLink" target="junit" />
+    <!-- LISP tests are to be run with explicit call to target lisp-unit-test -->
+    <ant dir="${main.basedir}/g2fasth" target="unit-tests"/>
+    <ant dir="${main.basedir}/mqtt" target="run-tests"/>
+    <ant dir="${main.basedir}/g2i" target="junit"/>
+  </target>
+
+    <target name="lisp-unit-test">
+      <ant dir="${main.basedir}/lisp/tests" target="api-tests" />
+    </target>
+
+    <target name="run-perf-tests">
+        <ant dir="${main.basedir}/tests/performance" target="performance-tests">
+          <property name="g2.version" value="${G2_VERSION}"/>
+        </ant>
+    </target>
+
+    <target name="run-perf-tests-parallel">
+        <ant dir="${main.basedir}/tests/performance" target="performance-tests-parallel" />
+    </target>
+
+    <target name="clean" depends="clean-results">
+        <delete dir="${main.basedir}/../dst"/>
+    </target>
+
+    <target name="clean-results">
+        <delete file="${result.dir}/test.cov"/>
+        <ant dir="${main.basedir}/ext" target="clean-results"/>
+        <ant dir="${main.basedir}/rtl" target="clean-results"/>
+        <ant dir="${main.basedir}/fnt" target="clean-results" />
+        <ant dir="${main.basedir}/jpeg" target="clean-results"/>
+        <ant dir="${main.basedir}/xml" target="clean-results"/>
+        <ant dir="${main.basedir}/scintilla" target="clean-results"/>
+        <ant dir="${main.basedir}/tw" target="clean-results"/>
+        <ant dir="${main.basedir}/gsi" target="clean-results"/>
+        <ant dir="${main.basedir}/gdanol/nol" target="clean-results"/>
+        <ant dir="${main.basedir}/activex" target="clean-results"/>
+        <ant dir="${main.basedir}/gw" target="clean-results"/>
+        <ant dir="${main.basedir}/g2" target="clean-results"/>
+        <ant dir="${main.basedir}/xtp" target="clean-results"/>
+        <ant dir="${main.basedir}/widgets" target="clean-results"/>
+        <ant dir="${main.basedir}/tw" target="clean-results"/>
+        <ant dir="${main.basedir}/twng" target="clean-results"/>
+        <ant dir="${main.basedir}/twng/java/jfreelib" target="clean-results"/>
+        <ant dir="${main.basedir}/g2db" target="clean-results" />
+
+        <delete dir="${main.basedir}/g2i/builds"/>
+        <delete dir="${cumulative.cpd.reports.dir}"/>
+        <delete dir="${cumulative.findbugs.reports.dir}"/>
+    </target>
+
+    <target name="check-cpd-full">
+        <ant dir="${main.basedir}/ext" target="check-cpd"/>
+        <ant dir="${main.basedir}/rtl" target="check-cpd"/>
+        <ant dir="${main.basedir}/fnt" target="check-cpd" />
+        <ant dir="${main.basedir}/jpeg" target="check-cpd"/>
+        <ant dir="${main.basedir}/xml" target="check-cpd"/>
+        <ant dir="${main.basedir}/scintilla" target="check-cpd"/>
+        <ant dir="${main.basedir}/tw" target="check-cpd"/>
+        <ant dir="${main.basedir}/gsi" target="check-cpd"/>
+        <ant dir="${main.basedir}/gw" target="check-cpd"/>
+        <ant dir="${main.basedir}/g2" target="check-cpd"/>
+        <ant dir="${main.basedir}/xtp" target="check-cpd"/>
+        <ant dir="${main.basedir}/widgets" target="check-cpd"/>
+        <ant dir="${main.basedir}/twng" target="check-cpd"/>
+        <ant dir="${main.basedir}/twng/java/jfreelib" target="check-cpd"/>
+    </target>
+
+    <target name="check-cpd">
+        <ant dir="${main.basedir}/ext" target="check-cpd"/>
+        <ant dir="${main.basedir}/rtl" target="check-cpd"/>
+        <ant dir="${main.basedir}/xml" target="check-cpd"/>
+        <ant dir="${main.basedir}/tw" target="check-cpd"/>
+        <ant dir="${main.basedir}/gsi" target="check-cpd"/>
+        <ant dir="${main.basedir}/gw" target="check-cpd"/>
+        <ant dir="${main.basedir}/g2" target="check-cpd"/>
+        <ant dir="${main.basedir}/widgets" target="check-cpd"/>
+        <ant dir="${main.basedir}/twng" target="check-cpd"/>
+    </target>
+
+    <target name="check-pmd">
+       <ant dir="${main.basedir}/twng/java/jfreelib" target="check-pmd" />
+    </target>
+
+    <target name="check-findbugs-full">
+        <ant dir="${main.basedir}/ext" target="check-findbugs" />
+        <ant dir="${main.basedir}/rtl" target="check-findbugs" />
+        <ant dir="${main.basedir}/fnt" target="check-findbugs" />
+        <ant dir="${main.basedir}/jpeg" target="check-findbugs" />
+        <ant dir="${main.basedir}/xml" target="check-findbugs" />
+        <ant dir="${main.basedir}/scintilla" target="check-findbugs" />
+        <ant dir="${main.basedir}/tw" target="check-findbugs" />
+        <ant dir="${main.basedir}/gsi" target="check-findbugs" />
+        <ant dir="${main.basedir}/gdanol/nol" target="check-findbugs" />
+        <ant dir="${main.basedir}/gw" target="check-findbugs" />
+        <ant dir="${main.basedir}/g2" target="check-findbugs" />
+        <ant dir="${main.basedir}/xtp" target="check-findbugs" />
+        <ant dir="${main.basedir}/widgets" target="check-findbugs" />
+        <ant dir="${main.basedir}/twng" target="check-findbugs" />
+        <ant dir="${main.basedir}/twng/java/jfreelib" target="check-findbugs" />
+    </target>
+
+    <target name="check-findbugs">
+        <ant dir="${main.basedir}/ext" target="check-findbugs"/>
+        <ant dir="${main.basedir}/xml" target="check-findbugs"/>
+        <ant dir="${main.basedir}/tw" target="check-findbugs"/>
+        <ant dir="${main.basedir}/gsi" target="check-findbugs"/>
+        <ant dir="${main.basedir}/gw" target="check-findbugs"/>
+        <ant dir="${main.basedir}/g2" target="check-findbugs"/>
+        <ant dir="${main.basedir}/widgets" target="check-findbugs"/>
+        <ant dir="${main.basedir}/twng" target="check-findbugs"/>
+    </target>
+
+    <target name="check-coverage">
+	<if><os family="windows"/><then>
+	    <delete file="${result.dir}/test.cov"/>
+	    <delete file="${result.dir}/report.xml"/>
+	    <ant dir="${main.basedir}/rtl" target="check-coverage" />
+	    <ant dir="${main.basedir}/scintilla" target="check-coverage" />
+	    <ant dir="${main.basedir}/ext" target="check-coverage" />
+	    <ant dir="${main.basedir}/twng" target="check-coverage" />
+	    <!--ant dir="${main.basedir}/java/scripts/JavaLink" target="check-coverage" /-->
+	    <exec executable="${bullseye.coverage}/covxml" output="${result.dir}/report.xml" append="false" failonerror="false"/>
+	</then></if>
+	<!-- Java coverage data is collected during unit testing
+	     (using JaCoCo).  On Teamcity we use its support for
+	     JaCoCo report generation. To get report(s) locally,
+	     run respective Ant `check-coverage` targets.
+	-->
+	<echo>
+##teamcity[jacocoReport dataPath='**/*.exec' includes='com.gensym.* gensym.*' excludes='com.gensym.nols.*.*Test com.gensym.nols.data.*.*Test com.gensym.nols.chart.*.*Test com.gensym.math.*.*Test gensym.*.tests.*' ]
+	</echo>
+	<!-- lisp coverage is done as part of unit tests. -->
+    </target>
+
+    <target name="checkstyle">
+        <ant dir="${main.basedir}/twng/java/jfreelib" target="check-checkstyle"/>
+    </target>
+
+    <!-- C++ Build section -->
+
+    <!-- Components built with Microsoft Visual Studio use this target. 
+
+        It expects "parameters" in properties:
+	- module: the directory inside the `vstudio` directory that
+	   "holds" the solution file to build
+	- type: string like <configuration> "|" <platform>, for
+	   backwards compatibility, see comment inside
+
+	Optional parameters:
+	- msbuild.target: The target to build (default: "Rebuild")
+	- solution: The solution to build (default: use `module` parameter)
+    -->
+    <target name="vstudio">
+        <property name="gsi.dir" value="${main.basedir}/../dst/gsi/opt" />
+	<property name="msbuild.target" value="Rebuild" />
+	<property name="solution" value="${module}" />
+        <!-- For backward compatibility (with when we used `devenv`),
+            here we do some (Java)scripting to get the configuration and
+	    platform from the `type`. This should be removed and the
+	    configuration and platform specified by the "caller", directly.
+
+            Yeah, I know it's ugly, but imagine how ugly it would have
+            been if we used Ant for this. :)
+        -->
+        <script language="javascript">
+            var x = String(project.getProperty('type')).split('|')
+            project.setProperty('msbuild.configuration', x[0])
+            project.setProperty('msbuild.platform', x[1] ? x[1] : 'Win32')
+        </script>
+
+        <mkdir dir="${result.dir}/build-logs"/>
+        <delete file="${result.dir}/${module}.txt"/>
+
+	<echo>Building [${module}/${solution}] - [${type}]: ${msbuild.target}</echo>
+	<exec executable="${msbuild.dir}\msbuild.exe" dir="${main.basedir}/${vstudio}/${module}" failonerror="true">
+	    <arg line="${solution}.sln /m /t:${msbuild.target} /p:Configuration='${msbuild.configuration}';Platform=${msbuild.platform} /clp:ErrorsOnly /flp:logfile=${result.dir}/build-logs/${solution}.txt"/>
+	    <env key="GSIDIR" value="${gsi.dir}" />
+	</exec>
+    </target>
+
+    <target name="run-api-tests">
+        <echo>API tests [${module} - ${project}]</echo>
+        <mkdir dir="${cumulative.api-tests.reports.dir}/c" />
+        <exec executable="${main.basedir}/../dst/${project}/${project}.exe" dir="${main.basedir}/${module}/tests">
+	    <env key="Path" value="${env.Path};${libiconv.dll}"/>
+            <arg line="-result ${cumulative.api-tests.reports.dir}/c/api_tests_${module}.xml" />
+        </exec>
+	<xslt in="${cumulative.api-tests.reports.dir}/c/api_tests_${module}.xml" out="${cumulative.api-tests.reports.dir}/c/api_tests_juni_${module}.xml" style="${main.basedir}/ant/tool/cpp2junit.xslt" />
+    </target>
+    <!-- End of C++ build section -->
+
+    <!-- C++ coverage section -->
+    <target name="check-c-coverage">
+        <exec executable="${bullseye.coverage}/cov01" failonerror="true"><arg line="--on"/></exec>
+        <ant dir="${main.basedir}/${module.name}" target="api-tests"/>
+        <exec executable="${bullseye.coverage}/cov01" failonerror="true"><arg line="--off"/></exec>
+    </target>
+    <!-- End of C++ coverage section -->
+
+    <!-- C++ Findbugs section -->
+    <target name="check-c-findbugs">
+        <property name="c.findbugs.file" value="cpp_check.xml"/>
+        <delete file="${result.dir}/${module.name}/${c.findbugs.file}"/>
+        <mkdir dir="${result.dir}/${module.name}"/>
+        <echo>Running Cppcheck on ${module.name}</echo>
+
+        <exec executable="${cpp_check.dir}/cppcheck" output="${result.dir}/${module.name}/${c.findbugs.file}" failonerror="true">
+            <arg line="--xml-version=2" />
+            <arg line="--force" />
+            <arg line="${c.findbugs.srcfolder}"/>
+        </exec>
+        <mkdir dir="${cumulative.findbugs.reports.dir}/c"/>
+        <copy file="${result.dir}/${module.name}/${c.findbugs.file}" tofile="${cumulative.findbugs.reports.dir}/c/cpp_check_${module.name}.xml"/>
+    </target>
+    <!-- End of C++ Findbugs section -->
+
+    <!-- C++ CPD section -->
+    <target name="check-c-cpd">
+        <property name="c.cpd.file" value="cpd_check.xml"/>
+        <delete file="${result.dir}/${module.name}/${c.cpd.file}"/>
+        <mkdir dir="${result.dir}/${module.name}"/>
+
+        <cpd minimumTokenCount="100" format="xml" language="cpp" outputFile="${result.dir}/${module.name}/${c.cpd.file}" encoding="UTF-8">
+            <fileset dir="${c.cpd.srcfolder}">
+                <include name="**/*.cpp" />
+        <include name="**/*.cxx" />
+                <include name="**/*.c" />
+                <include name="**/*.h" />
+            </fileset>
+        </cpd>
+
+        <mkdir dir="${cumulative.cpd.reports.dir}/c"/>
+        <copy file="${result.dir}/${module.name}/${c.cpd.file}" tofile="${cumulative.cpd.reports.dir}/c/cpd_check_${module.name}.xml"/>
+    </target>
+    <!-- End of C++ CPD section -->
+
+    <!-- build kbs subject -->
+    <target name="build-kbs" description="build core KBs">
+        <property name="build-kbs-path" value="${basedir}${file.separator}..${file.separator}kbs${file.separator}tools${file.separator}"/>
+        <mkdir dir="${build-kbs-path}dev"/>
+        <mkdir dir="${build-kbs-path}dist"/>
+        <start-server kb="${build-kbs-path}release-gxl.kb"/>
+        <start-server kb="${build-kbs-path}guidepro.kb"/>
+        <start-server kb="${build-kbs-path}release-protools.kb"/>
+        <property name="SRCBOX" value="${basedir}${file.separator}.."/>
+        <start-server options="-kb ${build-kbs-path}release-misc.kb
+            -module-search-path &#34;'${SRCBOX}${file.separator}kbs'
+				     '${SRCBOX}${file.separator}kbs${file.separator}sources'
+                                     '${SRCBOX}${file.separator}g2db${file.separator}kbs${file.separator}src'&#34;
+            -copy-logbook-on-console -start -log ${log.dir}/release-misc.log" />
+        <!-- GDANOL KBs -->
+        <start-server options="-kb ${SRCBOX}${file.separator}gdanol${file.separator}common${file.separator}build${file.separator}tools${file.separator}release-gdanol.kb
+        -module-search-path &#34;'${SRCBOX}${file.separator}gdanol${file.separator}common${file.separator}kbs'
+            '${SRCBOX}${file.separator}gdanol${file.separator}common${file.separator}demos${file.separator}kbs'
+            '${SRCBOX}${file.separator}gdanol${file.separator}gda${file.separator}kbs'
+            '${SRCBOX}${file.separator}gdanol${file.separator}nol${file.separator}kbs'
+            '${SRCBOX}${file.separator}kbs'
+            '${SRCBOX}${file.separator}kbs${file.separator}tools'
+            '${SRCBOX}${file.separator}g2i${file.separator}kbs'
+            '${SRCBOX}${file.separator}g2db${file.separator}kbs${file.separator}src'
+            '${SRCBOX}${file.separator}java${file.separator}products${file.separator}javalink${file.separator}common${file.separator}kbs'
+            '${SRCBOX}${file.separator}g2opc${file.separator}kbs'
+            '${SRCBOX}${file.separator}g2pi${file.separator}kbs'&#34;
+        -copy-logbook-on-console -start -log ${log.dir}/gdanol.log"/>
+    </target>
+
+    <macrodef name="build-layered">
+        <attribute name="module"/>
+        <attribute name="auto-build"/>
+        <attribute name="file"/>
+        <sequential>
+            <mkdir dir="${G2I_SRC_HOME}${file.separator}builds${file.separator}@{module}-${layered.version}${file.separator}staging"/>
+            <start-server options="-log ${SRCBOX}${file.separator}..${file.separator}results${file.separator}build-logs${file.separator}@{module}.log
+            -icon 'G2i Dev' -name 'G2i Dev Server' -@{auto-build} ${G2I_SRC_HOME}${file.separator}builds${file.separator}@{module}-${layered.version}${file.separator}staging${file.separator}
+            -kb ${G2I_SRC_HOME}${file.separator}sites${file.separator}@{module}${file.separator}kbs${file.separator}@{file}
+            -module-search-path &#34;'${G2I_SRC_HOME}${file.separator}sites${file.separator}DevSite'
+            '${G2I_SRC_HOME}${file.separator}kbs' '${G2I_SRC_HOME}${file.separator}sites${file.separator}DevSite${file.separator}kbs'
+            '${G2I_SRC_HOME}${file.separator}sites${file.separator}Optegrity${file.separator}kbs' '${G2I_SRC_HOME}${file.separator}sites${file.separator}Nol${file.separator}kbs'
+            '${G2I_SRC_HOME}${file.separator}sites${file.separator}e-SCOR${file.separator}kbs' '${G2I_SRC_HOME}${file.separator}sites${file.separator}ReThink${file.separator}kbs'
+            '${G2I_SRC_HOME}${file.separator}sites${file.separator}Integrity${file.separator}kbs'
+            '${SRCBOX}${file.separator}kbs'
+            '${SRCBOX}${file.separator}gdanol${file.separator}common${file.separator}kbs'
+            '${SRCBOX}${file.separator}java${file.separator}products${file.separator}javalink${file.separator}common${file.separator}kbs'
+            '${SRCBOX}${file.separator}g2pi${file.separator}kbs' '${SRCBOX}${file.separator}g2db${file.separator}kbs${file.separator}src'
+            '${SRCBOX}${file.separator}g2opc${file.separator}kbs' '${SRCBOX}${file.separator}gw${file.separator}kbs'
+            '${SRCBOX}${file.separator}corba${file.separator}kbs'
+            '${SRCBOX}${file.separator}java${file.separator}products${file.separator}sequoia${file.separator}common${file.separator}kbs'&#34;"/>
+         </sequential>
+    </macrodef>
+
+    <target name="nolstudio">
+      <ant dir="${main.basedir}/nolstudio" target="makeJar"/>
+    </target>
+
+    <target name="build-layered-products">
+
+        <condition property="version.set" else="false">
+            <isset property="version"/>
+        </condition>
+        <echo>Is version set: ${version.set}</echo>
+        <echo>version: ${version}</echo>
+        <echo>G2_VERSION: ${G2_VERSION}</echo>
+
+        <property name="SRCBOX" value="${basedir}${file.separator}.."/>
+        <property name="G2I_SRC_HOME" value="${SRCBOX}${file.separator}g2i"/>
+        <delete dir="${G2I_SRC_HOME}${file.separator}builds"/>
+
+        <build-layered module="Nol" auto-build="nol-auto-build" file="nol-dev.kb"/>
+        <build-layered module="e-SCOR" auto-build="escor-auto-build" file="escor-rethink-dev.kb"/>
+        <build-layered module="Optegrity" auto-build="optegrity-auto-build" file="Optegrity-dev.kb"/>
+        <build-layered module="ReThink" auto-build="rethink-auto-build" file="rethink-dev.kb"/>
+        <build-layered module="Integrity" auto-build="integrity-auto-build" file="integrity-dev.kb"/>
+        <build-layered module="HLA" auto-build="hla-auto-build" file="hla-dev.kb"/>
+
+        <ant dir="${main.basedir}/g2i" target="build"/>
+        <ant target="nolstudio"/>
+
+        <if><os family="windows"/>
+        <then>
+            <if>
+                <equals arg1="true" arg2="${version.set}"/>				
+                <then>
+                    <ant dir="${main.basedir}/g2i/sites/HLA" target="${version}" />
+                </then>
+                <else>
+                    <property name="version" value="${G2_VERSION}"/>
+                    <ant dir="${main.basedir}/g2i/sites/HLA" target="build_${G2_VERSION}" />
+                </else>
+            </if>
+        </then>
+        </if>
+    </target>
+
+    <macrodef name="start-server">
+        <attribute name="kb" default=""/>
+        <attribute name="module-search-path" default="&#34;'${basedir}${file.separator}..${file.separator}kbs'
+	'${basedir}${file.separator}..${file.separator}kbs${file.separator}sources'&#34;"/>
+        <attribute name="name" default="G2 Server"/>
+        <attribute name="log" default="g2.log"/>
+        <attribute name="ok" default="${g2.ok}"/>
+        <attribute name="exec" default="g2"/>
+        <attribute name="options" default="-module-search-path @{module-search-path} -kb @{kb} -log @{log} -copy-logbook-on-console -name @{name} -start -ok @{ok}"/>
+        <sequential>
+            <echo>Started G2 Server [@{options}]</echo>
+            <exec executable="${basedir}${file.separator}..${file.separator}..${file.separator}dst${file.separator}g2${file.separator}opt${file.separator}@{exec}">
+		<env key="Path" value="${env.Path};${libiconv.dll}"/>
+		
+                <env key="SRCBOX" value="${basedir}${file.separator}..${file.separator}"/>
+                <env key="DSTBOX" value="${basedir}${file.separator}..${file.separator}..${file.separator}dst"/>
+                <env key="UTILS" value="${basedir}${file.separator}..${file.separator}kbs${file.separator}tools"/>
+                <env key="MODMAP" value="sb.mm"/>
+                <env key="JAVA_SRCBOX" value="${basedir}${file.separator}.."/>
+                <env key="G2I_HOME" value="${SRCBOX}${file.separator}g2i${file.separator}"/>
+                <env key="G2_OK" value="${g2.ok}"/>
+                <arg line="@{options}"/>
+            </exec>
+        </sequential>
+    </macrodef>
+
+    <!-- GENSYMCID-1822: Enable running regression tests on development build of G2 -->
+    <target name="lisp_build_64_ent"> <!-- depends="clean"-->
+        <property name="version" value="build_64_ent" />
+        <property name="delivery" value="${main.basedir}/lisp/deliver.lisp" />
+        <mkdir dir="${result.dir}/build-logs" />
+
+        <!-- Step 1. Build Xanalys DLL -->
+        <ant dir="${main.basedir}/xanalys" target="${version}" />
+
+        <!-- Step 2a. Run API Tests -->
+        <ant dir="${main.basedir}/lisp/tests" target="api-tests" />
+
+        <!-- Step 2b. Build G2 Server from LispWorks -->
+        <lw-run lw-platform="${lw64}" logFile="${result.dir}/build-logs/g2-lw64.log" eval-command="" load-file="${delivery}" />
+        <mkdir dir="${main.basedir}/../dst/g2/opt" />
+        <copy file="${main.basedir}/../dst/g2/opt/g2-lw64.exe" tofile="${main.basedir}/../dst/g2/opt/g2.exe" overwrite="true" />
+
+        <!-- Step 3. Build core system KBs -->
+        <antcall target="build-kbs" />
+
+        <!-- Step 4. Do necessary translations -->
+        <parallel>
+            <translator lisp="sbcl" module="tw" type="3trpmx" />
+            <translator lisp="sbcl" module="gsi" type="3grpmx" />
+        </parallel>
+
+        <!-- Step 5. Build some necessary support components -->
+        <ant dir="${main.basedir}/twng" target="${version}" />
+        <ant dir="${main.basedir}/gsi" target="${version}" />
+        <ant dir="${main.basedir}/g2db" target="${version}" />
+
+        <!-- Step 6. Run regression tests -->
+        <ant dir="${main.basedir}/tests" target="regression-tests" />
+    </target>
+
+    <target name="sign">
+        <echo>Signing</echo>
+        <exec dir="${main.basedir}" executable="${main.basedir}/bundle/tools/sign-code.bat" failonerror="true">
+            <arg line="${file}" />
+            <arg line="${pass}" />
+        </exec>
+    </target>
+</project>
