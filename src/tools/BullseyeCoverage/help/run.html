@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_run.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+Running Test Programs
+</h1>
+<h2>
+<a name=1></a>
+Running on the Build Computer</h2>
+<p>
+There are no special steps required to run a test program
+built with BullseyeCoverage on the local computer; run your program as normal.
+Be sure the <code>COVFILE</code> environment variable names your coverage file.
+<h2>
+<a name=2></a>
+Running on Multiple Computers</h2>
+<p>
+There are two ways to collect and merge coverage data on multiple computers.
+<ol>
+<li>
+Share one coverage file on a network by setting environment variable
+<code>COVFILE</code> on the remote computer to the network path of the
+coverage file.
+This alternative is simpler but requires adequate network performance.
+<li>
+Copy the coverage file to each remote computer and set
+<code>COVFILE</code> on the remote computer to the path of the copy.
+After testing is complete, merge the coverage files into one file for reporting.
+Before making code changes or rebuilding, merge all copies of the coverage files back into the one on the build system.
+To merge coverage files using the
+<a href=coverageBrowser.html>Coverage Browser</a>,
+use command
+<code>File Insert</code>.
+To merge coverage files at the command prompt, use
+<a href=ref_covmerge.html>covmerge</a>.
+</ol>
+<h2>
+<a name=3></a>
+Collecting Data to Multiple Coverage Files</h2>
+<p>
+If you have multiple, separate projects which run together on the
+same computer and each project has its own associated coverage file,
+you can collect coverage data for all the projects simultaneously
+without merging the coverage files.
+Set environment variable <code>COVFILELIST</code>
+to a comma separated list of the coverage file paths.
+For example,
+<pre>
+COVFILELIST=/path1/test1.cov,/path2/test2.cov,/path3/test3.cov
+</pre>
+<p>
+Environment variable <code>COVFILELIST</code> overrides <code>COVFILE</code>,
+and is only used at run-time.
+<h2>
+<a name=4></a>
+Controlling Run-Time Error Display</h2>
+<p>
+If an error occurs at run-time, BullseyeCoverage displays an error message to
+the screen.
+However, if environment variable
+<a href=ref_environment.html#COVERR>COVERR</a>
+is set to the name
+of a file, BullseyeCoverage appends the message to the file instead.
+
+<p style="font-size:xx-small">
+Last reviewed: 13 Dec 2007
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
