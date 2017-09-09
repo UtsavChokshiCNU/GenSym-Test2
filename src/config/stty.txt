@@ -1,0 +1,176 @@
+#
+# Standard .stty (to be sourced from .cshrc) for Gensym's Unix systems
+# MHD 2/27/92
+# MHD 1/23/92
+#
+
+
+
+
+tty -s   # if not a tty, then exit
+if !($status == 0) then
+	exit
+endif
+
+
+set tty="`tty`"
+# sometimes tty can evaluate and print "not a tty" -- don't know why
+# wrapping the "" around the `` causes the result to become one "word",
+# i.e., like an atom |not a tty| or a list (not a tty).
+
+if !($?TERM) then
+  # TERM is unbound -- probably irrelevant, but we'll 
+  # just set term/TERM to vt100
+  setenv TERM vt100
+  set term=vt100
+else if ($TERM == su) then
+  set term=vt100
+else if ($TERM == dec-vt100) then
+  set term=vt100
+else if ($TERM =~ vt*) then
+  if (!($machine =~ decstation*)) then
+	# Machines other than decstations don't understand any
+	# vt terminals other than a vt100
+    if ($TERM != vt100-am) then
+	setenv TERM vt100
+	set term=vt100
+    endif
+  endif
+else if ($TERM == network) then
+ set term=vt100
+else if ($TERM == hp) then
+  if (tty == /dev/console) then  #check if term is defined
+    set term=$TERM
+  else
+    if !($?term) then
+      # if term is unbound, define it as vt100
+      set term=vt100
+    endif
+  endif
+endif
+if ($term =~ sun*) set term=sun
+
+
+
+
+# New terminal setup stuff.  (New that it's here -- it used to be in 
+# the .login file, but that did not do the trick on RX6....)
+# -mhd, 1/22/92
+
+# We figured out that "tty -s" tells you about standard input, but
+# that "stty -s", say, affects standard output.  This was screwing
+# up the test that used to be here
+#
+#    if {tty -s} ...
+#
+# in situations where standard input did not equal standard output.
+# The most notorious case of this was when you piped to more.
+# E.g.,
+#
+#    csh myscript | more
+#
+# would fail if standard input was a tty.  But
+#
+#    csh myscript </dev/null | more 
+#
+# or
+#    csh myscript
+#
+#
+# would work fine in the same situation.  (MHD 2/27/92)
+
+
+
+if (($TERM == emacs) && ($?ERASEKEY)) then
+	set erasekey=$ERASEKEY
+else
+
+	# Note that ERASEKEY is looked at by the .emacs init
+	# file to maybe swap the delete and erase key.  If we've
+	# already set up an erase key, and we're in an "emacs" terminal,
+	# i.e., a shell, don't set it up again.  (It will probably be
+	#  wrong if you do -- it will only set it to "delete" in this
+	# emacs case!)  -- MHD, 12/31/92
+	
+	if (!($TERM == vs) \
+	     && (($TERM =~ hp*) || ($TERM =~ AT*) || ($TERM == aixterm) \
+	         || ($TERM == hft-c) \
+	         || (($machine == aviion) && (tty == /dev/console)))) then
+	  set erasekey=backspace
+	else
+	  # if ($TERM =~ vt*) use delete
+	  set erasekey=delete
+	endif
+	setenv ERASEKEY $erasekey
+endif
+#set erasekey either
+#setenv ERASEKEY $erasekey
+
+if ($TERM == emacs) then
+        # This is to disable the ^M from appearing at the end
+        #   of every line when using rlogin
+
+        stty -echo nl >& /dev/null  # pipe errors output to null device; see below
+endif
+
+
+# do this on the decstation at least once -- this will spit out
+# "stty:: Not a typewriter" when called when logging in for the first time
+# -- but should die down after that.
+if ($machine == mips) then
+	if  !($?CRT_SET_FOR_DEC) then
+		# stty crt on the decstation
+		stty crt
+		if ($status == 0) then
+			setenv CRT_SET_FOR_DEC 1
+		endif
+	endif
+endif
+
+if ($machine == compaq) then 
+	stty intr ^\C   # compaq gets a different status if output is 
+			#   piped to /dev/null!! yuck! -mhd, 8/13/92
+else
+	stty intr ^\C >& /dev/null
+endif
+
+
+if !($status == 0) then
+ 	# Pipe error output to the null device bitsink because
+        #   this may fail and complain that the current device
+	#   is not a terminal and therefore cannot deal with stty; if so,
+	#   status should be "false" (i.e., not 0), and we exit. (MHD 4/8/92)
+	exit
+endif
+
+
+
+# Use Control-U to clear input from line.
+#stty kill ^\U
+stty kill 
+
+# Set the erase key to backspace (= control-h) or delete as appropriate.
+if ($erasekey == backspace) then
+#  stty erase ^\H
+  stty erase 
+else 
+#  stty erase ^\?
+  stty erase 
+endif
+
+# Assume you can "echo" the erase by removing characters from the screen.
+if !($machine == next) then
+   # "stty echoe" causes "unknown mode echoe" to print out on the Next -mhd
+   # decstation: "stty crt" works; this does not!
+   stty echoe
+endif
+
+
+
+# Use Control-Z to put suspend processes (put them in the background). 
+#stty susp ^\Z
+stty susp 
+
+
+
+# end file with CR
