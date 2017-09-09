@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_trouble_build.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>Warning c5999: invalid operator ## arguments</h1>
+<h2>SYMPTOMS</h2>
+<p>
+Warning c5999 occurs, possibly followed by a syntax error or other compiler error.
+<pre>
+warning c5999: invalid ## arguments ')' and '<i>identifier</i>' in macro '<i>macro</i>'
+</pre>
+<h2>CAUSE</h2>
+<p>
+The macro named in the message makes incorrect usage of the
+<code>##</code> operator.
+The token '<code>)</code>' cannot be joined with an identifier to form a new token.
+<p>
+A bug in Microsoft C++ masks an error in the order of evaluation of the
+operator <code>##</code> arguments.
+BullseyeCoverage does not have this bug, so a syntax error or compiler
+error only occurs with BullseyeCoverage.
+Intel C++ for Windows also contains this bug.
+For example:
+<pre>
+#define N() Prefix
+#define M() N()##Suffix    // incorrect
+</pre>
+<h2>RESOLUTION</h2>
+<p>
+1.
+Define the macros <code>Paste1</code> and <code>Paste2</code> shown below,
+and then use <code>Paste2</code> rather than the <code>##</code> operator.
+<pre>
+#define Paste1(x,y) x##y
+#define Paste2(x,y) Paste1(x,y)
+</pre>
+<p>
+For example,
+<pre>
+#define M() Paste2(N(),Suffix)
+</pre>
+<p>
+2.
+If you cannot use the resolution described above,
+for example because the warning occurs is in a source maintained by a third-party,
+you can disable this warning using <code>#pragma warning</code>.
+For example:
+<pre>
+#if _BullseyeCoverage
+    #pragma warning(disable:5999)
+#endif
+</pre>
+<p>
+Before disabling warning <code>c5999</code>,
+remove the Microsoft compiler option <code>-WX</code> (treat warnings as errors)
+and rebuild all your source code.
+If you encounter an error building without <code>-WX</code>, use the information in the previous warning c5999 to resolve the problem.
+<h2>MORE INFORMATION</h2>
+<p>
+When the result of the <code>##</code> operator is not a single valid
+token, the behavior is undefined by the C++ and C standards.
+This means that the code is not portable to other C++ or C translators, since
+any behavior is allowed, ranging from silently ignoring the
+situation with unpredictable results, to terminating the translation.
+<p>
+In the first example above,
+the macro definition "<code>#define M() N()##Suffix</code>" attempts to
+first expand <code>N()</code> and then join to <code>Suffix</code>,
+with the intended result <code>PrefixSuffix</code>.
+However, the <code>##</code> operator is evaluated before macros are expanded,
+not after.
+In this case, the <code>##</code> operator joins the <code>)</code>
+token with the <code>Suffix</code> token, resulting in
+<code>)Suffix</code>.
+This invalid token is then rescanned back into its original two tokens.
+Then, <code>N()</code> is expanded.
+The correct result is two separate tokens <code>Prefix</code> and
+<code>Suffix</code>.
+At this point, Microsoft C++ incorrectly joins these two tokens,
+resulting in <code>PrefixSuffix</code>.
+<p>
+You can verify this bug in Microsoft C++ by compiling the example after
+removing the <code>##</code> operator.
+You get the same result regardless of whether <code>##</code> is present.
+<pre>
+#define M() N()Suffix
+</pre>
+<p>
+You can also verify this bug in Microsoft C++ by comparing the behaviour
+with a different compiler, such as GCC.
+<p>
+The relevant sections of the C++ and C standards are:
+<ul>
+<li>ISO/IEC 14882:2003(E) 16.3.3 The ## operator
+<li>ISO/IEC 9899:1999 (E) 6.10.3.3 The ## operator
+</ul>
+
+<p style="font-size:xx-small">
+Last reviewed: 21 Sep 2009
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
