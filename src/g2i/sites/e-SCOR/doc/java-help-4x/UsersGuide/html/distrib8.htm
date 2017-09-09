@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="02/06/02 18:48:25">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Restricting the Orders to Sort Based on a Numeric Cutoff</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="distrib7.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="distrib9.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+      <div align="center"><b>e-SCOR User's Guide</b></div>
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/e-SCOR/OnlineHelpFiles/UsersGuide/html/distribu.htm">  
+        Modeling a Distribution Process  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Restricting the Orders to Sort Based on a Numeric Cutoff
+</h2>
+<p>You can configure numeric cutoff values to restrict the orders that the Deliver category considers for delivery. <a name="28211"></a></p>
+<p>When you configure the Cutoff to be the <code>Maximum</code> or <code>Minimum Acceptable</code> value, the Deliver category considers for delivery only those orders that meet the maximum or minimum value. For example, you might restrict orders to a minimum acceptable cost, so the supplier never delivers orders worth less than that minimum.<a name="28699"></a></p>
+<p>When you configure the Cutoff to be the <code>Maximum Acceptable Delta</code> value, the Deliver category considers the Sort Direction, Sort By, and Cutoff Value to determine which orders can be delivered. You configure the Cutoff Value as a fraction of the Sort By property of the order. This fraction defines a range either above the biggest or below the smallest Sort By value. If the value of the Sort By property of an order falls within this range, the Deliver category attempts to fill the order from current inventory. <a name="52355"></a></p>
+<p>For example, suppose you have configured the Order Selection parameters as follows: <a name="30080"></a></p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Sort Direction = <code>Biggest</code><a name="52711"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Sort By = <code>Order Size</code><a name="52731"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Cutoff = <code>Maximum Delta Acceptable</code><a name="52740"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">Cutoff Value = <code>0.5</code><a name="52749"></a></td>  </tr></table><p>Now, suppose orders exist for 50, 30, and 10 units, and you have a current inventory of 35 units. The Deliver category tries to deliver the order for 50 units first, because it is the largest. However, because it cannot fill the order from current inventory, it calculates a maximum delta acceptable value of 25 (0.5 x 50). Because 30 lies in the range from 25 to 50 and the current inventory is sufficient to fill the order for 30 units, it delivers the 30 units. The current inventory is now 5. Now suppose the inventory goes up to 35. The Deliver category does not deliver the order for 10 units because it is too small (10 &lt; (0.5 x 35)). <a name="52674"></a></p>
+<p>The following table describes two strategies for sorting orders, based on a numeric sort criteria, using a cutoff:<a name="28292"></a></p>
+<p >
+  <a name="29486"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="29560"><div >To deliver...</a></div></th>
+    <th><a name="29562"><div >Configure these parameters...</a></div></th>
+  </tr>
+  <tr>
+    <td><p>The most expensive orders first, with a minimum acceptable cost of $100.<a name="29576"></a></p>
+<p>If two orders have a value of more than $100, then deliver the most expensive order first.<a name="29577"></a></p>
+<p>In this configuration, orders for less than $100 are never delivered.<a name="29578"></a></p>
+</td>
+    <td><p>First tab:<a name="29580"></a></p>
+<blockquote>  <a name="29581">Sort Direction = <code>Biggest<br></code>Sort By = <code>Cost<br></code>Cutoff = <code>Minimum Acceptable<br></code>Cutoff Value = 100</a></blockquote>
+</td>
+  </tr>
+  <tr>
+    <td><p>The largest orders first, based on current inventory. If the current inventory is not sufficient to fill the chosen order, then deliver orders that are at least 50% as big as the current order.<a name="29585"></a></p>
+<p>In this configuration, all orders will be filled; however, smaller orders will be filled after larger orders.<a name="29586"></a></p>
+</td>
+    <td><p>First tab:<a name="29588"></a></p>
+<blockquote>  <a name="29589">Sort Direction = <code>Biggest<br></code>Sort By = <code>Order Size<br></code>Cutoff = <code>Maximum Delta Acceptable<br></code>Cutoff Value = <code>.5</code></a></blockquote>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<p><b>Related topics:</b><a name="120211"></a></p>
+<p><a href="distrib7.htm#27482">Sorting Orders with No Cutoff</a><a name="120215"></a></p>
+<p><a href="distrib9.htm#28877">Restricting the Orders to Sort Based on a Time Cutoff</a><a name="120219"></a></p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="distrib7.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="distrib9.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
