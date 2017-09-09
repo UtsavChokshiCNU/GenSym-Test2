@@ -1,0 +1,276 @@
+** Issues:
+The control "runs" without TW running.  I think that is definitely the right
+behavior, and it's easier to do it that way too.  I only bring it up because it
+may seem somewhat counter-intuitive, or at least contrary to the way TW works
+now.  Nevertheless, it is convenient for the user, because you can set
+properties before actually invoking TW.
+
+** API
+- names for LaunchHost, LaunchPort, etc. may be misleading because they can be
+  modified at run-time but have no effect unless and until ConnectToG2 is 
+  called next.
+
+** finding tw.exe (or twng.exe)
+- expose it as a property, allow user to supply a string
+  - expose it as a method which pops up a dialog box with a browse button
+- if user types in invalid value, pop up error dialog with informative message
+- if user sets a valid value, perhaps want to offer to write that information
+  to the registry
+- if not set by user, or set to invalid value at time initialization is invoked,
+  check registry key
+    HKEY_LOCAL_MACHINE\SOFTWARE\Gensym\...
+- if not found in registry, or registry has invalid value, use a default value:
+    whatever installer would use for the tw.exe that ships with the control,
+    e.g., C:\Program Files\Gensym\G2 6.2r0\tw.exe
+- if no suitable value can be found, again pop up browse dialog box
+- but, all this may be moot.  This is only relevant when the plugin is
+  completely separate from the TW functionality.
+- maybe, maybe, maybe: if the environment variable doesn't point to a good file,
+  it goes straight to the default, instead of looking in the same directory
+  as the ocx file
+
+** how to include tw
+1. build tw.exe as we have been: tw/c files compiled to objects, linked with
+   four .lib files
+   - note, incidentally, this is a bit weird in and of itself, because 
+     WinMain and the window procedure are in libcprim.lib.  It's strange to
+     think of the tw/c files as "TW" with support from libcprim (et al) when
+     libcprim contains the real foundation.  It doesn't cause any problems
+     per se, but it is definitely 
+   - (in all cases, there's also backtrac.obj which is checked out from CVS
+      as an object file; that shouldn't change, but let's omit it for brevity)
+2. build a libtwc.lib out of the tw/c files, and build tw.exe from five .lib
+     files and link them all together (with no "source" files involved in the link)
+   - also not exactly standard, and the linker does warn about it
+   - incidentally, I believe this would make development linking noticably
+     faster when working purely on the ext/c files
+3. build a libtwc.lib, but move WinMain to a separate C file (or move
+    code not directly related to WinMain out of msmain into another file,
+    and move msmain out of libcprim); link with winmain + five lib files
+4. build a libtwc.lib, move WinMain out of libcprim, and then build a tw.dll out
+    of five libraries.  Link WinMain against tw.lib stub file and distribute
+    small executable with "large" dll containing all the TW functionality
+
+** how to use TW from ActiveX control, per build choices above:
+1a. as Netscape plugin does, invoking tw.exe with CreateProcess
+   - still need to expose more of TW, such as the ability to tell it its size
+     has changed.  This is the only one of these options that requires
+     "finding" tw.exe
+1b. simply build ActiveX into tw.exe... presumably the choice involving
+   the least infrastructure work, but the trickiest and, frankly, least
+   pleasant coding, because we need to add C++ classes, or imitations of
+   them, into tw.  Getting tw, version 6, running *well* in a Windows Lisp
+   might really make this a lot easier.
+2. build separate tw.exe and twax.exe files from five .lib files, with twax.exe
+   being a proper superset of tw.exe
+3. build separate tw.exe and twax.exe files from five .lib files, with a small
+   amount of both tw-only and twax-only code
+4. would be the most standard, user-friendly approach; a small tw.exe, and
+   probably a small twax.dll, each of which could load tw.dll as needed.  Would
+   give best performance when used as an ActiveX control because the dll would
+   be loaded into the process, and marshalling data structures to send across
+   process boundaries is expensive.  There are further advantages of dll's even
+   apart from ActiveX in terms of how the OS manages them.
+
+** other things that clearly need work
+- tw should persist as much as possible.  If possible, reloading the html
+  page with TW embedded should not disconnect TW
+- you can resize the control (depending on the container), but the TW window
+  does not resize.  I think all we need to do here is send a message to the
+  TW process
+- currently, we only expose TW as an "ActiveX control", not as an "OLE object"
+  (i.e., it only implements IOleControl; it doesn't implement IOleClientSite
+  or others that it possibly needs to if we want it exposed in the standard
+  "Insert Object" dialog box [as seen, for example, in Wordpad])
+- the default drawing seems to work great now... as soon as you disconnect
+  TW, the pattern pops right back up, and stuff like that.  Now, we need to
+  make that default pattern be somewhat more Gensymy, maybe add the Gensym
+  logo as a gif or something like that.
+- when creating a control from scratch in the ActiveX test container, it always
+  starts out tiny.  The container calls us, *telling* us what size we are.
+  There must be a way to specify a preferred size.  This is not a problem in
+  VB or IE, where essentially the user is required to specify a size.
+- have dprintf send it's output to TRACE as well
+
+- we are presently looking for TW from registry under TWHACK.Telewindows.1\
+  TWServer; we need to delete that key, as well as old keys for the control
+  itself: TWHack.TwCtrl and TWHack.TelewindowsCtrl.
+
+** more that really should be done
+- we need to get a hold of all TW command line options, expose most of them
+  as properties, build a better property page, and generally handle things
+  much better
+- each TW command line option should be exposed individually as properties;
+  as much as is reasonable, those properties should work at any time; e.g.,
+  you can specify "UserName" before invoking TW, and it will be passed on
+  the command line as "-user-name ...", but it should also work afterwards,
+  to change the user-name a la change mode.  (Perhaps not the best example;
+  each option needs to be investigated individually, I think.)  The TW
+  ActiveX control may want to have defaults that are different from TW's
+  defaults (for example, when I got TWHack, it had default options -background
+  light-gray -splashtime 0).  We might want to expose a property such as
+  "command line" in addition to exposing more specific properties.
+- have user-level default options as well.  perhaps a file in the user's
+  home directory with lines like "tw=C:\Gensym\tw-6.0r1\tw.exe", etc.
+- it would be nice if TW could return its Hwnd to us in some way.  Again,
+  that probably becomes trivial if we are in the same process
+- dprintf should optionally use TRACE to (also) echo the messages to the
+  container's console
+
+** maybe crucial, maybe optional, maybe wrong
+- connect to a specific workspace as opposed to the larger tw view
+
+** relevant options supported by TW on Windows
+
+= Implemented as Launch properties
+  -user-name          <username> 
+  -user-mode          <mode> 
+  -password           <password> 
+  -background         <color> | <path_to_bitmap>
+  -ui                 {standard | classic}
+  -window             <windowname>   // not really implemented any more?
+
+= Implemented as "regular" properties
+  -init-string        <string> 
+  -splashtime         <seconds> 
+
+= Not yet implemented, but all take strings as arguments on all platforms
+  -mag[nification]    <number from .5 to 2.66 inclusive> 
+  -x-mag[nification] <number from .5 to 2.66 inclusive> 
+  -y-mag[nification] <number from .5 to 2.66 inclusive> 
+  -res[olution]       <dots per inch> 
+  -x-res[olution]   <dots per inch> 
+  -y-res[olution]   <dots per inch> 
+
+  -window-style       {standard | standard-large | g2-5.x} 
+  -language           {<language>|default} 
+  -cjk-language       {chinese|japanese|korean} 
+
+  -ok                 <filename> 
+  -fonts              <fontdir> 
+  -log                <filename> 
+
+  -rgn1lmt            <bytes> 
+  -rgn2lmt            <bytes> 
+  -rgn3lmt            <bytes> 
+
+= Weirdish
+  -v6ok               <filename> 
+  -v5ok               <filename>
+  -v51ok              <filename>
+
+= Windows only
+  -graphics           <number from 10 to 99 inclusive>
+
+= Boolean flags
+  -no-log
+  -discard-user-settings 
+
+= Buggy in TW
+  -tcptimeout         <milliseconds> 
+
+= Pointless unless we support a DECnet platform
+  -network            {tcpip|decnet} 
+
+= Not advisable because the size of the window is determined by the container
+  -height             <pixels> 
+  -width              <pixels> 
+  -help
+
+= Definitely make no sense
+  -geometry           <width>x<height>{+|-}<xoffset>{+|-}<yoffset>
+     ; should be no offset from window
+  -name               <name>
+     ; no title bar to stick a name onto
+  -fullscreen
+     ; always as full as the window is
+  -screenlock
+     ; can't lock a window
+
+** Docs:
+Internet Tools: Platform SDK: ActiveX Controls
+(search for "hwnd activex controls internet explorer")
+
+** Implemented Properties
+		
+LaunchHost		[id(2)]
+LaunchPort		[id(3)]
+
+LaunchUi		[id(10)]
+LaunchWindow		[id(11)]
+LaunchWorkspaceUUID	[id(12)]
+
+LaunchUserName		[id(4)]
+LaunchUserMode		[id(5)]
+LaunchPassword		[id(6)]
+InitString		[id(8)]
+
+TwLocation		[id(1)]
+LaunchBackground	[id(7)]
+Splashtime		[id(9)]
+
+** Libraries
+
+ws2_32.lib winmm.lib rpcrt4.lib
+
+kernel32.lib advapi32.lib user32.lib gdi32.lib shell32.lib oldnames.lib
+mswsock.lib wsock32.lib winspool.lib netapi32.lib version.lib uuid.lib
+oledlg.lib ole32.lib oleaut32.lib comdlg32.lib comctl32.lib
+
+** Doc Blurb for 7.0
+
+Version 7.0 of the TW ActiveX control adds two new string properties: LaunchUi and
+LaunchWindow.  LaunchUi is equivalent to the new -ui command line flag; the
+LaunchUi property defaults to "standard" and can be set to "classic" to get the 
+G2 v6-and-earlier UI.  No other value besides "classic" and "standard" has
+meaning.  LaunchWindow is the equivalent of the -window command line option; it
+should be set to the name of the class of g2-window that TW should create in the
+G2 it connects to.  For 7.0, a useful value for this property will be
+"workspace-view", which gives the single-workspace interface in TW.  Since users
+can create their own window classes, there is no constraint on what are
+meaningful values for this property; it depends on the G2 kb.
+
+This version of the TW ActiveX control ships with a cabinet file, called
+TwControl.cab.  This file contains all the necessary files and data to run the
+TW ActiveX control on a Windows computer that has never had any Gensym software
+installed on it before.
+
+** To Do
+work on VB demo
+get and set debug level
+get last command launched
+add more arguments
+disconnected appearance
+
+** Possible TW's to run
+(nice for cut and paste)
+C:\\SFU\\bt\\jv\\vstudio\\tw\\Debug\\tw.exe
+C:\\SFU\\bt\\jv\\vstudio\\tw\\twexe_Debug\\tw.exe
+
+** Debugging
+
+This is an available place to make note of the settings to use to debug TWAX and
+the Workspace View.  I got sick and tired of typing these values.  Maybe now I
+can just cut and paste if I need to enter them again.
+
+     C:\SFU\bt\jv\activex\control\examples
+     -tcpport 1112 -tcpipexact -module-search-path C:\SFU\bt\jv\kbs\sources -kb wsvdemo.kb -start
+
+     C:\Program Files\Microsoft Visual Studio\VB98\VB6.EXE
+     C:\SFU\bt\jv\activex\G2Com\demos\VBDemo
+     /runexit GensymAxDemo
+     /runexit WorkspaceViewDemo
+
+     C:\Program Files\Microsoft Visual Studio\Common\Tools\TSTCON32.EXE
+     C:\SFU\bt\jv\activex\control\examples
+     tw.tcs
+
+     C:\SFU\bt\jv\activex\control\examples
+     C:\SFU\bt\jv\activex\control\examples\wsview.html
+
+     C:\SFU\bt\jv\kbs
+     -tcpport 1111 -tcpipexact -module-search-path C:\SFU\bt\jv\kbs\sources -kb axldemo.kb -start
+
+     C:\Program Files\Microsoft Visual Studio\VB98\VB6.EXE
+     C:\SFU\bt\jv\activex\G2Com\demos\VBDemo
+     /runexit VBDemo
