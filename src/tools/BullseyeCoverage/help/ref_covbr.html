@@ -1,0 +1,164 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_reference.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>
+covbr - Detail Report
+</h1>
+<PRE>
+covbr [<i>options</i>] [<i>region</i> ...]
+</PRE>
+<H2>DESCRIPTION</H2>
+<P>
+<CODE>covbr</CODE> produces a report showing low-level condition/decision
+coverage measurements.
+With no arguments,
+<CODE>covbr</CODE> displays measurements for all analyzed source.
+Otherwise, <CODE>covbr</CODE> reports measurements in each source
+<i>region</i>. For more information, see <a href=ref_regions.html>Regions</a>.
+<P>
+For each source file selected, <CODE>covbr</CODE> displays the
+source file name, relative to the current directory, followed
+by an annotated listing of the file. Coverage measurements appear
+to the left of the source code.
+<ul>
+<li>
+An arrow <code>--&gt;</code> indicates incomplete coverage.
+<li>
+An <code>X</code> indicates a function that was invoked,
+a <code>switch</code> label that was exercised,
+a try-block that finished, or
+an exception handler that was invoked.
+<li>
+A <code>T</code> or <code>F</code> indicates a boolean decision
+that evaluated true or false, respectively.
+<li>
+A <code>t</code> or <code>f</code> indicates a boolean condition
+within a decision if the condition evaluated true or false,
+respectively.
+<li>
+A <code>k</code> indicates a constant decision or condition.
+<li>
+The slash <code>/</code> means this probe is excluded from summary results.
+</ul>
+<p>
+If there is more than one
+probe for a source line, <CODE>covbr</CODE> outputs multiple lines
+with the same line number and consecutive letters to distinguish
+them. In the example below, <CODE>!quit</CODE> has evaluated both
+true and false and <CODE>c!=EOF</CODE> has only evaluated true.
+<PRE>
+TF       19a    if (
+  tf     19b        !quit &amp;&amp;
+  --&gt;t   19c                 c!=EOF)
+</PRE>
+<p>
+You can take command line arguments from a file using the syntax
+<code>@</code><i>filename</i>.
+<H2>OPTIONS</H2>
+<TABLE CELLSPACING=12 summary="">
+<colgroup><col span=2 style=white-space:nowrap></colgroup>
+<tr><td><code>-a</code><td><code>--all</CODE>
+<td>Show all source lines. This option is mutually exclusive with <CODE>-c</CODE> (<CODE>--context</CODE>).
+
+<tr><td><code>-c</CODE><i>N</i><td><code>--context</CODE> <i>N</i>
+<td>Show only <i>N</i> source lines of context before or after a probe. This is the default, with <i>N</i>=3. Specify <i>N</i>=0 to see only the lines containing measurements. <CODE>covbr</CODE> replaces suppressed lines with &quot;<CODE>...</CODE>&quot; unless <i>N</i>=0. This option is mutually exclusive with <CODE>-a</CODE> (<CODE>--all</CODE>).
+
+<tr><td><code>-d</CODE><i>Dir</i><td><code>--srcdir</CODE> <i>Dir</i>
+<td>Look for source files relative to directory <i>Dir</i> rather than relative to the directory where the coverage file is located.
+
+<tr><td><code>-e</CODE><i>N</i><td><code>--tab</CODE> <i>N</i>
+<td>Expand tabs to every <i>N</i>th column. The default is <i>N</i>=8.
+
+<tr><td><code>-f</CODE><i>Path</i><td><code>--file</CODE> <i>Path</i>
+<td>The coverage file is specified by <i>Path</i>. The default is <CODE>test.cov</CODE>.
+
+<tr><td><code>-h</code><td><code>--help</CODE>
+<td>Display a summary of options.
+<tr><td><code>-i</code><td><code>--no-time</CODE>
+<td>Ignore source file date/time. Normally, <CODE>covbr</CODE> produces an error message for each source file modified since probes were added. If you use this option, measurements might not appear at the correct line numbers.
+
+<tr><td><code>-q</code><td><code>--quiet</CODE>
+<td>Suppress warnings and the copyright message.
+
+<tr><td><code>-r</code><td><code>--wrap</CODE>
+<td>Wrap lines rather than truncate. This option is mutually exclusive with <CODE>-t</CODE> (<CODE>--trunc</CODE>).
+
+<tr><td><code>-t</code><td><code>--trunc</CODE>
+<td>Truncate lines rather than wrap. This is the default. This option is mutually exclusive with <CODE>-r</CODE> (<CODE>--wrap</CODE>).
+
+<tr><td><code>-u</code><td><code>--uncover</CODE>
+<td>Suppress fully covered probes. This option has no effect with <CODE>-</CODE>a (<CODE>--all</CODE>).
+
+<tr><td><code>-v</code><td><code>--verbose</CODE>
+<td>Show informational messages. If the report is empty, output an explanation.
+
+<tr><td><code>-w</CODE><i>N</i><td><code>--width</CODE> <i>N</i>
+<td>The report width is <i>N</i> columns.
+If the standard output is to a console or terminal, the default width is the width of the console, otherwise 80.
+However, if the environment variable <CODE>COLUMNS</CODE> is set, the default is <CODE>COLUMNS</CODE>.
+
+<tr><td><code>--csv</code><td>
+<td>Output comma separated values. Use this option to export coverage measurements into another program. The format of each output line is &quot;<i>source</i>,<i>line</i>,[<i>letter</i>],<i>kind</i>,[<i>event</i>],[<i>function</i>]&quot;, where <i>letter</i> distinguishes identical line numbers; <i>kind</i> is one of <CODE>function</CODE>, <CODE>condition</CODE>, <CODE>decision</CODE>, <CODE>switch-label</CODE>, or <CODE>catch</CODE>; <i>event</i> is one of <CODE>T</CODE>, <CODE>F</CODE>, <CODE>TF</CODE>, <CODE>t</CODE>, <CODE>f</CODE>, <CODE>tf</CODE>, or <CODE>X</CODE>; and <i>function</i> gives the function name if the record is for a function. Unless you specify option <CODE>-q</CODE> (<CODE>--quiet</CODE>), <CODE>covbr</CODE> outputs column headings. Only the following options have effect: <CODE>-d</CODE> (<CODE>--srcdir</CODE>), <CODE>-f</CODE> (<CODE>--file</CODE>), <CODE>-h</CODE> (<CODE>--help</CODE>), <CODE>-q</CODE> (<CODE>--quiet</CODE>). The report width has no effect with this option.
+
+<tr><td><code>--html</code><td>
+<td>
+Output in HTML format using a color scheme similar to the
+<a href=coverageBrowser.html>Coverage Browser</a>
+
+<tr><td><code>--no-banner</code><td>
+<td>
+Suppress startup banner
+
+</TABLE>
+<H2>ENVIRONMENT VARIABLES</H2>
+<TABLE CELLSPACING=12 summary="">
+<tr><td><code>COLUMNS</code><td>The display device width. Option <CODE>-w</CODE> (<CODE>--width</CODE>) overrides this setting.
+
+<tr><td><code>COVFILE</code><td>The coverage file. Option <CODE>-f</CODE> (<CODE>--file</CODE>) overrides this setting.
+
+<tr><td><code>COVSRCDIR</code><td>The source file directory. Option <CODE>-d</CODE> (<CODE>--srcdir</CODE>) overrides this setting.
+
+<tr><td><code>COVBRCFG</code><td>Configuration file. See FILES.
+
+<tr><td><code>TZ</code><td>The local time zone and difference from UTC (Unix).
+
+</TABLE>
+<H2>FILES</H2>
+<p>
+If the files listed below exist, they contain initial options separated by white space.
+<p>
+<i>BullseyeCoverage</i><code>/bin/covbr.cfg</code><br>
+<i>home-directory</i><code>/covbr.cfg</code>
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
