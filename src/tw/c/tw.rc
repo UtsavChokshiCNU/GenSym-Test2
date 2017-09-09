@@ -1,0 +1,74 @@
+/* TW resources $Id: tw.rc,v 1.1311 2008/03/01 05:26:04 ab Exp $ */
+
+#include "windows.h"
+
+#include "../../ext/c/ddrsc.h"
+#include "../../ext/c/filedlg.rc"
+
+/* The normal resources for all Windows versions. */
+App	ICON    "tw.ico"	/* The alphabetically first icon is used by Explorer */
+G2	ICON    "tw.ico"
+GTILE	BITMAP  "gensym-tile.bmp"
+TOOLBAR	BITMAP  "toolbar.bmp"
+AVI	AVI	"delay.avi"
+
+
+/* Windows XP stuff */
+
+/* Ensure these are defined, even if using a pre-XP winuser.h */
+#ifndef RT_MANIFEST
+#define RT_MANIFEST 24
+#endif
+
+#ifndef CREATEPROCESS_MANIFEST_RESOURCE_ID
+#define CREATEPROCESS_MANIFEST_RESOURCE_ID 1
+#endif
+
+/* This causes TW to link with commctrl.dll version 6.0 when
+   running on XP. That way we pick up the new appearance of
+   native controls. */
+CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "tw.exe.manifest"
+
+
+/* Version info is nice to have because you can read it without launching the
+   app. It can include other useful flags such as VS_FF_PRIVATEBUILD, etc.
+
+   The magic "040904E4" means that the strings to follow are in
+   US English, Windows MultiLingual character set:
+   04------        = SUBLANG_ENGLISH_USA
+   --09----        = LANG_ENGLISH
+   ----04E4 = 1252 = Codepage for Windows:Multilingual
+
+   The fileversion is major, minor, quality, rev
+ */
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION    2015,20,32,0
+PRODUCTVERSION 2015,20,32,0
+FILEOS          VOS_NT_WINDOWS32
+FILETYPE        VFT_APP
+BEGIN
+   BLOCK "StringFileInfo"
+      BEGIN
+        BLOCK "040904E4"
+        BEGIN
+            VALUE "Build ID", "TH27\0"
+            VALUE "Comments", "\0"
+            VALUE "CompanyName", "Gensym Corporation\0"
+            VALUE "FileDescription", "Gensym Telewindows\0"
+            VALUE "FileVersion", "2015\0"
+            VALUE "InternalName", "tw\0"
+            VALUE "LegalCopyright", "Copyright \251 1986-2017 Gensym Corporation.\0"
+            VALUE "OriginalFilename", "tw.exe\0"
+            VALUE "ProductName", "Telewindows\0"
+            VALUE "ProductVersion", "2015\0"
+            VALUE "SpecialBuild", "\0"
+        END
+      END
+
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1252
+    END
+END
+
+
