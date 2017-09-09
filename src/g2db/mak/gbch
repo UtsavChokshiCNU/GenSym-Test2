@@ -1,0 +1,8 @@
+#!/bin/sh
+#
+#  Generate header containing today's build code
+#
+echo \#ifndef _BUILD_CODE_H_
+echo \#define _BUILD_CODE_H_
+echo \#define BUILD_CODE \"`date "+%Y %m %d" | awk '{ printf("%c%c%02d\n", ($1-1998)%26+65, $2+64, $3) } '`\"
+echo \#endif
