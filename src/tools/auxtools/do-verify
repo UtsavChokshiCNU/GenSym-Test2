@@ -1,0 +1,32 @@
+#!/bin/csh
+# See the following file for documentation.
+source auxtools/wtape-init.csh
+
+# This script is used to write the "null-tape" media.
+# It doesn't really do anything, but it would be a fine
+# place to do some additional validation of the release
+# directory.
+
+# This is used as a way to test make-gensym-tape without
+# bothering to write a tape.
+
+echo "A verify report has been made."
+echo "No verification was actually done, since I haven't"
+echo " written the script yet."
+
+
+# set media = "$1"
+# set platform = "$2"
+# set parts_list = "$3"
+# set release_directory = "$4"
+
+set file_list = /tmp/$$.fl
+
+awk '/ /{print $1}' $parts_list | sort > $file_list
+set info = ( `wc -l $file_list` )
+set part_count = $info[1]
+
+echo "Number of parts is $part_count"
+
+
+exit 0
