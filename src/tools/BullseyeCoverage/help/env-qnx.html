@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_platform.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>QNX</h1>
+
+<h2>Momentics Windows Host</h2>
+<p>
+The Momentics IDE cannot be configured to build with BullseyeCoverage.
+However, you can build from the command prompt using a makefile as described below.
+This documentation applies to QNX Software Development Platform 6.3.2.
+
+<h3>Build Run-Time Library</h3>
+<p>
+Use the commands below to build the BullseyeCoverage run-time library.
+Modify the compile command to use the same compile options as your project.
+<pre>
+cd <i>BullseyeCoverage</i>/run
+qcc -c -O -o libcov-qnx.o libcov-posix.c
+qcc -A ../lib/libcov-qnx.a libcov-qnx.o
+</pre>
+
+<h3>Build Project</h3>
+<p>
+In your project directory, run the commands below.
+<pre>
+make clean
+make QCONF_OVERRIDE=<i>BullseyeCoverage</i>/etc/qnx-qconf-override.mk
+</pre>
+
+<h2>Environment Variables</h2>
+<p>
+See <a href=env-unix.html>Unix</a>.
+
+<h2>Momentics Linux or Neutrino Host</h2>
+<p>
+Contact <a href="http://www.bullseye.com/support.html">Technical Support</a>.
+<p style="font-size:xx-small">
+Last reviewed: 4 Sep 2009
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
