@@ -1,0 +1,30 @@
+#!/bin/csh -f
+# See the following file for documentation.
+source auxtools/wtape-init.csh
+
+cd $release_directory
+if ($target_host == SELF) then
+  mkdir $target_pathname
+  set result = $status
+  if ($result != 0) then
+    echo "ERROR: Creation of new directory failed with error code ${result}."
+    exit $result
+  endif
+  tar -chlf - * | (cd $target_pathname;tar -xBfp -)
+  set result = $status
+else
+  tar -chlf - * | rsh $target_host "(mkdir $target_pathname; cd $target_pathname;tar -xf -)"
+  set result = $status
+endif
+
+# Insert verification code here!
+
+EXIT:
+
+if ($result) then
+  echo "ERROR: Tar to new directory failed."
+else
+  echo "LOG: Release files successfully copied."
+endif
+
+exit $result
