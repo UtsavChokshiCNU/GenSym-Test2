@@ -1,0 +1,53 @@
+<html><head><title>Introduction</title></head>
+<body bgcolor="#ffffff">
+<a href="introdu2.htm"><h5>| Prev </a> <a href="introdu4.htm">| Next </a> <a href="introduc.htm">| Start of Chapter </a> <a href="introdu6.htm">| End of Chapter </a> <a href="booktoc.htm">| Contents </a> <a href="bookix.htm">| Index |</a> (4 out of 7)</h5> <br>
+
+
+<a name="2609">
+<h1> Communicating With G2 WebLink </h1>
+</a><a name="2612">
+G2 and G2 WebLink communicate with each other by making <a href="procedur.htm#">remote procedure 
+calls</a>. The remote procedure calls perform operations such as sending configuration information to G2 WebLink, and pinging and killing G2 WebLink. Some of 
+these procedures return meaningful values or signals when errors occur. 
+<p>
+</a><a name="4042">
+G2 connects to G2 WebLink through a GSI Interface Object. The KB <code>gwlow.kb</code> 
+contains a fully configured GSI Interface Object, which you can use without modification for most purposes. This KB also contains objects that you must edit to 
+configure the connection between G2 and G2 WebLink. 
+<p>
+</a><a name="4044">
+G2 WebLink provides a procedure, <a href="configu2.htm#2667"></a>MONITOR-GSI-INTERFACE-TO-GW(), that 
+ensures reliable and continuous service from G2 WebLink. For most purposes, 
+you can use this procedure without modification.  
+<p>
+</a><a name="2624">
+<h2> Configuring the Behavior of G2 WebLink </h2>
+</a><a name="2625">
+After your G2 application establishes a connection to G2 WebLink, it must 
+configure G2 WebLink by calling the procedure <code>gw-configure-bridge()</code>. <a href="procedu3.htm#2737">gw-
+configure-bridge()</a> references an instance of the G2 class <code>gw-bridge-configuration</code>. 
+Attributes of the instance of <code>gw-bridge-configuration</code> specify details of how G2 
+WebLink operates.
+<p>
+</a><a name="2920">
+The top-level workspace of the KB <code>gwlow.kb</code> contains an instance of <code>gw-bridge-
+configuration</code>. You must edit this instance to specify the settings required by your 
+site. 
+<p>
+</a><a name="2628">
+G2 must call <code>gw-configure-bridge()</code> before it attempts to have <em>any</em> other interactions with G2 WebLink. The KB <code>gwlow.kb</code> does this automatically. You can also 
+call <code>gw-configure-bridge(</code>) at any time while G2 WebLink is running to reconfigure 
+its behavior. 
+<p>
+</a><a name="3722">
+<h2> G2 WebLink Processes </h2>
+</a><a name="3723">
+G2 WebLink is designed to ensure that remote procedure calls do not back up. If a 
+remote procedure request can not return immediately, a task is spawned inside 
+G2 WebLink to finish the request. 
+<p>
+</a>
+
+<a href="introdu2.htm"><h5>| Prev </a> <a href="introdu4.htm">| Next </a> <a href="introduc.htm">| Start of Chapter </a> <a href="introdu6.htm">| End of Chapter </a> <a href="booktoc.htm">| Contents </a> <a href="bookix.htm">| Index |</a> (4 out of 7)</h5> <br>
+<A HREF="titlepa1.htm"><h6>Copyright &#169; 1996, Gensym Corporation, Inc.</h6></A>
+</body></html>
