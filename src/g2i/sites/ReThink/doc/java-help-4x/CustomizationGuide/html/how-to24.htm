@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="01/11/02 11:07:23">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Customizing the Start Method</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="how-to23.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="how-to25.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/ReThink/custom-manual/stylesets/Customizing%20ReThink/Output/html/how-to-c.htm">  
+        How to Customize ReThink  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Customizing the Start Method
+</h2>
+<p>In addition to customizing the custom stop method for a block, you can customize the start method; you can only customize the start method of a block, not an instrument. The start method executes at the beginning of block processing, before the block executes the stop method and before the block computes its duration.<a name="15945"></a></p>
+<h4 >	 To customize the start method of a block:<a name="15946"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>1	</b></td>    <td valign="top" width="580">Create a subclass of the block you want to customize.<a name="15947"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>2	</b></td>    <td valign="top" width="580">Create a new method named <code>bpr-start-method</code> that has the desired behavior, as follows:<a name="15948"></a></td>  </tr></table><blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>a	</b></td>    <td valign="top" width="560">Choose View &gt; Toolbars &gt; New Item and click the Rules and Definitions tab:<a name="15949"></a></td>  </tr></table></blockquote>
+<p >
+  <a name="114563"> </a>
+<p><div align="left"><img src="images/rules-an.gif" border="0" hspace="0" vspace="0">
+</div><a name="114562"></a></p>
+
+
+
+</p>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>b	</b></td>    <td valign="top" width="560">Create a Method and place it on your customization workspace.<a name="15950"></a></td>  </tr></table></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>c	</b></td>    <td valign="top" width="560">Choose Edit Text on the stop method.<a name="114656"></a></td>  </tr></table></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>d	</b></td>    <td valign="top" width="560">Edit the first argument to the start method to refer to the custom subclass you just created.<a name="114596"></a></td>  </tr></table></blockquote>
+<blockquote><blockquote>  <a name="15951">Editing the method's first argument changes the qualified name of the method so that it corresponds to the custom subclass.</a></blockquote></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>e	</b></td>    <td valign="top" width="560">Edit the second argument to the method to refer to the <code>bpr-activity</code> class.<a name="15952"></a></td>  </tr></table></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>f	</b></td>    <td valign="top" width="560">Edit the third argument to the method to refer to the <code>ui-client-item</code> class.<a name="15953"></a></td>  </tr></table></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>g	</b></td>    <td valign="top" width="560">Specify the custom portion of the procedure, as desired.<a name="15954"></a></td>  </tr></table></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>h	</b></td>    <td valign="top" width="560">Add a <code>call next method</code> statement to the procedure in the desired location.<a name="15956"></a></td>  </tr></table></blockquote>
+<blockquote><blockquote>  <a name="15957">To cause the block to perform the custom portion of the method before it performs the default behavior, place the <code>call next method</code> statement at the end of the method.</a></blockquote></blockquote>
+<blockquote><h6><b>Note: </b>Currently, blocks do not define a default start method; however, this might change in the future. Therefore, we recommend you always include a <code>call next method</code> statement in your custom start method for future compatibility.<a name="15958"></a></h6></blockquote><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>3	</b></td>    <td valign="top" width="580">Create an instance of your custom class.<a name="15959"></a></td>  </tr></table><p>The custom class now obtains its default behavior from the custom stop method.<a name="15960"></a></p>
+<p>For example, suppose you wanted to display the detail of a Task block whenever a work object arrives at a task with detail. To do this, first create a custom subclass of a Task block, then create a custom start method that shows the workspace of the custom task.<a name="15961"></a></p>
+<p>This simple model shows a Task block with detail, which contain the custom Task block. If you step through the model, the detail automatically appears when the work object arrives at the Custom Task block on the detail.<a name="15962"></a></p>
+<p >
+  <a name="90332"> </a>
+<div style="color: #000000;  font-size: 4pt; font-style: normal; font-weight: normal; margin-bottom: 0pt; margin-left: 0pt; margin-right: 0pt; margin-top: 0pt; text-align: justify; text-decoration: none; text-indent: 0pt; text-transform: none; vertical-align: baseline">
+<a name="90331"> </a><div align="left"><img src="images/start-me.gif" border="0" hspace="0" vspace="0">
+</div><br>
+</div>
+
+
+
+</p>
+<p>Here is the custom start method for the Custom Task block and the <code>bpr-task-2</code> class definition. The custom task is an instance of the <code>bpr-task-2</code> custom class, thus the first argument to the custom start method is the custom class, <code>bpr-task-2</code>. The method tests to see if the workspace of the custom task exists, and then shows the workspace on the current window. The start method includes a <code>call next method</code> statement after the custom portion of the method so the subworkspace displays before the block does any processing.<a name="15971"></a></p>
+<p >
+  <a name="90345"> </a>
+<p><div align="left"><img src="images/how-ta31.gif" border="0" hspace="0" vspace="0">
+</div><a name="90344"></a></p>
+
+
+
+</p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="how-to23.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="how-to25.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
