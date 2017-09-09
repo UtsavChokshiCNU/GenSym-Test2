@@ -1,0 +1,38 @@
+/**************************************************************************
+
+  corbalink_daemon.idl
+
+  This interface enables client applications get a stringified
+  object reference of a G2 based CORBA object by name.
+
+  The name is checked against attribute G2ORB-OBJECT-NAME of
+  all of the G2ORB-SERVER objects registered with the bridge.
+
+  The method getIOR is handled in the bridge so no G2 code is necessary.
+  But the object in corbalink_daemon server object must be registered,
+  for the bridge to respond. This should be changed.
+
+  As of 4/21/2000 this mini name service feature is only experiment for
+  the 1.0 rev 2 and is not known to customers.
+
+  Although there is a standard CORBA object by naming interface it takes
+  and returns object references at this time. Because of a bug in Orbix
+  marshalling code that checks the object key in object reference passed as
+  parameters or return values for their format. But according to the CORBA
+  spec the object is opaque and only has meaning to the host ORB. Since our
+  object key does not match to Orbix format, an exception is thrown
+  whenever we pass one of our objects to be registered. So the normal
+  naming service will not work. But we know that if we pass a stringified
+  object reference the Orbix client, it can call a function to convert the
+  string into a usable object reference. So we invented this mini service
+  that gives out strings.
+
+***************************************************************************/
+
+interface corbalink_daemon{
+  /*
+   * getIOR, is called at runtime by the a client.
+   * It will return the named objects stringified IOR or NULL;
+   */
+  void getIOR(in string serverObjectName, out string serverObjectIOR);
+};
