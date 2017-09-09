@@ -1,0 +1,3973 @@
+# Automatically Generated File -- Please Do Not Edit
+
+index: 29
+
+family file syntax version: 10
+
+family: Optegrity
+directory name: optegrity-4.2a0
+splash screen: optegrity-setup.bmp
+guid: 88fb5875-5df5-449c-87de-0cbd5263552f
+  bundle: Optegrity Development
+    id: 1
+    version: 4.2a0-B04E17
+      component: G2 JavaLink
+        index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: jvl-unix
+            sourcedir: jvl-12r8
+            destdir: javalink
+            only on:  sparcsol hpux aix
+            postinstall code: replace_rootdir("javalink"^"bin", "set-envvars");
+          part: jvl-intelnt
+            sourcedir: jvl-12r8
+            destdir: javalink
+            only on:  nt
+            postinstall code: replace_rootdir("javalink"^"bin", "envvars.bat");
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: Download Interfaces
+                application directory: javalink\bin
+                target name: Downloadinterfaces.bat
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: Install Properties
+                application directory: javalink\bin
+                target name: InstallProperties.bat
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: G2 Bean Builder
+                application directory: javalink\bin
+                target name: G2BeanBuilder.bat
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: Examples Readme
+                application directory: javalink
+                target name: ExamplesReadme.html
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: Known Problems
+                application directory: javalink
+                target name: KnownProblems.html
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: Readme for G2 JavaLink
+                application directory: javalink
+                target name: readme-javalink.html
+          part: jvl-3tier
+            sourcedir: jvl-12r8
+            destdir: javalink
+            only on:  alphaosf linux
+          part: jvl-com-gensym-properties-intelnt
+            sourcedir: /home/development/installers/release-files
+            destdir: javalink/classes
+            filename: .com.gensym.properties
+            only on:  nt
+            postinstall code: FixupPropertiesFile(TARGETDIR^"javalink"^"bin", ".com.gensym.properties", TARGETDIR^"javalink", "classes", ".com.gensym.properties");
+          part: jvl-javadoc
+            sourcedir: jvl-javadoc-12r8
+            destdir: doc/javalink
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: API Documentation
+                application directory: doc\javalink\docs\api
+                target name: index.html
+      component: Optegrity Documentation
+        index: 2
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-doc
+            sourcedir: optegdoc-42r0-B04D14
+            destdir: doc/optegrity
+            filename: GEDPUsersGuide.pdf
+            filename: OptegrityUsersGuide.pdf
+            filename: OptegrityFurnaceTutorial.pdf
+            filename: SymCureUsersGuide.pdf
+            filename: IntelligentObjectsUsersGuide.pdf
+            filename: OptegrityReleaseNotes.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Optegrity
+                application display name: Optegrity User's Guide
+                application directory: doc/optegrity
+                target name: OptegrityUsersGuide.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Optegrity
+                application display name: Optegrity Release Notes
+                application directory: doc/optegrity
+                target name: OptegrityReleaseNotes.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Optegrity
+                application display name: Optegrity Furnace Tutorial
+                application directory: doc/optegrity
+                target name: OptegrityFurnaceTutorial.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Optegrity
+                application display name: GEDP User's Guide
+                application directory: doc/optegrity
+                target name: GEDPUsersGuide.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Optegrity
+                application display name: Intelligent Objects User's Guide
+                application directory: doc/optegrity
+                target name: IntelligentObjectsUsersGuide.pdf
+      component: G2i Modules
+        index: 3
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: g2i-core-modules
+            sourcedir:  g2i-11r1 kbs
+            destdir: g2i/kbs
+            filename: gens.kb
+            filename: gerr.kb
+            filename: grtl.kb
+            filename: glf.kb
+            filename: gqs.kb
+            filename: gqsui.kb
+            filename: gqsviews.kb
+            filename: gqsdemo.kb
+            filename: resources-english.txt
+            filename: config.txt
+            filename: gevm.kb
+            filename: geuc.kb
+          part: g2i-examples
+            sourcedir:  g2i-11r1 examples
+            destdir: g2i/examples
+            filename: gedp-demo.kb
+            filename: gdpm-demo.kb
+            filename: geuc-demo.kb
+            filename: cdg-modguide.kb
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Examples
+                subsubfolder name: G2i
+                application display name: GEDP Example
+                application directory: optegrity\bin
+                target name: StartServer.bat
+                parameters: ..\..\g2i\examples\gedp-demo.kb
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Examples
+                subsubfolder name: G2i
+                application display name: GDPM Example
+                application directory: optegrity\bin
+                target name: StartServer.bat
+                parameters: ..\..\g2i\examples\gdpm-demo.kb
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Examples
+                subsubfolder name: G2i
+                application display name: Engineering Unit Conversion Example
+                application directory: optegrity\bin
+                target name: StartServer.bat
+                parameters: ..\..\g2i\examples\geuc-demo.kb
+          part: g2i-datafiles
+            sourcedir:  g2i-11r1 data
+            destdir: g2i/data
+            filename: custom-conversions.csv
+            filename: custom-synonyms.csv
+      component: G2 Full Documentation (PDF)
+        index: 4
+        typical: false
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: g2doc-g2tutorials-pdf
+            sourcedir:  g2doc-70r0 g2tutorials
+            destdir: doc/g2/g2tutorials
+            filename: g2tutorials.pdf
+          part: g2doc-g2refman-pdf
+            sourcedir:  g2doc-70r0 g2refman
+            destdir: doc/g2/g2refman
+            filename: g2refman.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                application display name: G2 Bundle Release Notes
+                application directory: doc
+                target name: g2relnotes.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: G2
+                application display name: G2 Reference Manual
+                application directory: doc\g2\g2refman
+                target name: g2refman.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: G2
+                application display name: G2 Language Reference Card
+                application directory: doc\g2\g2langrefcard
+                target name: g2langrefcard.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: G2
+                application display name: G2 System Procedures Reference Manual
+                application directory: doc\g2\g2sysprocs
+                target name: g2sysprocs.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: G2
+                application display name: Getting Started with G2 Tutorials
+                application directory: doc\g2\g2tutorials
+                target name: g2tutorials.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: G2
+                application display name: G2 Class Reference Manual
+                application directory: doc\g2\g2classref
+                target name: g2classref.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: G2
+                application display name: G2 Developer's Guide
+                application directory: doc\g2\g2devguide
+                target name: g2devguide.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 Dynamic Displays User's Guide
+                application directory: doc\utilities\gdd
+                target name: gdd.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 Developer's Interface User's Guide
+                application directory: doc\utilities\gdi
+                target name: gdi.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 Foundation Resources User's Guide
+                application directory: doc\utilities\gfr
+                target name: gfr.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 Menu System User's Guide
+                application directory: doc\utilities\gms
+                target name: gms.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 Online Documentation Developer's Guide
+                application directory: doc\utilities\golddev
+                target name: golddev.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 Online Documentation User's Guide
+                application directory: doc\utilities\goldui
+                target name: goldui.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 GUIDE UIL Procedures Reference Manual
+                application directory: doc\utilities\guideprocref
+                target name: guideprocref.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 GUIDE User's Guide
+                application directory: doc\utilities\guideuserguide
+                target name: guideuserguide.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 XL Spreadsheet User's Guide
+                application directory: doc\utilities\gxl
+                target name: gxl.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: GDA
+                application display name: GDA User's Guide
+                application directory: doc\gda\gdaugrm
+                target name: gdaug.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: GDA
+                application display name: GDA Reference Manual
+                application directory: doc\gda\gdaugrm
+                target name: gdarefman.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: GDA
+                application display name: GDA API Reference Manual
+                application directory: doc\gda\gdaapi
+                target name: gdaapi.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 ProTools User's Guide
+                application directory: doc\utilities\g2protools
+                target name: g2protools.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: G2
+                application display name: G2 Gateway Bridge Developer's Guide
+                application directory: doc\g2\g2gateway
+                target name: g2gateway.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2 Database Bridge User's Guide
+                application directory: doc\bridges\db
+                target name: g2databasebridge.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2 OPCLink User's Guide
+                application directory: doc\bridges\opclink
+                target name: g2opclink.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2 CORBALink User's Guide
+                application directory: doc\bridges\corbalink
+                target name: g2corbalink.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2-ODBC Bridge Release Notes
+                application directory: doc\bridges\odbc
+                target name: g2odbcbridge.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2-Oracle Bridge Release Notes
+                application directory: doc\bridges\oracle
+                target name: g2oraclebridge.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2-Sybase Bridge Release Notes
+                application directory: doc\bridges\sybase
+                target name: g2sybasebridge.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2-PI Bridge User's Guide
+                application directory: doc\bridges\pi
+                target name: g2pibridge.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: G2
+                application display name: Telewindows User's Guide
+                application directory: doc\g2\telewindows
+                target name: telewindows.pdf
+          part: g2doc-g2gateway-pdf
+            sourcedir:  g2doc-70r0 g2gateway
+            destdir: doc/g2/g2gateway
+            filename: g2gateway.pdf
+          part: g2doc-g2classref-pdf
+            sourcedir:  g2doc-70r0 g2classref
+            destdir: doc/g2/g2classref
+            filename: g2classref.pdf
+          part: g2doc-telewindows-pdf
+            sourcedir:  g2doc-70r0 telewindows
+            destdir: doc/g2/telewindows
+            filename: telewindows.pdf
+          part: g2doc-g2sysprocs-pdf
+            sourcedir:  g2doc-70r0 g2sysprocs
+            destdir: doc/g2/g2sysprocs
+            filename: g2sysprocs.pdf
+          part: g2doc-g2langrefcard-pdf
+            sourcedir:  g2doc-70r0 g2langrefcard
+            destdir: doc/g2/g2langrefcard
+            filename: g2langrefcard.pdf
+          part: g2doc-g2devguide-pdf
+            sourcedir:  g2doc-70r0 g2devguide
+            destdir: doc/g2/g2devguide
+            filename: g2devguide.pdf
+          part: g2utldoc-gdi-pdf
+            sourcedir:  g2utldoc-70r0 gdi
+            destdir: doc/utilities/gdi
+            filename: gdi.pdf
+          part: g2utldoc-gms-pdf
+            sourcedir:  g2utldoc-70r0 gms
+            destdir: doc/utilities/gms
+            filename: gms.pdf
+          part: g2utldoc-goldui-pdf
+            sourcedir:  g2utldoc-70r0 goldui
+            destdir: doc/utilities/goldui
+            filename: goldui.pdf
+          part: g2utldoc-guideuserguide-pdf
+            sourcedir:  g2utldoc-70r0 guideuserguide
+            destdir: doc/utilities/guideuserguide
+            filename: guideuserguide.pdf
+          part: g2utldoc-gdd-pdf
+            sourcedir:  g2utldoc-70r0 gdd
+            destdir: doc/utilities/gdd
+            filename: gdd.pdf
+          part: g2utldoc-gfr-pdf
+            sourcedir:  g2utldoc-70r0 gfr
+            destdir: doc/utilities/gfr
+            filename: gfr.pdf
+          part: g2utldoc-golddev-pdf
+            sourcedir:  g2utldoc-70r0 golddev
+            destdir: doc/utilities/golddev
+            filename: golddev.pdf
+          part: g2utldoc-guideprocref-pdf
+            sourcedir:  g2utldoc-70r0 guideprocref
+            destdir: doc/utilities/guideprocref
+            filename: guideprocref.pdf
+          part: g2utldoc-gxl-pdf
+            sourcedir:  g2utldoc-70r0 gxl
+            destdir: doc/utilities/gxl
+            filename: gxl.pdf
+          part: jvldoc-javalink-pdf
+            sourcedir:  jvldoc-12r5-FC07 docs/guides/g2javalink
+            destdir: doc/javalink/docs/guides/g2javalink
+            filename: g2javalink.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: G2 JavaLink
+                application display name: G2 DownloadInterfaces User's Guide
+                application directory: doc\javalink\docs\guides\g2downloadinterfaces
+                target name: g2downloadinterfaces.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: G2 JavaLink
+                application display name: G2 Bean Builder User's Guide
+                application directory: doc\javalink\docs\guides\g2beanbuilder
+                target name: g2beanbuilder.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: G2 JavaLink
+                application display name: G2 JavaLink User's Guide
+                application directory: doc\javalink\docs\guides\g2javalink
+                target name: g2javalink.pdf
+          part: jvldoc-di-pdf
+            sourcedir:  jvldoc-12r5-FC07 docs/guides/g2downloadinterfaces
+            destdir: doc/javalink/docs/guides/g2downloadinterfaces
+            filename: g2downloadinterfaces.pdf
+          part: jvldoc-bb-pdf
+            sourcedir:  jvldoc-12r5-FC07 docs/guides/g2beanbuilder
+            destdir: doc/javalink/docs/guides/g2beanbuilder
+            filename: g2beanbuilder.pdf
+          part: axldoc
+            sourcedir:  axldoc-10r5-FC07 activexlink
+            destdir: doc/bridges/activexlink
+            filename: g2activexlink.pdf
+            only on:  nt
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2 ActiveXLink User's Guide
+                application directory: doc\bridges\activexlink
+                target name: g2activexlink.pdf
+          part: corbalinkdoc
+            sourcedir:  corbalinkdoc-10r2-FC07 corbalink
+            destdir: doc/bridges/corbalink
+            filename: g2corbalink.pdf
+          part: g2classicrn
+            sourcedir: g2classicrn-71r1
+            destdir: doc
+            filename: g2relnotes.pdf
+          part: g2oradoc
+            sourcedir:  g2oradoc-60r9-FC07 oracle
+            destdir: doc/bridges/oracle
+            filename: g2oraclebridge.pdf
+          part: g2sybdoc
+            sourcedir:  g2sybdoc-60r9-FC07 sybase
+            destdir: doc/bridges/sybase
+            filename: g2sybasebridge.pdf
+          part: opclinkdoc
+            sourcedir:  opclinkdoc-21r0-FC07 opclink
+            destdir: doc/bridges/opclink
+            filename: g2opclink.pdf
+          part: g2pidoc
+            sourcedir:  g2pidoc-50r0 pi
+            destdir: doc/bridges/pi
+            filename: g2pibridge.pdf
+          part: g2odbcdoc
+            sourcedir:  g2odbcdoc-60r9-FC07 odbc
+            destdir: doc/bridges/odbc
+            filename: g2odbcbridge.pdf
+          part: g2dbdoc
+            sourcedir:  g2dbdoc-60r9-FC07 db
+            destdir: doc/bridges/db
+            filename: g2databasebridge.pdf
+          part: protoolsdoc
+            sourcedir:  protoolsdoc-70r0-FD24 g2protools
+            destdir: doc/utilities/g2protools
+            filename: g2protools.pdf
+          part: weblinkdoc
+            sourcedir:  weblinkdoc-10r5-FC07 weblink
+            destdir: doc/bridges/weblink
+            filename: g2weblink.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2 WebLink User's Guide
+                application directory: doc\bridges\weblink
+                target name: g2weblink.pdf
+          part: gdadoc-api-pdf
+            sourcedir:  gdadoc-42r0-FD24 gda/gdaapi
+            destdir: doc/gda/gdaapi
+            filename: gdaapi.pdf
+          part: gdadoc-ug-pdf
+            sourcedir:  gdadoc-42r0-FD24 gda/gdaugrm
+            destdir: doc/gda/gdaugrm
+            filename: gdarefman.pdf
+            filename: gdaug.pdf
+      component: G2 Full Documentation (HTML/Gold)
+        index: 5
+        typical: false
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: g2doc-g2refman-html
+            sourcedir:  g2doc-70r0 g2refman/html
+            destdir: doc/g2/g2refman/html
+          part: g2doc-g2tutorials-html
+            sourcedir:  g2doc-70r0 g2tutorials/html
+            destdir: doc/g2/g2tutorials/html
+          part: g2doc-g2gateway-html
+            sourcedir:  g2doc-70r0 g2gateway/html
+            destdir: doc/g2/g2gateway/html
+          part: g2doc-g2classref-html
+            sourcedir:  g2doc-70r0 g2classref/html
+            destdir: doc/g2/g2classref/html
+          part: g2doc-telewindows-html
+            sourcedir:  g2doc-70r0 telewindows/html
+            destdir: doc/g2/telewindows/html
+          part: g2doc-g2sysprocs-html
+            sourcedir:  g2doc-70r0 g2sysprocs/html
+            destdir: doc/g2/g2sysprocs/html
+          part: g2doc-g2langrefcard-html
+            sourcedir:  g2doc-70r0 g2langrefcard/html
+            destdir: doc/g2/g2langrefcard/html
+          part: g2doc-g2devguide-html
+            sourcedir:  g2doc-70r0 g2devguide/html
+            destdir: doc/g2/g2devguide/html
+          part: g2utldoc-gdi-html
+            sourcedir:  g2utldoc-70r0 gdi/html
+            destdir: doc/utilities/gdi/html
+          part: g2utldoc-gms-html
+            sourcedir:  g2utldoc-70r0 gms/html
+            destdir: doc/utilities/gms/html
+          part: g2utldoc-goldui-html
+            sourcedir:  g2utldoc-70r0 goldui/html
+            destdir: doc/utilities/goldui/html
+          part: g2utldoc-guideuserguide-html
+            sourcedir:  g2utldoc-70r0 guideuserguide/html
+            destdir: doc/utilities/guideuserguide/html
+          part: g2utldoc-gdd-html
+            sourcedir:  g2utldoc-70r0 gdd/html
+            destdir: doc/utilities/gdd/html
+          part: g2utldoc-gfr-html
+            sourcedir:  g2utldoc-70r0 gfr/html
+            destdir: doc/utilities/gfr/html
+          part: g2utldoc-golddev-html
+            sourcedir:  g2utldoc-70r0 golddev/html
+            destdir: doc/utilities/golddev/html
+          part: g2utldoc-guideprocref-html
+            sourcedir:  g2utldoc-70r0 guideprocref/html
+            destdir: doc/utilities/guideprocref/html
+          part: g2utldoc-gxl-html
+            sourcedir:  g2utldoc-70r0 gxl/html
+            destdir: doc/utilities/gxl/html
+          part: jvldoc-javalink-html
+            sourcedir:  jvldoc-12r5-FC07 docs/guides/g2javalink/html
+            destdir: doc/javalink/docs/guides/g2javalink/html
+          part: jvldoc-di-html
+            sourcedir:  jvldoc-12r5-FC07 docs/guides/g2downloadinterfaces/html
+            destdir: doc/javalink/docs/guides/g2downloadinterfaces/html
+          part: jvldoc-bb-html
+            sourcedir:  jvldoc-12r5-FC07 docs/guides/g2beanbuilder/html
+            destdir: doc/javalink/docs/guides/g2beanbuilder/html
+          part: axldoc-html
+            sourcedir:  axldoc-10r5-FC07 activexlink/html
+            destdir: doc/bridges/activexlink/html
+            only on:  nt
+          part: corbalinkdoc-html
+            sourcedir:  corbalinkdoc-10r2-FC07 corbalink/html
+            destdir: doc/bridges/corbalink/html
+          part: g2oradoc-html
+            sourcedir:  g2oradoc-60r9-FC07 oracle/html
+            destdir: doc/bridges/oracle/html
+          part: g2sybdoc-html
+            sourcedir:  g2sybdoc-60r9-FC07 sybase/html
+            destdir: doc/bridges/sybase/html
+          part: opclinkdoc-html
+            sourcedir:  opclinkdoc-21r0-FC07 opclink/html
+            destdir: doc/bridges/opclink/html
+          part: g2pidoc-html
+            sourcedir:  g2pidoc-50r0 pi/html
+            destdir: doc/bridges/pi/html
+          part: g2odbcdoc-html
+            sourcedir:  g2odbcdoc-60r9-FC07 odbc/html
+            destdir: doc/bridges/odbc/html
+          part: g2dbdoc-html
+            sourcedir:  g2dbdoc-60r9-FC07 db/html
+            destdir: doc/bridges/db/html
+          part: protoolsdoc-html
+            sourcedir:  protoolsdoc-70r0-FD24 g2protools/html
+            destdir: doc/utilities/g2protools/html
+          part: weblinkdoc-html
+            sourcedir:  weblinkdoc-10r5-FC07 weblink/html
+            destdir: doc/bridges/weblink/html
+          part: gdadoc-api-html
+            sourcedir:  gdadoc-42r0-FD24 gda/gdaapi/html
+            destdir: doc/gda/gdaapi/html
+          part: gdadoc-ug-html
+            sourcedir:  gdadoc-42r0-FD24 gda/gdaugrm/html
+            destdir: doc/gda/gdaugrm/html
+      component: G2 Core Documentation (Windows Help)
+        index: 6
+        only on:  nt
+        typical: true
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: doc-chm
+            sourcedir: g2winhelp-71r0
+            destdir: g2
+            filename: G2BundleReleaseNotesHelp.chm
+            filename: G2ClassReferenceHelp.chm
+            filename: G2Core.html
+            filename: G2DevelopersGuideHelp.chm
+            filename: G2LanguageReferenceHelp.chm
+            filename: G2ProToolsHelp.chm
+            filename: G2ReferenceManualHelp.chm
+            filename: G2SystemProceduresHelp.chm
+            filename: G2Utilities.html
+            filename: GDDHelp.chm
+            filename: GDIHelp.chm
+            filename: GFRHelp.chm
+            filename: GMSHelp.chm
+            filename: GOLDDevelopersGuideHelp.chm
+            filename: GOLDHelp.chm
+            filename: GUIDEHelp.chm
+            filename: GUIDEUILHelp.chm
+            filename: GXLHelp.chm
+            filename: GettingStarted.html
+            filename: GettingStartedWithG2Help.chm
+            filename: Master.CHM
+            filename: Master.html
+            filename: Master2.html
+            filename: Master3.html
+            filename: TelewindowsHelp.chm
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                application display name: Windows Help G2 Documentation
+                application directory: g2
+                target name: Master.CHM
+      component: G2 ProTools
+        index: 7
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: protools
+            sourcedir: protools-71r2
+            destdir: protools/kbs
+            filename: protools.kb
+            filename: ptroot.kb
+          part: profiler
+            sourcedir: protools-71r2
+            destdir: g2/kbs/utils
+            filename: profiler.kb
+            filename: profroot.kb
+      component: G2 ActiveXLink
+        index: 8
+        only on:  nt
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: axl
+            sourcedir: axl-10r9
+            destdir: activexlink
+            filename: gsi.dll
+            filename: g2com.kb
+            filename: runme.bat
+            filename: regsvr32.exe
+            only on:  nt
+          part: axl-g2com-dll
+            sourcedir: axl-10r9
+            destdir: activexlink
+            filename: G2Com.dll
+            only on:  nt
+            register: yes
+          part: axl-demos
+            sourcedir:  axl-10r9 demos
+            destdir: activexlink/demos
+            only on:  nt
+      component: G2 WebLink
+        index: 9
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: gw
+            sourcedir: gw-10r5
+            destdir: gw
+          part: gsi-gw-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: gw
+            filename: gw-gsi.ok
+            new filename: gsi.ok
+            obfuscate: true
+          part: run-gw-template-batfile
+            sourcedir: /home/development/installers/release-files
+            destdir: gw
+            filename: run-gw.bat
+            only on:  nt
+            postinstall code: replace_rootdir("gw", "run-gw.bat");
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                application display name: G2 WebLink
+                application directory: gw
+                target name: run-gw.bat
+          part: gsi-gw-blank-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: gw
+            filename: gsi.ok
+            only on:  nt
+      component: Telewindows
+        index: 10
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: TW Windows Executable
+            sourcedir: tw-71r2
+            destdir: g2
+            filename: tw.exe
+            filename: nptwplug.dll
+            filename: tw.map
+            only on:  nt
+          part: TW Unix Executable
+            sourcedir: tw-71r2
+            destdir: g2
+            filename: tw
+            filename: nptwplug.so
+            on all but:  nt
+          part: twax
+            sourcedir: twax-71r2
+            destdir: g2
+            filename: TwControl.cab
+            filename: unregisterTwControl.bat
+            filename: TwControl.ocx
+            filename: install.html
+            filename: registerTwControl.bat
+            only on:  nt
+          part: twax-examples
+            sourcedir:  twax-71r2 examples
+            destdir: g2/examples
+            only on:  nt
+          part: fonts
+            sourcedir: fonts-71r2
+            destdir: g2/fonts
+      component: G2 (and utilities)
+        index: 11
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: G2 Windows Executable
+            sourcedir: g2-71r2
+            destdir: g2
+            filename: g2.exe
+            filename: g2passwd.exe
+            filename: g2.map
+            only on:  nt
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                application display name: G2
+                application directory: g2
+                target name: g2.exe
+                parameters: -module-search-path ..\g2i\kbs kbs\utils ..\optegrity\kbs ..\optegrity\demos ..\pi ..\odbc ..\opclink\kbs ..\protools\kbs ..\gw ..\corbalink\kbs ..\javalink\kbs ..\gda ..\activexlink ..\oracle ..\sybase -ok ..\g2\g2.ok
+          part: G2 Unix Executable
+            sourcedir: g2-71r2
+            destdir: g2
+            filename: g2
+            filename: g2passwd
+            on all but:  nt
+          part: Kanji dictionary files
+            sourcedir: g2-71r2
+            destdir: g2
+            filename: index.dic
+            filename: kojin.dic
+            filename: main.dic
+          part: G2 EXT Directory
+            sourcedir:  g2-71r2 ext
+            destdir: g2/ext
+          part: Sample G2 OK file
+            sourcedir: g2-71r2
+            destdir: g2
+            filename: g2.ok
+          part: kbs
+            sourcedir: kbs-71r2
+            destdir: g2/kbs
+          part: fonts
+            sourcedir: fonts-71r2
+            destdir: g2/fonts
+          part: mill-demo
+            sourcedir: demos-71r2
+            destdir: g2/kbs/demos
+            filename: start-mill.bat
+            filename: sleep.exe
+            only on:  nt
+            postinstall code: replace_rootdir("g2"^"kbs"^"demos", "start-mill.bat");
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Examples
+                subsubfolder name: G2
+                application display name: Mill Demo
+                application directory: g2\kbs\demos
+                target name: start-mill.bat
+          part: startserver-bat-file
+            sourcedir: demos-71r2
+            destdir: g2
+            filename: StartServer.bat
+            only on:  nt
+            postinstall code: replace_rootdir("g2", "StartServer.bat");
+      component: G2 Gateway (GSI)
+        index: 12
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: gsi
+            sourcedir: gsi-71r2
+            destdir: gsi
+      component: G2 Readme
+        index: 13
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: g2-readme
+            sourcedir: g2pkgreadme-71r1
+            filename: readme-g2.html
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                application display name: Readme for G2 Bundle
+                application directory: 
+                target name: readme-g2.html
+      component: G2 Diagnostic Assistant (GDA)
+        index: 14
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: gda
+            sourcedir: gda-43r0
+            destdir: gda
+      component: Java Runtime Environment
+        index: 15
+        only on:  nt
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: jre
+            sourcedir: jre-13r1_01
+            destdir: jre
+            only on:  nt
+      component: Import/Export Utilities for SymCure Upgrade
+        index: 16
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: cdg-import-export-kbs
+            sourcedir:  intereas-40b0-B03F16 kbs
+            destdir: optegrity/kbs
+            filename: cdg-import.kb
+            filename: cdg-export.kb
+          part: cdg-readme
+            sourcedir: optegdoc-42r0-B04D14
+            destdir: g2i
+            filename: readme-symcure.html
+            filename: cdgimportutility3.gif
+            filename: cdgimportutility42.gif
+            filename: readme-symcure3.gif
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                application display name: Readme for SymCure
+                application directory: g2i
+                target name: readme-symcure.html
+      component: Optegrity Readme
+        index: 17
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-readme
+            sourcedir: optegdoc-42r0-B04D14
+            filename: readme-optegrity.html
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                application display name: Readme for Optegrity Bundle
+                application directory: 
+                target name: readme-optegrity.html
+      component: GService Startup Service
+        index: 18
+        only on:  nt
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: gservice
+            sourcedir: gservice-71r2
+            destdir: g2
+            filename: gservice.exe
+            only on:  nt
+      component: Intelligent Objects
+        index: 19
+        optional: true
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: opt-io-modules
+            sourcedir:  optegrity-42r0-B04D14 kbs
+            destdir: optegrity/kbs
+            filename: iato.kb
+            filename: icco.kb
+            filename: ico.kb
+            filename: icso.kb
+            filename: idco.kb
+            filename: iedo.kb
+            filename: iffo.kb
+            filename: iho.kb
+            filename: ioc.kb
+            filename: ipo.kb
+            filename: irco.kb
+            filename: iso.kb
+            filename: ito.kb
+            filename: ivo.kb
+            filename: ixo.kb
+            filename: sdb.kb
+          part: opt-io-data
+            sourcedir:  optegrity-42r0-B04D14 data
+            destdir: optegrity/data
+            filename: io-external-datapoints-configuration.csv
+            filename: io-replay-to-external-datapoint.csv
+            filename: F-101-external-data.csv
+          part: opt-io-examples
+            sourcedir:  optegrity-42r0-B04D14 examples
+            destdir: optegrity/examples
+            filename: io-examples.kb
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Examples
+                subsubfolder name: Intelligent Objects
+                application display name: Heater Example
+                application directory: optegrity\bin
+                target name: StartServer.bat
+                parameters: ..\examples\io-examples.kb
+          part: opt-io-resources
+            sourcedir:  optegrity-42r0-B04D14 resources
+            destdir: optegrity/resources
+            filename: IATO-EventNames.txt
+            filename: ICCO-EventNames.txt
+            filename: ICO-EventNames.txt
+            filename: IDCO-EventNames.txt
+            filename: IEDO-EventNames.txt
+            filename: IFFO-FB-EventNames.txt
+            filename: IFFO-FF-EventNames.txt
+            filename: IHO-EventNames.txt
+            filename: IPO-EventNames.txt
+            filename: IRCO-EventNames.txt
+            filename: ISO-EventNames.txt
+            filename: ITO-EventNames.txt
+            filename: IVO-EventNames.txt
+            filename: IXO-EventNames.txt
+          part: opt-f101-examples
+            sourcedir:  optegrity-42r0-B04D14 examples
+            destdir: optegrity/examples
+            filename: f101demo.kb
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Examples
+                subsubfolder name: Intelligent Objects
+                application display name: Furnace Example
+                application directory: optegrity\bin
+                target name: StartServer.bat
+                parameters: ..\examples\f101demo.kb
+      component: Optegrity KBs
+        index: 20
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: opt-archive
+            sourcedir:  optegrity-42r0-B04D14 archives
+            destdir: optegrity/archives
+          part: opt-bin
+            sourcedir:  optegrity-42r0-B04D14 bin
+            destdir: optegrity/bin
+            filename: InstallServerAsNTService.bat
+            filename: Optegrity.ico
+            filename: StartServer.bat
+            filename: UninstallServerAsNTService.bat
+            filename: StartClient.bat
+            postinstall code: replace_rootdir("optegrity"^"bin", "StartServer.bat");replace_rootdir("optegrity"^"bin", "InstallServerAsNTService.bat");replace_rootdir("optegrity"^"bin", "UninstallServerAsNTService.bat");replace_rootdir("optegrity"^"bin", "StartClient.bat");
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                application display name: Start Optegrity Server
+                application directory: optegrity\bin
+                target name: StartServer.bat
+                icon file: Optegrity.ico
+                icon index: 0
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                application display name: Start Optegrity Client
+                application directory: optegrity\bin
+                target name: StartClient.bat
+                icon file: Optegrity.ico
+                icon index: 0
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Optegrity
+                application display name: SymCure User's Guide
+                application directory: doc/optegrity
+                target name: SymCureUsersGuide.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Examples
+                subsubfolder name: Optegrity
+                application display name: Furnace Tutorial
+                application directory: optegrity\bin
+                target name: StartServer.bat
+                parameters: ..\examples\fo2demo.kb
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Examples
+                subsubfolder name: Optegrity
+                application display name: SymCure Modeling Guide
+                application directory: optegrity\bin
+                target name: StartServer.bat
+                parameters: ..\..\g2i\examples\cdg-modguide.kb
+          part: opt-data
+            sourcedir:  optegrity-42r0-B04D14 data
+            destdir: optegrity/data
+            filename: fo2-external-datapoint-configuration-OPC.csv
+            filename: fo2-external-datapoint-configuration-OPC.xls
+            filename: fo2-external-datapoint-configuration-PI.csv
+            filename: fo2-external-datapoint-configuration-PI.xls
+            filename: fo2-external-datapoints-configuration.csv
+            filename: fo2-external-datapoints-configuration.xls
+            filename: fo2-logging-data.csv
+            filename: fo2-replay-to-external-datapoint.csv
+            filename: fo2-replay-to-internal-datapoint.csv
+          part: opt-examples
+            sourcedir:  optegrity-42r0-B04D14 examples
+            destdir: optegrity/examples
+            filename: fo2demo.kb
+          part: opt-kbs
+            sourcedir:  optegrity-42r0-B04D14 kbs
+            destdir: optegrity/kbs
+            filename: equipmnt.kb
+            filename: optegrity.kb
+            filename: optegrity-core.kb
+          part: opt-g2i-modules
+            sourcedir:  g2i-11r1 kbs
+            destdir: g2i/kbs
+            filename: cdg.kb
+            filename: cdggrlb.kb
+            filename: gdpm.kb
+            filename: grlb.kb
+            filename: gdsm.kb
+            filename: gedp.kb
+            filename: guif.kb
+            filename: guif-resources.txt
+            filename: geuc.kb
+          part: g2i-core-modules
+            sourcedir:  g2i-11r1 kbs
+            destdir: g2i/kbs
+            filename: gens.kb
+            filename: gerr.kb
+            filename: grtl.kb
+            filename: glf.kb
+            filename: gqs.kb
+            filename: gqsui.kb
+            filename: gqsviews.kb
+            filename: gqsdemo.kb
+            filename: resources-english.txt
+            filename: config.txt
+            filename: gevm.kb
+            filename: geuc.kb
+          part: opt-logs
+            sourcedir:  optegrity-42r0-B04D14 logs
+            destdir: optegrity/logs
+          part: opt-resources
+            sourcedir:  optegrity-42r0-B04D14 resources
+            destdir: optegrity/resources
+            filename: optegrity-core-resources.txt
+          part: opt-odbc-bridge
+            sourcedir: g2odbc-60r11
+            destdir: odbc
+            filename: g2-database.kb
+            only on:  nt
+          part: opt-opclink
+            sourcedir:  opclink-21r1 KBs
+            destdir: opclink/kbs
+            filename: launch.kb
+            only on:  nt
+          part: opt-pi
+            sourcedir: g2pi-50r3
+            destdir: pi
+            filename: g2-pi.kb
+            filename: gensym-raised-button.kb
+            only on:  nt
+          part: opt-jms
+            sourcedir:  jms-11r1 kbs
+            destdir: jms/kbs
+            filename: jms.kb
+            only on:  nt
+      component: G2 CORBALink
+        index: 21
+        on all but:  alphaosf linux
+        optional: true
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: corbalink
+            sourcedir: corbalink-10r3
+            destdir: corbalink
+            on all but:  alphaosf linux
+      component: G2 OPCLink Bridge
+        index: 22
+        only on:  nt
+        optional: true
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: opclink
+            sourcedir: opclink-21r1
+            destdir: opclink
+          part: gsi-opclink-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: opclink
+            filename: opclink-gsi.ok
+            new filename: gsi.ok
+            obfuscate: true
+          part: run-g2opc-template-batfile
+            sourcedir: /home/development/installers/release-files
+            destdir: opclink
+            filename: run-G2Opc.bat
+            only on:  nt
+            postinstall code: replace_rootdir("opclink", "run-G2Opc.bat");
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Bridges
+                application display name: G2 OPCLink Bridge
+                application directory: opclink
+                target name: run-G2Opc.bat
+          part: gsi-opclink-blank-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: opclink
+            filename: gsi.ok
+            only on:  nt
+      component: G2 PI Bridge
+        index: 23
+        only on:  nt
+        optional: true
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: g2pi
+            sourcedir: g2pi-50r3
+            destdir: pi
+          part: gsi-pi-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: pi
+            filename: pi-gsi.ok
+            new filename: gsi.ok
+            obfuscate: true
+          part: run-g2-pi-template-batfile
+            sourcedir: /home/development/installers/release-files
+            destdir: pi
+            filename: run-g2-pi.bat
+            only on:  nt
+            postinstall code: replace_rootdir("pi", "run-g2-pi.bat");
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Bridges
+                application display name: G2 PI Bridge
+                application directory: pi
+                target name: run-g2-pi.bat
+          part: gsi-pi-blank-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: pi
+            filename: gsi.ok
+            only on:  nt
+      component: G2 Oracle Bridge
+        index: 24
+        optional: true
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: oraclebridge
+            sourcedir: g2oracle-60r10
+            destdir: oracle
+          part: gsi-oracle-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: oracle
+            filename: oracle-gsi.ok
+            new filename: gsi.ok
+            obfuscate: true
+          part: run-g2-ora7-template-batfile
+            sourcedir: /home/development/installers/release-files
+            destdir: oracle
+            filename: run-g2-ora7.bat
+            only on:  nt
+            postinstall code: replace_rootdir("oracle", "run-g2-ora7.bat");
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Bridges
+                subsubfolder name: G2 Oracle
+                application display name: G2 Oracle 7 Bridge
+                application directory: oracle
+                target name: run-g2-ora7.bat
+          part: run-g2-ora80-template-batfile
+            sourcedir: /home/development/installers/release-files
+            destdir: oracle
+            filename: run-g2-ora80.bat
+            only on:  nt
+            postinstall code: replace_rootdir("oracle", "run-g2-ora80.bat");
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Bridges
+                subsubfolder name: G2 Oracle
+                application display name: G2 Oracle 8.0 Bridge
+                application directory: oracle
+                target name: run-g2-ora80.bat
+          part: run-g2-ora81-template-batfile
+            sourcedir: /home/development/installers/release-files
+            destdir: oracle
+            filename: run-g2-ora81.bat
+            only on:  nt
+            postinstall code: replace_rootdir("oracle", "run-g2-ora81.bat");
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Bridges
+                subsubfolder name: G2 Oracle
+                application display name: G2 Oracle 8.1 Bridge
+                application directory: oracle
+                target name: run-g2-ora81.bat
+          part: run-g2-ora90-template-batfile
+            sourcedir: /home/development/installers/release-files
+            destdir: oracle
+            filename: run-g2-ora90.bat
+            only on:  nt
+            postinstall code: replace_rootdir("oracle", "run-g2-ora90.bat");
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Bridges
+                subsubfolder name: G2 Oracle
+                application display name: G2 Oracle 9.0 Bridge
+                application directory: oracle
+                target name: run-g2-ora90.bat
+          part: run-g2-ora92-template-batfile
+            sourcedir: /home/development/installers/release-files
+            destdir: oracle
+            filename: run-g2-ora92.bat
+            only on:  nt
+            postinstall code: replace_rootdir("oracle", "run-g2-ora92.bat");
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Bridges
+                subsubfolder name: G2 Oracle
+                application display name: G2 Oracle 9.2 Bridge
+                application directory: oracle
+                target name: run-g2-ora92.bat
+          part: gsi-oracle-blank-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: oracle
+            filename: gsi.ok
+            only on:  nt
+      component: G2 Sybase Bridge
+        index: 25
+        on all but:  linux
+        optional: true
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: sybasebridge
+            sourcedir: g2sybase-60r10
+            destdir: sybase
+            on all but:  linux
+          part: gsi-sybase-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: sybase
+            filename: sybase-gsi.ok
+            new filename: gsi.ok
+            obfuscate: true
+          part: run-g2-sybase-template-batfile
+            sourcedir: /home/development/installers/release-files
+            destdir: sybase
+            filename: run-g2-sybase.bat
+            only on:  nt
+            postinstall code: replace_rootdir("sybase", "run-g2-sybase.bat");
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Bridges
+                application display name: G2 Sybase Bridge
+                application directory: sybase
+                target name: run-g2-sybase.bat
+          part: gsi-sybase-blank-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: sybase
+            filename: gsi.ok
+            only on:  nt
+      component: G2 ODBC Bridge
+        index: 26
+        only on:  nt
+        optional: true
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: odbcbridge
+            sourcedir: g2odbc-60r11
+            destdir: odbc
+            only on:  nt
+          part: gsi-odbc-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: odbc
+            filename: odbc-gsi.ok
+            new filename: gsi.ok
+            obfuscate: true
+          part: run-g2-odbc-template-batfile
+            sourcedir: /home/development/installers/release-files
+            destdir: odbc
+            filename: run-g2-odbc.bat
+            only on:  nt
+            postinstall code: replace_rootdir("odbc", "run-g2-odbc.bat");
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Bridges
+                application display name: G2 ODBC Bridge
+                application directory: odbc
+                target name: run-g2-odbc.bat
+          part: gsi-odbc-blank-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: odbc
+            filename: gsi.ok
+            only on:  nt
+      component: Socket Manager
+        index: 27
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: socket-manager-bin
+            sourcedir:  sockman-42r0-B04D14 bin
+            destdir: sockman/bin
+            filename: StartSockManBridge.bat
+            filename: SocketManager.sh
+            only on:  nt sparcsol
+            postinstall code: replace_rootdir("sockman"^"bin", "StartSockManBridge.bat");
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Bridges
+                application display name: Socket Manager Bridge
+                application directory: sockman\bin
+                target name: StartSockManBridge.bat
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Examples
+                subsubfolder name: Socket Manager
+                application display name: Socket Manager Example
+                application directory: optegrity\bin
+                target name: StartServer.bat
+                parameters: ..\..\sockman\kbs\sockdemo.kb
+          part: socket-manager-classes
+            sourcedir:  sockman-42r0-B04D14 classes
+            destdir: sockman/classes
+            filename: SocketManager.jar
+            only on:  nt sparcsol
+          part: socket-manager-kbs
+            sourcedir:  sockman-42r0-B04D14 kbs
+            destdir: sockman/kbs
+            filename: gsockman.kb
+            only on:  nt sparcsol
+          part: socket-manager-example
+            sourcedir:  sockman-42r0-B04D14 examples
+            destdir: sockman/examples
+            filename: gsockdemo.kb
+            only on:  nt sparcsol
+          part: socket-manager-doc
+            sourcedir:  sockman-42r0-B04D14 doc
+            destdir: doc/bridges/sockman
+            filename: JSockManUsersGuide.pdf
+            only on:  nt sparcsol
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: Socket Manager User's Guide
+                application directory: doc/bridges/sockman
+                target name: JSockManUsersGuide.pdf
+          part: jre
+            sourcedir: jre-13r1_01
+            destdir: jre
+            only on:  nt
+          part: jvl-unix
+            sourcedir: jvl-12r8
+            destdir: javalink
+            only on:  sparcsol hpux aix
+            postinstall code: replace_rootdir("javalink"^"bin", "set-envvars");
+          part: jvl-intelnt
+            sourcedir: jvl-12r8
+            destdir: javalink
+            only on:  nt
+            postinstall code: replace_rootdir("javalink"^"bin", "envvars.bat");
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: Download Interfaces
+                application directory: javalink\bin
+                target name: Downloadinterfaces.bat
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: Install Properties
+                application directory: javalink\bin
+                target name: InstallProperties.bat
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: G2 Bean Builder
+                application directory: javalink\bin
+                target name: G2BeanBuilder.bat
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: Examples Readme
+                application directory: javalink
+                target name: ExamplesReadme.html
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: Known Problems
+                application directory: javalink
+                target name: KnownProblems.html
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: Readme for G2 JavaLink
+                application directory: javalink
+                target name: readme-javalink.html
+          part: jvl-3tier
+            sourcedir: jvl-12r8
+            destdir: javalink
+            only on:  alphaosf linux
+          part: jvl-com-gensym-properties-intelnt
+            sourcedir: /home/development/installers/release-files
+            destdir: javalink/classes
+            filename: .com.gensym.properties
+            only on:  nt
+            postinstall code: FixupPropertiesFile(TARGETDIR^"javalink"^"bin", ".com.gensym.properties", TARGETDIR^"javalink", "classes", ".com.gensym.properties");
+          part: jvl-javadoc
+            sourcedir: jvl-javadoc-12r8
+            destdir: doc/javalink
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: API Documentation
+                application directory: doc\javalink\docs\api
+                target name: index.html
+      component: JMail
+        index: 28
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: jmail-part
+            sourcedir: jmail-11r1
+            destdir: jmail
+            only on:  nt
+            postinstall code: replace_rootdir("jmail"^"bin", "StartJMailBridge.bat");
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Bridges
+                application display name: G2 JMail Bridge
+                application directory: jmail\bin
+                target name: StartJMailBridge.bat
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Examples
+                subsubfolder name: G2 JMail Bridge
+                application display name: G2 JMail Bridge Tutorial
+                application directory: optegrity\bin
+                target name: StartServer.bat
+                parameters: ..\..\jmail\examples\jmail-demo.kb
+          part: jmail-doc
+            sourcedir: jmaildoc-10r0
+            destdir: doc/bridges/jmail
+            only on:  nt
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2 JMail Bridge User's Guide
+                application directory: doc/bridges/jmail
+                target name: g2jmailbridge.pdf
+          part: jre
+            sourcedir: jre-13r1_01
+            destdir: jre
+            only on:  nt
+          part: jvl-unix
+            sourcedir: jvl-12r8
+            destdir: javalink
+            only on:  sparcsol hpux aix
+            postinstall code: replace_rootdir("javalink"^"bin", "set-envvars");
+          part: jvl-intelnt
+            sourcedir: jvl-12r8
+            destdir: javalink
+            only on:  nt
+            postinstall code: replace_rootdir("javalink"^"bin", "envvars.bat");
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: Download Interfaces
+                application directory: javalink\bin
+                target name: Downloadinterfaces.bat
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: Install Properties
+                application directory: javalink\bin
+                target name: InstallProperties.bat
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: G2 Bean Builder
+                application directory: javalink\bin
+                target name: G2BeanBuilder.bat
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: Examples Readme
+                application directory: javalink
+                target name: ExamplesReadme.html
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: Known Problems
+                application directory: javalink
+                target name: KnownProblems.html
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: Readme for G2 JavaLink
+                application directory: javalink
+                target name: readme-javalink.html
+          part: jvl-3tier
+            sourcedir: jvl-12r8
+            destdir: javalink
+            only on:  alphaosf linux
+          part: jvl-com-gensym-properties-intelnt
+            sourcedir: /home/development/installers/release-files
+            destdir: javalink/classes
+            filename: .com.gensym.properties
+            only on:  nt
+            postinstall code: FixupPropertiesFile(TARGETDIR^"javalink"^"bin", ".com.gensym.properties", TARGETDIR^"javalink", "classes", ".com.gensym.properties");
+          part: jvl-javadoc
+            sourcedir: jvl-javadoc-12r8
+            destdir: doc/javalink
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: API Documentation
+                application directory: doc\javalink\docs\api
+                target name: index.html
+      component: JMS
+        index: 29
+        optional: true
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: jms-part
+            sourcedir: jms-11r1
+            destdir: jms
+            only on:  nt
+            postinstall code: replace_rootdir("jms"^"bin", "StartJmsBridge-j2ee.bat");replace_rootdir("jms"^"bin", "StartJmsBridge-jboss.bat");replace_rootdir("jms"^"bin", "StartJmsBridge-FioranoMQ.bat");replace_rootdir("jms"^"bin", "StartJmsBridge-WebSphereMQ.bat");
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Bridges
+                subsubfolder name: G2 JMSLink
+                application display name: G2 JMSLink J2EE Bridge
+                application directory: jms\bin
+                target name: StartJmsBridge-j2ee.bat
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Bridges
+                subsubfolder name: G2 JMSLink
+                application display name: G2 JMSLink JBoss Bridge
+                application directory: jms\bin
+                target name: StartJmsBridge-jboss.bat
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Bridges
+                subsubfolder name: G2 JMSLink
+                application display name: G2 JMSLink Fiorano MQ Bridge
+                application directory: jms\bin
+                target name: StartJmsBridge-FioranoMQ.bat
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Bridges
+                subsubfolder name: G2 JMSLink
+                application display name: G2 JMSLink WebSphere MQ Bridge
+                application directory: jms\bin
+                target name: StartJmsBridge-WebSphereMQ.bat
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Examples
+                subsubfolder name: G2 JMSLink
+                application display name: G2 JMSLink Tutorial
+                application directory: optegrity\bin
+                target name: StartServer.bat
+                parameters: ..\..\jms\examples\jms-demo.kb
+          part: jms-g2i-modules
+            sourcedir:  g2i-11r1 kbs
+            destdir: g2i/kbs
+            filename: grtl.kb
+            filename: gerr.kb
+          part: jms-doc
+            sourcedir: jmsdoc-10r0
+            destdir: doc/bridges/jms
+            only on:  nt
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2 JMSLink User's Guide
+                application directory: doc/bridges/jms
+                target name: g2jmslink.pdf
+          part: jre
+            sourcedir: jre-13r1_01
+            destdir: jre
+            only on:  nt
+          part: jvl-unix
+            sourcedir: jvl-12r8
+            destdir: javalink
+            only on:  sparcsol hpux aix
+            postinstall code: replace_rootdir("javalink"^"bin", "set-envvars");
+          part: jvl-intelnt
+            sourcedir: jvl-12r8
+            destdir: javalink
+            only on:  nt
+            postinstall code: replace_rootdir("javalink"^"bin", "envvars.bat");
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: Download Interfaces
+                application directory: javalink\bin
+                target name: Downloadinterfaces.bat
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: Install Properties
+                application directory: javalink\bin
+                target name: InstallProperties.bat
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: G2 Bean Builder
+                application directory: javalink\bin
+                target name: G2BeanBuilder.bat
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: Examples Readme
+                application directory: javalink
+                target name: ExamplesReadme.html
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: Known Problems
+                application directory: javalink
+                target name: KnownProblems.html
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: Readme for G2 JavaLink
+                application directory: javalink
+                target name: readme-javalink.html
+          part: jvl-3tier
+            sourcedir: jvl-12r8
+            destdir: javalink
+            only on:  alphaosf linux
+          part: jvl-com-gensym-properties-intelnt
+            sourcedir: /home/development/installers/release-files
+            destdir: javalink/classes
+            filename: .com.gensym.properties
+            only on:  nt
+            postinstall code: FixupPropertiesFile(TARGETDIR^"javalink"^"bin", ".com.gensym.properties", TARGETDIR^"javalink", "classes", ".com.gensym.properties");
+          part: jvl-javadoc
+            sourcedir: jvl-javadoc-12r8
+            destdir: doc/javalink
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: API Documentation
+                application directory: doc\javalink\docs\api
+                target name: index.html
+      component: 1-Client Optegrity Development OK
+        index: 30
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-development-1-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: optegrity-reasoner-development-1-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 2-Client Optegrity Development OK
+        index: 31
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-development-2-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: optegrity-reasoner-development-2-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 3-Client Optegrity Development OK
+        index: 32
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-development-3-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: optegrity-reasoner-development-3-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 4-Client Optegrity Development OK
+        index: 33
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-development-4-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: optegrity-reasoner-development-4-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 5-Client Optegrity Development OK
+        index: 34
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-development-5-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: optegrity-reasoner-development-5-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 6-Client Optegrity Development OK
+        index: 35
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-development-6-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: optegrity-reasoner-development-6-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 7-Client Optegrity Development OK
+        index: 36
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-development-7-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: optegrity-reasoner-development-7-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 8-Client Optegrity Development OK
+        index: 37
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-development-8-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: optegrity-reasoner-development-8-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 9-Client Optegrity Development OK
+        index: 38
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-development-9-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: optegrity-reasoner-development-9-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 10-Client Optegrity Development OK
+        index: 39
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-development-10-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: optegrity-reasoner-development-10-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 12-Client Optegrity Development OK
+        index: 40
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-development-12-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: optegrity-reasoner-development-12-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 16-Client Optegrity Development OK
+        index: 41
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-development-16-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: optegrity-reasoner-development-16-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 20-Client Optegrity Development OK
+        index: 42
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-development-20-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: optegrity-reasoner-development-20-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 24-Client Optegrity Development OK
+        index: 43
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-development-24-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: optegrity-reasoner-development-24-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 28-Client Optegrity Development OK
+        index: 44
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-development-28-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: optegrity-reasoner-development-28-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 32-Client Optegrity Development OK
+        index: 45
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-development-32-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: optegrity-reasoner-development-32-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: may25-2004 1-Client Optegrity Development OK
+        index: 46
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-development-1-may25-2004-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: optegrity-reasoner-development-1-v5-may25-2004.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: jun25-2004 1-Client Optegrity Development OK
+        index: 47
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-development-1-jun25-2004-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: optegrity-reasoner-development-1-v5-jun25-2004.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: jul25-2004 1-Client Optegrity Development OK
+        index: 48
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-development-1-jul25-2004-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: optegrity-reasoner-development-1-v5-jul25-2004.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: aug25-2004 1-Client Optegrity Development OK
+        index: 49
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-development-1-aug25-2004-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: optegrity-reasoner-development-1-v5-aug25-2004.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: sep25-2004 1-Client Optegrity Development OK
+        index: 50
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-development-1-sep25-2004-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: optegrity-reasoner-development-1-v5-sep25-2004.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: oct25-2003 1-Client Optegrity Development OK
+        index: 51
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-development-1-oct25-2003-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: optegrity-reasoner-development-1-v5-oct25-2003.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: nov25-2003 1-Client Optegrity Development OK
+        index: 52
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-development-1-nov25-2003-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: optegrity-reasoner-development-1-v5-nov25-2003.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: dec25-2003 1-Client Optegrity Development OK
+        index: 53
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-development-1-dec25-2003-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: optegrity-reasoner-development-1-v5-dec25-2003.ok
+            new filename: g2.ok
+            obfuscate: true
+  bundle: Optegrity Deployment
+    id: 2
+    version: 4.2a0-B04E17
+      component: G2 JavaLink
+        index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: jvl-unix
+            sourcedir: jvl-12r8
+            destdir: javalink
+            only on:  sparcsol hpux aix
+            postinstall code: replace_rootdir("javalink"^"bin", "set-envvars");
+          part: jvl-intelnt
+            sourcedir: jvl-12r8
+            destdir: javalink
+            only on:  nt
+            postinstall code: replace_rootdir("javalink"^"bin", "envvars.bat");
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: Download Interfaces
+                application directory: javalink\bin
+                target name: Downloadinterfaces.bat
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: Install Properties
+                application directory: javalink\bin
+                target name: InstallProperties.bat
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: G2 Bean Builder
+                application directory: javalink\bin
+                target name: G2BeanBuilder.bat
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: Examples Readme
+                application directory: javalink
+                target name: ExamplesReadme.html
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: Known Problems
+                application directory: javalink
+                target name: KnownProblems.html
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: Readme for G2 JavaLink
+                application directory: javalink
+                target name: readme-javalink.html
+          part: jvl-3tier
+            sourcedir: jvl-12r8
+            destdir: javalink
+            only on:  alphaosf linux
+          part: jvl-com-gensym-properties-intelnt
+            sourcedir: /home/development/installers/release-files
+            destdir: javalink/classes
+            filename: .com.gensym.properties
+            only on:  nt
+            postinstall code: FixupPropertiesFile(TARGETDIR^"javalink"^"bin", ".com.gensym.properties", TARGETDIR^"javalink", "classes", ".com.gensym.properties");
+          part: jvl-javadoc
+            sourcedir: jvl-javadoc-12r8
+            destdir: doc/javalink
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: API Documentation
+                application directory: doc\javalink\docs\api
+                target name: index.html
+      component: Optegrity Documentation
+        index: 2
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-doc
+            sourcedir: optegdoc-42r0-B04D14
+            destdir: doc/optegrity
+            filename: GEDPUsersGuide.pdf
+            filename: OptegrityUsersGuide.pdf
+            filename: OptegrityFurnaceTutorial.pdf
+            filename: SymCureUsersGuide.pdf
+            filename: IntelligentObjectsUsersGuide.pdf
+            filename: OptegrityReleaseNotes.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Optegrity
+                application display name: Optegrity User's Guide
+                application directory: doc/optegrity
+                target name: OptegrityUsersGuide.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Optegrity
+                application display name: Optegrity Release Notes
+                application directory: doc/optegrity
+                target name: OptegrityReleaseNotes.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Optegrity
+                application display name: Optegrity Furnace Tutorial
+                application directory: doc/optegrity
+                target name: OptegrityFurnaceTutorial.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Optegrity
+                application display name: GEDP User's Guide
+                application directory: doc/optegrity
+                target name: GEDPUsersGuide.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Optegrity
+                application display name: Intelligent Objects User's Guide
+                application directory: doc/optegrity
+                target name: IntelligentObjectsUsersGuide.pdf
+      component: G2i Modules
+        index: 3
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: g2i-core-modules
+            sourcedir:  g2i-11r1 kbs
+            destdir: g2i/kbs
+            filename: gens.kb
+            filename: gerr.kb
+            filename: grtl.kb
+            filename: glf.kb
+            filename: gqs.kb
+            filename: gqsui.kb
+            filename: gqsviews.kb
+            filename: gqsdemo.kb
+            filename: resources-english.txt
+            filename: config.txt
+            filename: gevm.kb
+            filename: geuc.kb
+          part: g2i-examples
+            sourcedir:  g2i-11r1 examples
+            destdir: g2i/examples
+            filename: gedp-demo.kb
+            filename: gdpm-demo.kb
+            filename: geuc-demo.kb
+            filename: cdg-modguide.kb
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Examples
+                subsubfolder name: G2i
+                application display name: GEDP Example
+                application directory: optegrity\bin
+                target name: StartServer.bat
+                parameters: ..\..\g2i\examples\gedp-demo.kb
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Examples
+                subsubfolder name: G2i
+                application display name: GDPM Example
+                application directory: optegrity\bin
+                target name: StartServer.bat
+                parameters: ..\..\g2i\examples\gdpm-demo.kb
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Examples
+                subsubfolder name: G2i
+                application display name: Engineering Unit Conversion Example
+                application directory: optegrity\bin
+                target name: StartServer.bat
+                parameters: ..\..\g2i\examples\geuc-demo.kb
+          part: g2i-datafiles
+            sourcedir:  g2i-11r1 data
+            destdir: g2i/data
+            filename: custom-conversions.csv
+            filename: custom-synonyms.csv
+      component: G2 Full Documentation (PDF)
+        index: 4
+        typical: false
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: g2doc-g2tutorials-pdf
+            sourcedir:  g2doc-70r0 g2tutorials
+            destdir: doc/g2/g2tutorials
+            filename: g2tutorials.pdf
+          part: g2doc-g2refman-pdf
+            sourcedir:  g2doc-70r0 g2refman
+            destdir: doc/g2/g2refman
+            filename: g2refman.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                application display name: G2 Bundle Release Notes
+                application directory: doc
+                target name: g2relnotes.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: G2
+                application display name: G2 Reference Manual
+                application directory: doc\g2\g2refman
+                target name: g2refman.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: G2
+                application display name: G2 Language Reference Card
+                application directory: doc\g2\g2langrefcard
+                target name: g2langrefcard.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: G2
+                application display name: G2 System Procedures Reference Manual
+                application directory: doc\g2\g2sysprocs
+                target name: g2sysprocs.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: G2
+                application display name: Getting Started with G2 Tutorials
+                application directory: doc\g2\g2tutorials
+                target name: g2tutorials.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: G2
+                application display name: G2 Class Reference Manual
+                application directory: doc\g2\g2classref
+                target name: g2classref.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: G2
+                application display name: G2 Developer's Guide
+                application directory: doc\g2\g2devguide
+                target name: g2devguide.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 Dynamic Displays User's Guide
+                application directory: doc\utilities\gdd
+                target name: gdd.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 Developer's Interface User's Guide
+                application directory: doc\utilities\gdi
+                target name: gdi.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 Foundation Resources User's Guide
+                application directory: doc\utilities\gfr
+                target name: gfr.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 Menu System User's Guide
+                application directory: doc\utilities\gms
+                target name: gms.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 Online Documentation Developer's Guide
+                application directory: doc\utilities\golddev
+                target name: golddev.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 Online Documentation User's Guide
+                application directory: doc\utilities\goldui
+                target name: goldui.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 GUIDE UIL Procedures Reference Manual
+                application directory: doc\utilities\guideprocref
+                target name: guideprocref.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 GUIDE User's Guide
+                application directory: doc\utilities\guideuserguide
+                target name: guideuserguide.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 XL Spreadsheet User's Guide
+                application directory: doc\utilities\gxl
+                target name: gxl.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: GDA
+                application display name: GDA User's Guide
+                application directory: doc\gda\gdaugrm
+                target name: gdaug.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: GDA
+                application display name: GDA Reference Manual
+                application directory: doc\gda\gdaugrm
+                target name: gdarefman.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: GDA
+                application display name: GDA API Reference Manual
+                application directory: doc\gda\gdaapi
+                target name: gdaapi.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Utilities
+                application display name: G2 ProTools User's Guide
+                application directory: doc\utilities\g2protools
+                target name: g2protools.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: G2
+                application display name: G2 Gateway Bridge Developer's Guide
+                application directory: doc\g2\g2gateway
+                target name: g2gateway.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2 Database Bridge User's Guide
+                application directory: doc\bridges\db
+                target name: g2databasebridge.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2 OPCLink User's Guide
+                application directory: doc\bridges\opclink
+                target name: g2opclink.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2 CORBALink User's Guide
+                application directory: doc\bridges\corbalink
+                target name: g2corbalink.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2-ODBC Bridge Release Notes
+                application directory: doc\bridges\odbc
+                target name: g2odbcbridge.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2-Oracle Bridge Release Notes
+                application directory: doc\bridges\oracle
+                target name: g2oraclebridge.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2-Sybase Bridge Release Notes
+                application directory: doc\bridges\sybase
+                target name: g2sybasebridge.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2-PI Bridge User's Guide
+                application directory: doc\bridges\pi
+                target name: g2pibridge.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: G2
+                application display name: Telewindows User's Guide
+                application directory: doc\g2\telewindows
+                target name: telewindows.pdf
+          part: g2doc-g2gateway-pdf
+            sourcedir:  g2doc-70r0 g2gateway
+            destdir: doc/g2/g2gateway
+            filename: g2gateway.pdf
+          part: g2doc-g2classref-pdf
+            sourcedir:  g2doc-70r0 g2classref
+            destdir: doc/g2/g2classref
+            filename: g2classref.pdf
+          part: g2doc-telewindows-pdf
+            sourcedir:  g2doc-70r0 telewindows
+            destdir: doc/g2/telewindows
+            filename: telewindows.pdf
+          part: g2doc-g2sysprocs-pdf
+            sourcedir:  g2doc-70r0 g2sysprocs
+            destdir: doc/g2/g2sysprocs
+            filename: g2sysprocs.pdf
+          part: g2doc-g2langrefcard-pdf
+            sourcedir:  g2doc-70r0 g2langrefcard
+            destdir: doc/g2/g2langrefcard
+            filename: g2langrefcard.pdf
+          part: g2doc-g2devguide-pdf
+            sourcedir:  g2doc-70r0 g2devguide
+            destdir: doc/g2/g2devguide
+            filename: g2devguide.pdf
+          part: g2utldoc-gdi-pdf
+            sourcedir:  g2utldoc-70r0 gdi
+            destdir: doc/utilities/gdi
+            filename: gdi.pdf
+          part: g2utldoc-gms-pdf
+            sourcedir:  g2utldoc-70r0 gms
+            destdir: doc/utilities/gms
+            filename: gms.pdf
+          part: g2utldoc-goldui-pdf
+            sourcedir:  g2utldoc-70r0 goldui
+            destdir: doc/utilities/goldui
+            filename: goldui.pdf
+          part: g2utldoc-guideuserguide-pdf
+            sourcedir:  g2utldoc-70r0 guideuserguide
+            destdir: doc/utilities/guideuserguide
+            filename: guideuserguide.pdf
+          part: g2utldoc-gdd-pdf
+            sourcedir:  g2utldoc-70r0 gdd
+            destdir: doc/utilities/gdd
+            filename: gdd.pdf
+          part: g2utldoc-gfr-pdf
+            sourcedir:  g2utldoc-70r0 gfr
+            destdir: doc/utilities/gfr
+            filename: gfr.pdf
+          part: g2utldoc-golddev-pdf
+            sourcedir:  g2utldoc-70r0 golddev
+            destdir: doc/utilities/golddev
+            filename: golddev.pdf
+          part: g2utldoc-guideprocref-pdf
+            sourcedir:  g2utldoc-70r0 guideprocref
+            destdir: doc/utilities/guideprocref
+            filename: guideprocref.pdf
+          part: g2utldoc-gxl-pdf
+            sourcedir:  g2utldoc-70r0 gxl
+            destdir: doc/utilities/gxl
+            filename: gxl.pdf
+          part: jvldoc-javalink-pdf
+            sourcedir:  jvldoc-12r5-FC07 docs/guides/g2javalink
+            destdir: doc/javalink/docs/guides/g2javalink
+            filename: g2javalink.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: G2 JavaLink
+                application display name: G2 DownloadInterfaces User's Guide
+                application directory: doc\javalink\docs\guides\g2downloadinterfaces
+                target name: g2downloadinterfaces.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: G2 JavaLink
+                application display name: G2 Bean Builder User's Guide
+                application directory: doc\javalink\docs\guides\g2beanbuilder
+                target name: g2beanbuilder.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: G2 JavaLink
+                application display name: G2 JavaLink User's Guide
+                application directory: doc\javalink\docs\guides\g2javalink
+                target name: g2javalink.pdf
+          part: jvldoc-di-pdf
+            sourcedir:  jvldoc-12r5-FC07 docs/guides/g2downloadinterfaces
+            destdir: doc/javalink/docs/guides/g2downloadinterfaces
+            filename: g2downloadinterfaces.pdf
+          part: jvldoc-bb-pdf
+            sourcedir:  jvldoc-12r5-FC07 docs/guides/g2beanbuilder
+            destdir: doc/javalink/docs/guides/g2beanbuilder
+            filename: g2beanbuilder.pdf
+          part: axldoc
+            sourcedir:  axldoc-10r5-FC07 activexlink
+            destdir: doc/bridges/activexlink
+            filename: g2activexlink.pdf
+            only on:  nt
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2 ActiveXLink User's Guide
+                application directory: doc\bridges\activexlink
+                target name: g2activexlink.pdf
+          part: corbalinkdoc
+            sourcedir:  corbalinkdoc-10r2-FC07 corbalink
+            destdir: doc/bridges/corbalink
+            filename: g2corbalink.pdf
+          part: g2classicrn
+            sourcedir: g2classicrn-71r1
+            destdir: doc
+            filename: g2relnotes.pdf
+          part: g2oradoc
+            sourcedir:  g2oradoc-60r9-FC07 oracle
+            destdir: doc/bridges/oracle
+            filename: g2oraclebridge.pdf
+          part: g2sybdoc
+            sourcedir:  g2sybdoc-60r9-FC07 sybase
+            destdir: doc/bridges/sybase
+            filename: g2sybasebridge.pdf
+          part: opclinkdoc
+            sourcedir:  opclinkdoc-21r0-FC07 opclink
+            destdir: doc/bridges/opclink
+            filename: g2opclink.pdf
+          part: g2pidoc
+            sourcedir:  g2pidoc-50r0 pi
+            destdir: doc/bridges/pi
+            filename: g2pibridge.pdf
+          part: g2odbcdoc
+            sourcedir:  g2odbcdoc-60r9-FC07 odbc
+            destdir: doc/bridges/odbc
+            filename: g2odbcbridge.pdf
+          part: g2dbdoc
+            sourcedir:  g2dbdoc-60r9-FC07 db
+            destdir: doc/bridges/db
+            filename: g2databasebridge.pdf
+          part: protoolsdoc
+            sourcedir:  protoolsdoc-70r0-FD24 g2protools
+            destdir: doc/utilities/g2protools
+            filename: g2protools.pdf
+          part: weblinkdoc
+            sourcedir:  weblinkdoc-10r5-FC07 weblink
+            destdir: doc/bridges/weblink
+            filename: g2weblink.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2 WebLink User's Guide
+                application directory: doc\bridges\weblink
+                target name: g2weblink.pdf
+          part: gdadoc-api-pdf
+            sourcedir:  gdadoc-42r0-FD24 gda/gdaapi
+            destdir: doc/gda/gdaapi
+            filename: gdaapi.pdf
+          part: gdadoc-ug-pdf
+            sourcedir:  gdadoc-42r0-FD24 gda/gdaugrm
+            destdir: doc/gda/gdaugrm
+            filename: gdarefman.pdf
+            filename: gdaug.pdf
+      component: G2 Full Documentation (HTML/Gold)
+        index: 5
+        typical: false
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: g2doc-g2refman-html
+            sourcedir:  g2doc-70r0 g2refman/html
+            destdir: doc/g2/g2refman/html
+          part: g2doc-g2tutorials-html
+            sourcedir:  g2doc-70r0 g2tutorials/html
+            destdir: doc/g2/g2tutorials/html
+          part: g2doc-g2gateway-html
+            sourcedir:  g2doc-70r0 g2gateway/html
+            destdir: doc/g2/g2gateway/html
+          part: g2doc-g2classref-html
+            sourcedir:  g2doc-70r0 g2classref/html
+            destdir: doc/g2/g2classref/html
+          part: g2doc-telewindows-html
+            sourcedir:  g2doc-70r0 telewindows/html
+            destdir: doc/g2/telewindows/html
+          part: g2doc-g2sysprocs-html
+            sourcedir:  g2doc-70r0 g2sysprocs/html
+            destdir: doc/g2/g2sysprocs/html
+          part: g2doc-g2langrefcard-html
+            sourcedir:  g2doc-70r0 g2langrefcard/html
+            destdir: doc/g2/g2langrefcard/html
+          part: g2doc-g2devguide-html
+            sourcedir:  g2doc-70r0 g2devguide/html
+            destdir: doc/g2/g2devguide/html
+          part: g2utldoc-gdi-html
+            sourcedir:  g2utldoc-70r0 gdi/html
+            destdir: doc/utilities/gdi/html
+          part: g2utldoc-gms-html
+            sourcedir:  g2utldoc-70r0 gms/html
+            destdir: doc/utilities/gms/html
+          part: g2utldoc-goldui-html
+            sourcedir:  g2utldoc-70r0 goldui/html
+            destdir: doc/utilities/goldui/html
+          part: g2utldoc-guideuserguide-html
+            sourcedir:  g2utldoc-70r0 guideuserguide/html
+            destdir: doc/utilities/guideuserguide/html
+          part: g2utldoc-gdd-html
+            sourcedir:  g2utldoc-70r0 gdd/html
+            destdir: doc/utilities/gdd/html
+          part: g2utldoc-gfr-html
+            sourcedir:  g2utldoc-70r0 gfr/html
+            destdir: doc/utilities/gfr/html
+          part: g2utldoc-golddev-html
+            sourcedir:  g2utldoc-70r0 golddev/html
+            destdir: doc/utilities/golddev/html
+          part: g2utldoc-guideprocref-html
+            sourcedir:  g2utldoc-70r0 guideprocref/html
+            destdir: doc/utilities/guideprocref/html
+          part: g2utldoc-gxl-html
+            sourcedir:  g2utldoc-70r0 gxl/html
+            destdir: doc/utilities/gxl/html
+          part: jvldoc-javalink-html
+            sourcedir:  jvldoc-12r5-FC07 docs/guides/g2javalink/html
+            destdir: doc/javalink/docs/guides/g2javalink/html
+          part: jvldoc-di-html
+            sourcedir:  jvldoc-12r5-FC07 docs/guides/g2downloadinterfaces/html
+            destdir: doc/javalink/docs/guides/g2downloadinterfaces/html
+          part: jvldoc-bb-html
+            sourcedir:  jvldoc-12r5-FC07 docs/guides/g2beanbuilder/html
+            destdir: doc/javalink/docs/guides/g2beanbuilder/html
+          part: axldoc-html
+            sourcedir:  axldoc-10r5-FC07 activexlink/html
+            destdir: doc/bridges/activexlink/html
+            only on:  nt
+          part: corbalinkdoc-html
+            sourcedir:  corbalinkdoc-10r2-FC07 corbalink/html
+            destdir: doc/bridges/corbalink/html
+          part: g2oradoc-html
+            sourcedir:  g2oradoc-60r9-FC07 oracle/html
+            destdir: doc/bridges/oracle/html
+          part: g2sybdoc-html
+            sourcedir:  g2sybdoc-60r9-FC07 sybase/html
+            destdir: doc/bridges/sybase/html
+          part: opclinkdoc-html
+            sourcedir:  opclinkdoc-21r0-FC07 opclink/html
+            destdir: doc/bridges/opclink/html
+          part: g2pidoc-html
+            sourcedir:  g2pidoc-50r0 pi/html
+            destdir: doc/bridges/pi/html
+          part: g2odbcdoc-html
+            sourcedir:  g2odbcdoc-60r9-FC07 odbc/html
+            destdir: doc/bridges/odbc/html
+          part: g2dbdoc-html
+            sourcedir:  g2dbdoc-60r9-FC07 db/html
+            destdir: doc/bridges/db/html
+          part: protoolsdoc-html
+            sourcedir:  protoolsdoc-70r0-FD24 g2protools/html
+            destdir: doc/utilities/g2protools/html
+          part: weblinkdoc-html
+            sourcedir:  weblinkdoc-10r5-FC07 weblink/html
+            destdir: doc/bridges/weblink/html
+          part: gdadoc-api-html
+            sourcedir:  gdadoc-42r0-FD24 gda/gdaapi/html
+            destdir: doc/gda/gdaapi/html
+          part: gdadoc-ug-html
+            sourcedir:  gdadoc-42r0-FD24 gda/gdaugrm/html
+            destdir: doc/gda/gdaugrm/html
+      component: G2 Core Documentation (Windows Help)
+        index: 6
+        only on:  nt
+        typical: true
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: doc-chm
+            sourcedir: g2winhelp-71r0
+            destdir: g2
+            filename: G2BundleReleaseNotesHelp.chm
+            filename: G2ClassReferenceHelp.chm
+            filename: G2Core.html
+            filename: G2DevelopersGuideHelp.chm
+            filename: G2LanguageReferenceHelp.chm
+            filename: G2ProToolsHelp.chm
+            filename: G2ReferenceManualHelp.chm
+            filename: G2SystemProceduresHelp.chm
+            filename: G2Utilities.html
+            filename: GDDHelp.chm
+            filename: GDIHelp.chm
+            filename: GFRHelp.chm
+            filename: GMSHelp.chm
+            filename: GOLDDevelopersGuideHelp.chm
+            filename: GOLDHelp.chm
+            filename: GUIDEHelp.chm
+            filename: GUIDEUILHelp.chm
+            filename: GXLHelp.chm
+            filename: GettingStarted.html
+            filename: GettingStartedWithG2Help.chm
+            filename: Master.CHM
+            filename: Master.html
+            filename: Master2.html
+            filename: Master3.html
+            filename: TelewindowsHelp.chm
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                application display name: Windows Help G2 Documentation
+                application directory: g2
+                target name: Master.CHM
+      component: G2 ProTools
+        index: 7
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: protools
+            sourcedir: protools-71r2
+            destdir: protools/kbs
+            filename: protools.kb
+            filename: ptroot.kb
+          part: profiler
+            sourcedir: protools-71r2
+            destdir: g2/kbs/utils
+            filename: profiler.kb
+            filename: profroot.kb
+      component: G2 ActiveXLink
+        index: 8
+        only on:  nt
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: axl
+            sourcedir: axl-10r9
+            destdir: activexlink
+            filename: gsi.dll
+            filename: g2com.kb
+            filename: runme.bat
+            filename: regsvr32.exe
+            only on:  nt
+          part: axl-g2com-dll
+            sourcedir: axl-10r9
+            destdir: activexlink
+            filename: G2Com.dll
+            only on:  nt
+            register: yes
+          part: axl-demos
+            sourcedir:  axl-10r9 demos
+            destdir: activexlink/demos
+            only on:  nt
+      component: G2 WebLink
+        index: 9
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: gw
+            sourcedir: gw-10r5
+            destdir: gw
+          part: gsi-gw-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: gw
+            filename: gw-gsi.ok
+            new filename: gsi.ok
+            obfuscate: true
+          part: run-gw-template-batfile
+            sourcedir: /home/development/installers/release-files
+            destdir: gw
+            filename: run-gw.bat
+            only on:  nt
+            postinstall code: replace_rootdir("gw", "run-gw.bat");
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                application display name: G2 WebLink
+                application directory: gw
+                target name: run-gw.bat
+          part: gsi-gw-blank-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: gw
+            filename: gsi.ok
+            only on:  nt
+      component: Telewindows
+        index: 10
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: TW Windows Executable
+            sourcedir: tw-71r2
+            destdir: g2
+            filename: tw.exe
+            filename: nptwplug.dll
+            filename: tw.map
+            only on:  nt
+          part: TW Unix Executable
+            sourcedir: tw-71r2
+            destdir: g2
+            filename: tw
+            filename: nptwplug.so
+            on all but:  nt
+          part: twax
+            sourcedir: twax-71r2
+            destdir: g2
+            filename: TwControl.cab
+            filename: unregisterTwControl.bat
+            filename: TwControl.ocx
+            filename: install.html
+            filename: registerTwControl.bat
+            only on:  nt
+          part: twax-examples
+            sourcedir:  twax-71r2 examples
+            destdir: g2/examples
+            only on:  nt
+          part: fonts
+            sourcedir: fonts-71r2
+            destdir: g2/fonts
+      component: G2 (and utilities)
+        index: 11
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: G2 Windows Executable
+            sourcedir: g2-71r2
+            destdir: g2
+            filename: g2.exe
+            filename: g2passwd.exe
+            filename: g2.map
+            only on:  nt
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                application display name: G2
+                application directory: g2
+                target name: g2.exe
+                parameters: -module-search-path ..\g2i\kbs kbs\utils ..\optegrity\kbs ..\optegrity\demos ..\pi ..\odbc ..\opclink\kbs ..\protools\kbs ..\gw ..\corbalink\kbs ..\javalink\kbs ..\gda ..\activexlink ..\oracle ..\sybase -ok ..\g2\g2.ok
+          part: G2 Unix Executable
+            sourcedir: g2-71r2
+            destdir: g2
+            filename: g2
+            filename: g2passwd
+            on all but:  nt
+          part: Kanji dictionary files
+            sourcedir: g2-71r2
+            destdir: g2
+            filename: index.dic
+            filename: kojin.dic
+            filename: main.dic
+          part: G2 EXT Directory
+            sourcedir:  g2-71r2 ext
+            destdir: g2/ext
+          part: Sample G2 OK file
+            sourcedir: g2-71r2
+            destdir: g2
+            filename: g2.ok
+          part: kbs
+            sourcedir: kbs-71r2
+            destdir: g2/kbs
+          part: fonts
+            sourcedir: fonts-71r2
+            destdir: g2/fonts
+          part: mill-demo
+            sourcedir: demos-71r2
+            destdir: g2/kbs/demos
+            filename: start-mill.bat
+            filename: sleep.exe
+            only on:  nt
+            postinstall code: replace_rootdir("g2"^"kbs"^"demos", "start-mill.bat");
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Examples
+                subsubfolder name: G2
+                application display name: Mill Demo
+                application directory: g2\kbs\demos
+                target name: start-mill.bat
+          part: startserver-bat-file
+            sourcedir: demos-71r2
+            destdir: g2
+            filename: StartServer.bat
+            only on:  nt
+            postinstall code: replace_rootdir("g2", "StartServer.bat");
+      component: G2 Gateway (GSI)
+        index: 12
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: gsi
+            sourcedir: gsi-71r2
+            destdir: gsi
+      component: G2 Readme
+        index: 13
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: g2-readme
+            sourcedir: g2pkgreadme-71r1
+            filename: readme-g2.html
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                application display name: Readme for G2 Bundle
+                application directory: 
+                target name: readme-g2.html
+      component: G2 Diagnostic Assistant (GDA)
+        index: 14
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: gda
+            sourcedir: gda-43r0
+            destdir: gda
+      component: Java Runtime Environment
+        index: 15
+        only on:  nt
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: jre
+            sourcedir: jre-13r1_01
+            destdir: jre
+            only on:  nt
+      component: Import/Export Utilities for SymCure Upgrade
+        index: 16
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: cdg-import-export-kbs
+            sourcedir:  intereas-40b0-B03F16 kbs
+            destdir: optegrity/kbs
+            filename: cdg-import.kb
+            filename: cdg-export.kb
+          part: cdg-readme
+            sourcedir: optegdoc-42r0-B04D14
+            destdir: g2i
+            filename: readme-symcure.html
+            filename: cdgimportutility3.gif
+            filename: cdgimportutility42.gif
+            filename: readme-symcure3.gif
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                application display name: Readme for SymCure
+                application directory: g2i
+                target name: readme-symcure.html
+      component: Optegrity Readme
+        index: 17
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-readme
+            sourcedir: optegdoc-42r0-B04D14
+            filename: readme-optegrity.html
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                application display name: Readme for Optegrity Bundle
+                application directory: 
+                target name: readme-optegrity.html
+      component: GService Startup Service
+        index: 18
+        only on:  nt
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: gservice
+            sourcedir: gservice-71r2
+            destdir: g2
+            filename: gservice.exe
+            only on:  nt
+      component: Intelligent Objects
+        index: 19
+        optional: true
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: opt-io-modules
+            sourcedir:  optegrity-42r0-B04D14 kbs
+            destdir: optegrity/kbs
+            filename: iato.kb
+            filename: icco.kb
+            filename: ico.kb
+            filename: icso.kb
+            filename: idco.kb
+            filename: iedo.kb
+            filename: iffo.kb
+            filename: iho.kb
+            filename: ioc.kb
+            filename: ipo.kb
+            filename: irco.kb
+            filename: iso.kb
+            filename: ito.kb
+            filename: ivo.kb
+            filename: ixo.kb
+            filename: sdb.kb
+          part: opt-io-data
+            sourcedir:  optegrity-42r0-B04D14 data
+            destdir: optegrity/data
+            filename: io-external-datapoints-configuration.csv
+            filename: io-replay-to-external-datapoint.csv
+            filename: F-101-external-data.csv
+          part: opt-io-examples
+            sourcedir:  optegrity-42r0-B04D14 examples
+            destdir: optegrity/examples
+            filename: io-examples.kb
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Examples
+                subsubfolder name: Intelligent Objects
+                application display name: Heater Example
+                application directory: optegrity\bin
+                target name: StartServer.bat
+                parameters: ..\examples\io-examples.kb
+          part: opt-io-resources
+            sourcedir:  optegrity-42r0-B04D14 resources
+            destdir: optegrity/resources
+            filename: IATO-EventNames.txt
+            filename: ICCO-EventNames.txt
+            filename: ICO-EventNames.txt
+            filename: IDCO-EventNames.txt
+            filename: IEDO-EventNames.txt
+            filename: IFFO-FB-EventNames.txt
+            filename: IFFO-FF-EventNames.txt
+            filename: IHO-EventNames.txt
+            filename: IPO-EventNames.txt
+            filename: IRCO-EventNames.txt
+            filename: ISO-EventNames.txt
+            filename: ITO-EventNames.txt
+            filename: IVO-EventNames.txt
+            filename: IXO-EventNames.txt
+          part: opt-f101-examples
+            sourcedir:  optegrity-42r0-B04D14 examples
+            destdir: optegrity/examples
+            filename: f101demo.kb
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Examples
+                subsubfolder name: Intelligent Objects
+                application display name: Furnace Example
+                application directory: optegrity\bin
+                target name: StartServer.bat
+                parameters: ..\examples\f101demo.kb
+      component: Optegrity KBs
+        index: 20
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: opt-archive
+            sourcedir:  optegrity-42r0-B04D14 archives
+            destdir: optegrity/archives
+          part: opt-bin
+            sourcedir:  optegrity-42r0-B04D14 bin
+            destdir: optegrity/bin
+            filename: InstallServerAsNTService.bat
+            filename: Optegrity.ico
+            filename: StartServer.bat
+            filename: UninstallServerAsNTService.bat
+            filename: StartClient.bat
+            postinstall code: replace_rootdir("optegrity"^"bin", "StartServer.bat");replace_rootdir("optegrity"^"bin", "InstallServerAsNTService.bat");replace_rootdir("optegrity"^"bin", "UninstallServerAsNTService.bat");replace_rootdir("optegrity"^"bin", "StartClient.bat");
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                application display name: Start Optegrity Server
+                application directory: optegrity\bin
+                target name: StartServer.bat
+                icon file: Optegrity.ico
+                icon index: 0
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                application display name: Start Optegrity Client
+                application directory: optegrity\bin
+                target name: StartClient.bat
+                icon file: Optegrity.ico
+                icon index: 0
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Optegrity
+                application display name: SymCure User's Guide
+                application directory: doc/optegrity
+                target name: SymCureUsersGuide.pdf
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Examples
+                subsubfolder name: Optegrity
+                application display name: Furnace Tutorial
+                application directory: optegrity\bin
+                target name: StartServer.bat
+                parameters: ..\examples\fo2demo.kb
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Examples
+                subsubfolder name: Optegrity
+                application display name: SymCure Modeling Guide
+                application directory: optegrity\bin
+                target name: StartServer.bat
+                parameters: ..\..\g2i\examples\cdg-modguide.kb
+          part: opt-data
+            sourcedir:  optegrity-42r0-B04D14 data
+            destdir: optegrity/data
+            filename: fo2-external-datapoint-configuration-OPC.csv
+            filename: fo2-external-datapoint-configuration-OPC.xls
+            filename: fo2-external-datapoint-configuration-PI.csv
+            filename: fo2-external-datapoint-configuration-PI.xls
+            filename: fo2-external-datapoints-configuration.csv
+            filename: fo2-external-datapoints-configuration.xls
+            filename: fo2-logging-data.csv
+            filename: fo2-replay-to-external-datapoint.csv
+            filename: fo2-replay-to-internal-datapoint.csv
+          part: opt-examples
+            sourcedir:  optegrity-42r0-B04D14 examples
+            destdir: optegrity/examples
+            filename: fo2demo.kb
+          part: opt-kbs
+            sourcedir:  optegrity-42r0-B04D14 kbs
+            destdir: optegrity/kbs
+            filename: equipmnt.kb
+            filename: optegrity.kb
+            filename: optegrity-core.kb
+          part: opt-g2i-modules
+            sourcedir:  g2i-11r1 kbs
+            destdir: g2i/kbs
+            filename: cdg.kb
+            filename: cdggrlb.kb
+            filename: gdpm.kb
+            filename: grlb.kb
+            filename: gdsm.kb
+            filename: gedp.kb
+            filename: guif.kb
+            filename: guif-resources.txt
+            filename: geuc.kb
+          part: g2i-core-modules
+            sourcedir:  g2i-11r1 kbs
+            destdir: g2i/kbs
+            filename: gens.kb
+            filename: gerr.kb
+            filename: grtl.kb
+            filename: glf.kb
+            filename: gqs.kb
+            filename: gqsui.kb
+            filename: gqsviews.kb
+            filename: gqsdemo.kb
+            filename: resources-english.txt
+            filename: config.txt
+            filename: gevm.kb
+            filename: geuc.kb
+          part: opt-logs
+            sourcedir:  optegrity-42r0-B04D14 logs
+            destdir: optegrity/logs
+          part: opt-resources
+            sourcedir:  optegrity-42r0-B04D14 resources
+            destdir: optegrity/resources
+            filename: optegrity-core-resources.txt
+          part: opt-odbc-bridge
+            sourcedir: g2odbc-60r11
+            destdir: odbc
+            filename: g2-database.kb
+            only on:  nt
+          part: opt-opclink
+            sourcedir:  opclink-21r1 KBs
+            destdir: opclink/kbs
+            filename: launch.kb
+            only on:  nt
+          part: opt-pi
+            sourcedir: g2pi-50r3
+            destdir: pi
+            filename: g2-pi.kb
+            filename: gensym-raised-button.kb
+            only on:  nt
+          part: opt-jms
+            sourcedir:  jms-11r1 kbs
+            destdir: jms/kbs
+            filename: jms.kb
+            only on:  nt
+      component: G2 CORBALink
+        index: 21
+        on all but:  alphaosf linux
+        optional: true
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: corbalink
+            sourcedir: corbalink-10r3
+            destdir: corbalink
+            on all but:  alphaosf linux
+      component: G2 OPCLink Bridge
+        index: 22
+        only on:  nt
+        optional: true
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: opclink
+            sourcedir: opclink-21r1
+            destdir: opclink
+          part: gsi-opclink-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: opclink
+            filename: opclink-gsi.ok
+            new filename: gsi.ok
+            obfuscate: true
+          part: run-g2opc-template-batfile
+            sourcedir: /home/development/installers/release-files
+            destdir: opclink
+            filename: run-G2Opc.bat
+            only on:  nt
+            postinstall code: replace_rootdir("opclink", "run-G2Opc.bat");
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Bridges
+                application display name: G2 OPCLink Bridge
+                application directory: opclink
+                target name: run-G2Opc.bat
+          part: gsi-opclink-blank-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: opclink
+            filename: gsi.ok
+            only on:  nt
+      component: G2 PI Bridge
+        index: 23
+        only on:  nt
+        optional: true
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: g2pi
+            sourcedir: g2pi-50r3
+            destdir: pi
+          part: gsi-pi-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: pi
+            filename: pi-gsi.ok
+            new filename: gsi.ok
+            obfuscate: true
+          part: run-g2-pi-template-batfile
+            sourcedir: /home/development/installers/release-files
+            destdir: pi
+            filename: run-g2-pi.bat
+            only on:  nt
+            postinstall code: replace_rootdir("pi", "run-g2-pi.bat");
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Bridges
+                application display name: G2 PI Bridge
+                application directory: pi
+                target name: run-g2-pi.bat
+          part: gsi-pi-blank-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: pi
+            filename: gsi.ok
+            only on:  nt
+      component: G2 Oracle Bridge
+        index: 24
+        optional: true
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: oraclebridge
+            sourcedir: g2oracle-60r10
+            destdir: oracle
+          part: gsi-oracle-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: oracle
+            filename: oracle-gsi.ok
+            new filename: gsi.ok
+            obfuscate: true
+          part: run-g2-ora7-template-batfile
+            sourcedir: /home/development/installers/release-files
+            destdir: oracle
+            filename: run-g2-ora7.bat
+            only on:  nt
+            postinstall code: replace_rootdir("oracle", "run-g2-ora7.bat");
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Bridges
+                subsubfolder name: G2 Oracle
+                application display name: G2 Oracle 7 Bridge
+                application directory: oracle
+                target name: run-g2-ora7.bat
+          part: run-g2-ora80-template-batfile
+            sourcedir: /home/development/installers/release-files
+            destdir: oracle
+            filename: run-g2-ora80.bat
+            only on:  nt
+            postinstall code: replace_rootdir("oracle", "run-g2-ora80.bat");
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Bridges
+                subsubfolder name: G2 Oracle
+                application display name: G2 Oracle 8.0 Bridge
+                application directory: oracle
+                target name: run-g2-ora80.bat
+          part: run-g2-ora81-template-batfile
+            sourcedir: /home/development/installers/release-files
+            destdir: oracle
+            filename: run-g2-ora81.bat
+            only on:  nt
+            postinstall code: replace_rootdir("oracle", "run-g2-ora81.bat");
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Bridges
+                subsubfolder name: G2 Oracle
+                application display name: G2 Oracle 8.1 Bridge
+                application directory: oracle
+                target name: run-g2-ora81.bat
+          part: run-g2-ora90-template-batfile
+            sourcedir: /home/development/installers/release-files
+            destdir: oracle
+            filename: run-g2-ora90.bat
+            only on:  nt
+            postinstall code: replace_rootdir("oracle", "run-g2-ora90.bat");
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Bridges
+                subsubfolder name: G2 Oracle
+                application display name: G2 Oracle 9.0 Bridge
+                application directory: oracle
+                target name: run-g2-ora90.bat
+          part: run-g2-ora92-template-batfile
+            sourcedir: /home/development/installers/release-files
+            destdir: oracle
+            filename: run-g2-ora92.bat
+            only on:  nt
+            postinstall code: replace_rootdir("oracle", "run-g2-ora92.bat");
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Bridges
+                subsubfolder name: G2 Oracle
+                application display name: G2 Oracle 9.2 Bridge
+                application directory: oracle
+                target name: run-g2-ora92.bat
+          part: gsi-oracle-blank-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: oracle
+            filename: gsi.ok
+            only on:  nt
+      component: G2 Sybase Bridge
+        index: 25
+        on all but:  linux
+        optional: true
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: sybasebridge
+            sourcedir: g2sybase-60r10
+            destdir: sybase
+            on all but:  linux
+          part: gsi-sybase-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: sybase
+            filename: sybase-gsi.ok
+            new filename: gsi.ok
+            obfuscate: true
+          part: run-g2-sybase-template-batfile
+            sourcedir: /home/development/installers/release-files
+            destdir: sybase
+            filename: run-g2-sybase.bat
+            only on:  nt
+            postinstall code: replace_rootdir("sybase", "run-g2-sybase.bat");
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Bridges
+                application display name: G2 Sybase Bridge
+                application directory: sybase
+                target name: run-g2-sybase.bat
+          part: gsi-sybase-blank-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: sybase
+            filename: gsi.ok
+            only on:  nt
+      component: G2 ODBC Bridge
+        index: 26
+        only on:  nt
+        optional: true
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: odbcbridge
+            sourcedir: g2odbc-60r11
+            destdir: odbc
+            only on:  nt
+          part: gsi-odbc-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: odbc
+            filename: odbc-gsi.ok
+            new filename: gsi.ok
+            obfuscate: true
+          part: run-g2-odbc-template-batfile
+            sourcedir: /home/development/installers/release-files
+            destdir: odbc
+            filename: run-g2-odbc.bat
+            only on:  nt
+            postinstall code: replace_rootdir("odbc", "run-g2-odbc.bat");
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Bridges
+                application display name: G2 ODBC Bridge
+                application directory: odbc
+                target name: run-g2-odbc.bat
+          part: gsi-odbc-blank-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: odbc
+            filename: gsi.ok
+            only on:  nt
+      component: JMail
+        index: 27
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: jmail-part
+            sourcedir: jmail-11r1
+            destdir: jmail
+            only on:  nt
+            postinstall code: replace_rootdir("jmail"^"bin", "StartJMailBridge.bat");
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Bridges
+                application display name: G2 JMail Bridge
+                application directory: jmail\bin
+                target name: StartJMailBridge.bat
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Examples
+                subsubfolder name: G2 JMail Bridge
+                application display name: G2 JMail Bridge Tutorial
+                application directory: optegrity\bin
+                target name: StartServer.bat
+                parameters: ..\..\jmail\examples\jmail-demo.kb
+          part: jmail-doc
+            sourcedir: jmaildoc-10r0
+            destdir: doc/bridges/jmail
+            only on:  nt
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2 JMail Bridge User's Guide
+                application directory: doc/bridges/jmail
+                target name: g2jmailbridge.pdf
+          part: jre
+            sourcedir: jre-13r1_01
+            destdir: jre
+            only on:  nt
+          part: jvl-unix
+            sourcedir: jvl-12r8
+            destdir: javalink
+            only on:  sparcsol hpux aix
+            postinstall code: replace_rootdir("javalink"^"bin", "set-envvars");
+          part: jvl-intelnt
+            sourcedir: jvl-12r8
+            destdir: javalink
+            only on:  nt
+            postinstall code: replace_rootdir("javalink"^"bin", "envvars.bat");
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: Download Interfaces
+                application directory: javalink\bin
+                target name: Downloadinterfaces.bat
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: Install Properties
+                application directory: javalink\bin
+                target name: InstallProperties.bat
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: G2 Bean Builder
+                application directory: javalink\bin
+                target name: G2BeanBuilder.bat
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: Examples Readme
+                application directory: javalink
+                target name: ExamplesReadme.html
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: Known Problems
+                application directory: javalink
+                target name: KnownProblems.html
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: Readme for G2 JavaLink
+                application directory: javalink
+                target name: readme-javalink.html
+          part: jvl-3tier
+            sourcedir: jvl-12r8
+            destdir: javalink
+            only on:  alphaosf linux
+          part: jvl-com-gensym-properties-intelnt
+            sourcedir: /home/development/installers/release-files
+            destdir: javalink/classes
+            filename: .com.gensym.properties
+            only on:  nt
+            postinstall code: FixupPropertiesFile(TARGETDIR^"javalink"^"bin", ".com.gensym.properties", TARGETDIR^"javalink", "classes", ".com.gensym.properties");
+          part: jvl-javadoc
+            sourcedir: jvl-javadoc-12r8
+            destdir: doc/javalink
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: API Documentation
+                application directory: doc\javalink\docs\api
+                target name: index.html
+      component: JMS
+        index: 28
+        optional: true
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: jms-part
+            sourcedir: jms-11r1
+            destdir: jms
+            only on:  nt
+            postinstall code: replace_rootdir("jms"^"bin", "StartJmsBridge-j2ee.bat");replace_rootdir("jms"^"bin", "StartJmsBridge-jboss.bat");replace_rootdir("jms"^"bin", "StartJmsBridge-FioranoMQ.bat");replace_rootdir("jms"^"bin", "StartJmsBridge-WebSphereMQ.bat");
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Bridges
+                subsubfolder name: G2 JMSLink
+                application display name: G2 JMSLink J2EE Bridge
+                application directory: jms\bin
+                target name: StartJmsBridge-j2ee.bat
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Bridges
+                subsubfolder name: G2 JMSLink
+                application display name: G2 JMSLink JBoss Bridge
+                application directory: jms\bin
+                target name: StartJmsBridge-jboss.bat
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Bridges
+                subsubfolder name: G2 JMSLink
+                application display name: G2 JMSLink Fiorano MQ Bridge
+                application directory: jms\bin
+                target name: StartJmsBridge-FioranoMQ.bat
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Bridges
+                subsubfolder name: G2 JMSLink
+                application display name: G2 JMSLink WebSphere MQ Bridge
+                application directory: jms\bin
+                target name: StartJmsBridge-WebSphereMQ.bat
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Examples
+                subsubfolder name: G2 JMSLink
+                application display name: G2 JMSLink Tutorial
+                application directory: optegrity\bin
+                target name: StartServer.bat
+                parameters: ..\..\jms\examples\jms-demo.kb
+          part: jms-g2i-modules
+            sourcedir:  g2i-11r1 kbs
+            destdir: g2i/kbs
+            filename: grtl.kb
+            filename: gerr.kb
+          part: jms-doc
+            sourcedir: jmsdoc-10r0
+            destdir: doc/bridges/jms
+            only on:  nt
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: Documentation
+                subsubfolder name: Bridges
+                application display name: G2 JMSLink User's Guide
+                application directory: doc/bridges/jms
+                target name: g2jmslink.pdf
+          part: jre
+            sourcedir: jre-13r1_01
+            destdir: jre
+            only on:  nt
+          part: jvl-unix
+            sourcedir: jvl-12r8
+            destdir: javalink
+            only on:  sparcsol hpux aix
+            postinstall code: replace_rootdir("javalink"^"bin", "set-envvars");
+          part: jvl-intelnt
+            sourcedir: jvl-12r8
+            destdir: javalink
+            only on:  nt
+            postinstall code: replace_rootdir("javalink"^"bin", "envvars.bat");
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: Download Interfaces
+                application directory: javalink\bin
+                target name: Downloadinterfaces.bat
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: Install Properties
+                application directory: javalink\bin
+                target name: InstallProperties.bat
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: G2 Bean Builder
+                application directory: javalink\bin
+                target name: G2BeanBuilder.bat
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: Examples Readme
+                application directory: javalink
+                target name: ExamplesReadme.html
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: Known Problems
+                application directory: javalink
+                target name: KnownProblems.html
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: Readme for G2 JavaLink
+                application directory: javalink
+                target name: readme-javalink.html
+          part: jvl-3tier
+            sourcedir: jvl-12r8
+            destdir: javalink
+            only on:  alphaosf linux
+          part: jvl-com-gensym-properties-intelnt
+            sourcedir: /home/development/installers/release-files
+            destdir: javalink/classes
+            filename: .com.gensym.properties
+            only on:  nt
+            postinstall code: FixupPropertiesFile(TARGETDIR^"javalink"^"bin", ".com.gensym.properties", TARGETDIR^"javalink", "classes", ".com.gensym.properties");
+          part: jvl-javadoc
+            sourcedir: jvl-javadoc-12r8
+            destdir: doc/javalink
+              shortcut: 
+                folder name: Gensym Optegrity 4.2a0
+                subfolder name: G2 JavaLink
+                application display name: API Documentation
+                application directory: doc\javalink\docs\api
+                target name: index.html
+      component: 4-Client Optegrity Deployment OK
+        index: 29
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-deployment-4-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: optegrity-reasoner-deployment-4-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 8-Client Optegrity Deployment OK
+        index: 30
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-deployment-8-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: optegrity-reasoner-deployment-8-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 16-Client Optegrity Deployment OK
+        index: 31
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-deployment-16-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: optegrity-reasoner-deployment-16-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 20-Client Optegrity Deployment OK
+        index: 32
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-deployment-20-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: optegrity-reasoner-deployment-20-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 24-Client Optegrity Deployment OK
+        index: 33
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-deployment-24-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: optegrity-reasoner-deployment-24-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 28-Client Optegrity Deployment OK
+        index: 34
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-deployment-28-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: optegrity-reasoner-deployment-28-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: 32-Client Optegrity Deployment OK
+        index: 35
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-deployment-32-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: optegrity-reasoner-deployment-32-v5.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: may25-2004 1-Client Optegrity Deployment OK
+        index: 36
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-deployment-1-may25-2004-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: optegrity-reasoner-deployment-1-v5-may25-2004.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: jun25-2004 1-Client Optegrity Deployment OK
+        index: 37
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-deployment-1-jun25-2004-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: optegrity-reasoner-deployment-1-v5-jun25-2004.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: jul25-2004 1-Client Optegrity Deployment OK
+        index: 38
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-deployment-1-jul25-2004-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: optegrity-reasoner-deployment-1-v5-jul25-2004.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: aug25-2004 1-Client Optegrity Deployment OK
+        index: 39
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-deployment-1-aug25-2004-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: optegrity-reasoner-deployment-1-v5-aug25-2004.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: sep25-2004 1-Client Optegrity Deployment OK
+        index: 40
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-deployment-1-sep25-2004-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: optegrity-reasoner-deployment-1-v5-sep25-2004.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: oct25-2003 1-Client Optegrity Deployment OK
+        index: 41
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-deployment-1-oct25-2003-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: optegrity-reasoner-deployment-1-v5-oct25-2003.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: nov25-2003 1-Client Optegrity Deployment OK
+        index: 42
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-deployment-1-nov25-2003-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: optegrity-reasoner-deployment-1-v5-nov25-2003.ok
+            new filename: g2.ok
+            obfuscate: true
+      component: dec25-2003 1-Client Optegrity Deployment OK
+        index: 43
+        watermark: g2/g2.ok
+        radio button group index: 1
+          part: blank-watermark
+            sourcedir: /home/development/installers/release-files
+            filename: watermark.txt
+            only on:  nt
+          part: optegrity-reasoner-deployment-1-dec25-2003-ok
+            sourcedir: /home/development/installers/release-files
+            destdir: g2
+            filename: optegrity-reasoner-deployment-1-v5-dec25-2003.ok
+            new filename: g2.ok
+            obfuscate: true
