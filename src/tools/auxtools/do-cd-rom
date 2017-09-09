@@ -1,0 +1,129 @@
+#!/bin/csh -f
+# See the following file for documentation.
+source auxtools/wtape-init.csh
+
+# Do-cd-rom premasters products for CD-ROM distributions.  It is used by
+# make-gensym-tape as mentioned in media-map.dat and media.dat.
+# -jra 9/16/94
+
+set installers_dir = /gensym/tools/installers
+set premaster_dir = /mnt/sd1c/cdrom/premaster
+
+switch ($command)
+  case "write":
+
+    # Since we ship multiple versions of GSI, if that is the product name, set
+    # the product name to include the first two characters of the version so
+    # that we can distinguish the different versions without another directory
+    # level.
+    if ($product == gsi) then
+      set version = "`echo $release | sed 's/\(..\).*/\1/'`"
+      if ("$version" < 50) then
+        set product = "gsi${version}"
+      endif
+    endif
+
+    # Determine the information for the directory hierarchy for the cd, given
+    # the software_platform.  By default, place the directory in
+    # <software_platform>/<product>.
+    set dir1 = $premaster_dir/$software_platform
+    set dir2 = $dir1/$product
+    set target = $dir2
+
+    # Insert code to override the default hierarchy as necessary.
+
+    # Make the target directory hierarchy.
+    if (! -d $premaster_dir) mkdir $premaster_dir
+    if ($dir1 != "" && ! -d $dir1) mkdir $dir1
+    if ($dir2 != "" && ! -d $dir2) mkdir $dir2
+    if (! -d $target) mkdir $target
+
+    # Copy the product into the directory.
+    cd $release_directory
+    echo "LOG: Ready to copy"
+    # Note that the release_directory is a directory tree filled with symbolic
+    # links to the actual locations of the files that will ship.  Use the
+    # following line to follow symbolic links while copying until the cd-rom
+    # burner software is capable of using directories of symbolic links, at
+    # which point we should copy just the symbolic links.
+    tar chlf - * | (cd $target ; tar xf -)
+    # Use the following line to copy the symbolic links tree.
+    # cp -rp * $target
+    set result = $status
+
+    # For products that may be installed on NT machines, a file called
+    # prodver.txt needs to be created that contains the version number
+    # of the installed product.  This is used by the NT installer to
+    # register the product in the registry.
+    if ($result == 0) then
+      if ($software_platform == indep || $software_platform == intelnt \
+            || $software_platform == alphant) then
+        echo "$release" > $target/prodver.txt
+        echo "" >> $target/prodver.txt    # The file needs an extra blank line.
+        set result = $status
+        if ($result) then
+          echo "LOG: Error, unable to create prodver.txt file for $software_platform $product."
+        endif
+      endif
+    endif
+    
+    # The following line removes the pesky kitinstal.com file from machine
+    # independent products.
+    if ($result == 0) then
+      if ($software_platform == indep && -e $target/kitinstal.com) then
+        rm -f $target/kitinstal.com
+        set result = $status
+        if ($result) then
+          echo "LOG: Error, unable to remove kitinstal.com from indep product."
+        endif
+      endif
+    endif
+    breaksw
+
+  case online:
+    # The online command should be used to clear the premastering directory
+    # prior to a sequence of write commands.
+    if ($media != "cd-rom-no-erase") then
+      cd $premaster_dir
+      rm -rf * >& /dev/null
+      cp $installers_dir/unixinst .
+      cp $installers_dir/setup.exe .
+      cp $installers_dir/setup.ins .
+      cp $installers_dir/_setup3i.lib .
+      cp $installers_dir/_setup3a.lib .
+      cp $installers_dir/_setup.dll .
+      cp $installers_dir/_isdel.exe .
+      cp $installers_dir/_inst32i.ex_ .
+      cp $installers_dir/_inst32a.ex_ .
+    endif
+    set result = 0
+    breaksw
+
+  case rewind:
+    set result = 0
+    breaksw
+
+  case offline:
+    echo "LOG: Premaster products may now be found in $premaster_dir"
+    set result = 0
+    breaksw
+
+  case default :
+    echo "ERROR: unknown command $command"
+    set result = 1
+    breaksw
+endsw
+
+# Insert verification code here!
+
+if ($result) then
+  echo "ERROR: Failed to execute this command\!"
+  echo "ERROR: DO NOT DISTRIBUTE this CD\!"
+else
+  echo "LOG: $command successful for cd-rom"
+  if ($command == offline) then
+    echo "LOG: Please remove and WRITE PROTECT the tape."
+  endif
+endif
+
+exit $result
