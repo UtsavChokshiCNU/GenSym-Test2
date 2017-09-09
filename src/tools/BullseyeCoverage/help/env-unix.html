@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang=en><head><title>
+BullseyeCoverage Help
+</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<link href=style.css rel=stylesheet type="text/css">
+</head><body>
+<div style="
+	background-image: url(banner.jpg);
+	background-repeat: repeat-x;
+	">
+	<img alt=BullseyeCoverage src="banner-title.jpg">
+	<span class=reverse style="
+		vertical-align: 30%;
+		">
+		<a style="padding-left:20pt" href=index_platform.html><img alt="" src=up.png>Up</a>
+		<a style="padding-left:20pt" href=index.html><img alt="" src=book0.png>Contents</a>
+		<a style="padding-left:20pt" href=index_index.html><img alt="" src=index.png>Index</a>
+		<a style="padding-left:20pt" href="http://www.bullseye.com/cgi-bin/searchHelp"><img alt="" src=search.png>Search</a>
+	</span>
+</div>
+
+<h1>Unix</h1>
+<p>
+<h2>Building the Run-Time Library</h2>
+<p>
+You do not need to build the run-time library for the host operating system;
+the library is supplied pre-compiled for most compilers.
+<p>
+If you are cross-compiling for a Unix/POSIX operating system, you must build the run-time library for your target.
+If you are using GCC, see <a href=tool-gccCross.html>GCC Cross Compiler</a>,
+otherwise continue below.
+<p>
+To build the run-time library, move to the directory <i>BullseyeCoverage</i><code>/run</code>.
+Modify the <code>Makefile</code> to use your cross compiler, and rebuild.
+For example:
+<pre>
+cd /opt/BullseyeCoverage/run
+make
+</pre>
+
+<h2>Environment Variables</h2>
+<p>
+If the BullseyeCoverage run-time cannot find an environment variable in
+the process environment, it first searches the file
+<code>/tmp/BullseyeCoverageEnv.txt</code> then the file
+<code>/etc/BullseyeCoverageEnv.txt</code>.
+These ASCII text files have the format below:
+<pre>
+<i>name1</i>=<i>value1</i>
+<i>name2</i>=<i>value2</i>
+<i>...</i>
+</pre>
+<p>
+This feature is intended for measuring coverage of programs launched during
+operating system boot, where setting environment variables is not practical.
+
+<p style="font-size:xx-small">
+Last reviewed: 12 Nov 2009
+
+<!-- Footer -->
+<p style="
+	float: right;
+	font-size: xx-small;
+	">
+Copyright &copy; Bullseye Testing Technology. All Rights Reserved.
+<p style="
+	border-top: 1px solid silver;
+	padding-top: 2pt;
+	">
+<a href="http://www.bullseye.com"><img alt=www.bullseye.com src=earth.png>www.bullseye.com</a>
+</body></html>
