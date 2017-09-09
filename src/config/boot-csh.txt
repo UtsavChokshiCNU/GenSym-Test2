@@ -1,0 +1,37 @@
+# Standard .cshrc for Gensym's Unix systems
+#
+# To get the standard Gensym Unix environment -- "Mr. AB's environment" -- have
+# csh do what this file does.  If you are sure you just want Mr. AB and nothing
+# else, you could simply symlink to this file:
+#    ln -s /home/development/boot-csh.txt ~/.cshrc
+# More likely, if you want to start with Mr. AB and then add a few things of
+# your own, you can copy this file to your .cshrc, and then add lines at the
+# bottom.
+#
+# To test changes you want to make to Mr. AB's environment, you should check out
+# the "config" directory (say, as ~/config), and set SCRIPTSBOX to the directory
+# where you have checked it out.  Then you can modify your local files, and run
+# a new shell to see how it goes.  When you are sure it works, you check in your
+# changes, update /home/development, and then can change your SCRIPTSBOX back to
+# /home/development.  -jv, 12/5/07
+#
+# This sources the following files from SOURCE_HOME, which should be a
+# directory containing the "scripts" CVS module in the latest spin:
+# 
+#    base-cshrc.txt path.txt aliases.txt stty.txt
+#
+#
+# MHD 4/8/92, JV 11/26/07
+#
+
+# The following sets up the SCRIPTSBOX environment variable.  This was formerly
+# AB_HOME, which was, /disc/ab, then became /home/ab (as of 9/16/92), but is now
+# /home/development.
+
+setenv SCRIPTSBOX /home/development
+
+
+# To keep this stuff under source code control, do very little here.
+# Instead, source another file that is checked in:
+
+source ${SCRIPTSBOX}/config/base-cshrc.txt
