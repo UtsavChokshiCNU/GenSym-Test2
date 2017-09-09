@@ -1,0 +1,1144 @@
+;;; -*- Mode: LISP; Syntax: Common-Lisp; Base: 10; Package: USER -*-
+(in-package "USER")
+
+;;;; Makefile generator relational database: commands-and-options.rel
+
+;;;; Copyright (c) 1986-2017 Gensym Corporation.
+;;;  All Rights Reserved.
+
+;;;; Author: Mark E. Staknis
+
+;;;; Description:
+;;;      This is part of the relational database used by the makefile generator
+;;;    (all files with a .rel suffix contain relations).  This file contains
+;;;    the relations that define the details of each makefile entry.
+;;;    The relations and their interaction can be subtle, and it is important
+;;;    to study all relevant notes sections carefully before making
+;;;    modifications.
+;;;
+;;;; File Organization:
+;;;      The relations in the file are grouped as follows.
+;;;
+;;;    Relations that Define Commands and Command Options
+;;;      commands-relation: Contains commands for target command lines.
+;;;      objects-per-command: Used by a few platforms to restrict the number
+;;;        of object files in archive commands.
+;;;      command-options-relation: Contains options for all commands for
+;;;        all products, platforms, types, targets, and compilation categories. 
+;;;        This is the most active relation in this file.
+;;;
+;;;    Relations that Provide Variables (makefile "macros")
+;;;      variable-declaration-relation: Declares variables to be
+;;;        automatically substituted for command-line options.  When options
+;;;        for a command are selected, if a variable definition exists then
+;;;        the variable name and value are placed in the variable symbol
+;;;        table, and the variable name $(<name>) is used in the command line.
+;;;      variable-initialization-relation: Contains variables and values
+;;;        to appear in the makefile by default.
+;;;
+;;;    Relations that Provide Directory Locations
+;;;        All product dependency relations (e.g., see g2-dependencies.rel)
+;;;        have a "local" field that indicates whether a file is local or not.
+;;;        The relations in this section contain locations of local and
+;;;        nonlocal files.  By convention, all locations are defined as
+;;;        variables ("macros").
+;;;      local-location-relation: Directory locations of local files.
+;;;      nonlocal-location-relation: Directory locations of nonlocal files.
+;;;        These are distinguished by both target name and target group.
+;;;
+;;;    Relations Needed for the install: Entry
+;;;        The install: makefile entry is the most complicated entry.  It
+;;;        supports a special file called parts.list, which contains
+;;;        special fields and which may reside in various locations.  The
+;;;        relations in this section contain the needed information. 
+;;;      partslist-filetype-relation: Associates makefile generator file types
+;;;        with parts.list file types.
+;;;      g2-install-destination-relation: Specifics for g2 installation.
+;;;      kbs-install-destination-relation: Specifics for kbs installation.
+;;;      default-install-destination-relation: For products with flat
+;;;        destination directories.
+;;;      install-rename-relation:  Maps names of files from old to new.
+
+
+
+
+
+
+;;; Relation: commands-relation
+;;; Description: Contains command-line commands for platforms.
+;;; Notes:
+;;;     This is ordered alphabetically by command-type.
+;;;     Only platform-group is used for distinction because it is assumed that
+;;;   commands are fixed for all products and compilation types.
+;;;     The link commands contain as part of them the option to specify
+;;;   the output file name.  This allows the natural form
+;;;   <link command> <output file> <options> to appear in the template.
+;;; Modifications:
+;;;     jv, 6/19/96: didn't actually modify, but added a commented-out line
+;;;   specifying the "remove" command in Unix as "rm -f" instead of plain
+;;;   old "rm".  I think it would be a good idea to use the -f option.
+;;;     mhd/rh, 5/6/00: for linux port, add -rdynamic and -ldl to the link
+;;;   flags, and change the X11 library pathname to -L/usr/X11R6/lib.
+
+(setq commands-relation
+ '(( platform-group  command-type  command             )
+;;;  --------------  ------------  -------
+   ((_all            archive       "ar"                )
+    (intelnt         archive       "$(implib) /out:"   )
+    (intelnt         dll-archive   "$(link) /out:"     )
+    (_all            shared-object "ld -G -o"          )
+    (_all            cd            "cd"                )
+    (_all            chmod         "chmod"             )
+    (_all            compile       "cc -c"             )
+    (intelnt         compile       "$(cc)"             )
+    (sparcsol        compile       "$(HELPERDIR)/help-please $(MFDIR) gcc -c")
+    (linux           compile       "gcc -c")
+    (_all            errlog        "$(SCRIPTSDIR)/errsweep")
+    (intelnt         errlog        "$(SCRIPTSDIR)\\errsweep.bat")
+    (_all            install       "cp"                )
+    (intelnt         install       "copy"              )
+    (_all            link          "cc -o"             )
+    (intelnt         link          "$(link)"           )
+    (sparcsol        link          "gcc -o"            )
+    (linux           link          "gcc -o"            )
+    (unix            strip         "strip"             )
+    (_all            make          "make"              )
+    (intelnt         resource      "rc.exe"            )
+    (_all            runmake       "$(SCRIPTSDIR)/runmake")
+    (intelnt         runmake       "$(SCRIPTSDIR)\\runmake.bat")
+    (_all            ranlib        "ranlib"            )
+   ;(_all            remove        "rm"                )
+    (_all            remove        "rm -f"             )
+    (intelnt         remove        "del"               )
+ )))
+
+
+
+
+;;; Relation: objects-per-command-relation
+;;; Description:  Contains numerical limits on the number of objects that
+;;;   can be passed as arguments.
+;;; Notes:
+;;;     Currently referenced only by mfgtf-archive-with-multiple-command-lines.
+;;;     The need for this is generally due to a deficiency of either a command
+;;;   or a command line interpreter.
+
+(setq objects-per-command-relation
+;;; This is currently used to govern the number of targets in multiple
+;;; ar lines.
+ '(( platform-group  limit )
+;;;  --------------  -----
+   ((_all            1000  )
+ )))
+
+
+
+
+;;; Relation: command-options-relation
+;;; Description: Contains options for all commands, platforms, targets, etc.
+;;;
+;;; Notes:
+;;;     ;* comments at the end of a row mean see Notes or Modification.
+;;;     ---
+;;;     Entries are organized first by option-category, though not strictly
+;;;   alphabetically (compilation-line options together, link-line options
+;;;   together, etc.).  Ordering is then by compile-category, by
+;;;   platform-group, by product-group, and finally by target-group.
+;;;   Ordering is always most general to most specific (_all is first,
+;;;   groups are next, and individuals are last and alphabetized).
+;;;     ---
+;;;     The selection of options during makefile generation follows a few rules.
+;;;     1. specific vs. general options:  Options are always selected using
+;;;   the option-category column, and there is a pair of categories for a given
+;;;   option, <opt> and general-<opt>.  The general-<opt> is "additive",
+;;;   which means that all options for platform, type, and target are selected.
+;;;   <opt> is "specific", which means that only options for the most specific
+;;;   groups are selected.  For a given option-category, all selected options
+;;;   of both <opt> and general-<opt> are ordered alphabetically first by
+;;;   position and then by the option itself.
+;;;     2. option selection by platform, type, and target group:  For
+;;;   selection of specific options, a search is made for options of the
+;;;   highest priority (most specific) platform, type, and target, in that
+;;;   order.  If there are multiple options, they are concatenated in the
+;;;   order specified in the position column.
+;;;     3. preselection of product-group and compile-category:  During
+;;;   initialization to produce a particular makefile for a product and
+;;;   compile-category, these two columns are used for preselection and
+;;;   then removed.  This yields the command-options-view used for selection
+;;;   in step 2. The rows that are selected include those for which
+;;;   both i) the compile-category is the current category or _all
+;;;   and ii) the product is a member of some product group, including _all.
+;;;     ---
+;;;     Because object compilation entries (those with .o or .obj targets)
+;;;   are typically the most numerous in a makefile, a mechanism has been
+;;;   introduced to generate them efficiently.  A format string is precomputed
+;;;   for standard objects.  This relation is analyzed during env
+;;;   initialization to identify objects that should not use the format
+;;;   string.
+;;;     To force a compilation entry to have a non-default format even
+;;;   though it has no unique options (e.g., if it differs only in its
+;;;   dependencies), it should be given a general-cc option of "".  This
+;;;   flags it as non-standard.  See mfgtf-object-targets and
+;;;   mfgtf-object-default-target in mfgtf.lisp for further details.
+;;;     ---
+;;;     There are a number of compiler optimizer bugs on various machines.
+;;;     The file set_spcs.c from the Bitstream fonts executables manifests
+;;;   optimizer errors on many compilers.
+;;;     The file parse.c manifests an optimizer error on platforms with
+;;;   MIPS cpus.
+;;;     ---
+;;;   machines is a kludge to properly place the opt file that lists object
+;;;   files.  It has position z to assure that it's last.  The opt file is
+;;;   needed because the list of objects can potentially exceed the command
+;;;   length limit.
+;;;
+;;; Modifications:
+;;;     jra 9/19/94:  Turned off optimization and turned on debugging flag
+;;;   for stkvl1 for alphaosf because it cannot otherwise handle floating
+;;;   point overflow errors in the stress test.
+;;;     jra 9/11/94:  Turned off optimization for ext directory for sparcsol
+;;;   due to undiagnosed optimization error.
+;;;     mes 4/20/95:  Turned off optimization for alphaosf for ext/c/xwindows.c
+;;;   because the compiler crashes.  Fred White introduced many changes
+;;;   recently and so cannot isolate the source of the problem.  A future
+;;;   compiler upgrade might solve the problem.
+;;;     mes 7/5/95:   Turned off optimization for panes.c for mips because
+;;;   the stress test crashes after 6 or more hours.
+;;;     hsh 8/22/95: Turned off optimization for fltrs.c for sgi because
+;;;   activating and deactivating the activable subworkspace is broken. FMW
+;;;   determined this could solve the bug hq-430643.
+;;;     mes 9/1/95: Turned off optimization for icp.c for alphaosf because
+;;;   Peter Fandel's group experienced segmentation violations for application
+;;;   that creates variables.
+;;;     mes 4/9/96: Turned off optimization for chnng.c for alphaosf because
+;;;   the system upgrade to DEC Unix caused the compiler to have a
+;;;   segmentation violation.
+;;;     jv, 5/16/96: Turned on optimization for sparcsol ext files, reversing
+;;;   Jim's 9/11/94 change.  We have significantly upgraded our Solaris
+;;;   compiler.  Also reversed an undocumented change which went in around
+;;;     mes, 1/15/97:  Added -bbigtoc option for g2 link for rs6000.  This
+;;;   is needed because the g2 link was overflowing the 64K TOC (table of
+;;;   contents).  Symbols that exceed the limit have additional code inserted
+;;;   to deal with them.
+;;;     ajs, 8/21/97:  Added -MAP to the general-link of g2 and tw for win32.
+;;;   Motivation is to generate g2.map and tw.map files during link.  Also
+;;;   doubled the size of the default stack  allocated to G2 on win32 to
+;;;   200,000,000 bytes using the -STACK flag.  See Microsoft Visual C++ doc
+;;;   on LINK command line options for more details.
+;;;     mes, 8/22/97:  Turned off optimization for g2 file icons1.c on
+;;;   alphant.  When optimized, g2 aborts when the icon editor is brought up.
+;;;     mes, 7/13/98:  Turned off optimization for g2 file vw-g2.c on
+;;;   hp800.  When optimized, this file takes 3 hours and runs the machine
+;;;   out of swap space.  It is used only for t2, which should not be
+;;;   relevant for users of HPUX 9.0x.
+;;;     rh, 1/22/97:  Turned off -Oy opt flag for intelnt.
+;;;     mhd, 12/9/01: added version.lib for Win32 - just really to support
+;;;       showing OS build information in the "About..." box!
+;;;     mhd, 12/10/01: added "/machine:IX86" as general link flag for intelnt
+;;;     mhd, 12/19/01: added rpcrt4.lib for Win32 - to support using Win32
+;;;       native UUID generation.
+;;;     fmw, 1/21/02: added jpeg library
+;;;     jv, 1/22/03: Made the size of the default stack allocated to G2 on Win32
+;;;       be 8,000,000 bytes using the -STACK flag, similar to ajs's change
+;;;       of 8/21/97.  See bug HQ-4481599.
+;;;     fmw, 9/30/04: added scintilla library (Win32 only)
+;;;     jv, 3/14/05: remove rpcrt4.lib for GSI and bridges, because we don't
+;;;       generate UUIDs from GSI.
+;;;     fmw, 5/24/06 Removed scintilla library (now is TWNG only)
+
+(setq command-options-relation
+ '(( product-group
+            compile-category
+                 target-group
+                           type-group
+                                platform-group 
+                                            option-category
+                                                        position
+                                                            option        )
+;;;  ------ ---  --------- ---- ----------- ----------- --- -------------
+  ;; Compile flags for optimization, debugging, or profiling (o.d.p.)
+   ((_all   opt  _all      obj  _all        cc-odp      c   "-O"          )
+    (_all   _all _all      obj  hpia64      cc-odp      d   "+W2111,2174,2177,2236,2940")
+    (_all   _all _all      obj  hpia64      cc-odp      e   "-Ae"         )
+    (fnt    opt  set_spcs  obj  unix        cc-odp      c   ""            )
+    (fnt    opt  set_spcs  obj  intelnt     cc-odp      c   "-Od"         )
+    (g2     opt  no-opt1   obj  rs6000      cc-odp      c   ""            )
+    (g2     opt  chnng     obj  alphaosf    cc-odp      c   ""            ) ;*
+    (g2     opt  stkvl1    obj  alphaosf    cc-odp      c   "-g"          ) ;*
+    (ext    opt  icp       obj  alphaosf    cc-odp      c   ""            ) ;*
+    (ext    opt  events    obj  alphaosf    cc-odp      c   ""            ) ;*
+    (ext    opt  keypress  obj  alphaosf    cc-odp      c   ""            ) ;*
+    (ext    opt  graphics  obj  alphaosf    cc-odp      c   ""            ) ;*
+    (ext    opt  windows   obj  alphaosf    cc-odp      c   ""            ) ;*
+
+    ;; The unix-with-installed-gcc group includes Sparcsol, Sun, and Linux.
+    (jpeg   opt  _all      obj  unix-with-installed-gcc cc-odp c "-O2"    ) ; jpeg wants lots of O
+    (ext    opt  images    obj  unix-with-installed-gcc cc-odp c "-O2"    ) ; so does images.
+
+    (g2     opt  fltrs     obj  hp9000s700  cc-odp      c   "+W67,612"    )
+    (rtl    opt  isyms     obj  hp9000s700  cc-odp      c   "+W67,612"    )
+    (_all   opt  _all      obj  intelnt     cc-odp      c   "-Gs"         )
+    ;;Use same optimization flags in opt and opt-intc.  Perhaps something
+    ;;intelligent could be done with groups.rel to prevent duplication.
+    (_all   opt-intc _all  obj  intelnt     cc-odp      c   "-Gs"         )
+    (_all   opt  _all      obj  intelnt     cc-odp      c   "-Og"         )
+    (_all   opt  _all      obj  intelnt     cc-odp      c   "-Oi"         )
+    (_all   opt-intc _all  obj  intelnt     cc-odp      c   "-Oi"         )
+    (_all   opt  _all      obj  intelnt     cc-odp      c   "-Ot"         )
+    (_all   opt-intc _all  obj  intelnt     cc-odp      c   "-Ot"         )
+  ;;(_all   opt  _all      obj  intelnt     cc-odp      c   "-Oy"         ) ;*
+    (_all   opt  _all      obj  intelnt     cc-odp      c   "-Zi"         ) ; Full debug info
+    (_all   opt  _all      obj  intelnt     cc-odp      c   "-Ob1"        )
+    (_all   opt-intc _all  obj  intelnt     cc-odp      c   "-Ob1"        )
+    (_all   opt-intc _all  obj  intelnt     cc-odp      c   "-Zi"         ) ; Full debug info
+    (_all   opt-intc _all  obj  intelnt     cc-odp      c   "-Oy-"        ) ; Disable FPO optimization
+    (_all   opt-intc _all  obj  intelnt     cc-odp      c   "-Qwd279,140,165,1011,269")
+    (_all   opt  _all      obj  hp9000s700  cc-odp      c   "-O"          )
+    (_all   opt  _all      obj  hp9000s700  cc-odp      c   "+W67,612"    )
+    (g2     opt  utlts0    obj  rs6000      cc-odp      c   ""            )
+    (ext    opt  _all      obj  sparcsol    cc-odp      c   "-O"          ) ;*
+    ;; Note: dbg-mt is not usable for all platforms or products at this time
+    (_all   dbg-mt  _all   obj  sparcsol    cc-odp      c   "-g -D_REENTRANT")
+    (_all   dbg-mt  _all   obj  alphaosf    cc-odp      c   "-g -D_REENTRANT -pthread")
+    (_all   dbg-mt  _all   obj  hp9000s700  cc-odp      c   "-g"          )
+    (_all   dbg-mt  _all   obj  hp9000s700  cc-odp      d   "+z"          )
+    (_all   dbg-mt  _all   obj  hp9000s700  cc-odp      e   "-Ae"         )
+    (_all   dbg-mt  _all   obj  hp9000s700  cc-odp      f   "-DNATIVE"    )
+    (_all   dbg-mt  _all   obj  hp9000s700  cc-odp      g   "-D_HPUX"     )
+    (_all   dbg-mt  _all   obj  hp9000s700  cc-odp      h   "-D_POSIX_C_SOURCE=199506L")
+    (_all   dbg-mt  _all   obj  hp9000s700  cc-odp      i   "-Wp,-H1000000")
+    (_all   dbg-mt  _all   obj  hp9000s700  cc-odp      j   "-DAportable" )
+    (_all   dbg-mt  _all   obj  hp9000s700  cc-odp      k   "+W67,612"    )
+
+    (_all   dbg-mt  _all   obj  hpia64      cc-odp      c   "-g"          )
+    (_all   dbg-mt  _all   obj  hpia64      cc-odp      d   "+z"          )
+    (_all   dbg-mt  _all   obj  hpia64      cc-odp      f   "-Wp,-H1000000")
+    (_all   dbg-mt  _all   obj  hpia64      cc-odp      g   "-mt"         )
+    (_all   dbg-mt  _all   obj  hpia64      cc-odp      h   "-D_REENTRANT")
+
+    (_all   dbg  _all      obj  _all        cc-odp      c   "-g"          )
+    (_all   dbg  _all      obj  intelnt     cc-odp      c   "$(cdebug)"   )
+    (_all   dbg  _all      obj  hp9000s700  cc-odp      c   "-g"          )
+    (_all   dbg  _all      obj  hp9000s700  cc-odp      c   "+W67,612"    )
+    (_all   dbg  _all      obj  hpia64      cc-odp      c   "-g"          )
+    (_all   prf  _all      obj  _all        cc-odp      c   "-O"          )
+    (_all   prf  _all      obj  _all        cc-odp      c   "-pg"         )
+    (_all   prf  _all      obj  intelnt     cc-odp      c   ""            )
+    (_all   prf  _all      obj  hp9000s700  cc-odp      c   "+W67,612"    )
+    (not-rtl prf _all      obj  hp9000s700  cc-odp      c   "-O"          )
+    (not-rtl prf _all      obj  hp9000s700  cc-odp      f   "-G"          )
+    (rtl    prf  _all      obj  hp9000s700  cc-odp      c   "-O"          )
+    (rtl    prf  add-prof  obj  hp9000s700  cc-odp      c   "-O"          )
+    (rtl    prf  add-prof  obj  hp9000s700  cc-odp      f   "-G"          )
+    (rtl    prf  isyms     obj  hp9000s700  cc-odp      c   ""            )
+  ;; pseudo-options to force objects to have non-default entries - see notes
+    (rtl    _all dcdnvslm  obj  _all        general-cc  c   ""            )
+    (rtl    _all encnvslm  obj  _all        general-cc  c   ""            )
+  ;; compile flags
+    (_all   _all _all      obj  sparcsol    general-cc  c   "-Wimplicit"  )
+    (_all   _all _all      obj  linux       general-cc  c   "-Wimplicit"  )
+    (_all   _all _all      obj  intelnt     general-cc  c   "$(cflags)"   )
+    (not-gw _all _all      obj  intelnt     general-cc  c   "$(cvarsmt)"  )
+    (gw     _all _all      obj  intelnt     general-cc  c   "$(cvars)"  )
+    (_all   _all _all      obj  intelnt     general-cc  c   "-D_CTYPE_DISABLE_MACROS")
+;    (not-gw _all _all      obj  intelnt     general-cc  c   "-MT"         ) ; already in $(cvarsmt)
+    (fnt     dbg _all      obj  intelnt     general-cc  d   "-UDEBUG"     )
+    (rtl     dbg _all      obj  intelnt     general-cc  d   "-UDEBUG"     )
+    (_all   _all _all      obj  rs6000      general-cc  c   "-qcheck=nullptr")
+    (_all   _all _all      obj  sparcsol    general-cc  c   "-Dsparcsol"  )
+    (trans  dbg  _all      obj  sparcsol    general-cc  g   "-DDEBUG_CONSING")
+    (trans  dbg  _all      obj  intelnt     general-cc  g   "-DDEBUG_CONSING")
+    (gsi    _all _all      obj  unix        general-cc  c   "-DGSI_TRANS" )
+    (gsi    _all _all      obj  intelnt     general-cc  c   "-DGSI_TRANS" )
+    (gw     _all _all      obj  unix        general-cc  c   "-DGSI_TRANS" )
+    (gw     _all _all      obj  intelnt     general-cc  c   "-DGSI_TRANS" )
+    (rtl    _all _all      obj  unix        general-cc  c   "-DCHESTNUT"  )
+    (rtl    _all _all      obj  unix        general-cc  c   "-DNDEBUG"    )
+    (rtl    _all _all      obj  intelnt     general-cc  c   "-DCHESTNUT"  )
+    (rtl    _all _all      obj  intelnt     general-cc  c   "-DNDEBUG"    )
+    ;;    the next line exists simply to allow a default variable
+    (_all   _all _all      obj  _all        cc          m   ""            )
+    (_all   _all _all      obj  hp9000s700  cc          m   "-Wp,-H1000000")
+    (ext    _all dtoa      obj  sparcsol    cc          c   "-mv8"     ) ; for Liquid
+    (gw     opt  _all      obj  hp9000s700  cc          b   "-Ae")
+    (gw     dbg  _all      obj  hp9000s700  cc          b   "-Ae")
+    (xml    _all _all      obj  hp9000s700  cc          l   "-Ae")
+    (ext    _all _all      obj  hp9000s700  cc          l   "-Ae")
+    (jpeg   _all _all      obj  hp9000s700  cc          l   "-Ae") ; Allow ANSI prototypes
+    (ext    _all dtoa      obj  hp9000s700  cc          c   "-DKR_headers")
+    (ext    _all g_fmt     obj  hp9000s700  cc          c   "-DKR_headers")
+    (trans  _all names     obj  alphaosf    cc          d   "-DDISABLE_FN_ARRAY")
+    ;; If wish to use FN_ARRAY on hp, use +O3 for names.c (see bug HQ-2888085)
+    (trans  _all names     obj  hp9000s700  cc          d   "-DDISABLE_FN_ARRAY")
+    (trans  _all names     obj  rs6000      cc          d   "-DDISABLE_FN_ARRAY")
+  ;; include-paths (note omission of option prefix; e.g., no -I...)
+    (gsi    _all _all      obj  _all        general-ipath r "$(EXTCDIR)"  )
+    (gw     _all _all      obj  _all        general-ipath r "$(EXTCDIR)"  )    
+    (gw     _all _all      obj  _all        general-ipath r "$(GSICDIR)"  )
+    (trans  _all _all      obj  _all        general-ipath q "$(RTHDIR)"   )
+    (twplug _all _all      obj  _all        general-ipath s "$(NPDIR)"    )
+    (ext    _all images    obj  _all        general-ipath s "$(JPEGCDIR)" )
+    
+    ;; This line is here to make w32_dyndlg be a "nonstandard" file, so that
+    ;; it doesn't get the default template.  Sigh.
+    (ext    _all w32_dyndlg obj _all        general-ipath s "$(CDIR)" )
+;    (ext    _all tabular_view obj _all      general-ipath s "$(CDIR)" )
+    (ext    _all filedlg    obj _all        general-ipath s "$(CDIR)" )
+
+    (xml    _all _all      obj  _all        general-ipath q "$(LIBXMLHDIR)")
+    (xml    _all _all      obj  _all        general-ipath y "$(EXTCDIR)"  )
+    (ext    _all events    obj  hp9000s700  ipath       m   "/usr/include/X11R5")
+    (ext    _all graphics  obj  hp9000s700  ipath       m   "/usr/include/X11R5")
+    (ext    _all keypress  obj  hp9000s700  ipath       m   "/usr/include/X11R5")
+    (ext    _all windows   obj  hp9000s700  ipath       m   "/usr/include/X11R5")
+    (ext    _all events    obj  sparcsol    ipath       m   "/usr/openwin/include")
+    (ext    _all graphics  obj  sparcsol    ipath       m   "/usr/openwin/include")
+    (ext    _all images    obj  sparcsol    ipath       m   "/usr/openwin/include")
+    (ext    _all keypress  obj  sparcsol    ipath       m   "/usr/openwin/include")
+    (ext    _all windows   obj  sparcsol    ipath       m   "/usr/openwin/include")
+    (ext    _all events    obj  linux       ipath       m   "/usr/X11/include")
+    (ext    _all graphics  obj  linux       ipath       m   "/usr/X11/include")
+    (ext    _all keypress  obj  linux       ipath       m   "/usr/X11/include")
+    (ext    _all windows   obj  linux       ipath       m   "/usr/X11/include")
+    (trans  _all _all      obj  linux       ipath       p   "$(CDIR)")
+    (trans  _all _all      obj  linux       ipath       u   "-")
+    (ext    _all nsleep    obj  intelnt     ipath       m   "$(SPFCDIR)")
+    (gw     _all nsleep    obj  _all        ipath       m   "$(SPFCDIR)")
+  ;; link flags
+    (g2tw   dbg  _all      exe  intelnt     general-link m  "$(guilflags)")
+    (g2tw   opt  _all      exe  intelnt     general-link m  "/incremental:no /nologo /subsystem:windows,$(APPVER) /release /debug /opt:ref")
+    (g2tw   opt-intc _all  exe  intelnt     general-link m  "/incremental:no /nologo /subsystem:windows,$(APPVER) /release /debug /opt:ref")
+    (g2     _all _all      exe  intelnt     general-link m  "-STACK:8000000") ;*
+    (g2     _all _all      exe  intelnt     general-link m  "-MAP:g2.map") ;*
+    (tw     _all _all      exe  intelnt     general-link m  "-MAP:tw.map") ;*
+    (g2tw   _all _all      exe  intelnt     general-link m  "/nodefaultlib:libc.lib")
+    (g2tw    dbg _all      exe  intelnt     general-link m  "/nodefaultlib:libcmt.lib")
+    (gsi     dbg _all      exe  intelnt     general-link m  "/nodefaultlib:libcmt.lib")
+    (gw      opt _all      exe  intelnt     general-link m  "/nodefaultlib:libc.lib")
+    (gw      opt-intc _all exe  intelnt     general-link m  "/nodefaultlib:libcmt.lib")
+    (gw      dbg _all      exe  intelnt     general-link m  "/nodefaultlib:libc.lib")
+    (gw      dbg _all      exe  intelnt     general-link m  "/nodefaultlib:libcd.lib")
+    (gw      dbg _all      exe  intelnt     general-link m  "/nodefaultlib:libcmtd.lib")
+    (ext    _all _all      exe  intelnt     general-link m  "$(conflags)" )
+    (gw     _all _all      exe  intelnt     general-link m  "$(conflags)" )
+    (gsi    _all _all      exe  intelnt     general-link m  "$(guilflags)")
+    (gsi    _all _all      dexe intelnt     general-link m  "$(guilflags)")  
+    (gsi    _all _all      dlib intelnt     archv        m  "$(dlllflags)")
+    (gsi    opt-intc _all  dlib intelnt     archv        z  "/export:__intel_proc_init")
+    (gsi    dbg  _all      dlib intelnt     archv        f  "$(ldebug)")
+    (_all   _all _all      exe  hp9000s700  general-link m  "-z"          )
+    (g2     _all g2        exe  rs6000      general-link m  "-bbigtoc")
+    (g2     _all g2        exe  rs6000      general-link m  "-bmaxdata:0x80000000")  
+    (_all   prf  _all      exe  hp9000s700  general-link a  "-G"          )
+    (_all   prf  _all      exe  rs6000      general-link a  "-pg"         )  
+    (_all   prf  _all      exe  sparcsol    general-link a  "-pg"         ) 
+    (_all   _all _all      exe  intelnt     general-link z  "/machine:IX86")
+    ;;for HQ-5281367 "G2 debuggable symbols should move back from separate file":
+    (_all   dbg  _all      exe  intelnt     general-link z  "/PDB:NONE")
+    ;; the following .rbj files hold icon definitions and appear at the link
+    ;; options to appear as additional files to link
+    (g2tw   _all _all      exe  ncr         general-link m  "-znorearrange")  
+    (_all   _all _all      exe  sparcsol    link        m   "-Xlinker -R -Xlinker /usr/openwin/lib")
+    (_all   _all _all      exe  linux       link        m   "-rdynamic")  
+    (_all   dbg  _all      exe  intelnt     link        c   "$(ldebug)"   )
+    (_all   dbg  _all      dexe intelnt     link        c   "$(ldebug)"   )
+  ;; library paths and libraries
+    (g2tw   _all _all      exe  hp9000s700  general-libpath m "-L/usr/lib/X11R5"  )
+    (g2tw   _all _all      exe  sparcsol    general-libpath m "-L/usr/openwin/lib")
+    (g2tw   _all _all      exe  linux       general-libpath m "-L/usr/X11R6/lib")
+    (_all   _all _all	   dso  linux       general-libpath m "-L/usr/X11R6/lib")
+    (_all   _all _all      exe  unix        general-lib m   "-lm"         )
+    (g2tw   _all _all      exe  intelnt     general-lib j   "$(SPFCDIR)\\spromeps.lib")
+    (gw     _all _all      exe  intelnt     general-lib j   "$(SPFCDIR)\\spromeps.lib")
+    (not-gw _all _all      exe  intelnt     general-lib n   "$(guilibsmt)"  )
+    (gw     _all _all      exe  intelnt     general-lib n   "$(guilibs)"  )
+    (_all   _all _all      dexe intelnt     general-lib n   "$(guilibsmt)"  )
+    (gsi    opt-intc _all  dexe intelnt     general-lib n   "libircmt.lib")
+    (gsi    opt-intc _all  dexe intelnt     general-lib n   "libmmt.lib")
+
+    ;; Gigasoft charting library. -fmw, 3/16/05
+    (ext    _all mdi       obj  intelnt     ipath       m   "$(SPFCDIR)")
+
+    ;; OpenSSL for supported unix platforms
+    (ext    _all  ssl      obj  unix        ipath       m   "$(SPFCDIR)")
+    (g2twgw _all _all      exe  sparcsol    general-lib j   "$(SPFCDIR)/libssl.a")
+    (g2twgw _all _all      exe  sparcsol    general-lib k   "$(SPFCDIR)/libcrypto.a")
+    (g2twgw _all _all      exe  linux       general-lib j   "$(SPFCDIR)/libssl.a")
+    (g2twgw _all _all      exe  linux       general-lib k   "$(SPFCDIR)/libcrypto.a")
+    (g2twgw _all _all      exe  rs6000      general-lib j   "$(SPFCDIR)/libssl.a")
+    (g2twgw _all _all      exe  rs6000      general-lib k   "$(SPFCDIR)/libcrypto.a")
+    (g2twgw _all _all      exe  hp9000s700  general-lib j   "$(SPFCDIR)/libssl.a")
+    (g2twgw _all _all      exe  hp9000s700  general-lib k   "$(SPFCDIR)/libcrypto.a")
+    ;;HP needs libgcc.a to link ssl.
+    (g2twgw _all _all      exe  hp9000s700  general-lib l   "$(SPFCDIR)/libgcc.a")
+    ;; SSPI/Schannel for for Windows platforms
+    (g2twgw _all _all      exe  intelnt     general-lib p   "crypt32.lib")
+    (g2twgw _all _all      dlib intelnt     general-lib p   "crypt32.lib")
+    (gsi    _all gsi_ssl   dlib intelnt     general-lib p   "crypt32.lib")
+    (gsi    _all skeleton_ssl exe intelnt   general-lib p   "crypt32.lib")
+
+    (g2tw   _all _all      exe  intelnt     general-lib n   "$(olelibsmt)"  )
+    (_all   _all _all      exe  intelnt     general-lib r   "ws2_32.lib" )
+    ;;For the intel compiler, we need to include libirc.lib when we create an
+    ;;executable.  However, for GSI, we are staticly linking the libircmt.lib
+    ;;library into gsi.lib, and thus we do NOT want to include it on the command
+    ;;line.  We could create a "not-gsi" target in groups.rel like the "not-gw"
+    ;;target, but that would be more lines than just specifying this here.
+    ;;yduJ 5/27/04
+    (g2tw   opt-intc _all  exe  intelnt     general-lib v   "libirc.lib" )
+    (ext    opt-intc _all  exe  intelnt     general-lib v   "libirc.lib" )
+    (xml    opt-intc _all  exe  intelnt     general-lib v   "libirc.lib" )
+    (gw     opt-intc _all  exe  intelnt     general-lib v   "libirc.lib" )
+    (g2tw   _all _all      exe  intelnt     general-lib n   "comctl32.lib"  )
+    (g2tw   _all _all      exe  intelnt     general-lib n   "winmm.lib"  )
+    (g2tw   _all _all      exe  intelnt     general-lib n   "shell32.lib"  )
+    (_all   _all _all      exe  intelnt     general-lib t   "version.lib")
+    (g2tw   _all _all      exe  intelnt     general-lib t   "rpcrt4.lib")
+    (_all   _all _all      dlib intelnt     general-lib n   "$(guilibsmt)"  )
+    (_all   _all _all      dlib intelnt     general-lib r   "ws2_32.lib" )
+    (gsi    opt-intc _all  dlib intelnt     general-lib v   "libircmt.lib" )
+    (gsi    opt-intc _all  dlib intelnt     general-lib v   "libmmt.lib" )
+    (_all   _all _all      dlib intelnt     general-lib t   "version.lib")
+    (_all   _all _all      exe  hp9000s700  general-lib t   "-lPW"        )
+    (_all   _all _all      exe  rs6000      general-lib o   "-lg"         )
+    (_all   _all _all      exe  rs6000      general-lib r   "-lbsd"       )
+    (_all   _all _all      exe  rs6000      general-lib t   "-lc"         )
+    (_all   _all _all      exe  sparcsol    general-lib r   "-lsocket"    )
+    (_all   _all _all      exe  sparcsol    general-lib s   "-lintl"      )
+    (_all   _all _all      exe  sparcsol    general-lib t   "-lnsl"       )
+    (g2     _all _all      exe  alphaosf    general-lib t   "-liconv"     )
+    (xml    _all _all      exe  alphaosf    general-lib t   "-liconv"     )
+    (_all   _all _all      exe  sparcsol    general-lib t   "-ldl"        )
+    (_all   _all _all      exe  linux       general-lib t   "-ldl"        )
+    (g2tw   _all _all      exe  unix        general-lib c   "-lX11"       )
+    (xml    _all _all      exe  linux       general-lib t   "-lz"         )
+    (g2     _all _all      exe  linux       general-lib t   "-lz"         )
+    (_all   _all _all	   dso  linux       general-lib c   "-lX11"       )
+    (_all   dbg  _all      exe  hp9000s700  general-lib r   "-lc"         )
+    (_all   opt  _all      exe  hp9000s700  general-lib r   "-lc"         )
+    (_all   prf  _all      exe  hp9000s700  general-lib r   "-l:libc.sl"  )
+    (_all   dbg-mt _all    exe  hp9000s700  general-lib r   "-lc"         )
+    (twplug _all nptwplug  dlib intelnt     lib         t   "odbc32.lib"  )  
+    (twplug _all nptwplug  dlib intelnt     lib         u   "odbccp32.lib")  
+    (twplug _all nptwplug  dlib intelnt     lib         v   "oleaut32.lib")  
+    (twplug _all nptwplug  dlib intelnt     lib         w   "ole32.lib"   )  
+    (twplug _all nptwplug  dlib intelnt     lib         x   "uuid.lib"    )  
+  ;; archive flags and options
+    (_all   _all _all      lib  alphaosf    general-archv m "qc"          )
+    (_all   _all _all      lib  hp9000s700  general-archv m "qc"          )
+    (_all   _all _all      lib  hpia64      general-archv m "qc"          )
+    (_all   _all _all      lib  linux       general-archv m "qc"          )
+    (_all   _all _all      lib  rs6000      general-archv m "qc"          )
+    (_all   _all _all      lib  sparcsol    general-archv m "qc"          )
+    (twplug _all nptwplug  dlib intelnt     archv       e   "/EXPORT:NP_GetEntryPoints,@1")
+    (twplug _all nptwplug  dlib intelnt     archv       f   "/EXPORT:NP_Initialize,@2")
+    (twplug _all nptwplug  dlib intelnt     archv       g   "/EXPORT:NP_Shutdown,@3")
+    (twplug _all nptwplug  dlib intelnt     archv       i   "$(dlllflags)")
+    (twplug dbg  nptwplug  dlib intelnt     archv       h   "$(ldebug)"   )  
+    (twplug _all nptwplug  dlib intelnt     archvobj    n   "$(NPDIR)\\npwin.obj")
+    (twplug _all nptwplug  dlib intelnt     archvobj    o   "$(NPDIR)\\nptwplug.res")
+    (_all   _all _all      lib  unix        general-inarchv m "q"         )
+    (gsi    _all libgsi    lib  sparcsol    archvobj    m   "/home/cygnus/lib/gcc-lib/sparc-sun-solaris2/cygnus-2.0.2/_varargs.o")
+    (gsi    opt-intc libgsi lib intelnt     archvobj    m   "libircmt.lib")
+    (gsi    opt-intc libgsi lib intelnt     archvobj    m   "libmmt.lib"  )
+  ;; make flags and options
+    (_all   _all _all      lib  unix        general-make m  "-k"          )
+
+  ;; resource flags and options
+    (_all   _all _all      _all intelnt     rsrc         c   "/l 0x409"   )
+    (ext    _all g2pwd     res  intelnt     rsrc         e   "/fo\"$(MFDIR)\\g2pwd.res\"") 
+    (g2     _all g2        res  intelnt     rsrc         e   "/fo\"$(MFDIR)\\g2.res\"") 
+    (tw     _all tw        res  intelnt     rsrc         e   "/fo\"$(MFDIR)\\tw.res\"") 
+    (gsi    _all gsi       res  intelnt     rsrc         e   "/fo\"$(MFDIR)\\gsi.res\"") 
+    (gw     _all gw        res  intelnt     rsrc         e   "/fo\"$(MFDIR)\\gw.res\"") 
+
+  ;; chmod flags and options
+    (_all   _all _all      _all unix        chmod       m   "444"         ) 
+    (_all   _all _all      exe  unix        chmod       m   "ug+r-w"      ) 
+    (_all   _all _all      dat  unix        chmod       m   "664"         ) 
+  ;; for gsi shippables
+    (extgsi _all filetest  obj  unix        chmod       m   "664"         ) 
+    (extgsi _all filetest  exe  unix        chmod       m   "ug+r+w"      ) 
+    (extgsi _all gsi_main  obj  unix        chmod       m   "664"         ) 
+    (extgsi _all rpcfuncs  obj  unix        chmod       m   "664"         ) 
+    (extgsi _all skeleton  obj  unix        chmod       m   "664"         ) 
+    (extgsi _all skeleton  exe  unix        chmod       m   "ug+r+w"      ) 
+    (extgsi _all typetest  obj  unix        chmod       m   "664"         ) 
+    (extgsi _all typetest  exe  unix        chmod       m   "ug+r+w"      ) 
+  ;; for miscellaneous shippables
+    (g2     _all g2        ok   unix        chmod       m   "664"         ) 
+    (g2     _all sitemap   txt  unix        chmod       m   "664"         ) 
+    (tw     _all tw        ok   unix        chmod       m   "664"         ) 
+    (_all   _all _all      _all _all        install     m   "-p"          )
+    (_all   _all _all      _all intelnt     install     m   ""            )
+ )))
+
+
+
+
+;;; Relation: variable-declaration-relation
+;;; Description: Declares variables that can be dynamically defined
+;;;   substituted for command options.
+;;; Notes:
+;;;     The makefile generator provides a general mechanism for defining
+;;;   variables ("macros") to replace command line options.  If a variable
+;;;   name declared matches exactly for the compile-category and the
+;;;   highest priority target, type, and platform group, then a variable
+;;;   is installed with the value of the chosen options, and the variable
+;;;   is defined at the beginning of the makefile.  Variable names defined
+;;;   here are thus defined dynamically during makefile generation if
+;;;   a matching option is found.
+;;;     WARNING: One must be careful that a name does not match more
+;;;   than a single set of highest priority group values or one group
+;;;   will be chosen arbitrarily.
+
+(setq variable-declaration-relation
+ '(( variable-name  variable-category position target-group 
+                                                         type-group
+                                                               platform-group )
+;;;  -------------  ----------------- -------- --------- ----  --------------
+   ((CC_FLAGS       cc                m        _all      obj   _all           )
+    (CC_FLAGS       cc                m        _all      obj   hp9000s700     )
+    (CC_FLAGS       cc                m        _all      obj   rs6000         )
+    (INCLUDE_PATH   ipath             m        _all      obj   _all           )
+ )))
+
+
+
+
+;;; Relation: variable-initialization-relation
+;;; Description: Defines variables ("macros") to be used within the makefile.
+;;; Notes:
+;;;     These are sorted within sections first by variable-name then by
+;;;   product-group.
+;;;     ---
+;;;     The variable names listed here are selected and defined during
+;;;   initialization.  First, rows are selected for which compile-category
+;;;   matches or is _all.  Then, for each variable-name, the highest
+;;;   priority platform and product-group (in that order) is selected.
+;;;   For those variable names, variable definitions are added to the 
+;;;   variable symbol table, which is printed at the beginning of the
+;;;   makefile.
+;;;     ---
+;;;     Most variables are defined simply for pathnames.  The usefulness of
+;;;   this is two-fold.  First, a variable definition provides a single
+;;;   place to change a path when editing a makefile by hand.  Second,
+;;;   using variables for paths helps to shorten lines in which the variables
+;;;   appear.  This helps makefile readability.
+;;; Modifications:
+
+(setq variable-initialization-relation
+ '(( platform-group
+              product-group
+                      compile-category
+                               variable-name position variable-value )
+;;   -------- ------- -------- ------------- -------- --------------
+   ((_all     ext     _all     PRODUCT       b        "ext")
+    (_all     fnt     _all     PRODUCT       b        "fnt")
+    (_all     fonts   _all     PRODUCT       b        "fonts")
+    (_all     jpeg    _all     PRODUCT       b        "jpeg")
+    (_all     g2      _all     PRODUCT       b        "g2" )
+    (_all     gsi     _all     PRODUCT       b        "gsi")
+    (_all     gw      _all     PRODUCT       b        "gw" )
+    (_all     kbs     _all     PRODUCT       b        "kbs")
+    (_all     rtl     _all     PRODUCT       b        "rtl")
+    (_all     tw      _all     PRODUCT       b        "tw" )
+    (_all     twplug  _all     PRODUCT       b        "twplug" )
+    (_all     xml     _all     PRODUCT       b        "xml")
+    (unix     _all    _all     SHELL         a        "/bin/sh")
+    ;; general purpose directories
+    (linux    ext     _all     ACLDIR        e        "/usr/local/acl61")
+    (intelnt  g2tw    optimize BINPROMDIR    e        "$(SRCBOX)\\promote\\bin")
+    (_all     _all    _all     CDIR          e        "$(SRCBOX)/$(PRODUCT)/c")
+    (intelnt  _all    _all     CDIR          e        "$(SRCBOX)\\$(PRODUCT)\\c")
+    (_all     g2      optimize EXTCDIR       e        "$(SRCBOX)/ext/c")
+    (intelnt  g2      optimize EXTCDIR       e        "$(SRCBOX)\\ext\\c")
+    (_all     xml     _all     EXTCDIR       e        "$(SRCBOX)/ext/c")
+    (intelnt  xml     _all     EXTCDIR       e        "$(SRCBOX)\\ext\\c")
+    (_all     gsi     _all     EXTCDIR       e        "$(SRCBOX)/ext/c")
+    (intelnt  gsi     _all     EXTCDIR       e        "$(SRCBOX)\\ext\\c")
+    (_all     useext  _all     EXTDIR        e        "$(DSTBOX)/ext/$(ODIR)")
+    (intelnt  useext  _all     EXTDIR        e        "$(DSTBOX)\\ext\\$(ODIR)")
+    (_all     gw      _all     EXTCDIR       e        "$(SRCBOX)/ext/c")
+    (intelnt  gw      _all     EXTCDIR       e        "$(SRCBOX)\\ext\\c")
+    (_all     xml     _all     LIBXMLHDIR    e        "$(SRCBOX)/xml")
+    (intelnt  xml     _all     LIBXMLHDIR    e        "$(SRCBOX)\\xml")
+    (_all     xml     _all     LIBXMLLOC     f        "$(LIBXMLHDIR)/libxml")
+    (intelnt  xml     _all     LIBXMLLOC     f        "$(LIBXMLHDIR)\\libxml")
+    (intelnt  tw      optimize TWPLUGDIR     e        "$(DSTBOX)\\twplug\\$(ODIR)")
+    (unix     tw      optimize TWPLUGDIR     e        "$(DSTBOX)/twplug/$(ODIR)")
+    (intelnt  tw      optimize ACTIVEXDIR    e        "$(DSTBOX)\\activex\\$(ODIR)")
+    (_all     g2      _all     GSIDIR        e        "$(DSTBOX)/gsi/$(ODIR)")
+    (intelnt  g2      _all     GSIDIR        e        "$(DSTBOX)\\gsi\\$(ODIR)")
+
+    (_all     gw      _all     GSIDIR        e        "$(DSTBOX)/gsi/$(ODIR)")
+    (intelnt  gw      _all     GSIDIR        e        "$(DSTBOX)\\gsi\\$(ODIR)")
+    (_all     gw      _all     GSICDIR       e        "$(SRCBOX)/gsi/c")
+    (intelnt  gw      _all     GSICDIR       e        "$(SRCBOX)\\gsi\\c")
+
+    (_all     g2      _all     XMLDIR        e        "$(DSTBOX)/xml/$(ODIR)")
+    (intelnt  g2      _all     XMLDIR        e        "$(DSTBOX)\\xml\\$(ODIR)")
+
+    (_all     g2tw    _all     FNTDIR        e        "$(DSTBOX)/fnt/$(ODIR)")
+    (intelnt  g2tw    _all     FNTDIR        e        "$(DSTBOX)\\fnt\\$(ODIR)")
+
+    (_all     g2tw    _all     JPEGDIR       e        "$(DSTBOX)/jpeg/$(ODIR)")
+    (intelnt  g2tw    _all     JPEGDIR       e        "$(DSTBOX)\\jpeg\\$(ODIR)")
+    (_all     ext     _all     JPEGCDIR      e        "$(SRCBOX)/jpeg/c")
+
+    (_all     fonts   optimize FONTPROMDIR   e        "$(SRCBOX)/promote/fonts")
+    (intelnt  fonts   optimize FONTPROMDIR   e        "$(SRCBOX)\\promote\\fonts")
+    (_all     g2tw    optimize FONTPROMDIR   e        "$(SRCBOX)/promote/fonts")
+    (intelnt  g2tw    optimize FONTPROMDIR   e        "$(SRCBOX)\\promote\\fonts")
+    (sparcsol _all    _all     HELPERDIR     e        "/home/development/helpers")
+    (_all     ship    optimize KBDIR         e        "$(SRCBOX)/kbs")
+    (intelnt  ship    optimize KBDIR         e        "$(SRCBOX)\\kbs")
+    (_all     gw      optimize KBDIR         e        "$(SRCBOX)/$(PRODUCT)/kbs")
+    (intelnt  gw      optimize KBDIR         e        "$(SRCBOX)\\$(PRODUCT)\\kbs")
+    (_all     kbs     optimize KBDIR         e        "$(SRCBOX)/kbs")
+    (intelnt  kbs     optimize KBDIR         e        "$(SRCBOX)\\kbs")
+    (_all     g2tw    optimize MISCDIR       e        "$(SRCBOX)/$(PRODUCT)/c/misc")
+    (intelnt  g2tw    optimize MISCDIR       e        "$(SRCBOX)\\$(PRODUCT)\\c\\misc")
+    (_all     _all    _all     MFDIR         e        "$(DSTBOX)/$(PRODUCT)/$(ODIR)")
+    (intelnt  _all    _all     MFDIR         e        "$(DSTBOX)\\$(PRODUCT)\\$(ODIR)")
+    (_all     g2      optimize MFPROMDIR     e        "$(SRCBOX)/promote/cgsi")
+    (intelnt  g2      optimize MFPROMDIR     e        "$(SRCBOX)\\promote\\cgsi")
+    (_all     gsi     optimize MFPROMDIR     e        "$(SRCBOX)/promote/lspgsi")
+    (intelnt  gsi     optimize MFPROMDIR     e        "$(SRCBOX)\\promote\\lspgsi")
+    (_all     twplug  _all     NPDIR         e        "$(SRCBOX)/specific/$(PLATFORM)")
+    (intelnt  twplug  _all     NPDIR         e        "$(SRCBOX)\\specific\\$(PLATFORM)")
+    (intelnt  _all    optimize NODEBUG       e        "1")
+    (intelnt  _all    optimize-intc NODEBUG  e        "1")
+    (_all     fonts   optimize PROMDIR       e        "$(SRCBOX)/promote")
+    (_all     trans   optimize PROMDIR       e        "$(SRCBOX)/promote")
+    (intelnt  trans   optimize PROMDIR       e        "$(SRCBOX)\\promote")
+    (_all     gw      optimize PROMDIR       e        "$(SRCBOX)/$(PRODUCT)/doc")
+    (intelnt  gw      optimize PROMDIR       e        "$(SRCBOX)\\$(PRODUCT)\\doc")
+    (_all     trans   _all     RTHDIR        e        "$(SRCBOX)/rtl/c")
+    (intelnt  trans   _all     RTHDIR        e        "$(SRCBOX)\\rtl\\c")
+    (_all     trans   _all     RTLDIR        e        "$(DSTBOX)/rtl/$(ODIR)")
+    (intelnt  trans   _all     RTLDIR        e        "$(DSTBOX)\\rtl\\$(ODIR)")
+
+    (_all     usespfc _all     SPFCDIR       e        "$(SRCBOX)/specific/$(PLATFORM)")
+    (intelnt  usespfc _all     SPFCDIR       e        "$(SRCBOX)\\specific\\$(PLATFORM)")
+
+    (_all     _all    _all     SCRIPTSDIR    e        "/home/development/scripts")
+    (intelnt  _all    _all     SCRIPTSDIR    e        "$(SCRIPTSBOX)\\scripts\\nt")
+
+    ;; the following are destination directories for installation
+    (_all     ship    optimize TAPEDST       g        "$(DSTBOX)/$(PRODUCT)/tape")
+    (intelnt  ship    optimize TAPEDST       g        "$(DSTBOX)\\$(PRODUCT)\\tape")
+    (_all     ship    optimize TESTDST       g        "$(DSTBOX)/$(PRODUCT)/test")
+    (intelnt  ship    optimize TESTDST       g        "$(DSTBOX)\\$(PRODUCT)\\test")
+    (_all     shiponly optimize TAPEDST      g        "$(SANDBOX)/stage/$(PRODUCT)")
+    (intelnt  shiponly optimize TAPEDST      g        "$(SANDBOX)\\stage\\$(PRODUCT)")
+    (_all     kbs     optimize TAPEDST       j        "$(SANDBOX)/stage/$(PRODUCT)")
+    (intelnt  kbs     optimize TAPEDST       j        "$(SANDBOX)\\stage\\$(PRODUCT)")
+    (_all     kbs     optimize DKBDST        j        "$(SANDBOX)/stage/$(PRODUCT)/demos")
+    (intelnt  kbs     optimize DKBDST        j        "$(SANDBOX)\\stage\\$(PRODUCT)\\demos")
+    (_all     kbs     optimize KBDST         j        "$(SANDBOX)/stage/$(PRODUCT)/utils")
+    (intelnt  kbs     optimize KBDST         j        "$(SANDBOX)\\stage\\$(PRODUCT)\\utils")
+    (_all     kbs     optimize SKBDST        j        "$(SANDBOX)/stage/$(PRODUCT)/samples")
+    (intelnt  kbs     optimize SKBDST        j        "$(SANDBOX)\\stage\\$(PRODUCT)\\samples")
+    (_all     kbs     optimize TKBDST        j        "$(SANDBOX)/stage/$(PRODUCT)/tutors")
+    (intelnt  kbs     optimize TKBDST        j        "$(SANDBOX)\\stage\\$(PRODUCT)\\tutors")
+    (_all     gw      optimize WWWDST        j        "$(DSTBOX)/$(PRODUCT)/tape/www")
+    (intelnt  gw      optimize WWWDST        j        "$(DSTBOX)\\$(PRODUCT)\\tape\\www")
+    (_all     gw      optimize KBDST         j        "$(DSTBOX)/$(PRODUCT)/tape/kbs")
+    (intelnt  gw      optimize KBDST         j        "$(DSTBOX)\\$(PRODUCT)\\tape\\kbs")
+    (_all     g2      optimize EXTDST        g        "$(DSTBOX)/$(PRODUCT)/tape/ext")
+    (intelnt  g2      optimize EXTDST        g        "$(DSTBOX)\\$(PRODUCT)\\tape\\ext")
+    (intelnt  tw      optimize W2KDST        g        "$(DSTBOX)\\$(PRODUCT)\\tape\\win2000")
+    (_all     g2tw    optimize FONTSDST      g        "$(DSTBOX)/$(PRODUCT)/tape/fonts")
+    (intelnt  g2tw    optimize FONTSDST      g        "$(DSTBOX)\\$(PRODUCT)\\tape\\fonts")
+
+    ;;These are copies, perhaps something could be done in groups.rel to
+    ;;coalesce them into a combined optimize/optimize-intc.
+    (intelnt  gsi     optimize-intc TAPEDST       g   "$(DSTBOX)\\$(PRODUCT)\\tape-intc")
+    (intelnt  gsi     optimize-intc TESTDST       g   "$(DSTBOX)\\$(PRODUCT)\\test-intc")
+    (intelnt  ship    optimize-intc TAPEDST  g        "$(DSTBOX)\\$(PRODUCT)\\tape")
+    (intelnt  ship    optimize-intc TESTDST  g        "$(DSTBOX)\\$(PRODUCT)\\test")
+    (intelnt  g2      optimize-intc EXTDST   g        "$(DSTBOX)\\$(PRODUCT)\\tape\\ext")
+    (intelnt  ship    optimize-intc CONTENTS j        "$(TAPEDST)\\contents.txt")
+    (intelnt  tw      optimize-intc TWPLUGDIR     e        "$(DSTBOX)\\twplug\\opt")
+    (intelnt  g2tw    optimize-intc BINPROMDIR    e        "$(SRCBOX)\\promote\\bin")
+    (intelnt  g2      optimize-intc MFPROMDIR     e        "$(SRCBOX)\\promote\\cgsi")
+    (intelnt  gsi     optimize-intc MFPROMDIR     e        "$(SRCBOX)\\promote\\lspgsi")
+    (intelnt  trans   optimize-intc PROMDIR       e        "$(SRCBOX)\\promote")
+    (intelnt  ship    optimize-intc KBDIR         e        "$(SRCBOX)\\kbs")
+    (intelnt  g2      optimize-intc EXTCDIR       e        "$(SRCBOX)\\ext\\c")
+    (intelnt  tw      optimize-intc W2KDST        g        "$(DSTBOX)\\$(PRODUCT)\\tape\\win2000")
+
+    ;; the following refer symbolically to the contents.txt files
+    (_all     ship    optimize CONTENTS      j        "$(DSTBOX)/$(PRODUCT)/tape/contents.txt")
+    (intelnt  ship    optimize CONTENTS      j        "$(DSTBOX)\\$(PRODUCT)\\tape\\contents.txt")
+    (_all     shiponly optimize CONTENTS     j        "$(SANDBOX)/stage/$(PRODUCT)/contents.txt")
+    (intelnt  shiponly optimize CONTENTS     j        "$(SANDBOX)\\stage\\$(PRODUCT)\\contents.txt")
+
+    (hp9000s700 gw    profile  EXTDIR        e        "/gensym/ut/gsi-41r0")
+    (hp9000s700 gw    profile  RTLDIR        e        "/gensym/ut/gsi-41r0")
+
+    (rs6000   gw      profile  EXTDIR        e        "/gensym/ut/gsi-41r0")
+    (rs6000   gw      profile  RTLDIR        e        "/gensym/ut/gsi-41r0")
+
+ )))
+
+
+
+
+;;; Relation: local-location-relation
+;;; Description: Specifies the default source locations for "local" files.
+;;; Notes:
+;;;     The "local" column in <product>-dependencies.rel is y to indicate
+;;;   that a dependency is local.
+;;;     The type "default" provides a value when there is no explicit match
+;;;   on the type.
+;;;     A directory "" means use the current directory.
+;;;     Before use in creating each makefile, a preselection is done on
+;;;   this for all matching product-group entries.
+;;;   The product-group field is then removed and becomes irrelevant to
+;;;   selection, so one must guarantee that a single target does not have
+;;;   multiple locations for overlapping product groups.
+;;;     The fields should be ordered by type then by product group. Sorting
+;;;   in product group should be in order of group precedence, most
+;;;   general first. Ordering should otherwise be alphabetical.  Types
+;;;   are ordered so that the most frequently needed are found early in
+;;;   the relation.  This reduces search time during processing.
+;;; Modifications:
+;;;     jv, 6/19/96: added a relation for "so", which has no default location.
+
+(setq local-location-relation
+ '(( product-group
+                 type         directory    )
+;;;  ---------   --------  -------------
+   ((_all        obj       ""              )
+    (_all        c         "$(CDIR)"       )
+    (_all        h         "$(CDIR)"       )
+    (_all        opt       "$(CDIR)"       )
+    (_all        rc        "$(CDIR)"       )
+    (_all        lib       ""              )
+    (_all        dlib      ""              )
+    (_all        map       ""              )
+    (_all        dso       ""              )
+    (_all        exe       ""              )
+    (_all        dexe      ""              )
+    (_all        dum       ""              )
+    (_all        res       ""              )
+    (_all        doc       "$(KBDIR)"      )
+    (_all        kb        "$(KBDIR)"      )
+    (_all        kl        "$(KBDIR)"      )
+    (_all        txt       "$(KBDIR)"      )
+    (_all        xbm       "$(KBDIR)"      )
+    (_all        dll       "$(BINPROMDIR)" )
+    (_all        gb        "$(FONTPROMDIR)")
+    (_all        spd       "$(FONTPROMDIR)")
+    (_all        ttf       "$(FONTPROMDIR)")
+    (_all        ok        "$(PROMDIR)"    )
+    (_all        dic       "$(PROMDIR)"    )
+    (_all        com       "$(PROMDIR)"    )
+    (_all        dat       "$(PROMDIR)"    )
+    (_all        hlp       "$(PROMDIR)"    )
+    (_all        mak       "$(MFPROMDIR)"  )
+    (kbs         gif       "$(KBDIR)"      )
+    (kbs         dgif      "$(KBDIR)"      )
+    (kbs         sgif      "$(KBDIR)"      )
+    (kbs         tgif      "$(KBDIR)"      )
+    (kbs         ugif      "$(KBDIR)"      )
+    (kbs         dkb       "$(KBDIR)"      )
+    (kbs         skb       "$(KBDIR)"      )
+    (kbs         tkb       "$(KBDIR)"      )
+    (kbs         ukb       "$(KBDIR)"      )
+    (kbs         dkl       "$(KBDIR)"      )
+    (kbs         skl       "$(KBDIR)"      )
+    (kbs         tkl       "$(KBDIR)"      )
+    (kbs         ukl       "$(KBDIR)"      )
+    (kbs         dtxt      "$(KBDIR)"      )
+    (kbs         stxt      "$(KBDIR)"      )
+    (kbs         ttxt      "$(KBDIR)"      )
+    (kbs         utxt      "$(KBDIR)"      )
+    (kbs         dxbm      "$(KBDIR)"      )
+    (kbs         sxbm      "$(KBDIR)"      )
+    (kbs         txbm      "$(KBDIR)"      )
+    (kbs         uxbm      "$(KBDIR)"      )
+    ;; the default is used when there is no match on the type
+    (_all        default   "$(PROMDIR)"    )
+ )))
+
+
+
+
+;;; Relation: nonlocal-location-relation
+;;; Description: Specifies the explicit source locations for non-local files.
+;;; Notes:
+;;;     Before use in creating each makefile, a preselection is done on
+;;;   this for all matching product-group and platform-group entries.
+;;;   The product-group field is then removed and becomes irrelevant to
+;;;   selection, so one must guarantee that a single target does not have
+;;;   multiple locations for overlapping product groups.  The "local"
+;;;   column in <product>-dependencies.rel is n to indicate that a dependency
+;;;   is non-local.
+;;;     The fields should be sorted by platform group, then by target group.
+;;;   Sorting in platform group should be in order of group precedence, most
+;;;   general first. Ordering should otherwise be alphabetical.
+;;; Modifications:
+
+(setq nonlocal-location-relation
+ '(( product-group
+              target-group type-group   platform-group  directory        )
+;;;  ------   ------------ -----------  --------------  -------------
+   ((g2       _all          kb          _all            "$(KBDIR)"       )
+    (trans    _all          h           _all            "$(RTHDIR)"      )
+    (xml      cprim         h           _all            "$(EXTCDIR)"     )
+    (xml      _all          h           _all            "$(LIBXMLLOC)"   )
+    (_all     icp           h           _all            "$(EXTCDIR)"     )
+    (_all     gensym-features h         _all            "$(EXTCDIR)"     )
+    (gw       gsi_main      h           _all            "$(GSICDIR)"     )
+    (gw       gsiannex      obj         _all            "$(GSIDIR)"      )
+    (g2       fgntest       c           _all            "$(PROMDIR)"     )
+    (g2       fgntest       tpl         _all            "$(PROMDIR)"     )
+    (g2       foreign       h           _all            "$(EXTCDIR)"     )
+    (g2       g2passwd      exe         _all            "$(EXTDIR)"      )
+    (g2       hostlookup    exe         _all            "$(EXTDIR)"      )
+    (trans    libcprim      lib         _all            "$(EXTDIR)"      )
+    (g2tw     libfnt        lib         _all            "$(FNTDIR)"      )
+    (g2tw     libjpeg       lib         _all            "$(JPEGDIR)"     )
+    (g2       libforgn      lib         _all            "$(EXTDIR)"      )
+    (g2       liblsxml      lib         _all            "$(XMLDIR)"      )
+    (_all     libxml2       lib         unix            "$(SPFCDIR)"     )
+    (_all     libxml2_a     lib         intelnt         "$(SPFCDIR)"     )
+    (_all     nsleep        obj         unix            "$(SPFCDIR)"     )
+    (_all     nsleep        obj         intelnt         "$(SPFCDIR)"     )
+    (_all     backtrac      obj         unix            "$(SPFCDIR)"     )
+    (_all     backtrac      obj         intelnt         "$(SPFCDIR)"     )
+    (_all     librtl        lib         _all            "$(RTLDIR)"      )
+    (useext   libtcp        lib         _all            "$(EXTDIR)"      )
+    (useext   libgsec       lib         _all            "$(EXTDIR)"      )
+    (useext   libnogsec     lib         _all            "$(EXTDIR)"      )
+    (_all     libircmt      lib         intelnt         "$(SPFCDIR)"     )
+    (_all     libmmt        lib         intelnt         "$(SPFCDIR)"     )
+    (_all     libgcc        lib         hp9000s700      "$(SPFCDIR)"     )
+    (_all     libssl        lib         _all            "$(SPFCDIR)"     )
+    (_all     libcrypto     lib         _all            "$(SPFCDIR)"     )
+    (g2       gsiannex      lib         _all            "$(GSIDIR)"      )
+    (g2       overlay       exe         _all            "$(EXTDIR)"      )
+    (ext      libacl612     dso         linux           "$(ACLDIR)"      )
+    (tw       pegrp32g      dll         intelnt         "$(BINPROMDIR)"  )
+    (tw       gdiplus       dll         intelnt         "$(BINPROMDIR)"  )
+    (tw       nptwplug      dll         intelnt         "$(TWPLUGDIR)"   )
+    (tw       nptwplug      dso         unix            "$(TWPLUGDIR)"   )
+    (tw       "TwControl"   ocx         intelnt         "$(ACTIVEXDIR)"  )
+    (tw       "registerTwControl" bat   intelnt         "$(ACTIVEXDIR)"  )
+    )))
+
+
+
+
+;;; Relation: partslist-filetype-relation
+;;; Description: Provides mapping between makefile generator file types and
+;;;   parts.list file types.
+;;; Notes:  Sorted alphabetically by type.
+;;;      As of 11/21/96, this is obsolete.  I (mes) am leaving it for now,
+;;;   however, because it is still used to set fields in the install
+;;;   structure of env, even though the fields are not referenced.
+
+(setq partslist-filetype-relation
+ '(( type        partslist-type)
+;;;  ----        --------------
+   ((c           c-source      )
+    (dat         data          )
+    (dexe        executable    )
+    (dlib        archive       )
+    (dso         shared-object )
+    (exe         executable    )
+    (h           h-source      )
+    (kb          kb-file       )
+    (kl          kb-file       )
+    (lib         archive       )
+    (mak         makefile      )
+    (obj         object        )
+ )))
+
+
+
+
+;;; Relation: source-target-relation
+;;; Description: Provides mapping between object files and the C source files
+;;;   used to produce them, for non-default files.
+;;; Notes: It is necessary to add options for the files in "commands-option-
+;;;   relation" to specify the name of the object file, e.g., "-o newname.o".
+;;;   The makefile generator should be smart enough to figure that out, but
+;;;   for now (6/19/96), it isn't.
+;;; Modifications: jv, 6/19/96: created
+
+(setq source-target-relation
+ '(( target      source     )
+;;;  ------      ----------
+   ))
+
+
+
+
+;;; List: c++-files
+;;; Description: Provides list of filenames which are C++ files
+;;; Notes: used by function mfgtf-c-source-for-target
+
+(setq c++-files
+ '( w32_dyndlg
+;   tabular_view
+   filedlg
+   ))
+
+
+
+
+;;; Relation: tw-install-destination-relation
+;;; Description: Provides specific installation information for tw
+;;;   files.
+
+(setq tw-install-destination-relation
+ '(( target-group type-group
+                       platform-group
+                                directory    partslist   distribution
+                                                                parts-subdir  )
+;;;  ------------ ---- -------- -----------  ----------  ------ ------------
+   ((_all         _all  _all    "$(TAPEDST)" "$(PLIST)"  all    ""            )
+    (gdiplus      dll  intelnt  "$(W2KDST)"  "$(PLIST)"  all    "win2000\\"     )
+ )))
+
+
+;;; Relation: g2-install-destination-relation
+;;; Description: Provides specific installation information for g2
+;;;   files.
+
+(setq g2-install-destination-relation
+ '(( target-group type-group
+                       platform-group
+                                directory    partslist   distribution
+                                                                parts-subdir  )
+;;;  ------------ ---- -------- -----------  ----------  ------ ------------
+   ((_all         _all  _all    "$(TAPEDST)" "$(PLIST)"  all    ""            )
+    (overlay      exe  _all     "$(EXTDST)"  "$(PLIST)"  all    "ext/"        )
+    (_all         c    _all     "$(EXTDST)"  "$(PLIST)"  all    "ext/"        )
+    (_all         h    _all     "$(EXTDST)"  "$(PLIST)"  all    "ext/"        )
+    (_all         lib  _all     "$(EXTDST)"  "$(PLIST)"  all    "ext/"        )
+    (_all         mak  _all     "$(EXTDST)"  "$(PLIST)"  all    "ext/"        )
+    (_all         tpl  _all     "$(EXTDST)"  "$(PLIST)"  all    "ext/"        )
+    (overlay      exe  intelnt  "$(EXTDST)"  "$(PLIST)"  all    "ext\\"       )
+    (_all         c    intelnt  "$(EXTDST)"  "$(PLIST)"  all    "ext\\"       )
+    (_all         h    intelnt  "$(EXTDST)"  "$(PLIST)"  all    "ext\\"       )
+    (_all         lib  intelnt  "$(EXTDST)"  "$(PLIST)"  all    "ext\\"       )
+    (_all         mak  intelnt  "$(EXTDST)"  "$(PLIST)"  all    "ext\\"       )
+    (_all         tpl  intelnt  "$(EXTDST)"  "$(PLIST)"  all    "ext\\"       )
+ )))
+
+
+
+
+;;; Relation: kbs-install-destination-relation
+;;; Description: Provides specific installation information for kb
+;;;   files.
+
+(setq kbs-install-destination-relation
+ '(( target-group type-group
+                       platform-group
+                                directory    partslist   distribution
+                                                                parts-subdir  )
+;;;  ------------ ---- -------- -----------  ----------  ------ ------------
+   ((_all         _all  _all    "$(KBDST)"   "$(PLIST)"  all    "utils/"      )
+    (_all         _all  intelnt "$(KBDST)"   "$(PLIST)"  all    "utils\\"     )
+    (_all         dgif  _all    "$(DKBDST)"  "$(PLIST)"  all    "demos/"      )
+    (_all         dgif  intelnt "$(DKBDST)"  "$(PLIST)"  all    "demos\\"     )
+    (_all         dkb   _all    "$(DKBDST)"  "$(PLIST)"  all    "demos/"      )
+    (_all         dkb   intelnt "$(DKBDST)"  "$(PLIST)"  all    "demos\\"     )
+    (_all         dkl   _all    "$(DKBDST)"  "$(PLIST)"  all    "demos/"      )
+    (_all         dkl   intelnt "$(DKBDST)"  "$(PLIST)"  all    "demos\\"     )
+    (_all         dtxt  _all    "$(DKBDST)"  "$(PLIST)"  all    "demos/"      )
+    (_all         dtxt  intelnt "$(DKBDST)"  "$(PLIST)"  all    "demos\\"     )
+    (_all         dxbm  _all    "$(DKBDST)"  "$(PLIST)"  all    "demos/"      )
+    (_all         dxbm  intelnt "$(DKBDST)"  "$(PLIST)"  all    "demos\\"     )
+    (_all         sgif  _all    "$(SKBDST)"  "$(PLIST)"  all    "samples/"    )
+    (_all         sgif  intelnt "$(SKBDST)"  "$(PLIST)"  all    "samples\\"   )
+    (_all         skb   _all    "$(SKBDST)"  "$(PLIST)"  all    "samples/"    )
+    (_all         skb   intelnt "$(SKBDST)"  "$(PLIST)"  all    "samples\\"   )
+    (_all         skl   _all    "$(SKBDST)"  "$(PLIST)"  all    "samples/"    )
+    (_all         skl   intelnt "$(SKBDST)"  "$(PLIST)"  all    "samples\\"   )
+    (_all         stxt  _all    "$(SKBDST)"  "$(PLIST)"  all    "samples/"    )
+    (_all         stxt  intelnt "$(SKBDST)"  "$(PLIST)"  all    "samples\\"   )
+    (_all         sxbm  _all    "$(SKBDST)"  "$(PLIST)"  all    "samples/"    )
+    (_all         sxbm  intelnt "$(SKBDST)"  "$(PLIST)"  all    "samples\\"   )
+    (_all         tgif  _all    "$(TKBDST)"  "$(PLIST)"  all    "tutors/"     )
+    (_all         tgif  intelnt "$(TKBDST)"  "$(PLIST)"  all    "tutors\\"    )
+    (_all         tkb   _all    "$(TKBDST)"  "$(PLIST)"  all    "tutors/"     )
+    (_all         tkb   intelnt "$(TKBDST)"  "$(PLIST)"  all    "tutors\\"    )
+    (_all         tkl   _all    "$(TKBDST)"  "$(PLIST)"  all    "tutors/"     )
+    (_all         tkl   intelnt "$(TKBDST)"  "$(PLIST)"  all    "tutors\\"    )
+    (_all         ttxt  _all    "$(TKBDST)"  "$(PLIST)"  all    "tutors/"     )
+    (_all         ttxt  intelnt "$(TKBDST)"  "$(PLIST)"  all    "tutors\\"    )
+    (_all         txbm  _all    "$(TKBDST)"  "$(PLIST)"  all    "tutors/"     )
+    (_all         txbm  intelnt "$(TKBDST)"  "$(PLIST)"  all    "tutors\\"    )
+ )))
+
+
+(setq gw-install-destination-relation
+'(( target-group type-group
+                       platform-group
+                                directory    partslist   distribution
+                                                                parts-subdir  )
+;;;  ------------ ---- -------- -----------  ----------  ------ ------------
+   ((_all         _all  _all    "$(TAPEDST)" "$(PLIST)"  all    ""            )
+    (_all         gif   _all    "$(WWWDST)"  "$(PLIST)"  all    "www/"      )
+    (_all         gif   intelnt "$(WWWDST)"  "$(PLIST)"  all    "www\\"     )
+    (_all         kb    _all    "$(KBDST)"   "$(PLIST)"  all    "kbs/"      )
+    (_all         kb    intelnt "$(KBDST)"   "$(PLIST)"  all    "kbs\\"     ))))
+
+
+
+
+
+;;; Relation: default-install-destination-relation
+;;; Description: Provides installation information for single, flat destination
+;;;   directory.
+
+(setq default-install-destination-relation
+ '(( target-group type-group
+                       platform-group
+                                directory    partslist   distribution
+                                                                parts-subdir  )
+;;;  ------------ ---- -------- ----------   ----------  ------ ------------
+   ((_all         _all _all     "$(TAPEDST)" "$(PLIST)"  all    ""            )
+ )))
+
+
+
+
+;;; Relation: install-rename-relation
+;;; Description: Provides mapping to change a file's name during installation.
+;;; Notes:  During initial product processing, all rows matching
+;;;   the product's product group are selected.  This allows a single
+;;;   name to have multiple new-names as long as its product groups
+;;;   are distinct.
+;;;     This relation is alphabetized by the "name" field.
+
+(setq install-rename-relation
+ '(( product-group  name                type      new-name    )
+;;;  -------------  ---------------     ----      ------------
+   ((g2             kitinstal-g2        com       kitinstal   )
+    (gsi            kitinstal-gsi40     com       kitinstal   )
+    (gsi            kitinstal-gsi50     com       kitinstal   )
+    (tw             kitinstal-tw        com       kitinstal   )
+    (gsi            make_extension40    com       make_extension )
+    (gsi            make_extension50    com       make_extension )
+    (g2             makefgn-alphaosf    mak       makefile    )
+    (g2             makefgn-hp9000s700  mak       makefile    )
+    (g2             makefgn-intelnt     mak       makefile    )
+    (g2             makefgn-linux       mak       makefile    )
+    (g2             makefgn-rs6000      mak       makefile    )
+    (g2             makefgn-sparcsol    mak       makefile    )
+    (extgsi         makegsi-alphaosf    mak       makefile    )
+    (extgsi         makegsi-hp9000s700  mak       makefile    )
+    (extgsi         makegsi-intelnt     mak       makefile    )
+    (extgsi         makegsi-linux       mak       makefile    )
+    (extgsi         makegsi-rs6000      mak       makefile    )
+    (extgsi         makegsi-sparcsol    mak       makefile    )
+    (g2             g2nt                ok        g2          )
+ )))
