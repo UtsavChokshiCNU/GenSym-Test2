@@ -1,0 +1,22 @@
+#!/bin/csh
+
+if ($#argv != 2) then
+  echo "Error: Wrong number of arguments, $#argv supplied, 2 required."
+  echo "Usage: promote-bundle version buildid"
+  echo "e.g. promote-bundle 82r0 HK29"
+  exit 1
+endif
+
+set version = $1
+set ishipid = $2
+
+#pick up contents from the "cd" directory of the bundle
+
+foreach platform ( intelnt linux hp9000s700 alphaosf rs6000 sparcsol hpia64)
+   echo promoting $platform $version
+   /gensym/tools/promote-product -noconfirm -i g2bundle $platform /gensym/bundles/g2/$version/cd/$platform $version-$ishipid
+
+   /gensym/tools/promote-product -noconfirm -e g2bundle $platform  $version-$ishipid  $version
+   /gensym/tools/remove-product -noconfirm -i g2bundle $version-$ishipid  $platform
+end
+
