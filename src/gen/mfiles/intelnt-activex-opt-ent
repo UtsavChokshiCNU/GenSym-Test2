@@ -1,0 +1,183 @@
+PRODUCT = activex
+ODIR = opt
+PLATFORM = intelnt
+AUXDIR = $(SRCBOX)\$(PRODUCT)\control\auxi
+EXDIR = $(SRCBOX)\$(PRODUCT)\control\examples
+TWAXDIR = $(SRCBOX)\$(PRODUCT)\control\src
+WSVDIR = $(SRCBOX)\$(PRODUCT)\control\wsview
+DEMODIR = $(SRCBOX)\$(PRODUCT)\G2Com\demos
+KBDIR = $(SRCBOX)\kbs
+G2COMDIR = $(DEMODIR)\VCppDemo
+OUTPUTDIR = $(DSTBOX)\$(PRODUCT)\$(ODIR)
+TWAXSTGDIR = $(SANDBOX)\stage\twax
+WSVSTGDIR = $(SANDBOX)\stage\workspace-view
+TWEXEDIR = $(DSTBOX)\tw\$(ODIR)
+TWNGDIR = $(DSTBOX)\twng\$(ODIR)
+MFCDIR = $(VS100COMNTOOLS)..\..\VC\redist\x86\Microsoft.VC100.MFC
+CRTDIR = $(VS100COMNTOOLS)..\..\VC\redist\x86\Microsoft.VC100.CRT
+NODEBUG = 1
+MTL=midl.exe
+CABARC=cabarc
+REGSVR=regsvr32
+SCRIPTSDIR = $(SCRIPTSBOX)\scripts\nt
+DEFINES=/D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_VERBOSE" /D "_WINDLL" /D "_AFXDLL" /D "_MBCS" /D "_USRDLL" /D "L_USE_COMCAT"
+CC_FLAGS = /nologo /MD /W3 /GX /O2 $(DEFINES) /FD /c 
+WSV_CCFLAGS = $(CC_FLAGS) /D "WORKSPACE_VIEW_CONTROL" /I $(G2COMDIR)
+
+# The include file ntwin32.mak defines macros to provide independence
+# macro      Intel NT             Alpha NT      Definition
+# =====      ========             ========      ===========
+# $(cc)      cl                   claxp         compiler
+# $(ccommon) -c -W3               same          standard compiler flags
+# $(cdebug)  -Od -Zi              -Od -Zi -Zh   standard debug flags*
+# $(cflags)  $(ccommon) -D_X86_=1 -c -DALPHA=1  to identify platform
+# $(cvarsdll) -DWIN32 $(noansi)    same          to identify o.s.
+# $(link)    link32               same          linker
+# $(ldebug)  -debug:full          same          linker debug flags*
+#            -debugtype:cv              
+# $(guilflags) -subsystem:windows same          GUI link flags
+#             -entry:WinMainCRTStartup  
+#
+# (*) A NODEBUG option or macro turns off debugging and specifies
+#    full optimization.
+
+!include <ntwin32.mak>
+
+all : _mfenter TwControl.ocx WorkspaceView.ocx regsvr32.trg TwControl.cab WorkspaceView.cab _mfexit
+
+_mfenter : 
+	@- $(SCRIPTSDIR)\errsweep.bat -init
+
+_mfexit : 
+	@- $(SCRIPTSDIR)\errsweep.bat -finish
+
+WorkspaceView.tlb : $(WSVDIR)\WorkspaceView.odl
+	$(MTL) /nologo /D NDEBUG /tlb WorkspaceView.tlb /mktyplib203 /win32 $(WSVDIR)\WorkspaceView.odl
+
+WorkspaceView.res : WorkspaceView.tlb $(WSVDIR)\view-resources.rc $(AUXDIR)\bmp-tw.bmp \
+  $(WSVDIR)\defs-ws.h
+	$(rc) /l 0x409 /foWorkspaceView.res /i $(WSVDIR) /i $(OUTPUTDIR) /d NDEBUG /d _AFXDLL $(WSVDIR)\view-resources.rc
+
+WorkspaceView.ocx : WorkspaceView.res $(WSVDIR)\exports-ws.def inst-ws.obj log-ws.obj \
+  cws.obj
+    $(link) /nologo /subsystem:windows /dll /incremental:no /pdb:WorkspaceView.pdb /machine:I386 /def:$(WSVDIR)\exports-ws.def /implib:WorkspaceView.lib /out:WorkspaceView.ocx inst-ws.obj log-ws.obj cws.obj WorkspaceView.res version.lib
+!ifdef USE_VS2008
+	mt.exe -manifest WorkspaceView.ocx.manifest -outputresource:WorkspaceView.ocx;2
+!endif
+	
+regsvr32.trg : WorkspaceView.ocx TwControl.ocx
+	$(REGSVR) /s /c WorkspaceView.ocx
+	$(REGSVR) /s /c TwControl.ocx
+	echo regsvr32 exec. time > regsvr32.trg
+
+WorkspaceView.cab : WorkspaceView.ocx $(AUXDIR)\wsv-info.inf $(TWNGDIR)\twng.exe  "$(CRTDIR)\msvcr100.dll" "$(MFCDIR)\mfc100.dll" "$(MFCDIR)\mfc100u.dll"
+	$(CABARC) -s 6144 N WorkspaceView.cab WorkspaceView.ocx $(AUXDIR)\wsv-info.inf $(TWNGDIR)\twng.exe  "$(CRTDIR)\msvcr100.dll" "$(MFCDIR)\mfc100.dll" "$(MFCDIR)\mfc100u.dll"
+
+cws.obj : $(WSVDIR)\cws.cpp $(WSVDIR)\props-ws.h \
+  $(WSVDIR)\defs-ws.h $(WSVDIR)\afx-ws.h
+	$(cc) $(WSV_CCFLAGS) $(WSVDIR)\cws.cpp
+
+inst-ws.obj : $(WSVDIR)\inst-ws.cpp $(WSVDIR)\props-ws.h \
+  $(WSVDIR)\defs-ws.h $(WSVDIR)\afx-ws.h
+	$(cc) $(WSV_CCFLAGS) $(WSVDIR)\inst-ws.cpp
+
+log-ws.obj : $(TWAXDIR)\logger.cpp $(WSVDIR)\defs-ws.h $(WSVDIR)\afx-ws.h
+	$(cc) /Folog-ws.obj $(WSV_CCFLAGS) /D MFGEN /I $(WSVDIR) $(TWAXDIR)\logger.cpp
+
+TwControl.tlb : $(TWAXDIR)\TwControl.odl
+	$(MTL) /nologo /D NDEBUG /tlb TwControl.tlb /mktyplib203 /win32 $(TWAXDIR)\TwControl.odl
+
+TwControl.res : TwControl.tlb $(TWAXDIR)\resources.rc $(AUXDIR)\bmp-tw.bmp \
+  $(TWAXDIR)\defs-twax.h
+	$(rc) /l 0x409 /foTwControl.res /i $(TWAXDIR) /i $(OUTPUTDIR) /d NDEBUG /d _AFXDLL $(TWAXDIR)\resources.rc
+
+TwControl.ocx : TwControl.res $(TWAXDIR)\exports.def instance.obj logger.obj \
+  page.obj xtw.obj
+    $(link) /nologo /subsystem:windows /dll /incremental:no /pdb:TwControl.pdb /machine:I386 /def:$(TWAXDIR)\exports.def /implib:TwControl.lib /out:TwControl.ocx instance.obj logger.obj page.obj xtw.obj TwControl.res
+!ifdef USE_VS2008
+	mt.exe -manifest TwControl.ocx.manifest -outputresource:TwControl.ocx;2
+!endif
+
+TwControl.cab : TwControl.ocx $(AUXDIR)\info-twax.inf $(TWEXEDIR)\tw.exe $(TWNGDIR)\twng.exe "$(CRTDIR)\msvcr100.dll" "$(MFCDIR)\mfc100.dll" "$(MFCDIR)\mfc100u.dll"
+	$(CABARC) -s 6144 N TwControl.cab TwControl.ocx $(AUXDIR)\ent\info-twax.inf $(TWEXEDIR)\tw.exe $(TWNGDIR)\twng.exe "$(CRTDIR)\msvcr100.dll" "$(MFCDIR)\mfc100.dll" "$(MFCDIR)\mfc100u.dll"
+
+instance.obj : $(TWAXDIR)\instance.cpp $(TWAXDIR)\classes-twax.hxx \
+  $(TWAXDIR)\defs-twax.h $(TWAXDIR)\gafx.h
+	$(cc) $(CC_FLAGS) $(TWAXDIR)\instance.cpp
+
+logger.obj : $(TWAXDIR)\logger.cpp $(TWAXDIR)\defs-twax.h $(TWAXDIR)\gafx.h
+	$(cc) $(CC_FLAGS) /D MFGEN $(TWAXDIR)\logger.cpp
+
+page.obj : $(TWAXDIR)\page.cpp $(TWAXDIR)\classes-twax.hxx \
+  $(TWAXDIR)\defs-twax.h $(TWAXDIR)\gafx.h
+	$(cc) $(CC_FLAGS) $(TWAXDIR)\page.cpp
+
+xtw.obj : $(TWAXDIR)\xtw.cpp $(TWAXDIR)\classes-twax.hxx \
+  $(TWAXDIR)\defs-twax.h $(TWAXDIR)\gafx.h
+	$(cc) $(CC_FLAGS) $(TWAXDIR)\xtw.cpp
+
+stage : TwControl.cab TwControl.ocx WorkspaceView.cab WorkspaceView.ocx $(AUXDIR)\registerTwControl.bat $(AUXDIR)\unregisterTwControl.bat $(EXDIR)\classic.html $(EXDIR)\sample.html $(EXDIR)\twcontrol.kb $(EXDIR)\twform.frm $(EXDIR)\twform.frx $(EXDIR)\twloc.html $(EXDIR)\twproj.vbp $(EXDIR)\twproj.vbw $(KBDIR)\g2com.kb $(EXDIR)\wsvdemo.kb
+	rmdir /s /q $(TWAXSTGDIR)
+	mkdir $(TWAXSTGDIR)
+	copy TwControl.ocx $(TWAXSTGDIR)
+	copy TwControl.cab $(TWAXSTGDIR)
+	copy $(EXDIR)\install.html $(TWAXSTGDIR)
+	copy $(AUXDIR)\registerTwControl.bat $(TWAXSTGDIR)
+	copy $(AUXDIR)\unregisterTwControl.bat $(TWAXSTGDIR)
+	mkdir $(TWAXSTGDIR)\examples
+	mkdir $(TWAXSTGDIR)\examples\vb
+	copy $(EXDIR)\twproj.vbp $(TWAXSTGDIR)\examples\vb
+	copy $(EXDIR)\twproj.vbw $(TWAXSTGDIR)\examples\vb
+	copy $(EXDIR)\twform.frm $(TWAXSTGDIR)\examples\vb
+	copy $(EXDIR)\twform.frx $(TWAXSTGDIR)\examples\vb
+	mkdir $(TWAXSTGDIR)\examples\html
+	copy $(EXDIR)\classic.html $(TWAXSTGDIR)\examples\html
+	copy $(EXDIR)\sample.html $(TWAXSTGDIR)\examples\html
+	copy $(EXDIR)\twloc.html $(TWAXSTGDIR)\examples\html
+	copy $(EXDIR)\diag-exe.html $(TWAXSTGDIR)\examples\html
+	copy $(EXDIR)\no-tw-exe.gif $(TWAXSTGDIR)\examples\html
+	copy $(EXDIR)\objerror.gif $(TWAXSTGDIR)\examples\html
+	copy $(EXDIR)\pagerror.gif $(TWAXSTGDIR)\examples\html
+	copy $(EXDIR)\splash.gif $(TWAXSTGDIR)\examples\html
+	mkdir $(TWAXSTGDIR)\examples\kbs
+	copy $(EXDIR)\twcontrol.kb $(TWAXSTGDIR)\examples\kbs
+	copy $(EXDIR)\gensym_logo.gif $(TWAXSTGDIR)\examples\kbs
+	rmdir /s /q $(WSVSTGDIR)
+	mkdir $(WSVSTGDIR)
+	copy WorkspaceView.ocx $(WSVSTGDIR)
+	copy WorkspaceView.cab $(WSVSTGDIR)
+	copy $(EXDIR)\wsview.html $(WSVSTGDIR)
+	copy $(DEMODIR)\VBDemo\WorkspaceViewDemo.vbp $(WSVSTGDIR)
+	copy $(DEMODIR)\VBDemo\WorkspaceViewDemo.vbw $(WSVSTGDIR)
+	copy $(DEMODIR)\VBDemo\WSView.frm $(WSVSTGDIR)
+	copy $(DEMODIR)\VBDemo\WSView.frx $(WSVSTGDIR)
+	copy $(KBDIR)\g2com.kb $(WSVSTGDIR)
+	copy $(AUXDIR)\registerWSV.bat $(WSVSTGDIR)
+	copy $(AUXDIR)\unregisterWSV.bat $(WSVSTGDIR)
+	copy $(EXDIR)\wsvdemo.kb $(WSVSTGDIR)
+	copy $(EXDIR)\WorkspaceViewDemo.exe $(WSVSTGDIR)
+
+
+clean :
+	- del TwControl.cab
+	- del TwControl.exp
+	- del TwControl.lib
+	- del TwControl.ocx
+	- del TwControl.res
+	- del TwControl.tlb
+	- del WorkspaceView.cab
+	- del WorkspaceView.exp
+	- del WorkspaceView.lib
+	- del WorkspaceView.ocx
+	- del WorkspaceView.res
+	- del WorkspaceView.tlb
+	- del makefile
+	- del regsvr32.trg
+	- del vc60.idb
+	- del cws.obj
+	- del inst-ws.obj
+	- del instance.obj
+	- del log-ws.obj
+	- del logger.obj
+	- del page.obj
+	- del xtw.obj
