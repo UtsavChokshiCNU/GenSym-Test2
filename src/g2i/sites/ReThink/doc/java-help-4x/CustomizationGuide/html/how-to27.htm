@@ -1,0 +1,128 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="01/11/02 11:07:23">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Customizing Reset, Delete, and Update Procedures</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="how-to26.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="how-to28.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/ReThink/custom-manual/stylesets/Customizing%20ReThink/Output/html/how-to-c.htm">  
+        How to Customize ReThink  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Customizing Reset, Delete, and Update Procedures
+</h2>
+<p>The reset, delete, and update procedures are proprietary and, therefore, do not exist on any workspace. To create custom reset, delete, and update procedures for the various types of objects, create a new procedure with these signatures:<a name="115448"></a></p>
+<p >
+  <a name="115791"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="115868"><div >Class</a></div></th>
+    <th><a name="115870"><div >Procedures</a></div></th>
+  </tr>
+  <tr>
+    <td><code>bpr-block<a name="115872"> </a></code></blockquote></td>
+    <td><p><code>bpr-reset-block(block:class bpr-block)</code><a name="115907"></a></p>
+<p><code>bpr-delete-block(block: class bpr-block)</code><a name="115908"></a></p>
+<p><code>bpr-update-block(block: class bpr-block)</code><a name="115899"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><code>bpr-path<a name="116079"> </a></code></blockquote></td>
+    <td><p><code>bpr-reset-path(path: class bpr-path)</code><a name="116081"></a></p>
+<p><code>bpr-delete-path(path: class bpr-path)</code><a name="116082"></a></p>
+<p><code>bpr-update-path(path: class bpr-path)</code><a name="116083"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><code>bpr-instrument<a name="129893"> </a></code></blockquote></td>
+    <td><p><code>bpr-reset-instrument(instrument: class <br>   bpr-instrument)</code><a name="129895"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><code>bpr-object<a name="115979"> </a></code></blockquote></td>
+    <td><p><code>bpr-reset-object(object: class bpr-object)</code><a name="115991"></a></p>
+<p><code>bpr-delete-object(object: class bpr-object)</code><a name="115992"></a></p>
+<p><code>bpr-update-object-metrics(object: class bpr-object)</code><a name="115981"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><code>bpr-resource-
+manager<a name="116010"> </a></code></blockquote></td>
+    <td><p><code>bpr-reset-resource-manager<br>   (manager: class bpr-resource-manager)</code><a name="116012"></a></p>
+</td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<h4 >	 To customize reset, delete, and update procedures:<a name="115429"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>1	</b></td>    <td valign="top" width="580">Create a subclass of the block you want to customize.<a name="116116"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>2	</b></td>    <td valign="top" width="580">Create a new procedure with the desired behavior, as follows:<a name="116117"></a></td>  </tr></table><blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>a	</b></td>    <td valign="top" width="560">Choose View &gt; Toolbars &gt; New Item and click the Rules and Definitions tab:<a name="116118"></a></td>  </tr></table></blockquote>
+<p >
+  <a name="116125"> </a>
+<p><div align="left"><img src="images/rules-aa.gif" border="0" hspace="0" vspace="0">
+</div><a name="116124"></a></p>
+
+
+
+</p>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>b	</b></td>    <td valign="top" width="560">Create a Procedure and place it on your customization workspace.<a name="116126"></a></td>  </tr></table></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>    <td valign="top" width="20"><b>c	</b></td>    <td valign="top" width="560">Choose Edit Text on the procedure and edit the text of the procedure, using the signatures in the table above, as desired.<a name="116127"></a></td>  </tr></table></blockquote>
+<blockquote><blockquote>  <a name="116530">The procedure name should be unique, for example, <code>bpr-reset-task-3</code>.</a></blockquote></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>3	</b></td>    <td valign="top" width="580">Create an instance of your custom class.<a name="116137"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>4	</b></td>    <td valign="top" width="580">Edit the appropriate procedure name attribute in the properties dialog for the custom block.<a name="116419"></a></td>  </tr></table><p>For example, you might create a custom reset procedure for a custom Task block that posts a message to the Message Board when the block resets, as this example shows:<a name="116444"></a></p>
+<p >
+  <a name="116720"> </a>
+<p><div align="left"><img src="images/reset-bl.gif" border="0" hspace="0" vspace="0">
+</div><a name="116719"></a></p>
+
+
+
+</p>
+<p>Here is the custom procedure named <code>bpr-reset-task-3</code> and the custom block class definition:<a name="116096"></a></p>
+<p >
+  <a name="117052"> </a>
+<p><div align="left"><img src="images/how-ta26.gif" border="0" hspace="0" vspace="0">
+</div><a name="117051"></a></p>
+
+
+
+</p>
+<p>You edit the Reset Procedure Name attribute on the Customize tab of the custom block to refer to the custom procedure:<a name="117379"></a></p>
+<p >
+  <a name="117433"> </a>
+<p><div align="left"><img src="images/reset-25.gif" border="0" hspace="0" vspace="0">
+</div><a name="117432"></a></p>
+
+
+
+</p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="how-to26.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="how-to28.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
