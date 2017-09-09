@@ -1,0 +1,438 @@
+<project name="Tests" default="regression-tests" basedir=".">
+	<property name="module.name" value="regressiontests" />
+	<!-- regression-tests-mode can be "g2" or "lw" -->
+	<property name="regression-tests-mode" value="g2" />
+	<!-- g2-lw-dev-delete-fasls should be true in production. But we can change it temporarily 
+		while debugging build process itself -->
+	<property name="g2-lw-dev-delete-fasls" value="true" />
+	<property name="${module.name}.basedir" location=".." />
+	<property name="result.dir" location="../../results" />
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties" />
+	<property name="tests.list" value="testkbs_list.txt"/>
+	<property name="tests.list.mt" value="testkbs_list_mt.txt"/>
+	<property name="tests.list.mtg2" value="testkbs_list_mtg2.txt"/>
+	<property name="xml-report" value="${result.dir}/regression.xml"/>
+	<property name="search.path" value="${basedir}/../kbs 
+		${basedir}/../kbs/sources
+		${basedir}/../g2i/kbs
+		${basedir}/../g2i/sites/Integrity/kbs
+		${basedir}/../java/products/javalink/common/kbs
+		${basedir}/../g2db/kbs
+		${basedir}/../g2i/sites/Optegrity/kbs
+		${basedir}/../g2i/sites/e-SCOR/kbs
+		${basedir}/../g2pi/kbs
+		${basedir}/../g2i/sites/ReThink/kbs
+		${basedir}/../g2i/sites/Nol/kbs
+		${basedir}/../g2i/sites/HLA/kbs
+		${basedir}/../g2opc/kbs
+		${basedir}/../gdanol/gda/kbs
+		${basedir}/../gdanol/common/kbs
+		${basedir}/../gdanol/nol/kbs
+		${basedir}/../tests"/>
+ 
+	<property name="libiconv.dll" value="${basedir}/../libiconv/MSVC14/lib64;${basedir}/../libiconv/MSVC14/lib"/>
+	<property name="kb.coverage.report.dir" value="${result.dir}/kb/coverage"/>
+	<property name="kb.regression.report.dir" value="${result.dir}/kb/regression"/>
+	<property name="old.report.dir" value="c:/results"/>
+	<property environment="env"/>
+
+	<if><os family="windows"/>
+		<then>
+			<property name="ENV_PATH" value="${env.Path}"/>
+		</then>
+	<else>
+		<property name="ENV_PATH" value="${env.PATH}"/>
+	</else>
+	</if>
+
+	<target name="g2-lw-dev-clean-logs-and-locks">
+		<if><equals arg1="${regression-tests-mode}" arg2="lw"/><then>
+			<delete dir="${basedir}/../lisp/tests/loading-tests.lck"/>
+			<delete dir="${basedir}/../lisp/tests/loading-1mp.lck"/>
+			<if><equals arg1="${g2-lw-dev-delete-fasls}" arg2="true"/><then>
+				<mkdir dir="${basedir}/../../dst/lisp/dev"/>
+				<delete><fileset dir="${basedir}/../../dst/lisp/dev/" includes="*.64ofasl"/></delete>
+			</then>
+			</if>
+		</then>
+		</if>
+	</target>
+
+	<target name="wait-port">
+	  <property name="wait.maxwait" value="10" />
+	  <property name="wait.port" value="1111" />
+	  <echo message="[wait port localhost:${wait.port} within ${wait.maxwait} seconds]"/>
+	  <waitfor maxwait="${wait.maxwait}" maxwaitunit="second" timeoutproperty="wait.timeout">
+	    <socket server="localhost" port="${wait.port}"/>
+	  </waitfor>
+	  <fail if="wait.timeout" message="Could not connect to localhost port ${wait.port}"/>
+	</target>
+
+	<!-- 1800 seconds = 30 minutes -->
+	<property name="regression-test-twng-timeout-ms" value="1800000"/>
+	<property name="regression-test-lw1mp-approximate-timeout-seconds" value="1200"/>
+	<target name="clear-regression-tests-results">
+		<delete dir="${basedir}/results"/>
+		<mkdir dir="${basedir}/results"/>
+		<delete file="${xml-report}"/>
+	</target>
+
+	<target name="regression-tests-mtg2" depends="clear-regression-tests-results">
+	  <concat destfile="${tests.list.mtg2}">
+	    <fileset file="${tests.list}" />
+	    <fileset file="testkbs_list_mtg2_only.txt" />
+	  </concat>
+	  <antcall target="regression-tests">
+	    <param name="regression-tests-mode" value="mtg2"/>
+	    <param name="tests.list" value="${tests.list.mtg2}"/>
+	  </antcall>
+	</target>
+
+	<target name="regression-tests-mt" depends="clear-regression-tests-results">
+		<!-- Run tests on SymScale -->
+		<echo message="[Launching SymScale tests]"/>
+		<loadfile property="ssTests" srcFile="${tests.list.mt}">
+			<filterchain>
+				<linecontains negate="true"><contains value="@twng"/></linecontains>
+				<striplinecomments><comment value="#"/></striplinecomments>
+				<tokenfilter>
+					<stringtokenizer/>
+					<replaceregex flags="i" pattern="((\.kb)|(\.xml)).*$" replace="\1,"/>
+				</tokenfilter>
+				<striplinebreaks/>
+			</filterchain>
+		</loadfile>
+
+		<foreach list="${ssTests}" target="g2-tests-mt" param="test" parallel="false" maxThreads="1"/>
+	</target>
+
+	<target name="cleanup-processes-after-regression-tests-lw-on-windows">
+		<property name="G2_IN_LISP_EXECUTABLE" value="lispworks-6-0-0-x64-windows.exe"/>
+		<echo message="[Killing instances of ${G2_IN_LISP_EXECUTABLE}]"/>
+		<exec executable="cmd" failonerror="false">
+			<arg line="/c taskkill /f /fi &quot;imagename eq ${G2_IN_LISP_EXECUTABLE}&quot;" />
+		</exec>
+		<echo message="[Killing instances of q2-odbc.exe]"/>
+		<exec executable="cmd" failonerror="false">
+			<arg line="/c taskkill /f /fi &quot;imagename eq g2-odbc.exe&quot;" />
+		</exec>
+	</target>		
+
+	<target name="regression-tests-lw" depends="clear-regression-tests-results">
+		<antcall target="regression-tests">
+			<param name="regression-tests-mode" value="lw"/>
+		</antcall>
+	</target>
+
+	<target name="regression-tests" depends="clear-regression-tests-results">
+		<delete file="${xml-report}"/>
+		<echo file="${xml-report}" message="&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;${line.separator}"/>
+		<echo file="${xml-report}" message="&lt;testsuite errors=&#34;&#34; failures=&#34;&#34; tests=&#34;&#34; name=&#34;Regression Tests&#34;&gt;${line.separator}" append="true"/>
+
+		<antcall target="g2-lw-dev-clean-logs-and-locks"/>
+
+		<!-- Call fake test to create fasls, otherwise we will fail on timeout of twng waiting for G2 to connect.
+			We could instead simply set a sufficiently long timeout so that twng would 
+			wait for building fasls. But that takes several minutes and hence it would complicate the debugging 
+			of actual connectivity issues.
+
+			This test will be always reported as failed. It is normal. -->
+		<antcall target="g2-tests">
+			<param name="test" value="simply-shutdown-g2.xml"/>
+			<param name="fail-if-produced-no-files" value="false"/>			
+		</antcall>
+		
+		<if><os family="windows"/><then>
+
+		<echo message="[Launching G2+TWNG tests]"/>
+		<loadfile property="twngTests" srcFile="${tests.list}">
+			<filterchain>
+				<striplinecomments><comment value="#"/></striplinecomments>
+				<tokenfilter>
+					<containsstring contains="@twng"/>
+					<stringtokenizer/>
+					<replaceregex flags="i" pattern="((\.kb)|(\.xml))@twng" replace="\1,"/>
+				</tokenfilter>
+				<striplinebreaks/>
+			</filterchain>
+		</loadfile>
+
+		<foreach list="${twngTests}" target="g2-twng-tests" param="test"/>
+
+		<echo message="[Launching G2 tests]"/>
+		<loadfile property="g2Tests" srcFile="${tests.list}">
+			<filterchain>
+				<linecontains negate="true"><contains value="@twng"/></linecontains>
+				<striplinecomments><comment value="#"/></striplinecomments>
+				<tokenfilter>
+					<stringtokenizer/>
+					<replaceregex flags="i" pattern="((\.kb)|(\.xml)).*$" replace="\1,"/>
+				</tokenfilter>
+				<striplinebreaks/>
+			</filterchain>
+		</loadfile>
+
+		<foreach list="${g2Tests}" target="g2-tests" param="test" parallel="true" maxThreads="4"/>
+
+		<antcall target="clean-up-java-process-win"/>
+		<antcall target="clean-up-g2-process"/>
+
+		<!-- not <os family="windows"/>, no TWNG tests -->
+		</then><else>
+			<echo message="[Launching G2 tests]"/>
+			<loadfile property="g2Tests" srcFile="${tests.list}">
+				<filterchain>
+					<linecontains negate="true"><contains value="@"/></linecontains>
+					<striplinecomments><comment value="#"/></striplinecomments>
+					<tokenfilter>
+						<stringtokenizer/>
+						<replaceregex flags="i" pattern="((\.kb)|(\.xml))" replace="\1,"/>
+					</tokenfilter>
+					<striplinebreaks/>
+				</filterchain>
+			</loadfile>
+
+			<foreach list="${g2Tests}" target="g2-tests" param="test" parallel="true" maxThreads="4"/>
+			<antcall target="clean-up-java-process-linux" />
+		</else></if>
+        
+		<concat destfile="${xml-report}" append="true">      
+			<fileset dir="${basedir}/results/" includes="**/*.res"/>
+		</concat>
+		<echo file="${xml-report}" message="&lt;&#47;testsuite&gt;" append="true"/> 
+	</target>
+
+	<target name="g2-tests">
+		<echo message="${test}"/>
+		<property name="dest" location="${basedir}/results/${test}"/>
+		<property name="fail-if-produced-no-files" value="true"/>
+		
+		<if>
+		  <equals arg1="${regression-tests-mode}" arg2="g2"/>
+		  <then>
+		    <property name="regression-tests-executable" value="${basedir}/../../dst/g2/opt/g2"/>
+		  </then>
+		  <elseif>
+		    <equals arg1="${regression-tests-mode}" arg2="mtg2"/>
+		    <then>
+		      <property name="regression-tests-executable" value="${basedir}/../../dst/g2/opt-mt/g2"/>
+		    </then>
+		  </elseif>
+		  <elseif>
+		    <equals arg1="${regression-tests-mode}" arg2="lw"/>
+		    <then>
+		      <property name="regression-tests-executable" value="${basedir}/../scripts/nt/StartLW1mp.bat"/>
+		    </then>
+		  </elseif>
+		  <else>
+		    <fail message="Incorrect value of regression-tests-mode property"/>
+		  </else>
+		</if>
+
+		<delete dir="${dest}"/>
+		<mkdir dir="${dest}"/>
+		<property name="pseudo-test-file-prefix" value="${test}, pseudo-test RG file created by src/tests/build.xml${line.separator}${line.separator}"/>
+		<property name="pseudo-test-file-suffix" value="${line.separator}${line.separator}${line.separator}We have extra lines for format compatibility with G2-generated *.rg files${line.separator}"/>
+		<trycatch reference="exec-error-catcher">
+			<try>
+				<exec failonerror="true" executable="${regression-tests-executable}" dir="${dest}">
+					<env key="PATH" path="${regressiontests.basedir}/../dst/twng/opt;${ENV_PATH};${regressiontests.basedir}/scripts/nt;${libiconv.dll}"/>
+					<env key="SRCBOX" value="${regressiontests.basedir}"/>
+					<env key="DSTBOX" value="${regressiontests.basedir}/../dst"/>
+					<env key="UTILS" value="${regressiontests.basedir}/kbs/tools"/>
+					<env key="MODMAP" value="sb.mm"/>
+					<env key="G2_OK" value="${regressiontests.basedir}/license/g2sitev2015.ok"/>
+					<env key="G2_AUTO_TEST" value="${dest}"/>
+					<env key="KEY_PART_OF_COMMAND_LINE_TO_KILL_AFTER_TIMEOUT" value="${test}"/>
+					<env key="APPROXIMATE_LW1MP_TIMEOUT_IN_SECONDS" value="${regression-test-lw1mp-approximate-timeout-seconds}"/>
+
+					<arg line=" -kb ${regressiontests.basedir}/tests/${test} -module-search-path '${search.path}' -start" />
+				</exec>
+			</try>
+			<catch>
+				<echo file="${dest}/process-exit-code.rg" message="${pseudo-test-file-prefix}PROCESS-EXIT-CODE-OK-ANT-PSEUDO-TEST,FAILED${pseudo-test-file-suffix}"/>
+			</catch>		
+		</trycatch>
+		
+		<if><available file="${dest}/g2-lw-verbose-backtrace.txt"/><then>
+			<echo file="${dest}/g2-lw-verbose-backtrace.rg" message="${pseudo-test-file-prefix}NO-VERBOSE-BACKTRACE-DUMPED-PSEUDO-TEST,FAILED${pseudo-test-file-suffix}"/>
+		</then>
+		</if>
+
+		<if><available file="${dest}/g2-lw-brief-backtrace.txt"/><then>
+			<echo file="${dest}/g2-lw-brief-backtrace.rg" message="${pseudo-test-file-prefix}NO-BRIEF-BACKTRACE-DUMPED-PSEUDO-TEST,FAILED${pseudo-test-file-suffix}"/>
+		</then>
+		</if>
+
+		
+		<!-- sometimes test invokes console debugger. As eof in listener appears, LW exits with code 0, and no files are produced. 
+			To detect this situation, we check that there are files. If not, we add one -->
+		<!-- googled via 'ant check if directory is empty' -->
+		<fileset dir="${dest}" id="fileset"/>
+		<pathconvert refid="fileset" property="dir.contains-files" setonempty="false"/>
+		<!-- googled via 'ant check if property is set' -->
+		<condition property="dir.contains-files.set" else="false">
+			<isset property="dir.contains-files"/>
+		</condition>
+		<if><equals arg1="${fail-if-produced-no-files}" arg2="true"/><then>
+			<if><equals arg1="false" arg2="${dir.contains-files.set}"/><then>
+				<echo file="${dest}/test-produced-no-files.rg" message="${pseudo-test-file-prefix}KB-PRODUCED-SOME-FILES-PSEUDO-TEST,FAILED${pseudo-test-file-suffix}"/>
+			</then></if>
+		</then></if>
+		
+		<concat destfile="${dest}/test-results-log.res">
+			<fileset dir="${basedir}/results/${test}" includes="*.rg"/>
+			<filterchain>
+				<tokenfilter>
+                    <filetokenizer/>
+                    <scriptfilter language="javascript">
+                    <![CDATA[
+                        function echo(x) { var ech = Tests.createTask("echo"); ech.setMessage(x); ech.perform(); }
+                        var output = ""
+                        var lines = self.getToken().split("\n")
+                        var test = ""
+                        var outcome = ""
+                        var comment = ""
+                        var kb = Tests.getProperty("test")
+                        var first = true;
+                        if (lines.length < 4) {
+                            output += '<testcase classname="' + kb + '" name="no-name">\n  <error message="failure" type="Assertion">Incorrect rg file with less than 4 lines</error></testcase>\n'
+                        }
+                        for (var i = 2; i < lines.length - 2; ++i) {
+                            var v = lines[i].trim().split(',')
+                            if ((i == lines.length-3) || ((v.length == 2) && ((v[1] == "FAILED") || (v[1] == "PASSED")))) {
+                                if (first) {
+                                    first = false
+                                }
+                                else {
+                                    if (outcome == "FAILED") {
+					comment = comment.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+                                        output += '<testcase classname="' + kb + '" name="' + test + '">\n  <error message="failure" type="Assertion">' + comment + '</error></testcase>\n'
+                                    }
+                                    else {
+                                        output += '<testcase classname="' + kb + '" name="' + test + '"/>\n'
+                                    }
+                                }
+                                test = v[0]
+                                outcome = v[1]
+                                comment = ""
+                            }
+                            else {
+                                if (test == v[0]) {
+                                    v.splice(0, 1)
+                                    comment += v.join() + "\n"
+                                }
+                                else {
+                                    comment += lines[i] + "\n"
+                                }
+                            }
+                        }
+                        self.setToken(output)
+                    ]]>
+                    </scriptfilter>
+                </tokenfilter>
+			</filterchain>
+		</concat>
+	</target>
+    
+	<target name="g2-tests-mt">
+		<antcall target="g2-tests">
+			<param name="exec" value="SymScale"/>
+		</antcall>
+	</target>
+
+	<target name="g2-twng-tests">
+		<parallel>
+			<antcall target="g2-tests"/>
+			<antcall target="start-twng"/>
+		</parallel>
+	</target>
+
+	<target name="start-twng">
+		<trycatch reference="exec-error-or-timeout-catcher">
+			<try>
+				<antcall target="wait-port">
+					<param name="wait.maxwait" value="90"/>
+					<param name="wait.port" value="1111"/>
+				</antcall>
+				<exec failonerror="true" executable="${regressiontests.basedir}/../dst/twng/opt/twng" timeout="${regression-test-twng-timeout-ms}">
+					<env key="PATH" value="${ENV_PATH};${libiconv.dll}"/>
+					<arg line="localhost 1111"/>
+				</exec>
+			</try>
+			<catch>
+				<echo message="Error: start-twng failed"/>
+			</catch>
+		</trycatch>
+	</target>
+    
+	<!--The target smoke-tests will run all the smoke tests and store results into "C:\results\smoke-test-results.log" file -->
+	<target name="smoke-tests">
+		<mkdir dir="${result.dir}/smoketests"/>
+		<exec executable="cmd" dir="${regressiontests.basedir}/tests" failonerror="false">
+			<env key="PATH" value="${ENV_PATH};${libiconv.dll}"/>
+			<arg line="/c QuickRegressionTest.bat smoketestkbs_list.txt" />
+		</exec>
+    
+		<copy file="${old.report.dir}/Regr-test-summary.log" tofile="${result.dir}/smoketests/Smoke-test-summary.log" />
+		<copy file="${old.report.dir}/test-results-log.rg" tofile="${result.dir}/smoketests/Smoke-results-log.rg" />    
+	</target>
+    
+	<!--The target smoke-tests will run all the Testcomplete smoke tests-->
+	<target name="all-smoke-tests">
+		<exec failonerror="true" dir="C:\Program Files (x86)\Automated QA\TestExecute 8\Bin" executable="C:\Program Files (x86)\Automated QA\TestExecute 8\Bin\TestExecute.exe">
+			<arg value="--disable-vm-check"/>
+			<arg value="C:\G2\src\G2-SmokeTest\G2-Smoke-AllTests.pjs"/>
+			<arg value="/run"/>
+			<arg value="/exit"/>
+		</exec>
+	</target>
+
+	<target name="kb-coverage">
+		<mkdir dir="${result.dir}/kbcoverage"/>
+		<exec executable="cmd" dir="${regressiontests.basedir}/tests" failonerror="false">
+			<arg line="/c CoverageTest.bat" />
+			<env key="G2_OK" value="${g2.ok}"/>
+		</exec>
+		<copy file="${old.report.dir}/Regr-test-summary.log" todir="${result.dir}/kbcoverage" />
+		<copy file="${old.report.dir}/test-results-log.rg" todir="${result.dir}/kbcoverage" />
+
+		<delete dir="${kb.coverage.report.dir}"/>
+		<mkdir dir="${kb.coverage.report.dir}"/>
+		<move todir="${kb.coverage.report.dir}">
+			<fileset dir="${old.report.dir}" includes="*.html"/>
+		</move>
+	</target>
+
+	<target name="check-kb-mi">
+		<exec executable="cmd" dir="${regressiontests.basedir}/tests/metrics" failonerror="true">
+			<arg line="/c RunMetricsTest.bat" />
+			<env key="SRCBOX" value="${basedir}/.."/>
+			<env key="PATH" path="${ENV_PATH};${env.JAVA_HOME}\bin;${libiconv.dll}"/>
+			<env key="G2_OK" value="${g2.ok}"/>
+		</exec>
+	</target>
+
+	<target name="check-kb-perfomance">
+	<!--    <exec executable="cmd" dir="${regressiontests.basedir}/tests/bench" failonerror="true">
+			<arg line=" /C RunPerfomanceTest.bat"/>
+		</exec> -->
+	</target>
+
+	<target name="clean-up-java-process-win">
+		<exec executable="cmd" dir="${basedir}/test-sockman">
+			<arg line=" /C cleanup-java-processes.bat"/>
+		</exec>
+	</target>
+	<target name="clean-up-java-process-linux">
+		<exec executable="bash" dir="${basedir}/test-javalink">
+			<arg line=" cleanup-java-processes.sh" />
+		</exec>
+	</target>
+	<target name="clean-up-g2-process">
+		<exec executable="taskkill">
+			<arg value="/FI"/>
+			<arg value="IMAGENAME eq g2.exe"/>
+		</exec>
+	</target>
+</project>
