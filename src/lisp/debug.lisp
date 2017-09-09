@@ -1,0 +1,2201 @@
+;; -*- Mode: Lisp; Package: AB; Base: 10; Syntax: Common-Lisp -*-
+(in-package "AB")
+
+;;;; Module DEBUG
+
+;;; Copyright (c) 1986 - 2017 Gensym Corporation.
+;;; All Rights Reserved.
+
+;;; Michael Levin
+
+
+
+(declare-forward-reference *current-computation-frame* variable)
+
+(declare-forward-reference current-computation-component-particulars variable)
+
+;; To COMP-UTILS
+(declare-forward-reference invocation-stack-program-counter-function function)
+(declare-forward-reference current-computation-instance variable)
+(declare-forward-reference cached-stack-frame-base variable)
+(declare-forward-reference get-computation-instance-for-block function)
+
+;; To PROC-UTILS
+(declare-forward-reference procedure? function)
+(declare-forward-reference procedure-invocation? function)
+(declare-forward-reference code-body-invocation? function)
+(declare-forward-reference code-body-of-invocation-function function)
+(declare-forward-reference n-compiles-this-session-function function)
+(declare-forward-reference procedure-definition-of-code-body-function function)
+(declare-forward-reference set-tracing-and-breakpoints-of-procedure-invocations function)
+(declare-forward-reference in-order-p function)
+
+;; To BOOKS
+(declare-forward-reference notify-user-2 function)
+(declare-forward-reference current-message-serial-number variable)
+
+;; To TABLES
+(declare-forward-reference get-or-make-up-name-for-block function)
+
+;; To GRAMMAR7
+(declare-forward-reference explanation-related-features-enabled-func? function)
+
+(declare-forward-reference show-procedure-invocation-hierarchy-on-debugger-pause-p variable)
+
+(declare-forward-reference disassemble-enabled? variable)
+
+;; To DISPLAYS
+(declare-forward-reference kind-of-cell-based-display-p function)
+
+(declare-forward-reference update-cell-based-display-computation-style function)
+
+(declare-forward-reference current-computation-slot-component-group variable)
+
+(declare-forward-reference set-tracing-and-breakpoints-for-trend-chart function)
+
+;; To RUN
+(declare-forward-reference break-out-of-debug-messages function)
+
+;;;; Printing to stderr/Debug Console
+
+
+;;; `c-put-string-stderr'
+
+(def-gensym-c-function c-put-string-stderr
+		       (:void "g2ext_puts")
+  ((:string string)))
+
+
+;;; `stderr-message' - always adds a newline to the message; don't supply one at
+;;; the end, unless you want two.
+
+(defmacro stderr-message (&body body)
+  `(let* ((msg (twith-output-to-text-string
+		 (tformat . ,body)
+		 (twrite-char %newline))))
+     (c-put-string-stderr msg)
+     (reclaim-text-string msg)
+     nil))
+
+
+
+
+;;;; Block snapshots
+
+;;; A `snapshot-annotation-info' is a structure used to hold the annotation info
+;;; for a snapshot.  Since the presentation system short-circuits us trying to
+;;; pass along a snapshot itself to the UI-COMMAND (which is what we really want),
+;;; we put the info we need here and pass that through. 
+
+(def-structure (snapshot-invocation-info
+		 (:constructor make-snapshot-invocation-info
+			       (snapshot-invocation-info-procedure
+				 snapshot-invocation-info-n-compiles-of-procedure
+				 snapshot-invocation-info-code-body
+				 snapshot-invocation-info-program-counter
+				 snapshot-invocation-info-code-body-index))
+		 (:reclaimer reclaim-snapshot-invocation-info-1))
+  snapshot-invocation-info-procedure
+  ;; the number of times the procedure being executed has been compiled
+  snapshot-invocation-info-n-compiles-of-procedure
+  ;; the code body being executed at time of error.  May need to make this an
+  ;; index if saving becomes an issue [it shouldn't because logbook messages are
+  ;; not saveable].
+  snapshot-invocation-info-code-body
+  ;; the PC at time of error
+  snapshot-invocation-info-program-counter
+  ;; the position of this invocation in the stack
+  snapshot-invocation-info-code-body-index)
+
+(defun-void reclaim-snapshot-invocation-info (struct?)
+  (when struct?
+    (reclaim-snapshot-invocation-info-1 struct?)))
+
+(defun-simple copy-snapshot-invocation-info (snapshot-invocation-info)
+  (make-snapshot-invocation-info
+    (snapshot-invocation-info-procedure snapshot-invocation-info)
+    (snapshot-invocation-info-n-compiles-of-procedure snapshot-invocation-info)
+    (snapshot-invocation-info-code-body snapshot-invocation-info)
+    (snapshot-invocation-info-program-counter snapshot-invocation-info)
+    (snapshot-invocation-info-code-body-index snapshot-invocation-info)))
+
+(defun-simple snapshot-invocation-info-stale-p (snapshot-invocation-info)
+  ;; snapshot invocation is stale if its not in the code-bodies of the procedure or the procedure has been recompiled since the
+  ;; snapshot was created (since a reclaim can 
+  (/=f (snapshot-invocation-info-n-compiles-of-procedure snapshot-invocation-info)
+       (n-compiles-this-session-function (snapshot-invocation-info-procedure
+					   snapshot-invocation-info))))
+
+
+;;; A `snapshot-of-block' is little structure which records a block and its
+;;; frame serial number.  If it's been generated by a procedure error and
+;;; tracing-and-breakpoints are enabled, it also records info about the state at
+;;; the time of the error to enable going to source code.
+
+(def-structure (snapshot-of-block (:constructor make-snapshot-of-block-1)
+				  (:predicate snapshot-of-block-p))
+  (block-of-snapshot nil)
+  (invocation-info-of-snapshot
+    nil :reclaimer reclaim-snapshot-invocation-info)
+  (serial-number-of-snapshot nil :reclaimer reclaim-frame-serial-number))
+
+;;; `ok-to-get-source-code-lookup-info-p' is used by MAKE-SNAPSHOT-OF-BLOCK and
+;;; CONVERT-SYMBOL-TEXT-TO-ERROR-OBJECT to abstract the test that tells whether it's
+;;; ok to go hunting in the current-computation-instance for debugging info.
+
+(defun-simple ok-to-get-source-code-lookup-info-p (computation-instance)
+  (and computation-instance
+       (not (framep computation-instance))
+       (code-body-invocation? computation-instance)))
+
+(defun-simple make-snapshot-of-block (block)
+  (let ((snapshot (make-snapshot-of-block-1)))
+    (setf (block-of-snapshot snapshot) block)
+    (frame-serial-number-setf (serial-number-of-snapshot snapshot) (frame-serial-number block))
+    ;; Set up stuff for source-code lookup -dkuznick, 1/28/99
+    (when (and (procedure? block) current-computation-instance)
+      (multiple-value-bind (computation-instance-for-block? index?)
+	  (get-computation-instance-for-block
+	    block *current-computation-frame* current-computation-instance cached-stack-frame-base)
+	(when (and computation-instance-for-block?
+		   (ok-to-get-source-code-lookup-info-p computation-instance-for-block?))
+	  (let ((program-counter? (invocation-stack-program-counter-function
+				    computation-instance-for-block?)))
+	    (when program-counter?
+	      (setf (invocation-info-of-snapshot snapshot)
+		    (make-snapshot-invocation-info
+		      block
+		      (n-compiles-this-session-function block)
+		      (code-body-of-invocation-function computation-instance-for-block?)
+		      program-counter?
+		      index?)))))))
+    snapshot))
+
+(defun-simple copy-snapshot-of-block (snapshot-of-block)
+  (let ((new (make-snapshot-of-block-1)))
+    (setf (block-of-snapshot new) (block-of-snapshot snapshot-of-block)
+	  (serial-number-of-snapshot new) (copy-frame-serial-number (serial-number-of-snapshot snapshot-of-block))
+	  (invocation-info-of-snapshot new) (let ((invocation-info?
+						    (invocation-info-of-snapshot
+						      snapshot-of-block)))
+					      (and invocation-info?
+						   (copy-snapshot-invocation-info
+						     invocation-info?))))
+    new))
+
+(defun-simple snapshot-of-block-valid-p (snapshot-of-block)
+  (not (frame-has-been-reprocessed-p (block-of-snapshot snapshot-of-block)
+				     (serial-number-of-snapshot snapshot-of-block))))
+
+
+
+
+;;;; Block recording facility
+
+
+
+;; This stuff is used by notify-user and make-message, to record the blocks a
+;; message is "about".
+
+
+;;; The defvar `snapshots-of-related-blocks' is bound to a list of snapshots of
+;;; interesting blocks related to the message being created.  It is a
+;;; slot-value list whose ownership is taken over by make-message.
+
+(defvar snapshots-of-related-blocks ())
+
+
+;;; The simple function `record-block-for-tformat' maye get either a block
+;;; (from ~NF directives) or a snapshot (from ~NW directives), but always
+;;; creates a new snapshot.
+
+(defun-simple record-block-for-tformat (block-or-snapshot-of-block)
+  (let ((block (if (snapshot-of-block-p block-or-snapshot-of-block)
+		   (block-of-snapshot block-or-snapshot-of-block)
+		   block-or-snapshot-of-block)))
+    ;; This is slot-value-pushnew-onto-end
+    (unless (loop for snapshot in snapshots-of-related-blocks
+		  thereis (eq block (block-of-snapshot snapshot)))
+      (setf snapshots-of-related-blocks
+	    (nconc snapshots-of-related-blocks
+		   (slot-value-list
+		     (if (snapshot-of-block-p block-or-snapshot-of-block)
+			 (copy-snapshot-of-block block-or-snapshot-of-block)
+			 (make-snapshot-of-block block))))))))
+
+
+(defmacro with-tformat-output-recording (&body body)
+  `(let ((snapshots-of-related-blocks ())
+	 (note-blocks-in-tformat #'record-block-for-tformat))
+     (unwind-protect-for-development with-tformat-output-recording
+	 (progn ,@body)
+       (when snapshots-of-related-blocks		    ; If nobody claimed it, REclaim it.
+	 (reclaim-list-of-block-snapshots snapshots-of-related-blocks)
+	 (setq snapshots-of-related-blocks nil)))))
+
+
+;;; The macro `with-user-notification' collects all of the twritten output in
+;;; the body and posts a user notification with the resulting string.  Any
+;;; blocks written with the ~NF tformat directive will be remembered.  We may
+;;; also get blocks from printing error-text via the ~NW directive.
+
+(defmacro with-user-notification (options &body body)
+  (declare (ignore options))
+  `(with-tformat-output-recording
+     (notify-user-1
+       (twith-output-to-text-string
+	 ,@body))))
+
+
+
+(defun reclaim-list-of-block-snapshots (snapshots)
+  (when snapshots
+    (loop for snapshot in snapshots doing
+      (reclaim-snapshot-of-block snapshot))
+    (reclaim-slot-value-list snapshots)))
+
+
+
+
+;;;; Error text
+
+
+
+;; These may someday be condition objects.
+
+
+;;; An `error-text' is either a text string, or, a slot-value-list of a text
+;;; string and blocks or block snapshots.
+
+(def-concept error-text)
+
+
+(defun make-error-text (text-string blocks)
+  (if blocks
+      (slot-value-cons text-string blocks)
+      text-string))
+
+
+(def-substitution-macro error-text-string (error-text)
+  (cond ((consp error-text)
+	 (first error-text))
+	(t
+	 error-text)))
+
+(def-substitution-macro error-text-blocks (error-text)
+  (cond ((consp error-text)
+	 (rest error-text))
+	(t
+	 nil)))
+
+(defun error-text-p (thing)
+  (or (text-string-p thing)
+      (and (consp thing)
+	   (text-string-p (error-text-string thing)))))
+
+
+	   
+(def-substitution-macro reclaim-error-text-1 (error-text reclaim-text-too)
+  (let ((string (error-text-string error-text))
+	(things (error-text-blocks error-text)))
+    (when reclaim-text-too
+      (reclaim-text-string string))
+    (when things
+      (loop for thing in things
+	    when (snapshot-of-block-p thing)
+	      do (reclaim-snapshot-of-block thing)))
+    (when (consp error-text)
+      (reclaim-slot-value-list error-text))))
+
+
+;;; The function `reclaim-error-text' reclaims the text string,
+;;; the slot-value-list, and any block snapshots.
+
+(defun reclaim-error-text (error-text)
+  (reclaim-error-text-1 error-text t))
+
+(defun reclaim-error-text-but-not-string (error-text)
+  (reclaim-error-text-1 error-text nil))
+
+
+;;; The function `write-error-text' twrites an error-text object for the ~NW
+;;; format directive.  Print the text, and record the blocks a la NF.
+
+(defun write-error-text (error-text)
+  #+development
+  (unless (error-text-p error-text)
+    (cerror "Continue"
+            "Attempt to write ~s, which is not an error-text, using the ~~NW directive."
+	    error-text))
+  (twrite (error-text-string error-text))
+  (when note-blocks-in-tformat
+    (loop for block in (error-text-blocks error-text) doing
+      (funcall-simple-compiled-function note-blocks-in-tformat block))))
+
+
+
+;;; The macro `twith-output-to-error-text' returns an error-text object from
+;;; the twritten output of the body.  This should be used instead of
+;;; twith-output-to-text-string in some functions which report errors.
+
+(defmacro twith-output-to-error-text (&body body)
+  (let ((text-string '#:text-string)
+	(snapshots '#:snapshots))
+    `(let (,text-string ,snapshots)
+       (with-tformat-output-recording
+	 (setq ,text-string (twith-output-to-text-string
+			      ,@body)
+	       ,snapshots snapshots-of-related-blocks
+	       snapshots-of-related-blocks nil))
+       (make-error-text ,text-string ,snapshots))))
+
+
+
+;;;; Careful Funcalling
+
+
+;;; The macro `funcall-catching-stack-errors' calls function on args, handling
+;;; stack-errors by returning the error message. If no error, NIL is
+;;; returned. It is useful, for example, when virtual attributes want to call
+;;; the bodies of system procedures, since system procedures are allowed to
+;;; signal but virtual attributes are not.
+
+(defmacro funcall-catching-stack-errors (function &rest args)
+  `(apply-catching-stack-errors #',function (gensym-list ,@args)))
+
+
+;;; The function `apply-catching-stack-errors' reclaims args as a gensym list.
+
+(defun-allowing-unwind apply-catching-stack-errors (function args)
+  (with-catch-handlers
+      (((:stack-error) (passed-top-of-stack error error-text supress-debugging-info?)
+	error passed-top-of-stack supress-debugging-info?
+	(reclaim-gensym-list args)
+	(prog1 (error-text-string error-text)
+	  (reclaim-error-text-but-not-string error-text))))
+    (apply function args)
+    (reclaim-gensym-list args)
+    nil))
+
+
+
+;;;; User Notifications
+
+
+
+
+;; Moved here from BOOKS 'cuz of all the forwards references.
+
+
+;;; `Defer-notifications?' and `variable stack-of-deferred-notification-strings'
+;;; are special variables used to defer notifications until some later more
+;;; appropriate time.  This is used, for example, by KB read and printing when
+;;; the general state of the current-workstation is suspect.
+
+;;; This mechanism should be utilized as follows:
+;;;   (let ((stack-of-deferred-notification-strings '())
+;;;         (defer-notifications? t))
+;;;      ... do work that might generate notifications ...
+;;;      (setq defer-notifications? nil)
+;;;      (try-to-do-deferred-user-notifications))
+
+;;; If you fail to call try-to-do-deferred-user-notifications any notifications
+;;; will be lost, along with some leakage.
+
+
+
+;;; The defvar `stack-of-deferred-notification-strings' is a slot-value list
+;;; of either text-string or (text-string . snapshots-of-blocks).  It has both
+;;; a top-level value, which is drained in service-workstations, and a dynamically
+;;; bound value, which is drained when the contour is exitex (used by KB load).
+
+(defvar stack-of-deferred-notification-strings nil)
+
+;; Consider having notification deferral in other notification functions also.
+
+
+;;; The function `try-to-do-deferred-user-notifications' re-executes notify-user for
+;;; all deferred notifications in `stack-of-deferred-notification-strings.'
+
+(defun try-to-do-deferred-user-notifications ()  
+  (when stack-of-deferred-notification-strings
+    (let ((reversed-stack
+	    (nreverse stack-of-deferred-notification-strings)))
+      (setq stack-of-deferred-notification-strings nil)
+
+      (loop for element in reversed-stack
+	    as notification-string = (car-or-atom element)
+	    as notification-snapshots = (cdr-or-atom element)
+	    doing
+	(let ((snapshots-of-related-blocks notification-snapshots))
+	  (notify-user-2 notification-string)
+	  (when snapshots-of-related-blocks
+	    (reclaim-list-of-block-snapshots snapshots-of-related-blocks))
+	  (when (consp element)
+	    (reclaim-slot-value-cons element))))
+
+      ;; Reclaim the backbone.
+      (reclaim-slot-value-list reversed-stack)
+      t)))
+
+
+
+;;; The macro `with-notifications-deferred' captures the simplest pattern of
+;;; usage of deferred notifications.
+
+#+unused
+(defmacro with-notifications-deferred (&body body)
+  `(let ((defer-notifications? t))
+     (unwind-protect-for-development with-defered-notifications
+	 (progn ,@body)
+       (setq defer-notifications? nil)
+       (try-to-do-deferred-user-notifications))))
+
+
+
+
+
+;;; The function `notify-user' posts a messages on the logbook.
+
+(defun notify-user (notification-as-format-string 
+		     &optional
+		     (arg1 no-arg) (arg2 no-arg) (arg3 no-arg)
+		     (arg4 no-arg) (arg5 no-arg) (arg6 no-arg)
+		     (arg7 no-arg) (arg8 no-arg) (arg9 no-arg))
+  (with-user-notification ()
+    (call-per-number-of-actual-args
+      tformat
+      1 notification-as-format-string	
+      arg1 arg2 arg3
+      arg4 arg5 arg6
+      arg7 arg8 arg9)))
+
+
+;;; The function `notify-user-1' assumes that we are already in a context of
+;;; tformat output recording, and scarfs up the recorded blocks, if any.
+
+(defvar send-logbook-messages-to-console-p nil)
+
+(defun notify-user-1 (notification-string)
+  (when send-logbook-messages-to-console-p
+    (notify-user-at-console "log: ~A" notification-string))
+  (cond (defer-notifications?
+	    (slot-value-push
+	      (if snapshots-of-related-blocks
+		  (slot-value-cons notification-string snapshots-of-related-blocks)
+		  notification-string)
+	      stack-of-deferred-notification-strings)
+	    (setq snapshots-of-related-blocks nil))
+	(t
+	 (let ((defer-notifications? t)) ; Don't allow recursive calls to notify-user-2.
+	   (notify-user-2 notification-string))
+	 (try-to-do-deferred-user-notifications))))
+
+
+
+
+
+;;;; Tracing and Breakpoint Facilities
+
+
+
+
+;;; Modifications:
+;;;
+;;; Tracing has been modified so that all information for a rule will
+;;; be displayed in one message.
+;;;
+;;; Also, when a file name is specified, the trace will be written to the
+;;; file as well as the logbook. 
+;;;
+;;; In the debugging parameters, the user enables tracing and breakpoints and
+;;; also provides a file name in the slot "tracing-file".
+;;;
+;;; Upon entering a tracing context, all messages are held in a variable, and
+;;; on exit of the context all tracing information is shown as one message.
+;;; This will cause a rule execution to create one message.  Rule tracing will
+;;; write to a file when the slot tracing-file contains a file, tracing
+;;; is enabled, and the system has been started.  Reset, start, and the editing
+;;; of tracing-and-breakpoints-enabled? opens or closes the file stream as
+;;; appropriate.
+
+;;; To get this facility turned on, the explanation-related-features-enabled?
+;;; switch in miscellaneous-parameters must be set to "yes". -dkuznick, 7/14/98
+
+
+
+
+;;; Message Control Parameters
+
+(def-system-frame debugging-parameters debug
+  (warning-message-level 2 system (type warning-message-level))
+  (tracing-message-level 0 system (type tracing-message-level))
+  (breakpoint-level 0 system (type breakpoint-level))
+  (source-stepping-level 0 system (type source-stepping-level))
+  (message-and-breakpoint-overrides nil vector-slot system do-not-save (type yes-or-no))
+  (show-procedure-invocation-hierarchy-at-pause-from-breakpoint t (system) (save) (type yes-or-no))
+  (disassembler-enabled nil (system) (save) (type yes-or-no))
+  (generate-source-annotation-info t (system) (save) (type yes-or-no))
+  (tracing-file 
+     nil (lookup-slot) (type trace-file-pathname) (system) (save))
+  (tracing-file-string
+     nil (lookup-slot) (do-not-put-in-attribute-tables) (do-not-save)
+     (attribute-export-comment "Internal"))
+  (tracing-file-stream
+     nil (lookup-slot) (do-not-put-in-attribute-tables) (do-not-save)
+     (attribute-export-comment "Internal"))
+  (trace-outputting-to-file?
+    nil (lookup-slot) (do-not-put-in-attribute-tables) (do-not-save)
+    (attribute-export-comment "Internal"))
+  (highlight-invoked-rules-mode nil system save)
+  (dynamic-display-delay-in-milliseconds
+    200 (lookup-slot) (type delay-millisecond-time?) (system) (do-not-save))
+
+
+  ;; jh, 6/28/91.  The following invisible slots are for the protection machinery
+  ;; which detects when the system clock has been set back.  They are hidden here
+  ;; to give the unscrupulous user a bit more trouble in figuring things out.
+  ;; Details are in SEQUENCES1.
+  ;; jh, 7/22/91.  Gave these slots devious names.
+  ;; jh, 7/23/91.  Added backtracking-resource-computation-milestone, a devious
+  ;; name for last-daylight-savings-clock-setback.
+  (task-fragmentation-map-1 nil 
+    (vector-slot) (system) (save) 
+    (do-not-put-in-attribute-tables)
+    (attribute-export-comment "Internal"))
+  (task-fragmentation-map-2 nil        
+    (vector-slot) (system) (save) 
+    (do-not-put-in-attribute-tables)
+    (attribute-export-comment "Internal"))
+  (task-fragmentation-map-3 nil        
+    (vector-slot) (system) (save) 
+    (do-not-put-in-attribute-tables)
+    (attribute-export-comment "Internal"))
+  (task-fragmentation-map-4 nil        
+    (vector-slot) (system) (save) 
+    (do-not-put-in-attribute-tables)
+    (attribute-export-comment "Internal"))
+  (task-fragmentation-map-5 nil        
+    (vector-slot) (system) (save) 
+    (do-not-put-in-attribute-tables))
+  (mask-for-inheritance-shadowing-masks-1 nil ;fixnum MSB to detect setback at runtime
+    (vector-slot) (system) (do-not-save) 
+    (do-not-put-in-attribute-tables)
+    (attribute-export-comment "Internal"))
+  (mask-for-inheritance-shadowing-masks-2 nil ;bignum LSB to detect setback at runtime
+    (vector-slot) (system) (do-not-save) 
+    (do-not-put-in-attribute-tables)
+    (attribute-export-comment "Internal"))
+  (backtracking-resource-computation-milestone nil
+    (vector-slot) (system) (do-not-save) 
+    (do-not-put-in-attribute-tables)
+    (attribute-export-comment "Internal"))
+  )
+
+;; jh, 7/22/91.  The names of vector slots appear in distribution, and we don't
+;; want to reveal that debugging-parameters contains slots which timestamp the KB,
+;; so these slots have been deviously named.  For the sake of clarity in the
+;; source code, the following macros translate between the straightforward and
+;; devious names.  
+
+;; jh, 8/23/91.  Used absent slot-putters to handle those KBs created during the
+;; week or so when the timestamp fields did not have devious names.
+
+
+(defmacro kb-timestamp-field-1 () 
+  `(task-fragmentation-map-1 debugging-parameters))
+
+(def-absent-slot-putter kb-timestamp-field-1 (frame value)
+  (declare (ignore frame value))
+  nil)
+
+(defmacro kb-timestamp-field-2 () 
+  `(task-fragmentation-map-2 debugging-parameters))
+
+(def-absent-slot-putter kb-timestamp-field-2 (frame value)
+  (declare (ignore frame value))
+  nil)
+
+(defmacro kb-timestamp-field-3 () 
+  `(task-fragmentation-map-3 debugging-parameters))
+
+(def-absent-slot-putter kb-timestamp-field-3 (frame value)
+  (declare (ignore frame value))
+  nil)
+
+(defmacro kb-timestamp-field-4 () 
+  `(task-fragmentation-map-4 debugging-parameters))
+
+(def-absent-slot-putter kb-timestamp-field-4 (frame value)
+  (declare (ignore frame value))
+  nil)
+
+(defmacro kb-timestamp-field-5 () 
+  `(task-fragmentation-map-5 debugging-parameters))
+
+(def-absent-slot-putter kb-timestamp-field-5 (frame value)
+  (declare (ignore frame value))
+  nil)
+
+(defmacro kb-timestamp-guardian-1 ()
+  `(mask-for-inheritance-shadowing-masks-1 debugging-parameters))
+
+(defmacro kb-timestamp-guardian-2 ()
+  `(mask-for-inheritance-shadowing-masks-2 debugging-parameters))
+
+(defmacro last-daylight-savings-clock-setback ()
+  `(backtracking-resource-computation-milestone debugging-parameters))
+
+(def-absent-slot-putter task-fragmentation-map-6 (frame value)
+  (declare (ignore frame value))
+  nil)
+
+
+
+
+
+
+;;; The activation and deactivation methods are defined for debugging parameters
+;;; These methods will cause the tracing-file to be closed and/or opened as
+;;; necessary.  During start (and restart) all instances of system-frame (e.g.,
+;;; debugging-parameters) are activated.  During reset all instances of
+;;; system-frame are deactivated.
+
+;;; Note that users can get themselves into trouble if they turn on
+;;; explanation-related-features, turn on tracing, and then turn off
+;;; explanation-related-features. Make sure to publicly document that this is a
+;;; bad thing to do. -dkuznick, 7/15/98
+
+(def-class-method activate-subclass-of-entity (debugging-parameters)
+  (when (not (active-p debugging-parameters))
+    ;; close in case this is a restart.
+    (close-tracing-file)
+    (open-tracing-file t)))
+
+
+(def-class-method deactivate-subclass-of-entity (debugging-parameters)
+  (when (active-p debugging-parameters)
+    (close-tracing-file)))
+
+
+(define-slot-alias tracing-and-breakpoints-enabled? message-and-breakpoint-overrides
+  debugging-parameters)
+
+(define-slot-alias disassembler-enabled? disassembler-enabled
+  debugging-parameters)
+
+
+
+
+(def-system-variable warning-message-level debug 2)
+
+(def-system-variable tracing-message-level debug 0)
+(def-system-variable breakpoint-level debug 0)
+(def-system-variable source-stepping-level debug 0)
+
+(def-system-variable debugging-reset debug nil)
+
+(def-system-variable generate-source-annotation-info debug t)
+
+;;; This is called by switch-to-new-empty-kb ()
+;;; because default values do not get slot put.
+
+(defun restore-debugging-parameters-to-default-values ()
+  (setq warning-message-level 2)
+  (setq tracing-message-level 2)	;shouldn't this be 0 (though it works)?
+  (setq breakpoint-level 0)
+  (setq source-stepping-level 0)
+  (setq debugging-reset nil)
+  (setq disassemble-enabled? nil)
+  (setq generate-source-annotation-info
+	#+runtime-functionality-without-a-license
+	nil
+	#-runtime-functionality-without-a-license
+	(not (g2-limited-to-this-license-level-or-more restricted-use)))
+  (setq show-procedure-invocation-hierarchy-on-debugger-pause-p
+	#+runtime-functionality-without-a-license
+	nil
+	#-runtime-functionality-without-a-license
+	(not (g2-limited-to-this-license-level-or-more restricted-use))))
+
+
+
+;;; The `install-system-table' and `deinstall-system-table' methods for 
+;;; debugging-parameters ....
+
+(def-class-method install-system-table (debugging-parameters)
+  (setq warning-message-level
+	(warning-message-level debugging-parameters))
+  (setq tracing-message-level
+	(tracing-message-level debugging-parameters))
+  (setq breakpoint-level
+	(breakpoint-level debugging-parameters))
+  (setq source-stepping-level
+	(source-stepping-level debugging-parameters))
+  (setq disassemble-enabled?
+	(and (disassembler-enabled debugging-parameters)
+	     #+runtime-functionality-without-a-license
+	     nil
+	     #-runtime-functionality-without-a-license
+	     (not (g2-limited-to-this-license-level-or-more restricted-use))))
+  (setq show-procedure-invocation-hierarchy-on-debugger-pause-p
+	(and (show-procedure-invocation-hierarchy-at-pause-from-breakpoint debugging-parameters)
+	     #+runtime-functionality-without-a-license
+	     nil
+	     #-runtime-functionality-without-a-license
+	     (not (g2-limited-to-this-license-level-or-more restricted-use))))
+  (setq generate-source-annotation-info
+	(and (generate-source-annotation-info debugging-parameters)
+	     #+runtime-functionality-without-a-license
+	     nil
+	     #-runtime-functionality-without-a-license
+	     (not (g2-limited-to-this-license-level-or-more restricted-use))))
+  (open-tracing-file nil))
+
+
+(def-class-method deinstall-system-table (debugging-parameters)
+  (restore-debugging-parameters-to-default-values)
+  (close-tracing-file))
+
+;; Methods on debugging-parameters added for new system table constraints.
+;; Putters also modified to reflect the new constraints.  See System Frame
+;; section in ENTITIES. (MHD 8/28/91)
+
+
+
+(def-slot-putter warning-message-level (debugging-parameters-instance value)
+  (if (system-table-installed-p debugging-parameters-instance)
+      (setq warning-message-level value))
+  (setf (warning-message-level debugging-parameters-instance) value))
+
+(def-slot-putter tracing-message-level (debugging-parameters-instance value)
+  (if (system-table-installed-p debugging-parameters-instance)
+      (setq tracing-message-level value))
+  (setf (tracing-message-level debugging-parameters-instance) value))
+
+(def-slot-putter breakpoint-level (debugging-parameters-instance value)
+  (if (system-table-installed-p debugging-parameters-instance)
+      (setq breakpoint-level value))
+  (setf (breakpoint-level debugging-parameters-instance) value))
+
+(def-slot-putter source-stepping-level (debugging-parameters-instance value)
+  (if (system-table-installed-p debugging-parameters-instance)
+      (setq source-stepping-level value))
+  (setf (source-stepping-level debugging-parameters-instance) value))
+
+(def-slot-putter disassembler-enabled (debugging-parameters-instance value)
+  #+runtime-functionality-without-a-license
+  (setq value nil)
+  #-runtime-functionality-without-a-license
+  (when (g2-limited-to-this-license-level-or-more restricted-use)
+    (setq value nil))
+  (if (system-table-installed-p debugging-parameters-instance)
+      (setq disassemble-enabled? value))
+  (setf (disassembler-enabled debugging-parameters-instance) value))
+
+(def-slot-putter show-procedure-invocation-hierarchy-at-pause-from-breakpoint
+    (debugging-parameters-instance value)
+  #+runtime-functionality-without-a-license
+  (setq value nil)
+  #-runtime-functionality-without-a-license
+  (when (g2-limited-to-this-license-level-or-more restricted-use)
+    (setq value nil))
+  (if (system-table-installed-p debugging-parameters-instance)
+      (setq show-procedure-invocation-hierarchy-on-debugger-pause-p value))
+  (setf (show-procedure-invocation-hierarchy-at-pause-from-breakpoint debugging-parameters-instance) value))
+
+(def-slot-putter generate-source-annotation-info (debugging-parameters-instance value)
+  #+runtime-functionality-without-a-license
+  (setq value nil)
+  #-runtime-functionality-without-a-license
+  (when (g2-limited-to-this-license-level-or-more restricted-use)
+    (setq value nil))
+  (if (system-table-installed-p debugging-parameters-instance)
+      (setq generate-source-annotation-info value))
+  (setf (generate-source-annotation-info debugging-parameters-instance) value))
+
+
+(add-grammar-rules
+  `((warning-message-level ('0 '\( 'no 'warning 'messages '\) ) 1)
+    (warning-message-level ('1 '\( 'kb 'errors 'only'\) ) 1)
+    (warning-message-level ('2 '\( 'kb 'errors 'and 'deficiencies '\) ) 1)
+    (warning-message-level ('3 '\( 'kb 'errors '\, 'deficiencies
+			    '\, 'and 'other 'conditions '\) ) 1)
+		
+    ))
+
+(def-slot-value-writer warning-message-level (value)
+  (twrite
+    (case value
+      (0 "0 (no warning messages)")
+      (1 "1 (kb errors only)")
+      (2 "2 (kb errors and deficiencies)")
+      (3 "3 (kb errors, deficiencies, and other conditions)"))))
+
+
+
+(add-grammar-rules
+  `((tracing-message-level ('0 '\( 'no 'trace 'messages '\) ) 1)
+    (tracing-message-level ('1 '\( 'trace 'messages 'on 'entry 'and 'exit '\))
+			   1)
+    (tracing-message-level ('2 '\( 'trace 'messages 'at 'major 'steps '\) ) 1)
+    (tracing-message-level ('3 '\( 'trace 'messages 'at 'every 'step '\) ) 1)		
+    ))
+
+(def-slot-value-writer tracing-message-level (value)
+  (twrite
+    (case value
+      (0 "0 (no trace messages)") 
+      (1 "1 (trace messages on entry and exit)")
+      (2 "2 (trace messages at major steps)")
+      (3 "3 (trace messages at every step)"))))
+
+
+
+
+(add-grammar-rules
+  `((breakpoint-level ('0 '\( 'no 'breakpoints '\) ) 1)
+    (breakpoint-level ('1 '\( 'breakpoints 'on 'entry 'and 'exit '\) ) 1)
+    (breakpoint-level ('2 '\( 'breakpoints 'at 'major 'steps '\) ) 1)
+    (breakpoint-level ('3 '\( 'breakpoints 'at 'every 'step '\) ) 1)		
+    ))
+
+(def-slot-value-writer breakpoint-level (value)
+  (twrite
+    (case value
+      (0 "0 (no breakpoints)") 
+      (1 "1 (breakpoints on entry and exit)")
+      (2 "2 (breakpoints at major steps)")
+      (3 "3 (breakpoints at every step)"))))
+
+(add-grammar-rules
+  '((source-stepping-level ('0 '\( 'no 'source 'stepping '\)) 1)
+    ;; maybe want two levels - step in and step over?
+    (source-stepping-level ('1 '\( 'source 'stepping '\)) 1)))
+    
+(def-slot-value-writer source-stepping-level (value)
+  (twrite
+    (case value
+      (0 "0 (no source stepping)")
+      (1 "1 (source stepping)"))))
+
+;; unused?
+(add-grammar-rules
+  '((message-overrides ('no 'breakpoints 'or 'trace 'messages) 1)
+    (message-overrides ('no 'breakpoints '\, 'trace 'messages 'enabled) 2)
+    (message-overrides ('breakpoints 'and 'trace 'messages 'enabled) 5)
+    ))
+
+;;unused?
+(def-slot-value-compiler message-overrides (parse-result)
+  (cdr (assq parse-result
+	     '((no . no-messages) (breakpoints . no-breakpoints)))))
+		 
+
+;;unused?
+(def-slot-value-writer message-overrides (value)
+  (twrite
+    (case value
+      (no-messages "no breakpoints or trace messages")
+      (no-breakpoints "no breakpoints, trace messages enabled")
+      (otherwise "breakpoints and trace messages enabled"))))
+
+
+
+
+(add-grammar-rules
+  '((tracing-and-breakpoints 'default)
+    (tracing-and-breakpoints tracing-and-breakpoints-1)
+    
+    (tracing-and-breakpoints-1 warning-m-l)
+    (tracing-and-breakpoints-1
+      (warning-m-l '\; tracing-and-breakpoints-1) (2 1 3)
+      simplify-associative-operation)
+    (tracing-and-breakpoints-1 tracing-m-l)
+    (tracing-and-breakpoints-1
+      (tracing-m-l '\; tracing-and-breakpoints-1) (2 1 3)
+      simplify-associative-operation)
+    (tracing-and-breakpoints-1 breakpoints-m-l)
+    (tracing-and-breakpoints-1
+      (breakpoints-m-l '\; tracing-and-breakpoints-1) (2 1 3)
+      simplify-associative-operation)
+    (tracing-and-breakpoints-1 source-stepping-m-l)
+    (tracing-and-breakpoints-1
+     (source-stepping-m-l '\; tracing-and-breakpoints-1) (2 1 3)
+     simplify-associative-operation)
+
+    (warning-m-l ('warning 'message 'level warning-message-level) (warning . 4))
+    
+    (tracing-m-l ('tracing 'message 'level tracing-message-level) (tracing . 4))
+
+    (breakpoints-m-l ('breakpoint 'level breakpoint-level) (breakpoint . 3))
+
+    (source-stepping-m-l ('source 'stepping 'level source-stepping-level)
+     (source-stepping . 4))
+
+    ))
+
+
+
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (defconstant debugging-shift-alist
+	       '((warning . #.warning-shift) (tracing . #.tracing-shift)
+		 (breakpoint . #.breakpoint-shift)
+		 (source-stepping . #.source-stepping-shift)))
+  (defconstant completely-unspecified-debugging-code
+	        #.(+ (ash message-field-mask warning-shift)
+		     (ash message-field-mask tracing-shift)
+		     (ash message-field-mask breakpoint-shift)
+		     (ash message-field-mask source-stepping-shift))))
+
+(defvar disable-tracing-and-breakpoints-warning nil)
+
+(def-slot-value-compiler tracing-and-breakpoints (parse-result)
+  (let ((encoded-parameters
+	  (cond
+	    ((eq parse-result 'default) nil)
+	    ((eq (car parse-result) '\;)
+	     (loop with result = completely-unspecified-debugging-code
+		   for (keyword . level) in (cdr parse-result)
+		   for shift = (cdr (assq keyword debugging-shift-alist)) doing
+	       (setq result (logior
+			      (logandc2 result (ash message-field-mask shift))
+			      (ash level shift)))
+		   finally (return result)))
+	    (t (let ((shift (cdr (assq (car parse-result)
+				       debugging-shift-alist)))
+		     (level (cdr parse-result)))
+		 (logior
+		   (logandc2 completely-unspecified-debugging-code
+			     (ash message-field-mask shift))
+		   (ash level shift)))))))
+
+    (when encoded-parameters
+      (let ((tracing
+	      (ash (logandf encoded-parameters
+			    #.(ash message-field-mask tracing-shift))
+		   #.(- tracing-shift)))
+	    (breakpoint
+	      (ash (logandf encoded-parameters
+			    #.(ash message-field-mask breakpoint-shift))
+		   #.(- breakpoint-shift)))
+	    (source-stepping
+	      (ash (logandf encoded-parameters
+			    #.(ash message-field-mask source-stepping-shift))
+		   #.(- source-stepping-shift)))
+	    (overrides
+	      (message-and-breakpoint-overrides debugging-parameters)))
+	
+	(if (and (not disable-tracing-and-breakpoints-warning)
+		 (null overrides)
+		 (or (>f breakpoint 0)) (>f tracing 0) (>f source-stepping 0))
+	    (notify-engineer
+	      "Note that messages and/or breakpoints have been disabled."))))
+    encoded-parameters))
+
+(define-category-evaluator-interface (tracing-and-breakpoints :access read-write)
+    (or (member default)
+	(structure tracing-and-breakpoints-spec
+		   ((warning-message-level (member 0 1 2 3))
+		    (tracing-message-level (member 0 1 2 3))
+		    (breakpoint-level (member 0 1 2 3))
+		    (source-stepping-level (member 0 1)))
+		   (or warning-message-level tracing-message-level
+		       breakpoint-level source-stepping-level)))
+  ((set-form (evaluation-value))
+   (if (eq evaluation-value 'default)
+       'default
+       (let* ((raw-value
+		(phrase-cons
+		  '\;
+		  (with-structure (evaluation-value tracing-and-breakpoints-spec)
+		    (nconc
+		      ;; NOTE: for the %-prefix, please see `with-evaluation-structure-slots'
+		      (and %warning-message-level
+			   (phrase-list
+			     (phrase-cons 'warning %warning-message-level)))
+		      (and %tracing-message-level
+			   (phrase-list
+			     (phrase-cons 'tracing %tracing-message-level)))
+		      (and %breakpoint-level
+			   (phrase-list
+			     (phrase-cons 'breakpoint %breakpoint-level)))
+		      (and %source-stepping-level
+			   (phrase-list
+			     (phrase-cons 'source-stepping %source-stepping-level)))))))
+	      (breakpoints (cdr raw-value)))
+	     ;; one level
+	 (if (null (cdr breakpoints))
+	     (first breakpoints)
+	     ;; two or three levels
+	     raw-value))))
+  ((get-form (slot-value))
+   (if (null slot-value)
+       'default
+       (let* ((warning-level
+		(ash (logandf slot-value #.(ash message-field-mask warning-shift))
+		     #.(- warning-shift)))
+	      (tracing-level
+		(ash (logandf slot-value #.(ash message-field-mask tracing-shift))
+		     #.(- tracing-shift)))
+	      (breakpoint-level-1
+		(ash (logandf slot-value #.(ash message-field-mask breakpoint-shift))
+		     #.(- breakpoint-shift)))
+	      (source-stepping-level-1
+		(ash (logandf slot-value #.(ash message-field-mask source-stepping-shift))
+		     #.(- source-stepping-shift)))
+	      (returned-struct
+	       (with-new-structure (tracing-and-breakpoints-spec)
+		 ;; NOTE: for the %-prefix, please see `with-evaluation-structure-slots'
+		 (unless (=f warning-level message-field-mask)
+		   (setf %warning-message-level warning-level))
+		 (unless (=f tracing-level message-field-mask)
+		   (setf %tracing-message-level tracing-level))
+		 (unless (=f breakpoint-level-1 message-field-mask)
+		   (setf %breakpoint-level breakpoint-level-1))
+		 (unless (=f source-stepping-level-1 message-field-mask)
+		   (setf %source-stepping-level source-stepping-level-1)))))
+	 returned-struct))))
+
+
+
+;;; The slot putter for tracing and breakpoints is needed for procedures.  If
+;;; they are changed for a procedure definition, then they must be propagated to
+;;; the current procedure-invocations of that procedure definition.
+
+(def-slot-putter tracing-and-breakpoints (block new-breakpoints)
+  (when (frame-of-class-p block 'procedure)
+    (set-tracing-and-breakpoints-of-procedure-invocations block new-breakpoints))
+  (setf (tracing-and-breakpoints block) new-breakpoints)
+  ;; REMOVE-TRACING-AND-BREAKPOINTS resets every block
+  (when (kind-of-cell-based-display-p block)
+    (if (frame-of-class-p block 'trend-chart)
+	(set-tracing-and-breakpoints-for-trend-chart block new-breakpoints)
+	(update-cell-based-display-computation-style block)))
+  new-breakpoints)
+
+(def-slot-value-writer tracing-and-breakpoints (value frame)
+  (if (null value)
+      (twrite "default")
+      
+      (let* ((warning-level
+	       (ash (logandf value #.(ash message-field-mask warning-shift))
+		    #.(- warning-shift)))
+	     (tracing-level
+	       (ash (logandf value #.(ash message-field-mask tracing-shift))
+		    #.(- tracing-shift)))
+	     (breakpoint-level-1
+	       (ash (logandf value #.(ash message-field-mask breakpoint-shift))
+		    #.(- breakpoint-shift)))
+	     (source-stepping-level-1
+	       (ash (logandf value #.(ash message-field-mask source-stepping-shift))
+		    #.(- source-stepping-shift))))
+
+	(unless (=f warning-level message-field-mask)
+	  (twrite "warning message level ")
+	  (write-warning-message-level-from-slot warning-level frame)
+	  (unless (and (=f tracing-level message-field-mask)
+		       (=f breakpoint-level-1 message-field-mask)
+		       (=f source-stepping-level-1 message-field-mask))
+	    (twrite "; ")))
+
+	(unless (=f tracing-level message-field-mask)
+	  (twrite "tracing message level ")
+	  (write-tracing-message-level-from-slot tracing-level frame)
+	  (unless (and (=f breakpoint-level-1 message-field-mask)
+		       (=f source-stepping-level-1 message-field-mask))
+	    (twrite "; ")))
+
+	(unless (=f breakpoint-level-1 message-field-mask)
+	  (twrite "breakpoint level ")
+	  (write-breakpoint-level-from-slot breakpoint-level-1 frame)
+	  (unless (=f source-stepping-level-1 message-field-mask)
+	    (twrite "; ")))
+
+	(unless (=f source-stepping-level-1 message-field-mask)
+	  (twrite "source stepping level ")
+	  (write-source-stepping-level-from-slot source-stepping-level-1
+						 frame)))))
+
+
+
+
+(add-grammar-rules 
+    '((trace-file-pathname whole-string)
+      (trace-file-pathname 'none nil)))
+
+(def-slot-value-writer trace-file-pathname (format)
+  (cond ((null format)
+	 (twrite-string "none"))
+	((text-string-p format)  (tprin format t))	       ; prints the quotes.
+	(t (tformat "~a" format))))
+
+
+;;; The slot putter for `tracing-file' sets the slot value and when
+;;; appropriate closes and then opens the tracing-file.  
+
+(def-slot-putter tracing-file
+		 (debugging-parameters-instance new-value initialization?)
+  (cond ((or initialization?
+	     (not (system-table-installed-p debugging-parameters-instance))
+	     (not (explanation-related-features-enabled-func?)))
+	 (setf (tracing-file debugging-parameters-instance)
+	       new-value))
+	(t ; (nupec-authorized-p)
+	 (close-tracing-file)
+	 (setf (tracing-file debugging-parameters-instance)
+	       new-value)
+	 ;; opens tracing file if message-and-breakpoint-overrides
+	 ;;   (i.e., tracing-and-breakpoints-enabled?) is "on".
+	 (open-tracing-file nil)))
+  new-value)
+
+
+;;; The slot putter for `message-and-breakpoint-overrides' sets the slot value
+;;; and when appropriate closes and then opens the tracing-file.  The slot
+;;; message-and-breakpoint-overrides is aliased to
+;;; TRACING-AND-BREAKPOINTS-ENABLED?.
+
+(def-slot-putter message-and-breakpoint-overrides
+		 (debugging-parameters-instance new-value initialization?)
+
+  (cond ((or initialization?
+	     (not (system-table-installed-p debugging-parameters-instance))
+	     (not (explanation-related-features-enabled-func?)))
+	 (setf (message-and-breakpoint-overrides debugging-parameters-instance)
+	       new-value))
+	(t ; (nupec-authorized-p)
+	 (close-tracing-file)
+	 (setf (message-and-breakpoint-overrides debugging-parameters-instance)
+	       new-value)
+	 ;; opens tracing file if message-and-breakpoint-overrides
+	 ;;   (i.e., tracing-and-breakpoints-enabled?) is "on".
+	 (open-tracing-file nil)))
+	
+  new-value)
+
+
+
+
+;;; Reset-debugging-parameters should be called at the beginning of each clock
+;;; tick to assure that the parameter shave their global values.  It is also
+;;; used by each object handling function (invoke-rule, get-current-value etc.)
+;;; to restore the global parameters.
+
+
+
+(def-system-variable saved-warning-level debug nil)
+(def-system-variable saved-tracing-level debug nil)
+(def-system-variable saved-breakpoint-level debug nil)
+(def-system-variable saved-source-stepping-level debug nil)
+
+
+;;; The following variables are for the purpose of causing all the trace
+;;; messages generated within a rule execution appear as a single message at the
+;;; time the rule is exited.
+
+;;; within-dynamic-extent-of-traced-rule-p is globally NIL.  It is rebound to
+;;; NIL by validate-and-execute-rule-continuation.  It is set to t only by
+;;; enter-tracing-and-breakpoint-context called from within
+;;; validate-and-execute-rule-continuation.  It is restored to NIL by leaving
+;;; the dynamic extent of validate-and-execute-rule-continuation.  While it is
+;;; t, trace messages are accumulated as text-strings on
+;;; trace-messages-within-extent-of-rule in reverse order.  when the rule is
+;;; being traced.
+
+;;; trace-messages-within-extent-of-rule accumulates the messages written during
+;;; the rule execution.
+
+(def-concept within-dynamic-extent-of-traced-rule-p)
+(def-system-variable trace-messages-within-extent-of-rule debug nil)
+
+(defun reset-debugging-parameters ()
+;  (setq debugging-reset nil)
+  (setq warning-message-level (warning-message-level debugging-parameters))
+  (setq tracing-message-level (tracing-message-level debugging-parameters))
+  (setq breakpoint-level (breakpoint-level debugging-parameters))
+  (setq source-stepping-level (source-stepping-level debugging-parameters))
+  (setq saved-warning-level nil)
+  (setq saved-tracing-level nil)
+  (setq saved-breakpoint-level nil)
+  (setq saved-source-stepping-level nil)
+  (when (explanation-related-features-enabled-func?)
+    (reset-message-accumulation-variables)))
+
+;; Used in NUPEC.
+
+(defun reset-message-accumulation-variables ()
+  (loop for text-string in trace-messages-within-extent-of-rule doing
+    (reclaim-text-string text-string))
+  (reclaim-gensym-list trace-messages-within-extent-of-rule)
+  (setq trace-messages-within-extent-of-rule nil))
+
+
+
+
+
+(defun set-debugging-parameters (encoded-parameters)
+  (let* ((warning-level
+	   (ashf (logandf encoded-parameters
+			  #.(ash message-field-mask warning-shift))
+		 #.(- warning-shift)))
+	 (tracing-level
+	   (ashf (logandf encoded-parameters
+			  #.(ash message-field-mask tracing-shift))
+		 #.(- tracing-shift)))
+	 (breakpoint-level-1
+	   (ashf (logandf encoded-parameters
+			  #.(ash message-field-mask breakpoint-shift))
+		 #.(- breakpoint-shift)))
+	 (source-stepping-level-1
+	   (ashf (logandf encoded-parameters
+			  #.(ash message-field-mask source-stepping-shift))
+		 #.(- source-stepping-shift))))
+      (setq warning-message-level
+	    (if (=f warning-level message-field-mask)
+		(warning-message-level debugging-parameters)
+		warning-level))
+      (setq tracing-message-level
+	    (if (=f tracing-level message-field-mask)
+		(tracing-message-level debugging-parameters)
+		tracing-level))
+      (setq breakpoint-level
+	    (if (=f breakpoint-level-1 message-field-mask)
+		(breakpoint-level debugging-parameters)
+		breakpoint-level-1))
+      (setq source-stepping-level
+	    (if (=f source-stepping-level-1 message-field-mask)
+		(source-stepping-level debugging-parameters)
+		source-stepping-level-1))))
+
+
+
+
+;;; Warning-message sends a warning
+
+
+#+development
+(eval-when (:compile-toplevel :load-toplevel :execute)
+(defun check-for-illegal-warning-message-level (level)
+  ;; If it's a constant, we check it.  Otherwise, we assume it
+  ;;   is to be evaluated at run time.
+  ;; Why does this check something that might not be able to be
+  ;;   evaluated until run time?  Good question. The evolution is
+  ;;   that it used to require a constant; then it was changed
+  ;;   not to -- e.g. for warning-message-with-no-args.  So
+  ;;   maybe now we should flush this testing altogether.
+  ;;   (MHD 8/14/89)
+  (if (constantp level)
+      (let ((level-evaluated (eval level)))
+	(if (not (and (integerp level-evaluated)
+		      (<= 1 level-evaluated 3)))
+	    (error
+	      "Warning-message level should be 1, 2, or 3.  ~s is illegal."
+	      level)))))
+)
+
+
+
+;;; Write-warning-messages-p is true if level and debugging-reset are such that
+;;; write-warning-message and related macros are operative.
+
+(defmacro write-warning-messages-p (level)
+  `(and (<=f ,level warning-message-level)
+	(not debugging-reset)))
+
+;; Change name to write-debugging-message-p
+
+
+
+
+
+
+;;; Suppress-warning-message-header? ... [probably temporary!]
+
+(def-system-variable suppress-warning-message-header? debug nil)
+
+;; Suppress-warning-message-header?, bound globally to nil, is only needed so
+;; that warning-message can bind it as an implicit parameter to give-warning.
+;; Both warning-message and warning-message* use give-warning, but only
+;; warning-message* will get the header.  When warning-message is eliminated,
+;; this variable should also be!!  (MHD 11/7/90)
+
+
+
+
+;;; A note regarding warning-message and warning-message*:
+
+;;; NOTE: ~A should not be called with its argument a block.  It has been
+;;; tolerated until now in warning-message and warning-message* only, which have
+;;; endeavored to have blocks turned into names, as given by
+;;; get-or-make-up-name-for-block.  This will continue to be tolerated until
+;;; further notice, but code that depends on this needs to be weeded out.  After
+;;; the release of 3.0 settles down, we can put in debugging code to help find
+;;; such code and/or analyze callers throughout the sources.  I'm not sure if
+;;; this "feature" was put in as a workaround for coding bugs or as a
+;;; convenience feature, but, in any case, it was never a documented feature.
+;;; (MHD 11/26/91)
+
+;;; A note about the variable calling-tformat-for-give-warning?.  This is used
+;;; for communicating to twrite that give-warning, a subfunction of
+;;; warning-message and warning-message*, is calling it indirectly.  Twrite
+;;; implements special behavior in that situation; namely, it prints blocks as
+;;; names, as given by get-or-make-up-name-for-block.  This variable is a defvar
+;;; bound to nil at top-level.  It is defined in UTILITIES1 next to the
+;;; definition for twrite.
+
+
+
+
+;;; Warning-message ...
+
+(defmacro warning-message (level format-string &body format-args)
+  `(progn
+     (setq suppress-warning-message-header? t)
+     (give-warning ,level ,format-string . ,format-args)
+     (setq suppress-warning-message-header? nil)))
+
+;; Note that warning-message was changed so that all format args will have
+;; get-or-make-up-name-if-frame applied, as of 11/7/90.  Previously, it was just
+;; an error to pass in an arg that was a frame, so this is compatible.  It was
+;; never really documented, but previously, only warning-message* had this
+;; feature, and we know that some code in the system may depend on this feature.
+;; (MHD 11/8/90)
+
+;; Also note that the binding of the suppress variable was removed in favor of a
+;; pair of setqs of the global variable.  This was done to avoid the overhead of
+;; global variable bindings within the many calling functions.  Non-local exists
+;; of give-warning can happen only in case of errors, and the following bombout
+;; clean up function resets it during restart in that case.  -jra 1/9/92
+
+(def-bombout-clean-up-function 'reset-suppress-header-variable)
+
+(defun reset-suppress-header-variable ()
+  (setq suppress-warning-message-header? nil))
+
+
+
+
+;;; Warning-message* is like warning-message except that it first puts a warning
+;;; message header (via write-warning-message-header) into the message ahead of
+;;; the text contributed by format-args.
+
+(defmacro warning-message* (level format-string &body format-args)
+  `(give-warning ,level ,format-string . ,format-args))
+
+
+
+
+;;; The macro `write-warning-message' can be used (instead of warning-message)
+;;; when it is not convenient to create the message with a single format
+;;; string.  The body can be any form(s) that will "twrite" the message to the
+;;; current text string.  The resulting text string is reclaimed.  Body cannot
+;;; return any useful values.  Also, body cannot even be counted on to be
+;;; evaluated unless (write-warning-messages-p level) is true.
+
+(defmacro write-warning-message (level &body body)
+  #+development
+  (check-for-illegal-warning-message-level level)  
+  `(when (write-warning-messages-p ,level)
+     (unless defer-notifications? 
+       (break-out-of-debug-messages))
+     (with-user-notification ()
+       ,@body)))
+
+(defun-void write-warning-message-string (level message)
+  (write-warning-message level
+    (twrite message)))
+
+
+;;; The macro `Write-warning-message*' is like write-warning-message, except
+;;; that it first puts a warning message header (via
+;;; write-warning-message-header) into the message ahead of the text
+;;; contributed by body.
+
+(defmacro write-warning-message* (level &body body)
+  `(write-warning-message ,level
+     (write-warning-message-header ,level)
+     . ,body))
+
+;; Note that people have continued using warning-message in new code
+;; (e.g. CPM -- see BOOKS) in code where *current-computation-frame* is
+;; not expected to be appropriately bound.  So the following comment by
+;; ML is really obsolete, or at least should be reviewed. (MHD 11/7/90)
+;; 
+;; ;; Warning-message* and write-warning-message* should replace
+;; ;; warning-message and write-warning-message a.s.a.p. The difference
+;; ;; is that * variety macros preceed the message with "Error in ..."
+;; ;; naming *current-computation-frame*. This saves a lot of wear and
+;; ;; tear and makes the warning message more uniform.
+
+
+
+
+
+
+
+;;; Give-warning ... This should only be called, at present, by warning-message
+;;; or warning-message*.
+
+(defmacro give-warning
+	  (target-warning-level format-string &body format-args)
+  #+development
+  (check-for-illegal-warning-message-level target-warning-level)
+  `(when (<=f ,target-warning-level warning-message-level)
+     (give-warning-1
+       ,target-warning-level ,format-string . ,format-args)))
+
+(defun give-warning-1
+    (target-warning-level format-string
+			  &optional
+			  (arg1 no-arg) (arg2 no-arg) (arg3 no-arg)
+			  (arg4 no-arg) (arg5 no-arg) (arg6 no-arg)
+			  (arg7 no-arg) (arg8 no-arg) (arg9 no-arg))
+  (when (not debugging-reset)
+    (break-out-of-debug-messages)    
+    (with-user-notification ()
+      (unless suppress-warning-message-header?	; only bound in warning-message!
+	(write-warning-message-header target-warning-level))
+      (let ((calling-tformat-for-give-warning? t))	; special; see note above
+	(call-per-number-of-actual-args
+	  tformat
+	  1 format-string
+	  arg1 arg2 arg3 arg4 arg5 arg6 arg7 arg8 arg9)))))
+
+;; Processing each arg with get-or-make-up-name-if-frame was removed today
+;; because that is now being done by tformat's ~A.  See tformat for discussion
+;; of where that's going.
+
+;; Consider checking that target-warning-message-level is a valid warning
+;; message level at compile and/or run time.
+ 
+
+
+
+
+;;; Write-warning-message-header ...
+
+(defun write-warning-message-header (level)
+  (twrite-string
+    (case level
+      (1 "Error")
+      (2 "Error or incomplete KB")
+      (3 "General warning")))
+  (when (and (boundp '*current-computation-frame*) *current-computation-frame*)
+    (twrite-string " in ")
+    (denote-component-of-block t))
+  (twrite-string ": "))
+
+;; Review not downcasing the name for the current computation frame! (MHD 8/29/89)
+
+;; The variable *current-computation-frame* should be renamed current-computation-
+;; frame? and be bound to nil at top-level and when not within the dynamic scope
+;; of the inference engine!  Then the test
+;;
+;;    (and (boundp '*current-computation-frame*) *current-computation-frame*)
+;;
+;; should go away and be replaced by the test
+;;
+;;    (not (null current-computation-frame?))
+;;
+;; Unfortunately, the variable is used in a large number of places throughout
+;; the system.  The boundp test was in fact added in order to sweep a bombout
+;; under the rug -- calling warning-message* for an illegal color change
+;; via a menu choice (rather than from within the inference engine) -- allowing
+;; this to be used outside the inference engine's dynamic scope. (MHD, based
+;; on an earlier discussion with JRA, 8/29/89)
+
+
+(defun give-icp-error-warning-message (shutdownp error-type error-string-or-out-of-synch-case arg1 arg2 arg3)
+  (write-warning-message (if shutdownp 1 2)
+    (twrite-icp-error error-type error-string-or-out-of-synch-case arg1 arg2 arg3)
+    ;; Even if the arguments aren't asked for by the string, they should still be available.
+    (when (of-class-p-function arg1 'block) (record-block-for-tformat arg1))
+    (when (of-class-p-function arg2 'block) (record-block-for-tformat arg2))
+    (when (of-class-p-function arg3 'block) (record-block-for-tformat arg3))))
+
+
+
+
+
+
+
+
+
+(declare-forward-reference pause-during-debug function)	; in RUN
+
+
+
+;;; The macro enter-tracing-and-breakpoint-context is used at or near the entry
+;;; of rules variables, formulas and functions.  It presumes a local variable
+;;; called tracing-and-breakpoints to indicate whether or not to reset on exit
+;;; and local variables called saved-warning-level, saved-tracing-level, and
+;;; saved-breakpoint-level for saving and restoring the state.
+
+;;; The specification requires that the tracing-and-breakpoints specified for a
+;;; frame be local to that frame and not include frames operated on within its
+;;; dynamic scope.  Accordingly,saving and restoring of the three "saved-"
+;;; parameters occurs either when the frame has a non-null
+;;; tracing-and-breakpoints slot, or any of these has a non-null value.  Note
+;;; that their global bindings are nil.  Once saving has occurred, they are
+;;; numeric, and saving must then occur within all nested contexts regardless of
+;;; the tracing-and-breakpoints slot of the nested context.  But if
+;;; tracing-and-breakpoints is nil, then the corresponding controlling
+;;; parameters are refrshed from the global values.
+
+(defmacro enter-tracing-and-breakpoint-context
+	  (frame-to-trace entry-message?)
+  (let ((frame (if (symbolp frame-to-trace)
+		   frame-to-trace
+		   (gensym)))
+	(tracing-and-breakpoints (gensym)))
+    `(let* (,@(when (not (eq frame frame-to-trace))
+		`((,frame ,frame-to-trace)))
+	    (,tracing-and-breakpoints (tracing-and-breakpoints ,frame)))
+       (body-of-enter-tracing-and-breakpoint-context
+	 ,frame ,tracing-and-breakpoints ,entry-message?))))
+
+(defmacro enter-tracing-and-breakpoint-context-within-computation-style
+	  (entry-message?)
+  (let ((tracing-and-breakpoints (gensym)))
+    `(let ((,tracing-and-breakpoints
+	    (computation-style-tracing-and-breakpoints
+	      current-computation-style)))
+       (body-of-enter-tracing-and-breakpoint-context
+	 *current-computation-frame* ,tracing-and-breakpoints ,entry-message?))))
+
+(defmacro body-of-enter-tracing-and-breakpoint-context
+	  (frame tracing-and-breakpoints entry-message?)
+  `(when (and (or ,tracing-and-breakpoints	
+		  saved-warning-level
+		  (or (not (fixnump breakpoint-level))
+		      (>f breakpoint-level 0))
+		  (>f tracing-message-level 0)
+		  (>f source-stepping-level 0))
+	      (not debugging-reset)
+	      (message-and-breakpoint-overrides debugging-parameters))
+     (modify-tracing-and-breakpoints-context-on-entry
+       ,frame ,tracing-and-breakpoints)
+     (when (or (>f breakpoint-level 0)
+	       (>f tracing-message-level 0))
+       (issue-tracing-and-breakpoints-entry-message
+	 ,frame ,entry-message?))))
+
+;; After NUPEC spinoff, change the argument "frame" to "in-rule-p".  Let this be
+;; t for the case within validate-and-ex...  and nil otherwise.  Use this to to
+;; test at macro-expand time instead of the runtime frame-of-class-p.  Do the
+;; same for exit-tracing-and....  ML, 1/31/90.
+
+;; Note that frame is now needed to test for its being proprietary.  I do not
+;; understand the convention implied by the code that a null entry message
+;; causes no trace or breakpoint.  ML, 11/30/90
+
+;; There are places where the context should change, but no message should be
+;; given.  For example, when within a procedure and calling a user defined
+;; function, we need to exit the context of the procedure and enter the context
+;; of the function.  In this circumstance it doesn't make sense to issue a
+;; message about exiting the procedure, though we do want to issue one for
+;; entering the function.  Basicly, we are still "in the context" of the
+;; procedure, though the immediate context is the function.  When returning from
+;; the function, we should issue a message about exiting the function, but not
+;; about "reentering" the procedure.  The ability to enter and leave contexts
+;; without messages helps us make contexts look like stacks of contexts to the
+;; user.  -jra 5/30/91
+
+
+
+(defmacro proprietary-p (block)
+  `(in-order-p ,block))
+
+(defun modify-tracing-and-breakpoints-context-on-entry
+       (frame tracing-and-breakpoints)
+  (setq saved-warning-level warning-message-level)
+  (setq saved-tracing-level tracing-message-level)
+  (setq saved-breakpoint-level breakpoint-level)
+  (setq saved-source-stepping-level source-stepping-level)
+  (cond
+    ((or (proprietary-p frame) (not (frame-of-class-p frame 'item)))
+     (setq warning-message-level 0)
+     (setq tracing-message-level 0)
+     (setq breakpoint-level 0)
+     (setq source-stepping-level 0))
+    (tracing-and-breakpoints
+     (set-debugging-parameters tracing-and-breakpoints))
+    (t
+     (setq warning-message-level (warning-message-level debugging-parameters))
+     (setq tracing-message-level (tracing-message-level debugging-parameters))
+     (setq breakpoint-level (breakpoint-level debugging-parameters))
+     (setq source-stepping-level (source-stepping-level
+				   debugging-parameters)))))
+
+(defun issue-tracing-and-breakpoints-entry-message (frame entry-message)
+  (let ((overrides (message-and-breakpoint-overrides debugging-parameters)))
+    (cond
+      ((null entry-message)
+       nil)
+      ((proprietary-p frame)
+       (reclaim-text-string entry-message))
+      ((and (>f breakpoint-level 0) overrides) 
+       (notify-engineer "~A  Break on entry." entry-message)
+       (pause-during-debug entry-message))
+      ((and (>f tracing-message-level 0) overrides)
+       (break-out-of-debug-messages)
+       (cond
+	 ((and (explanation-related-features-enabled-func?)
+	       (within-dynamic-extent-of-traced-rule-p))
+	  (setq trace-messages-within-extent-of-rule
+		(gensym-cons entry-message trace-messages-within-extent-of-rule)))
+	 ((and (explanation-related-features-enabled-func?) (frame-of-class-p frame 'rule))
+	  (setf (within-dynamic-extent-of-traced-rule-p) t)
+	  (setq trace-messages-within-extent-of-rule
+		(gensym-cons entry-message trace-messages-within-extent-of-rule)))
+	 (t
+	  (notify-engineer "~a" entry-message)
+	  (reclaim-text-string entry-message))))
+      (t
+       (reclaim-text-string entry-message)))))
+
+
+
+
+;;; Restoration of level variables must occur if any saved level variable is not
+;;; nil.  Since this will also be the case if any message or breakpoint is
+;;; needed, this is a sufficient test for calling a function to process the
+;;; exit.
+
+;;; Exit-tracing-and-breakpoint-context contains code to write a message wrapped
+;;; in a pair of parentheses, and followed by values which it will evaluate and
+;;; return.
+
+(defmacro exit-tracing-and-breakpoint-context
+	  (frame-to-exit exit-message? &rest form-or-forms-for-values)
+  (let ((frame (if (symbolp frame-to-exit) frame-to-exit (gensym))))
+    `(let ,(if (eq frame frame-to-exit) nil `((,frame ,frame-to-exit)))
+       (when saved-warning-level
+	 (when (and (or (>f breakpoint-level 0)
+			(>f tracing-message-level 0))
+		    (message-and-breakpoint-overrides debugging-parameters)
+		    (not (proprietary-p ,frame)))
+	   (issue-tracing-and-breakpoint-exit-message ,frame ,exit-message?))
+	 (setq warning-message-level saved-warning-level)
+	 (setq tracing-message-level saved-tracing-level)
+	 (setq breakpoint-level saved-breakpoint-level)
+	 (setq source-stepping-level saved-source-stepping-level))
+       ,(if (cdr form-or-forms-for-values)
+	    `(values ,@form-or-forms-for-values)
+	    (car form-or-forms-for-values)))))
+
+(defmacro exit-trace-messages-will-be-written-p (frame)
+  `(and saved-warning-level
+	(or (>f breakpoint-level 0)
+	    (>f tracing-message-level 0))
+	(message-and-breakpoint-overrides debugging-parameters)
+	(not (proprietary-p ,frame))))
+
+(defun issue-tracing-and-breakpoint-exit-message (frame exit-message?)
+  (let ((overrides (message-and-breakpoint-overrides debugging-parameters)))
+    (cond
+      ((proprietary-p frame)
+       (if exit-message? (reclaim-error-text exit-message?)))
+      
+      ((and exit-message? debugging-reset)
+       (reclaim-error-text exit-message?))
+      
+      ((and (>f breakpoint-level 0) overrides exit-message?)
+       (notify-engineer "~NW Break on exit." exit-message?)
+       (pause-during-debug
+	 (tformat-text-string "~A  Break on exit." exit-message?)))
+      
+      ((and (>f tracing-message-level 0) overrides)
+       (break-out-of-debug-messages)
+       (when exit-message?
+	 (cond
+	   ((and (explanation-related-features-enabled-func?)
+		 (within-dynamic-extent-of-traced-rule-p))
+	    (setq trace-messages-within-extent-of-rule
+		  (gensym-cons exit-message?
+			       trace-messages-within-extent-of-rule)))
+	   (t
+	    (notify-engineer "~NW" exit-message?)
+	    (reclaim-error-text exit-message?))))
+       (when (and (explanation-related-features-enabled-func?) (frame-of-class-p frame 'rule))
+	 (setq trace-messages-within-extent-of-rule
+	       (nreverse trace-messages-within-extent-of-rule))
+	 (let ((combined-message
+		 (twith-output-to-text-string
+		   (tformat "~%")
+		   (loop for listed-text-string
+			     on trace-messages-within-extent-of-rule
+			 doing
+		     (if (and (cdr listed-text-string)
+			      (neq listed-text-string
+				   trace-messages-within-extent-of-rule))
+			 (twrite "   "))
+		     (tformat "~NW" (car listed-text-string))
+		     (reclaim-error-text (car listed-text-string))
+		     (if (cdr listed-text-string) (tformat "~%"))))))
+	   (notify-engineer combined-message)
+	   (reclaim-error-text combined-message)
+	   (reclaim-gensym-list trace-messages-within-extent-of-rule)
+	   (setq trace-messages-within-extent-of-rule nil))))
+      
+      (exit-message? (reclaim-error-text exit-message?)))
+    ;; If no exit-message and not exiting a rule, then do nothing.
+    nil))
+
+(defmacro major-trace-message-will-be-written-p ()
+  '(and
+    #+development
+    (progn
+      (assert-for-development
+       (and (boundp '*current-computation-frame*)
+            (framep *current-computation-frame*))
+       "Current-computation-frame not bound for major trace message.")
+      t)
+    (or (>f tracing-message-level 1) (>f breakpoint-level 1))
+    (not debugging-reset)
+    (message-and-breakpoint-overrides debugging-parameters)))
+
+(defmacro write-major-trace-message (&body body)
+  (let ((output-message (gensym)))
+    `(when (major-trace-message-will-be-written-p)
+       (let ((,output-message
+	      (twith-output-to-text-string . ,body)))
+	 (write-major-trace-message-function ,output-message)))))
+
+(defmacro tformat-major-trace-message
+	  (control-string
+	   &optional arg1 arg2 arg3 arg4 arg5 arg6 arg7 arg8 arg9)
+  `(when (major-trace-message-will-be-written-p)
+     (tformat-major-trace-message-1
+       ,control-string ,arg1 ,arg2 ,arg3 ,arg4 ,arg5 ,arg6 ,arg7 ,arg8 ,arg9)))
+
+(defun tformat-major-trace-message-1
+       (control-string arg1 arg2 arg3 arg4 arg5 arg6 arg7 arg8 arg9)
+  (let ((output-message
+	  (twith-output-to-text-string
+	    (tformat
+	      control-string arg1 arg2 arg3 arg4 arg5 arg6 arg7 arg8 arg9))))
+    (write-major-trace-message-function output-message)))
+
+(defun write-major-trace-message-function (output-message)
+  (let ((overrides (message-and-breakpoint-overrides debugging-parameters)))
+    (cond
+      ((and (>f breakpoint-level 1) overrides)
+       (notify-engineer "~A Break on exit." output-message)
+       (pause-during-debug (tformat-text-string "~A Break on exit."
+						output-message)))
+      (overrides
+       (break-out-of-debug-messages)
+       (cond ((explanation-related-features-enabled-func?)
+	      (cond
+		((within-dynamic-extent-of-traced-rule-p)
+		 (setq trace-messages-within-extent-of-rule
+		       (gensym-cons output-message
+				    trace-messages-within-extent-of-rule)))
+		(t (notify-engineer "~a" output-message)
+		   (reclaim-text-string output-message))))
+	     (t
+	      (notify-engineer "~a" output-message)
+	      (reclaim-text-string output-message))))
+      (t (reclaim-text-string output-message)))))
+
+(defmacro detail-trace-message-will-be-written-p ()
+  '(and (or (>f tracing-message-level 2) (>f breakpoint-level 2))
+	(not debugging-reset)
+	(message-and-breakpoint-overrides debugging-parameters)))
+
+(defmacro write-detail-trace-message (&body body)
+  (let ((output-message (gensym)))
+    `(when (detail-trace-message-will-be-written-p)
+       (let ((,output-message
+	      (twith-output-to-text-string . ,body)))
+	 (write-detail-trace-message-function ,output-message)))))
+
+;;unused?
+(defmacro tformat-detail-trace-message
+	  (control-string
+	   &optional arg1 arg2 arg3 arg4 arg5 arg6 arg7 arg8 arg9)
+  `(when (detail-trace-message-will-be-written-p)
+     (tformat-detail-trace-message-1
+       ,control-string ,arg1 ,arg2 ,arg3 ,arg4 ,arg5 ,arg6 ,arg7 ,arg8 ,arg9)))
+
+;;unused except above?
+(defun tformat-detail-trace-message-1
+       (control-string arg1 arg2 arg3 arg4 arg5 arg6 arg7 arg8 arg9)
+  (let ((output-message
+	  (twith-output-to-text-string
+	    (tformat
+	      control-string arg1 arg2 arg3 arg4 arg5 arg6 arg7 arg8 arg9))))
+    (write-detail-trace-message-function output-message)))
+
+
+(defun write-detail-trace-message-function (output-message)
+  (let ((overrides (message-and-breakpoint-overrides debugging-parameters)))
+    (cond
+      ((and (>f breakpoint-level 2) overrides)
+       (notify-engineer "~A Break on exit." output-message)
+       (pause-during-debug (tformat-text-string "~A Break on exit."
+						output-message)))
+      (overrides
+       (break-out-of-debug-messages)
+       (cond ((explanation-related-features-enabled-func?)
+	      (cond
+		((within-dynamic-extent-of-traced-rule-p)
+		 (setq trace-messages-within-extent-of-rule
+		       (gensym-cons output-message
+				    trace-messages-within-extent-of-rule)))
+		(t (notify-engineer "~a" output-message)
+		   (reclaim-text-string output-message))))
+	     (t
+	      (notify-engineer "~a" output-message)
+	      (reclaim-text-string output-message))))
+      (t (reclaim-text-string output-message)))))
+
+
+
+(declare-forward-reference notify-engineer function)
+(declare-forward-reference break-out-of-debug-messages function)
+
+(defun remove-tracing-and-breakpoints ()
+  (change-slot-value debugging-parameters 'tracing-message-level 0)
+  (change-slot-value debugging-parameters  'breakpoint-level 0)
+  (change-slot-value debugging-parameters 'source-stepping-level 0)
+  (change-slot-value debugging-parameters
+		     'message-and-breakpoint-overrides nil)
+  (loop for entity being class-instances of 'block do
+    (change-slot-value entity 'tracing-and-breakpoints nil)))
+
+
+
+
+
+;;;; Obsolete Names for the Class Debugging-Parameters
+
+
+;;; In earlier versions of the software, there had been a different name for
+;;; the class debugging-parameters.  The two old class names are
+;;;
+;;;     tracing-and-breakpoint-parameters
+;;;
+;;; and
+;;; 
+;;;     debugging-message-and-breakpoint-parameters
+;;;
+;;; If frames of these two classes appear in old KBs, they are to be deleted.
+;;; This is accomplished by using def-substitute-for-old-class to transition
+;;; them into instances of debugging-paramters, and then giving the
+;;; fix-frame-with-substitute-class method of debugging-parameters the action
+;;; of simply deleting the instance.  Thus, we will be left with no instances
+;;; of debugging-parameters that were originally loaded as instances of one of
+;;; the old classes.
+;;;
+;;; Note that when a KB is loaded, and it is missing an instance of a
+;;; system-table class, it creates one.  Note that there may only be only
+;;; one instance of a system table (per module) of any given class.
+;;;
+;;; Thus, in the end, we are left with only one system table of the class
+;;; debugging-parameters, newly created, and no frames that are or were
+;;; instances of of any of the old classes.
+
+(def-substitute-for-old-class tracing-and-breakpoint-parameters
+    debugging-parameters)
+
+(def-substitute-for-old-class debugging-message-and-breakpoint-parameters
+    debugging-parameters)
+
+(def-class-method fix-frame-with-substitute-class (debugging-parameters)
+  (delete-frame debugging-parameters))
+
+
+
+
+
+;;;; Nupec Tracing File Open and Close Stream
+
+
+
+
+;;; The function `open-tracing-file' opens the tracing file in
+;;; debugging parameters file if message-and-breakpoint-overrides  (i.e.,
+;;; tracing-and-breakpoints-enabled?) is "on" and the system is running, the
+;;; system is paused, or if activating (e.g., upon restart).  A warning message
+;;; is displayed if an error occurs when opening the tracing-file.  If the file
+;;; is sucessfully opened, t is returned, otherwise nil is returned. 
+
+(defun open-tracing-file (activating?)
+  (when (and (or activating? system-is-running system-has-paused)
+	     (message-and-breakpoint-overrides debugging-parameters))
+    (let* ((pathname? (get-pathname-for-file-from-slot
+			debugging-parameters 'tracing-file)))
+      (when pathname?
+	(when (text-string-p (tracing-file-string debugging-parameters))
+	  (reclaim-text-string 
+	    (tracing-file-string debugging-parameters)))
+	(setf (tracing-file-string debugging-parameters)
+	      pathname?)
+	(setf (tracing-file-stream debugging-parameters)
+	      (g2-stream-open-for-output pathname?))
+	(cond
+	  ((g2-stream-p (tracing-file-stream debugging-parameters))
+	   (setf (trace-outputting-to-file? debugging-parameters) t)
+	   t)
+	  (t (let ((error-text (most-recent-file-operation-status-as-text)))
+	       (warning-message
+		   1 "Couldn't open tracing file ~s:  ~a."
+		 pathname?
+		 error-text)
+	       (reclaim-text-string error-text))
+	     nil))))))
+
+
+
+;;; The function `close-tracing-file' closes the tracing file in
+;;; debugging parameters. 
+
+(defun close-tracing-file ()
+  (let* ((file-stream? (tracing-file-stream debugging-parameters)))
+    (when (text-string-p (tracing-file-string debugging-parameters))
+      (reclaim-text-string 
+	(tracing-file-string debugging-parameters)))
+    (setf (tracing-file-string debugging-parameters) nil)
+    (when file-stream?
+      (g2-stream-close file-stream?)
+      (setf (tracing-file-stream debugging-parameters)
+	    nil))
+    (setf (trace-outputting-to-file? debugging-parameters)
+	  nil)))
+
+
+
+
+
+;;; The function `get-pathname-for-file-from-slot' takes a frame and returns the
+;;; pathname in the slot as indicated by the specified slot name.  If the
+;;; contents of the slot is a string, then the string is returned.  If the
+;;; contents of the slot is a designation, then the value of the designation is
+;;; returned if it is a text string.  NIL is returned if no string can be
+;;; returned.  The text string that is returned should be reclaimed.
+
+;; ** NUPEC **
+;; This code is based on get-pathname-for-gfi-interface in the module GFI.
+;; Changed: arg name (frame) and warning messages.
+;; This should  be abstracted (file/stream operations)!!
+
+(defun get-pathname-for-file-from-slot
+    (frame slot-name-for-pathname)
+  (let* ((pathname
+	   (get-slot-value frame slot-name-for-pathname)))
+    (cond
+      ((null pathname)
+       nil)
+      ((text-string-p pathname)
+       (copy-text-string pathname))
+      (t
+       #+development
+       (warning-message 1
+	   "Tried to open a file with the ~a slot of ~nf incorrectly set."
+	 slot-name-for-pathname
+	 frame)
+       nil))))
+
+
+
+
+
+
+;;;; Warning Messages for SMBX-TCP.
+
+
+
+
+;;; There are several warning messages which need to be issued from the
+;;; Symbolics TCP implementation for ICP.  That file preceeds DEBUG in the load
+;;; sequence, so these warning message function are being defined here.
+
+(defun warning-message-with-no-args (warning-level format-string)
+  (warning-message warning-level format-string))
+
+(defun warning-message-with-one-arg (warning-level format-string arg1)
+  (warning-message warning-level format-string arg1))
+
+(defun warning-message-with-two-args (warning-level format-string arg1 arg2)
+  (warning-message warning-level format-string arg1 arg2))
+
+(defun warning-message-with-three-args
+       (warning-level format-string arg1 arg2 arg3)
+  (warning-message warning-level format-string arg1 arg2 arg3))
+
+
+
+
+
+
+;;;; Warning Messages for ENTITIES
+
+
+
+;;; The module ENTITIES directly preceeds debug in the module list, and
+;;; it contains a few warning messages which need to be given.
+
+(defun warn-of-non-polychrome-icon (entity)
+  (warning-message* 2
+    "~NF does not have a color pattern to change -- it is not polychrome."
+    entity))
+
+
+(defun warn-of-polychrome-icon (entity)
+  (warning-message* 2
+    "~NF does not have a single icon color to change -- it is polychrome."
+    entity))
+
+;; Maybe this goes away -- see MHD's design notes! (MHD 8/28/89)
+
+
+;;; `Warn-of-invalid-color-attribute' ...
+
+(defun warn-of-invalid-color-attribute (item invalid-color-attribute)
+  (warning-message* 2
+    "~a is not a valid color attribute for ~NF."
+    invalid-color-attribute
+    item))
+
+
+
+;;; `Warn-of-invalid-color-region' ...
+
+(defun warn-of-invalid-color-region (item invalid-color-region)
+  (warning-message* 2
+    "~a is not a valid color region for ~NF."
+    invalid-color-region
+    item))
+
+
+(defun warn-of-missing-color-region (entity region)
+  (warning-message* 2
+    "Attempt to change the ~a region of ~NF. ~
+    The class definition for ~a does not have a region named ~a."
+    region entity (class entity) region))
+
+(defun warn-of-unnamed-color-region (entity region)
+  (warning-message* 2
+    "Attempt to change an unnamed color region in ~NF using its color name ~
+     (~a).  Unnamed color regions cannot be changed."
+    entity
+    region))
+
+
+(defun warn-of-illegal-colors (illegal-colors)
+  (if illegal-colors				; nec.?
+      ;; get illegal-colors with duplicates removed; string
+      ;;   written and returned in finally clause for reclamation
+      ;;   at end:   (Maybe define "remove-duplicates-using-gensym-
+      ;;   conses" and revise this?)
+      (loop for remaining-colors on illegal-colors
+	    when (loop for previous-illegal-colors on illegal-colors
+		       until (eq previous-illegal-colors remaining-colors)
+		       never (eq (car previous-illegal-colors)
+				 (car remaining-colors)))
+	      collect (car remaining-colors)
+		into remaining-colors-without-duplicates  using gensym-cons
+	    finally
+	      (let ((list-of-colors-text-string
+		      (twith-output-to-text-string
+			(write-symbol-list
+			  remaining-colors-without-duplicates
+			  '\, 'and))))
+		(warning-message* 2
+		  "~a ~a illegal color~a"
+		  list-of-colors-text-string
+		  (if (cdr remaining-colors-without-duplicates)
+		      "are"
+		      "is an")
+		  (if (cdr remaining-colors-without-duplicates)
+		      "s"
+		      ""))
+		(reclaim-text-string list-of-colors-text-string)
+		(reclaim-gensym-list
+		  remaining-colors-without-duplicates)))))
+
+
+
+
+;;;; Warning Messages for TELESTUBS
+
+
+
+;;; The function `post-telewindows-connection-clogged' runs most of the time
+;;; inside an on-window context, so we must defer the notifications.  It's
+;;; stubbed in tw-patches for telewindows.
+
+(defun post-telewindows-connection-clogged (g2-window? clogged?)
+  (let ((defer-notifications? t))    ; Always defer this message.
+    (write-warning-message 2
+      (cond ((null g2-window?)
+	     (twrite-string "A telewindows connection "))
+	    (t
+	     (twrite-string "The telewindows connection for ")
+	     (tformat "~A " (get-or-make-up-name-for-block g2-window?))))
+
+      (if clogged?
+	  (twrite-string "is clogged.")
+	  (twrite-string "is now unclogged.")))))
+
+;; This doesn't work within an on-window context, which unfortunately is where
+;; it is generally called.  Fixed by allowing top-level deferred notifications.
+
+
+
+
+;;; `c-performance-frequency'
+
+(def-gensym-c-function c-performance-frequency
+    (:fixnum-int "g2ext_performance_frequency")
+  ((:pointer stream-handle)
+   (:fixnum-int message-number)))
+
+
+;;; `c-emit-performance-counter'
+
+(def-gensym-c-function c-emit-performance-counter
+    (:double-float "g2ext_emit_performance_counter")
+  ((:wide-string format-string)
+   (:fixnum-int message-number)
+   (:pointer stream-handle)))
+
+
+;;; `c-report-performance-counter'
+
+(def-gensym-c-function c-report-performance-counter
+    (:double-float "g2ext_report_performance_counter")
+  ())
+
+
+;;; `g2-performance-frequency'
+
+(defun-for-system-procedure g2-performance-frequency ()
+  (let ((stream-handle -1))
+    (when (and (trace-outputting-to-file? debugging-parameters)
+               (g2-stream-p (tracing-file-stream debugging-parameters)))
+      (setq stream-handle (g2-stream-handle (tracing-file-stream debugging-parameters))))
+    (c-performance-frequency stream-handle current-message-serial-number)))
+
+
+;;; `g2-emit-performance-counter'
+
+(defun-for-system-procedure g2-emit-performance-counter (format-string)
+  (let ((stream-handle -1))
+    (when (and (trace-outputting-to-file? debugging-parameters)
+               (g2-stream-p (tracing-file-stream debugging-parameters)))
+      (setq stream-handle (g2-stream-handle (tracing-file-stream debugging-parameters))))
+    (let ((c-float
+            (c-emit-performance-counter
+              format-string current-message-serial-number stream-handle)))
+      (make-evaluation-float c-float))))
+
+
+;;; `g2-report-performance-counter'
+
+(defun-for-system-procedure g2-report-performance-counter ()
+  (let ((c-float (c-report-performance-counter)))
+    (make-evaluation-float c-float)))
