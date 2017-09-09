@@ -1,0 +1,382 @@
+SHELL = /bin/sh
+PRODUCT = gw
+ODIR = opt
+PLATFORM = sun4
+CDIR = $(SRCBOX)/$(PRODUCT)/c
+EXTCDIR = $(SRCBOX)/ext/c
+EXTDIR = $(DSTBOX)/ext/$(ODIR)
+GSICDIR = $(SRCBOX)/gsi/c
+GSIDIR = $(DSTBOX)/gsi/$(ODIR)
+HELPERDIR = /home/development/helpers
+KBDIR = $(SRCBOX)/$(PRODUCT)/kbs
+MFDIR = $(DSTBOX)/$(PRODUCT)/$(ODIR)
+PROMDIR = $(SRCBOX)/$(PRODUCT)/doc
+RTHDIR = $(SRCBOX)/rtl/c
+RTLDIR = $(DSTBOX)/rtl/$(ODIR)
+SCRIPTSDIR = /home/development/scripts
+SPFCDIR = $(SRCBOX)/specific/$(PLATFORM)
+TAPEDST = $(DSTBOX)/$(PRODUCT)/tape
+TESTDST = $(DSTBOX)/$(PRODUCT)/test
+CONTENTS = $(DSTBOX)/$(PRODUCT)/tape/contents.txt
+KBDST = $(DSTBOX)/$(PRODUCT)/tape/kbs
+WWWDST = $(DSTBOX)/$(PRODUCT)/tape/www
+CC_FLAGS = -DGSI_TRANS -Wimplicit
+RTHFILES = $(RTHDIR)/c-ifuns.h $(RTHDIR)/c-sdefs.h \
+  $(RTHDIR)/config.h $(RTHDIR)/core.h $(RTHDIR)/ffi.h $(RTHDIR)/gensym.h \
+  $(RTHDIR)/initvars.h $(RTHDIR)/inline.h $(RTHDIR)/instance.h \
+  $(RTHDIR)/kernel.h $(RTHDIR)/lisplib.h $(RTHDIR)/longname.h \
+  $(RTHDIR)/object.h $(RTHDIR)/smcompat.h $(RTHDIR)/specific.h \
+  $(RTHDIR)/svarargs.h $(RTHDIR)/uconfig.h $(RTHDIR)/values.h
+
+all : _mfenter libgw.a gw _mfexit
+
+_mfenter : 
+	@- $(SCRIPTSDIR)/errsweep -init
+
+_mfexit : 
+	@- $(SCRIPTSDIR)/errsweep -finish
+
+libgw.a : gw_tcp.o lgsi_support.o
+	@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)
+	@- if [ -f libgw.a ] ; then rm -f libgw.a ; fi
+	ar qc libgw.a  gw_tcp.o lgsi_support.o
+	ranlib libgw.a
+
+gw : $(EXTDIR)/libgsec.a $(RTLDIR)/librtl.a $(EXTDIR)/libtcp.a \
+  $(GSIDIR)/gsiannex.o $(SPFCDIR)/nsleep.o basics.o bridge.o btstrp.o \
+  buffer.o chars.o chars2.o clocks.o delta.o flprse.o gbmap.o gbmapr.o \
+  glbscs.o gscmn.o gsi.o gsi_brg.o gspts.o gsrpc1.o gsrpc2.o gw_main.o \
+  gw_tcp.o gwtl1.o htmlgn.o int1.o int2.o int3a.o int3b.o int4.o is2022.o \
+  is8859.o jismap.o ksmap2.o launch.o load.o loop.o lspfxs.o lttrs.o names.o \
+  ntrrr.o ntvnt.o ntwrks.o os-mem.o os-set.o osfrgn.o osrrr.o ostme.o \
+  prmtvs.o pthnms.o rpcmn1.o rpcmn2.o rpcmn3.o schdle.o server.o sock1.o \
+  strms.o symtab.o systm.o thread.o times.o tran.o trnscd.o uncde.o \
+  userfuns.o userinit.o usersyms.o utlts0.o utlts1.o utlts2.o utlts3.o \
+  wbgsi.o web.o
+	@ $(HELPERDIR)/wait-for-helpers -udir $(HELPERDIR)
+	@- if [ -f gw ] ; then rm -f gw ; fi
+	gcc -o gw   gsi_brg.o gw_main.o gw_tcp.o symtab.o \
+  userfuns.o userinit.o usersyms.o names.o load.o btstrp.o systm.o delta.o \
+  gspts.o loop.o lspfxs.o glbscs.o osfrgn.o basics.o ostme.o os-set.o \
+  os-mem.o prmtvs.o chars.o jismap.o ksmap2.o gbmap.o gbmapr.o chars2.o \
+  utlts0.o utlts1.o utlts2.o lttrs.o uncde.o is2022.o trnscd.o is8859.o \
+  utlts3.o times.o osrrr.o launch.o pthnms.o flprse.o strms.o schdle.o \
+  clocks.o ntwrks.o int1.o ntrrr.o ntvnt.o int2.o int3a.o int3b.o int4.o \
+  gscmn.o rpcmn1.o rpcmn2.o rpcmn3.o gsi.o gsrpc1.o gsrpc2.o sock1.o gwtl1.o \
+  buffer.o thread.o htmlgn.o bridge.o web.o server.o wbgsi.o tran.o \
+  $(EXTDIR)/libtcp.a $(EXTDIR)/libgsec.a $(RTLDIR)/librtl.a \
+  $(GSIDIR)/gsiannex.o $(SPFCDIR)/nsleep.o -lm -lc -ldl
+
+basics.o : $(CDIR)/basics.c $(RTHFILES)
+	@- if [ -f basics.o ] ; then rm -f basics.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/basics.c
+
+bridge.o : $(CDIR)/bridge.c $(RTHFILES)
+	@- if [ -f bridge.o ] ; then rm -f bridge.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/bridge.c
+
+btstrp.o : $(CDIR)/btstrp.c $(RTHFILES)
+	@- if [ -f btstrp.o ] ; then rm -f btstrp.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/btstrp.c
+
+buffer.o : $(CDIR)/buffer.c $(RTHFILES)
+	@- if [ -f buffer.o ] ; then rm -f buffer.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/buffer.c
+
+chars.o : $(CDIR)/chars.c $(RTHFILES)
+	@- if [ -f chars.o ] ; then rm -f chars.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/chars.c
+
+chars2.o : $(CDIR)/chars2.c $(RTHFILES)
+	@- if [ -f chars2.o ] ; then rm -f chars2.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/chars2.c
+
+clocks.o : $(CDIR)/clocks.c $(RTHFILES)
+	@- if [ -f clocks.o ] ; then rm -f clocks.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/clocks.c
+
+delta.o : $(CDIR)/delta.c $(RTHFILES)
+	@- if [ -f delta.o ] ; then rm -f delta.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/delta.c
+
+flprse.o : $(CDIR)/flprse.c $(RTHFILES)
+	@- if [ -f flprse.o ] ; then rm -f flprse.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/flprse.c
+
+gbmap.o : $(CDIR)/gbmap.c $(RTHFILES)
+	@- if [ -f gbmap.o ] ; then rm -f gbmap.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/gbmap.c
+
+gbmapr.o : $(CDIR)/gbmapr.c $(RTHFILES)
+	@- if [ -f gbmapr.o ] ; then rm -f gbmapr.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/gbmapr.c
+
+glbscs.o : $(CDIR)/glbscs.c $(RTHFILES)
+	@- if [ -f glbscs.o ] ; then rm -f glbscs.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/glbscs.c
+
+gscmn.o : $(CDIR)/gscmn.c $(RTHFILES)
+	@- if [ -f gscmn.o ] ; then rm -f gscmn.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/gscmn.c
+
+gsi.o : $(CDIR)/gsi.c $(RTHFILES)
+	@- if [ -f gsi.o ] ; then rm -f gsi.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/gsi.c
+
+gsi_brg.o : $(CDIR)/gsi_brg.c $(RTHFILES)
+	@- if [ -f gsi_brg.o ] ; then rm -f gsi_brg.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/gsi_brg.c
+
+gspts.o : $(CDIR)/gspts.c $(RTHFILES)
+	@- if [ -f gspts.o ] ; then rm -f gspts.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/gspts.c
+
+gsrpc1.o : $(CDIR)/gsrpc1.c $(RTHFILES)
+	@- if [ -f gsrpc1.o ] ; then rm -f gsrpc1.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/gsrpc1.c
+
+gsrpc2.o : $(CDIR)/gsrpc2.c $(RTHFILES)
+	@- if [ -f gsrpc2.o ] ; then rm -f gsrpc2.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/gsrpc2.c
+
+gw_main.o : $(CDIR)/gw_main.c $(RTHFILES) $(CDIR)/gw_main.h $(GSICDIR)/gsi_main.h
+	@- if [ -f gw_main.o ] ; then rm -f gw_main.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/gw_main.c
+
+gw_tcp.o : $(CDIR)/gw_tcp.c $(RTHFILES)
+	@- if [ -f gw_tcp.o ] ; then rm -f gw_tcp.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/gw_tcp.c
+
+gwtl1.o : $(CDIR)/gwtl1.c $(RTHFILES)
+	@- if [ -f gwtl1.o ] ; then rm -f gwtl1.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/gwtl1.c
+
+htmlgn.o : $(CDIR)/htmlgn.c $(RTHFILES)
+	@- if [ -f htmlgn.o ] ; then rm -f htmlgn.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/htmlgn.c
+
+int1.o : $(CDIR)/int1.c $(RTHFILES)
+	@- if [ -f int1.o ] ; then rm -f int1.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/int1.c
+
+int2.o : $(CDIR)/int2.c $(RTHFILES)
+	@- if [ -f int2.o ] ; then rm -f int2.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/int2.c
+
+int3a.o : $(CDIR)/int3a.c $(RTHFILES)
+	@- if [ -f int3a.o ] ; then rm -f int3a.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/int3a.c
+
+int3b.o : $(CDIR)/int3b.c $(RTHFILES)
+	@- if [ -f int3b.o ] ; then rm -f int3b.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/int3b.c
+
+int4.o : $(CDIR)/int4.c $(RTHFILES)
+	@- if [ -f int4.o ] ; then rm -f int4.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/int4.c
+
+is2022.o : $(CDIR)/is2022.c $(RTHFILES)
+	@- if [ -f is2022.o ] ; then rm -f is2022.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/is2022.c
+
+is8859.o : $(CDIR)/is8859.c $(RTHFILES)
+	@- if [ -f is8859.o ] ; then rm -f is8859.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/is8859.c
+
+jismap.o : $(CDIR)/jismap.c $(RTHFILES)
+	@- if [ -f jismap.o ] ; then rm -f jismap.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/jismap.c
+
+ksmap2.o : $(CDIR)/ksmap2.c $(RTHFILES)
+	@- if [ -f ksmap2.o ] ; then rm -f ksmap2.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/ksmap2.c
+
+launch.o : $(CDIR)/launch.c $(RTHFILES)
+	@- if [ -f launch.o ] ; then rm -f launch.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/launch.c
+
+lgsi_support.o : $(CDIR)/lgsi_support.c $(RTHFILES) $(GSICDIR)/gsi_main.h
+	@- if [ -f lgsi_support.o ] ; then rm -f lgsi_support.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/lgsi_support.c
+
+load.o : $(CDIR)/load.c $(RTHFILES)
+	@- if [ -f load.o ] ; then rm -f load.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/load.c
+
+loop.o : $(CDIR)/loop.c $(RTHFILES)
+	@- if [ -f loop.o ] ; then rm -f loop.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/loop.c
+
+lspfxs.o : $(CDIR)/lspfxs.c $(RTHFILES)
+	@- if [ -f lspfxs.o ] ; then rm -f lspfxs.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/lspfxs.c
+
+lttrs.o : $(CDIR)/lttrs.c $(RTHFILES)
+	@- if [ -f lttrs.o ] ; then rm -f lttrs.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/lttrs.c
+
+names.o : $(CDIR)/names.c $(RTHFILES)
+	@- if [ -f names.o ] ; then rm -f names.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/names.c
+
+ntrrr.o : $(CDIR)/ntrrr.c $(RTHFILES)
+	@- if [ -f ntrrr.o ] ; then rm -f ntrrr.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/ntrrr.c
+
+ntvnt.o : $(CDIR)/ntvnt.c $(RTHFILES)
+	@- if [ -f ntvnt.o ] ; then rm -f ntvnt.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/ntvnt.c
+
+ntwrks.o : $(CDIR)/ntwrks.c $(RTHFILES)
+	@- if [ -f ntwrks.o ] ; then rm -f ntwrks.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/ntwrks.c
+
+os-mem.o : $(CDIR)/os-mem.c $(RTHFILES)
+	@- if [ -f os-mem.o ] ; then rm -f os-mem.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/os-mem.c
+
+os-set.o : $(CDIR)/os-set.c $(RTHFILES)
+	@- if [ -f os-set.o ] ; then rm -f os-set.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/os-set.c
+
+osfrgn.o : $(CDIR)/osfrgn.c $(RTHFILES)
+	@- if [ -f osfrgn.o ] ; then rm -f osfrgn.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/osfrgn.c
+
+osrrr.o : $(CDIR)/osrrr.c $(RTHFILES)
+	@- if [ -f osrrr.o ] ; then rm -f osrrr.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/osrrr.c
+
+ostme.o : $(CDIR)/ostme.c $(RTHFILES)
+	@- if [ -f ostme.o ] ; then rm -f ostme.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/ostme.c
+
+prmtvs.o : $(CDIR)/prmtvs.c $(RTHFILES)
+	@- if [ -f prmtvs.o ] ; then rm -f prmtvs.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/prmtvs.c
+
+pthnms.o : $(CDIR)/pthnms.c $(RTHFILES)
+	@- if [ -f pthnms.o ] ; then rm -f pthnms.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/pthnms.c
+
+rpcmn1.o : $(CDIR)/rpcmn1.c $(RTHFILES)
+	@- if [ -f rpcmn1.o ] ; then rm -f rpcmn1.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/rpcmn1.c
+
+rpcmn2.o : $(CDIR)/rpcmn2.c $(RTHFILES)
+	@- if [ -f rpcmn2.o ] ; then rm -f rpcmn2.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/rpcmn2.c
+
+rpcmn3.o : $(CDIR)/rpcmn3.c $(RTHFILES)
+	@- if [ -f rpcmn3.o ] ; then rm -f rpcmn3.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/rpcmn3.c
+
+schdle.o : $(CDIR)/schdle.c $(RTHFILES)
+	@- if [ -f schdle.o ] ; then rm -f schdle.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/schdle.c
+
+server.o : $(CDIR)/server.c $(RTHFILES)
+	@- if [ -f server.o ] ; then rm -f server.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/server.c
+
+sock1.o : $(CDIR)/sock1.c $(RTHFILES)
+	@- if [ -f sock1.o ] ; then rm -f sock1.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/sock1.c
+
+strms.o : $(CDIR)/strms.c $(RTHFILES)
+	@- if [ -f strms.o ] ; then rm -f strms.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/strms.c
+
+symtab.o : $(CDIR)/symtab.c $(RTHFILES)
+	@- if [ -f symtab.o ] ; then rm -f symtab.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/symtab.c
+
+systm.o : $(CDIR)/systm.c $(RTHFILES)
+	@- if [ -f systm.o ] ; then rm -f systm.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/systm.c
+
+thread.o : $(CDIR)/thread.c $(RTHFILES)
+	@- if [ -f thread.o ] ; then rm -f thread.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/thread.c
+
+times.o : $(CDIR)/times.c $(RTHFILES)
+	@- if [ -f times.o ] ; then rm -f times.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/times.c
+
+tran.o : $(CDIR)/tran.c $(RTHFILES)
+	@- if [ -f tran.o ] ; then rm -f tran.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/tran.c
+
+trnscd.o : $(CDIR)/trnscd.c $(RTHFILES)
+	@- if [ -f trnscd.o ] ; then rm -f trnscd.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/trnscd.c
+
+uncde.o : $(CDIR)/uncde.c $(RTHFILES)
+	@- if [ -f uncde.o ] ; then rm -f uncde.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/uncde.c
+
+userfuns.o : $(CDIR)/userfuns.c $(RTHFILES)
+	@- if [ -f userfuns.o ] ; then rm -f userfuns.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/userfuns.c
+
+userinit.o : $(CDIR)/userinit.c $(RTHFILES)
+	@- if [ -f userinit.o ] ; then rm -f userinit.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/userinit.c
+
+usersyms.o : $(CDIR)/usersyms.c $(RTHFILES)
+	@- if [ -f usersyms.o ] ; then rm -f usersyms.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/usersyms.c
+
+utlts0.o : $(CDIR)/utlts0.c $(RTHFILES)
+	@- if [ -f utlts0.o ] ; then rm -f utlts0.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/utlts0.c
+
+utlts1.o : $(CDIR)/utlts1.c $(RTHFILES)
+	@- if [ -f utlts1.o ] ; then rm -f utlts1.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/utlts1.c
+
+utlts2.o : $(CDIR)/utlts2.c $(RTHFILES)
+	@- if [ -f utlts2.o ] ; then rm -f utlts2.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/utlts2.c
+
+utlts3.o : $(CDIR)/utlts3.c $(RTHFILES)
+	@- if [ -f utlts3.o ] ; then rm -f utlts3.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/utlts3.c
+
+wbgsi.o : $(CDIR)/wbgsi.c $(RTHFILES)
+	@- if [ -f wbgsi.o ] ; then rm -f wbgsi.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/wbgsi.c
+
+web.o : $(CDIR)/web.c $(RTHFILES)
+	@- if [ -f web.o ] ; then rm -f web.o ; fi
+	@ $(HELPERDIR)/help-please $(MFDIR) gcc -c -O $(CC_FLAGS) -I$(RTHDIR) -I$(EXTCDIR) -I$(GSICDIR) $(CDIR)/web.c
+
+clean : 
+	- rm -f *.[oa]
+	- rm -f gw
+
+install : 
+	- rm -rf $(TAPEDST)
+	mkdir $(TAPEDST)
+	mkdir $(WWWDST)
+	chmod ug+r+w $(WWWDST)
+	mkdir $(KBDST)
+	chmod ug+r+w $(KBDST)
+	echo "gw   `sum gw` " >> $(CONTENTS)
+	cp -p gw $(TAPEDST)/gw
+	chmod ug+r-w $(TAPEDST)/gw
+	echo "www/bridge.gif   `sum $(PROMDIR)/bridge.gif` " >> $(CONTENTS)
+	cp -p $(PROMDIR)/bridge.gif $(WWWDST)/bridge.gif
+	chmod 444 $(WWWDST)/bridge.gif
+	echo "kbs/gwex1.kb   `sum $(KBDIR)/gwex1.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/gwex1.kb $(KBDST)/gwex1.kb
+	chmod 444 $(KBDST)/gwex1.kb
+	echo "kbs/gwex2.kb   `sum $(KBDIR)/gwex2.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/gwex2.kb $(KBDST)/gwex2.kb
+	chmod 444 $(KBDST)/gwex2.kb
+	echo "kbs/gwex3.kb   `sum $(KBDIR)/gwex3.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/gwex3.kb $(KBDST)/gwex3.kb
+	chmod 444 $(KBDST)/gwex3.kb
+	echo "kbs/gwlow.kb   `sum $(KBDIR)/gwlow.kb` " >> $(CONTENTS)
+	cp -p $(KBDIR)/gwlow.kb $(KBDST)/gwlow.kb
+	chmod 444 $(KBDST)/gwlow.kb
