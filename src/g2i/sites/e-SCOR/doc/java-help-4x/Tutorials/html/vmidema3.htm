@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="02/06/02 18:38:55">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Running the Simulation</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="vmidema2.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="vmidema4.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+      <div align="center"><b>e-SCOR Tutorials</b></div>
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/e-SCOR/OnlineHelpFiles/Tutorials/html/vmidemor.htm">  
+        Running the Simulation: Central Distributor Model  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Running the Simulation
+</h2>
+<p>You will now run the simulation to determine whether each consumer achieves a 100% on-time performance, given your initial estimates. You will also look at inventory days of supply and the other asset metrics. <a name="282279"></a></p>
+<p>The model runs different processes at different phases of the simulation.<a name="282337"></a></p>
+<h4 >	 To run the simulation, using estimated replenishment levels:<a name="280681"></a></h4><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>1	</b></td>    <td valign="top" width="580">Run the simulation in jump mode.<a name="280733"></a></td>  </tr></table><blockquote>  <a name="282323">For details, see <a href="running2.htm#269459">Running the Simulation</a>.</a></blockquote>
+<blockquote>  <a name="282324">During the first two seconds of simulation time, the model runs the <a href="../../../GettingStartedTutorial/chapters/threadst.htm#"Role Verfification Process"">Role Verification process</a> to determine which suppliers can deliver the products that buyers order.</a></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>2	</b></td>    <td valign="top" width="580">Display the Level 2 Output Report so you can view the <b>Supplier On-Time Performance (%)</b> metric as the model runs.<a name="281518"></a></td>  </tr></table><blockquote>  <a name="309648">As the model runs, buyer roles place orders and supplier roles deliver shipments. At the same time, the model computes <b>Supplier On-Time Performance (%)</b>. To do this, the model runs the following processes:</a></blockquote>
+<blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="560"><a href="threads3.htm#154394">Order/Product process</a> - Creates customer and replenishment orders, and sends shipments. Customer orders originate in the three Consumer roles in the sizes and frequencies you configured for the Sc: Source Consumer category. Replenishment orders originate in the three site Distributor roles and in the central Distributor role in the sizes and frequencies that the Source Planning process determines. The Order/Product process is relevant for all roles in the model.<a name="309650"></a></td>  </tr></table></blockquote><blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="560"><a href="threads4.htm#154405">Build process</a> - Creates build orders and manufactures finished products in the sizes and frequencies that the Make Planning process determines. In the Central Distributor model, the Build process is relevant only for the Base Manufacturer role.<a name="282130"></a></td>  </tr></table></blockquote><blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="560"><a href="threads7.htm#288435">Source Planning process</a> - Determines the size and frequency of replenishment orders for source products, which originate in the three site Distributor roles and the central Distributor role. It does this by looking at replenishment levels and reorder quantities for source products and current orders for delivery products.<a name="282394"></a></td>  </tr></table></blockquote><blockquote><table width="580" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="560"><a href="threads6.htm#182190">Make Planning process</a> - Determines the size and frequency of build orders for delivery products, which the Base Manufacturer role makes. It does this by looking at replenishment levels, reorder quantities, and current orders for delivery products.<a name="309679"></a></td>  </tr></table></blockquote><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>3	</b></td>    <td valign="top" width="580">Display the Role Output Report to view the <b>Inventory Days of Supply</b> and other asset metrics as the model runs.<a name="309680"></a></td>  </tr></table><blockquote>  <a name="282447">Each financial period, which is 2 weeks, each role computes incoming and outgoing financial metrics, days of supply, and other asset metrics. To do this, the model runs the <a href="threads5.htm#154417">Financial process</a>, which computes financial and asset metrics, based on the Net Selling Price of each delivery product in the model. </a></blockquote>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><b>4	</b></td>    <td valign="top" width="580">Observe the metrics in the Metrics toolbar and in the reports until the simulation stops.<a name="282589"></a></td>  </tr></table><p>The simulation runs for 43 days, then stops when the simulation clock reads February 6.<a name="282442"></a></p>
+<p>Did your replenishment level estimates result in 100% on-time performance? No, they were no where near sufficient to meet the demand. For example, your Level 2 Output Report might have values something like these: <a name="281373"></a></p>
+<p >
+  <a name="281415"> </a>
+<p><div align="left"><img src="images/tutoriad.gif" border="0" hspace="0" vspace="0">
+</div><a name="281414"></a></p>
+
+
+
+</p>
+<p>In this simulation, neither the three consumers nor the distribution sites had anywhere close to 100% Supplier On-Time Performance. <a name="281430"></a></p>
+<p>Now, let's look at inventory days of supply and assets. For example, your Role Output Report might have values something like these: <a name="282611"></a></p>
+<p >
+  <a name="282631"> </a>
+<p><div align="left"><img src="images/tutorie2.gif" border="0" hspace="0" vspace="0">
+</div><a name="282630"></a></p>
+
+
+
+</p>
+<p>In this simulation, the distribution sites are carrying less than one day of inventory, which is way too low. The sites take between 0 and 168 days to turn over their inventory. Two of the three sites spend more money than they take in, based on a positive cash-to-cash cycle time. Therefore, the asset metrics for the three distribution sites, as well as for the central distributor, are not very favorable, because the amount of inventory is not sufficient to supply all sites equally well, based on demand.<a name="281507"></a></p>
+<p>To increase on-time performance and balance asset metrics between the sites, you need to increase replenishment levels, which you will experiment with <a href="../../../GettingStartedTutorial/chapters/vmidemoo.htm#VMIOptimizing">later in this tutorial</a>.<a name="282675"></a></p> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="vmidema2.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="vmidema4.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
