@@ -1,0 +1,1474 @@
+Sun4/IN ALL MAKEFILE`s:
+4/19/93
+
+[This was the first platform tried, so most of these problems are
+general.  All of the problems in this section have been worked around
+by various changes, most of which are described below, but some of
+which are discussed in the change logs. Mike Colena wrote up, and
+worked on, the porting issues discussed below in this section. -mhd]
+
+
+
+Before being able to make in any directory, these dirs had to be commented
+out and the ones marked 'delivery' had to be uncommented. Shouldn't this 
+have been done by Bitstream?
+
+	# we use this directory structure for development:
+	speedo_dir = //ninja/archive/src/speedo
+	type1_dir = //ninja/archive/src/type1
+	4demo_dir = //ninja/archive/src/4in1
+	# you should use this directory structure to match delivery diskettes:
+	#speedo_dir = ../speedo
+	#type1_dir = ../type1
+	#4demo_dir = ../4demo
+
+
+/4DEMO:
+
+There is a dependency in the makefile here which I could not resolve. The
+file 'fi_proto.h' is not in the Chart of Include Files (5-3) and is not
+in any of the delivery directories.
+
+	make: Fatal error: Don't know how to make target `fi_proto.h'
+
+
+/TYPE1:
+
+First try of make gave:
+	make: Fatal error: Don't know how to make target `../type1/useropt.h'
+
+Since all the other Common include files appeared to be in /speedo, I 
+created a link to /speedo/useropt.h. Some files now compile, but the next 
+error to appear was:
+
+	cc  -I../4demo -I../speedo -I../type1 \
+	-DINCL_KEYS -USHORT_LISTS -DINCL_BLACK  -DINCL_2D-DINCL_OUTLINE \
+	-DINCL_SCREEN -DPROC_PCL=0  -DPROC_TRUETYPE=0 -DINCL_PFB -c -DUNIX=1 \
+	-w ../type1/tr_ldfnt.c
+
+	../type1/stdef.h: 155: Can't find include file /sys/ins/base.ins.c
+	../type1/stdef.h: 156: #include of /usr/include/... may be non-portable
+	*** Error code 2
+	make: Fatal error: Command failed for target `tr_ldfnt.o'
+
+/TT:
+
+First try of make gave:
+	make: Fatal error: Don't know how to make target `useropt.h'
+
+Since all the other Common include files appeared to be in /speedo, I 
+created a link to /speedo/useropt.h. Some files now compile, but the next 
+error to appear was:
+
+	cc -g -DSHORT_LISTS=0 -DAPOLLO -DPROC_PCL=0 -DPROC_TYPE1=0 -w \
+	-I../speedo -I../4demo -I. -c tt_iface.c
+
+	"tt_iface.c", line 409: redeclaration of tt_error
+	*** Error code 1
+	make: Fatal error: Command failed for target `tt_iface.o'
+
+
+/SPEEDO:
+
+	cc  -I../tt -I../pcl5  -I../type1 -I../4demo -DINCL_OUTLINE \
+	-DINCL_2D -DINCL_KEYS  -DINCL_SCREEN -DINCL_WHITE -USHORT_LISTS \
+	-DAPOLLO=1  -DPROC_PCL=0 -DPROC_TYPE1=0 -DPROC_TRUETYPE=0 -c out_wht.c
+
+	"out_wht.c", line 860: redeclaration of intersect_2vect
+	*** Error code 1
+	make: Fatal error: Command failed for target `out_wht.o'
+
+
+/FITUTIL
+
+	cc -g -c -I/user/include -I../type1 -I../tt finfotbl.c
+
+	../type1/stdef.h: 155: Can't find include file /sys/ins/base.ins.c
+	../type1/stdef.h: 156: #include of /usr/include/... may be non-portable
+
+	*** Error code 2
+	make: Fatal error: Command failed for target `finfotbl.o'
+
+
+
+
+
+
+*********
+
+Problems on the RS6000
+4/20/93
+
+
+Compilation of the individual demo programs in the speedo and truetype (tt) directories
+worked fine.  The type1 had a minor problem (problem (2) below), which we were able
+to easily work around.  Problem (1) below remains unresolved.
+
+
+Problem (1): Error compiling 4demo.c trying to do a make in the 4demo directory:
+
+4demo:4> make
+        cc  -DSPEEDO_CODE=1 -DINCL_KEYS=1 -DSHORT_LISTS=0 -DINCL_BLACK=1  -DINCL_2D=1 -DINCL_OUTLINE=1 -DINCL_SCREEN=1 -DINCL_WHITE=1  -DPROTOS_AVAIL=0 -DINCL_PFB=1 -DBASELINE_IMPROVE=1 -DHAVE_MSL2INDEX -I../speedo -I../pcl5 -I../type1 -I../tt -I../fitutil -I. -w -c  4demo.c
+"4demo.c", line 714.17: 1506-025 (S) Operand must be a modifiable lvalue.
+"4demo.c", line 722.25: 1506-025 (S) Operand must be a modifiable lvalue.
+make: 1254-004 The error code from the last command is 1.
+
+Make Quitting.
+
+4demo:5> 
+
+------------
+Problem (1) Resolution: the lines have been changed to remove the casts.  They now
+read as folows:
+
+/* Altered the following line because three compiler found it to
+   be illegal syntax (sgi, ibm rs6000, and dec mips).
+   -- mhd@gensym, 4/21/93
+   */
+/*	   	(ufix8 *)ch = (ufix8 *)font_encoding[char_index]; */
+	   	ch = (void *)font_encoding[char_index];
+
+
+/* Altered the following line because three compiler found it to
+   be illegal syntax (sgi, ibm rs6000, and dec mips).
+   -- mhd@gensym, 4/21/93
+   */
+/*			(ufix16 *)ch = (ufix16 *)&font_table[char_index]; */
+			ch = (void *)&font_table[char_index];
+
+
+This resolves problems for two other platforms: SGI and RS600.  See below.
+
+Bob Eggers has been informed of this change, and agrees that a similar change
+should be made in Bitstream's sources.  He said he'd make it.  -mhd, 4/22/93
+
+
+Problem (1b): Can't compile 4demo:
+.
+.
+.
+    cc  -DSPEEDO_CODE=1 -DINCL_KEYS=1 -DSHORT_LISTS=0 -DINCL_BLACK=1  -DINCL_2D=1 -DINCL_OUTLINE=1 -DINCL_SCREEN=1 -DINCL_WHITE=1  -DPROTOS_AVAIL=0 -DINCL_PFB=1 -DBASELINE_IMPROVE=1 -DHAVE_MSL2INDEX -I../speedo -I../pcl5 -I../type1 -I../tt -I../fitutil -I. -w -c  ../tt/fontscal.c
+accom: Error: ../tt/fontscal.c, line 848: Illegal pointer combination:   pointer to signed char  versus   pointer to char
+                   int8* workSpacePtr                      = key->memoryBases[                     3 ];
+       --------------------------------------------------------------------------------------------^
+*** Error code 1
+
+Stop.
+
+------------
+
+Solution: 
+	        /* I added the cast (int8 *) to the right-hand side of the
+		   assignment that follows.  The SGI (strict ansi) compiler
+		   objected otherwise. -mhd@gensym, 4/22/93
+		   */
+		int8* workSpacePtr		= (int8 *)key->memoryBases[WORK_SPACE_BASE];
+
+
+-------------
+
+
+Problem (1c):  
+
+    cc  -DSPEEDO_CODE=1 -DINCL_KEYS=1 -DSHORT_LISTS=0 -DINCL_BLACK=1  -DINCL_2D=1 -DINCL_OUTLINE=1 -DINCL_SCREEN=1 -DINCL_WHITE=1  -DPROTOS_AVAIL=0 -DINCL_PFB=1 -DBASELINE_IMPROVE=1 -DHAVE_MSL2INDEX -I../speedo -I../pcl5 -I../type1 -I../tt -I../fitutil -I. -w -c  ../tt/fsglue.c
+accom: Error: ../tt/fsglue.c, line 1284: Illegal pointer combination:   pointer to signed char  versus   pointer to char
+              register int8                           *workSpacePtr   = key->memoryBases[                     3 ];
+       ----------------------------------------------------------------------------------------------------^
+*** Error code 1
+
+Stop.
+
+
+------------
+
+Solved with fix similar to that for tt/fontscal.c: cast to (int8 *)
+------------
+
+Problem (1d):
+
+ cc  -DSPEEDO_CODE=1 -DINCL_KEYS=1 -DSHORT_LISTS=0 -DINCL_BLACK=1  -DINCL_2D=1 -DINCL_OUTLINE=1 -DINCL_SCREEN=1 -DINCL_WHITE=1  -DPROTOS_AVAIL=0 -DINCL_PFB=1 -DBASELINE_IMPROVE=1 -DHAVE_MSL2INDEX -I../speedo -I../pcl5 -I../type1 -I../tt -I../fitutil -I. -w -c  ../type1/tr_ldfnt.c
+accom: Error: ../type1/tr_ldfnt.c, line 752: static function declaration in inner block is illegal (ANSI C 3.5.1)
+        static boolean  tr_read_long();
+       -------------------------------^
+*** Error code 1
+
+Stop.
+
+------------
+Solved by moving the declaration to top level, before the function in which
+it appears.  This seems safe.
+
+------------
+
+Problem (1e): Can't compile 4demo
+
+ cc  -DSPEEDO_CODE=1 -DINCL_KEYS=1 -DSHORT_LISTS=0 -DINCL_BLACK=1  -DINCL_2D=1 -DINCL_OUTLINE=1 -DINCL_SCREEN=1 -DINCL_WHITE=1  -DPROTOS_AVAIL=0 -DINCL_PFB=1 -DBASELINE_IMPROVE=1 -DHAVE_MSL2INDEX -I../speedo -I../pcl5 -I../type1 -I../tt -I../fitutil -I. -w -c  ../type1/tr_mkchr.c
+accom: Error: ../type1/tr_mkchr.c, line 464: Left pointer in assignment must have all qualifiers of right and pointed to types must be compatible (or void) (ANSI 3.3.16.1)
+              sp_globals.processor.type1.current_font = font_ptr;
+       ---------------------------------------------------^
+accom: Error: ../type1/tr_mkchr.c, line 464: Illegal pointer combination:   pointer to struct  versus   pointer to unsigned char
+          sp_globals.processor.type1.current_font = font_ptr;
+       ---------------------------------------------------^
+*** Error code 1
+
+Stop.
+
+
+Problem (1f): Can't compile 4demo
+
+
+        cc  -DSPEEDO_CODE=1 -DINCL_KEYS=1 -DSHORT_LISTS=0 -DINCL_BLACK=1  -DINCL_2D=1 -DINCL_OUTLINE=1 -DINCL_SCREEN=1 -DINCL_WHITE=1  -DPROTOS_AVAIL=0 -DINCL_PFB=1 -DBASELINE_IMPROVE=1 -DHAVE_MSL2INDEX -I../speedo -I../pcl5 -I../type1 -I../tt -I../fitutil -I. -w -c  ../speedo/out_wht.c
+accom: Error: ../speedo/out_wht.c, line 412: static function declaration in inner block is illegal (ANSI C 3.5.1)
+       static void  intersect_2vect();
+       ------------------------------^
+accom: Error: ../speedo/out_wht.c, line 413: static function declaration in inner block is illegal (ANSI C 3.5.1)
+       static void  ww_line();
+       ----------------------^
+*** Error code 1
+
+Stop.
+
+-----------
+Fixed by moving the declarations to top level.
+
+-----------
+
+
+
+Problem (1e): Can't compile 4demo
+
+    cc  -DSPEEDO_CODE=1 -DINCL_KEYS=1 -DSHORT_LISTS=0 -DINCL_BLACK=1  -DINCL_2D=1 -DINCL_OUTLINE=1 -DINCL_SCREEN=1 -DINCL_WHITE=1  -DPROTOS_AVAIL=0 -DINCL_PFB=1 -DBASELINE_IMPROVE=1 -DHAVE_MSL2INDEX -I../speedo -I../pcl5 -I../type1 -I../tt -I../fitutil -I. -w -c  load_pcl.c
+
+accom: Error: load_pcl.c, line 63: illegal combination of pointer and integer, op <
+       if ((fd = fopen(pathname, "rb")) < 0)
+       ------------------------------------^
+accom: Error: load_pcl.c, line 63: types :   pointer to struct  versus   int
+       if ((fd = fopen(pathname, "rb")) < 0)
+       ------------------------------------^
+*** Error code 1
+
+Stop.
+
+-------------
+/* I replaced
+     if ((fd = fopen(pathname, "rb")) < 0)
+   with the following line.  The SGI (strict ansi) compiler
+   objected to comparing the result of fopen with 0 using <.
+   Fopen is defined to return NULL if the attempt to open
+   the named file fails.  --mhd, 4/22/93
+   */
+
+if ((fd = fopen(pathname, "rb")) == NULL)
+--------------
+
+Problem (1f): Can't compile 4demo [note also the warnings]
+
+Warning: sp_globals: multiply defined
+  previous (used) definition from '4demo.o';
+      new (ignored) definition from 'tt_specs.o'
+Warning: sp_globals: multiply defined
+ previous (used) definition from '4demo.o';
+      new (ignored) definition from 'set_spcs.o'
+Undefined:
+clear_hints
+read_byte
+parse_tag
+read_token
+read_long_array
+read_real
+read_string
+read_real_array
+read_boolean
+read_int
+read_binary
+clear_encoding
+add_encoding
+read_name
+asctohex
+escape_seq
+load_header
+is_num
+mbyte
+*** Error code 1
+
+Stop.
+
+---------
+some of these went away by rearranging the code for the #if ... #endif
+problem in ....
+
+some of these went away by removing the word static in their function
+declarations in load_pcl.c
+-mhd, 4/25/93
+
+
+
+
+
+
+Problem (2): Makefile in the type1 directory contains backslash (\) line continuations,
+which the make processor cannot handle.  We have worked around these by removing the
+backslashes and moving the continuation lines up.  Lines are
+
+	#type1_defines = -DRESTRICTED_ENVIRON -DINCL_PFB -DRESTRICTED_STATS	
+	#type1_defines = -DINCL_PFB -DEDGE_ALIGN=1 -DNAME_STRUCT -DPROTOTYPE
+
+
+
+
+**********
+
+
+ MIPS (Decstation MIPS (RISC) processor)
+ 4/20/93
+
+
+ Speedo and Type1 demos compile and run fine.
+
+ Problem (1):  4demo does not compile
+ Problem (2):  truetype demo (ttsample) compiles but doesn't run
+ ---------------------------------------------------------------------
+
+
+ Problem (1):
+
+ mhd:mips:th:/home/mhd/4in1/mips/fonts/c/4demo:57> make
+ cc  -DSPEEDO_CODE=1 -DINCL_KEYS=1 -DSHORT_LISTS=0 -DINCL_BLACK=1  -DINCL_2D=1 -DINCL_OUTLINE=1 -DINCL_SCREEN=1 -DINCL_WHITE=1  -DPROTOS_AVAIL=0 -DINCL_PFB=1 -DBASELINE_IMPROVE=1 -DHAVE_MSL2INDEX -I../speedo -I../pcl5 -I../type1 -I../tt -I../fitutil -I. -w -c  4demo.c
+ ccom: Error: 4demo.c, line 714: illegal lhs of assignment operator
+		 (ufix8 *)ch = (ufix8 *)font_encoding[char_index];
+       ----------------------------------------------------------^
+ ccom: Error: 4demo.c, line 722: illegal lhs of assignment operator
+			 (ufix16 *)ch = (ufix16 *)&font_table[char_index];
+       ------------------------------------------------------------------^
+ *** Error code 1
+
+ Stop.
+
+
+
+ -----------
+
+ Problem (2):  
+
+ mhd:mips:th:/home/mhd/4in1/mips/fonts/c/tt:74> ttsample ../4demo/tt0003m_.ttf 25
+ *** report_error 0x1405 5125
+ *** tt_load_font fails
+
+
+
+ ------------
+
+
+
+
+***********
+
+
+VAX/VMS -- Problems compiling 4-in-1:
+4/20/93
+
+
+No executable could be produced.  Here is the output that resulted
+from the attempt to compile on VMS:
+
+$ @make
+                if ((font_ptr->encoding[index] = (CHARACTERNAME *) malloc(strlen
+(charactername) + 1)) == NULL)
+%CC-W-CONFLICTDECL, This declaration of "malloc" conflicts
+                with a previous declaration of the same name.
+                At line number 3068 in BOLTON$DKB400:[PUBLIC.MHD.VMSFONTS.C.TYPE
+1]TR_LDFNT.C;1.
+
+                if ((sp_globals.processor.type1.current_font->encoding = (CHARAC
+TERNAME **) malloc(256 * sizeof(CHARACTERNAME *))) == NULL) {
+%CC-W-CONFLICTDECL, This declaration of "malloc" conflicts
+                with a previous declaration of the same name.
+                At line number 3447 in BOLTON$DKB400:[PUBLIC.MHD.VMSFONTS.C.TYPE
+1]TR_LDFNT.C;1.
+
+%CC-I-SUMMARY, Completed with 0 error(s), 2 warning(s), and
+                0 informational messages.
+                At line number 3786 in BOLTON$DKB400:[PUBLIC.MHD.VMSFONTS.C.TYPE
+1]TR_LDFNT.C;1.
+
+        CHARACTERNAME  *charname_tbl[];
+%CC-E-INVARRAYBOUND, The declaration of "charname_tbl" specifies
+                a missing or invalid array bound.
+                At line number 358 in BOLTON$DKB400:[PUBLIC.MHD.VMSFONTS.C.TYPE1
+]TR_MKCHR.C;1.
+
+        }
+%CC-I-NOBJECT, No object file produced.
+                At line number 1870 in BOLTON$DKB400:[PUBLIC.MHD.VMSFONTS.C.TYPE
+1]TR_MKCHR.C;1.
+
+%CC-I-SUMMARY, Completed with 1 error(s), 0 warning(s), and
+                1 informational messages.
+                At line number 1906 in BOLTON$DKB400:[PUBLIC.MHD.VMSFONTS.C.TYPE
+1]TR_MKCHR.C;1.
+
+
+
+
+
+***********
+
+
+
+
+SGI (Silicon Graphics) -- Problems compiling 4-in-1, speedo, type1, and truetype
+4/21/93
+
+
+PROBLEM (1) CAN'T MAKE 4DEMO:
+
+4demo:4> make
+    cc  -DSPEEDO_CODE=1 -DINCL_KEYS=1 -DSHORT_LISTS=0 -DINCL_BLACK=1  -DINCL_2D=1 -DINCL_OUTLINE=1 -DINCL_SCREEN=1 -DINCL_WHITE=1  -DPROTOS_AVAIL=0 -DINCL_PFB=1 -DBASELINE_IMPROVE=1 -DHAVE_MSL2INDEX -I../speedo -I../pcl5 -I../type1 -I../tt -I../fitutil -I. -w -c  4demo.c
+accom: Error: 4demo.c, line 251: prototype parameter 1 type must have all of the actual arguments qualifiers (except the outermost) and pointed-to types must be compatible (ANSI 3.3.2.2,3.3.16.1)
+          if ( strncmp(buf, "%!", 2) == 0 )
+       --------------------------^
+accom: Error: 4demo.c, line 251: Argument 1 Type Doesn't Match prototype description; prototype:  pointer to const  char is different from actual:  pointer to unsigned char
+         if ( strncmp(buf, "%!", 2) == 0 )
+       --------------------------^
+accom: Error: 4demo.c, line 257: prototype parameter 1 type must have all of the actual arguments qualifiers (except the outermost) and pointed-to types must be compatible (ANSI 3.3.2.2,3.3.16.1)
+          else if (strncmp(buf, "D1.0", 4) == 0)
+       ----------------------------------^
+accom: Error: 4demo.c, line 257: Argument 1 Type Doesn't Match prototype description; prototype:  pointer to const  char is different from actual:  pointer to unsigned char
+          else if (strncmp(buf, "D1.0", 4) == 0)
+       ----------------------------------^
+accom: Error: 4demo.c, line 260: prototype parameter 1 type must have all of the actual arguments qualifiers (except the outermost) and pointed-to types must be compatible (ANSI 3.3.2.2,3.3.16.1)
+               else if (strncmp(buf, ")s", 3) == 0)
+       -------------------------------^
+accom: Error: 4demo.c, line 260: Argument 1 Type Doesn't Match prototype description; prototype:  pointer to const  char is different from actual:  pointer to unsigned char
+         else if (strncmp(buf, ")s", 3) == 0)
+       -------------------------------^
+accom: Error: 4demo.c, line 458: illegal combination of pointer and integer, op =
+            if ((tspecs.Gen_specs = malloc(sizeof(specs_t))) == 0 )
+       ------------------------------------------------^
+accom: Error: 4demo.c, line 458: types :   pointer to struct  versus   int
+               if ((tspecs.Gen_specs = malloc(sizeof(specs_t))) == 0 )
+       ------------------------------------------------^
+accom: Error: 4demo.c, line 714: syntax error
+                    (ufix8 *)ch = (ufix8 *)font_encoding[char_index];
+       ---------------------^
+accom: Error: 4demo.c, line 722: syntax error
+                             (ufix16 *)ch = (ufix16 *)&font_table[char_index];
+       ------------------------------^
+*** Error code 1
+
+Stop.
+
+
+-----------------
+
+The first set of problem has to do with the fact that strncmp requires
+a (char *) first arg.  We have fixed this with a cast in front of every
+arg.  
+
+
+Then, we fixed the problem with the cast in front of the left-hand side
+of the assignment statement by removing the cast altogether, and changing
+the right-hand side cast to be (void *).
+
+
+Then, we found a cast was needed to (char *) in front of the buf argument
+to strncmp.
+
+Then, we found a cast was needed to (specs_t *)  the rhs in the
+assignment expression
+
+    	((tspecs.Gen_specs = (specs_t *)malloc(sizeof(specs_t))) == NULL)
+
+After all of the above, this now compiles on SGI.  [verify it also works
+on all others, which we think it should!]
+
+
+Problem (1a): Can't make 4demo
+
+
+       cc  -DSPEEDO_CODE=1 -DINCL_KEYS=1 -DSHORT_LISTS=0 -DINCL_BLACK=1  -DINCL_2D=1 -DINCL_OUTLINE=1 -DINCL_SCREEN=1 -DINCL_WHITE=1  -DPROTOS_AVAIL=0 -DINCL_PFB=1 -DBASELINE_IMPROVE=1 -DHAVE_MSL2INDEX -I../speedo -I../pcl5 -I../type1 -I../tt -I../fitutil -I. -w -c  frontend.c
+accom: Error: frontend.c, line 785: Left pointer in assignment must have all qualifiers of right and pointed to types must be compatible (or void) (ANSI 3.3.16.1)
+        sv_init_out                                     = sp_globals.init_out;
+       ----------------------------------------------------------------------^
+accom: Error: frontend.c, line 785: Illegal pointer combination:   pointer to function returning void  versus   pointer to function returning unsigned char
+         sv_init_out                                     = sp_globals.init_out;
+       ----------------------------------------------------------------------^
+accom: Error: frontend.c, line 786: Left pointer in assignment must have all qualifiers of right and pointed to types must be compatible (or void) (ANSI 3.3.16.1)
+                  sv_begin_char                           = sp_globals.begin_char;
+       ------------------------------------------------------------------------^
+accom: Error: frontend.c, line 786: Illegal pointer combination:   pointer to function returning void  versus   pointer to function returning unsigned char
+             sv_begin_char                           = sp_globals.begin_char;
+       ------------------------------------------------------------------------^
+accom: Error: frontend.c, line 793: Left pointer in assignment must have all qualifiers of right and pointed to types must be compatible (or void) (ANSI 3.3.16.1)
+              sv_end_char                                     = sp_globals.end_char;
+       ------------------------------------------------------------------------------^
+accom: Error: frontend.c, line 793: Illegal pointer combination:   pointer to function returning void  versus   pointer to function returning unsigned char
+                 sv_end_char                                     = sp_globals.end_char;
+       ------------------------------------------------------------------------------^
+accom: Error: frontend.c, line 839: Left pointer in assignment must have all qualifiers of right and pointed to types must be compatible (or void) (ANSI 3.3.16.1)
+          sp_globals.init_out                     = sv_init_out;
+       ------------------------------------------------------^
+accom: Error: frontend.c, line 839: Illegal pointer combination:   pointer to function returning unsigned char  versus   pointer to function returning void
+         sp_globals.init_out                     = sv_init_out;
+       ------------------------------------------------------^
+accom: Error: frontend.c, line 840: Left pointer in assignment must have all qualifiers of right and pointed to types must be compatible (or void) (ANSI 3.3.16.1)
+                  sp_globals.begin_char           = sv_begin_char;
+       --------------------------------------------------------^
+accom: Error: frontend.c, line 840: Illegal pointer combination:   pointer to function returning unsigned char  versus   pointer to function returning void
+             sp_globals.begin_char           = sv_begin_char;
+       --------------------------------------------------------^
+accom: Error: frontend.c, line 847: Left pointer in assignment must have all qualifiers of right and pointed to types must be compatible (or void) (ANSI 3.3.16.1)
+              sp_globals.end_char                     = sv_end_char;
+       --------------------------------------------------------------^
+accom: Error: frontend.c, line 847: Illegal pointer combination:   pointer to function returning unsigned char  versus   pointer to function returning void
+                 sp_globals.end_char                     = sv_end_char;
+       --------------------------------------------------------------^
+*** Error code 1
+
+Stop.
+
+
+-------------
+The above problems were all solved by adding a new typedef:
+
+   typedef boolean (*PFB)(); /* New typedef -- see use below. mhd@gensym, 4/22/93 */
+
+
+And then using it with the three variables that are evidently boolean-based,
+rather than void-based:
+
+
+   PFB sv_init_out, sv_begin_char, sv_end_char;  /* New -- these were previously
+						 type-declared above under PFV
+						 -- mhd@gensym.com, 4/22/93
+						 */
+
+
+
+
+
+PROBLEM (2): CAN'T MAKE SPEEDO:
+
+
+4demo:5> cd ../speedo
+speedo:6> ls
+CVS          makefile     out_bl2d.c   out_util.c   set_spcs.c   useropt.h
+do_char.c    mknsamp.lnk  out_blk.c    out_wht.c    set_trns.c
+do_trns.c    mknsamp.pc   out_outl.c   reset.c      spdo_prv.h
+keys.h       nsample.c    out_scrn.c   set_keys.c   speedo.h
+speedo:7> make
+       cc  -I../tt -I../pcl5  -I../type1 -I../4demo  -DINCL_OUTLINE -DINCL_2D -DINCL_KEYS  -DINCL_SCREEN -DINCL_WHITE -USHORT_LISTS   -DPROC_PCL=0 -DPROC_TYPE1=0 -DPROC_TRUETYPE=0 -c nsample.c
+       cc  -I../tt -I../pcl5  -I../type1 -I../4demo  -DINCL_OUTLINE -DINCL_2D -DINCL_KEYS  -DINCL_SCREEN -DINCL_WHITE -USHORT_LISTS   -DPROC_PCL=0 -DPROC_TYPE1=0 -DPROC_TRUETYPE=0 -c reset.c
+ cc  -I../tt -I../pcl5  -I../type1 -I../4demo  -DINCL_OUTLINE -DINCL_2D -DINCL_KEYS  -DINCL_SCREEN -DINCL_WHITE -USHORT_LISTS   -DPROC_PCL=0 -DPROC_TYPE1=0 -DPROC_TRUETYPE=0 -c do_char.c
+       cc  -I../tt -I../pcl5  -I../type1 -I../4demo  -DINCL_OUTLINE -DINCL_2D -DINCL_KEYS  -DINCL_SCREEN -DINCL_WHITE -USHORT_LISTS   -DPROC_PCL=0 -DPROC_TYPE1=0 -DPROC_TRUETYPE=0 -c do_trns.c
+       cc  -I../tt -I../pcl5  -I../type1 -I../4demo  -DINCL_OUTLINE -DINCL_2D -DINCL_KEYS  -DINCL_SCREEN -DINCL_WHITE -USHORT_LISTS   -DPROC_PCL=0 -DPROC_TYPE1=0 -DPROC_TRUETYPE=0 -c set_spcs.c
+      cc  -I../tt -I../pcl5  -I../type1 -I../4demo  -DINCL_OUTLINE -DINCL_2D -DINCL_KEYS  -DINCL_SCREEN -DINCL_WHITE -USHORT_LISTS   -DPROC_PCL=0 -DPROC_TYPE1=0 -DPROC_TRUETYPE=0 -c set_trns.c
+      cc  -I../tt -I../pcl5  -I../type1 -I../4demo  -DINCL_OUTLINE -DINCL_2D -DINCL_KEYS  -DINCL_SCREEN -DINCL_WHITE -USHORT_LISTS   -DPROC_PCL=0 -DPROC_TYPE1=0 -DPROC_TRUETYPE=0 -c out_bl2d.c
+      cc  -I../tt -I../pcl5  -I../type1 -I../4demo  -DINCL_OUTLINE -DINCL_2D -DINCL_KEYS  -DINCL_SCREEN -DINCL_WHITE -USHORT_LISTS   -DPROC_PCL=0 -DPROC_TYPE1=0 -DPROC_TRUETYPE=0 -c out_blk.c
+       cc  -I../tt -I../pcl5  -I../type1 -I../4demo  -DINCL_OUTLINE -DINCL_2D -DINCL_KEYS  -DINCL_SCREEN -DINCL_WHITE -USHORT_LISTS   -DPROC_PCL=0 -DPROC_TYPE1=0 -DPROC_TRUETYPE=0 -c out_outl.c
+      cc  -I../tt -I../pcl5  -I../type1 -I../4demo  -DINCL_OUTLINE -DINCL_2D -DINCL_KEYS  -DINCL_SCREEN -DINCL_WHITE -USHORT_LISTS   -DPROC_PCL=0 -DPROC_TYPE1=0 -DPROC_TRUETYPE=0 -c out_util.c
+      cc  -I../tt -I../pcl5  -I../type1 -I../4demo  -DINCL_OUTLINE -DINCL_2D -DINCL_KEYS  -DINCL_SCREEN -DINCL_WHITE -USHORT_LISTS   -DPROC_PCL=0 -DPROC_TYPE1=0 -DPROC_TRUETYPE=0 -c out_scrn.c
+      cc  -I../tt -I../pcl5  -I../type1 -I../4demo  -DINCL_OUTLINE -DINCL_2D -DINCL_KEYS  -DINCL_SCREEN -DINCL_WHITE -USHORT_LISTS   -DPROC_PCL=0 -DPROC_TYPE1=0 -DPROC_TRUETYPE=0 -c out_wht.c
+accom: Error: out_wht.c, line 412: static function declaration in inner block is illegal (ANSI C 3.5.1)
+       static void  intersect_2vect();
+       ------------------------------^
+accom: Error: out_wht.c, line 413: static function declaration in inner block is illegal (ANSI C 3.5.1)
+       static void  ww_line();
+       ----------------------^
+*** Error code 1
+
+Stop.
+
+
+
+
+PROBLEM (3): CAN'T MAKE TRUETYPE:
+
+
+speedo:8> cd ../tt
+tt:9> make
+        cc -g -DSHORT_LISTS=0 -DPROC_PCL=0 -DPROC_TYPE1=0 -w -I../speedo -I../4demo -I. -c truetype.c
+   cc -g -DSHORT_LISTS=0 -DPROC_PCL=0 -DPROC_TYPE1=0 -w -I../speedo -I../4demo -I. -c tt_iface.c
+   cc -g -DSHORT_LISTS=0 -DPROC_PCL=0 -DPROC_TYPE1=0 -w -I../speedo -I../4demo -I. -c tt_specs.c
+   cc -g -DSHORT_LISTS=0 -DPROC_PCL=0 -DPROC_TYPE1=0 -w -I../speedo -I../4demo -I. -c fontscal.c
+accom: Error: fontscal.c, line 848: Illegal pointer combination:   pointer to signed char  versus   pointer to char
+                int8* workSpacePtr                      = key->memoryBases[                     3 ];
+       --------------------------------------------------------------------------------------------^
+*** Error code 1
+
+Stop.
+
+
+
+
+
+
+PROBLEM (4): CAN'T MAKE TYPE1:
+
+
+
+
+tt:10> cd ../type1
+type1:11> make
+      cc  -I../4demo -DINCL_KEYS -USHORT_LISTS -DINCL_BLACK  -DINCL_2D-DINCL_OUTLINE -DINCL_SCREEN -DPROC_PCL=0  -DPROC_TRUETYPE=0   -c -DUNIX=1 -w \
+         -I../speedo -I../type1 ../speedo/out_blk.c
+      cc  -I../4demo -I../speedo -I../type1  \
+                -DINCL_KEYS -USHORT_LISTS -DINCL_BLACK  -DINCL_2D-DINCL_OUTLINE -DINCL_SCREEN -DPROC_PCL=0  -DPROC_TRUETYPE=0  -DINCL_PFB -c -DUNIX=1 -w ../speedo/out_util.c
+   cc  -I../4demo -DINCL_KEYS -USHORT_LISTS -DINCL_BLACK  -DINCL_2D-DINCL_OUTLINE -DINCL_SCREEN -DPROC_PCL=0  -DPROC_TRUETYPE=0   -c -DUNIX=1 -w \
+         -I../speedo -I../type1 ../speedo/out_outl.c
+     cc  -I../4demo -DINCL_KEYS -USHORT_LISTS -DINCL_BLACK  -DINCL_2D-DINCL_OUTLINE -DINCL_SCREEN -DPROC_PCL=0  -DPROC_TRUETYPE=0   -c -DUNIX=1 -w \
+         -I../speedo -I../type1 ../speedo/out_scrn.c
+     cc  -I../4demo -DINCL_KEYS -USHORT_LISTS -DINCL_BLACK  -DINCL_2D-DINCL_OUTLINE -DINCL_SCREEN -DPROC_PCL=0  -DPROC_TRUETYPE=0   -c -DUNIX=1 -w \
+         -I../speedo -I../type1 ../speedo/out_bl2d.c
+     cc  -I../4demo -I../speedo -I../type1 \
+         -DINCL_KEYS -USHORT_LISTS -DINCL_BLACK  -DINCL_2D-DINCL_OUTLINE -DINCL_SCREEN -DPROC_PCL=0  -DPROC_TRUETYPE=0  -DINCL_PFB -c -DUNIX=1 -w ../type1/tr_names.c
+    cc  -I../4demo -I../speedo -I../type1 \
+         -DINCL_KEYS -USHORT_LISTS -DINCL_BLACK  -DINCL_2D-DINCL_OUTLINE -DINCL_SCREEN -DPROC_PCL=0  -DPROC_TRUETYPE=0  -DINCL_PFB -c -DUNIX=1 -w ../type1/tr_ldfnt.c
+accom: Error: ../type1/tr_ldfnt.c, line 752: static function declaration in inner block is illegal (ANSI C 3.5.1)
+           static boolean  tr_read_long();
+       -------------------------------^
+*** Error code 1
+
+Stop.
+type1:12> 
+
+
+
+
+
+
+
+
+
+
+---------------
+
+APPLSCAN - must be off; otherwise you get undefined functions in fontscal.
+
+INTEL must be defined 1 for vax/vms.  (This is just to determine byte order;
+it has nothing to do with PC functionality or hardware.  INTEL means "INTEL
+byte order". per Bob Eggers.
+
+-- PUT THIS IN USEROPT.H  (This was already done for the last release.)
+
+Note: _4DEMO_ flag in useropt.h is not used.  But one could use it as
+an alternative to the flags coming from the cc command line.
+
+Bitstream should get this into the documentation.
+
+Send Bob Eggers the lines that were too long for the vax that had to be rearranged.
+(Fax the lines changed.))
+
+
+
+
+-------------
+
+4/27/93:
+
+Files in the type1 directory have lines that are too long for the
+VAX/VMS compiler.  You get "-RMS-W-RTB, 369 byte record too large for
+user's buffer".
+
+tr_trans.c
+---------
+Before:
+
+	for (i = 0; i < sp_globals.processor.type1.no_top_zones; i++) {
+		printf("%6.1f %6.1f %8.3f\n",
+		       (real) sp_globals.processor.type1.top_zones[i].bottom_orus / 16.0, (real) sp_globals.processor.type1.top_zones[i].top_orus / 16.0, (real) sp_globals.processor.type1.top_zones[i].pix / (real) sp_globals.processor.type1.mk_onepix);
+
+After:
+
+	for (i = 0; i < sp_globals.processor.type1.no_top_zones; i++) {
+		printf("%6.1f %6.1f %8.3f\n",
+		       (real) sp_globals.processor.type1.top_zones[i].bottom_orus
+		       / 16.0, (real) sp_globals.processor.type1.top_zones[i].top_orus
+		       / 16.0, (real) sp_globals.processor.type1.top_zones[i].pix
+		       / (real) sp_globals.processor.type1.mk_onepix);
+
+Before:
+
+	for (i = 0; i < sp_globals.processor.type1.no_bottom_zones; i++) {
+		printf("%6.1f %6.1f %8.3f\n",
+		       (real) sp_globals.processor.type1.bottom_zones[i].bottom_orus / 16.0, (real) sp_globals.processor.type1.bottom_zones[i].top_orus / 16.0, (real) sp_globals.processor.type1.bottom_zones[i].pix / (real) sp_globals.processor.type1.mk_onepix);
+
+After:
+	for (i = 0; i < sp_globals.processor.type1.no_bottom_zones; i++) {
+		printf("%6.1f %6.1f %8.3f\n",
+		       (real) sp_globals.processor.type1.bottom_zones[i].bottom_orus
+		       / 16.0, (real) sp_globals.processor.type1.bottom_zones[i].top_orus
+		       / 16.0, (real) sp_globals.processor.type1.bottom_zones[i].pix
+		       / (real) sp_globals.processor.type1.mk_onepix);
+
+
+Before:
+	for (i = 0; i < sp_globals.processor.type1.no_x_breaks; i++) {
+		q1 = sp_globals.processor.type1.Xorus[i];
+		q2 = 0;
+		do_trans_a(PARAMS2 (fix31 STACKFAR*)&q1, (fix31 STACKFAR*)&q2);
+		printf("%10.1f %12.1f %12.5f %12.5f %12.5f\n",
+		       (real) sp_globals.processor.type1.Xorus[i] * 0.0625, (real) sp_globals.processor.type1.Xpix[i] / (real) sp_globals.processor.type1.mk_onepix, (real) sp_globals.processor.type1.Xmult[i] / (real) sp_globals.processor.type1.tr_onepix, (real) sp_globals.processor.type1.Xoffset[i] / (real) sp_globals.processor.type1.mk_onepix, (real) q1 / (real) sp_globals.processor.type1.mk_onepix);
+	}
+
+After:
+	for (i = 0; i < sp_globals.processor.type1.no_x_breaks; i++) {
+		q1 = sp_globals.processor.type1.Xorus[i];
+		q2 = 0;
+		do_trans_a(PARAMS2 (fix31 STACKFAR*)&q1, (fix31 STACKFAR*)&q2);
+		printf("%10.1f %12.1f %12.5f %12.5f %12.5f\n",
+		       (real) sp_globals.processor.type1.Xorus[i]
+		       * 0.0625, (real) sp_globals.processor.type1.Xpix[i]
+		       / (real) sp_globals.processor.type1.mk_onepix, (real) sp_globals.processor.type1.Xmult[i]
+		       / (real) sp_globals.processor.type1.tr_onepix, (real) sp_globals.processor.type1.Xoffset[i]
+		       / (real) sp_globals.processor.type1.mk_onepix, (real) q1
+		       / (real) sp_globals.processor.type1.mk_onepix);
+
+
+
+
+Before:
+		printf("%10.1f %12.1f %12.5f %12.5f %12.5f\n",
+		       (real) sp_globals.processor.type1.Xorus[i] * 0.0625, (real) sp_globals.processor.type1.Xpix[i] / (real) sp_globals.processor.type1.mk_onepix, (real) sp_globals.processor.type1.Xmult[i] / (real) sp_globals.processor.type1.tr_onepix, (real) sp_globals.processor.type1.Xoffset[i] / (real) sp_globals.processor.type1.mk_onepix, (real) q1 / (real) sp_globals.processor.type1.mk_onepix);
+
+After:
+	printf("                        %12.5f %12.5f\n",
+	       (real) sp_globals.processor.type1.Xmult[sp_globals.processor.type1.no_x_breaks]
+	       / (real) sp_globals.processor.type1.tr_onepix,
+	       (real) sp_globals.processor.type1.Xoffset[sp_globals.processor.type1.no_x_breaks]
+	       / (real) sp_globals.processor.type1.mk_onepix);
+
+Before:
+		printf("%10.1f %12.1f %12.5f %12.5f %12.5f\n",
+		       (real) sp_globals.processor.type1.Yorus[i] * 0.0625, (real) sp_globals.processor.type1.Ypix[i] / (real) sp_globals.processor.type1.mk_onepix, (real) sp_globals.processor.type1.Ymult[i] / (real) sp_globals.processor.type1.tr_onepix, (real) sp_globals.processor.type1.Yoffset[i] / (real) sp_globals.processor.type1.mk_onepix, (real) q2 / (real) sp_globals.processor.type1.mk_onepix);
+
+After:
+		printf("%10.1f %12.1f %12.5f %12.5f %12.5f\n",
+		       (real) sp_globals.processor.type1.Yorus[i] * 0.0625,
+		       (real) sp_globals.processor.type1.Ypix[i]
+		       / (real) sp_globals.processor.type1.mk_onepix, (real) sp_globals.processor.type1.Ymult[i]
+		       / (real) sp_globals.processor.type1.tr_onepix, (real) sp_globals.processor.type1.Yoffset[i]
+		       / (real) sp_globals.processor.type1.mk_onepix, (real) q2
+		       / (real) sp_globals.processor.type1.mk_onepix);
+
+
+Before:
+	printf("                        %12.5f %12.5f\n",
+	       (real) sp_globals.processor.type1.Ymult[sp_globals.processor.type1.no_y_breaks] / (real) sp_globals.processor.type1.tr_onepix, (real) sp_globals.processor.type1.Yoffset[sp_globals.processor.type1.no_y_breaks] / (real) sp_globals.processor.type1.mk_onepix);
+
+After:
+	printf("                        %12.5f %12.5f\n",
+	       (real) sp_globals.processor.type1.Ymult[sp_globals.processor.type1.no_y_breaks]
+	       / (real) sp_globals.processor.type1.tr_onepix,
+	       (real) sp_globals.processor.type1.Yoffset[sp_globals.processor.type1.no_y_breaks]
+	       / (real) sp_globals.processor.type1.mk_onepix);
+
+
+[Sent in to Bob Eggers@Bitstream, 4/28/93]
+
+
+
+-----------
+4/28/93: On the PC/Windows platform (Machine: Toronto), we discovered
+a syntax error in a PROTOS_AVAIL line of code in type1/tr_ldfnt.c.  The
+corrected line and its comment:
+
+
+           /* comma was missing before fix15 in the following line! -mhd@gensym, 4/28/93 */
+     static boolean read_long_array PROTO((PROTO_DECL2 fix31 STACKFAR*data,fix15 STACKFAR*pn));
+
+Note that PROTOS_AVAIL is only turned on for the PC environment.  There
+is at least one comment in the sources that states that PROTOS_AVAIL _must_
+be enabled in this environment, but I found no details on this point.
+
+
+
+
+
+
+-------------
+
+
+
+5/5/93
+
+Even though the manual implies that stdef.h is a different
+file with the same name in the several directories, we are
+just using one file, and things are working out fine.
+
+We reported to Bitstream a while ago that we considered it
+bogus for this file to be forked, but they did not reply.
+
+We need hand-tuned bitmaps for Swiss (Helvetica) and for
+monospace, as well as for the Japanese font.
+
+We need the postscript printer wrapper for these fonts,
+which we hope they have.
+
+bx000596.spd - Bitstream's Outline Font named Monospace 821
+bx000003.spd - Bitstream's Outline Font named Swiss 721
+
+
+Enabling MODE_2D as the output mode was a loser; many of
+the characters were OK, but several had stray, out-of-place
+bits.  We'll revert to the mode that seems to work (the default):
+
+
+
+
+-------------
+
+7/13/93
+-- See fax4.text -- problems with getting font bbox (bounding box)
+This was sent to Karen, 7/13/93
+--- UPDATE: Karen acknowledge problem, giving these answers, and
+supplying a new source file:  (MY REPLY APPEARS BELOW. -mhd)
+
+
+Return-Path: <@relay2.uu.net:karen@met.bitstream.com>
+Date: Fri, 16 Jul 93 07:12:19 EDT
+From: karen <karen@met.bitstream.com>
+To: mhd@gensym.com, karen@met.bitstream.com
+Subject: Bounding Box
+
+
+Text item: 
+
+    Hi Mark:
+
+    We defintely had a problem with the bounding box for compound
+    characters.  It turns out we might have always had this problem, but
+    how it's gone by for 3 years without detection is baffling!
+
+    We've had the logic to look for a compound character (we can tell this
+    from the Speedo font), and know that we needed to overcompensate for
+    the bounding box in this case.  Problem was, the code to do this wasn't
+    being used.  As a result, I'm sending you a new DO_CHAR.C file which
+    addresses this.  It should be attached to this file.
+
+    To comment on your other items:
+
+    1)  Yes, the doc is wrong and will be addressed in our next release.
+    2)  Again, bad doc. These values are not in whole pixels, but you can
+    easily obtain whole pixel values using a statement such as this:
+          rounded_bbox_min = (fix15) ( (bbox.min + 0x8000) >> 16)
+
+    In order to force the values to round to the closest pixel, you need to
+    add .5 to the value. This also needs to be
+    done to the offset values (which we call offver and offhor). In 4DEMO,
+    this has not been done, and it really doesn't make sense.  I think this
+    may account for some of your troubles in addition to the
+    non-functioning bounding box.
+
+    3) I'm including a portion of 4DEMO that I changed to call the 4in1
+    bounding box function.  This seems to be working fine now, along with
+    the new DO_CHAR.  However, I wanted you to see another problem we
+    uncovered this week with rotated characters (which may not apply to
+    you).  We were not getting correct offver and offhor values when the
+    bitmap was rotated.  Bob added a check for negative values.  All the
+    new lines are designated as such.
+
+    4) I think this is related to the bounding box problem mentioned above.
+
+    5) It appears that problems you are seeing with non-compound characters
+    may be related to the misinterpretation of offhor and offver.  If these
+    values are interpreted as xorg and yorg rounded to the nearest pixel
+    (by adding .5 as above), I think everything is OK.  If not, please give
+    me concrete examples of your results.
+
+    6) No, this is correct.  When we get the bounding box, we do not
+    actually generate the character--for the sake of time. All we promise
+    is that the bounding box is correct, or at most, 2 pixels too large.
+    When using the xorg and yorg values for composition, these MUST be
+    taken from sp_open_bitmap.  The bounding box just
+    gives you the dimensions for the character, not its position in
+    space.
+
+    I will attached DO_CHAR.C, and sent a piece of 4DEMO.C in a second
+    E-MAIL. Hope this clear everything up!
+
+    -K. Tackett
+
+The following is an attached File item from cc:Mail.  It contains
+eight bit information which had to be encoded to insure successful trans-
+mission through various mail systems.  To decode the file use the UUDECODE
+program.
+--------------------------------- Cut Here ---------------------------------
+begin 644 DO_CHAR.C
+M#0H-"@T*+RHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ*BHJ
+....
+-------
+MHD's reply:
+-------
+
+Return-Path: <mhd>
+Date: Tue, 20 Jul 93 19:37:04 EDT
+From: mhd (Mark H David)
+To: karen@met.bitstream.com
+In-Reply-To: <9307160712.A04424@met.bitstream.com> (karen@met.bitstream.com)
+Subject: Bounding Box
+
+Thanks for the info, and updates.
+
+I did unpack the do_char.c file and have installed and used it successfully.
+It seems to fix all the cases of underestimating the size of bitmaps, at least
+with one font tried (font3004.spd).
+
+If "the bounding box just gives you the dimensions for the character, not its
+position in space", as you write, why don't you give us a function to give the
+estimated maximum width and height of the bounding box?  It seems there's no
+other useful information.  And the current return value needs some fairly
+complicated interpretation (and documentation) in order to be made even this
+useful.
+
+(Maybe we are the only ones with a need for this.  If there are other users,
+they could not have been using it according to its spec, so presumably you have
+no (or "less") obligation to support them.)
+
+
+I'm having a bit of trouble convincing myself that rounding the min and max, and
+then subtracting min from max, gives the maximum width reliably, but I tried it,
+and did not see any cases of underestimation with one font (font3004).  
+
+However, I still did see numerous non-compound characters getting
+overestimations.  You want the cases?  I'll try to send them along soon.
+
+
+Consider this:
+
+    if min = 4.49 and max = 10.51, then width = 11 - 4 = 7  
+
+and
+
+    if min = 4.51 and max = 10.49, then width = 10 - 5 = 5
+
+Can you (i.e., does the spec) make the claim that with these formulas you'll
+never underestimate the width of the raster?  Can you make the even stronger
+claim that this will give you the accurate width of the raster for all
+non-compound characters?
+
+That's my early reaction.
+
+Thanks again for your help on this one.
+
+-- Mark D.
+
+
+
+---------------
+
+Comments in 4demo about the args to sp_open_bitmap are wrong
+and misleading.
+
+fix31 xorg;    /* Pixel boundary at left extent of bitmap character */
+fix31 yorg;    /* Pixel boundary at right extent of bitmap character */
+fix15 xsize;    /* Pixel boundary of bottom extent of bitmap character */
+fix15 ysize;    /* Pixel boundary of top extent of bitmap character */
+
+The first two have fraction parts, but do pertain to pixels.
+The last two have no fraction parts, and are just the number
+of pixels of width and height.
+
+We've removed these comments.
+--mhd, 7/13/93
+--------------
+
+KSAMPLE:
+
+Fixed another more non-k&r declaration: fill_font_buffer
+
+Can't turn off processors -- Bob knows this is a problem.  E.g., PROC_TRUETYPE.
+They've fixed this there.
+
+Then, just comment out the line with #define GetSFNTFunc in ksample -- it was
+causing the "redeclaration of tt_get_font_fragment" errors.
+
+Then, undefined symbols:  (with Bob's solutions)
+problem				solution
+-------				--------
+ld: Undefined symbol 
+   _MSLtoIndex 			- kill HAVE_MSL2INDEX
+   _sp_globals 			- spdo_prv/set_spcs change
+   _BuildSortedMSLIDList 	- kill HAVE_MSL2INDEX
+
+-----
+
+Then, just had to change mapping file: (1) MinM => minm (2) remove ^M's.
+
+Then, ksample would run and show a large number of characters, but not
+all, and then "prompt" with 
+
+
+	 Press any key to continue for JIS code 
+
+
+But then it would quit when any character was typed.
+----
+
+Found that the Kanji fonts included the latest Bitstream release
+differ from those we got initially ("paid for").  When run with
+(new) 4demo, it still did not work, except for the first (00)
+font.
+
+----
+
+Have tried various combinations of flags, revealing various
+problems:
+
+with "#define REENTRANT_ALLOC 1":
+cc  -g  -w -c ./do_char.c
+"./do_char.c", line 735: syntax error at or near type word "plaid_t"
+"./do_char.c", line 739: intercepts undefined
+"./do_char.c", line 742: plaid undefined
+*** Error code 1
+
+----
+
+You have to turn off HAVE_MSL2INDEX to get ksample to compile.
+----
+Printing first character index:
+minm_81 - we get 33088
+----
+-32448  (same when printed in Hex.)
+
+----
+On Bob Eggers' suggestion, tried doing this on a different platform, the SGI, and
+it worked all of a sudden.  
+- does not work on: sun4, rs6000
+
+
+----
+
+minm_h.sfm does not work -- taking out #-comments seems to help out.
+
+
+----
+
+Turning on dynamic_alloc revealed this problem (with this proposed
+solution):
+
+retrieving revision 1.1
+diff -r1.1 tr_mkchr.c
+727c727,729
+< 	void            do_hstem(PARAMS2);	/* Execute hstem hint */
+---
+> 	/* void            do_hstem(PARAMS2); */
+> 	/* -- rewrote this as the following: -mhd@gensym, 7/26/93 */
+> 	void            do_hstem();	/* Execute hstem hint */
+---
+
+BUG -- BUG -- BUG!
+------------------
+
+With INCL_OUTLINE = 0, but INCL_WHITE = 1, and INCL_SCREEN = 1, and
+INCL_2D = 1, using 2d writer causes bad output.  Too many pixels
+on, and too-thick strokes.  Turning on INCL_OUTLINE = 1 seems
+to make this problem go away.  Example:
+
+Showing font3004 (swiss721swa) at 25 lines per em
+with 0 rotation/oblique, with 2d writer:
+
+with INCL_OUTLINE = 0:
+
+Character index = 3
+set width = 13.9, 0.0
+open bitmap hex setwidth = de600
+X offset  = 0
+Y offset  = 0
+
+    . . . . X X X . . X X X . 
+    . . . . X X X . . X X X . 
+    . . . X X X X X . X X X . 
+    . . . X X X X X . X X X . 
+    . . X X X X X X . X X X . 
+    . . X X X X X X . X X X . 
+    . X X X X X X X X X X X X 
+    . X X X X X X X X X X X X 
+    . X X X X X X . X X X X X 
+    . . X X X . . . X X X X . 
+    . X X X X . . . X X X . . 
+    X X X X X X X X X X X X . 
+    X X X X X X X X X X X X . 
+    X X X X X X X X X X X X . 
+    . X X X X X X X X X X . . 
+    . X X X . X X X X X X . . 
+    . X X X . X X X X X . . . 
+    . X X . . X X X X . . . . 
+    . X X . . . X X X . . . . 
+
+
+
+with INCL_OUTLINE = 1:
+
+Character index = 3
+set width = 13.9, 0.0
+open bitmap hex setwidth = de600
+X offset  = 0
+Y offset  = 0
+
+    . . . . X X . . . X X . 
+    . . . . X X . . . X X . 
+    . . . . X X . . . X X . 
+    . . . . X . . . . X . . 
+    . . . X X . . . . X . . 
+    . . . X X . . . X X . . 
+    . X X X X X X X X X X X 
+    . X X X X X X X X X X X 
+    . . . X . . . . X . . . 
+    . . . X . . . . X . . . 
+    . . X X . . . X X . . . 
+    X X X X X X X X X X X . 
+    X X X X X X X X X X X . 
+    . . X . . . . X . . . . 
+    . X X . . . . X . . . . 
+    . X X . . . X X . . . . 
+    . X X . . . X X . . . . 
+    . X . . . . X X . . . . 
+
+
+What causes this?  What can be done to work around this?
+
+[Emailed to karen, timc, & Bob Eggers @ bitstream.com, 7/28/93]
+
+
+------------
+
+
+Problem hinting?  The 'a' and the 's' illustrate problems
+with the handling of detail at low lines-per-em.  The
+file hinting-problems.text illustrates this.  Its contents
+were sent as mail to Karen, TimC, and Bob Eggers  @
+bitstream.com, 7/28/93 by email.
+
+-------------
+
+Kanji Problem Resolved (locally):
+
+As explained in this code from speedo.h
+---------------------------------------
+#if 1				/* Fix by MHD@gensym, 7/28/93 */
+				/* Changed type to ufix16 -- indexes and numbers
+				   of characters available are never negative.
+				   This has implications when you get into large
+				   character sets -- like Kanji.  Without this
+				   change, the font processor (used in 4demo,
+				   e.g.) would work everywhere for non-asian
+				   fonts (non-Kanji) fonts, but fail for all
+				   wards of Bitstream Speedo Kanji fonts except
+				   00 for many platforms (sparcstation,
+				   decstation, HP 9000, ibm rs6000) while
+				   working for others (sgi, pc-windows, apollo).
+
+				   The test that's critical is in do_char.c at
+				   the line that says
+				      if (char_index < sp_globals.processor.speedo.first_char_idx)
+				   Comparing the ufix16 char_index to the
+				   fix15 ....first_char_idx turned out not to be
+				   portable.  Note that the compilers that used
+				   to work were the most strictly ansi compliant
+				   ones, so this may turn out to have been technically
+				   correct under ANSI.  I don't know at this
+				   time.  It ought to be changed in any case,
+				   thought, since we're representing inherently
+				   unsigned quantities.
+				   -- mhd@gensym, 7/29/93 */
+     		ufix16   first_char_idx; /* Index to first character in font */
+     		ufix16    no_chars_avail; /* Total characters in font layout */
+#else  /* OLD: (MHD 7/28/93) */
+     		fix15    first_char_idx; /* Index to first character in font */
+     		fix15    no_chars_avail; /* Total characters in font layout */
+#endif
+
+
+-------------
+-------------
+
+in msl.c:
+
+void BuildSortedMSLIDList(PARAMS1) /* Added PARAMS1 here and fixed caller in frontend.c
+				    -- mhd@gensym, 8/3/93*/
+
+in frontend.c:
+
+			if (sp_globals.gCharProtocol != protoDirectIndex)
+				BuildSortedMSLIDList(PARAMS1);	/* Added PARAMS1 (& fixed arglist
+								 of function in msl.c)
+								 -- mhd@gensym, 8/3/93*/
+
+
+-------------
+
+sp_make_char -- problem when both REENTRANT_ALLOC and INCL_ISW are on.
+You get the compiler error
+
+
+    ./do_char.c: In function `sp_do_make_char':
+    ./do_char.c:735: parse error before `plaid'
+    ./do_char.c:739: `intercepts' undeclared (first use this function)
+    ./do_char.c:739: (Each undeclared identifier is reported only once
+    ./do_char.c:739: for each function it appears in.)
+    ./do_char.c:742: `plaid' undeclared (first use this function)
+
+
+To fix this, I change code as shown:
+
+
+...
+GDECL
+ufix16 char_index;
+{
+ufix8 FONTFAR  *pointer;      /* Pointer to character data */
+fix15    x_orus;
+fix15    tmpfix15;
+ufix8    format;
+
+#if REENTRANT_ALLOC
+
+plaid_t plaid;
+
+#if INCL_BLACK || INCL_SCREEN || INCL_2D || INCL_WHITE
+intercepts_t intercepts;
+sp_globals.intercepts = &intercepts;
+#endif
+
+sp_globals.processor.speedo.plaid = &plaid;
+#endif
+
+				/* Moved this #if...#endif here
+				   from above the previous because the
+				   previous has both variable declarations
+				   and statements, and this statement can't
+				   come in the middle. --mhd@gensym, 8/3/93
+				   */
+#if INCL_ISW
+sp_globals.processor.speedo.isw_modified_constants = FALSE;
+#endif
+
+...
+
+
+
+
+
+-------------
+
+
+
+Return-Path: <mhd>
+Date: Wed, 4 Aug 93 09:22:11 EDT
+From: mhd (Mark H David)
+To: karen@bitstream.com, timc@bitstream.com
+Subject: sp_intercepts with DYNAMIC_ALLOC
+Cc: roberte@bitstream.com
+
+When compiling with DYNAMIC_ALLOC enabled, you get an error
+compiling out_blk.c:
+
+  
+  ./out_blk.c: In function `sp_add_intercept_black':
+  ./out_blk.c:648: `sp_intercepts' undeclared (first use this function)
+  ./out_blk.c:648: (Each undeclared identifier is reported only once
+  ./out_blk.c:648: for each function it appears in.)
+  ./out_blk.c: In function `sp_proc_intercepts_black':
+  ./out_blk.c:762: `sp_intercepts' undeclared (first use this function)
+
+
+The following, from speedo.h, seems to be involved.  Note that it does
+not define sp_intercepts at all in the DYNAMIC_ALLOC case, but does
+do so in the other two cases.  Beyond that, I don't know how to proceed
+with this.  
+
+  #if STATIC_ALLOC
+  EXTERN SPEEDO_GLOBALS GLOBALFAR sp_globals;
+  #define sp_intercepts sp_globals
+  #define sp_plaid sp_globals.processor.speedo
+  #else
+  #if DYNAMIC_ALLOC
+  EXTERN SPEEDO_GLOBALS GLOBALFAR *sp_global_ptr;
+  #define sp_globals (*sp_global_ptr)
+  #define sp_plaid (*sp_global_ptr).processor.speedo
+  #else
+  #if REENTRANT_ALLOC
+  #define sp_globals (*sp_global_ptr)
+  #define sp_intercepts (*(*sp_global_ptr).intercepts)
+  #define sp_plaid (*(*sp_global_ptr).processor.speedo.plaid)
+  #endif
+  #endif
+  #endif
+
+
+
+Could you get back to me with a solution?  Thanks.
+
+-- Mark
+
+--------
+ANSWERED:
+--------
+
+Return-Path: <timc@met.bitstream.com>
+Date: Mon, 09 Aug 93 13:21:12 EDT
+From: timc <timc@met.bitstream.com>
+To: karen@bitstream.com, uunet!gensym.com!mhd@uunet.UU.NET
+Cc: roberte@bitstream.com
+Subject: Re: sp_intercepts with DYNAMIC_ALLOC
+
+Mark,
+
+The following changes in speedo.h should solve the DYNAMIC_ALLOC problems.
+
+/*==========================================*/
+/*  old code in speedo.h                    */
+/*==========================================*/
+...
+/*==========================================*/
+/*  new code in speedo.h                    */
+/*==========================================*/
+
+#if STATIC_ALLOC
+EXTERN SPEEDO_GLOBALS GLOBALFAR sp_globals;
+#define sp_intercepts sp_globals
+#define sp_plaid sp_globals.processor.speedo
+#else
+#if DYNAMIC_ALLOC
+EXTERN SPEEDO_GLOBALS GLOBALFAR *sp_global_ptr;
+#define sp_globals (*sp_global_ptr)
+#define sp_intercepts (*sp_global_ptr)                    <------ added one
+/* line of code to define sp_intercepts */
+#define sp_plaid (*sp_global_ptr).processor.speedo
+#else
+#if REENTRANT_ALLOC
+#define sp_globals (*sp_global_ptr)
+#define sp_intercepts (*(*sp_global_ptr).intercepts)
+#define sp_plaid (*(*sp_global_ptr).processor.speedo.plaid)
+#endif
+
+
+Thanks
+Tim Christo...
+
+
+--- change made in speedo.h, 8/9/93 -- mhd
+
+
+
+
+
+
+
+
+=======
+BSearch -- multiply declared.
+
+File msl.c has:
+===============
+...
+#include "ufe.h"					/* Unified Front End definitions */
+...
+boolean  BSearch PROTO((fix15 STACKFAR*indexPtr, fix15 (*ComparisonTo)(fix31, void STACKFAR *),
+					void STACKFAR *theValue, fix31 nElements));
+...
+
+
+File ufe.h has:
+===============
+...
+#if REENTRANT_ALLOC
+boolean  BSearch PROTO((PROTO_DECL2 fix15 STACKFAR*indexPtr, fix15 (*ComparisonTo)(SPEEDO_GLOBALS *,fix31, void STACKFAR *), \
+					void STACKFAR *theValue, fix31 nElements));
+#else
+boolean  BSearch PROTO((fix15 STACKFAR*indexPtr, fix15 (*ComparisonTo)(fix31, void STACKFAR *), \
+					void STACKFAR *theValue, fix31 nElements));
+#endif
+...
+
+
+
+Thus, BSearch is declared twice.  This chokes at least one of our compilers, the
+DEC Alpha AXP VMS compiler.  We have fixed this temporarily by commenting out
+the declaration ufe.h.  We would like Bitstream to let us know how they recommend
+revising the sources for this problem.
+
+--mhd@gensym, 8/10/93
+[Emailed to Bitstream's karen, timc, and roberte, 8/10/93]
+
+
+
+
+==========
+
+Fixes to get 4in1 to compile under Watcom on the PC:
+
+FROM LOAD_PCL.C:
+ ...
+ #ifndef SEEK_SET
+ #define SEEK_CUR 1
+ #define SEEK_END 2
+ #define SEEK_SET 0
+ #endif
+
+>/*
+> * mpc@gensym.com  8-10-93:   Declare this function before it is
+> *     called. Watcom somehow barfs on param types, causing an error
+> *     when this is first called.
+> */
+>#ifdef MSDOS
+>void  mbyte (char *, char *, fix31);
+>#endif
+
+ /*** EXTERNAL FUNCTIONS ***/
+ #ifdef MSDOS
+ extern boolean fill_font_buffer PROTO((ufix8 **ptr, ufix32 size, FILE *fp));
+ #endif
+ ...
+
+
+
+FROM FONTRIP.C:
+ ...
+ #include "finfotbl.h"
+ #include "ufe.h"
+
+>/*
+> * mpc@gensym.com  8-10-93:   Declare this function before it is
+> *     called. Watcom somehow barfs on param types, causing an error
+> *     when this is first called.
+> */
+>#ifdef MSDOS
+>int write_1_gf_font_file(char *, char *,  char *, int, int, int, int);
+>#endif
+
+
+ #ifndef SEEK_SET
+ #define SEEK_CUR 1
+ #define SEEK_END 2
+ #define SEEK_SET 0
+ #endif
+ ...
+
+
+
+
+
+
+FROM FONTSCAL.H:
+
+ ...
+ #ifndef fontscal_h
+ #define fontscal_h
+
+>/* mpc@gensym 10-Aug-93:  Ifdef'd out pascal on PC platform because
+> *     it was smashing heads with the Watcom compiler. Apparently
+> *     Watcom predefined 'pascal', '_pascal', AND '__pascal', so we
+> *     get an error when we redefine it here.  All its uses in these
+> *     sources are in undefined ifdefs anyway, so is should have no 
+> *     negative effects.
+> */
+>#ifndef MSDOS
+ #define pascal
+>#endif
+
+ #ifndef _MacTypes_
+ ...
+
+
