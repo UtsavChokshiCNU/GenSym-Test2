@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="01/11/02 11:08:39">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>bpr-copy-list-of-attributes</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="api5.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="api7.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/ReThink/custom-manual/stylesets/Customizing%20ReThink/Output/html/api.htm">  
+        Application Programmer's Interface   </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+bpr-copy-list-of-attributes
+</h2>
+<p>This procedure copies attributes from a source object to a destination object. <a name="61203"></a></p>
+<h3 >
+  <a name="61204">Synopsis</a>
+</h3>
+<code>bpr-copy-list-of-attributes(<code>source-item</code>: class item, <code>destination-item</code>: class item,
+<code>   operations</code>: sequence, <code>copy-all-attributes</code>: truth-value, 
+<code>   add-to-associations</code>: truth-value, <code>scenario</code>: item-or-value, 
+   <code>ui-client-item</code>: class ui-client-item)<a name="61206"> </a></code></blockquote><p >
+  <a name="61242"> </a><table border="1" cellpadding="5" cellspacing="0">
+  <tr bgcolor="#CCCCCC">
+    <th><a name="61209"><div >Argument</a></div></th>
+    <th><a name="61211"><div >Description</a></div></th>
+  </tr>
+  <tr>
+    <td><code><code>source-item</code><a name="61213"> </a></code></blockquote></td>
+    <td><p>The class name of the source item.<a name="61215"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><code><code>destination-item</code><a name="61217"> </a></code></blockquote></td>
+    <td><p>The class name of the destination item.<a name="61219"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><code><code>operations</code><a name="61221"> </a></code></blockquote></td>
+    <td><p>A <code>sequence</code> describing the list of operations to perform. See Description.<a name="61223"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><code><code>copy-all-attributes</code><a name="61225"> </a></code></blockquote></td>
+    <td><p>Whether to copy all common user-defined attributes from the source to the destination object. <a name="61227"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><code><code>add-to-associations</code><a name="61229"> </a></code></blockquote></td>
+    <td><p>Whether to add the source object to the list of associations of the destination object.<a name="61231"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><code><code>scenario</code><a name="61233"> </a></code></blockquote></td>
+    <td><p>The scenario associated with the item.<a name="61235"></a></p>
+</td>
+  </tr>
+  <tr>
+    <td><code><code>ui-client-item</code><a name="61237"> </a></code></blockquote></td>
+    <td><p>A <code>ui-client-item</code>, which is the superior class of:<a name="61239"></a></p>
+<table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">A <code>g2-window</code>, which is a window in the current G2 session or a remote connection to G2 through a Telewindows client.<a name="61240"></a></td>  </tr></table><table width="600" border="0" cellspacing="0" cellpadding="0">  <tr>     <td valign="top" width="20"><img src="images/bullet1.gif"></td>    <td valign="top" width="580">A <code>ui-client-session</code>, which is a remote connection to G2 through a Telewindows2 Toolkit client, which allows you to create native UI clients for G2 applications.<a name="61241"></a></td>  </tr></table></td>
+  </tr>
+</table>
+<p>
+
+
+
+
+</p>
+<h3 >
+  <a name="61243">Description</a>
+</h3>
+<p>This procedure is a general-purpose routine for copying attributes from a source item to a destination item. The "copy" operation can be a simple copy of values or a more complex operation that adds, subtracts, multiplies, divides, averages, or applies any user-defined function. Valid operations are: <code>=, +, -, *, *, AVG, </code>and<code> FCT</code>, as a text string.<a name="61244"></a></p>
+<p>Optionally, this procedure can copy all user-defined attributes from the source to the destination object before doing any operations, and it can copy the source object to the associations of the destination object.<a name="61245"></a></p>
+<p>These operations always store the result in the destination attribute of the <code>destination-item</code>. <code>FCT</code> allows you to specify a more complex mathematical operation, such as adding several attributes from the source and destination items and storing the result in the destination object by specifying a user-defined G2 function to call. <a name="61246"></a></p>
+<p>The user-defined function can refer to attributes of the <code>source-item</code>, destination-item, or <code>scenario</code> by using this syntax:<a name="61247"></a></p>
+<blockquote><code>the &lt;attribute&gt; of &lt;SourceItem&gt;<a name="61248"> </a></code></blockquote></blockquote><blockquote><code>the &lt;attribute&gt; of &lt;DestinationItem&gt;<a name="61249"> </a></code></blockquote></blockquote><blockquote><code>the &lt;attribute&gt; of &lt;Scenario&gt;<a name="61250"> </a></code></blockquote></blockquote><p>The format of the <code>sequence</code> describing the <code>operations</code> is:<a name="61251"></a></p>
+<code>sequence (
+	structure 
+		(SOURCE-ATTRIBUTE-NAME: the symbol <code>attribute-name</code>,
+		 SOURCE-SUBTABLE-NAME: the symbol <code>subtable-name</code>,
+		 DESTINATION-ATTRIBUTE-NAME: the symbol <code>attribute-name</code>,
+		 DESTINATION-SUBTABLE-NAME: the symbol <code>subtable-name</code>,
+		 OPERATION: &quot;<code>operator</code>&quot;)<a name="61252"> </a></code></blockquote><h3 >
+  <a name="62344">Example</a>
+</h3>
+<blockquote><code>bpr-copy-list-of-attributes 	(bpr-task-1, bpr-task-2, 
+	sequence (
+		structure 
+			(source-attribute-name: the symbol total-cost,
+			 source-subtable-name: the symbol cost-subtable,
+			 destination-attribute-name: the symbol test-var,
+			 destination-subtable-name: the symbol none,
+			 operation: &quot;=&quot;),
+		 structure 
+			( source-attribute-name: the symbol none,
+			 source-subtable-name: the symbol none,
+			 destination-attribute-name: the symbol total-cost,
+			 destination-subtable-name: the symbol cost-subtable,
+			 operation: &quot;fct&quot;,
+			 function: &quot;(the total-starts of SourceItem + the total-stops of
+				SourceItem) / the output-count DestinationItem&quot;))
+		false, true, scenario-1, window)<a name="63279"> </a></code></blockquote></blockquote> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="api5.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="api7.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
