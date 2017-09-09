@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="GENERATOR" content="Quadralay WebWorks Publisher Professional Edition 7.0.2.1206">
+<meta name="TEMPLATEBASE" content="Gensym JavaHelp Template">
+<meta name="LASTUPDATED" content="02/06/02 18:48:39">
+<link rel="StyleSheet" href="document.css" type="text/css" media="screen">
+<title>Report Keywords</title>
+</head>
+
+<body>
+<table width="605" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="78"><a href="batchsi7.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="batchsi9.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">
+      <div align="center"><b>e-SCOR User's Guide</b></div>
+    </td>
+    <td width="268"> 
+      <div align="right">Topic - <a href="/C:/Docs/e-SCOR/OnlineHelpFiles/UsersGuide/html/batchsim.htm">  
+        Using the Scenario Manager  </a></div>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"> 
+      <hr>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="4"><h2 >
+Report Keywords
+</h2>
+<p>The following keywords control various reporting functions that can occur during the simulation. All keywords specify the <code>&lt;report-title&gt;</code> argument to identify the report object. When you save a report, it writes the report data to an Excel report, CSV file, or database, depending on how the report is configured.<a name="123864"></a></p>
+<p><code><b>SET-FILE-REPORTING</b></code><code>(&lt;report-title&gt;,&lt;excel-report-enabled&gt;,<br>   &lt;excel-report-filename&gt;)</code><a name="123675"></a></p>
+<blockquote>  <a name="123871">Enables the creation of CSV files for reports and specifies the <code>.csv</code> file name to create, as if you had clicked the Enable CSV File Reporting Enabled option and specified the file name in the report dialog. This keyword sets the file name to save when you use the <code>SAVE-REPORT</code> keyword. Typically, you save report data to separate CSV files; otherwise, saving report data overwrites the file data.</a></blockquote>
+<blockquote>  <a name="123830">Example:</a></blockquote>
+<blockquote>  <a name="1007120"><code>SET-FILE-REPORTING(role output report,true,<br>   role summary report.csv)</code></a></blockquote>
+<p><code><b>UPDATE-REPORT</b></code><code>(&lt;report-title&gt;)</code><a name="123334"></a></p>
+<blockquote>  <a name="123905">Updates a report as if you had manually updated the report while the simulation was running.</a></blockquote>
+<blockquote>  <a name="123911">Example:</a></blockquote>
+<blockquote>  <a name="1007138"><code>UPDATE-REPORT(role output report)</code></a></blockquote>
+<p><code><b>SAVE-REPORT</b></code><code>(&lt;report-title&gt;)</code><a name="152168"></a></p>
+<blockquote>  <a name="152196">Saves report data to the <code>.csv</code> file associated with the report that you set by using the <code>SET-FILE-REPORTING</code> keyword. To save reports to different filenames, use the <code>SET-FILE-REPORTING</code> keyword each time you use <code>SAVE-REPORT</code>. </a></blockquote>
+<blockquote>  <a name="153576">If an Excel client is currently connected or if a report view is currently visible in the client, this keyword updates the report in Excel or the client. </a></blockquote>
+<blockquote>  <a name="153559">If the report object is configured to output data to a database, this keyword saves the report data to the specified database. The database table includes columns for the Model_Version and Simulation_Version to uniquely identify data for each simulation run of each model.</a></blockquote>
+<blockquote>  <a name="123924">Example:</a></blockquote>
+<blockquote>  <a name="1007156"><code>SAVE-REPORT(role output report)</code></a></blockquote>
+<p><code><b>LOAD-REPORT</b></code><code>(&lt;report-title&gt;)</code><a name="123336"></a></p>
+<blockquote>  <a name="123945">Loads the <code>.csv</code> file associated with an input report, as if you had clicked the Import Data from File button in the report dialog.</a></blockquote>
+<blockquote>  <a name="126669">Example:</a></blockquote>
+<blockquote>  <a name="1007174"><code>LOAD-REPORT(role input report)</code></a></blockquote>
+<p><code><b>LOAD-REPORT-FROM-DATABASE</b></code> <code>(&lt;report-title&gt;)</code><a name="152268"></a></p>
+<blockquote>  <a name="152315">Loads the data from the database associated with an input report, as if you had clicked the Import Data from Table button.</a></blockquote>
+<blockquote>  <a name="152316">Example:</a></blockquote>
+<blockquote>  <a name="1007192"><code>LOAD-REPORT-FROM-DATABASE(role input report)</code></a></blockquote> 
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td width="78" valign="top"><a href="batchsi7.htm"><img src="images/prev.gif" width="23" height="21" border="0"></a><a href="batchsi9.htm"><img src="images/next.gif" width="23" height="21" border="0"></a></td>
+    <td colspan="2">&nbsp;</td>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
