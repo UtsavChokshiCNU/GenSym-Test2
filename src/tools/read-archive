@@ -1,0 +1,264 @@
+#!/bin/csh -f
+
+# Read-archive
+
+# Jim Allard
+
+# This C shell script is used to read archive tapes that have been written with
+# write-archive.  This script takes one argument, which is the no-rewind device
+# name for the tape drive where the archive tape can be found.  This script will
+# read the archive.dat file from the tape, and then present the user with a
+# query about which products should be restored from the tape.
+
+goto main
+
+usage:
+
+echo "Usage: read-archive <no-rewind-tape-device>"
+echo " E.g.: read-archive /dev/nrst3"
+
+exit 1
+
+fail:
+
+echo "ERROR:  The last command failed."
+if ($fail == 0) set fail = 1
+goto exit
+
+main:
+
+# Set up a command checking alias.
+
+alias check 'set fail = $status ; if ($fail != 0) goto fail'
+set fail = 0
+
+# Set up variables with directory locations.
+
+set indep_dir = /st/ab/eship/indep
+set dep_dir = /st/ab/eship/dep
+set skel_dir = /st/ab/skeletons/mt-skel
+set indep_mntdir = /gensym/ab/eship-indep
+set dep_mntdir = /gensym/ab/eship
+
+if ($#argv != 1) goto usage
+
+set device = $1
+
+# Check that the device looks like a no-rewind device.  If it does not, then
+# verify with the user that they really want to use this device.
+
+if ($device !~ *n*) then
+  echo ""
+  echo "The given device name, $device, does not have the letter n in it, as most"
+  echo "no-rewind device names do."
+  deviceok:
+  echo ""
+  echo -n "Are you sure you want to use this device name? (yes or no): "
+  set answer = $<
+  if ("$answer" == "yes") then
+    echo "Log:  Continuing with device name ${device}."
+  else if ("$answer" ==  "no") then
+    echo "ERROR:  Device not accepted, exiting."
+    goto usage
+  else
+    echo "Please enter yes or no."
+    goto deviceok
+  endif
+endif
+
+# Set up temporary directory which will hold the fetched archive data file.
+
+set archive_dir = /tmp/read-archive$$
+set archive_name = archive.dat
+set archive = ${archive_dir}/$archive_name
+set tmp_archive = ${archive_dir}/archive.tmp
+
+if (-e $archive_dir) then
+  rmdir $archive_dir
+  set fail = $status
+  if ($fail != 0) then
+    echo "ERROR: Unable to remove temp file ${archive_dir}.  Please remove it and try again."
+    goto fail
+  endif
+endif
+
+mkdir $archive_dir
+check
+
+# Fetch the data file from the tape.
+
+echo "Log:  Rewinding the tape."
+mt -f $device rewind
+check
+
+echo "Log:  Fetching data file from the archive tape."
+
+cd $archive_dir
+tar xf $device $archive_name
+check
+
+if !(-f $archive) then
+  set fail = 1
+  echo "ERROR:  The file archive.dat was not found in the first archive on this tape."
+  echo "ERROR:  Unable to proceed."
+  goto exit
+endif
+
+# Read the archive file to obtain a listing of the products available within it.  For
+# each line found, it is output to a temporary file, which we can read knowing that it
+# is correctly formatted.
+
+echo "Log:  Processing archive.dat file."
+
+touch $tmp_archive
+
+set choices = ""
+
+foreach line_raw ( " `cat $archive` ")
+  set line = ( $line_raw )
+  if ($#line >= 4) then
+    if ("$line[1]" != "#") then
+      # Line = <number> product <promotion> dep|indep [dep-name]
+      if (($line[4] == indep) && ($#line == 4)) then
+        set choices = ($choices $line[1])
+        echo "$line_raw" >> $tmp_archive
+        check
+      else if (($line[4] == dep) && ($#line == 5)) then
+        set choices = ($choices $line[1])
+        echo "$line_raw" >> $tmp_archive
+        check
+      else
+        echo "ERROR:  Malformed line: $line_raw"
+        goto fail
+      endif
+    endif
+  endif
+end
+
+if ($#choices == 0) then
+  echo "ERROR:  No products were found in the archive.dat file in the first archive of this tape."
+  set fail = 1
+  goto exit
+endif
+
+set choices = ($choices all)
+
+echo ""
+echo "The following products can be retrieved from this tape."
+echo ""
+head -2 $archive
+echo ""
+cat $tmp_archive
+
+whichproduct:
+
+echo ""
+echo "You can now load one product, all of them, or quit this utility."
+echo -n "Enter a number, all, or quit to choose which product(s) to read: "
+set answer = $<
+if ("$answer" == "quit") then
+  echo "Exiting read-archive."
+  goto quietexit
+endif
+foreach choice ($choices)
+  if ("$answer" == $choice) goto productok
+end
+echo "Please choose one of the following: $choices quit"
+goto whichproduct
+
+productok:
+set product = $answer
+
+# Product now contains a valid number or the word all. Loop over the tmp file, picking
+# which ones to load.
+
+foreach line_raw ( " `cat $archive` ")
+  set line = ( $line_raw )
+  if (($product == all) || ($product == $line[1])) then
+    echo "Log:  Reading $line"
+    # Line = <number> product <promotion> dep|indep [dep-name]
+    set product_name = $line[3]
+    if ($line[4] == dep) then
+      set indep = 0
+      set platform = $line[5]
+      set target_dir = ${dep_dir}/$platform
+    else
+      set indep = 1
+      unset platform
+      set target_dir = $indep_dir
+    endif
+    if ($product != all) then
+      echo "Log:  Skipping $product archives forward."
+      mt -f $device fsf $product
+      check
+    endif
+    if (-d ${target_dir}/$product_name) then
+      echo "ERROR: product $product_name already exists."
+      if ($product == all) then
+        echo "ERROR: Continuing to try and load other products."
+      else
+        set fail = 1
+        goto exit
+      endif
+    else
+      echo "Log:  Reading $line"
+      cd $target_dir
+      check
+      tar xf $device
+      check
+      if !(-d ${target_dir}/$product_name) then
+        set fail = 1
+        echo "ERROR:  Tar command reported no error, but ${target_dir}/$product_name was not created."
+        goto exit
+      endif
+      echo "Log:  Setting up /gensym/ut links."
+      if ($indep) then
+        set link_dirs=`ls -d ${skel_dir}/eut-skel-*`
+        if ($status != 0) then
+          echo "ERROR: No link directories found in ${skel_dir}, continuing anyway."
+        endif
+        set link_target = ${indep_mntdir}/${product_name}/test
+        foreach link_dir ($link_dirs)
+          echo "Log:  Linking from ${link_dir}."
+          set link_name = ${link_dir}/$product_name
+          ln -s $link_target $link_name
+          if ($status != 0) then
+            echo "ERROR: link for $product_name in $link_dir failed, continuing anyway."
+          endif
+        end
+      else
+        set link_target = ${dep_mntdir}/${product_name}/test
+        set link_name = ${skel_dir}/eut-skel-${platform}/$product_name
+        ln -s $link_target $link_name
+        if ($status != 0) then
+          echo "ERROR: link for $product_name on $platform failed, continuing anyway."
+        endif
+      endif
+    endif
+  endif
+end
+
+echo "Log:  Done reading, taking $device offline."
+mt -f $device offl
+
+exit:
+
+if ($fail == 0) then
+  echo "Log:  Archive read successfully.  Remember to take your tape out of the drive."
+else
+  echo "ERROR:  Archive not read\!  Correct the errors above and try again."
+endif
+
+quietexit:
+
+if ($?tmp_archive) then
+  if (-e $tmp_archive) rm $tmp_archive
+endif
+if ($?archive) then
+  if (-e $archive) rm $archive
+endif
+if ($?archive_dir) then
+  if (-d $archive_dir) rmdir $archive_dir
+endif
+
+exit $fail
