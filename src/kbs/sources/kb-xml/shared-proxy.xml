@@ -1,0 +1,306 @@
+<?xml version="1.0"?>
+<rdf:RDF
+ xmlns:rdf="http://www.w3.org/TR/WD-rdf-syntax#"
+ xmlns:g2="g2-beta-12-0-17.rdf"
+ xmlns="">
+
+<g2:Module ID="SHARED-PROXY">
+  <g2:version>
+    <g2:Structure>
+      <g2:sa.MAJOR-VERSION g2:type="Integer">12</g2:sa.MAJOR-VERSION>
+      <g2:sa.MINOR-VERSION g2:type="Integer">0</g2:sa.MINOR-VERSION>
+      <g2:sa.RELEASE-QUALITY g2:type="Text">Beta</g2:sa.RELEASE-QUALITY>
+      <g2:sa.REVISION g2:type="Integer">17</g2:sa.REVISION>
+      <g2:sa.BUILD-IDENTIFICATION g2:type="Text">TF09</g2:sa.BUILD-IDENTIFICATION></g2:Structure></g2:version>
+  <g2:systemtables>
+    <g2:Sequence>
+      <rdf:li>
+      <g2:c.MODULE-INFORMATION ID="bd56104a529d11e790869eb6d01063cf">
+        <g2:a.TOP-LEVEL-MODULE g2:type="Symbol">SHARED-PROXY</g2:a.TOP-LEVEL-MODULE>
+        </g2:c.MODULE-INFORMATION></rdf:li>
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      <rdf:li>
+      <g2:c.MISCELLANEOUS-PARAMETERS ID="bd56105b529d11e790869eb6d01063cf">
+        <g2:a.BACKWARD-COMPATIBILITY-FEATURES>
+          <g2:Sequence>
+            <rdf:li g2:type="Symbol">PRINT-MEANS-PRINT-TO-SERVER-IN-CONFIGURATIONS</rdf:li>
+            <rdf:li g2:type="Symbol">INCONSISTENT-BEHAVIOR-OF-MOVE-IN-CONFIGURATIONS</rdf:li></g2:Sequence></g2:a.BACKWARD-COMPATIBILITY-FEATURES>
+        </g2:c.MISCELLANEOUS-PARAMETERS></rdf:li>
+      
+      
+      </g2:Sequence></g2:systemtables>
+  <g2:panes>
+    <g2:Sequence>
+      <rdf:li>
+      <g2:Structure>
+        <g2:sa.WORKSPACE><g2:c.KB-WORKSPACE rdf:resource="#bd56105f529d11e790869eb6d01063cf"/></g2:sa.WORKSPACE>
+        <g2:sa.X-IN-WORKSPACE g2:type="Integer">0</g2:sa.X-IN-WORKSPACE>
+        <g2:sa.Y-IN-WORKSPACE g2:type="Integer">0</g2:sa.Y-IN-WORKSPACE>
+        <g2:sa.X-MAGNIFICATION g2:type="Integer">256</g2:sa.X-MAGNIFICATION>
+        <g2:sa.Y-MAGNIFICATION g2:type="Integer">256</g2:sa.Y-MAGNIFICATION></g2:Structure></rdf:li></g2:Sequence></g2:panes>
+  </g2:Module>
+
+<g2:c.KB-WORKSPACE ID="bd56105f529d11e790869eb6d01063cf">
+  <g2:a.NAMES g2:type="Symbol">TL</g2:a.NAMES>
+  <g2:a.MODULE-ASSIGNMENT g2:type="Symbol">SHARED-PROXY</g2:a.MODULE-ASSIGNMENT>
+  <g2:a.EDGES-OF-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.LEFT g2:type="Integer">-350</g2:sa.LEFT>
+      <g2:sa.TOP g2:type="Integer">250</g2:sa.TOP>
+      <g2:sa.RIGHT g2:type="Integer">350</g2:sa.RIGHT>
+      <g2:sa.BOTTOM g2:type="Integer">-250</g2:sa.BOTTOM></g2:Structure></g2:a.EDGES-OF-WORKSPACE>
+  <g2:a.NAME-BOX>
+    <g2:Structure>
+      <g2:sa.COLOR>
+        <g2:Structure>
+          <g2:sa.BACKGROUND-COLOR g2:type="Symbol">BLACK</g2:sa.BACKGROUND-COLOR>
+          <g2:sa.TEXT-COLOR g2:type="Symbol">WHITE</g2:sa.TEXT-COLOR></g2:Structure></g2:sa.COLOR>
+      <g2:sa.POSITION>
+        <g2:Structure>
+          <g2:sa.X-OFFSET g2:type="Integer">-320</g2:sa.X-OFFSET>
+          <g2:sa.Y-OFFSET g2:type="Integer">220</g2:sa.Y-OFFSET></g2:Structure></g2:sa.POSITION></g2:Structure></g2:a.NAME-BOX></g2:c.KB-WORKSPACE>
+
+<g2:c.PROCEDURE ID="bd561048529d11e790869eb6d01063cf">
+  <g2:a.TEXT><![CDATA[
+generate-names-for-proxy(shar: class item, ws: class kb-workspace) = (symbol, symbol)
+iname: symbol;
+fname: symbol;
+sname: symbol;
+begin
+iname = the name of shar;
+if the faction of ws does not exist then
+fname = the symbol main-faction
+else
+fname = the name of the faction of ws;
+sname = text-to-symbol("[iname]-[fname]-SETTER");
+return iname, sname;
+end
+]]></g2:a.TEXT>
+  <g2:a.ICON-VARIABLES>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES>
+  <g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING><g2:c.PROCEDURE rdf:resource="#bd561049529d11e790869eb6d01063cf"/></g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING>
+  <g2:a.POSITION-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.X g2:type="Integer">124</g2:sa.X>
+      <g2:sa.Y g2:type="Integer">171</g2:sa.Y>
+      <g2:sa.SUPERIOR><g2:c.KB-WORKSPACE rdf:resource="#bd56105f529d11e790869eb6d01063cf"/></g2:sa.SUPERIOR></g2:Structure></g2:a.POSITION-IN-WORKSPACE>
+  <g2:a.SIZE-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.SIZE-IN-WORKSPACE>
+  <g2:a.NAME-BOX>
+    <g2:Structure>
+      <g2:sa.COLOR>
+        <g2:Structure>
+          <g2:sa.BACKGROUND-COLOR g2:type="Symbol">TRANSPARENT</g2:sa.BACKGROUND-COLOR>
+          <g2:sa.TEXT-COLOR g2:type="Symbol">FOREGROUND</g2:sa.TEXT-COLOR></g2:Structure></g2:sa.COLOR>
+      <g2:sa.POSITION>
+        <g2:Structure>
+          <g2:sa.X-OFFSET g2:type="Integer">-123</g2:sa.X-OFFSET>
+          <g2:sa.Y-OFFSET g2:type="Integer">-29</g2:sa.Y-OFFSET></g2:Structure></g2:sa.POSITION></g2:Structure></g2:a.NAME-BOX></g2:c.PROCEDURE>
+
+<g2:c.PROCEDURE ID="bd561049529d11e790869eb6d01063cf">
+  
+  <g2:a.TEXT><![CDATA[
+create-a-proxy-for-shared-item(
+shar: class item {The item to create a proxy for}, 
+ws: class kb-workspace {A workspace to create the proxy on})
+
+{ This procedure creates a proxy (an instance of same class as SHAR with the same name) on the supplied workspace, along with the proxy setter (a procedure with single argument and no return values, on proxy's subworkspace) and the rule to invoke the setter (on item's subworkspace). 
+Whenever the original item receives a value, the rule is invoked and spawns the setter with that value as an argument, concluding the proxy to the same value as the original.
+If SHAR is not shared, or SHAR and WS live on the same faction, or either proxy or setter already exists on the target faction, an error is signalled.
+}
+
+iname: symbol;
+sname: symbol;
+begin
+iname, sname = call generate-names-for-proxy(shar, ws);
+call check-args-for-proxy(shar, ws, iname, sname);
+call create-proxy-and-setter(shar, ws, iname, sname);
+call create-rule-for-proxy(shar, iname, sname);
+end
+]]></g2:a.TEXT>
+  <g2:a.ICON-VARIABLES>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES>
+  <g2:a.POSITION-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.X g2:type="Integer">-134</g2:sa.X>
+      <g2:sa.Y g2:type="Integer">118</g2:sa.Y>
+      <g2:sa.SUPERIOR><g2:c.KB-WORKSPACE rdf:resource="#bd56105f529d11e790869eb6d01063cf"/></g2:sa.SUPERIOR></g2:Structure></g2:a.POSITION-IN-WORKSPACE>
+  <g2:a.SIZE-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.SIZE-IN-WORKSPACE>
+  <g2:a.NAME-BOX>
+    <g2:Structure>
+      <g2:sa.COLOR>
+        <g2:Structure>
+          <g2:sa.BACKGROUND-COLOR g2:type="Symbol">TRANSPARENT</g2:sa.BACKGROUND-COLOR>
+          <g2:sa.TEXT-COLOR g2:type="Symbol">FOREGROUND</g2:sa.TEXT-COLOR></g2:Structure></g2:sa.COLOR>
+      <g2:sa.POSITION>
+        <g2:Structure>
+          <g2:sa.X-OFFSET g2:type="Integer">-144</g2:sa.X-OFFSET>
+          <g2:sa.Y-OFFSET g2:type="Integer">-29</g2:sa.Y-OFFSET></g2:Structure></g2:sa.POSITION></g2:Structure></g2:a.NAME-BOX></g2:c.PROCEDURE>
+
+<g2:c.PROCEDURE ID="e5a2ebf552a211e790869eb6d01063cf">
+  <g2:a.TEXT><![CDATA[
+create-proxy-and-setter(shar: class item, ws: class kb-workspace, iname: symbol, sname: symbol)
+proxy: class item;
+pws: class kb-workspace;
+proc: class procedure;
+cname: symbol;
+begin
+cname = the class of shar;
+create an instance proxy of the class named by cname;
+change the name of proxy to iname;
+create a kb-workspace pws;
+make pws the subworkspace of proxy;
+transfer proxy to ws; 
+make proxy permanent; 
+make pws permanent; 
+create a procedure proc;
+transfer proc to pws;
+change the text of proc to "[sname](val: item-or-value)
+begin
+conclude that [iname] = val;
+end";
+make proc permanent;
+end
+]]></g2:a.TEXT>
+  <g2:a.ICON-VARIABLES>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES>
+  <g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING><g2:c.PROCEDURE rdf:resource="#e5a2ebf652a211e790869eb6d01063cf"/></g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING>
+  <g2:a.POSITION-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.X g2:type="Integer">128</g2:sa.X>
+      <g2:sa.Y g2:type="Integer">-46</g2:sa.Y>
+      <g2:sa.SUPERIOR><g2:c.KB-WORKSPACE rdf:resource="#bd56105f529d11e790869eb6d01063cf"/></g2:sa.SUPERIOR></g2:Structure></g2:a.POSITION-IN-WORKSPACE>
+  <g2:a.SIZE-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.SIZE-IN-WORKSPACE>
+  <g2:a.NAME-BOX>
+    <g2:Structure>
+      <g2:sa.COLOR>
+        <g2:Structure>
+          <g2:sa.BACKGROUND-COLOR g2:type="Symbol">TRANSPARENT</g2:sa.BACKGROUND-COLOR>
+          <g2:sa.TEXT-COLOR g2:type="Symbol">FOREGROUND</g2:sa.TEXT-COLOR></g2:Structure></g2:sa.COLOR>
+      <g2:sa.POSITION>
+        <g2:Structure>
+          <g2:sa.X-OFFSET g2:type="Integer">-115</g2:sa.X-OFFSET>
+          <g2:sa.Y-OFFSET g2:type="Integer">-29</g2:sa.Y-OFFSET></g2:Structure></g2:sa.POSITION></g2:Structure></g2:a.NAME-BOX></g2:c.PROCEDURE>
+
+<g2:c.PROCEDURE ID="e5a2ebf652a211e790869eb6d01063cf">
+  <g2:a.TEXT><![CDATA[
+check-args-for-proxy(shar: class item, ws: class kb-workspace, iname: symbol, sname: symbol)
+begin
+if the shared of shar is false then signal the symbol shared-proxy, "The [iname] is not shared!";
+if (the faction of shar does not exist and the faction of ws does not exist) or (the faction of ws exists and the faction of shar exists and the faction of ws = the faction of shar) then signal the symbol shared-proxy, "Can't create the proxy on the same faction with [iname]";
+if the faction of ws exists and there exists an item i named by iname such that (the faction of  i exists and the faction of i = the faction of ws) then signal the symbol shared-proxy, "The proxy [iname] already exists";
+if the faction of ws does not exist and there exists an item i named by iname such that (the faction of  i does not exist) then signal the symbol shared-proxy, "The proxy [iname] already exists"; 
+if there exists a procedure named by sname then signal the symbol shared-proxy, "The setter [sname] already exists";
+end
+]]></g2:a.TEXT>
+  <g2:a.ICON-VARIABLES>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES>
+  <g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING><g2:c.PROCEDURE rdf:resource="#bd561048529d11e790869eb6d01063cf"/></g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING>
+  <g2:a.POSITION-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.X g2:type="Integer">126</g2:sa.X>
+      <g2:sa.Y g2:type="Integer">67</g2:sa.Y>
+      <g2:sa.SUPERIOR><g2:c.KB-WORKSPACE rdf:resource="#bd56105f529d11e790869eb6d01063cf"/></g2:sa.SUPERIOR></g2:Structure></g2:a.POSITION-IN-WORKSPACE>
+  <g2:a.SIZE-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.SIZE-IN-WORKSPACE>
+  <g2:a.NAME-BOX>
+    <g2:Structure>
+      <g2:sa.COLOR>
+        <g2:Structure>
+          <g2:sa.BACKGROUND-COLOR g2:type="Symbol">TRANSPARENT</g2:sa.BACKGROUND-COLOR>
+          <g2:sa.TEXT-COLOR g2:type="Symbol">FOREGROUND</g2:sa.TEXT-COLOR></g2:Structure></g2:sa.COLOR>
+      <g2:sa.POSITION>
+        <g2:Structure>
+          <g2:sa.X-OFFSET g2:type="Integer">-103</g2:sa.X-OFFSET>
+          <g2:sa.Y-OFFSET g2:type="Integer">-29</g2:sa.Y-OFFSET></g2:Structure></g2:sa.POSITION></g2:Structure></g2:a.NAME-BOX></g2:c.PROCEDURE>
+
+<g2:c.PROCEDURE ID="a36a4f9a52a311e790869eb6d01063cf">
+  <g2:a.TEXT><![CDATA[
+create-rule-for-proxy(shar: class item, iname: symbol, sname: symbol)
+sws: class kb-workspace;
+rool: class rule;
+begin
+if the subworkspace of shar does not exist then
+begin
+create a kb-workspace sws;
+make sws the subworkspace of shar;
+make sws permanent; 
+end
+else sws = the subworkspace of shar;
+create a rule rool;
+transfer rool to sws;
+change the text of rool to "whenever [iname] receives a value then spawn [sname](the value of [iname])";
+make rool permanent;
+end
+]]></g2:a.TEXT>
+  <g2:a.ICON-VARIABLES>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES>
+  <g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING><g2:c.PROCEDURE rdf:resource="#e5a2ebf552a211e790869eb6d01063cf"/></g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING>
+  <g2:a.POSITION-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.X g2:type="Integer">128</g2:sa.X>
+      <g2:sa.Y g2:type="Integer">-156</g2:sa.Y>
+      <g2:sa.SUPERIOR><g2:c.KB-WORKSPACE rdf:resource="#bd56105f529d11e790869eb6d01063cf"/></g2:sa.SUPERIOR></g2:Structure></g2:a.POSITION-IN-WORKSPACE>
+  <g2:a.SIZE-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.SIZE-IN-WORKSPACE>
+  <g2:a.NAME-BOX>
+    <g2:Structure>
+      <g2:sa.COLOR>
+        <g2:Structure>
+          <g2:sa.BACKGROUND-COLOR g2:type="Symbol">TRANSPARENT</g2:sa.BACKGROUND-COLOR>
+          <g2:sa.TEXT-COLOR g2:type="Symbol">FOREGROUND</g2:sa.TEXT-COLOR></g2:Structure></g2:sa.COLOR>
+      <g2:sa.POSITION>
+        <g2:Structure>
+          <g2:sa.X-OFFSET g2:type="Integer">-105</g2:sa.X-OFFSET>
+          <g2:sa.Y-OFFSET g2:type="Integer">-29</g2:sa.Y-OFFSET></g2:Structure></g2:sa.POSITION></g2:Structure></g2:a.NAME-BOX></g2:c.PROCEDURE>
+
+<g2:c.KB-WORKSPACE ID="4f8eb70852a411e790869eb6d01063cf">
+  <g2:a.MODULE-ASSIGNMENT g2:type="Symbol">SHARED-PROXY</g2:a.MODULE-ASSIGNMENT>
+  <g2:a.DEFAULT-WINDOW-POSITION-AND-SCALE>
+    <g2:Structure>
+      <g2:sa.X g2:type="Integer">418</g2:sa.X>
+      <g2:sa.Y g2:type="Integer">326</g2:sa.Y></g2:Structure></g2:a.DEFAULT-WINDOW-POSITION-AND-SCALE>
+  <g2:a.EDGES-OF-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.LEFT g2:type="Integer">-350</g2:sa.LEFT>
+      <g2:sa.TOP g2:type="Integer">250</g2:sa.TOP>
+      <g2:sa.RIGHT g2:type="Integer">350</g2:sa.RIGHT>
+      <g2:sa.BOTTOM g2:type="Integer">-250</g2:sa.BOTTOM></g2:Structure></g2:a.EDGES-OF-WORKSPACE></g2:c.KB-WORKSPACE>
+</rdf:RDF>

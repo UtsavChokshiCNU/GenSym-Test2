@@ -1,0 +1,45 @@
+# Sample makefile for the RMI classes
+#   GSI Version 5.0
+#   JDK 1.1
+# Machine type: IntelNT
+
+#
+# JAVA_HOME should be set!
+# SPIN_ID should be set!
+# SRCBOX should be set!
+#
+
+!include <ntwin32.mak>
+
+BT_JAVA = $(SRCBOX)\java
+RMIC	= $(JAVA_HOME)\bin\rmic
+TMPFILE	= $(TMP)\rmic.txt
+PP	= com.gensym.ntw.rmi
+
+RMI_DIR	= $(BT_JAVA)\com\gensym\ntw\rmi
+
+RMIC_FLAGS	= -d $(BT_JAVA)
+
+TWCLIENT	= TwRMIClientImpl
+TWSERVER	= TwRMIServerImpl
+
+RMI_STUBS	= $(RMI_DIR)\$(TWCLIENT)_Stub.class \
+		  $(RMI_DIR)\$(TWSERVER)_Stub.class
+
+RMI_SKELS	= $(RMI_DIR)\$(TWCLIENT)_Skel.class \
+		  $(RMI_DIR)\$(TWSERVER)_Skel.class
+
+all: $(RMI_STUBS) $(RMI_SKELS)
+
+$(RMI_DIR)\$(TWCLIENT)_Stub.class: $(RMI_DIR)\$(TWCLIENT).class
+	$(RMIC) $(RMIC_FLAGS) $(PP).$(TWCLIENT)
+
+$(RMI_DIR)\$(TWCLIENT)_Skel.class: $(RMI_DIR)\$(TWCLIENT).class
+	$(RMIC) $(RMIC_FLAGS) $(PP).$(TWCLIENT)
+
+$(RMI_DIR)\$(TWSERVER)_Stub.class: $(RMI_DIR)\$(TWSERVER).class
+	$(RMIC) $(RMIC_FLAGS) $(PP).$(TWSERVER)
+
+$(RMI_DIR)\$(TWSERVER)_Skel.class: $(RMI_DIR)\$(TWSERVER).class
+	$(RMIC) $(RMIC_FLAGS) $(PP).$(TWSERVER)
+

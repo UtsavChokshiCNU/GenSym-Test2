@@ -1,0 +1,34 @@
+#!/bin/csh -f
+
+if ($#argv == 2) then
+  goto runscript
+endif
+
+# Usage message
+
+usage:
+echo 'usage: generatedocs productname targetdir'
+exit 1
+
+runscript:
+
+if !($?JAVA_HOME) then
+  echo "ERROR: The environment variable JAVA_HOME is not set."
+  goto usage
+endif
+
+if !($?SWING_HOME) then
+  echo "ERROR: The environment variable SWING_HOME is not set."
+  goto usage
+endif
+
+setenv SOURCE_DIR  $SRCBOX/java
+setenv JAVASRC_HOME  $JAVA_HOME/src
+setenv SWINGSRC_HOME  $SWING_HOME
+setenv JAVADOC_CLASSPATH $JAVA_HOME/lib/classes.zip;$SWING_HOME/swingall.jar
+
+java -mx400m com.gensym.core.GenerateDocs $1 $2 $SOURCE_DIR $JAVASRC_HOME $SWINGSRC_HOME
+echo "***FINISHED***"
+
+
+exit 0

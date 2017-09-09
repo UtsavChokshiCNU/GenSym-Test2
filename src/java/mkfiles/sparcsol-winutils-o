@@ -1,0 +1,101 @@
+# Sample makefile for JGI programs.
+#   GSI Version 5.0
+# Machine type: Solaris 2.5
+
+#
+# JAVA_HOME should be set!
+# SPIN_ID should be set!
+# SRCBOX should be set!
+#
+# Note that this makefile does not use DSTBOX, which it probably should for
+# the java/o and java/lib directories.
+ 
+ODIR = o
+PACKAGE_DIR=com/gensym/ntw/util
+PACKAGE_PREFIX = com.gensym.ntw.util.
+PP = com_gensym_ntw_util_
+BT_JAVA = ${SRCBOX}/java
+
+JAVA_DIR      = ${BT_JAVA}/${PACKAGE_DIR}
+C_DIR         = ${BT_JAVA}/c
+OBJ_DIR       = ${BT_JAVA}/${ODIR}
+EXE_DIR       = ${BT_JAVA}/lib
+H_DIR         = ${BT_JAVA}/include
+X_INCLUDE_DIR = /usr/openwin/include
+X_LIB_DIR     = /usr/openwin/lib
+GSIDIR = $(SRCBOX)/gsi
+RTLDIR = $(SRCBOX)/rtl
+EXTDIR = $(SRCBOX)/ext
+# Uncomment to see preprocessed output
+#CDEBUG_FLAGS  = -save-temps
+C_FLAGS  = -G $(CDEBUG_FLAGS)
+INCLUDE_FLAGS = -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/solaris -I${BT_JAVA}/include -I${X_INCLUDE_DIR}
+COMMON=-DNEW_CLASS_MAPPING
+CCFLAGS       = $(COMMON) $(C_FLAGS) $(cvars) $(INCLUDE_FLAGS)
+
+link = ld
+CC = gcc
+JAVAH = $(JAVA_HOME)/bin/javah
+JAVAC = $(JAVA_HOME)/bin/javac
+JAVAC_OPTIONS = -verbose
+JAVAC_OPTIONS = 
+JAVAH_OPTIONS = -d $(H_DIR)
+JAVAH_STUBS_OPTIONS = -d $(C_DIR) -stubs
+
+LIB_DIR = -L. -L${BT_JAVA}/lib -L${X_LIB_DIR}
+DEFAULT_LIBS = -lgsi -ltcp -lrtl
+PLATFORM_LIBS = -lsocket -lintl -lm -lnsl
+ 
+DEFAULT_LIBS = -lXt -lX11
+JAVA_LIBS = $(JAVA_HOME)/lib/sparc/green_threads/libjava.so
+LIBS           = $(LIB_DIR) $(DEFAULT_LIBS) $(PLATFORM_LIBS)
+LINKFLAGS      = -G 
+LINKDEBUGFLAGS = -z defs
+
+H_FILES = $(H_DIR)/$(PP)WindowUtil.h $(H_DIR)/sun_awt_motif_MComponentPeer.h \
+	  $(H_DIR)/java_awt_Component.h
+
+EXECUTABLES = $(EXE_DIR)/libwinutils.so
+JAVACLASSES = $(JAVA_DIR)/WindowUtil.class
+
+JAVA_FILES =  $(OBJ_DIR)/WindowUtil_Implmn.o $(OBJ_DIR)/$(PP)WindowUtil.o
+
+ALL : $(JAVACLASSES) $(EXECUTABLES)
+
+$(EXE_DIR)/libwinutils.so : $(JAVA_FILES)
+	$(link) -o $(EXE_DIR)//libwinutils.so $(LINKFLAGS) $(JAVA_FILES) $(LIBS)
+	
+$(OBJ_DIR)/WindowUtil_Implmn.o : $(C_DIR)/WindowUtil_Implmn.c $(H_FILES)
+	$(CC) -c $(CCFLAGS) $(C_DIR)/WindowUtil_Implmn.c -o $(OBJ_DIR)/WindowUtil_Implmn.o
+
+$(OBJ_DIR)/$(PP)WindowUtil.o : $(C_DIR)/$(PP)WindowUtil.c
+	$(CC) -c $(CCFLAGS) $(C_DIR)/$(PP)WindowUtil.c -o $(OBJ_DIR)/$(PP)WindowUtil.o
+
+#
+# Dependencies on generated files
+#
+
+
+
+$(H_DIR)/$(PP)WindowUtil.h : $(JAVA_DIR)/WindowUtil.class
+	$(JAVAH) $(JAVAH_OPTIONS) $(PACKAGE_PREFIX)WindowUtil
+	@ touch $(H_DIR)/$(PP)WindowUtil.h
+
+$(C_DIR)/$(PP)WindowUtil.c : $(JAVA_DIR)/WindowUtil.class
+	$(JAVAH) $(JAVAH_STUBS_OPTIONS) $(PACKAGE_PREFIX)WindowUtil
+	@ touch $(C_DIR)/$(PP)WindowUtil.c
+
+$(H_DIR)/java_awt_Component.h :
+	$(JAVAH) $(JAVAH_OPTIONS) java.awt.Component
+	@ touch $(H_DIR)/java_awt_Component.h
+
+$(H_DIR)/sun_awt_motif_MComponentPeer.h :
+	$(JAVAH) $(JAVAH_OPTIONS) sun.awt.motif.MComponentPeer
+	@ touch $(H_DIR)/sun_awt_motif_MComponentPeer.h
+
+$(JAVA_DIR)/WindowUtil.class: $(JAVA_DIR)/WindowUtil.java
+	$(JAVAC) $(JAVAC_OPTIONS) $(JAVA_DIR)/WindowUtil.java
+
+clean :
+	rm -f $(EXE_DIR)/libwinutils.so $(OBJ_DIR)/*Window*.o $(C_DIR)/com_gensym_util_*.c $(H_DIR)/com_gensym_util*.h $(JAVA_DIR)/WindowUtil.class
+

@@ -1,0 +1,15 @@
+#!/bin/csh -f
+ 
+setenv SOURCE_DIR  $SRCBOX
+setenv JAVADOC_CLASSPATH ${JAVA_HOME}/lib/classes.zip:${SWING_HOME}/swingall.jar
+setenv TARGET_DIR ${SOURCE_DIR}/javalink/javalink-${MACHINE}-staging
+setenv TARGET_BIN ${TARGET_DIR}/bin
+
+${JAVA_HOME}/bin/java -mx50m com.gensym.devtools.BuildProductRepository javalink ${SOURCE_DIR} ${TARGET_DIR} ${JAVADOC_CLASSPATH}
+
+# Copy platform specific bin
+if (("$MACHINE" == hp9000s800) || ("$MACHINE" == hp9000s700)) then
+  cp -p ${DSTBOX}/java/lib/libJgiInterface.sl ${TARGET_BIN}/libJgiInterface.sl
+else
+  cp -p ${DSTBOX}/java/lib/libJgiInterface.so ${TARGET_BIN}/libJgiInterface.so
+endif

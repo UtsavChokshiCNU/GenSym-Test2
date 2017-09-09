@@ -1,0 +1,18 @@
+/*
+ * ptnmvrsn.c -  Chestnut Run-Time Library entry for function pathname_version
+ *
+ * Copyright (c) 1990-1992 Chestnut Software, Inc.  All Rights Reserved.
+ * Use of this Library is subject to the terms of a license from
+ * Chestnut Software, Inc.  Please refer to the License for details.
+ *
+ */
+
+#include "runtime.h"
+#include "filesys.h"
+
+Object pathname_version (pathnm)
+    Object pathnm;
+{
+    Declare_local_temp;
+    return VALUES_1(FIX(1));  /* must be modified for systems that support versions */
+}

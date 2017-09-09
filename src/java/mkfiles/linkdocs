@@ -1,0 +1,18 @@
+#!/bin/csh -f
+ 
+if ($#argv == 2) then
+  goto runscript
+endif
+ 
+# Usage message
+usage:
+echo 'usage: linkdocs productname targetdir'
+exit 1
+ 
+runscript:
+setenv SOURCE_DIR  $SRCBOX/java
+
+java  -mx400m com.gensym.core.LinkJavaDocs $1 $SOURCE_DIR $2
+echo ***FINISHED***
+
+exit 0

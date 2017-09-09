@@ -1,0 +1,256 @@
+#!/bin/csh -f
+
+# runmakejntw
+
+# Copyright (c) 1986 - 2017 Gensym Corporation.
+# All Rights Reserved.
+
+# Vikram Pillai
+
+# This C shell script is used to update all the files necessary to run NTW.
+# It calls the appropriate runmakes to build rtl, ext and gsi libraries.
+# It compiles java files as necessary
+# It updates JGInterface.so using the makefile <machine>-jgi-<compile-type>.
+# Any step can be skipped using the appropriate switch
+
+
+if ($#argv > 0) then
+  goto runscript
+endif
+
+
+# Usage message
+
+usage:
+echo 'usage: runmakejntw <type>|clean [optional args]'
+echo "           type : opt, o, o-pg"
+echo "  optional args : -skiprtl -skipext -skipgsi -cleanjava -skipjava -skipjgi"
+exit 1
+
+
+# Verify environment
+
+runscript:
+
+if !($?SRCBOX) then
+  echo "ERROR: The environment variable SRCBOX is not set, you must run use-sandbox."
+  goto usage
+endif
+
+if !($?DSTBOX) then
+  echo "ERROR: The environment variable DSTBOX is not set, you must run use-sandbox."
+  goto usage
+endif
+
+if !($?SPIN_ID) then
+  echo "ERROR: The environment variable SPIN_ID is not set, you must run use-sandbox."
+  goto usage
+endif
+
+
+# Initialize variables
+
+if !($?MACHINE) then
+  setenv MACHINE `/usr/local/bin/machine`
+endif
+
+set compile_type = $1
+shift
+
+set cleanjava = 0
+set dortl = 1
+set doext = 1
+set dogsi = 1
+set dojgi = 1
+set dojava = 1
+set dojarring = 1
+set dormi = 1
+set doax = 1
+
+
+# Parse command-line arguments
+
+foreach option ($*)
+echo "option $option"
+switch ($option)
+    case -cleanjava:
+        echo "Cleaning up class files";
+        set cleanjava = 1;
+        breaksw;
+    case -skiprtl: 
+	echo "Skipping rtl";
+	set dortl = 0;
+	breaksw;
+    case -skipext: 
+	echo "Skipping ext";
+	set doext = 0;
+	breaksw;
+    case -skipgsi: 
+	echo "Skipping gsi";
+	set dogsi = 0;
+	breaksw;
+    case -skipjava: 
+	echo "Skipping java";
+	set dojava = 0;
+	breaksw;
+    case -skipjarring: 
+	echo "Skipping jarring";
+	set dojarring = 0;
+	breaksw;
+    case -skipjgi: 
+	echo "Skipping jgi";
+	set dojgi = 0;
+	breaksw;
+    case -skiprmi:
+	echo "Skipping rmi";
+	set dormi = 0;
+	breaksw;
+    case -skipax:
+	echo "Skipping ax";
+	set doax = 0;
+	breaksw;
+    default:
+	echo "Error: unknown option $option"
+	goto usage;
+endsw
+end
+
+echo "here 1"
+
+switch ($compile_type)
+  case o:
+  case opt:
+  case o-pg:
+	breaksw;
+  case clean:
+	goto clean;
+	breaksw;
+  default:
+	echo "Error: Bad compile_type $compile_type"
+	goto usage;
+	breaksw;
+endsw
+
+
+# Build JNTW.
+
+gooduse:
+
+if ( $cleanjava ) then
+   echo " In clean java case "
+#  find $DSTBOX/java -name '*.class' -exec echo Removing the file {} \; -exec rm -f {} \;
+  pushd $DSTBOX/java
+  set files='*.class'
+  set remlist=""
+  @ n = 9
+  while ($n != 0)
+    @ n = $n - 1
+    set noglob
+    set files='*/'$files
+#    set remlist="$remlist $files"
+#    set remlist = ($remlist)
+    unset noglob
+    /bin/rm $files
+  end
+  popd
+  echo "Done cleaning up class files"
+endif
+
+if ( $dortl ) then
+  runmake rtl $compile_type librtl.a
+endif
+echo "Done with rtl"
+
+if ( $doext ) then
+  runmake ext $compile_type libtcp.a
+endif
+echo "Done with ext"
+
+if ( $dogsi ) then
+  runmake gsi $compile_type libgsi.a
+endif
+echo "Done with gsi"
+
+if ( $cleanjava ) then
+  jmake -clean ${SRCBOX}/java/com/gensym
+endif
+echo "Done cleaning up class files"
+
+if ( $dojava ) then
+  javac ${SRCBOX}/java/com/gensym/devtools/JavaMake.java
+  pushd ${DSTBOX}/java; java -mx80m com.gensym.devtools.JavaMake -srcbox $SRCBOX -quiet -product sequoia; popd
+  echo "Done with java"
+endif
+
+if ( $dojarring ) then
+  cd ${SRCBOX}/java; jar cvf classes.jar com/gensym/classes/*.class; jar cvf beans.jar com/gensym/com/beans/*/*.class
+  echo "Done with jarring"
+endif
+
+if ( $dormi ) then
+   make -e -f ${SRCBOX}/java/mkfiles/${MACHINE}-jgi-rmi
+   make -e -f ${SRCBOX}/java/mkfiles/${MACHINE}-ntw-rmi
+endif
+echo "Done with rmi"
+
+if ( $doax ) then
+   make -f ${SRCBOX}/java/mkfiles/${MACHINE}-container-o
+endif
+echo "Done with ax"
+
+if ( $dojgi ) then
+  make -f ${SRCBOX}/java/mkfiles/${MACHINE}-jgi-${compile_type}
+endif
+echo "Done with jgi"
+
+exit 0
+
+
+# Clean all object files related to JNTW.
+
+clean:
+
+#find $DSTBOX/java -name '*.class' -exec echo Removing {} \; -exec rm -f {} \;
+  pushd $DSTBOX/java
+  set files='*.class'
+  set remlist=""
+  @ n = 9
+  while ($n != 0)
+    @ n = $n - 1
+    set noglob
+    set files='*/'$files
+#    set remlist="$remlist $files"
+#    set remlist = ($remlist)
+    unset noglob
+    /bin/rm $files
+  end
+  popd
+  echo "Done cleaning up class files"
+
+if ( -d $DSTBOX/java/o ) then
+  if ( -d $DSTBOX/java/o/CVS ) then
+    echo "ERROR: $DSTBOX/java/o is a CVS module.  Not touching it"
+    echo "  See /home/ab/trail/0140-java-o-and-lib.txt"
+  else
+    find $DSTBOX/java/o -type f -exec echo Removing {} \; -exec rm -f {} \;
+  endif
+endif
+if ( -d $DSTBOX/java/opt ) then
+  if ( -d $DSTBOX/java/opt/CVS ) then
+    echo "ERROR: $DSTBOX/java/opt is a CVS module.  Not touching it"
+    echo "  See /home/ab/trail/0140-java-o-and-lib.txt"
+  else
+    find $DSTBOX/java/opt -type f -exec echo Removing {} \; -exec rm -f {} \;
+  endif
+endif
+if ( -d $DSTBOX/java/lib ) then
+  if ( -d $DSTBOX/java/lib/CVS ) then
+    echo "ERROR: $DSTBOX/java/lib is a CVS module.  Not touching it"
+    echo "  See /home/ab/trail/0140-java-o-and-lib.txt"
+  else
+    find $DSTBOX/java/lib -type f -exec echo Removing {} \; -exec rm -f {} \;
+  endif
+endif
+
+exit 0
+

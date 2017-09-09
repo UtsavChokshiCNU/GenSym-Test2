@@ -1,0 +1,14 @@
+
+all: $(GSIBOX)\libgsi.lib $(GSIBOX)\librtl.lib $(GSIBOX)\libtcp.lib
+
+$(GSIBOX)\libgsi.lib: $(DSTBOX)\gsi\o\libgsi.lib
+	runmake.bat gsi o libgsi.lib
+	copy $(DSTBOX)\gsi\o\libgsi.lib $(GSIBOX)\libgsi.lib
+
+$(GSIBOX)\librtl.lib: $(DSTBOX)\rtl\o\librtl.lib
+	runmake.bat rtl o
+	copy $(DSTBOX)\rtl\o\librtl.lib $(GSIBOX)\librtl.lib
+
+$(GSIBOX)\libtcp.lib: $(DSTBOX)\ext\o\libtcp.lib
+	runmake.bat ext o libtcp.lib
+	copy $(DSTBOX)\ext\o\libtcp.lib $(GSIBOX)\libtcp.lib

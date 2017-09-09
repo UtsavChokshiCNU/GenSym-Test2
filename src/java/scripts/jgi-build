@@ -1,0 +1,49 @@
+#!/bin/csh -f
+
+set clean = "no"
+if ("$1" == "-clean") then
+  set clean = "yes"
+  shift
+endif
+
+set nojavac = "no"
+if ("$1" == "-nojavac") set nojavac = "yes"
+  
+
+
+if !(-d $DSTBOX/java) mkdir $DSTBOX/java
+if !(-d $DSTBOX/java/o) mkdir $DSTBOX/java/o
+if !(-d $DSTBOX/java/opt) mkdir $DSTBOX/java/opt
+
+
+
+set all_targets = (rtl ext gsi jgi)
+
+set all_build_types = (o opt)
+
+foreach target ( $all_targets )
+  foreach build_type ( $all_build_types )
+
+    if ($clean == "yes") then
+      if ($target == jgi) then
+        make -f $SRCBOX/java/mkfiles/$machine-$target-$build_type clean
+      else
+        runmake  $target $build_type clean
+      endif
+    endif
+
+    if ($target == gsi) then
+      runmake gsi $build_type libgsi.a; runmake gsi $build_type item_1
+    else
+      if ($target == jgi) then
+        if ($nojavac == "no") then
+          $JAVA_HOME/bin/javac -classpath $SRCBOX/java java/com/gensym/devtools/JavaMake.java
+          $JAVA_HOME/bin/java -classpath $SRCBOX/java com.gensym.devtools.JavaMake -srcbox $SRCBOX -dstbox $DSTBOX -verbose -product sequoia
+        endif
+        make -f $SRCBOX/java/mkfiles/$machine-$target-$build_type
+      else
+        runmake $target $build_type
+      endif
+    endif
+  end
+end

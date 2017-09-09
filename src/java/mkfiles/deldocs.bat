@@ -1,0 +1,16 @@
+rm com.gensym.beansruntime.*.html
+rm com.gensym.build.*.html
+rm com.gensym.classes.*.html
+rm com.gensym.core.*.html
+rm com.gensym.dlg.*.html
+rm com.gensym.dlgevent.*.html
+rm com.gensym.jgi.*.html
+rm com.gensym.message.*.html
+rm com.gensym.net.*.html
+rm com.gensym.tracebeans.*.html
+rm com.gensym.types.*.html
+rm com.gensym.util.*.html
+rm com.gensym.g2export.*.html
+rm com.gensym.jlp.*.html
+rm com.sun.*.html
+rm java.*.html

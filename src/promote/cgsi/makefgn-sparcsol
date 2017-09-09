@@ -1,0 +1,44 @@
+SHELL=/bin/sh
+ 
+# Sample makefile for foreign images to connect to G2.
+# Machine type: Sun4/Sparcstation Solaris
+ 
+C_DIR = 
+OBJ_DIR = 
+EXE_DIR = 
+TEMPLATE_DIR = $(C_DIR)
+OVERLAY_DIR = 
+H_DIR = ./
+INCLUDE_DIR = $(H_DIR)
+CCFLAGS = -O
+LIB_DIR = ./
+ 
+DEFAULT_LIBS = -lforgn
+PLATFORM_SPECIFIC_LIBS = -lsocket -lintl -lm -lnsl -ldl
+LIBS = -L$(LIB_DIR) $(DEFAULT_LIBS) $(PLATFORM_SPECIFIC_LIBS) 
+ 
+H_FILES = $(H_DIR)foreign.h
+EXECUTABLES = $(EXE_DIR)fgntest.fgn
+FGNTEST_FILES = $(OBJ_DIR)fgntest.o $(OBJ_DIR)fgnover.o
+ 
+ALL : $(EXECUTABLES)
+ 
+$(EXE_DIR)fgntest.fgn : $(FGNTEST_FILES)
+	cc -o $(EXE_DIR)fgntest.fgn $(FGNTEST_FILES) $(LIBS)
+ 
+$(OBJ_DIR)fgntest.o : $(C_DIR)fgntest.c $(H_FILES)
+	cc -c $(CCFLAGS) -I$(INCLUDE_DIR) -o $(OBJ_DIR)fgntest.o $(C_DIR)fgntest.c
+ 
+$(OBJ_DIR)fgnover.o : $(C_DIR)fgnover.c $(H_FILES)
+	cc -c $(CCFLAGS) -I$(INCLUDE_DIR) -o $(OBJ_DIR)fgnover.o $(C_DIR)fgnover.c
+ 
+$(C_DIR)fgnover.c : $(TEMPLATE_DIR)fgntest.tpl
+	$(OVERLAY_DIR)overlay $(TEMPLATE_DIR)fgntest.tpl  $(C_DIR)fgnover.c
+ 
+clean :
+	@for file in $(EXECUTABLES); do \
+		if [ -f $$file ] ; then \
+			rm $$file; \
+		fi ;\
+	done
+	@rm *.o

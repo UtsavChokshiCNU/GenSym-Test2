@@ -1,0 +1,1094 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Joe">
+   <meta name="GENERATOR" content="Mozilla/4.5 [en] (WinNT; I) [Netscape]">
+   <title>Nevada:  Technical Description</title>
+</head>
+<body>
+
+<h2>
+Telewindows2 Technical Description</h2>
+<i>Please send questions, comments, and spelling and grammar corrections
+to service@gensym.com).</i>
+<h2>
+Contents</h2>
+<a href="#section-0.0">0 Audience</a>
+<br><a href="#section-1.0">1 Introduction</a>
+<br><a href="#section-2.0">2 Terminology</a>
+<br><a href="#section-2.1">&nbsp;&nbsp;&nbsp; 2.1 Users</a>
+<br><a href="#section-2.2">&nbsp;&nbsp;&nbsp; 2.2 The Names of this Product</a>
+<br><a href="#section 3.0">3 Telewindows2 Architecture Overview</a>
+<br><a href="#section-4.0">4 JavaLink</a>
+<br><a href="#section-4.1">&nbsp;&nbsp;&nbsp; 4.1 Overview</a>
+<br><a href="#section-4.1.1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+4.1.1 The Properties File</a>
+<br><a href="#section-4.2">&nbsp;&nbsp;&nbsp; 4.2 G2 Connections</a>
+<br><a href="#section-4.3">&nbsp;&nbsp;&nbsp; 4.3 Two and three-tier models</a>
+<br><a href="#section-4.4">&nbsp;&nbsp;&nbsp; 4.4 Stub classes</a>
+<br><a href="#section-4.5">&nbsp;&nbsp;&nbsp; 4.5 JavaLink and G2 5.x</a>
+<br><a href="#section-4.5.1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+4.5.1 System-defined Remote Procedure Calls</a>
+<br><a href="#section-4.5.2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+4.5.2 New Data Types</a>
+<br><a href="#section-4.5.3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+4.5.3 Attribute Export</a>
+<br><a href="#section-4.5.4">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+4.5.4 Introspection</a>
+<br><a href="#section-4.5.5">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+4.5.5 The G2 API</a>
+<br><a href="#section-4.6">&nbsp;&nbsp;&nbsp; 4.6 G2 JavaLink Gateway in
+Telewindows2</a>
+<br><a href="#section-4.6.1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+4.6.1 Licensing Considerations</a>
+<br><a href="#section-4.6.2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+4.6.2 The showing Protocol</a>
+<br><a href="#section-4.6.3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+4.6.3 Media Bins</a>
+<br><a href="#section-5.0">5 Telewindows2 Components</a>
+<br><a href="#section-5.1">&nbsp;&nbsp;&nbsp; 5.1 General Guidelines</a>
+<br><a href="#section-5.1.1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+5.1.1 Reference</a>
+<br><a href="#section-5.1.2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+5.1.2 State</a>
+<br><a href="#section-5.1.3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+5.1.3 Communication</a>
+<br><a href="#section-5.1.4">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+5.1.4 Restrictions</a>
+<br><a href="#section-5.2">&nbsp;&nbsp;&nbsp; 5.2 Example: A trivial Telewindows2
+Component</a>
+<br><a href="#section-5.3">&nbsp;&nbsp;&nbsp; 5.3 The Workspace Component</a>
+<br><a href="#section-5.4">&nbsp;&nbsp;&nbsp; 5.4 High-level Dialog Components</a>
+<br><a href="#section-5.4.1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+5.4.1 G2 Data Structure and Attribute Export</a>
+<br><a href="#section-5.4.2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+5.4.2 Data Aware Components</a>
+<br><a href="#section-5.4.2.1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+5.4.2.1 Scalar Components</a>
+<br><a href="#section-5.4.2.2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+5.4.2.2 Aggregate Components</a>
+<br><a href="#section-5.4.2.3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+5.4.2.3 Update and Change Events</a>
+<br><a href="#section-5.4.2.4">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+5.4.2.4 Item Proxies</a>
+<br><a href="#section-5.4.3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+5.4.3 Event Adaptation and Non-Gensym Components</a>
+<br><a href="#section-5.5">&nbsp;&nbsp;&nbsp; 5.5 ActiveX Components</a>
+<br><a href="#section-6.0">6 Containers</a>
+<br><a href="#section-6.1">&nbsp;&nbsp;&nbsp; 6.1 The Telewindows2 Toolkit
+Shell</a>
+<br><a href="#section-6.1.1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+6.1.1 Menu/Command Interface</a>
+<br><a href="#section-6.2">&nbsp;&nbsp;&nbsp; 6.2 Dialogs</a>
+<br><a href="#section-6.2.1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+6.2.1 Editing</a>
+<br><a href="#section-6.2.2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+6.2.2 Storage</a>
+<br><a href="#section-6.2.3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+6.2.3 Workspace Views as Containers</a>
+<br><a href="#section-6.2.4">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+6.2.4 Item-Editing Dialogs</a>
+<br><a href="#section-6.2.5">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+6.2.5 Dialog Shutdown</a>
+<br><a href="#section-6.2.6">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+6.2.6 ActiveX Considerations</a>
+<br>&nbsp;
+<h2>
+<a NAME="section-0.0"></a>0&nbsp; Audience</h2>
+This document is intended for a technical audience.&nbsp; This document
+assumes a fair degree of knowledge of Java, Java Beans, HTML, JavaScript,
+ActiveX, and ActiveX scripting tools such as Visual Basic.&nbsp; These
+subjects are documented very thoroughly in other publications.
+<br>&nbsp;
+<h2>
+<a NAME="section-1.0"></a>1 Introduction</h2>
+Telewindows2 is a user interface system for G2.&nbsp; Its goals are:
+<ul>
+<li>
+Provide a native Windows and Motif look and feel user interface for G2.</li>
+
+<li>
+Be a part of modern, open user interface, emphasizing cross-platform component
+standards</li>
+
+<li>
+Be extensible at a fundamental level to provide KB developers and VAR's
+the appropriate interfaces so that they can extend Gensym-provided components
+or make new components that are "first class" as compared with the ones
+provided by Gensym.</li>
+</ul>
+Telewindows2 is implemented in Java and adheres to the Java Beans component
+architecture.&nbsp; One can find the&nbsp; <a href="http://www.javasoft.com/beans">Java
+Beans Specification</a>&nbsp; at Sun's Javasoft website.&nbsp; Beans has
+the stated goal "... to define a software component model for Java so that
+third party ISV's can create and ship Java components that can be composed
+into applications by end users.
+<p>A principal reason for having chosen Java for the implementation of
+Telewindows2 is that it provides platform independent user interface programming
+tools in the Abstract Windowing Toolkit and Swing.&nbsp; AWT and Swing
+provide UI classes that have the correct native platform look and feel
+for the operating system upon which Java is running.&nbsp; Java applications
+on Windows 95/NT are virtually indistinguishable from those written in
+Visual C++/MFC.&nbsp; The same story goes for Motif on UNIX and VMS DecWindows
+systems.
+<p>One of the hallmarks of current user interface design tools is the use
+of a combination of graphical tools and scripting to make end-user UI.&nbsp;
+Examples include Visual Basic, Delphi, and various Java integrated development
+environments.&nbsp; The Java Beans architecture has a lot to offer in service
+of this paradigm.&nbsp; It also has the goal of platform-neutrality, or
+more prosaically, that a Java Bean can be written once and used in heterogeneous
+development environments. Another quote from the Java Beans specification
+illustrates:&nbsp; "... this means that on the Microsoft platforms, the
+Java Beans APIs will be bridged through into COM and ActiveX.&nbsp; Similarly,
+it will be possible to treat a bean as a Live Object (nee Open Doc) part,
+or to integrate a bean with Live Connect inside Netscape Navigator"
+<p>The components that comprise Telewindows2 are written in Java.&nbsp;
+In fact Telewindows2 solely rests upon Java and G2 JavaLink Gateway JavaLink
+will be explained later).&nbsp; Most classes in Telewindows2 will be public.&nbsp;
+Third party developers are welcomed and encouraged to build additional
+components to the ones provided by Gensym.&nbsp; The components provided
+by Gensym may be subclassed, except where prohibited by "final" declarations
+in the implementing classes.&nbsp; Any user-defined class will have an
+equal footing with Gensym-defined ones; i.e. can be as graphically intensive
+or highly interactive.
+<p>Some Gensym-defined classes will not be made public in earlier releases
+of Telewindows2.&nbsp; Certain API's are not stable enough to warrant permanent
+support.
+<br>&nbsp;
+<h2>
+<a NAME="section-2.0"></a>2 Terminology</h2>
+
+<h3>
+<a NAME="section-2.1"></a>2.1 Users</h3>
+Telewindows2 is used by different people in different ways.&nbsp; In order
+to not make the rest of this document confusing the following terms categorize
+specific types of users.
+<p>End User
+<p>An End User is someone who interacts with user interfaces that contain
+Telewindows2 components. This user typically expects an interface to be
+Windows or Motif compliant.
+<p>UI Builder
+<p>A UI Builder is a user who builds end-user UI by assembling, connecting
+and configuring Telewindows2 (and 3rd party) components.&nbsp; This person
+will use any of a broad variety of tools to get this job done, including
+Visual Basic, HTML and JavaScript or VBScript, Delphi, Borland's JBuilder,
+Symantec Cafe, Sun's Java Studio, or Java itself.&nbsp; This list is by
+no means complete; the set of Java Beans-oriented graphical development
+environments is growing rapidly.
+<p>Component Developer
+<p>A Component Developer makes new Telewindows2 Components, and writes
+them in Java.&nbsp; This person should have a good understanding of AWT
+(and Swing in the near future), Java Beans, JavaLink, G2,&nbsp; this document,
+and the API documentation of Telewindows2.
+<h3>
+<a NAME="section-2.2"></a>2.2 The Names of this Product</h3>
+Throughout the development of this new user interface for G2 the project
+has been called "Nevada".&nbsp; This is a <i>project name</i>, like "Chicago"
+for Windows95.&nbsp; With the first beta of Nevada imminent a&nbsp; <i>product
+name</i> was chosen, Telewindows2.&nbsp; This became the more accurate
+"Telewindows2 Toolkit" by the time 1.0 was being readied.&nbsp; The name
+Sequoia is also sometimes seen.&nbsp; This is the project name for the
+first release of&nbsp; Telewindows2.&nbsp; The later releases have the
+project names Yosemite and Tahoe.
+<h2>
+<a NAME="section 3.0"></a>3 Telewindows2 Architecture Overview</h2>
+<img SRC="nevada-block-diagram-image.GIF" height=719 width=767>
+<p>This diagram illustrates that Telewindows2 components communicate to
+G2 through JavaLink, taking advantage of many G2 and GSI 5.0 enhancements,
+particularly attribute export (also known as "attribute access").&nbsp;
+These components can in turn be embedded in a variety of UI containers.&nbsp;
+One of these containers is the Telewindow2 default shell, com.gensym.shell.Shell
+, which which allows a user to browse and interact with a KB.&nbsp;&nbsp;
+A future release of Telewindows2 will have another container application
+that will be a G2 developers environment made from Telewindows2 components.&nbsp;
+G2 developers and VAR's will develop application specific container applications
+as well.
+<br>&nbsp;
+<h2>
+<a NAME="section-4.0"></a>4 Telewindows2 and G2 JavaLink Gateway</h2>
+
+<h3>
+<a NAME="section-4.1"></a>4.1 Overview</h3>
+Telewindows2 does all of its communication with G2 through G2 JavaLink
+Gateway (referred to as just JavaLink throughout the rest of this document).&nbsp;
+Interested readers are encouraged to read the&nbsp; <a href="../../../../Javalink/docs/guides/G2 Javalink Gateway User's Guide/titlepag.htm">JavaLink
+User's Guide</a> .&nbsp; JavaLink encapsulates GSI completely, and presents
+a Java Beans oriented view of G2.&nbsp; G2 is seen as a set of objects
+with properties events and methods rather than a broad set of API calls,
+or a complex wire protocol.&nbsp; The GSI type system is not visible in
+any way.&nbsp; JavaLink provides a high-level mapping of the G2 type system
+into Java.&nbsp; JavaLink takes advantage of GSI 5.0 features to initiate
+a connection and keep it up and running even when G2 is paused or reset.
+<h4>
+<a NAME="section-4.1.1"></a>4.1.1 The Properties File</h4>
+JavaLink (and JavaLink-based products) find a description of the installation
+and customization of a given machine in its .com.gensym.properties file.&nbsp;
+This file is placed in the home directory of the computer.&nbsp; This is
+usually the root of the C: drive on Windows and the users home directory,
+i.e. ~/, on Unix.
+<h3>
+<a NAME="section-4.2"></a>4.2 G2 connections in JavaLink</h3>
+A class in JavaLink that represents a connection to a G2 process implements
+an interface called G2Access.&nbsp; The management of the connection (e.g.
+host and port), the state of G2 (e.g. running, reset, paused), and the
+management of KB loading and clearing is done through this G2Access object.&nbsp;
+All other interaction with G2 takes place through instances of "stub classes"
+for G2 items, described later.
+<h3>
+<a NAME="section-4.3"></a>4.3&nbsp; Two and three-tier models.</h3>
+The reason why G2Access is an interface and not a class is that JavaLink
+supports 2 and 3 tier connection models to G2 which have different implementations.&nbsp;
+Second-tier Telewindows2 client applications connect to one or more G2
+servers directly.&nbsp; Third-tier Telewindows2 client applications connect
+through a "middle tier" T2 server, which is connected to G2.&nbsp; Three
+tier installations, although they are somewhat more difficult to set up,
+provide two distinct advantages.&nbsp; One is scalability; the G2 process
+serves one client, which can in turn serve many.&nbsp; The other is network
+administration.&nbsp; Third-tier client applications are "Pure Java" and
+thus be installed and maintained over a network.&nbsp; These clients applications
+and applets are typically embedded in HTML pages and communicate with the
+"middle tier" T2 server through HTTP and RMI.&nbsp; The choice of two and/or
+three tier models should be determined from deployment constraints; the
+implementation of T2 components is insulated from this consideration though
+the G2Access interface.
+<h3>
+<a NAME="section-4.4"></a>4.4 JavaLink Stub Classes</h3>
+JavaLink automatically generates instances of stub classes when remote
+method calls are made between G2 and Java that reference G2 items in arguments
+or return values.&nbsp; These stubs can be used for the lifetime of the
+connection to make further remote methods into G2.&nbsp; This is very similar
+in spirit to RMI, and somewhat simpler because stub generation is implicit.&nbsp;
+JavaLink is not built on RMI because RMI assumes the existence of a Java
+Virtual Machine on both sides of the connection.
+<p>JavaLink projects the G2 class hierarchy into an isomorphic Java interface
+hierarchy. This is necessary due to the fact that G2 supports multiple
+inheritence of classes, where Java only allows multiple inheritence of
+interfaces.&nbsp; These interfaces and the underlying Java classes that
+implement them are generated through introspective system procedures, provided
+in G2 5.0.&nbsp; The root of this interface hierarchy is in&nbsp; <a href="../../../../Javalink/docs/api/com.gensym.classes.Item.html">com.gensym.classes.Item.</a>
+The generated stub classes are Java Beans, i.e. they have public methods,
+properties (presented as get/set method pairs), and events.&nbsp;&nbsp;&nbsp;
+The default stub generation for methods in properties takes place in a
+straightforward fashion.&nbsp; This default behavior can be overridden
+and extended by developers, usually in order to define events for the stubs
+to generate.&nbsp; The stubs for G2-defined classes, such as KB-Workspace
+make use of this facility.&nbsp; Please see the JavaLink reference for
+the specifics of overriding default stub generation. Stub classes for G2
+system-defined classes are found in the com.gensym.classes package; user
+defined classes are placed in a sub-package of the package specified by
+the .com.gensym.user.repository property in the .com.gensym.properties
+file.
+<p>Stubs are generated implicitly as the result of passing item arguments
+from G2 into Java or as the return values of calls into G2.&nbsp; This
+does not make it possible to reference a particular method of a generated
+interface at compile time.&nbsp; If it is necessary to do so, there is
+a utility, called DownloadInterfaces, that can pre-load stub interfaces.&nbsp;
+It can be called by invoking
+<p>java&nbsp; <a href="../../../../Javalink/docs/api/com.gensym.jgi.download.DownloadInterfaces.html">com.gensym.jgi.download.DownloadInterfaces</a>&nbsp;
+-host &lt;hostname> -port &lt;portnumber> -classes &lt;class1> &lt;class2>...
+<p>The host and port should reference G2 with some KB loaded that contains
+all classes mentioned.&nbsp; The generated stubs will be placed in the
+directory/package defined by the "com.gensym.class.user.repository" property
+in the .com.gensym.properties file.&nbsp; This file is placed in the home
+directory of the user as specified the java user.home system property.&nbsp;
+See&nbsp; <a href="http://java.sun.com/products/jdk/1.1/docs/api/java.lang.System.html">java.lang.System</a>
+for details.
+<h3>
+<a NAME="section-4.5"></a>4.5 JavaLink and G2 5.x</h3>
+JavaLink exposes a JavaBeans interface for any G2 class.&nbsp; This would
+not have been possible using G2 and GSI 4.0.&nbsp; There are several 5.0
+features that make JavaLink possible.&nbsp; These features are available
+to all KBs and bridges as well.
+<h4>
+<a NAME="section-4.5.1"></a>4.5.1 System-Defined Remote Procedure Calls</h4>
+Most system procedures in G2 are now directly callable through GSI.&nbsp;
+The standard sys-mod.kb does not need to be loaded and G2 does not need
+to be running for them to function.&nbsp; This feature is usually called
+"System RPC"'s.&nbsp; JavaLink and Telewindows2 make heavy use of this
+feature.
+<h4>
+<a NAME="section-4.5.2"></a>4.5.2 New Data Types</h4>
+G2 5.0 has two new data types, Sequences and Structures.&nbsp; They are
+values, not items, and therefore provide automatic storage management and
+are NOT mutable (although it easy to make modified copies of either) in
+G2.&nbsp; In JavaLink these data types are represented by instances of
+<a href="../../../../Javalink/docs/api/com.gensym.util.Sequence.html">com.gensym.util.Sequence</a>
+and <a href="../../../../Javalink/docs/api/com.gensym.util.Structure.html">com.gensym.util.Structure.</a>&nbsp;
+These objects are mutable in JavaLink.
+<h4>
+<a NAME="section-4.5.3"></a>4.5.3 Attribute Export</h4>
+In G2 5.0 nearly every system-defined attribute has been given a definition
+as some G2 data structure and is concludable and accessible directly as
+a value.&nbsp; The G2 5.0 documentation contains a volume, the Class Reference
+Manual, which presents a description of the acceptable values for every
+exported attribute.
+<h4>
+<a NAME="section-4.5.4"></a>4.5.4 Introspection</h4>
+In G2 5.0 there is a system procedure g2-get-attribute-descriptions-of-class
+that returns a sequence of structures that describe all attributes of an
+item.&nbsp; This feature is the basis of the stub generation facility in
+JavaLink.
+<h4>
+<a NAME="section-4.5.5"></a>4.5.5 "The G2 API"</h4>
+G2 5.0 introduces a set of inter-related system procedures that provide
+access to all attributes of G2 items.&nbsp; This is can be done through
+a small number of calls, because each of these API procedures takes an
+argument called a denotation.&nbsp; These denotations can describe a large
+and growing number of data relationships of G2 Items and their attributes.&nbsp;
+The G2 API allows clients to subscribe to the state of attributes in a
+programmatic fashion (i.e. not necessitating a new "whenever rule" for
+every object in that one wants to display in the UI).&nbsp; This subscription
+API allows one to create remote replications of G2 items that are kept
+in synch without polling G2.&nbsp; The API for subscriptions is extremely
+low-level and not particularly friendly, and should not be normally be
+used directly.&nbsp; Instead, most capabilities of the G2 API show up in
+a the following JavaLink interfaces:
+<p>In interface <a href="../../../../Javalink/docs/api/com.gensym.classes.G2__Base.html">com.gensym.classes.G2__Base</a>
+, there are two methods, setPropertyValue, and getPropertyValue which allow
+generic G2 Item attribute access.
+<p>In interface <a href="../../../../Javalink/docs/api/com.gensym.classes.G2__Base.html">com.gensym.classes.Item</a>
+, there are two methods, addItemListener and removeItemListener, that provide
+JavaBeans-style subscription to the changes in G2 Item attributes.
+<p>Variable and parameter current values are distinct from Item Attributes
+in the G2 API and the following interface is provided.
+<p>In interface <a href="../../../../Javalink/docs/api/com.gensym.classes.G2__Base.html">com.gensym.classes.VariableOrParameter</a>
+, there are two methods, getValueStructure and setValueStructure, that
+allow access to G2 Variable or Parameter values, with expiration and collection
+times fully supported.&nbsp; There are two other methods addVariableValueListener
+and removeVariableValueListener, that provide the corresponding subscription
+to state change events.
+<h3>
+<a NAME="section-4.6"></a>4.6 JavaLink in Telewindows2.</h3>
+JavaLink connections to G2 are represented (on the Java side) as implementations
+G2Access.&nbsp; These connections appear in G2 as instances of Gsi-interface.&nbsp;&nbsp;
+Telewindows2 uses a sub-interface of&nbsp; <a href="../../../../Javalink/docs/api/com.gensym.jgi.G2Access.html">G2Access</a>
+called&nbsp; <a href="../api/com.gensym.ntw.TwAccess.html">TwAccess</a>,
+short for Telewindows2 Access.&nbsp; This interface adds some additional
+capabilities for running a remote UI for G2.&nbsp; Each second-tier Telewindows2
+client login causes to items to be created in G2, an instance of Ui-client-session
+(a subclass of Gsi-interface) to represent the data connection and an instance
+of Ui-client-session to represent the authorized login of a user.&nbsp;
+In three-tier installations multiple third-tier clients share a single
+Ui-client-interface and have distinct Ui-client-session's.&nbsp; The Ui-client-session
+plays much the same role as the G2-Window does in UI programming inside
+a G2 KB.&nbsp; In G2 5.0 they both inherit from a common parent called,
+Ui-client-item.&nbsp;&nbsp; KB's that want to be more "Telewindows2-friendly
+should replace all references to G2-window with ui-client-item.&nbsp; As
+of G2 5.1r1, most KB's that ship with G2 have been upgraded to do so.
+<p>In G2 the ui-client-item has a set of virtual attributes that span the
+common features of g2-windows&nbsp; These attributes include:
+<ul>
+<li>
+ui-client-user-mode, a symbol</li>
+
+<li>
+ui-client-user-name, a symbol</li>
+
+<li>
+ui-client-remote-host-name, a text</li>
+
+<li>
+ui-client-operating-system-type, a symbol</li>
+
+<li>
+ui-client-time-of-last-connection, a structure</li>
+
+<li>
+ui-client-user-name-in-operating-system, a text</li>
+
+<li>
+ui-client-specific-language, a symbol</li>
+
+<li>
+ui-client-connection-status, a symbol</li>
+
+<li>
+ui-client-user-is-valid, a truth-value</li>
+
+<li>
+ui-client-mode-is-valid, a truth-value</li>
+
+<li>
+ui-client-interface,&nbsp; an instance of ui-client-interface that is hosting
+the ui-client-session</li>
+</ul>
+The attributes of ui-client-sessions, such as user-mode, appear as properties
+in the TwAccess object.&nbsp; User-mode is visible through the &lt;get/set>UserMode()
+methods of TwAccess.&nbsp; This user mode is available to guide the display
+and input-handling behavior of any Telewindows2 component.&nbsp; The <a href="../api/com.gensym.wksp.WorkspaceView.html">WorkspaceView</a>&nbsp;
+uses this to interpret item-configurations in much the same way as occurs
+in Classic Telewindows.
+<br>&nbsp;
+<h4>
+<a NAME="section-4.6.1"></a>4.6.1 Licensing and special capabilities</h4>
+A ui-client-session has most of the same rights and restrictions as a g2-window
+item when representing a floating Telewindows connection.&nbsp; ui-client-sessions
+are counted by the G2 licensing manager to be the same as a Telewindows
+connection.&nbsp; Certain system-procedures that provide the means of running
+workspaces remotely only work when calling across a ui-client-session or
+its associated ui-client-interface.
+<br>&nbsp;
+<h4>
+<a NAME="section-4.6.2"></a>4.6.2 The "Showing" Protocol</h4>
+G2 is able to minimize the amount of computation it does to run its UI
+by knowing the set of which workspaces are showing on which windows.&nbsp;
+This allows G2 to turn off costly data displays on workspaces that are
+not visible anywhere.&nbsp; In 5.0 this is extended to ui-client-sessions
+as well.
+<p>The show and hide actions of G2 5.0 can use ui-client-sessions in the
+same way that all previous and current versions of G2 use G2-windows.&nbsp;
+If the target of these actions is a ui-client-session, an event is generated
+in the TwAccess object to inform the remote UI that it should show or hide
+a given workspace.&nbsp; If and how it does so is a private affair of the
+remote UI.&nbsp; In a UI client that looks like a MS-Windows Multiple Document
+Interface (MDI) application, it could choose to bring up another document
+window inside the application window.&nbsp; In a browser, it could react
+to these events by navigating to different pages, showing a different workspace
+in the same page, or even bringing up a new browser window.&nbsp; The JavaBeans
+event class that this protocol uses is called&nbsp; <a href="../api/com.gensym.ntw.WorkspaceShowingEvent.html">WorkspaceShowingEvent</a>.&nbsp;
+These events describe whether the client should show or hide a workspace,
+and, if it's a show event, additional information about where and how it
+should be shown based on the arguments to the show action initiated in
+G2.&nbsp; To receive WorkspaceShowingEvents a class should implement <a href="../api/com.gensym.ntw.WorkspaceShowingListener.html">WorkspaceShowingListener</a>
+and register/deregister interest in these events through the&nbsp; <a href="../api/com.gensym.ntw.TwAccess.html#addWorkspaceShowingListener">addWorkspaceShowingListener</a>
+and <a href="../api/com.gensym.ntw.TwAccess.html#removeWorkspaceShowingListener">removeWorkspaceShowingListener</a>
+methods of TwAccess.&nbsp; G2 considers a workspace to be showing upon
+receipt of the <a href="../api/com.gensym.ntw.TwAccess.html#representWorkspace">representWorkspace</a>
+call throught the TwAccess/ui-client-session, and hidden upon receipt of
+<a href="../api/com.gensym.ntw.TwAccess.html#unrepresentWorkspace">unrepresentWorkspace</a>.&nbsp;
+The implementation of <a href="../api/com.gensym.wksp.WorkspaceView.html">WorkspaceView</a>&nbsp;
+calls these methods when building and dismissing the display of a workspace.&nbsp;
+It is not expected that Telewindows2 application developers will need to
+call these methods directly, but rather that if different WorkspaceView
+behavior is desired, that WorkpaceView should be subclassed and have some
+of its methods overridden.
+<h4>
+<a NAME="section-4.6.3"></a>4.6.3&nbsp; Media Bins</h4>
+JavaBeans states that all beans are serializable, meaning their state can
+be written as a stream of bytes and later restored.&nbsp; UI client state
+can, of course, be stored on client machines in binary files.&nbsp; However,
+for many cases, such as the layout of a dialog, it makes more sense to
+store this data in the KB with which it is associated.&nbsp; Media Bins
+are a new G2 5.0 class that act as self-contained hierarchical file systems
+to provide storage of arbitrary byte streams.&nbsp; The JavaLink stub,&nbsp;
+<a href="../../../../Javalink/docs/api/com.gensym.classes.MediaBin.html">com.gensym.classes.MediaBin</a>,
+for media bins provides the means of getting a&nbsp; <a href="../../../../Javalink/docs/api/com.gensym.util.G2BinaryInputStream.html">com.gensym.util.G2BinaryInputStream</a>
+or&nbsp; <a href="../../../../Javalink/docs/api/com.gensym.util.G2BinaryOutputStream.html">com.gensym.util.G2BinaryOutputStream</a>
+from a given media bin.&nbsp; These streams are subclasses of java.io.InputStream
+and java.io.OutputStream and are thus compatible with any kind of serialization
+and deserialization of JavaBeans that needs to take place on the client.&nbsp;
+That is to say, any higher-order java.io.* stream or reader can be constructed
+by aggregating one of them, most notably ObjectInputStream and ObjectOutputStream.
+<h2>
+<a NAME="section-5.0"></a>5 Telewindows2 Components</h2>
+
+<h3>
+<a NAME="section-5.1"></a>5.1 General Guidelines</h3>
+A Telewindows2 component is a Java Bean that is used to display or edit
+data from G2.&nbsp; Components get data directly from G2 through a JavaLink
+stub, or by calling methods and listening to the events of another Telewindows2
+component.
+<h4>
+<a NAME="section-5.1.1"></a>5.1.1 Reference</h4>
+Components establish their links to G2 when they are created, or cloned,
+for presentation to the user.&nbsp; These links should be represented by
+transient fields that refer to JavaLink objects.&nbsp; JavaLink does not
+have a persistent distributed naming scheme for all objects in all G2's,
+therefore it is meaningless to serialize a stub.&nbsp; However, denotational
+information can be stored permanently in the stub object.&nbsp; In a simple
+example a Telewindows2 component could have non-transient instance fields
+that hold host name, port, and G2 item name information.&nbsp; When created
+or deserialized such information can be used to make a JavaLink connection
+and request a stub from it by name from G2.&nbsp; In practice, linkage
+to G2 is usually done more indirectly and rarely is based on names.&nbsp;
+Linkage is more likely to come through an argument to some constructor
+of a component that takes a JavaLink stub instance or through a property
+setter on the component.
+<p><i>n.b.&nbsp; There is work proposed in&nbsp; G2, GSI, and JavaLink
+that may allow persistent references between G2 and its bridges, specifically
+JavaLink.&nbsp; If and when this work becomes public, this section will
+be updated to loosen the restrictions on the storage of references to G2
+items.</i>
+<h4>
+<a NAME="section-5.1.2"></a>5.1.2 State</h4>
+Telewindows2 is designed to allow large-scale, widely-distributed user
+interfaces for G2.&nbsp; One of the principal reasons that this is possible
+is that Telewindows2 components have client-side state, whereas classic
+Telewindows does not.&nbsp; Telewindows2 components should store at least
+enough state data to paint themselves on the client's screen without having
+to call G2 or any another remote process.&nbsp; Input components should
+also be designed to have most editing to occur locally as well.&nbsp; It
+is recommended that only at the end of an editing gesture (e.g. dragging
+the mouse, hitting the "Enter" key) that G2 should be called to accept
+or reject the edit.&nbsp; Again, the components should have sufficient state
+data to continue functioning in either case.
+<h4>
+<a NAME="section-5.1.3"></a>5.1.3 Communication</h4>
+Telewindows2 components should fill themselves with whatever information
+they need from G2, when they are "JavaLink-ed", i.e have obtained references
+to JavaLink G2 Item stubs.&nbsp; If the component needs to stay up to date
+with state changes from G2 items, it should do so through subscriptions,
+not polling.&nbsp; Subscription to data in G2 can be done at a high-level
+through JavaLink stub classes, or at a low-level by calling the G2 API
+through JavaLink remote procedure calls.&nbsp; The former is preferred
+for reasons of modularity and stratification.&nbsp; The low-level JavaLink
+API exists, for the most part, to implement the JavaLink stub classes.&nbsp;
+This allows most other programming to retain high-level, object-oriented
+character that is isomorphic to the programming that occurs in G2 KB's.&nbsp;
+There are options on subscriptions to throttle down the number of update
+callbacks received by the subscriber/client.&nbsp; These options include
+being updated only at the end of G2 scheduler time-slices, and not to be
+updated more frequently than some given interval.&nbsp; These options,
+and other details, are described in the <a href="../../../../Javalink/docs/guides/G2 Javalink Gateway User's Guide/titlepag.htm">JavaLink
+User's Guide</a>.
+<h4>
+<a NAME="section-5.1.4"></a>5.1.4 Restrictions</h4>
+Telewindows2 components should be useable in Java Applets, as well as applications,
+and third-party containers like Visual Basic.&nbsp; If a component is to
+be useable in all of these places it is subject to the same restrictions
+that Applets have.&nbsp; The most prominent of these restrictions is that
+it does not have access to the file system by default and it cannot load
+native (i.e. C language) code.&nbsp; The specifics of what is allowed is
+covered in greater detail in the the Java JDK documentation.&nbsp; Of course,
+if a custom component is bought or developed that does observe these restrictions,
+it will still work.&nbsp; The component might not be-redeployable into
+stricter environments.
+<h3>
+<a NAME="section-5.2"></a>5.2 Example: A Trivial Telewindows2 Component</h3>
+The following code sample defines a very simple Telewindows2 Component.&nbsp;
+This component exists to provide a graphical display of the level attribute
+of an instance of a class called "TANK" in G2.&nbsp; This graphical display
+looks like a thermometer, but without the scale markings.&nbsp;&nbsp;
+There is a main method that makes a frame window and a connection to G2,
+demonstrating a trivial Java container for this component.
+<p><tt>// Component code starts here</tt>
+<br><tt>package COM.gensym.tests;</tt>
+<p><tt>import COM.gensym.classes.Item;</tt>
+<br><tt>import COM.gensym.util.Symbol;</tt>
+<br><tt>import COM.gensym.util.Structure;</tt>
+<br><tt>import COM.gensym.util.ItemListener;</tt>
+<br><tt>import COM.gensym.util.ItemEvent;</tt>
+<br><tt>import COM.gensym.ntw.TwAccess;</tt>
+<br><tt>import COM.gensym.ntw.TwGateway;</tt>
+<br><tt>import java.awt.*;</tt>
+<br><tt>import jed.Tank;</tt>&nbsp;<tt> // a class generated by JavaLink
+to represent the "Tank" class in G2</tt>
+<p><tt>public class Simple extends Component implements ItemListener</tt>
+<br><tt>{</tt>
+<br><tt>&nbsp; private transient Tank tank;</tt>
+<br><tt>&nbsp; private transient int currentLevel = 0;</tt>
+<br><tt>&nbsp; private static final int margin = 20;</tt>
+<br><tt>&nbsp; private static final Symbol tank_ = Symbol.intern("TANK");</tt>
+<br><tt>&nbsp; private static final Symbol level_ = Symbol.intern("LEVEL");</tt>
+<p><tt>&nbsp; public Simple(TwAccess connection,</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+String thingName)</tt>
+<br><tt>&nbsp; {</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; try {</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tank</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = (Tank) connection.getUniqueNamedItem(tank_,Symbol.intern(thingName));</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tank.addItemListener(this);</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; }</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; catch (Exception e) {</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.printStackTrace();</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; }</tt>
+<br><tt>&nbsp; }</tt>
+<p><tt>&nbsp; public void receivedInitialValues (Structure initialValues)</tt>
+<br><tt>&nbsp; {</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; currentLevel</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = ((Integer)(initialValues.getAttributeValue(level_,null)))</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .intValue();</tt>
+<br><tt>&nbsp; }</tt>
+<p><tt>&nbsp; public void itemModified (G2ItemEvent e)</tt>
+<br><tt>&nbsp; {</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; currentLevel</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = ((Integer)e.getNewValue()).intValue();</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; repaint();</tt>
+<br><tt>&nbsp; }</tt>
+<p><tt>&nbsp; public void itemDeleted (G2ItemEvent e)</tt>
+<br><tt>&nbsp; {</tt>
+<br><tt>&nbsp; }</tt>
+<p><tt>&nbsp; public void paint(Graphics g)</tt>
+<br><tt>&nbsp; {</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; Dimension size = getSize();</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; g.setColor(Color.lightGray);</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; g.fill3DRect(0,0,size.width,size.height,true);</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; if ((size.width > 2 * margin) &amp;&amp;</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (size.height > 2 * margin))
+{</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; g.setColor(Color.red);</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; g.fillRect(margin,size.height -
+(margin + currentLevel),</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+size.width - (2 * margin), currentLevel);</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; }</tt>
+<br><tt>&nbsp; }</tt>
+<p><tt>&nbsp; public static void main(String[] args)</tt>
+<br><tt>&nbsp; {</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; TwAccess connection = null;</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; Frame frame = new Frame();</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; try {</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; connection</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = (TwAccess)TwGateway.openConnection("ganesha","1111");</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; frame.setSize(600,400);</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; frame.setLayout(null);</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Simple simple = new Simple(connection,"TANK-1");</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; frame.add(simple);</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; simple.setSize(100,200);</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; frame.show();</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; }</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; catch (Exception e) {</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.printStackTrace();</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; }</tt>
+<br><tt>&nbsp; }</tt>
+<br><tt>}</tt>
+<p><tt>// Stub interface code starts here</tt>
+<br>&nbsp;
+<br>&nbsp;
+<p><tt>// Code ends here</tt>
+<p>The package declaration is, of course, optional and could be any package
+the component developer chooses.&nbsp; The imports make a number of common
+JavaLink and Telewindows2 classes visible.&nbsp; The example also uses
+AWT.
+<p>The most interesting import is that of jed.Tank.&nbsp; It is a stub
+interface for a G2 class called tank.&nbsp; This G2 class has Object as
+direct superior and contains one attribute, level, which is an integer.&nbsp;
+This class was created using the DownloadInterfaces utility (see <a href="#section-4.4">section
+4.4)</a>&nbsp; and was placed in the author's test package, jed.
+<p>The Simple class itself extends java.awt.Component, and thus is a Java
+1.1 "Lightweight" component.&nbsp; It also implements the COM.gensym.util.ItemListener
+interface, which allows Java classes to be clients of changes in the attributes
+of a specific G2 item.
+<p>The constructor of Simple does a lookup of an item in the G2 represented
+by TwAccess interface, connection using the&nbsp; <a href="../../../../Javalink/docs/api/com.gensym.jgi.G2Access.html#getUniqueNamedItem">getUniqueNamedItem()</a>&nbsp;
+method. Instances of G2Access (TwAccess is a sub-interface of G2Access)&nbsp;
+provide naming as a bootstrapping mechanism for distributed programming.&nbsp;
+Later versions of JavaLink will probably provide a broader set of roots.&nbsp;
+The return value of getUniqueNamedItem is a JavaLink stub.&nbsp; All of
+these stubs implement COM.gensym.classes.Item.&nbsp; Because this is a
+simple example, and exceptional conditions are not of interest, this stub
+is cast to be of the interface Tank.&nbsp; The constructor ends by making
+the new instance of Simple be a listener of changes to the Tank object
+in G2.
+<p>The next three (of four total) instance methods of the Simple class
+are the implementation of the three interface methods of COM.gensym.util.ItemListener.&nbsp;
+The receivedInitialValues method is actually called within the extent of
+calls to addItemListener.&nbsp; This allows initial values to be reliably
+obtained from G2 before any updates are sent over the connection.&nbsp;
+If this were not done, and subscribers to G2 items had to poll g2 by calling
+some getter method, a state change in that item could be lost.&nbsp;&nbsp;
+In the current example the receivedInitialValues method establishes the
+locally cached currentLevel variable. The itemModified method receives
+a G2ItemEvent method that carries the details about what changed in the
+G2 item.&nbsp; In the example this method updates the local cache variable.&nbsp;
+The itemDeleted method does nothing because this is a trivial example of
+a Telewindows2 component.
+<p>The remaining instance method is the paint method.&nbsp; Paint methods
+are normally specified for Lightweight AWT components.&nbsp; This paint
+method merely draws a gray rectangle for the background of this component
+and a red rectangle over the background to graphically represent the level
+value cached in currentLevel.
+<p>The static main method of this class builds AWT Frame (i.e. a top-level
+application window) and makes a connection to G2 at port 1111 of a machine
+called "ganesha".&nbsp; It places an instance of the Simple component in
+the frame.
+<p>For more detail on the specific classes and methods used here, please
+refer to&nbsp; <a href="http://java.sun.com/products/jdk/1.1/docs/">Java
+JDK 1.1 Documtation</a> and&nbsp; <a href="../api/packages.html">Telewindows2
+API Documentation</a> .
+<h3>
+<a NAME="section-5.3"></a>5.3 The workspace component</h3>
+&nbsp;G2 workspaces are represented in Telewindows2 by instances of <a href="../api/com.gensym.wksp.WorkspaceView.html">com.gensym.wksp.WorkspaceView.</a>&nbsp;&nbsp;
+The implementation of this class is analogous to the Simple example, albeit
+many orders of magnitude more complex.&nbsp; It links to G2 through the
+JavaLink stub class <a href="../../../../Javalink/docs/api/com.gensym.classes.KbWorkspace.html">com.gensym.classes.KbWorkspace,</a>
+getting the initial state of the workspace and subscribing to events that
+describe each state change of the workspace.&nbsp; It does not change its
+internal state directly in response to editing actions of the user, but
+instead makes requests to G2, for example, to move or change the size of
+an item.&nbsp; If this request is satisfied, an update event is generated
+that is received and causes the drawing in the WorkspaceView to change.
+<p>The WorkspaceView draws itself to look as similar as possible to the
+way workspaces are drawn in classic Telewindows.&nbsp; Most differences
+are minor, if intentional, or bugs.&nbsp; The major difference is that
+scaling is not supported, and will not be supported in the 1.0 release
+of Telewindows2.&nbsp; Input-handling has a number of differences that
+are intended to modernize and standardize the user interactions.&nbsp;
+Context-sensitive menus are only activated by the right mouse button.&nbsp;
+The left mouse button drives selection, which is represented by outlines
+and sizing handles that are drawn on selected objects.&nbsp; The WorkspaceView
+has commands that are applied to the selection.&nbsp; Many applications
+(such as the Telewindows2 Toolkit application development shell) will have
+menu choices and toolbar buttons that invoke these commands. This selection
+model is meant to be immediately useable by anyone who has used a standards-based
+drawing program, CAD application, or presentation authoring environment
+(such as MS-PowerPoint) or the Windows NT/95 "Explorer" environment.&nbsp;
+Selection is local to a view; it cannot be seen by G2 or other ui-clients.
+<p>The customization of workspace behavior through item-configurations
+is supported in Telewindows2, with some restrictions.&nbsp; This is due
+to the fact that restrictions are interpreted for every mouse click and
+key typed in any Telewindows in the G2 server.&nbsp; This is not something
+that fits in with the distributed UI model of Telewindows2 very well.&nbsp;
+In Telewindows2, components are supposed to be able to draw themselves
+and interact with the user without necessarily communicating with G2.&nbsp;
+This is done to allow place less of a burden on the G2 server thus promoting
+scalability to far greater numbers of UI clients than permitted by classic
+Telewindows.&nbsp; The handling of item-configurations in Telewindows is
+a compromise.&nbsp; Item-configurations are downloaded for the workspace
+and its contained items when the workspace is shown.&nbsp; (The same goes
+for the evaluation user-menu-choice condition).&nbsp; These item-configurations
+are then used locally to modify input handling.&nbsp; This strategy is
+fine for the end-users of an application, because this configuration information
+is typically pretty stable and user-modes tend to change slowly.&nbsp;
+This is less true in development situations.&nbsp; There are interfaces
+for forcing an update to the configuration state of a WorkspaceView.&nbsp;
+These will be invoked automatically if the user-mode of the TwAccess changes.
+<h3>
+<a NAME="section-5.4"></a>5.4 High-level Dialog components</h3>
+Telewindows2 provides dialog components that are designed to display and
+edit the data of G2 easily,and to be used straightforwardly in a JavaBeans
+GUI building environment.&nbsp; This by no means restricts one to build
+UI using just these Gensym-provided components; Telewindows2 is an open,
+JavaBeans architecture.&nbsp; These components are provided to accelerate
+and simplify the development of user interfaces.&nbsp;&nbsp; If one were
+to attempt to build an interface using exactly the
+<br>components provided in "classic" (i.e. JDK 1.1) AWT and the newer Swing
+Set,&nbsp; one would conclude that their data types and events are very
+generic and thus low-level.&nbsp; Considerable data type mapping and event
+interpretation is needed around nearly all of these components to get them
+to work easily with G2.&nbsp; The Telewindows2 high-level dialog components
+address these needs by subclassing of many of the AWT, and eventually Swing,
+components.&nbsp; Their API's are not hidden, merely extended to allow
+smoother integration with G2.
+<h4>
+<a NAME="section-5.4.1"></a>5.4.1 G2 Data Structure and Attribute Export</h4>
+One of the major goals of version 5 of G2 was to provide a virtually complete
+system programming interface for G2, accessible from KB's and bridges.&nbsp;
+This project was christened "attribute export".&nbsp; Attribute export
+extends the basic getter and setter of the attributes of G2 items, the
+conclude action and the "of" operator to system-defined attributes and
+other implicit properties of items.&nbsp; Telewindows2 components use Attribute
+Export to display and edit the attributes of items.
+<p>In 5.0 nearly all system-defined attributes are available directly through
+the "the &lt;attr-name> of &lt;item>" syntax.&nbsp; The value is nearly
+always something more complex than a simple scalar, like an integer or
+a float.&nbsp; To serve this need the G2 type system was extended with
+two new kinds of values, sequences and structures.&nbsp; Sequences are
+like lightweight lists or arrays, and structures are like lightweight items.&nbsp;
+These data structures are "values" in the G2 type hierarchy, this implies
+the that they are not mutable, have no identity (meaning they cannot be
+tested for equality through "same as" operator), and have implicit reclamation.&nbsp;
+One can make modified copies of sequences and structures through a variety
+of operations (please see the G2 5.0 reference manual for a complete treatment)
+and can be tested for equality by the value equality operator, "=".&nbsp;
+Each system-attribute that is exported has a data type definition in terms
+of a composition of sequences and structures over all the value types and
+G2 items.&nbsp; There is a whole book in the G2 5.0 documentation set devoted
+to this subject, the Class Reference Manual.
+<p>An example of an exported system-defined attribute that has an interesting,
+i.e. non-trivial export is that of the class-specific-attributes of any
+of the definition classes.&nbsp; This attribute is exported as a sequence
+of structures describing each attribute defined for the class.&nbsp; The
+attribute-describing structures always contain an attribute holding a symbol
+which names the class.&nbsp; Optionally, these structures also contain
+the data type, initial value, range of values, and whether the attribute
+should maintain an index or not.
+<p>The attribute export project also exposes many other properties of items
+in pre-5.0 G2 that had non-uniform or incomplete programmability, such
+as the layout and contents of the attribute-displays of the item, or the
+name of the module that contains a given item.&nbsp; This data is exported
+as "virtual" attributes, meaning that these properties can be accessed
+or changed in the same way that attributes are, although they are not necessarily
+stored in the items themselves.&nbsp; Two interesting and complex virtual
+attributes are the current-attribute-displays of an item, and the relationships
+of an item.&nbsp; The former allows one to layout the attribute displays
+of a G2 item and the latter allows one to view and edit all relations in
+which a given item participates.&nbsp; The virtual attributes of all G2
+classes are also documented in the aforementioned Class Reference Manual.
+<h4>
+<a NAME="section-5.4.2"></a>5.4.2 Data-aware Components</h4>
+
+<h4>
+<a NAME="section-5.4.2.1"></a>5.4.2.1 Scalar Components</h4>
+The Telewindows high-level dialog components are aware of the data types
+of G2 as presented through JavaLink.&nbsp; One does not need to write setter
+and getter code to display, for instance, a text field that allows the
+user to edit an attribute that contains a floating point value.&nbsp; The
+currently set of scalar editing components include <a href="../api/com.gensym.controls.G2TextField.html">G2TextField</a>,
+<a href="../api/com.gensym.controls.G2DropDownChoice.html">G2DropDownChoice</a>,
+<a href="../api/com.gensym.controls.G2Radiobox.html">G2Radiobox,</a>&nbsp;
+and&nbsp; <a href="../api/com.gensym.controls.G2Radiobox.html">G2Checkbox</a>.
+Every one of these components has a property called FieldType.&nbsp; Field
+types include Text, TruthValue, Integer, Float, Symbol, Structure, Sequence,
+and Value, i.e. any G2 value type.&nbsp; The FieldType governs the translation
+of data from G2 (as presented by JavaLink) in to the data types needed
+by the components underlying AWT or Swing object.&nbsp; For example if
+a G2TextField is being used to edit an attribute of a G2 item that is defined
+to contain an integer, then it will use the FieldType object to take the
+integer and turn it into a java.lang.String before calling the setText()
+method on itself.&nbsp; Conversely when the field has been edited, the
+field will use the FieldType object to parse the string back into a java.lang.Integer.
+<p>G2TextFields are somewhat more complex than the other scalar components,
+because textfields&nbsp; allow any value to be typed in, rather than choosing
+one of many possibilities, as is done in DropDownChoices Checkboxes, and
+RadioButtons.&nbsp; They contain additional properties to say whether unparseable
+input, i.e. input that does not match the field type, should bring up a
+warning dialog box.&nbsp; They also have a property that controls whether
+empty fields are to be interpreted as null.&nbsp; This can be used to match
+up with the G2 concept that an empty attribute "does not exist" (from the
+perspective of the G2 evaluator) or is "none" (from the perspective of
+G2 attribute tables). Another property, PropagateEveryKeyTyped controls
+whether change events are generated for each intermediate state of editing
+the text, or just upon pressing return or tab.
+<h4>
+<a NAME="section-5.4.2.2"></a>5.4.2.2 Aggregate Components</h4>
+G2 Sequences and Structures have no simple analog in the AWT component
+set.&nbsp; The High-level Telewindows2 Components include two Beans to
+simplify their editing.&nbsp; For sequences (actually instances of java.util.Vector
+of which com.gensym.util.Sequence is a subclass) that hold a collection
+of like elements, one can use the&nbsp; <a href="../api/com.gensym.controls.G2Listbox.html">G2ListBox</a>.&nbsp;
+It is a collection list, rather than a selection list.&nbsp; In other words
+it maintains a set of objects that can grow or shrink in which the currently
+selected element can be edited through other dialog components.
+<p>For G2 structures there is an invisible bean called&nbsp; <a href="../api/com.gensym.controls.StructureMUX.html">StructureMUX</a>
+.&nbsp; A more accurate, but overly long, name for this bean would be G2StructureMultiplexerDemultiplexer.&nbsp;
+This bean can route the attributes of a structure into separate dialog
+components for browsing or editing.
+<h4>
+<a NAME="section-5.4.2.3"></a>5.4.2.3 Update and Change events.</h4>
+Java Beans communicate through defined events and event listener interfaces.&nbsp;
+The actual transport between events and event listeners can be done in
+a variety of ways depending upon the container implementation.&nbsp; For
+example, in Visual Basic, beans communicate through fragments of Basic
+code; in Netscape's Live Connect, Java Beans can be glued together with
+JavaScript.&nbsp; Requiring Telewindows2 UI Builders to master the intricacies
+of making these connections at a very low level (AWT Events) would be painstaking
+and non-obvious.&nbsp; For that reason Telewindows2 offers two simple events
+that can link the High-Level Dialog Components together to edit reasonably
+complex data structures.&nbsp; These two events are called&nbsp; <a href="../../../../Javalink/docs/api/com.gensym.dlgevent.ObjectChangeEvent.html">ObjectChangeEvent</a>&nbsp;
+and&nbsp; <a href="../../../../Javalink/docs/api/com.gensym.dlgevent.ObjectUpdateEvent.html">ObjectUpdateEvent</a>.&nbsp;
+Most high-level dialog components in com.gensym.controls implement <a href="../../../../Javalink/docs/api/com.gensym.dlgevent.ObjectChangeListener.html">ObjectChangeListener</a>
+, except the scalar controls.&nbsp; (Scalar controls represent "atomic
+data" with no sub parts to be edited by other contols). Nearly every component
+implements <a href="../../../../Javalink/docs/api/com.gensym.dlgevent.ObjectUpdateListener.html">ObjectUpdateListener</a>,
+except the ItemProxy.
+<p>ObjectUpdateEvents flow from beans that represent containing data structures&nbsp;
+to beans that represent contained data.&nbsp; They stop flowing when an
+atomic/scalar component is reached, such as a text field or a radio button.&nbsp;
+They normally start flowing when a dialog is launched, or when a dialog
+that subscribes to attribute values in G2 receives an update.&nbsp; ObjectChangeEvents
+flow in the opposite direction, and are usually initiated by the end-user
+editing a particular atomic/scalar control.&nbsp; The following diagram
+shows a simple dialog for a G2 item that has two attributes called Attr1
+and Attr2.
+<p><img SRC="nevadaevents1.GIF" height=575 width=671>
+<br>A more complex example for a fragment of a dialog that could edit the
+sequence of structures that is exported for the class-specific-attributes
+of one of the definition classes of G2 could be built like the following
+diagram.&nbsp; ActionEvents are also included to illustrate how these components
+are wired into the typical apply and ok buttons of editing dialogs.
+<br><img SRC="nevadaevents2.GIF" height=575 width=671>
+<br>&nbsp;
+<h4>
+<a NAME="section-5.4.2.4"></a>5.4.2.4 Item Proxies</h4>
+An&nbsp; <a href="../api/com.gensym.controls.ItemProxy.html">ItemProxy</a>
+bean is very much like a StructureMUX except that it splits and joins the
+editing events of the attributes of a G2 Item, rather than a Structure.&nbsp;
+It also contains a reference to a JavaLink stub of a G2 item.&nbsp; It
+has upload and download methods that can be used to fill up a dialog's
+components upon launch and to store the results of the dialog when the
+dialog is closed.
+<h4>
+<a NAME="section-5.4.3"></a>5.4.3 Event Adaptation and non-Gensym components</h4>
+G2 data-aware components listen to low-level events, such as the TextChanged,
+and generate an ObjectUpdate event if and only if the event occurred as
+a result of end-user keyboard/mouse input.&nbsp; Because UI builders in
+many cases will build non-Gensym-provided components into dialogs, they
+need a means of interacting with the events of the Telewindows2 dialog
+G2-aware dialog components.&nbsp; In other words, there is no restriction
+or standard on the developers of JavaBeans or ActiveX controls to use just
+a limited and compatible set of events.&nbsp;&nbsp; More often than not
+a fragment of code must be written to "impedence match" a the events of
+one vendor's beans with the methods of another's.&nbsp; In the ComponentEditor
+that is supplied with Telewindows2, this can be done through a fragment
+of code in either G2 or Java Syntax.&nbsp;&nbsp; Other integrated development
+environments for Java and ActiveX solve the problem in a similar fashion,
+but vary widely in the pragmatics of editing and storing these code fragments.
+<h3>
+<a NAME="section-5.5"></a>5.5 ActiveX components</h3>
+Telewindows2 contains a special feature on the Windows NT and 95 platforms
+to support the use of ActiveX components in Telewindows2 Containers.&nbsp;
+These components are imported into JavaBeans by a utility known as the
+BeanXporter** and given Java "wrapper" classes.&nbsp; Once this is done
+these components behave as any other Telewindows2 component.&nbsp; Their
+use is restricted to a subset of Telewindows2 containers that implement
+a handful of special support interfaces.&nbsp; Also, using ActiveX-based
+Telewindows2 components makes an application not 100% pure Java. Nevertheless,
+the power, robustness, and popularity of many of these ActiveX controls,
+including most of the parts of the MS Office suite, makes them an attractive
+choice when the deployment environment is known to be Windows.
+<p><i>** The BeanXporter is included with Telewindows2 Toolkit and accessible
+from the ComponentEditor.&nbsp; It is also available as a stand-alone product.</i>
+<h2>
+<a NAME="section-6.0"></a>6 Containers</h2>
+There are several kinds of UI containers in Telewindows2 in addition to
+the components.&nbsp; Some of the components, such as the WorkspaceView,
+are themselves containers.&nbsp; Other top-level windows such as application
+shells and dialogs are purely containers.
+<h3>
+<a NAME="section-6.1"></a>6.1 The "Telewindows2 Toolkit" shell.</h3>
+It is likely that a future version of Telewindows2 will contain an end-user
+application targeted at KB developers.&nbsp; Many will see this future
+offering as a plug-and-play replacement of Classic Telewindows.&nbsp; It
+will be a customizable environment for users to develop KBs and end-user
+UI for these KBs.&nbsp; It will not assume that its users have Java or
+Visual Basic skills.&nbsp; It will focus on the G2 object model and language
+and visual programming.
+<p>The 1.0 release of Telewindows2 contains a default application shell,
+with source code, to jump start development of application-specific end-user
+interfaces.&nbsp; This is in the class com.gensym.shell.Shell, and it makes
+use of all of the standard top-level UI controls, such as menubars, toolbars,
+status lines, and multiple-document interface handling.&nbsp; These same
+features that Gensym is using to build the new KB developer's environment
+are available now for application UI.
+<h4>
+<a NAME="section-6.1.1"></a>6.1.1.&nbsp; Menu/Command Interface</h4>
+An area of particular concern is the relationship between a shell and its
+contained components.&nbsp; A good abstraction of this interaction is necessary
+to provide an environment for components such as the WorkspaceView so that
+they can be hosted and be controlled easily from menus and toolbars. This
+relationship must not impose the demand that the contained component be
+aware in any way of how it is contained and driven.&nbsp; In Telewindows2
+this is done in a JavaBeans style.&nbsp; The command interface that a component
+presents is precisely the set of publicly visible methods.&nbsp; To make
+good UI, one needs to know that certain commands only make sense at a certain
+times.&nbsp; For example, cut or copy menu choices should only be allowed
+when the component currently has a selection.&nbsp; A well-written Telewindows2
+component publishes the availability of its commands through events. Command
+initiators, such as menus and toolbars listen to these events and do the
+appropriate "graying-out" of menu choices or the like.
+<p>A second abstraction that simplifies the interaction of the component
+and container is the <a href="../api/com.gensym.ui.Command.html">com.gensym.ui.Command</a>
+class.&nbsp; Subclasses of this class group related methods of the component
+in question and listen to specific events to determine command availability.&nbsp;
+Menubars and toolbars can be created from these command objects and are
+wired to the components through them.&nbsp; The precise way in which this
+is done in the Telewindows2 default application shell is illustrated in
+the following diagram.
+<p><img SRC="command-diagram-image.GIF" height=719 width=959>
+<br><i></i>&nbsp;
+<h3>
+<a NAME="section-6.2"></a>6.2 Dialogs</h3>
+There are many kinds of dialogs in Telewindows2.&nbsp; The two most important
+types to understand are user-defined application-specific dialogs and G2
+Item-editing dialogs.&nbsp; They share many concepts.&nbsp;&nbsp; This
+section applies primarily to Java based environments.&nbsp; Visual Basic
+edits and stores its forms, while HTML editors and browsers use web-pages
+as their primary UI containers.&nbsp; The section on G2-item-editing dialogs
+is relevant to all environments.
+<h4>
+<a NAME="section-6.2.1"></a>6.2.1 Editing</h4>
+Dialogs can be created in any Java Beans oriented editor, including Telewindows2
+ComponentEditor.&nbsp; These dialogs can be launched programmatically from
+Telewindows2 applications and/or associated with G2 classes.
+<h4>
+<a NAME="section-6.2.2"></a>6.2.2 Storage</h4>
+In most cases, dialogs are created and saved at "design time" and recreated
+from a stored form and activated at "run time".&nbsp; Because Telewindows2
+containers are composed of JavaBeans and ActiveX components it is possible
+to serialize (save as a stream of bytes) any dialog.&nbsp; There are two
+common means of doing so in Telewindows2; others are certainly possible.&nbsp;
+If one wants to store dialogs in a KB module one can do so into a G2 5.0
+class called a&nbsp; <a href="../../../../Javalink/docs/api/com.gensym.classes.MediaBin.html">Media
+Bin</a>. The JavaLink stub for this G2 class provides methods to obtain
+java.io package InputStreams and OutputStreams.&nbsp; Serializing and deserializing
+into these streams is straightforward.&nbsp; For client-side one can simply
+(de-)serialize objects into the local file system.&nbsp; G2 item-editing
+dialogs use a combination of the two methods.
+<h4>
+<a NAME="section-6.2.3"></a>6.2.3 WorkspaceViews as Containers</h4>
+The WorkspaceView component is an AWT lightweight container.&nbsp; Currently
+the only things it contains are the components that represent G2 items.&nbsp;
+WorkspaceViews have the contract of being able to represent data compatibly
+with G2 and "classic" Telewindows.&nbsp; There is a special client-server
+relationship in the implementation of the Workspace.&nbsp; The real object
+upon a workspace exists only in the G2 server.&nbsp; What is seen in any
+client is just a representation that must be kept in synch with the server
+in other clients.&nbsp; If any of the items on the workspace are instances
+of G2-JAVA-BEANS, then they are represented by corresponding Java bean
+instances. This allows WorkspaceViews to be "open" containers, accepting any
+kind of Java bean or ActiveX control (converted using BeanXporter).
+See the <a href="BeansOnWorkspaces.html">Beans on Workspaces</a>
+documentation for more information on how to use this functionality.
+<h4>
+<a NAME="section-6.2.4"></a>6.2.4 Item-Editing Dialogs</h4>
+One of the most important kinds of dialogs in Telewindows2 is item-editing
+dialogs, i.e. dialogs that allow a G2 item to be edited.&nbsp; These dialogs
+are given special support because of their ubiquity and great need for
+customization.&nbsp; These are typically launched by user interaction on
+a workspace, but can be launched programmatically for any reason.&nbsp;
+They are typically customized based on user mode, client locale, module
+membership, and other application needs.&nbsp; They also need to work well
+regardless of the outermost container environment (e.g. Telewindows2, VisualBasic,
+Netscape) from which they are launched.&nbsp; Furthermore these dialogs
+are sometimes expensive to build or generate, and need to be cached on
+the client.
+<p>Every instance of TwAccess has an instance of&nbsp; <a href="../api/com.gensym.dlgruntime.DialogManager.html">DialogManager</a>
+associated with it.&nbsp; This can be found through the&nbsp; <a href="../api/com.gensym.ntw.TwAccess.html#getDialogManager">getDialogManager()</a>&nbsp;
+method.&nbsp; DialogManagers organize how item-editing dialogs are stored,
+found, and launched for given G2 connection of a given client.&nbsp; The
+DialogManager builds and shows a dialog for an item through its <a href="../api/com.gensym.dlgruntime.DialogManager.html#editItem">editItem()</a>
+method.
+<p>The DialogManager maintains a table, called a resource table, that holds
+an association between the arguments of the editItem method and a <a href="../api/com.gensym.dlgruntime.DialogResource.html">DialogResource</a>.&nbsp;
+This association maps the combination of either a G2 class name or a specific
+item, a user-mode and a locale with a DialogResource. This mapping can
+be modified through the <a href="../api/com.gensym.dlgruntime.DialogManager.html#setDialogResourceEntry">setResourceDialogEntry</a>
+method of DialogManager.&nbsp; If one desires to do so from a G2 KB, this
+can be done by calling one of the variants of this method that take structures.&nbsp;
+Note that if this method is called remotely from G2, that the remote procedure
+declaration should specify that all items and structures be passed "as
+handle".
+<p>DialogResources normalize the storage and launching of dialogs that
+come from different authoring environments.&nbsp; Dialogs might be written
+by hand in Java, or in some 3rd party JavaBeans visual development environment,
+or could even be Visual Basic forms or web pages. DialogResources have
+three essential pieces of information:&nbsp; a URL of where to find the
+stored form of the dialog, a&nbsp;&nbsp; <a href="../api/com.gensym.dlgruntime.DialogReader.html">DialogReader</a>,&nbsp;
+and a&nbsp; <a href="../api/com.gensym.dlgruntime.DialogLauncher.html">DialogLauncher</a>.&nbsp;
+The URL can use any protocol (e.g. file, http, gopher).&nbsp; A special
+protocol, eg "g2://..." allows resources to be found from the KB in the
+G2 for that TwAccess.&nbsp; [ <i>n.b. As of 1.0r1 the "g2://hostname:port/namedBin/&lt;BinName>/&lt;location-in-bin>"
+URL syntax only supports named media bins and locations within them.&nbsp;
+This will be changed and extended in a later release. </i>]&nbsp; A DialogReader
+knows how to take a stream of bytes found in the URL and create/deserialize
+a dialog.&nbsp; DialogReaders must implement methods that allow DialogLaunchers
+to hookup the&nbsp; <a href="../api/com.gensym.controls.ItemProxy.html">ItemProxy</a>
+within the dialog to actual Item stub class instances.&nbsp; DialogLaunchers
+must implement the launch method that actually creates and shows the top-level
+window that will hold the dialog and perform the Item to ItemProxy hookups.
+<h4>
+<a NAME="section-6.2.5"></a>6.2.5 Dialog State</h4>
+When dialog is launched, often other components on the dialog need to perform
+some kind of initialization.&nbsp; The component, <a href="../api/com.gensym.controls.DialogCommand.html">DialogCommand,</a>
+provides events for the startup and shutdown of dialogs.&nbsp; The event
+class is, <a href="../api/com.gensym.dlgruntime.DialogCommandEvent.html">DialogCommandEvent</a>
+and the listener interface is&nbsp; <a href="../api/com.gensym.dlgruntime.DialogCommandListener.html">DialogCommandListener.</a>
+The dialogLaunched listener method will be invoked.
+<p>When a dialog is closed, it should shutdown properly and remove items
+from ItemProxies.&nbsp; This allows the Java garbage collecter to do its
+job better and earlier.&nbsp; Furthermore, there may be parts of an application
+outside of that dialog that need to know when the dialog is finished.&nbsp;
+Typically, the component or module that launches a non-modal dialog might
+want to know when that dialog is done.&nbsp; The listenerMethod called
+in this case is dialogShutdown.
+<h4>
+<a NAME="section-6.2.6"></a>6.2.6 ActiveX considerations</h4>
+When a Gensym-written container (e.g. a WorkspaceView or Dialog)&nbsp;
+is used on a Window NT/95 machine it has additional support for hosting
+ActiveX controls in it.&nbsp; There is a short document explaining how
+to use ActiveX controls&nbsp; with Telewindows2.&nbsp; Detailed technical
+information is not yet available.
+</body>
+</html>

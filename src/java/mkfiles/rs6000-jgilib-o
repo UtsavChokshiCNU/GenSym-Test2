@@ -1,0 +1,84 @@
+# Makefile for JGI Shareable Object Library
+# Machine type: RS6000
+
+#   This makefile is to be run in the object directory with a command
+# such as "make -f $SRCBOX/java/mkfiles/<platform>-jgilib-o".
+# The following environment variables must be set.
+#     JAVA_HOME: needed for jdk jni include files
+#     SRCBOX:    needed for .c and .h files
+#     GSIBOX:    needed for gsi libraries
+# The following files are required, which are created by javah.
+#     $(H_DIR)/com_gensym_jgi_JGInterface.h
+#     $(H_DIR)/com_gensym_jgi_GsiLoopThread.h
+
+# Porting note:  To build the gsi libraries for use with this, 
+#   xlc_r must be used rather than cc.  At this point, we
+#   build under minimum AIX 4.3.4 (mes -- 10/12/00).
+
+#------------------------------------------------
+# Variables
+#-----------------------
+# Command variables
+CC = xlc_r
+
+#-----------------------
+# Directory variables
+
+C_DIR   = $(SRCBOX)/java/c
+H_DIR   = $(SRCBOX)/java/include
+EXE_DIR = ../lib
+SPECIFIC = $(SRCBOX)/specific/rs6000
+
+#-----------------------
+# Flag variables
+
+CCFLAGS = -DNDEBUG -Dunix \
+  -I$(JAVA_HOME)/include -I$(SRCBOX)/java/include -I$(GSIBOX)
+
+#-----------------------
+# File variables
+
+GSI_LIBS = $(GSIBOX)/libgsi.a $(GSIBOX)/libtcp.a $(GSIBOX)/libnogsec.a $(GSIBOX)/librtl.a 
+# $(SPECIFIC)/libssl.a $(SPECIFIC)/libcrypto.a
+
+H_FILES = $(GSIBOX)/gsi_main.h $(H_DIR)/jni_gi.h $(H_DIR)/jgi_gsi_options.h \
+  $(GSIBOX)/gsi_misc.h $(H_DIR)/jgi_locks_generate.h $(H_DIR)/jgi_info.h \
+  $(H_DIR)/com_gensym_jgi_JGInterface.h $(H_DIR)/com_gensym_jgi_GsiLoopThread.h
+
+O_FILES = $(GSIBOX)/gsi_misc.o jni_gi.o jni_gi_gsiconv.o jni_gi_init.o \
+  jni_gi_javaconv.o jni_gi_utils.o jgi_locks.o
+
+#------------------------------------------------
+# Targets
+
+$(EXE_DIR)/libJgiInterface.a : $(O_FILES) $(GSI_LIBS)
+	grep " JNICALL " $(H_DIR)/com_gensym_jgi_JGInterface.h $(H_DIR)/com_gensym_jgi_GsiLoopThread.h | sed "s/.* JNICALL //g" > libJgiInterface.exp
+	$(CC) -o $(EXE_DIR)/libJgiInterface.a $(O_FILES) $(GSI_LIBS) -lm -bE:libJgiInterface.exp -bM:SRE -bnoentry
+	rm libJgiInterface.exp
+
+#gsi_misc.o : $(C_DIR)/gsi_misc.c $(H_FILES)
+#	$(CC) -c $(CCFLAGS) $(C_DIR)/gsi_misc.c -o gsi_misc.o
+
+jgi_locks.o : $(C_DIR)/jgi_locks.c $(H_FILES)
+	$(CC) -c $(CCFLAGS) $(C_DIR)/jgi_locks.c -o jgi_locks.o
+
+jni_gi.o : $(C_DIR)/jni_gi.c $(H_FILES)
+	$(CC) -c $(CCFLAGS) $(C_DIR)/jni_gi.c -o jni_gi.o
+
+jni_gi_gsiconv.o : $(C_DIR)/jni_gi_gsiconv.c $(H_FILES)
+	$(CC) -c $(CCFLAGS) $(C_DIR)/jni_gi_gsiconv.c -o jni_gi_gsiconv.o
+
+jni_gi_init.o : $(C_DIR)/jni_gi_init.c $(H_FILES)
+	$(CC) -c $(CCFLAGS) $(C_DIR)/jni_gi_init.c -o jni_gi_init.o
+
+jni_gi_javaconv.o : $(C_DIR)/jni_gi_javaconv.c $(H_FILES)
+	$(CC) -c $(CCFLAGS) $(C_DIR)/jni_gi_javaconv.c -o jni_gi_javaconv.o
+ 
+jni_gi_utils.o : $(C_DIR)/jni_gi_utils.c $(H_FILES)
+	$(CC) -c $(CCFLAGS) $(C_DIR)/jni_gi_utils.c -o jni_gi_utils.o
+
+#------------------------------------------------
+# Cleanup
+
+clean :
+	rm -f $(EXE_DIR)/libJgiInterface.a *.o

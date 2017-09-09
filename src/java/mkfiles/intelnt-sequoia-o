@@ -1,0 +1,19 @@
+
+JAVADIR=$(SRCBOX)\java
+
+JARDIR=$(JAVADIR)\classes
+
+JARFILE=$(JARDIR)\sequoia.jar
+
+all: $(JARDIR) $(JARFILE) 
+
+# Create a JAR file with a suitable manifest based on package.info
+
+$(JARDIR):
+	mkdir "$(JARDIR)"
+
+$(JARFILE): $(CLASSFILES)
+	java -mx100m com.gensym.devtools.MakeProductJar -productName sequoia -sourceDir $(JAVADIR) -targetFile $(JARFILE) -javaSource $(JAVADIR)
+
+clean:
+	-del $(JARFILE)

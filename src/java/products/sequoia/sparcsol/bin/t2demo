@@ -1,0 +1,17 @@
+#!/bin/csh -f
+
+if (! $?SEQUOIA_HOME) then
+  if ($?0) then
+    source `dirname $0`/set-envvars
+  else
+    echo "SEQUOIA_HOME not set and can't determine directory for environment variable script"
+    exit -1
+  endif
+endif
+
+${SEQUOIA_HOME}/bin/start-g2 -kb ${SEQUOIA_HOME}/kbs/mill.kb -rgn1lmt 40000000 -name "Mill" -width 600 -height 500 -module-search-path ${SEQUOIA_G2}/kbs/utils&
+
+sleep 10
+
+java com.gensym.shell.Shell -title "Telewindows2 Demo (mill)" -geometry 600x500-0-0 -host localhost -port 1111
+

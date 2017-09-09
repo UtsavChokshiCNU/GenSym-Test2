@@ -1,0 +1,261 @@
+<project name="Gensym_173" basedir="." default="all">
+
+	<!-- Reading properties from files -->
+	<property file="${basedir}/build.properties" />
+
+	<!--Classpath of application includes all thirdparty jars -->
+	<path id="app.classpath.compile">
+		<pathelement location="${lib.dir}" />
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+	
+	<path id="app.classpath.run">
+		<path refid="app.classpath.compile" />
+		<fileset dir="${res.dir}">
+			<include name="**/*.*" />
+		</fileset>
+		<fileset dir="${properties.dir}">
+			<include name="**/*.*" />
+		</fileset>
+		<fileset dir="${basedir}/xml">
+			<include name="**/*.*" />
+		</fileset>
+	</path>
+
+	<!-- Test compile/run tests-->
+	<path id="test.classpath.compile">
+		<path refid="app.classpath.compile" />
+		<pathelement location="${classes.dir}" />
+		<pathelement location="${test.res.dir}" />
+	</path>
+
+	<!--Classpath for running tests -->
+	<path id="test.classpath.run">
+		<path refid="app.classpath.run" />
+		<path refid="test.classpath.compile" />
+		<pathelement location="${test.classes.dir}" />
+		<fileset dir="${test.res.dir}">
+			<include name="**/*.*" />
+		</fileset>
+	</path>
+
+	<!--============================================
+             Clean all the temporary directories
+        ============================================-->
+	<target name="clean" description="Cleans the entire build and restores to original clean status" depends="clean-build, clean-tests, clean-reports">
+		<delete dir="${classes.dir}" />
+		<delete dir="${basedir}/tmp" />
+	</target>
+
+	<target name="clean-reports" description="Deletes reports directory">
+		<delete dir="${reports.dir}" />
+	</target>
+
+	<target name="clean-build" description="Deletes build directory">
+		<delete dir="${build.dir}" />
+	</target>
+
+	<target name="clean-tests" description="Deletes tests classes directory">
+		<delete dir="${test.classes.dir}" />
+	</target>
+
+	<!--====================================================
+                  Copy junit.jar into ANT_HOME/lib/
+	====================================================-->
+	<target name="copy-junit-emma" description="Copy junit.jar, emma.jar and emma_ant.jar into ANT_HOME/lib ">
+		<copy file="${lib.dir}/junit-3.8.1.jar" todir="${ant.library.dir}" />
+		<copy file="${lib.dir}/emma.jar" todir="${ant.library.dir}" />
+		<copy file="${lib.dir}/emma_ant.jar" todir="${ant.library.dir}" />
+	</target>
+
+	<!--====================================================
+	                  Building application
+	    ====================================================-->
+	<!-- Compiling application -->
+	<target name="compile" description="Compiles source" depends="all-clean">
+		<mkdir dir="${classes.dir}" />
+		<javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="app.classpath.compile" debug="true" fork="true" failonerror="true" />
+		<copy todir="${classes.dir}">
+			<fileset dir="${res.dir}">
+				<include name="*.*" />
+			</fileset>
+			<fileset dir="${properties.dir}">
+				<include name="*.*" />
+			</fileset>
+		</copy>
+	</target>
+
+	<!-- Building jar file -->
+	<target name="build-app" depends="compile" description="Pack the classes">
+		<mkdir dir="${build.dir}" />
+		<copy todir="${build.dir}">
+			<fileset dir="${lib.dir}">
+				<include name="*.jar" />
+			</fileset>
+		</copy>
+		<jar jarfile="${build.dir}/${jar-name}.jar" compress="true" basedir="${classes.dir}">
+			<manifest>
+				<attribute name="Main-Class" value="${main.class}" />
+				<attribute name="Class-Path" value="${class.path}" />
+			</manifest>
+		</jar>
+	</target>
+
+	<!--==============================================
+                        Run Application
+            =============================================-->
+	<target name="run-app" depends="all-clean, build-app" description="Runs Bundle creation tool">
+		<property name="xml" value="" />
+		<java jar="${build.dir}/${jar-name}.jar" fork="true" classpathref="app.classpath.run" failonerror="true" maxmemory="128m">
+			<arg value="${xml}" />
+		</java>
+	</target>
+
+	<!--==============================================
+                    Compiles and builds tests
+	    ==============================================-->
+
+	<!--Compiles unit tests -->
+	<target name="compile-tests" depends="compile, copy-junit-emma" description="Compiles tests source">
+		<mkdir dir="${test.classes.dir}" />
+		<javac srcdir="${test.src.dir}" destdir="${test.classes.dir}" classpathref="test.classpath.compile" debug="true" fork="true" failonerror="true" />
+	</target>
+
+	<!--Build application tests into  output jar files-->
+	<target name="build-tests" depends="compile-tests" description="Builds the application tests into jar file">
+		<mkdir dir="${build.dir}" />
+		<jar jarfile="${build.dir}/${jar-name}Test.jar" basedir="${test.classes.dir}" />
+	</target>
+
+	<!--==============================================
+               Running unit tests and EMMA test coverage
+	    ==============================================-->
+
+	<!-- Creates directory structure fir unit tests -->
+	<target name="init-reports" description="Creates directories for reports run">
+		<mkdir dir="${testreport.dir}" />
+		<mkdir dir="${coverage.dir}" />
+	</target>
+
+	<!-- Run tests -->
+	<target name="run-tests" description="Runs tests" depends="compile, compile-tests, init-reports">
+		<copy todir="${test.classes.dir}" >
+			<fileset dir="${test.res.dir}">
+				<include name="*.*"/>
+			</fileset>
+		</copy>
+		<junit fork="yes">
+			<classpath refid="test.classpath.run" />
+			<formatter type="xml" />
+			<test name="${test.name}" fork="yes" todir="${testreport.dir}" if="test.name">
+				<formatter type="xml" />
+			</test>
+			<batchtest fork="yes" todir="${testreport.dir}" unless="test.name">
+				<fileset dir="${test.src.dir}">
+					<include name="**/*Test.java" />
+					<exclude name="**/Abstract*.java" />
+				</fileset>
+			</batchtest>
+		</junit>
+
+		<echo>Generating Test Report.....</echo>
+		<junitreport todir="${testreport.dir}">
+			<fileset dir="${testreport.dir}">
+				<include name="*.xml" />
+			</fileset>
+			<report format="frames" todir="${testreport.dir}" />
+		</junitreport>
+		<delete>
+			<fileset dir="${testreport.dir}" includes="*.xml" />
+		</delete>
+	</target>
+
+	<!--emma init task -->
+	<target name="emma-init" depends="run-tests" description="Creates direcotory structure and filters used by EMMA">
+
+		<path id="emma.lib">
+			<pathelement location="${test.lib.dir}/emma.jar" />
+			<pathelement location="${test.lib.dir}/emma_ant.jar" />
+		</path>
+		<taskdef name="emma" classname="com.vladium.emma.emmaTask">
+			<classpath refid="emma.lib" />
+		</taskdef>
+
+		<!--Coping files for instrumenting -->
+		<copy todir="${basedir}/temp">
+			<fileset dir="${classes.dir}">
+				<include name="**/*.class" />
+			</fileset>
+		</copy>
+
+		<property name="emma.enabled" value="true" />
+		<property name="instr.out.dir" value="${testreport.dir}" />
+		<property name="emma.results.text.file" value="${coverage.dir}/results.txt" />
+		<property name="emma.results.html.file" value="${coverage.dir}/results.html" />
+		<property name="emma.results.xml.file" value="${coverage.dir}/results.xml" />
+	</target>
+
+	<!--emma instrument task -->
+	<target name="emma-instrument" depends="emma-init" description="Runs the examples">
+		<emma enabled="${emma.enabled}">
+			<instr instrpath="${basedir}/temp" destdir="${instr.out.dir}" metadatafile="${coverage.dir}/metadata.emma" merge="true">
+				<!--filter file="${emma.override.file}" /-->
+			</instr>
+		</emma>
+	</target>
+
+	<!-- Emma run unit tests task-->
+	<target name="emma-run" depends="emma-init, emma-instrument" description="Runs unit tests under emma instruments">
+		<junit fork="yes">
+			<classpath>
+				<path location="${instr.out.dir}" />
+				<path refid="test.classpath.run" />
+				<path refid="emma.lib" />
+			</classpath>
+			<sysproperty key="emma.coverage.out.file" value="${coverage.dir}/coverage.emma" />
+			<sysproperty key="emma.coverage.out.merge" value="true" />
+			<formatter type="xml" />
+			<test name="${test.name}" fork="yes" todir="${testreport.dir}" if="test.name">
+				<formatter type="xml" />
+			</test>
+			<batchtest fork="yes" todir="${testreport.dir}" unless="test.name">
+				<fileset dir="${test.classes.dir}">
+					<include name="**/*Test.class" />
+					<exclude name="**/Abstract*.class" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
+	<!-- Generates coverage report -->
+	<target name="emma-report" depends="emma-run" description="Generates EMMA test coverage report">
+		<!-- generate coverage report(s): -->
+		<emma enabled="${emma.enabled}">
+			<report sourcepath="${src.dir}" sort="+name,+method,+class" metrics="method:100,line:90,class:100">
+				<fileset dir="${coverage.dir}">
+					<include name="*.emma" />
+				</fileset>
+				<xml outfile="${emma.results.xml.file}" depth="package" columns="class,method,line,name" />
+				<txt outfile="${emma.results.text.file}" depth="package" columns="class,method,line,name" />
+				<html outfile="${emma.results.html.file}" depth="method" columns="name,class,method,line" />
+			</report>
+		</emma>
+		<delete dir="${basedir}/temp" />
+	</target>
+
+
+	<!--==============================================
+                        Run all targets
+            =============================================-->
+	<target name="all" depends="clean, compile, build-app,compile-tests, build-tests, copy-junit-emma" description="Build everything ">
+		<echo message="Application has been built." />
+	</target>
+
+	<!-- Run all test targets -->
+	<target name="all-tests" depends="run-tests, emma-report" description="Run all test and generate emma report" />
+
+	<!-- Run clean targets -->
+	<target name="all-clean" depends="clean-reports, clean" description="Run all test and generate emma report" />
+</project>

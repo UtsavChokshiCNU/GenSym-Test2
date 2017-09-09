@@ -1,0 +1,33 @@
+! This file contains linker options for building both GSI 3.2
+! and GSI 4.0 applications.  Depending on how your system is set
+! up you may need to uncomment some options that are commented 
+! out by default.
+!
+! The logical names with the 'gsi' prefix used below are defined
+! by the VMS installer when you install GSI.
+!
+! The GSI library is always required.
+!
+gsi$libgsi/lib
+!
+! One of three network libraries is always required:
+!   libdec if you want your GSI application to only use DECnet.
+!   libtcp if you want your GSI application to only use TCP.
+!   libnet if you want your GSI application to support both.
+!
+gsi$libdec/lib
+!gsi$libtcp/lib
+!gsi$libnet/lib
+!
+! The following lines are relevant only for TCP and may or may not 
+! be needed, depending on how your system is set up.  The "multinet..."
+! line is used when TCP is provided by TGV Multinet, while the
+! "sys$library..." is used with TCP from DEC's UCX.
+!
+!multinet_root:[multinet.library]ucx$ipc.olb/library
+!sys$library:ucx$ipc.olb/lib
+!
+! The additional library librtl, required for GSI 4.0 applications
+! is linked in explicitly by the makefile (descrip.mms) shipped
+! with GSI 4.0.  It is not listed here as an option because it is
+! not needed for GSI 3.2 applications.

@@ -1,0 +1,1 @@
+java com.gensym.jgi.download.DownloadInterfaces -host localhost -port 1111 -force -stubs -classes ALARM DISCOVERER-INFORMATION PLANET-C PLANET-D PLANET-E

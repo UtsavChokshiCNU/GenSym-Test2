@@ -1,0 +1,9 @@
+#!/bin/csh -f
+
+foreach JAVAFILE ($1/*.java)
+  set basename = $JAVAFILE:r
+  if ( ! { test -f $basename.class } ) then
+    add-for-java-compile $JAVAFILE
+  endif
+end
+make -f /tmp/__generic_java_makefile *.class

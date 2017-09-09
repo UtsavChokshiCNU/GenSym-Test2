@@ -1,0 +1,64 @@
+begin g2-ok-file
+-- When G2 starts it reads this file to obtain information
+-- about its license to run on the host computer
+
+-- Licensing information may be obtained from the
+-- Order Services department at Gensym in the US 
+-- by calling 781-265-7106 or the Order Services
+-- department in Europe by calling +31-71-5682-627.
+
+-- The licensing information should then be used to fill
+-- out the following fields:
+
+file-format-version: 2;
+
+begin machine
+  name: my-machine;
+  machine-id: "ABC123LMN456";
+  authorized-products: ( online jl japanese );
+  expiration-date?: (from 20 apr 1999 to 1 oct 2002);
+  authorization: ( 68019 2369 592 3623 311214 );
+  make-g2-secure?: false;
+  authorized-kb-packages: (
+                 ( gensym-rethink 403621 57529 92263 )
+                 ( gensym-gda2 258620 463872 360971 )
+                 ( gensym-gmm 362457 357948 227816 ) );
+  number-of-processes-authorized: 2;
+  maximum-number-of-concurrent-floating-telewindows-allowed: 2;
+  maximum-number-of-concurrent-floating-tw2-allowed: 2;
+end machine
+
+
+-- Multiple machines may be authorized in this file by 
+-- duplicating the "machine" entry and filling it out.
+
+
+
+-- When the G2 is secure, you include entries for all
+-- of the individuals who are entitled to log into
+-- the G2 you are authorizing with this OK file.
+
+-- A user entry consists of a login name, a password
+-- and a list of authorized modes. When a new user is
+-- added to the ok file, the password must be given 
+-- as an empty string, e.g.
+
+begin user
+  name: daniel;
+  password: "";
+  permitted-user-modes: (administrator operator);
+end user
+
+-- Actual passwords are recorded in the OK file in encrypted
+-- form. They are created by using g2passwd or from the main
+-- menu of a secure G2. When the password has been assigned,
+-- the entry will look like this:
+
+begin user
+  name: patrick;
+  password: "4fa1793ae11cf3649fbc2dcb0292fc0d"; -- change date: Fri Dec 11 14:50:12 EST 1998
+  permitted-user-modes: (operator);
+end user
+
+
+end g2-ok-file

@@ -1,0 +1,23 @@
+#!/bin/sh
+
+MKFILES=$SRCBOX/java/mkfiles
+JVLBUILD=$SRCBOX/java/products/javalink/builds/sparcsol
+T2BUILD=$SRCBOX/java/products/sequoia/builds/sparcsol
+CDIR=$SRCBOX/java/c
+INCLUDEDIR=$SRCBOX/java/include
+SPARCJAVALINKFILES=$SRCBOX/java/products/javalink/sparcsol/bin
+SPARCSEQUOIAFILES=$SRCBOX/java/products/sequoia/sparcsol/bin
+HPJAVALINKFILES=$SRCBOX/java/products/javalink/hp9000s700/bin
+HPSEQUOIAFILES=$SRCBOX/java/products/sequoia/hp9000s700/bin
+
+filelist="$MKFILES/packagejavalink $MKFILES/packagesequoia $MKFILES/sparcsol-jgilib-o $MKFILES/hp9000s700-jgilib-o $JVLBUILD/runMeOnce.sh $JVLBUILD/IbuildJLUnix.sh $T2BUILD/runMeOnce.sh $T2BUILD/IbuildT2Unix.sh $CDIR/jni*.c $CDIR/jgi*.c $INCLUDEDIR/*.h $SPARCJAVALINKFILES/[a-z]* $SPARCSEQUOIAFILES/[a-z]* $HPJAVALINKFILES/[a-z]* $HPSEQUOIAFILES/[a-z]*" 
+
+for file in $filelist
+do
+    echo "Coverting: $file"
+    dos2unix $file tmpfile
+    echo "Moving: tmpfile to $file"
+    mv tmpfile $file
+    echo "Changing permissions: $file"
+    chmod u+x $file
+done

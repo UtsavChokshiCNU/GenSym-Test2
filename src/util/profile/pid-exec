@@ -1,0 +1,10 @@
+#! /bin/sh
+pidfile=$1
+shift
+
+cmd="$* &"     # The & is appended so the command will run in the background.
+
+(eval $cmd;
+ echo $! > $pidfile
+ wait $!
+ rm -f $pidfile) &

@@ -1,0 +1,72 @@
+# Makefile for JGI Shareable Object Library
+# Machine type: HPUX 10.20+
+
+#   This makefile is to be run in the object directory with a command
+# such as "make -f $SRCBOX/java/mkfiles/<platform>-jgilib-o".
+# The following environment variables must be set.
+#     JAVA_HOME: needed for jdk jni include files
+#     SRCBOX:    needed for .c and .h files
+#     DSTBOX:    path for emitted objects and libraries
+#     GSIBOX:    needed for gsi libraries
+# The following files are required, which are created by javah.
+#     $(H_DIR)/com_gensym_jgi_JGInterface.h
+#     $(H_DIR)/com_gensym_jgi_GsiLoopThread.h
+
+#------------------------------------------------
+# Variables
+#-----------------------
+# Directory variables
+
+C_DIR   = $(SRCBOX)/java/c
+H_DIR   = $(SRCBOX)/java/include
+EXE_DIR = ../lib
+SPECIFIC = $(SRCBOX)/specific/hp9000s700
+
+#-----------------------
+# Flag variables
+
+CCFLAGS = -g +z +u4 -Ae -DCHESTNUT -DNATIVE -DNDEBUG -D_HPUX -Dunix -D_POSIX_C_SOURCE=199506L -DNEW_CLASS_MAPPING \
+  -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/hp-ux -I$(SRCBOX)/java/include -I$(GSIBOX)
+
+#-----------------------
+# File variables
+
+GSI_LIBS = $(GSIBOX)/libgsi.a $(GSIBOX)/libtcp.a $(GSIBOX)/libnogsec.a $(GSIBOX)/librtl.a 
+# Not loading ssl, because of errors.  Should figure it out:
+# ld: Invalid loader fixup in text space needed in output file for symbol "ssl3_connect" in input file "/bt/yduj/specific/hp9000s700/libssl.a(s3_meth.o)"
+# $(SPECIFIC)/libssl.a $(SPECIFIC)/libcrypto.a $(SPECIFIC)/libgcc.a
+
+H_FILES = $(GSIBOX)/gsi_main.h $(H_DIR)/jni_gi.h $(H_DIR)/jgi_gsi_options.h \
+  $(GSIBOX)/gsi_misc.h $(H_DIR)/jgi_info.h \
+  $(H_DIR)/com_gensym_jgi_JGInterface.h $(H_DIR)/com_gensym_jgi_GsiLoopThread.h
+
+O_FILES = $(GSIBOX)/gsi_misc.o jni_gi.o jni_gi_gsiconv.o jni_gi_init.o \
+  jni_gi_javaconv.o jni_gi_utils.o 
+
+#------------------------------------------------
+# Targets
+
+$(EXE_DIR)/libJgiInterface.sl : $(O_FILES) $(GSI_LIBS)
+	ld -o $(EXE_DIR)/libJgiInterface.sl -b $(O_FILES) $(GSI_LIBS) -lm
+
+
+jni_gi.o : $(C_DIR)/jni_gi.c $(H_FILES)
+	cc -c $(CCFLAGS) $(C_DIR)/jni_gi.c -o jni_gi.o
+
+jni_gi_gsiconv.o : $(C_DIR)/jni_gi_gsiconv.c $(H_FILES)
+	cc -c $(CCFLAGS) $(C_DIR)/jni_gi_gsiconv.c -o jni_gi_gsiconv.o
+
+jni_gi_init.o : $(C_DIR)/jni_gi_init.c $(H_FILES)
+	cc -c $(CCFLAGS) $(C_DIR)/jni_gi_init.c -o jni_gi_init.o
+
+jni_gi_javaconv.o : $(C_DIR)/jni_gi_javaconv.c $(H_FILES)
+	cc -c $(CCFLAGS) $(C_DIR)/jni_gi_javaconv.c -o jni_gi_javaconv.o
+ 
+jni_gi_utils.o : $(C_DIR)/jni_gi_utils.c $(H_FILES)
+	cc -c $(CCFLAGS) $(C_DIR)/jni_gi_utils.c -o jni_gi_utils.o
+
+#------------------------------------------------
+# Cleanup
+
+clean :
+	rm -f $(EXE_DIR)/libJgiInterface.sl *.o

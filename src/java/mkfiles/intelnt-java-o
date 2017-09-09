@@ -1,0 +1,234 @@
+# Sample makefile for JGSI programs.
+#   GSI Version 5.0
+# Machine type: IntelNT
+
+#
+# JAVA_HOME should be set!
+# SPIN_ID should be set!
+# SRCBOX should be set!
+#
+
+!include <ntwin32.mak>
+
+ODIR = o
+PACKAGE_PREFIX = com.gensym.jgsi.
+PACKAGE_PREFIX_UTIL = com.gensym.util.
+PP = com_gensym_jgsi_
+PPUTIL = com_gensym_util_
+BT_JAVA = $(SRCBOX)\java
+
+JAVA_DIR      = $(BT_JAVA)\com\gensym\jgsi
+JAVA_DIR_UTIL = $(BT_JAVA)\com\gensym\util
+C_DIR         = $(BT_JAVA)\c
+OBJ_DIR       = $(BT_JAVA)\$(ODIR)
+EXE_DIR       = $(BT_JAVA)\lib
+H_DIR         = $(BT_JAVA)\include
+GSIDIR = $(SRCBOX)\gsi
+RTLDIR = $(SRCBOX)\rtl
+EXTDIR = $(SRCBOX)\ext
+
+# Uncomment to see preprocessed output
+#CDEBUG_FLAGS  = -save-temps
+CDEBUG_FLAGS = -Od -Zi	
+C_FLAGS  = $(cflags) $(CDEBUG_FLAGS)
+INCLUDE_FLAGS = -I$(JAVA_HOME)\include -I$(BT_JAVA)\include -I$(JAVA_HOME)\include\win32
+#INCLUDE_FLAGS = -I$(JAVA_HOME)\include -I$(BT_JAVA)\include 
+CCFLAGS       = $(common) $(C_FLAGS) $(cvars) $(INCLUDE_FLAGS)
+
+link = link
+CC = cl
+JAVAH = $(JAVA_HOME)\bin\javah
+JAVAC = $(JAVA_HOME)\bin\javac
+#JAVAH = $(JAVA_HOME)\bin\msjavah
+#JAVAC = $(JAVA_HOME)\bin\jvc
+
+#JAVAC_OPTIONS = -verbose
+JAVAC_OPTIONS = 
+JAVAH_OPTIONS =  -d $(H_DIR)
+JAVAH_STUBS_OPTIONS = -d $(C_DIR) -stubs
+
+
+WINLIBS =  libcmt.lib netapi32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib 
+# When creating images to execute under Win32s, you should
+# use the DEFAULT_LIBS below that has winio.lib.
+# DEFAULT_LIBS = $(GSIDIR)\$(ODIR)\libgsi.lib $(EXTDIR)\$(ODIR)\libtcp.lib $(RTLDIR)\$(ODIR)\librtl.lib winio.lib
+DEFAULT_LIBS = $(GSIDIR)\$(ODIR)\libgsi.lib $(EXTDIR)\$(ODIR)\libtcp.lib $(RTLDIR)\$(ODIR)\librtl.lib
+JAVA_LIBS = $(JAVA_HOME)\lib\javai.lib
+#JAVA_LIBS = $(JAVA_HOME)\lib\i386\msjava.lib
+LIBS = $(WINLIBS) $(DEFAULT_LIBS) $(JAVA_LIBS)
+LDEBUGFLAGS = -debug:full -debugtype:cv	
+LINKFLAGS = /DLL /nodefaultlib:"libc.lib" $(LDEBUGFLAGS)
+
+
+ 
+H_FILES = $(H_DIR)\gsi_main.h $(H_DIR)\java_gsi.h\
+	  $(H_DIR)\$(PP)GsiInterface.h $(H_DIR)\$(PP)GsiLoopThread.h\
+	  $(H_DIR)\$(PP)GsiItem.h $(H_DIR)\$(PP)GsiObject.h\
+	  $(H_DIR)\$(PP)GsiInt.h $(H_DIR)\$(PP)GsiFloat.h $(H_DIR)\$(PP)GsiString.h\
+	  $(H_DIR)\$(PP)GsiSymbol.h $(H_DIR)\$(PP)GsiLog.h $(H_DIR)\gsi_misc.h\
+	  $(H_DIR)\$(PP)GsiRemoteRPCThread.h $(H_DIR)\$(PP)GsiRemoteRPCThreadData.h\
+	  $(H_DIR)\jgsi_locks_generate.h
+	  
+EXECUTABLES = $(EXE_DIR)\GsiInterface.dll
+
+JAVA_FILES =  $(OBJ_DIR)\java_gsi.obj $(OBJ_DIR)\gsi_misc.obj $(OBJ_DIR)\java_gsi_utils.obj\
+	      $(OBJ_DIR)\jgsi_locks.obj\
+	      $(OBJ_DIR)\$(PP)GsiInterface.obj $(OBJ_DIR)\$(PP)GsiLoopThread.obj\
+	      $(OBJ_DIR)\$(PP)GsiItem.obj $(OBJ_DIR)\$(PP)GsiObject.obj\
+	      $(OBJ_DIR)\$(PP)GsiRemoteRPCThread.obj  $(OBJ_DIR)\gsi50.obj\
+	      $(OBJ_DIR)\$(PP)GsiRemoteRPCThreadData.obj
+
+ALL : $(EXECUTABLES)
+ 
+$(EXE_DIR)\GsiInterface.dll : $(JAVA_FILES) $(DEFAULT_LIBS)
+	$(link) -out:$(EXE_DIR)\GsiInterface.dll $(LINKFLAGS) $(JAVA_FILES) $(LIBS)
+
+$(OBJ_DIR)\jgsi_locks.obj : $(C_DIR)\jgsi_locks.c $(H_FILES)
+	$(CC) -c $(CCFLAGS) $(C_DIR)\jgsi_locks.c -Fo$(OBJ_DIR)\jgsi_locks.obj
+
+$(OBJ_DIR)\$(PP)GsiInterface.obj : $(C_DIR)\$(PP)GsiInterface.c $(H_FILES)
+	$(CC) -c $(CCFLAGS) $(C_DIR)\$(PP)GsiInterface.c -Fo$(OBJ_DIR)\$(PP)GsiInterface.obj
+
+$(OBJ_DIR)\$(PP)GsiRemoteRPCThread.obj : $(C_DIR)\$(PP)GsiRemoteRPCThread.c $(H_FILES)
+	$(CC) -c $(CCFLAGS) $(C_DIR)\$(PP)GsiRemoteRPCThread.c -Fo$(OBJ_DIR)\$(PP)GsiRemoteRPCThread.obj
+	
+$(OBJ_DIR)\$(PP)GsiRemoteRPCThreadData.obj : $(C_DIR)\$(PP)GsiRemoteRPCThreadData.c $(H_FILES)
+	$(CC) -c $(CCFLAGS) $(C_DIR)\$(PP)GsiRemoteRPCThreadData.c -Fo$(OBJ_DIR)\$(PP)GsiRemoteRPCThreadData.obj
+
+$(OBJ_DIR)\$(PP)GsiLoopThread.obj : $(C_DIR)\$(PP)GsiLoopThread.c $(H_FILES)
+	$(CC) -c $(CCFLAGS) $(C_DIR)\$(PP)GsiLoopThread.c -Fo$(OBJ_DIR)\$(PP)GsiLoopThread.obj
+	
+$(OBJ_DIR)\$(PP)GsiItem.obj : $(C_DIR)\$(PP)GsiItem.c $(H_FILES)
+	$(CC) -c $(CCFLAGS) $(C_DIR)\$(PP)GsiItem.c -Fo$(OBJ_DIR)\$(PP)GsiItem.obj
+
+$(OBJ_DIR)\$(PP)GsiObject.obj : $(C_DIR)\$(PP)GsiObject.c $(H_FILES)
+	$(CC) -c $(CCFLAGS) $(C_DIR)\$(PP)GsiObject.c -Fo$(OBJ_DIR)\$(PP)GsiObject.obj
+
+$(OBJ_DIR)\java_gsi.obj : $(C_DIR)\java_gsi.c $(H_FILES)
+	$(CC) -c $(CCFLAGS) $(C_DIR)\java_gsi.c -Fo$(OBJ_DIR)\java_gsi.obj
+ 
+$(OBJ_DIR)\java_gsi_utils.obj : $(C_DIR)\java_gsi_utils.c $(H_FILES)
+	$(CC) -c $(CCFLAGS) $(C_DIR)\java_gsi_utils.c -Fo$(OBJ_DIR)\java_gsi_utils.obj
+ 
+$(OBJ_DIR)\gsi_main.obj : $(C_DIR)\gsi_main.c $(H_FILES)
+	$(CC) -c $(CCFLAGS) $(C_DIR)\gsi_main.c -Fo$(OBJ_DIR)\gsi_main.obj
+	
+$(OBJ_DIR)\gsi_misc.obj : $(C_DIR)\gsi_misc.c $(H_FILES)
+	$(CC) -c $(CCFLAGS) $(C_DIR)\gsi_misc.c -Fo$(OBJ_DIR)\gsi_misc.obj
+	
+$(OBJ_DIR)\gsi50.obj : $(C_DIR)\gsi50.c $(H_FILES)
+	$(CC) -c $(CCFLAGS) $(C_DIR)\gsi50.c -Fo$(OBJ_DIR)\gsi50.obj
+
+#
+# Dependencies on generated files
+#
+
+$(H_DIR)\$(PPUTIL)Structure.h : $(JAVA_DIR_UTIL)\Structure.class
+	$(JAVAH) $(JAVAH_OPTIONS) $(PACKAGE_PREFIX_UTIL)Structure
+	@ touch $(H_DIR)\$(PPUTIL)Structure.h
+
+$(H_DIR)\$(PPUTIL)Sequence.h : $(JAVA_DIR_UTIL)\Sequence.class
+	$(JAVAH) $(JAVAH_OPTIONS) $(PACKAGE_PREFIX_UTIL)Sequence
+	@ touch $(H_DIR)\$(PPUTIL)Sequence.h
+
+$(H_DIR)\$(PPUTIL)Symbol.h : $(JAVA_DIR_UTIL)\Symbol.class
+	$(JAVAH) $(JAVAH_OPTIONS) $(PACKAGE_PREFIX_UTIL)Symbol
+	@ touch $(H_DIR)\$(PPUTIL)Symbol.h
+
+$(H_DIR)\$(PPUTIL)G2ItemProxy.h : $(JAVA_DIR_UTIL)\G2ItemProxy.class
+	$(JAVAH) $(JAVAH_OPTIONS) $(PACKAGE_PREFIX_UTIL)G2ItemProxy
+	@ touch $(H_DIR)\$(PPUTIL)G2ItemProxy.h
+
+$(H_DIR)\$(PP)GsiInterface.h : $(JAVA_DIR)\GsiInterface.class
+	$(JAVAH) $(JAVAH_OPTIONS) $(PACKAGE_PREFIX)GsiInterface
+	@ touch $(H_DIR)\$(PP)GsiInterface.h
+	
+$(C_DIR)\$(PP)GsiInterface.c : $(JAVA_DIR)\GsiInterface.class
+	$(JAVAH) $(JAVAH_STUBS_OPTIONS) $(PACKAGE_PREFIX)GsiInterface
+	@ touch $(C_DIR)\$(PP)GsiInterface.c
+
+$(H_DIR)\$(PP)GsiItem.h : $(JAVA_DIR)\GsiItem.class
+	$(JAVAH) $(JAVAH_OPTIONS) $(PACKAGE_PREFIX)GsiItem
+	@ touch $(H_DIR)\$(PP)GsiItem.h
+
+$(C_DIR)\$(PP)GsiItem.c : $(JAVA_DIR)\GsiItem.class
+	$(JAVAH)  $(JAVAH_STUBS_OPTIONS) $(PACKAGE_PREFIX)GsiItem
+	@ touch $(C_DIR)\$(PP)GsiItem.c
+
+$(H_DIR)\$(PP)GsiLoopThread.h : $(JAVA_DIR)\GsiLoopThread.class
+	$(JAVAH) $(JAVAH_OPTIONS) $(PACKAGE_PREFIX)GsiLoopThread
+	@ touch $(H_DIR)\$(PP)GsiLoopThread.h
+
+$(C_DIR)\$(PP)GsiLoopThread.c : $(JAVA_DIR)\GsiLoopThread.class
+	$(JAVAH)  $(JAVAH_STUBS_OPTIONS) $(PACKAGE_PREFIX)GsiLoopThread
+	@ touch $(C_DIR)\$(PP)GsiLoopThread.c
+
+$(H_DIR)\$(PP)GsiRemoteRPCThread.h : $(JAVA_DIR)\GsiRemoteRPCThread.class
+	$(JAVAH) $(JAVAH_OPTIONS) $(PACKAGE_PREFIX)GsiRemoteRPCThread
+	@ touch $(H_DIR)\$(PP)GsiRemoteRPCThread.h
+	
+$(C_DIR)\$(PP)GsiRemoteRPCThread.c : $(JAVA_DIR)\GsiRemoteRPCThread.class
+	$(JAVAH)  $(JAVAH_STUBS_OPTIONS) $(PACKAGE_PREFIX)GsiRemoteRPCThread
+	@ touch $(C_DIR)\$(PP)GsiRemoteRPCThread.c
+
+$(H_DIR)\$(PP)GsiRemoteRPCThreadData.h : $(JAVA_DIR)\GsiRemoteRPCThreadData.class
+	$(JAVAH) $(JAVAH_OPTIONS) $(PACKAGE_PREFIX)GsiRemoteRPCThreadData
+	@ touch $(H_DIR)\$(PP)GsiRemoteRPCThreadData.h
+
+$(C_DIR)\$(PP)GsiRemoteRPCThreadData.c : $(JAVA_DIR)\GsiRemoteRPCThreadData.class
+	$(JAVAH)  $(JAVAH_STUBS_OPTIONS) $(PACKAGE_PREFIX)GsiRemoteRPCThreadData
+	@ touch $(C_DIR)\$(PP)GsiRemoteRPCThreadData.c
+
+$(H_DIR)\$(PP)GsiObject.h : $(JAVA_DIR)\GsiObject.class
+	$(JAVAH) $(JAVAH_OPTIONS) $(PACKAGE_PREFIX)GsiObject
+	@ touch $(H_DIR)\$(PP)GsiObject.h
+	
+$(C_DIR)\$(PP)GsiObject.c : $(JAVA_DIR)\GsiObject.class
+	$(JAVAH)  $(JAVAH_STUBS_OPTIONS) $(PACKAGE_PREFIX)GsiObject
+	@ touch $(C_DIR)\$(PP)GsiObject.c
+
+$(H_DIR)\$(PP)GsiString.h : $(JAVA_DIR)\GsiString.class
+	$(JAVAH) $(JAVAH_OPTIONS) $(PACKAGE_PREFIX)GsiString
+	@ touch $(H_DIR)\$(PP)GsiString.h
+	
+$(C_DIR)\$(PP)GsiString.c : $(JAVA_DIR)\GsiString.class
+	$(JAVAH)  $(JAVAH_STUBS_OPTIONS) $(PACKAGE_PREFIX)GsiString
+	@ touch $(C_DIR)\$(PP)GsiString.c
+
+$(H_DIR)\$(PP)GsiSymbol.h : $(JAVA_DIR)\GsiSymbol.class
+	$(JAVAH) $(JAVAH_OPTIONS) $(PACKAGE_PREFIX)GsiSymbol
+	@ touch $(H_DIR)\$(PP)GsiSymbol.h
+	
+$(C_DIR)\$(PP)GsiSymbol.c : $(JAVA_DIR)\GsiSymbol.class
+	$(JAVAH)  $(JAVAH_STUBS_OPTIONS) $(PACKAGE_PREFIX)GsiSymbol
+	@ touch $(C_DIR)\$(PP)GsiSymbol.c
+
+$(H_DIR)\$(PP)GsiInt.h : $(JAVA_DIR)\GsiInt.class
+	$(JAVAH) $(JAVAH_OPTIONS) $(PACKAGE_PREFIX)GsiInt
+	@ touch $(H_DIR)\$(PP)GsiInt.h
+	
+$(C_DIR)\$(PP)GsiInt.c : $(JAVA_DIR)\GsiInt.class
+	$(JAVAH)  $(JAVAH_STUBS_OPTIONS) $(PACKAGE_PREFIX)GsiInt
+	@ touch $(C_DIR)\$(PP)GsiInt.c
+
+$(H_DIR)\$(PP)GsiFloat.h : $(JAVA_DIR)\GsiFloat.class
+	$(JAVAH) $(JAVAH_OPTIONS) $(PACKAGE_PREFIX)GsiFloat
+	@ touch $(H_DIR)\$(PP)GsiFloat.h
+	
+$(C_DIR)\$(PP)GsiFloat.c : $(JAVA_DIR)\GsiFloat.class
+	$(JAVAH)  $(JAVAH_STUBS_OPTIONS) $(PACKAGE_PREFIX)GsiFloat
+	@ touch $(C_DIR)\$(PP)GsiFloat.c
+
+$(H_DIR)\$(PP)GsiLog.h : $(JAVA_DIR)\GsiLog.class
+	$(JAVAH) $(JAVAH_OPTIONS) $(PACKAGE_PREFIX)GsiLog
+	@ touch $(H_DIR)\$(PP)GsiLog.h
+
+$(C_DIR)\$(PP)GsiLog.c : $(JAVA_DIR)\GsiLog.class
+	$(JAVAH)  $(JAVAH_STUB_OPTIONS) $(PACKAGE_PREFIX)GsiLog
+	@ touch $(C_DIR)\$(PP)GsiLog.c
+
+$(JAVA_DIR)\GsiInterface.class: $(JAVA_DIR)\GsiInterface.java
+	$(JAVAC) $(JAVAC_OPTIONS) $(JAVA_DIR)\GsiInterface.java
+
+clean :
+	erase $(EXE_DIR)\GsiInterface.dll $(OBJ_DIR)\*.obj $(C_DIR)\com_gensym_jgsi_*.c $(H_DIR)\com_gensym_jgsi*.h $(JAVA_DIR)\*.class

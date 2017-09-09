@@ -1,0 +1,3 @@
+#! /bin/csh
+nm -ap $1 | grep -i ' t ' | grep -v '\.' | grep -v '__gnu_compiled_c' | grep -v ' t noerr' | \
+sed -e 's/ [tT] _/ /' -e 's/ [tT] / /' | sort 

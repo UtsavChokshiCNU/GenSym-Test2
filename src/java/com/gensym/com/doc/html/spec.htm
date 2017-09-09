@@ -1,0 +1,837 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<META NAME="Generator" CONTENT="Microsoft Word 97">
+<TITLE>Using the ActiveX to Java Beans Package</TITLE>
+</HEAD>
+<BODY>
+
+<I><FONT SIZE=5>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P><DIR>
+<DIR>
+<DIR>
+<DIR>
+
+</FONT><FONT SIZE=6><P>The ActiveX to Java Beans Package</P>
+<P>Draft 0, April 1998</P>
+</FONT><FONT SIZE=4><P>Technical Specification</P>
+</FONT>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<FONT SIZE=4><P>Allan Scott</P>
+</I></FONT><FONT SIZE=2>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+
+<P><IMG SRC="Image1.gif" WIDTH=336 HEIGHT=134></P>
+</DIR></DIR>
+
+</FONT><U><FONT SIZE=5><P>Contents</P>
+</FONT><B>
+<OL>
+
+</U><LI>Introduction&#9;</LI></OL>
+
+<OL>
+<OL>
+
+<LI>Goals of the ActiveX to Java Beans Package</LI>
+<LI>About this Document</LI>
+<LI>Conventions</LI>
+<LI>References</LI></OL>
+</OL>
+
+
+<OL>
+
+<LI>Overview</LI>
+
+<LI>Representation of Data Types</LI>
+<OL>
+
+<LI>Primitive Data Types</LI>
+<LI>User Defined Data Types</LI></OL>
+
+
+<LI>Properties </LI>
+<OL>
+
+<LI>Simple Properties  </LI>
+<LI>Indexed Properties</LI></OL>
+
+
+<LI>Methods</LI>
+<OL>
+
+<LI>Simple Methods </LI>
+<LI>Variable Arguments </LI>
+<LI>Named Arguments</LI></OL>
+
+
+<LI>Events</LI>
+
+<LI>Component Lifecycle</LI>
+<OL>
+
+<LI>Creation </LI>
+<LI>Insertion</LI>
+<LI>Activation </LI>
+<LI>Display </LI>
+<LI>Persistence </LI>
+<LI>Deletion</LI></OL>
+
+
+<LI>Container Services</LI>
+
+<LI>Introspection</LI>
+
+<LI>Runtime Considerations   </LI>
+<OL>
+
+<LI>Threading model </LI>
+<LI>Casting</LI></OL>
+</OL>
+
+</B><FONT SIZE=2>
+</FONT><B><P>Appendix A: com.gensym.com</P>
+
+<P>Appendix B: Naming conventions</P>
+</B><U><FONT SIZE=5>
+
+<P>1. Introduction </P>
+</U></FONT><FONT SIZE=2>
+<P>&nbsp;</P>
+</FONT><P>ActiveX is the Windows standard component model.   Java Beans is the platform-independent component model written in 100%  Java.  The ActiveX to Java Beans package (also known as <B>com.gensym.com</B>) provides a means of importing ActiveX components into Java as Java Beans.  This allows the developer to benefit from the many ActiveX components that have been written and still develop their application primarily in Java.</P>
+<FONT SIZE=2>
+</FONT><P>Beans that are created by the ActiveX to Java Beans package can be used in a visual builder tool along with beans that are written in 100% pure Java.  Developers get full programmatic access to the properties; methods and events of the ActiveX control in the same manner as any Java Bean.</P>
+
+<FONT SIZE=5><P> 1.1 </FONT><FONT SIZE=4>Goals of the ActiveX to Java Beans Package</FONT> </P>
+<P>The primary goal of the ActiveX to Java Beans package is to provide Java programmers a simple and powerful means of integrating ActiveX components into a product written primarily in Java.  From the perspective of the Java developer this would have the following advantages:</P>
+
+<OL>
+
+<LI>The ability to integrate Windows standard applications such as Excel and Word into Java.    Many of these Windows applications are standards that are understood and used by millions of users every day.  It will take some time before applications of the same maturity and universal acceptance are available in the 100% pure Java platform;</LI>
+<LI>The ability to produce Java applications that have the same &quot;look and feel&quot; as Windows applications.  Part of reproducing the look and feel of Windows is using components that are identical to those normally used by application developers on that platform.  The ActiveX to Java Beans package will allow Java developers to use standard Windows components such as toolbars, sliders, combo-boxes, and list boxes;</LI>
+<LI>A simpler means of adding native extensions to Java on the Windows platform.  As the demand for greater performance and features for Java is increasing the need to add native extensions to Java is increasing. For each new native extension a new native bridge is required.  The ActiveX to Java Beans package removes the need for a separate native bridge for each extension, and in doing so reduces redundancy and possible conflicts between multiple native bridges.   Native code can be developed separately as ActiveX components and tested separately inside native ActiveX containers before being integrated into Java.</LI></OL>
+
+
+<P>As well as advantages for Java developers the ActiveX to Java Beans package also provides advantages for Windows programmers who would not normally have considered developing in Java:</P>
+
+<OL>
+
+<LI>A smooth upgrade path from native Windows applications to a Java application.  Rather than having to rewrite all native components into Java the ActiveX to Java Beans package makes it possible for the Windows programmer to convert the application logic into Java without throwing away the look and feel of the native application that is provided by the individual ActiveX components.  Over time as better Java components are developed Java components can be used to replace existing ActiveX components;</LI>
+<LI>The ability to take advantage of the many features of Java that make it an attractive platform for writing applications in.  These include: memory management, dynamic software upgrades and a simple API for accessing information from files and the internet;</LI>
+<LI>The chance to develop software without putting all ones eggs in the Windows or the Java basket.  There is always some degree of uncertainty about the commercial future of a particular platform. The ActiveX to Java Beans package allows software companies and developers to hedge their bets on the future. </LI></OL>
+
+<P> </P>
+<FONT SIZE=5><P> 1.2 </FONT><FONT SIZE=4>About this Document</P>
+</FONT><P>This document is Draft 0 of the &quot;ActiveX to Java Beans Specification&quot; it is subject to change or extension at any time.  The purpose of this document is to give developers and partners a first look at an open specification for the <B>com.gensym.com</B> package.</P>
+
+<P>The terms Java, JavaBeans, and JavaSoft are trademarks or registered trademarks of Sun Microsystems.</P>
+
+<P>The terms Windows, Windows NT and ActiveX are trademarks of Microsoft Corporation.</P>
+
+<P> <FONT SIZE=5>1.3 </FONT><FONT SIZE=4>Conventions</P>
+</FONT><P>All classes defined by Gensym Corporation are in boldface (e.g. <B>ActiveXProxy</B>) and the documentation for each of these classes is contained in Appendix A.  All Microsoft defined interfaces and classes, structures and enumerations are in Italics (e.g. <I>IUnknown</I>).  Java classes provided by other vendors are listed in a normal face with their full package name (e.g. java.lang.String).</P>
+
+<P>   <FONT SIZE=5>1.4 </FONT><FONT SIZE=4>References</P>
+</FONT><P>[1] &quot;Automation: Progammers Reference&quot;, Microsoft Press 1997</P>
+<P>[2] &quot;Java Beans 1.0 API Specification&quot;, JavaSoft, 1996</P>
+<P>[3] &quot;Java Native Interface Specification: Release 1.1&quot;, JavaSoft, May 1997</P>
+<P>[4] &quot;Using the ActiveX to Java Beans Package: A Tutorial&quot;, </P>
+<P>&#9;   Gensym Corporation, April 1998</P>
+<FONT SIZE=4><P>&#9;</P>
+</FONT>
+<P>&nbsp;</P>
+<U><FONT SIZE=5><P>2. Overview                                                                                  </P>
+</U></FONT><FONT SIZE=2>
+<P>&nbsp;</P>
+</FONT><P>The ActiveX to Java Beans package can be broken down into two top level tasks.  The first is the conversion of the information in a type library into Java classes.  The second is the runtime support for the two way communication between ActiveX and Java.  </P>
+
+<P>The diagram below shows the role of the tool responsible for converting a type library into java classses.  The conversion tool will browse the type library collecting information about the methods, properties and events of the ActiveX components defined by that library. It will then emit Java source files which provide a Java beans wrapper around theActiveX components.   The conversion tool can also either directly emit java bytecode files and archive files, or standard tools such as Sun’s javac and jar can be used.</P>
+<P>The source files that are emitted include wrappers for the full range of information provided by the type library including top level components, dispatch interfaces, enumerations and records.</P>
+<P><IMG SRC="Image15.gif" WIDTH=900 HEIGHT=768></P>
+
+<P>&#9;</P>
+<P>The architecture of the runtime communication is illustrated below. The Java class <B>ActiveXProxy</B> manages the communication between Java and ActiveX for a </P>
+<P>particular ActiveX component.  The  Java class <B>NativeMethodBroker</B> mediates the communication between each <B>ActiveXProxy</B> and a native library.  The communication between the <B>NativeMethodBroker </B>class and the native library is through the Java Native Interface (JNI) [3].   The native library communicates with the ActiveX components through standard native interfaces and in a similar way to any native ActiveX containers.</P>
+
+<P>When the <B>Beanifier </B>class emits a Java Bean it will emit code to manage and communicate with a particular <B>ActiveXProxy. </B>   The Java Bean exposes properties, events and methods to the rest of the Virtual Machine.  The implementation of these properties, events and methods provides hooks back and from the ActiveX component</P>
+<P><IMG SRC="Image16.gif" WIDTH=900 HEIGHT=768></P>
+<U>
+<FONT SIZE=5><P>3. Representation of Data Types                                                                                                                              </P>
+</U></FONT><FONT SIZE=2>
+<P>&nbsp;</P>
+</FONT><P>An Automation container provides the general ability to communicate data to and from ActiveX components.  The ActiveX to Java Beans package (<B>com.gensym.com</B>) provides ability to represent a large subset of the data that can be communicated via Automation.   This representation can be divided into three categories: the representation of primitive types (section 2.1), the representation of auxiliary data types (section 2.2), and the representation of user defined data types (section 2.3).</P>
+
+<FONT SIZE=5><P> 3.1 </FONT><FONT SIZE=4>Primitive Data Types</FONT> </P>
+<P>Primitive data types for the purposes of this specification are those that can be contained in a <I>VARIANT</I> structure ([1] p163) and are not defined in a user-created type library.  The type of  a <I>VARIANT</I> is provided by the <B>vt</B> member that is of the enumeration <I>VARTYPE</I> ([1] p164). The <B>vt</B> member defines the type and location of the data within the <I>VARIANT </I>structure.  The table below shows the default mapping provided by the <B>com.genym.com </B>package between members of the <I>VARTYPE</I> enumeration and Java:</P>
+
+<TABLE BORDER CELLSPACING=1 CELLPADDING=7 WIDTH=590>
+<TR><TD WIDTH="33%" VALIGN="TOP">
+<B><I><P>VARTYPE</B></I></TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<B><P>Description</B></TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<B><P>Java Class/Interface</B></TD>
+</TR>
+<TR><TD WIDTH="33%" VALIGN="TOP">
+<I><P>VT_EMPTY</I></TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>Not specified</TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>Null</TD>
+</TR>
+<TR><TD WIDTH="33%" VALIGN="TOP">
+<I><P>VT_NULL</I></TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>Null</TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>Null</TD>
+</TR>
+<TR><TD WIDTH="33%" VALIGN="TOP">
+<I><P>VT_I2</I></TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>2-byte signed int</TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>Short</TD>
+</TR>
+<TR><TD WIDTH="33%" VALIGN="TOP">
+<I><P>VT_I4</I></TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>4-byte signed int</TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>Int</TD>
+</TR>
+<TR><TD WIDTH="33%" VALIGN="TOP">
+<I><P>VT_R4</I></TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>4-byte real</TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>Float</TD>
+</TR>
+<TR><TD WIDTH="33%" VALIGN="TOP">
+<I><P>VT_R8</I></TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>8-byte real</TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>Double</TD>
+</TR>
+<TR><TD WIDTH="33%" VALIGN="TOP">
+<I><P>VT_CY</I></TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<I><P>Currency</I></TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>(to be defined)</TD>
+</TR>
+<TR><TD WIDTH="33%" VALIGN="TOP">
+<I><P>VT_DATE</I></TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<I><P>Date</I></TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>java.util.Date</TD>
+</TR>
+<TR><TD WIDTH="33%" VALIGN="TOP">
+<I><P>VT_BSTR</I></TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>Binary String</TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>java.lang.String</TD>
+</TR>
+<TR><TD WIDTH="33%" VALIGN="TOP">
+<I><P>VT_DISPATCH</I></TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<I><P>IDispatch</I> FAR *</TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<B><P>ActiveXDispatchable</B></TD>
+</TR>
+<TR><TD WIDTH="33%" VALIGN="TOP">
+<I><P>VT_ERROR</I></TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>Scodes</TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>(to be defined)</TD>
+</TR>
+<TR><TD WIDTH="33%" VALIGN="TOP">
+<I><P>VT_BOOL</I></TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>Boolean</TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>Boolean</TD>
+</TR>
+<TR><TD WIDTH="33%" VALIGN="TOP">
+<I><P>VT_VARIANT</I></TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<I><P>VARIANT</I> FAR *</TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>com.gensym.com.Variant</TD>
+</TR>
+<TR><TD WIDTH="33%" VALIGN="TOP">
+<I><P>VT_UNKNOWN</I></TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<I><P>IUnknown</I> FAR *</TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>(to be defined)</TD>
+</TR>
+<TR><TD WIDTH="33%" VALIGN="TOP">
+<I><P>VT_UI1</I></TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>Unsigned char</TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>Char</TD>
+</TR>
+</TABLE>
+
+
+<P>&nbsp;</P>
+<FONT SIZE=5><P>3.2 </FONT><FONT SIZE=4>Auxiliary Data Types</FONT> </P>
+<I><P>TYPEDESC</I> ([1] p178) is a structure used in Type library interfaces ([1] p184) to define the type of a return, variable, or parameter value.  Auxiliary data types for the purposes of this specification are those that are members of the <I>VARENUM</I> enumeration ([1] p167)  that do not appear within the <I>VARTYPE</I> enumeration and can be used with <I>TYPEDESC</I>.  These are referred to as auxiliary because although some can be contained within a <I>VARIANT</I> structure their usefulness depends upon our ability to interpret the primitive data types inside of the <I>VARIANT</I> structure in terms of the auxiliary data type. This distinction proves important later in this specification when the conversion of information in a type library into Java methods, properties and events is presented (sections 3, 4, 5).</P>
+
+<P>The default mapping between the auxiliary data types and Java is provided in the table below:</P>
+<P> </P>
+<TABLE BORDER CELLSPACING=1 CELLPADDING=7 WIDTH=590>
+<TR><TD WIDTH="33%" VALIGN="TOP">
+<I><P>VARENUM</I></TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>Description</TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>Java</TD>
+</TR>
+<TR><TD WIDTH="33%" VALIGN="TOP">
+<I><P>VT_L1</I></TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>Signed char</TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>Byte</TD>
+</TR>
+<TR><TD WIDTH="33%" VALIGN="TOP" HEIGHT=24>
+<I><P>VT_UI2</I></TD>
+<TD WIDTH="33%" VALIGN="TOP" HEIGHT=24>
+<P>Unsigned short</TD>
+<TD WIDTH="33%" VALIGN="TOP" HEIGHT=24>
+<P>Int</TD>
+</TR>
+<TR><TD WIDTH="33%" VALIGN="TOP">
+<I><P>VT_UI4</I></TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>Unsigned short</TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>Long</TD>
+</TR>
+<TR><TD WIDTH="33%" VALIGN="TOP">
+<I><P>VT_I8</I></TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>Signed 64 bit int</TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>(not yet defined)</TD>
+</TR>
+<TR><TD WIDTH="33%" VALIGN="TOP">
+<I><P>VT_UI8</I></TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>Unsigned 64 bit int</TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>(not yet defined)</TD>
+</TR>
+<TR><TD WIDTH="33%" VALIGN="TOP">
+<I><P>VT_INT</I></TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>Signed machine int</TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>Int</TD>
+</TR>
+<TR><TD WIDTH="33%" VALIGN="TOP">
+<I><P>VT_UINT</I></TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>Unsigned machine int</TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>Long</TD>
+</TR>
+<TR><TD WIDTH="33%" VALIGN="TOP">
+<I><P>VT_VOID</I></TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>C Style void</TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>(not applicable)</TD>
+</TR>
+<TR><TD WIDTH="33%" VALIGN="TOP">
+<I><P>VT_HRESULT</I></TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<I><P>HRESULT</I></TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>(not yet defined)</TD>
+</TR>
+<TR><TD WIDTH="33%" VALIGN="TOP">
+<I><P>VT_PTR</I></TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>Pointer Type</TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>(see section 3.3)</TD>
+</TR>
+<TR><TD WIDTH="33%" VALIGN="TOP">
+<I><P>VT_SAFEARRAY</I></TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<I><P>SAFEARRAY</I></TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>(not yet defined)</TD>
+</TR>
+<TR><TD WIDTH="33%" VALIGN="TOP">
+<I><P>VT_CARRAY</I></TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>C-style array</TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>(not yet defined)</TD>
+</TR>
+<TR><TD WIDTH="33%" VALIGN="TOP">
+<I><P>VT_USERDEFINED</I></TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>User defined type</TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>(see section 3.3)</TD>
+</TR>
+<TR><TD WIDTH="33%" VALIGN="TOP">
+<I><P>VT_LPSTR</I></TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>Null terminated String</TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>java.lang.String</TD>
+</TR>
+<TR><TD WIDTH="33%" VALIGN="TOP">
+<I><P>VT_LPWSTR</I></TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>Null terminated Wide string</TD>
+<TD WIDTH="33%" VALIGN="TOP">
+<P>java.lang.String</TD>
+</TR>
+</TABLE>
+
+
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<FONT SIZE=5><P>3.3 </FONT><FONT SIZE=4>User Defined Data Types</P>
+</FONT>
+<P>As well as primitive and auxiliary types an Automation container can also provide the ability to represent and manipulate data types that have been defined in a Type library.  These types can be categorized by the <I>TYPEKIND</I> enumeration ([1] p181).  The class <B>Beanifier</B>  (see Appendix A) performs a translation from types in a given type library to Java classes and interfaces.  </P>
+
+<P>The table below summarizes which Java superclass is chosen when each member of <I>TYPEKIND </I>is translated.</P>
+
+<TABLE BORDER CELLSPACING=1 CELLPADDING=7 WIDTH=787>
+<TR><TD WIDTH="21%" VALIGN="TOP">
+<I><P>TYPEKIND</I></TD>
+<TD WIDTH="27%" VALIGN="TOP">
+<P>Description</TD>
+<TD WIDTH="11%" VALIGN="TOP">
+<P>Interface</TD>
+<TD WIDTH="42%" VALIGN="TOP">
+<P>Interfaces implemented/extended</TD>
+</TR>
+<TR><TD WIDTH="21%" VALIGN="TOP">
+<I><P>TKIND_ALIAS</I></TD>
+<TD WIDTH="27%" VALIGN="TOP">
+<P>Alias of another type</TD>
+<TD WIDTH="11%" VALIGN="TOP">
+<P>N/A</TD>
+<TD WIDTH="42%" VALIGN="TOP">
+<P>(use the other type)</TD>
+</TR>
+<TR><TD WIDTH="21%" VALIGN="TOP">
+<I><P>TKIND_COCLASS</I></TD>
+<TD WIDTH="27%" VALIGN="TOP">
+<P>A set of implemented component object interfaces</TD>
+<TD WIDTH="11%" VALIGN="TOP">
+<P ALIGN="JUSTIFY">false</TD>
+<TD WIDTH="42%" VALIGN="TOP">
+<B><P ALIGN="JUSTIFY">ActiveXDefaultComponent </P>
+</B><P ALIGN="JUSTIFY"> (see 2.3.1)</TD>
+</TR>
+<TR><TD WIDTH="21%" VALIGN="TOP">
+<I><P>TKIND_DISPATCH</I></TD>
+<TD WIDTH="27%" VALIGN="TOP">
+<P>A set of methods and properties that are accessible through Idispatch::Invoke</TD>
+<TD WIDTH="11%" VALIGN="TOP">
+<P>false</TD>
+<TD WIDTH="42%" VALIGN="TOP">
+<B><P>ActiveXDispatchable</P>
+</B><P> (see 2.3.2)</TD>
+</TR>
+<TR><TD WIDTH="21%" VALIGN="TOP">
+<I><P>TKIND_ENUM</I></TD>
+<TD WIDTH="27%" VALIGN="TOP">
+<P>A set of enumerators</TD>
+<TD WIDTH="11%" VALIGN="TOP">
+<P>true</TD>
+<TD WIDTH="42%" VALIGN="TOP">
+<P>(see 2.3.3)</TD>
+</TR>
+<TR><TD WIDTH="21%" VALIGN="TOP">
+<I><P>TKIND_INTERFACE</I></TD>
+<TD WIDTH="27%" VALIGN="TOP">
+<P>A type that has virtual functions all of which are pure</TD>
+<TD WIDTH="11%" VALIGN="TOP">&nbsp;</TD>
+<TD WIDTH="42%" VALIGN="TOP">
+<P>(not yet defined)</TD>
+</TR>
+<TR><TD WIDTH="21%" VALIGN="TOP">
+<I><P>TKIND_MODULE</I></TD>
+<TD WIDTH="27%" VALIGN="TOP">
+<P>A module that can have static functions and data</TD>
+<TD WIDTH="11%" VALIGN="TOP">
+<P>N/A</TD>
+<TD WIDTH="42%" VALIGN="TOP">
+<P>(not yet defined)</TD>
+</TR>
+<TR><TD WIDTH="21%" VALIGN="TOP">
+<I><P>TKIND_RECORD</I></TD>
+<TD WIDTH="27%" VALIGN="TOP">
+<P>A structure with no methods</TD>
+<TD WIDTH="11%" VALIGN="TOP">
+<P>false</TD>
+<TD WIDTH="42%" VALIGN="TOP">
+<P>(not yet defined)</TD>
+</TR>
+<TR><TD WIDTH="21%" VALIGN="TOP">
+<I><P>TKIND_UNION</I></TD>
+<TD WIDTH="27%" VALIGN="TOP">
+<P>A union</TD>
+<TD WIDTH="11%" VALIGN="TOP">
+<P>N/A</TD>
+<TD WIDTH="42%" VALIGN="TOP">
+<P>(not yet defined)</TD>
+</TR>
+<TR><TD WIDTH="21%" VALIGN="TOP" HEIGHT=5>
+<I><P>TKIND_MAX</I></TD>
+<TD WIDTH="27%" VALIGN="TOP" HEIGHT=5>
+<P>End of <I>ENUM</I> marker</TD>
+<TD WIDTH="11%" VALIGN="TOP" HEIGHT=5>
+<P>N/A</TD>
+<TD WIDTH="42%" VALIGN="TOP" HEIGHT=5>
+<P>N/A</TD>
+</TR>
+</TABLE>
+
+<P> </P>
+
+<P>Each <I>TYPEKIND</I> in a type library has associated with it a Class Identifier or <I>CLSID</I> ([1] p26).  Whenever any <I>TYPEKIND</I> is translated into a Java class or interface the <I>CLSID</I> is included (see section 9 for how this can be accessed).</P>
+
+<P>  <FONT SIZE=5>3.3.1 Representation of </FONT><FONT SIZE=4>TKIND_COCLASS</P>
+</FONT>
+<I><P>TKIND_COCLASS</I> types must be emitted as Java classes that implement the <B>ActiveXDefaultComponent</B> interface (see Appendix A).  </P>
+
+<P>The <B>ActiveXDefaultComponent</B> interface extends the <B>ActiveXDispatchable </B>interface, and the<B> ActiveXDisplayComponent </B>interface.  Through these interfaces the emitted class that represents the <I>TKIND_COCLASS</I> must provided component, automation and display services.  A default implementation of these services is provides by the <B>ActiveXDefaultComponentImpl</B> class, although many other implementations are possible.</P>
+
+<P>Each emitted <I>TKIND_COCLASS</I> must be given its own unique subclass that contains its own <I>CLSID</I> that is accessible through the <B>ActiveXComponent</B> interface. In the type library a <I>TKIND_COCLASS</I> can declare to implement a certain number of other types, and to provide an event source and event-sync for a number of other types.  The Java Beans properties, methods and events that are added to each emitted subclass are determined by the specification in sections 3, 4 and 5.</P>
+
+<P>Another restriction of the emitted classes that represent <I>TKIND_COCLASS</I> is that they must provide a zero argument constructor. This defines the emitted classes for <I>TKIND_COCLASS</I> to be Java Beans.</P>
+
+<P>The final restriction on the emitted class for <I>TKIND_COCLASS</I> is that it must also provide a one-argument constructor where the type of the argument is <B>ActiveXDispatchable</B>. This one argument constructor is used to allow casting between different <B>ActiveXDispatchable </B>components.  Runtime casting is discussed in section 9.2.</P>
+
+<P>  <FONT SIZE=5>3.3.2 </FONT><FONT SIZE=4>Representation of <I>TKIND_DISPATCH</P>
+</I></FONT>
+<P>For each <I>TKIND_DISPATCH</I> in a given type library a class that implements <B>ActiveXDispatchable</B> must be emitted.  This class must <B>not</B> have a zero argument constructor.   It must provide an implementation for the properties and methods of the <I>TKIND_DISPATCH</I> type according to the specification in sections 3 and 4.</P>
+
+<P>The emitted class for <I>TKIND_DISPATCH</I> must also provide a one-argument constructor where the type of the argument is <B>ActiveXDispatchable</B>. This one argument constructor is used to allow casting between different <B>ActiveXDispatchable </B>components.  Runtime casting is discussed in section 9.2.</P>
+
+<B><P>*Design Note:<br>
+</B>It is likely that the next draft of this specification will include the emitting of a Java interface for each <I>TKIND_DISPATCH</I> as well as the current implementation class that is emitted.  This will also entail a small change to the emitting of <I>TKIND_COCLASS</I>.</P>
+
+<P>  <FONT SIZE=5>3.3.3 </FONT><FONT SIZE=4>Representation of <I>TKIND_ENUM</P>
+</I></FONT>
+<P>For each <I>TKIND_ENUM</I> in a given type library a Java interface will be emitted.  This interface will contain one &quot;public constant final int&quot;  field for each member of the enumeration. </P>
+
+<P>A specific conventional algorithm is used for determining the name to be used for the constant field (see Appendix B).</P>
+
+<U><FONT SIZE=5><P></P>
+<P>4. Properties                                                                            </P>
+</U></FONT><FONT SIZE=2>
+<P></P>
+</FONT><P>The Java Beans specification [2] provides for the ability to represent the properties of a Bean via conventional method names and prototypes.    In ActiveX either a Variable or a Function member of a specific type represents a property in the type library.  This information can be retrieved from the type library by using the ITypeInfo([1] p317) interface.</P>
+
+<P>Whenever a Function member is defined in a type library it has associated with it an <I>INVOKEKIND</I> ([1] 175) flag:</P>
+<P> </P>
+<TABLE BORDER CELLSPACING=1 CELLPADDING=7 WIDTH=590>
+<TR><TD WIDTH="50%" VALIGN="TOP">
+<I><P>INVOKEKIND</I></TD>
+<TD WIDTH="50%" VALIGN="TOP">
+<P>Equivalent</TD>
+</TR>
+<TR><TD WIDTH="50%" VALIGN="TOP">
+<I><P>INVOKE_FUNC</I></TD>
+<TD WIDTH="50%" VALIGN="TOP">
+<P>DISPATCH_METHOD</TD>
+</TR>
+<TR><TD WIDTH="50%" VALIGN="TOP">
+<I><P>INVOKE_PROPERTYGET</I></TD>
+<TD WIDTH="50%" VALIGN="TOP">
+<P>DISPATCH_PROPERTYGET</TD>
+</TR>
+<TR><TD WIDTH="50%" VALIGN="TOP">
+<I><P>INVOKE_PROPERTYSET</I></TD>
+<TD WIDTH="50%" VALIGN="TOP">
+<P>DISPATCH_PROPERTYSET</TD>
+</TR>
+<TR><TD WIDTH="50%" VALIGN="TOP">
+<I><P>INVOKE_PROPERTYPUTREF</I></TD>
+<TD WIDTH="50%" VALIGN="TOP">
+<P>DISPATCH_PROPERTYPUTREF</TD>
+</TR>
+</TABLE>
+
+
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<FONT SIZE=5><P> 4.1 </FONT><FONT SIZE=4>Simple Properties</FONT> </P>
+
+<P>A simple property is defined here as one that is either:</P>
+<OL>
+
+<LI>A Variable member of  a type;</LI>
+<LI>A Function member or a pair of Function members that are declared to be  <I>INVOKE_PROPERTYGET</I> or <I>INVOKE_PROPERTYSET</I>, where any set function takes only one argument and returns void, and any get function takes no arguments.</LI></OL>
+
+
+<P>In the case of a simple property there is a simple translation to the Beans getX and setX methods.</P>
+
+<P>This translation involves a minimum of three stages:</P>
+<OL>
+
+<OL>
+
+<LI>Determining the data type of each argument and return value;</LI>
+<LI>Renaming the function or variable to follow Java standard naming conventions (see Appendix B)</LI>
+<LI>Constructing and emitting an implementation of the method</LI></OL>
+</OL>
+
+
+<P>Stage 3) is dependent upon the implementation of this spec.  In Stage 1) the conversion will proceed by consulting the mapping provided by sections 2.1, 2.2 and 2.3.  In the case that a user-defined type resulted in the emitting of a Java class with a zero arg constructor the user-defined type is used, otherwise the default mapping from sections 2.1 or 2.2 is used.</P>
+
+<P>Properties that are of type <I>TKIND_ENUM</I> are always emitted as int properties.</P>
+
+<P>For example, a type that contains a Variable of type <I>VT_DATE</I> and name &quot;Today&quot; will result in the following methods being emitted:</P>
+
+<PRE><code>
+public java.util.Date getAxToday() {
+  &lt;implementation specific code&gt;
+}
+public void setAxToday(java.util.Date date) {
+  &lt;implementation specific code&gt;
+}
+</PRE></code>
+
+<P>&nbsp;</P>
+<P>   <FONT SIZE=5>4.2 </FONT><FONT SIZE=4>Indexed Properties</P>
+</FONT><P>In ActiveX it is possible to declare Function members that set or get properties but also contain additional arguments to qualify the property set or get.  These are emitted in a similar way to the simple properties described in section 3.2 with the difference that additional arguments are added to the get and set methods.</P>
+<FONT SIZE=2>
+</FONT><P>For example if a type declares two Function members:</P>
+<OL>
+
+<LI>Value that is <I>INVOKE_PROPERTYGET</I> and takes 1 argument a <I>VT_INT</I> and returns a <I>VT_INT</I>;</LI>
+<LI>Value that is <I>INVOKE_PROPERTYSET</I> and takes 2 <I>VT_INT</I> arguments and returns          <I>VT_VOID</LI></OL>
+
+</I>
+<P>These two functions would emit as:</P>
+
+<PRE><code>
+public int getAxValue(int  param0) {
+   &lt;implementation specific code&gt;
+}
+
+public void setAxValue(int param0, int param1) {
+   &lt;implementation specific code&gt;
+}
+</code></PRE>
+
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<U><FONT SIZE=5><P>5. Methods                                                                                                                                                                  </P>
+</U>
+</FONT><FONT SIZE=2><P>&nbsp;</P>
+</FONT><P>Some of the background for this section has been discussed already in section 3.  The type of return values and argument values for emitted methods are determined in the same way that they are for property get and set methods. </P>
+
+<FONT SIZE=5><P> </FONT><FONT SIZE=4>5.1 Simple Methods</P>
+</FONT><P>If a Function member of a type is defined to be <I>INVOKE_FUNC</I> the method is emitted without any additional adornments.</P>
+
+<P>For example, if a Function member is named  Count and it takes zero arguments and returns a <I>VT_UINT</I> and it  is defined to be <I>INVOKE_FUNC</I> the method is emitted as follows:</P>
+
+<pre><code>
+public long Count() {
+   &lt;implementation specific code&gt;
+}
+</code></pre>
+
+<P>   <FONT SIZE=4>5.2 Variable Arguments</P>
+</FONT><P>In ActiveX it is also possible to define Function members to take a variable number of arguments.  Note that this is orthogonal to which <I>INVOKEKIND</I> the function is declared to require.  There is no explicit means of defining variable argument methods in Java, rather the convention is to have a number of methods, each with a different number of arguments.</P>
+
+<P>For example if a Function member is named Add and it takes 2 required arguments and 2 optional arguments and one return argument (all <I>VT_INT</I>) and it is defined to be <I>INVOKE_FUNC</I> the methods emitted are as follows:</P>
+
+<pre><code>
+public int Add(int param0, int param1) {
+  &lt;implementation specific code&gt;
+}
+public int Add(int param0, int param1, int param2) {
+  &lt;implementation specific code&gt;
+}
+public int Add(int param0, int param1, int param2, int param3) {
+  &lt;implementation specific code&gt;
+}
+</code></pre>
+
+<FONT SIZE=2><P>&nbsp;</P>
+<P>&nbsp;</P>
+</FONT><FONT SIZE=4><P>5.3 Named Arguments</P>
+</FONT><P>In ActiveX it is also possible to define Function members that take named arguments as well as required and optional arguments.  Again there is no explicit means of defining named arguments in Java.   This translation is currently not specified.</P>
+<FONT SIZE=2>
+</FONT><B><P>*Design Note:<br>
+</B>One way to achieve this will be to have a class that provides the equivalent of a structured mapping between names and values, and emit a version of each method to optionally have this as it’s last argument.  An example of such as class is <B>com.gensym.util.Structure<U>.</P>
+</B><FONT SIZE=5><P>6. Events                                                                                 </P>
+</U></FONT><FONT SIZE=2>
+<P>&nbsp;</P>
+</FONT><P>The ActiveX and the Java Beans event model differ quite significantly. In ActiveX a class can define itself as an event source in the type library or at runtime through the <I>IConnectionPointContainer</I> and <I>IConnectionPoint</I> interfaces.  Any class that provides an implementation of the interface can be connected to the event source.  Events in ActiveX take the form of method calls through an interface.  There are no separate event objects used in the ActiveX event model.</P>
+
+<P>In Java Beans a component can declare itself as being the an event source by having the appropriate addListener() method.  Any class that implements the Listener interface that is the argument to this addListener method can register itself for notification in the case of an event.  In Java Beans there are explicit event objects, and methods in the event Listener interfaces are defined to operate upon these objects.</P>
+
+<P>The translation of the ActiveX to Java Beans event models is currently not specified.</P>
+
+<B><P>*Design Note:<br>
+</B>There is enough information in the type library to provide a pure Java Beans translation.  This requires that for each method in a given interface there must be an associated event object that packs up the arguments of this method.   There is a choice to be made as to whether the event object class should be created for each unique method in the type library or for each interface.  Classes that implement a particular interface would also require to provide an version of each method that takes an event rather than a number of arguments.</P>
+
+<B><P>*Design Note:<br>
+</B>Some event interfaces have special status in Java Beans because they provide the common means by which components are hooked up in a visual environment.  These include mouse events, and property changed events.  These may require special handling within this specification.</P>
+
+<U><FONT SIZE=5>
+<P>7.  Lifecycle of Components                                                                                                                                                                                                                 </P>
+</U></FONT><FONT SIZE=2>
+<P>&nbsp;</P>
+</FONT><P>Part of any component model is the definition of the stages in the lifecycle of an individual component.  ActiveX and Java Beans differ at each stage of the lifecycle.  Below is a summary of how the ActiveX lifecycle is mapped into Java Beans by this specification.  During this discussion the word &quot;must&quot; implies a requirement of this specification while the word &quot;implemented&quot; implies that the implementation classes provided by <B>com.gensym.com</B> have made that  choice.</P>
+
+<FONT SIZE=5><P> 7.1 </FONT><FONT SIZE=4>Creation</P>
+</FONT><P>In section 2.3.1 the emitting of <I>TKIND_CO_CLASS</I> types were discussed.  There it was mentioned that these types must be translated as Java classes and that such classes must contain a zero argument constructor.  This zero argument constructor defines these emitted classes as Java Beans and represent the means by which top level ActiveX components are created.  </P>
+
+<P>The time of creation is a decision that must be made by an implementation of an emitted</P>
+<I><P>TKIND_COCLASS</I>.   In the implementation class <B>ActiveXDefaultComponentImpl </B>the actual ActiveX component associated with the emitted class are not created until the component is added to a container and the Java addNotify() method is called.  </P>
+
+<P>Creation requires the following:</P>
+<OL>
+
+<LI>An instance of <B>ActiveXMode</B>s must be created (see Appendix A).  The <B>ActiveXModes</B> instance provides default information about how the ActiveX component is to be created, inserted, activated and displayed.  A <B>Guid </B>representing the <I>CLSID</I> of the component is also required to create an instance of <B>ActiveXModes</B>;</LI>
+<LI>An <B>Hwnd </B> object (see section 7.4); </LI>
+<LI>An  implementation of the <B>ActiveXComponent</B> interface;</LI>
+<LI>The <B>Hwnd</B>, the <B>ActiveXModes</B>  and the <B>ActiveXComponent</B> must be passed to a constructor of <B>ActiveXProxy</B>.</LI></OL>
+
+
+<P>The <B>ActiveXProxy</B> class manages the communication with the ActiveX component (see Appendix A).  During its constructor <B>ActiveXProxy</B> will try to create the appropriate class, decisions about insertion, activation and display are also made at this point and are discussed in sections 7.2, 7.3 and 7.4.</P>
+
+<P>Creation of an ActiveX Component inside <B>ActiveXProxy</B> requires only that the component provides an <I>IUnknown</I>  interface.</P>
+
+<B><P>*Design Note:</br>
+</B>The <B>Hwnd</B> requirement is likely to be removed in the next version of this specification, since ActiveX components exist that do not require any display.</P>
+
+<B><P>*Design Note:</br>
+ActiveXModes</B> includes the ability to specify linking, linking to a file, and creating or linking to remote component.  It is intended that this specification will describe all of these options.</P>
+
+<P>   <FONT SIZE=5>7.2 </FONT><FONT SIZE=4>Insertion</P>
+</FONT><P>Insertion in ActiveX refers to the traditional concept of OLE Insertion.  Components that can be inserted in the OLE insert dialog also have the Insert key associated with their <I>CLSID</I> in the registry.  The primary use of the insertable/uninsertable  distinction is that it affects the way that the component is created. Support for the standard insertion of components into Java containers is provided by the implementation class <B>ActiveXGenericComponent</B>.  </P>
+<FONT SIZE=4>
+<P>&nbsp;</P>
+</FONT><FONT SIZE=5><P>7.3 </FONT><FONT SIZE=4>Activation</P>
+</FONT><P>Activation in ActiveX is represented primarily by the method <I>IOleObject::DoVerb(</I>).  Components that do not implement <I>IOleObject</I> do not therefore have any activation semantics.</P>
+
+<P>There are 3 interesting ways to categorize the activation states of ActiveX components that relate to our ability to include them inside a Java VM.</P>
+
+<OL>
+
+<LI>In Place Activation;</LI>
+<LI>UI Activation;</LI>
+<LI>Out of Place Activation.</LI></OL>
+
+
+<P>By passing an appropriate <I>OLEIVERB</I> flag to DoVerb() the container can influence which activation state results.  Another factor that affects the result is the type and extent of container services that the container provides. This is discussed in section 7.</P>
+
+<P>From the perspective of Java Beans In Place Activation provides the most natural way to activate an ActiveX component.  Wherever possible the container should prefer in place activation over any other kind.</P>
+
+<P>UI Activation requires access to a range of container services that may not be available inside a Java environment.  These include the ability to change menu and toolbar items.  UI Activation is not supported by this specification. </P>
+
+<P>Out of Place Activation is where the ActiveX component creates its own separate window (if it needs one) that is not contained within the window hierarchy of the container.  If  In Place Activation is not possible for an ActiveX component the <B>com.gensym.com </B>module will use Out of Place Activation.</P>
+
+<P>An instance of an <B>ActiveXProxy</B> is responsible for the activation of an individual ActiveX component.  The constructor for <B>ActiveXProxy </B>requires an implementation of the <B>ActiveXComonent</B> interface as an argument.  One requirement of that interface is the <B>proxyActivated()</B> method.  This method informs the <B>ActiveXComponent</B> that the <B>ActiveXProxy</B> has completed activation.   </P>
+
+<P>See section 7.5 for a discussion of the interaction between activation and persistence.</P>
+
+<B><P>*Design Note:</P>
+</B><P>The current implementation of the <B>ActiveXProxy</B> class will activate the <B>ActiveXComponent </B>directly after creation.</P>
+
+<B><P>*Design Note:</P>
+</B><P>The <B>proxyActivated()</B> notification is likely to be replaced with an event based notification in the next version of this spec.</P>
+
+<FONT SIZE=5><P> 7.4 </FONT><FONT SIZE=4>Display</P>
+</FONT><P>In order to display an ActiveX control inside a Java VM access to the <I>HWND</I> of  a heavyweight AWT component is required.   This is the only service over and above existing public APIs that the <B>com.gensym.com</B> facility requires.  An implementation of <B>ActiveXComponent </B>must attempt to retrieve this HWND in order to create the component.  This is supported by the <B>Hwnd</B> class which uses knowledge about supported Java VMs to find the <I>HWND</I> of an heavy weight AWT component (see Appendix A).  </P>
+
+<P>How the <B>ActiveXProxy</B> uses the <B>Hwnd </B>depends upon the manner in which the ActiveX component has been activated.  If the ActiveX component has been activated in place then the <I>HWND</I>, and location information is passed to the control which will then create its own window inside of that <I>HWND</I>.  In the case of in place activation the size of the display is determined by negotiation between the container and the component.  With the components window inside of our container the user can now interact directly with the component, as they would with any Java Bean that provides a display.</P>
+
+<P>If the ActiveX control has been activated out of place then the <I>HWND</I> is used for the purposed of painting a view of the ActiveX component onto the <I>HWND</I>.  This view is retrieved from the component using the <I>IViewObject</I> and <I>IViewObject2</I> interfaces.  For components that support <I>IDataObject</I> the container registers itself to receive events whenever the view of the object needs to be repainted.   </P>
+
+<FONT SIZE=5><P> 7.5 </FONT><FONT SIZE=4>Persistence</P>
+</FONT><P> ActiveX provides support for serialization via a number of persistence interfaces implemented by components.  Among these are <I>IPersistToFile</I>, <I>IPersistToText</I>, <I>IPersistToStream</I> and <I>IPersistStorage</I>.</P>
+
+<P>When a  <B>ActiveXProxy</B> object is serialized it will determine which persistence interface the ActiveX component has available.  After the data for the <B>ActiveXProxy</B> has been inserted into the java.io.ObjectStream  a long is inserted followed by the same number of bytes that represent the persistent storage of the ActiveX component. </P>
+
+<P>When an <B>ActiveXProx</B>y object is loaded from an ObjectStream the last thing the <B>ActiveXProxy</B> will do is to load the ActiveX component from the bytes that follow it in the ObjectStream.</P>
+
+<P>This allows the ActiveX Persistence model to fit seemlessly into the Java serialization model.</P>
+
+<P>After loading a decision has to be made as to whether the control is automatically activated or not.  This decision is controlled by the <B>activateOnLoad</B> property on </P>
+<B><P>ActiveXComponent.</P>
+</B>
+<FONT SIZE=5><P> 7.6 </FONT><FONT SIZE=4>Deletion</P>
+</FONT><P>ActiveX requires deletion semantics in the sense that <I>Release()</I> be called on <I>IUknown</I> interfaces that the container has a pointer to.  To achieve this <B>delete()</B> is a required method in  <B>ActiveXComponent</B>.  The implementation of the <B>delete()</B> method must call <B>ActiveXProxy.delete()</B>.</P>
+<U><FONT SIZE=5>
+<P>8. Container   Services                                                                                                                                           </P>
+</U></FONT><FONT SIZE=2>
+<P>&nbsp;</P>
+</FONT><P>(To be specified)</P>
+
+<FONT SIZE=4><P>&nbsp;</P>
+<U><P>&nbsp;</P>
+</FONT><FONT SIZE=5><P>9. Introspection                                                                                                                                                                                                                                     </P>
+</U></FONT><FONT SIZE=2>
+<P>&nbsp;</P>
+</FONT><P>(To be specified)</P>
+<FONT SIZE=4>
+<P>  </P>
+</FONT><FONT SIZE=2>
+</FONT><U><FONT SIZE=5><P>&nbsp;</P>
+<P>10. Runtime Considerations                                                                                                                           </P>
+<P>                                                                                 </P>
+</U></FONT><FONT SIZE=2>
+<P>&nbsp;</P>
+</FONT><P>(To be specified)</P>
+
+<FONT SIZE=5><P> 10.1 </FONT><FONT SIZE=4>Threading Model</FONT> </P>
+
+<P> </P>
+
+<P>  <FONT SIZE=5>10.2 </FONT><FONT SIZE=4>Casting</P>
+</FONT><FONT SIZE=2>
+<P>&nbsp;</P></FONT>
+</DIR>
+</DIR>
+</BODY>
+</HTML>

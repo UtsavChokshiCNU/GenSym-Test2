@@ -1,0 +1,1330 @@
+//BeanXporter setup file for InstallShield3
+
+declare
+
+#include "sddialog.h"
+
+   // Constant declarations.
+#define SPACE_REQUIRED        100000          // Disk space in bytes.
+#define APP_NAME              "BeanXporter"
+#define PROGRAM_FOLDER_NAME   "BeanXporter"
+#define APPBASE_PATH          "gensym\\bx-10r3"
+#define APPBASE_PATH_WIN32S   "gensym\\bx-10r3"
+#define COMPANY_NAME          "Gensym"
+#define PRODUCT_NAME          "BeanXporter"
+#define PRODUCT_KEY           "beanXporter"
+#define PRODUCT_VERSION       "1.0 Rev 3"
+#define DEINSTALL_KEY         "BeanXporterDeinstKey"
+#define UNINSTALL_NAME        "BeanXporter 1.0 Rev 3"
+#define ROOT_INST_DIR	    	"c:\\"
+#define EXTRA_BLOCKSPACE      200000
+
+// File component constant declarations
+#define BIN				"Bin"
+#define CORE_CLASSES		"Class files"
+#define DEMOS			"Demos"
+#define DOCUMENTATION         "BeanXporter Documentation"
+
+#define STR_CORE_CLASSES		"This component consists of all BeanXporter classes."
+#define STR_DOCUMENTATION		"This component consists of BeanXporter classes javadoc and other guides."
+#define STR_DEMOS			    "This component consists of sample demos."
+
+#define COMP_FILE             "data.z"
+
+#define PROPERTIES_FILE          ".com.gensym.properties";
+#define RAW_PROPERTIES_FILE      "rawprop.gen";
+#define RAW_PROPERTIES_FILE_PATH ".\\";
+#define TAGSTRING                "%ROOTDIR%";
+
+#define US_LICENSE			"license.txt";
+#define EU_LICENSE			"license-eu.txt";
+#define EVAL_LICENSE		"license-eval.txt";
+
+// I would like to control this from the build
+BOOL isEval;
+
+STRING svLicenseFile;
+
+   // Global variable declarations.
+BOOL    bSpaceOk, bWinNT, bWin32s, bIsShellExplorer, bHtmlSet;
+BOOL 	  bModifiedClassPath , bModifiedPath, bModifiedBeanXporterHome, bModifyInstallDir;
+NUMBER  nType, nvType, nvSize, nResult, nTypeReturn;
+NUMBER  nReturn, nJarLocation, nBxJarLocation, nLocation;
+STRING  szBaseKey, szParameter, svInstallType; 
+STRING  szDestinationTitle, szDestinationMsg, szDestinationField;
+STRING  svTestString, sHtmHandler, szHtmlHandler, sHTMAPP;
+STRING  svFolder, svDir, szMsg, szFileSet, szTitle, svUninstLogFile;
+STRING  svTargetDir, szProgram, szParam, szTemp, szAppPath;
+STRING  szTypeTitle, szTypeMsg, svTypeDir, szComponentList;
+STRING mixedSlashString, doubleSlashString;
+STRING svHomepath , svHomedrive , svPropsHome;
+STRING sGlobalClassPath
+
+//for file stuff
+STRING  szFileName, szPath, szText, svLine;
+NUMBER  nFileHandle,ndFileHandle;
+BOOL createThePropertiesFile;
+
+STRING svResult, TEMPDIR, uniqueDirName;
+STRING szFile1,szFile2;
+
+NUMBER nCounter;
+STRING         genFileName,genDirName ,  rootFileName , szFilePath ;
+
+LIST   listID;
+
+BOOL   bClassPathFound, bJavaHomeFound;
+
+// Function declarations.
+prototype SetupScreen ();
+prototype CheckRequirements ();
+prototype modifyBeanXporterHome ();
+prototype modifyClassPath ();
+prototype modifyPath ();
+prototype DetermineComponentInfo( STRING );
+prototype EnoughSpace( STRING, STRING, NUMBER );
+prototype GetInstallationType( STRING, BYREF STRING, BYREF STRING );
+prototype GetInstallationDirectory( BYREF STRING );
+prototype PerformFileTransfer( STRING );
+prototype SetupFileTransfer( STRING, STRING );
+prototype CreateAppRegEntries();
+prototype CreateProgramIcons( STRING );
+prototype checkDirExistence();
+
+prototype CopyPropertiesFile();
+prototype InstallPropertiesFile();
+prototype mkPropsFile();
+prototype replaceStrWithStrInStr(STRING,STRING,STRING);
+prototype doubleSlashify( );
+prototype installProps();
+prototype mkPropsFileInBinDir();
+prototype genFile();
+prototype genDir();
+
+program
+
+start:
+	
+   // Should be controlled by the build
+   isEval = FALSE;
+
+   Disable( BACKGROUND );
+
+   // Set up the installation screen.
+   SetupScreen();
+   Enable( DIALOGCACHE );
+
+   // Set installation info., which is required for registry entries.
+   InstallationInfo( COMPANY_NAME, PRODUCT_NAME, PRODUCT_VERSION, PRODUCT_KEY );
+
+   // this is the dir from which InstallShield started
+    TEMPDIR=SRCDIR;
+
+   // Create a Welcome dialog.
+   WelcomeDlg:
+      Disable( BACKBUTTON );
+      Welcome( "", 0 );
+      Enable( BACKBUTTON );
+
+      // Test target system for proper configuration.
+      CheckRequirements();
+
+	// Ask User to accept the license conditions
+	License:
+		if (isEval)
+			then svLicenseFile = EVAL_LICENSE;
+		else 
+			// Now ask for which country they are in
+			if (AskYesNo( "Are you installing this product one of the\n" +
+			              "following European Union countries?\n\n" +
+						 "\tAUSTRIA\n" +
+						 "\tBELGIUM\n" + 
+					     "\tDENMARK\n" +
+						 "\tFINLAND\n" +
+						 "\tGREECE\n"  +
+						 "\tIRELAND\n" +
+						 "\tITALY\n" + 
+						 "\tLUXEMBOURG\n"+
+						 "\tTHE NETHERLANDS\n" +
+						 "\tNORWAY\n" +  
+						 "\tSWEDEN\n" +
+						 "\tU.K.", YES ) = YES) then
+				svLicenseFile = EU_LICENSE;
+			else
+				svLicenseFile = US_LICENSE;
+			endif;
+		endif;
+		
+		nResult = SdLicense("License Agreement",
+			"Please read the following license agreement.  Use the scrollbar\n" +
+			"to view the rest of this agreement.",
+			"Do you accept all the items in the preceding license agreement\n" +
+			"If so click on the Yes button.  If you select No Setup will close.",
+			TEMPDIR + svLicenseFile);
+		if (nResult = BACK) then goto WelcomeDlg; endif;
+
+
+// Set the target directory and other globals.
+   SetTargetDirectory:
+      PROGRAMFILES = ROOT_INST_DIR;
+      if (bWin32s) then
+         svTargetDir = TARGETDISK ^ APPBASE_PATH_WIN32S;
+      else
+         if ( PROGRAMFILES = "") then
+             svTargetDir = TARGETDISK ^ APPBASE_PATH;
+         else
+             svTargetDir = PROGRAMFILES ^ APPBASE_PATH;
+         endif;
+      endif;
+      szComponentList = "BeanXporter";
+      svFolder = PROGRAM_FOLDER_NAME;
+      szFileSet = "General";
+
+// Select target directory and components to be installed.
+   GetTargetLocAndSelection:
+	//nResult = GetInstallationDirectory(svTargetDir);
+	nResult = GetInstallationType( szComponentList, svInstallType, svTargetDir );
+    if (nResult = BACK) then goto License; endif;
+
+// Check for the dir existence
+   CheckDirExistence:
+	  checkDirExistence();
+	  if (bModifyInstallDir=TRUE) then goto GetTargetLocAndSelection; endif;
+
+// Select program folder name.
+   GetProgramFolderInfo:
+        nResult = SdSelectFolder( "", "", svFolder);
+        if (nResult = BACK) then goto GetTargetLocAndSelection; endif;
+
+
+// Prepare InstallSHIELD to record deinstallation information.
+        DeinstallStart( svTargetDir, svUninstLogFile, DEINSTALL_KEY, 0 );
+        RegDBSetItem( REGDB_UNINSTALL_NAME, UNINSTALL_NAME );
+
+
+// Set the App Paths Registry keys for the main program.
+        szAppPath = svTargetDir ^ "bin";
+        RegDBSetItem( REGDB_APPPATH, szAppPath );
+        szProgram = svTargetDir ^ "bin\\beanXporter.bat";
+        RegDBSetItem( REGDB_APPPATH_DEFAULT, szProgram );
+
+
+   SetupFilesToTransfer:
+// Setup and perform file transfer.
+        SetupFileTransfer( szComponentList, szFileSet );
+        PerformFileTransfer( szFileSet );
+        Delay(2);
+
+	
+
+   
+   SetupRegistryVars:
+   if (bWinNT) then
+	bModifiedBeanXporterHome=FALSE;
+	modifyBeanXporterHome();
+
+      if (AskYesNo( "Do you want Setup to modify your PATH Registry variable?", YES ) = YES) then
+         modifyPath();
+         Delay( 2 );
+	else
+	   MessageBox("You have chosen not to modify the PATH.\n"+
+			  "In order for BeanXporter to run, you must add the following to your PATH:\n\n"+
+			  "%BEANXPORTER_HOME%\\bin\n\n"+
+			  "Please refer to the readme file for help.", WARNING);
+      endif;
+
+      if (AskYesNo( "Do you want Setup to modify your CLASSPATH Registry variable?", YES ) = YES) then
+         modifyClassPath();
+         Delay( 2 );
+	else
+	   MessageBox("You have chosen not to modify the CLASSPATH.\n"+
+			  "In order for BeanXporter to run, you must add the following to your CLASSPATH:\n\n\n"+
+			  "%BEANXPORTER_HOME%\\classes\n"+
+			  "%BEANXPORTER_HOME%\\classes\\ax2jbeans.jar\n\n"+
+			  "Please refer to the readme file for help.", WARNING);
+      endif;
+  endif;
+
+// Create application registry entries.
+        SetStatusWindow( 93, "Creating File Associations..." );
+        CreateAppRegEntries();
+
+installProps();
+
+// see if a html browser is on the machine and linked to html files.
+   	bHtmlSet=TRUE;
+    	RegDBSetDefaultRoot( HKEY_CLASSES_ROOT );
+
+    	szBaseKey = ".htm";
+
+    	if (RegDBGetKeyValueEx(szBaseKey, "", nvType, sHtmHandler, nvSize) < 0) then
+        // key not found
+        MessageBox("Dont know how to handle htm files"+"\n\nPlease install a html reader", WARNING);
+        bHtmlSet=FALSE;
+    	endif;
+
+    	if(bHtmlSet=TRUE) then
+	    // need to get this from the registry
+	    RegDBSetDefaultRoot( HKEY_CLASSES_ROOT );
+	    szBaseKey = sHtmHandler+"\\shell\\open\\command\\";
+
+	    if (RegDBGetKeyValueEx(szBaseKey, "", nvType, sHTMAPP, nvSize) < 0) then
+	        // key not found
+	        MessageBox("HTML reader application <"+sHTMAPP+"> was not found.", WARNING);
+	        bHtmlSet=FALSE;
+	    endif;
+
+	    nLocation = StrFind(sHTMAPP, ".exe");
+	    nLocation = nLocation + 5;
+
+	    if ( StrSub(szHtmlHandler , sHTMAPP , 0, nLocation ) < 0 )then
+	        bHtmlSet=FALSE;
+	    endif;
+    	endif;
+
+
+// Create program folder and icons.
+   CreateProgramFolderIcons:
+        SetStatusWindow( 99, "Creating Program Group and Icons...." );
+        CreateProgramIcons( svFolder );
+
+   // Announce setup complete and offer to read README file
+   FinalInstallProcess:
+      SetStatusWindow( 100, "Installation complete." );
+        Disable( STATUSDLG );
+
+   DisplayReadme:
+    bHtmlSet = FALSE;
+	if (bWinNT) then 
+		if (AskYesNo( "Do you want to view the README file now?", YES ) = YES) then
+			bHtmlSet = TRUE;
+	endif;
+
+	if(bHtmlSet=TRUE) then
+         LaunchApp( szHtmlHandler, svTargetDir ^ "README.HTML" );
+         Delay( 2 );		
+    endif;
+  endif;
+
+  MessageBox("In order to run BeanXporter, please ensure that the following software\n"+
+		 "is installed on this machine:\n\n"+
+		 "Java Development Kit (JDK) Version 1.1.6 or greater\n\n\n"+
+		 "To run demos, please ensure that the following software\n" +
+		 "is correctly installed on this machine:\n\n"+
+		 "Bean Development Kit (BDK) Version 1.0\n" +
+		 "Swing 1.1\n",
+		 INFORMATION);
+
+  if(bModifiedClassPath=TRUE || bModifiedPath=TRUE || bModifiedBeanXporterHome=TRUE) then
+    szTemp =
+       "Some Registry entries have been modified."+
+	 "\You should restart your system to apply the changes to the Registry.";
+    RebootDialog(PRODUCT_NAME+" Installation is complete",  szTemp,0);
+  endif;
+
+  if (bWinNT) then
+   szMsg = "Setup is complete.";
+  else 
+	LaunchApp( szHtmlHandler, svTargetDir ^ "README.HTML");
+	szMsg = "Setup is complete. Please follow further Windows 95 install instructions in readme.html";
+  endif;
+  MessageBox( szMsg, INFORMATION );
+
+exit;
+
+/*---------------------------------------------------------------------------*\
+ *
+ * Function:  CheckRequirements
+ *
+ *  Purpose:  This function will check all minimum requirements for the
+ *            application being installed.  If any fail, then the user
+ *            is informed and the installation is terminated.
+ *
+\*---------------------------------------------------------------------------*/
+
+function CheckRequirements()
+   NUMBER  nvDx, nvDy, nvResult;
+   STRING  svResult;
+
+begin
+   // Check screen resolution.
+   GetExtents( nvDx, nvDy );
+
+   if (nvDy < 480) then
+      MessageBox( "This program requires VGA or better resolution.", WARNING );
+      abort;
+   endif;
+
+   // Determine the target system's operating system.
+   GetSystemInfo( OS, nvResult, svResult );
+
+   bWinNT           = FALSE;
+   bWin32s          = FALSE;
+   bIsShellExplorer = FALSE;
+
+   if (nvResult =  IS_WINDOWSNT) then
+      bWinNT = TRUE;                   // Running Windows NT.
+      // Check to see if the shell being used is EXPLORER shell.
+      if (( nvResult = IS_WINDOWSNT ) || ( nvResult = IS_WINDOWS95 )) then
+         if (GetSystemInfo( OSMAJOR, nvResult, svResult ) = 0) then
+            if (nvResult >= 4) then
+               bIsShellExplorer = TRUE;
+            endif;
+         endif;
+      endif;
+
+   elseif (nvResult =  IS_WIN32S) then
+      bWin32s = TRUE; // Running Win32s.
+
+   elseif (nvResult = IS_WINDOWS95 ) then
+      bIsShellExplorer = TRUE;
+
+   endif;
+
+
+   // see if CLASSPATH has been set
+   bClassPathFound = FALSE;
+
+   szParameter = "CLASSPATH";
+
+   if (GetEnvVar(szParameter, sGlobalClassPath) < 0) then
+
+      MessageBox("Can not continue. CLASSPATH not found\n\n"+
+                 "Possible reasons for this are:\n\n"+
+                 "	(1) Sun Microsystems JDK1.1.6 (or greater) is not installed\n\n"+
+                 "	(2) JDK1.1 is installed but CLASSPATH has not been set.\n\n"+
+                 "Please ensure that Sun Microsystems JDK 1.1.6 or greater is\n"+
+                 "installed on this machine and that CLASSPATH has been set\n\n"
+                 , SEVERE);
+        exit;
+   endif;
+
+    bClassPathFound = TRUE;
+
+	if (bWinNT) then
+		
+	bJavaHomeFound  = FALSE;
+
+	szParameter = "JAVA_HOME";
+
+	if (GetEnvVar(szParameter, sGlobalClassPath) < 0) then
+
+	MessageBox("Can not continue. JAVA_HOME not found\n\n"+
+			   "Please ensure that the environment variable JAVA_HOME is set\n" +
+			   "to the installation of Sun's JDK 1.1.6 or greater.\n\n" +
+			   "Use Settings >> ControlPanel >> System >> Environment\n"
+			   , SEVERE);
+        exit;
+   endif;
+   
+   endif;
+
+   bJavaHomeFound = TRUE;
+
+end;
+
+/*---------------------------------------------------------------------------*\
+ *
+ * Function:  checkDirExistence
+ *
+ *  Purpose:  This function will check if the target directory exists.
+ *
+\*---------------------------------------------------------------------------*/
+
+function checkDirExistence()
+begin
+  bModifyInstallDir=FALSE;
+  if (ExistsDir(svTargetDir) = EXISTS ) then
+    if (AskYesNo( svTargetDir+" already exists."+
+ 		"\nWould you like to install into \nthat directory anyway?", YES ) = NO) then
+	bModifyInstallDir=TRUE;
+    endif;
+  endif;
+end;
+
+/*---------------------------------------------------------------------------*\
+ *
+ * Function:  modifyBeanXporterHome
+ *
+ *  Purpose:  This function will set the BEANXPORTER_HOME variable.
+ *
+\*---------------------------------------------------------------------------*/
+
+function modifyBeanXporterHome()
+begin
+Disable(LOGGING);
+
+ if (bModifiedBeanXporterHome=FALSE) then
+  SetStatusWindow( 96, "Updating registry (BEANXPORTER_HOME)...." );
+  RegDBSetDefaultRoot( HKEY_CURRENT_USER );
+  szBaseKey = "Environment\\";
+  if(RegDBKeyExist(szBaseKey)<0)then
+    RegDBCreateKeyEx( szBaseKey, "" );
+  endif;
+  RegDBSetKeyValueEx( szBaseKey, "BEANXPORTER_HOME", REGDB_STRING, svTargetDir , -1 );
+  bModifiedBeanXporterHome = TRUE;
+ endif;
+Enable(LOGGING);
+
+end;
+
+/*---------------------------------------------------------------------------*\
+ *
+ * Function:  modifyClassPath
+ *
+ *  Purpose:  This function will modify the CLASSPATH and will add
+ *            BEANXPORTER_HOME\classes and
+ *            BEANXPORTER_HOME\classes\ax2jbeans.jar
+ *
+\*---------------------------------------------------------------------------*/
+
+function modifyClassPath()
+  BOOL bSetClazzPathClass;
+  BOOL bSetClazzPathJar;
+  BOOL bSetClazzPathBxJar;
+  STRING sCLASSPATH;
+  STRING sLcaseCLASSPATH, sR;
+  NUMBER jarPos, CPLength, nToolsJarLocation;
+begin
+  Disable(LOGGING);
+
+  bSetClazzPathClass=FALSE;
+  bSetClazzPathJar=FALSE;
+
+  bModifiedClassPath=FALSE;
+  bSetClazzPathBxJar=FALSE;
+
+  SetStatusWindow(98, "Updating registry (CLASSPATH) ....");
+
+  RegDBSetDefaultRoot(HKEY_CURRENT_USER);
+  szParameter = "CLASSPATH";
+  szBaseKey = "Environment\\";
+  if (RegDBKeyExist(szBaseKey) < 0) then
+    RegDBCreateKeyEx(szBaseKey, "");
+  endif;
+
+  if (RegDBGetKeyValueEx(szBaseKey, szParameter, nvType , sCLASSPATH,
+      nvSize) < 0) then
+    sCLASSPATH = "%CLASSPATH%";
+  endif;
+
+  nReturn = StrToLower(sLcaseCLASSPATH, sCLASSPATH);
+
+  nReturn = StrToLower(svTestString,
+            "%BEANXPORTER_HOME%\\classes\\ax2jbeans.jar");
+  nBxJarLocation = StrFind(sLcaseCLASSPATH, svTestString);
+
+  nReturn = StrToLower(svTestString, "%BEANXPORTER_HOME%\\classes");
+  nLocation = StrFind(sLcaseCLASSPATH, svTestString);
+
+  svTestString = "%java_home%\\lib\\tools.jar";
+  nToolsJarLocation = StrFind(sLcaseCLASSPATH, svTestString);
+
+  if (nLocation < 0) then
+    RegDBSetKeyValueEx(szBaseKey, szParameter, REGDB_STRING_EXPAND,
+      sCLASSPATH+";%BEANXPORTER_HOME%\\classes", -1 );
+    bModifiedClassPath=TRUE;
+    bSetClazzPathClass=TRUE; // we've changed the classpath for classes
+  endif;
+
+  RegDBGetKeyValueEx(szBaseKey, szParameter, nvType , sCLASSPATH, nvSize);
+
+  if (nBxJarLocation < 0) then
+    RegDBSetKeyValueEx(szBaseKey, szParameter, REGDB_STRING_EXPAND,
+      sCLASSPATH + ";%BEANXPORTER_HOME%\\classes\\ax2jbeans.jar", -1);
+    bModifiedClassPath = TRUE;
+    bSetClazzPathBxJar = TRUE; // changes classpath for ax2jbeans jar
+  endif;
+
+  RegDBGetKeyValueEx(szBaseKey, szParameter, nvType , sCLASSPATH, nvSize);
+
+  if (nToolsJarLocation < 0) then
+    RegDBSetKeyValueEx(szBaseKey, szParameter, REGDB_STRING_EXPAND,
+      sCLASSPATH + ";%JAVA_HOME%\\lib\\tools.jar", -1);
+    bModifiedClassPath=TRUE;
+  endif;
+
+  RegDBGetKeyValueEx(szBaseKey, szParameter, nvType , sCLASSPATH, nvSize);
+
+  if (nLocation >= 0) then // found
+    // if its the same as the jar reference - add it
+    if (nLocation = nJarLocation) then
+      if (bSetClazzPathClass=FALSE) then
+        // get the remainder sR of the sLcaseCLASSPATH
+        // from nJarLocation,
+        // look in sR for %BEANXPORTER_HOME%\\classes,
+        // if not found , add it.
+
+        CPLength = StrLength(sLcaseCLASSPATH);
+
+        nReturn = StrSub(sR,sLcaseCLASSPATH, nJarLocation+1,
+                  CPLength  - nJarLocation + 1);
+        //MessageBox("sR = "+sR,INFORMATION);
+        nLocation = StrFind(sR,svTestString );
+        if (nLocation < 0) then
+          RegDBSetKeyValueEx( szBaseKey, szParameter, REGDB_STRING_EXPAND,
+            sCLASSPATH + ";%BEANXPORTER_HOME%\\classes", -1);
+            bModifiedClassPath=TRUE;
+        endif;
+      endif;
+    endif;
+  endif;
+
+  Enable(LOGGING);
+end;
+
+/*---------------------------------------------------------------------------*\
+ *
+ * Function:  modifyPath
+ *
+ *  Purpose:  This function will modify the PATH in the registry.
+ *            It will add BEANXPORTER_HOME\bin to the PATH after checking that it hasn't
+ *            been set already.
+ *
+\*---------------------------------------------------------------------------*/
+
+function modifyPath()
+STRING sPATH;
+	begin
+	modifyBeanXporterHome();
+	Disable(LOGGING);
+  	bModifiedPath=FALSE;
+	SetStatusWindow( 97, "Updating registry (PATH)...." );
+
+ 	RegDBSetDefaultRoot( HKEY_CURRENT_USER );
+ 	szParameter = "path";
+  	szBaseKey = "Environment\\";
+	
+    	if(RegDBKeyExist(szBaseKey)<0)then
+	  RegDBCreateKeyEx( szBaseKey, "" );
+	endif;
+
+ 	if (RegDBGetKeyValueEx(szBaseKey, szParameter, nvType , sPATH, nvSize) < 0) then
+  		sPATH="";
+	endif;
+
+ 	nReturn = StrToLower(svTestString, "%BEANXPORTER_HOME%\\bin");
+	nLocation = StrFind(sPATH,svTestString );
+
+  	// if its not on the path
+  	if (nLocation <0)then
+  	//see if the user path is set
+  		if (sPATH = "")then
+     // its not so set it
+     	RegDBSetKeyValueEx( szBaseKey, "PATH", REGDB_STRING_EXPAND, "%BEANXPORTER_HOME%\\bin" , -1 );
+     else
+     // it is so append it
+       RegDBSetKeyValueEx( szBaseKey, "PATH", REGDB_STRING_EXPAND, sPATH+";%BEANXPORTER_HOME%\\bin" , -1 );
+     endif;
+     bModifiedPath=TRUE;
+   endif;
+	Enable(LOGGING);
+
+end;
+
+/*-------------------------------------------------------------------------*\
+ *
+ * Function: CreateProgramIcons
+ *
+ *  Purpose: This function will create the folder icons.
+ *
+\*-------------------------------------------------------------------------*/
+
+function  CreateProgramIcons( svFolder )
+    STRING  szCommandLine, szWorkDir, szGrp, szLinkDir, szProgram, szParam;
+
+begin
+// Create the PROGRAM FOLDER.
+	if (bWinNT) then
+		nResult = CreateProgramFolder( svFolder );
+		if (nResult < 0) then			
+			ProgDefGroupType(PERSONAL);
+			CreateProgramFolder( svFolder );
+		endif;			
+	else CreateProgramFolder( svFolder );
+	endif;
+    
+    ShowProgramFolder( svFolder, SW_SHOW );
+    Delay(1);
+
+    szWorkDir = svTargetDir;
+    szProgram = svTargetDir ^ "readme.html";
+    LongPathToShortPath( szParam );
+    AddFolderIcon( svFolder, "Readme", szProgram,
+                     szWorkDir, "", 0, "", REPLACE );
+
+// Add PROGRAM ICONS to the program folder.
+    if (ComponentIsItemSelected( szComponentList, CORE_CLASSES )) then
+	  szWorkDir = svTargetDir;
+        szProgram = szWorkDir^"bin\\beanXporter.bat";
+                LongPathToQuote( szProgram, TRUE );
+		szProgram = szProgram^" -wizard";
+        AddFolderIcon( svFolder, "BeanXporter Wizard",
+                       szProgram, szWorkDir, "", 0, "", REPLACE );
+        Delay(2);
+
+        //szProgram = szWorkDir^"bin\\mydemo.bat";
+        //        LongPathToQuote( szProgram, TRUE );
+        //AddFolderIcon( svFolder, "BeanXporter Demo",
+        //               szProgram, szWorkDir, "", 0, "", REPLACE );
+        //Delay(2);
+    endif;
+
+    // UNINST global variable stores the file name (with full path) of
+    // the uninstaller file.
+    //if (!bIsShellExplorer) then
+        szProgram = UNINST;
+        szParam = svUninstLogFile;
+        LongPathToQuote( szProgram, TRUE );
+        LongPathToShortPath( szParam );
+        szCommandLine =  szProgram + " -f" + szParam;
+        AddFolderIcon( svFolder, "unInstallShield", szCommandLine,
+                       WINDIR, "", 0, "", REPLACE );
+    //endif;
+    Delay(2);
+
+end;
+
+/*-------------------------------------------------------------------------*\
+ *
+ * Function: CreateAppRegEntries()
+ *
+ *  Purpose: This function will insert the application initialization
+ *           settings in the registry. This information was entered in the
+ *           application ini files in Win3.1, but in 32bit Windows, Registry
+ *           is used to store this information.
+ *
+\*-------------------------------------------------------------------------*/
+
+function CreateAppRegEntries()
+    STRING szKey, szBaseKey, szPath, szTempPath;
+
+begin
+    RegDBSetDefaultRoot( HKEY_LOCAL_MACHINE );
+    szBaseKey = "SOFTWARE\\"+COMPANY_NAME+"\\"+PRODUCT_NAME+"\\"+PRODUCT_VERSION;
+
+   RegDBCreateKeyEx( szBaseKey, "" );
+   RegDBSetKeyValueEx( szBaseKey, "version", REGDB_STRING, PRODUCT_VERSION , -1 );
+   RegDBSetKeyValueEx( szBaseKey, "installdir", REGDB_STRING, svTargetDir , -1 );
+   RegDBSetKeyValueEx( szBaseKey, "dereg", REGDB_STRING, svUninstLogFile , -1 );
+
+end;
+
+
+function installProps()
+begin
+
+    svPropsHome="a";
+    svHomedrive="x";
+    svHomepath="y";
+
+   szParameter = "HOME";
+   if (GetEnvVar(szParameter, svPropsHome) < 0) then
+		svPropsHome = svTargetDir ^ "classes";
+   endif;
+
+   //MessageBox(svPropsHome, WARNING);
+
+   //mixedSlashString = svPropsHome;
+   //doubleSlashify();
+   //svPropsHome = doubleSlashString;
+
+   SetStatusWindow( 99, "Installing .com.gensym.properties file...." );
+
+   //MessageBox(svPropsHome,WARNING);
+
+	mkPropsFileInBinDir();
+	//MessageBox("Made file in BIN dir",WARNING);
+	CopyPropertiesFile();
+	//MessageBox("Copied properties file to Bin Dir",WARNING);
+	CloseFile(ndFileHandle);
+
+       if (FindFile(svPropsHome + "\\", PROPERTIES_FILE, svResult) < 0) then
+
+		  //MessageBox("Did not find an existing properties file", WARNING);
+          mkPropsFile();
+		  //MessageBox("Made new properties file", WARNING);
+          InstallPropertiesFile();
+		  //MessageBox("Installed new properties file", WARNING);
+
+	      CloseFile(ndFileHandle);
+
+
+       else
+        if (AskYesNo(svPropsHome + "\\"+PROPERTIES_FILE+" is already on your machine.\n\nReplace it with a new one ?", YES) = YES) then
+            // do the biz
+            // rename the orig
+            createThePropertiesFile=TRUE;
+            szFile1= PROPERTIES_FILE ;
+
+            SRCDIR = svPropsHome+"\\";
+            TARGETDIR = SRCDIR;
+
+            nCounter=0;
+            genFileName="";
+            rootFileName = PROPERTIES_FILE;
+            szFilePath = SRCDIR;
+
+            // create a new file name
+            genFile();
+            szFile2 = genFileName;
+
+
+            if (RenameFile (szFile1, szFile2) < 0) then
+               MessageBox("Failed to backup properties file."+szFile1+"\n\nto\n\n"+szFile2, WARNING);
+               if (AskYesNo("Overwrite the existing properties file ?", YES) = YES) then
+                  createThePropertiesFile=TRUE;
+               else
+                  MessageBox("Check the file permissions on "+SRCDIR+szFile1+"\n\n"+"The existing "+ szFile1+" may be outdated and the\nsoftware you are about to install may not function correctly.", WARNING);
+                  createThePropertiesFile=FALSE;
+               endif;
+             else
+                  MessageBox("Renamed "+SRCDIR+szFile1+"\n\nto      "+SRCDIR+szFile2,INFORMATION);
+             endif;
+
+             if(createThePropertiesFile=TRUE) then
+                mkPropsFile();
+		        InstallPropertiesFile();
+    		    CloseFile(ndFileHandle);
+
+             endif;
+
+        else
+            MessageBox("You have elected not to replace the existing properties file.\n\n"+"The existing "+ PROPERTIES_FILE+" may be outdated and the\nsoftware you are about to install may not function correctly.", WARNING);
+        endif;
+       endif;
+ end;
+
+
+
+function mkPropsFile()
+STRING aString;
+begin
+   // Set the file mode to append open files.
+   OpenFileMode(FILE_MODE_APPEND);
+
+   aString = svPropsHome + "\\";
+   //MessageBox("Making Props file in " + aString, WARNING);
+
+   if (CreateFile(ndFileHandle, aString, PROPERTIES_FILE) < 0) then
+      MessageBox("CreateFile failed."+svPropsHome+PROPERTIES_FILE, SEVERE);
+      abort;
+   endif;
+   //MessageBox("Claims to have created the file " + aString, WARNING);
+end;
+
+
+
+function mkPropsFileInBinDir()
+STRING aString;
+begin
+   // Set the file mode to append open files.
+   OpenFileMode(FILE_MODE_APPEND);
+
+   aString = svTargetDir + "\\bin\\";
+
+   if (CreateFile(ndFileHandle, aString, PROPERTIES_FILE) < 0) then
+      MessageBox("CreateFile failed."+svPropsHome+PROPERTIES_FILE, SEVERE);
+      abort;
+   endif;
+
+end;
+
+
+
+function CopyPropertiesFile()
+BOOL failed;
+begin
+// create the new file
+
+    failed = FALSE;
+
+  // Set the file mode to normal.
+   OpenFileMode(FILE_MODE_NORMAL);
+
+   szFileName = RAW_PROPERTIES_FILE;
+   //szPath     = RAW_PROPERTIES_FILE_PATH;
+   szPath     = TEMPDIR;
+//MessageBox("CopyPropertiesFile CreateFile try. "+szPath+szFileName, INFORMATION);
+
+if( OpenFile(nFileHandle, szPath, szFileName)<0) then
+MessageBox("OpenFile failed. "+szPath+szFileName+"\n\nCould not find file - check disk space", SEVERE);
+endif;
+
+   while (GetLine (nFileHandle, svLine) = 0)
+    // output to new file
+    if (WriteLine(ndFileHandle, svLine) < 0) then
+        failed = TRUE;
+    endif;
+   endwhile;
+
+   if(failed = TRUE)then
+     MessageBox("Failed to copy properties file.\n\nThis may have an effect on installproperties.bat", WARNING);
+   endif;
+
+   CloseFile(nFileHandle);
+
+
+end;
+
+
+function InstallPropertiesFile()
+BOOL failed;
+begin
+// create the new file
+
+  // Set the file mode to normal.
+   OpenFileMode(FILE_MODE_NORMAL);
+
+   szFileName = PROPERTIES_FILE;
+   szPath       = svTargetDir + "\\bin\\";
+//MessageBox("CopyPropertiesFile OpenFile try. "+szPath+szFileName, INFORMATION);
+
+if( OpenFile(nFileHandle, szPath, szFileName)<0) then
+MessageBox("OpenFile failed. "+szPath+szFileName+"\n\nCould not find file - check disk space", SEVERE);
+endif;
+
+//MessageBox("OpenFile succeeded",INFORMATION);
+//MessageBox("Target Dir" + svTargetDir, INFORMATION);
+failed = FALSE;
+
+   while (GetLine (nFileHandle, svLine) = 0)
+    doubleSlashString="";
+    replaceStrWithStrInStr(TAGSTRING,svTargetDir,svLine);
+    // output to new file
+    if (WriteLine(ndFileHandle, doubleSlashString) < 0) then
+     failed=TRUE;
+    endif;
+   endwhile;
+
+      if(failed = TRUE)then
+    MessageBox("Failed to install properties file", SEVERE);
+   endif;
+
+
+   // The following closes the EXAMPLE_TXT file.
+
+   CloseFile(nFileHandle);
+
+
+end;
+
+
+function replaceStrWithStrInStr(oldStr, newStr, sourceStr)
+STRING retStr , frontSubStr, backSubStr;
+number nStrLocation, nOldStrLen, nSubLocation , nSrcLen;
+begin
+
+        nStrLocation= StrFind(sourceStr, oldStr);
+        if(nStrLocation<0)then
+            doubleSlashString = sourceStr;
+        else
+
+            // get the length of the old string
+            nSrcLen = StrLength(sourceStr);
+            nOldStrLen = StrLength(oldStr);
+            // we know the location of the old Str & its length
+            nSubLocation = StrSub(frontSubStr , sourceStr , 0 , nStrLocation);
+            nSubLocation = StrSub(backSubStr  , sourceStr, nStrLocation+nOldStrLen , nSrcLen);
+            retStr = frontSubStr + newStr + backSubStr;
+            mixedSlashString = retStr;
+            doubleSlashify();
+
+         //   MessageBox("got "+ sourceStr +"\n\n returned "+doubleSlashString,INFORMATION);
+        endif;
+
+end;
+
+
+function doubleSlashify( )
+STRING retString;
+STRING szString,szDelimiterSet,svString,svTempString;
+number nStringLength;
+begin
+ listID         = ListCreate(STRINGLIST);
+   szString       = mixedSlashString;
+   szDelimiterSet = "|\\";
+
+   doubleSlashString="";
+   if (StrGetTokens(listID, szString, szDelimiterSet) < 0) then
+   	  MessageBox("StrGetTokens failed.", SEVERE);
+   endif;
+
+    retString = "";
+    nResult = ListGetFirstString(listID, svString);
+
+   while (nResult != END_OF_LIST)
+
+      nStringLength = StrLength(svString);
+
+      nResult = NumToStr(svTempString, nStringLength);
+
+      if(svString = "")then
+
+      else
+          // concat $
+        if(retString = "") then
+          retString = svString ;
+        else
+          retString = retString +"\\\\"+svString ;
+        endif;
+      endif;
+      nResult = ListGetNextString(listID, svString);
+   endwhile;
+//    MessageBox("doubleSlashify RETURN - "+retString,INFORMATION);
+   // Destroy the list.
+   ListDestroy(listID);
+   doubleSlashString = retString;
+end;
+
+
+function genFile()
+STRING svString;
+begin
+
+    nCounter = nCounter + 1;
+    nResult = NumToStr (svString , nCounter);
+    genFileName = rootFileName + svString;
+    while(FindFile(szFilePath, genFileName, svResult) >-1)
+        genFile( );
+    endwhile;
+
+    // recusion safety valve -- if you hit this,
+    // there's something wrong, or you have a large disk!
+
+    if(nCounter > 100) then
+        abort;
+    endif;
+
+end;
+
+
+
+
+function genDir()
+STRING svString;
+begin
+
+    nCounter = nCounter + 1;
+    nResult = NumToStr (svString , nCounter);
+    genFileName = rootFileName + svString;
+
+    while(ExistsDir(genFileName)=EXISTS)
+        genDir();
+    endwhile;
+
+    uniqueDirName = genFileName;
+
+    // recusion safety valve -- if you hit this, there's something wrong!
+
+    if(nCounter > 100) then
+        abort;
+    endif;
+
+end;
+
+
+
+/*---------------------------------------------------------------------------*\
+ *
+ * Function:  EnoughSpace
+ *
+ *  Purpose:  This function will determine if enough space exists on
+ *            the target drive based on the selection in the component
+ *            list.
+ *
+\*---------------------------------------------------------------------------*/
+
+function  EnoughSpace( szTargetDisk, szComponentList, nExtraSpace )
+LIST    list;
+number  nTotal, nvSize, nFreeSpace, nResult;
+string  svComponent;
+begin
+
+// Create string list of component names
+        list   = ListCreate( STRINGLIST );
+        ComponentListItems( szComponentList, list );
+
+        nResult = ListGetFirstString( list, svComponent );
+
+        // Get total size of all selected components.
+        nTotal = nExtraSpace;
+        while (nResult = 0)
+           ComponentGetItemSize( szComponentList, svComponent, nvSize );
+           if (ComponentIsItemSelected( szComponentList, svComponent )) then
+              nTotal = nTotal + nvSize;
+           endif;
+           nResult = ListGetNextString( list, svComponent );
+        endwhile;
+
+        ListDestroy( list );
+
+        // Determine if target disk has enough space.
+        nFreeSpace = GetDiskSpace( szTargetDisk );
+
+        if (nFreeSpace < nTotal) then
+           szMsg = "There is not enough space available, %ld bytes, on the disk\n" +
+                   "'" + szTargetDisk + "' \n" +
+                   "Please free up some space or change the target location\n" +
+                   "to a different disk";
+           SprintfBox( WARNING, "Setup", szMsg, nTotal );
+           return FALSE;
+        endif;
+
+        return TRUE; // Enough space.
+end;
+
+/*---------------------------------------------------------------------------*\
+ *
+ * Function:  DetermineComponentInfo
+ *
+ *  Purpose:  This function will place all the separatly identifable
+ *            file components into a component list. It will also
+ *            set the size the files represent and will by default
+ *            enable each to be selected.
+ *
+ \*---------------------------------------------------------------------------*/
+
+function DetermineComponentInfo( szFileList )
+    number nvSize, nTotal;
+    string svSize;
+begin
+  // Add CORE_CLASSES.
+        nTotal = 0;
+        CompressInfo( COMP_FILE, "classes\\*.*", COMP_INFO_ORIGSIZE | INCLUDE_SUBDIR,
+                      nvSize, svSize );
+        nTotal = nvSize;
+        CompressInfo( COMP_FILE, "known-bugs.txt", COMP_INFO_ORIGSIZE, nvSize, svSize );
+        nTotal = nTotal + nvSize;
+        CompressInfo( COMP_FILE, "readme.html", COMP_INFO_ORIGSIZE, nvSize, svSize );
+        nTotal = nTotal + nvSize;
+        ComponentAddItem( szFileList, CORE_CLASSES, nTotal, TRUE );
+
+  // Add BIN.
+        //CompressInfo( COMP_FILE, "bin\\*.*", COMP_INFO_ORIGSIZE | INCLUDE_SUBDIR,
+                      //nvSize, svSize );
+        //ComponentAddItem( szFileList, BIN, nvSize, TRUE );
+
+  // Add DOCUMENTATION.
+        CompressInfo( COMP_FILE, "docs\\*.*", COMP_INFO_ORIGSIZE | INCLUDE_SUBDIR,
+                      nvSize, svSize );
+        ComponentAddItem( szFileList, DOCUMENTATION, nvSize, TRUE );  
+
+  // Add DEMOS.
+        CompressInfo( COMP_FILE, "classes\\com\\gensym\\demos\\*.*", 
+			    COMP_INFO_ORIGSIZE | INCLUDE_SUBDIR, nvSize, svSize );
+        ComponentAddItem( szFileList, DEMOS, nvSize, TRUE );
+
+end;
+
+/*---------------------------------------------------------------------------*\
+ *
+ * Function:  GetInstallationDirectory
+ *
+ *  Purpose:  This function asks the user to select a directory to install into
+ *            
+ *
+\*---------------------------------------------------------------------------*/
+
+function GetInstallationDirectory( svTargetDir )
+
+begin
+	szDestinationTitle = "Select Destination Directory";
+	szDestinationMsg = "Setup will install BeanXporter in the directory " +
+				"shown below.\nYou may select different diretory by " +
+				"editing the Destination field.";
+	szDestinationField = "Destination";
+	
+	SdShowDlgEdit1( szDestinationTitle, szDestinationMsg, szDestinationField,
+					svTargetDir);
+end;
+
+/*---------------------------------------------------------------------------*\
+ *
+ * Function:  GetInstallationType
+ *
+ *  Purpose:  This function asks the user to select a type of installation
+ *            (Typical, Compact, or Custom).
+ *
+\*---------------------------------------------------------------------------*/
+
+function GetInstallationType( szComponentList, svInstallType, svTargetDir )
+    BOOL  bDone;
+    NUMBER   nType, nCustomDlg;
+
+begin
+// Determine component information and assemble component list.
+    DetermineComponentInfo( szComponentList );
+
+    szTypeTitle = "Select Setup Type";
+    szTypeMsg = "Select a setup type by selecting one of the options";
+
+    bDone = FALSE;
+    while (!bDone)
+        nType = SdSetupType( szTypeTitle, szTypeMsg, svTargetDir, STYLE_NORMAL );
+                nCustomDlg = NEXT;
+        switch (nType)
+        case TYPICAL:
+             svInstallType = "TYPICAL";
+             //ComponentSelectItem( szComponentList, BIN, TRUE );
+             ComponentSelectItem( szComponentList, CORE_CLASSES, TRUE );
+             ComponentSelectItem( szComponentList, DOCUMENTATION, TRUE );
+			 ComponentSelectItem( szComponentList, DEMOS, TRUE );
+        case COMPACT:
+             svInstallType = "COMPACT";
+             //ComponentSelectItem( szComponentList, BIN, TRUE );
+             ComponentSelectItem( szComponentList, CORE_CLASSES, TRUE );
+             ComponentSelectItem( szComponentList, DOCUMENTATION, TRUE );
+        case CUSTOM:
+             svInstallType = "CUSTOM";
+  	    	 szTypeTitle = "Custom Installation";
+	    	 szTypeMsg = "Install the following components:";
+             nCustomDlg = SdComponentDialog(szTypeTitle, szTypeMsg, svTargetDir, szComponentList);
+		         //or SdComponentDialogAdv(szTypeTitle, szTypeMsg, svTypeDir, szComponentList);
+        case BACK:
+                         // DO NOTHING
+        default:
+             MessageBox( "not a possible choice - SetupType", SEVERE );
+             abort;
+        endswitch;
+
+    // Perform space check of target drive.
+        if (nCustomDlg != BACK) then
+            if (EnoughSpace( TARGETDISK, szComponentList, EXTRA_BLOCKSPACE )) then
+                bDone = TRUE;
+            endif;
+        endif;
+    endwhile;
+
+    return nType;
+end;
+
+/*---------------------------------------------------------------------------*\
+ *
+ * Function:  PerformFileTransfer
+ *
+ *  Purpose:  This function will perform the file transfer and handle
+ *            any error that may occur during the file transfer.
+ *
+\*---------------------------------------------------------------------------*/
+
+function PerformFileTransfer( szFileSet )
+    STRING szTemp;
+
+begin
+        // Set up progress indicator and information gauge.
+        Disable( DIALOGCACHE );
+        Enable( STATUSDLG );
+        StatusUpdate( ON, 95 );
+        SetStatusWindow( 0, "Copying program files..." );
+
+        // Perform the file set.
+        nResult = FileSetPerformEz( szFileSet, 0 );
+
+        switch (nResult)
+
+        case FS_DONE: // Successful completion.
+
+        case FS_CREATEDIR: // Create directory error.
+             MessageBox( "Unable to create a directory under " + svTargetDir + "."+
+                         "Please check write access to this directory.", SEVERE );
+             abort;
+
+        default: // Group all other errors under default label.
+             NumToStr( szTemp, nResult );
+             MessageBox( "General file transfer error."+
+                          "Please check your target location and try again."+
+                          "\n\n Error Number:"+szTemp, SEVERE );
+
+             abort;
+        endswitch;
+
+        //Enable(DIALOGCACHE );
+end;
+
+/*---------------------------------------------------------------------------*\
+ *
+ * Function:  SetupFileTransfer
+ *
+ *  Purpose:  This function defines the file set based on the user's choices
+ *            of components.
+ *
+\*---------------------------------------------------------------------------*/
+
+function SetupFileTransfer( szComponentList, szFileSet )
+begin
+  // Define the file set.
+        TARGETDIR = svTargetDir;
+        FileSetBeginDefine( szFileSet );
+
+  // Always include README FILES, located at the root of the compressed library file.
+        SetStatusWindow( -1, "Copying readme files..." );
+        TARGETDIR = svTargetDir;
+        CompressGet( COMP_FILE, "*.*", COMP_NORMAL );
+
+  // If BIN is selected, then add them to the file set.
+        //if (ComponentIsItemSelected( szComponentList, BIN)) then
+           //SetStatusWindow( -1, "Copying bin files..." );
+           //TARGETDIR = svTargetDir ^ "bin";
+           //CompressGet( COMP_FILE, "bin\\*.*", INCLUDE_SUBDIR );
+        //endif;
+
+  // If CORE_CLASSES are selected, then add them to the file set.
+        if (ComponentIsItemSelected( szComponentList, CORE_CLASSES)) then
+           SetStatusWindow( -1, "Copying class files..." );
+           TARGETDIR = svTargetDir ^ "classes";
+           CompressGet( COMP_FILE, "classes\\*.*", INCLUDE_SUBDIR );
+           TARGETDIR = svTargetDir ^ "bin";
+	     CompressGet( COMP_FILE, "bin\\*.*", INCLUDE_SUBDIR );
+        endif;
+
+  // If DOCUMENTATION are selected, then add them to the file set.
+        if (ComponentIsItemSelected( szComponentList, DOCUMENTATION)) then
+           SetStatusWindow( -1, "Copying javadoc files and other documents..." );
+           TARGETDIR = svTargetDir ^ "docs";
+           CompressGet( COMP_FILE, "docs\\*.*", INCLUDE_SUBDIR );
+        endif;
+
+  // If DEMOS are selected, then add them to the file set.
+        if (ComponentIsItemSelected( szComponentList, DEMOS)) then
+           SetStatusWindow( -1, "Copying demos..." );
+           TARGETDIR = svTargetDir ^ "classes\\com\\gensym\\demos";
+           CompressGet( COMP_FILE, "classes\\com\\gensym\\demos\\*.*", INCLUDE_SUBDIR );
+        endif;
+
+   FileSetEndDefine( szFileSet );
+
+end;
+
+/*---------------------------------------------------------------------------*\
+ *
+ * Function:  SetupScreen
+ *
+ *  Purpose:  This function will set up the screen look.  This includes
+ *            colors, fonts, text to be displayed, etc.
+ *
+\*-------------------------------------------------------------------------*/
+
+function SetupScreen()
+  NUMBER  nDx, nDy;
+
+begin
+   GetExtents( nDx, nDy );
+
+   Enable( FULLWINDOWMODE );
+   Enable( INDVFILESTATUS );
+   Enable( BITMAP256COLORS );
+
+   SetTitle( "Installing " + APP_NAME, 24, WHITE );
+
+   SetColor( BACKGROUND, BK_BLUE ); // Dark blue.
+   SetColor( STATUSBAR, BLUE );     // Bright blue.
+   SetTitle( "BeanXporter Setup", 0, BACKGROUNDCAPTION ); // Caption bar text.
+
+   Enable( BACKGROUND );
+
+   Delay( 1 );
+end;
+
+#include "Sddialog.rul"
+

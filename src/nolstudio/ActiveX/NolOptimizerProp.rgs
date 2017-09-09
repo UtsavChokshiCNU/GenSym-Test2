@@ -1,0 +1,23 @@
+HKCR
+{
+	NolOnline.NolOptimizerProp.1 = s 'NolOptimizerProp Class'
+	{
+		CLSID = s '{49079014-4EB0-11D4-8704-00609703E392}'
+	}
+	NolOnline.NolOptimizerProp = s 'NolOptimizerProp Class'
+	{
+		CLSID = s '{49079014-4EB0-11D4-8704-00609703E392}'
+		CurVer = s 'NolOnline.NolOptimizerProp.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {49079014-4EB0-11D4-8704-00609703E392} = s 'NolOptimizerProp Class'
+		{
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+		}
+	}
+}

@@ -1,0 +1,47 @@
+
+GROUP_NAME = wksp
+
+JAVADIR=$(SRCBOX)/java
+
+JARDIR=jars
+
+JARFILE= $(JARDIR)/$(GROUP_NAME).jar
+
+CLASSDIR=com/gensym/wksp
+
+PACKAGE=com.gensym.wksp
+
+CLASSFILES= \
+	$(CLASSDIR)/WorkspaceView.class \
+	$(CLASSDIR)/MultipleWorkspaceView.class \
+	$(CLASSDIR)/MultipleWorkspacePanel.class
+
+DATAFILES= 
+
+all: $(JARFILE)
+
+# Create a JAR file with a suitable manifest.
+
+$(JARFILE): $(CLASSFILES) $(DATAFILES)
+	cd $(JAVADIR)
+	@echo "Building Manifest"	
+	@echo "Name: com/gensym/wksp/WorkspaceView.class" >> manifest.tmp
+	@echo "Java-Bean: True" >> manifest.tmp
+	@echo "" >> manifest.tmp
+	@echo "Name: com/gensym/wksp/MultipleWorkspaceView.class" >> manifest.tmp
+	@echo "Java-Bean: True" >> manifest.tmp
+	@echo "" >> manifest.tmp
+	@echo "Name: com/gensym/wksp/MultipleWorkspacePanel.class" >> manifest.tmp
+	@echo "Java-Bean: True" >> manifest.tmp
+	@echo "" >> manifest.tmp
+	jar cfm $(JARFILE) manifest.tmp ${CLASSDIR}/*.class com/gensym/dispatcher/*.class com/gensym/wksp/configurations/*.class
+	@/bin/rm manifest.tmp
+
+
+.SUFFIXES: .java .class
+
+%.class: %.java
+	export CLASSPATH; CLASSPATH=. ;
+	javac $<
+
+clean:

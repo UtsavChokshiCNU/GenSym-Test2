@@ -1,0 +1,278 @@
+// NolOnline.idl : IDL source for NolOnline.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (NolOnline.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+#include "olectl.h"
+	
+
+	[
+		object,
+		uuid(CDE0EF5F-4E9A-11D4-B8A0-0000861E0389),
+		dual,
+		helpstring("INolPredictor Interface"),
+		pointer_default(unique)
+	]
+	interface INolPredictor : IDispatch
+	{
+		[id(1), helpstring("Loads the model specified by the file name and directory.")] HRESULT loadModel([in] BSTR ModelFileName,[in, defaultvalue("")] BSTR ModelFilePath);
+		[id(2), helpstring("Returns the number of inputs.")] HRESULT getNumberOfInputs([out, retval] long *pVal);
+		[id(3), helpstring("Returns the number of outputs.")] HRESULT getNumberOfOutputs([out, retval] long *pVal);
+		[id(4), helpstring("Set an  input value of a time-based model, at the specified time. The input is identified by its index number.")] HRESULT setInputAtTimeByIndex([in] long Index,[in] double InputValue,[in] BSTR Time);
+		[id(5), helpstring("Set an  input value of a time-based model, at the specified time. The input is identified by its name.")] HRESULT setInputAtTimeByName([in] BSTR Name,[in] double InputValue,[in] BSTR Time);
+		[id(6), helpstring("Set an  input value of a time-based model, at the specified time. The input is identified by its tag.")] HRESULT setInputAtTimeByTag([in] BSTR Tag,[in] double InputValue,[in] BSTR Time);
+		[id(7), helpstring("Set an  input value of a row-based model. The input is identified by its index number.")] HRESULT setInputForRowByIndex([in] long Index,[in] double InputValue);
+		[id(8), helpstring("Set an  input value of a row-based model. The input is identified by its name.")] HRESULT setInputForRowByName([in] BSTR InputName,[in] double InputValue);
+		[id(9), helpstring("Set an  input value of a row-based model. The input is identified by its tag.")] HRESULT setInputForRowByTag([in] BSTR Tag,[in] double InputValue);
+		[id(10), helpstring("Use to send the trained model the full set of  input values at a specified time. Inputs must be a variant, an array of input values,  in the order specified by the trained model. Use this method for a full set of inputs only.")] HRESULT setInputsAtTime([in] VARIANT Inputs,[in] BSTR Time);
+		[id(11), helpstring("Use to send the trained model the full set of  input values for a specific row. Inputs must be a variant, an array of input values,  in the order specified by the trained model. Use this method for a full set of inputs only. ")] HRESULT setInputsForRow([in] VARIANT Inputs);
+		[id(12), helpstring("Returns a Variant, an array of output values, in the order specified by the trained model, for the given time with previously set of inputs.")] HRESULT calculateOutputsAtTime([in] BSTR Time,[out, retval] VARIANT* pVal);
+		[id(13), helpstring("Returns a Variant, an array of output values, in the order specified by the trained model, for the previously set row of inputs.")] HRESULT calculateOutputsForRow([out, retval] VARIANT* pVal);
+		[id(14), helpstring("Use to set the time format for all time-related operations.")] HRESULT setTimeFormat(BSTR newVal);
+		[id(15), helpstring("Returns true if model is trained from time based data.")] HRESULT isTimeBasedModel([out, retval]VARIANT_BOOL* pbool);
+		[propget, id(16), helpstring("String. The description of the model provided by the model developer")] HRESULT modelComment([out, retval] BSTR *pVal);
+		[propput, id(16), helpstring("String. The description of the model provided by the model developer")] HRESULT modelComment([in] BSTR newVal);
+		[propget, id(17), helpstring("The file directory of the trained model as String.")] HRESULT modelFilePath([out, retval] BSTR *pVal);
+		[propput, id(17), helpstring("The file directory of the trained model as String.")] HRESULT modelFilePath([in] BSTR newVal);
+		[propget, id(18), helpstring("The file name of the model as String.")] HRESULT modelFileName([out, retval] BSTR *pVal);
+		[propput, id(18), helpstring("The file name of the model as String.")] HRESULT modelFileName([in] BSTR newVal);
+		[propget, id(19), helpstring("The name of the model as specified in the trained model.")] HRESULT modelName([out, retval] BSTR *pVal);
+		[propput, id(19), helpstring("The name of the model as specified in the trained model.")] HRESULT modelName([in] BSTR newVal);
+		[propget, id(20), helpstring("A String array, populated with the names of the inputs in the order specified by the trained model")] HRESULT inputNames([in] short index, [out, retval] BSTR *pVal);
+		[propget, id(21), helpstring("A String array populated by the  inputs' Tags, in the order specified by the trained model.")] HRESULT inputTags([in] short index, [out, retval] BSTR *pVal);
+		[propget, id(22), helpstring("An array of Strings populated by the names of all outputs, in the order specified by the trained.")] HRESULT outputNames([in] short index, [out, retval] BSTR *pVal);
+		[propget, id(23), helpstring("An array of Strings populated by the output tags, in the order specified by the trained model.")] HRESULT outputTags([in] short index, [out, retval] BSTR *pVal);
+		[propget, id(24), helpstring("The current time format as String.")] HRESULT timeFormat([out, retval] BSTR *pVal);
+		[propput, id(24), helpstring("The current time format as String.")] HRESULT timeFormat([in] BSTR newVal);
+		[propget, id(25), helpstring("property modelPath")] HRESULT modelFullPath([out, retval] BSTR *pVal);
+		[propput, id(25), helpstring("property modelPath")] HRESULT modelFullPath([in] BSTR newVal);
+		[propget, id(26), helpstring("Returns the number of Inputs in the trained model as Long.")] HRESULT numberOfInputs([out, retval] long *pVal);
+		[propget, id(27), helpstring("Returns the number of Outputs in the trained model as Long.")] HRESULT numberOfOutputs([out, retval] long *pVal);
+		[propget, id(28), helpstring("Stores the information on whether a model should be loaded automatically at run time.  If true the model should be loaded automatically at run time.  If false, the model can only be loaded through the loadModel method.")] HRESULT loadOnRun([out, retval] VARIANT_BOOL *pVal);
+		[propput, id(28), helpstring("Stores the information on whether a model should be loaded automatically at run time.  If true the model should be loaded automatically at run time.  If false, the model can only be loaded through the loadModel method.")] HRESULT loadOnRun([in] VARIANT_BOOL newVal);
+		[id(29), helpstring("method trainModel")] HRESULT trainModel(VARIANT input, VARIANT output, double timeInMinute, VARIANT_BOOL  autoStop, VARIANT_BOOL newTraining, VARIANT_BOOL display);
+		[id(30), helpstring("method trainModelFromFile")] HRESULT trainModelFromFile(BSTR inputFileName, BSTR outputFileName, double  timeInMinute, VARIANT_BOOL autoStop, VARIANT_BOOL newTraining, VARIANT_BOOL display);
+		[id(31), helpstring("method trainModelFromFiles")] HRESULT trainModelFromFiles(VARIANT dataFileNames, double timeInMinute, VARIANT_BOOL autoStop, VARIANT_BOOL newTraining, VARIANT_BOOL display);
+		[id(32), helpstring("method getModelRate")] HRESULT getModelRate([out, retval] double *pVal);
+		[id(33), helpstring("method getTestRmse")] HRESULT getTestRmse([out, retval] VARIANT *pVal);
+		[id(34), helpstring("method getTrainingRmse")] HRESULT getTrainingRmse([out, retval] VARIANT *pVal);
+		[id(35), helpstring("method getTestCorr")] HRESULT getTestCorr([out, retval] VARIANT *pVal);
+		[id(36), helpstring("method getTrainingCorr")] HRESULT getTrainingCorr([out, retval] VARIANT *pVal);
+		[propget, id(37), helpstring("A String array, populated with the units of the inputs in the order specified by the trained model")] HRESULT inputUnits([in] short index, [out, retval] BSTR *pVal);
+		[propget, id(38), helpstring("A String array, populated with the units of the outputs in the order specified by the trained model")] HRESULT outputUnits([in] short index, [out, retval] BSTR *pVal);
+		[id(39), helpstring("Set an variable history value of a time-based model, at the specified time. The variable is identified by its name.")] HRESULT setVariableValueAtTimeByName(BSTR Name, double val, BSTR Time);
+		[id(40), helpstring("Set an variable history value of a time-based model, at the specified time. The variable is identified by its tag.")] HRESULT setVariableValueAtTimeByTag(BSTR Tag, double val, BSTR Time);
+		[id(41), helpstring("method getMaxValueByName")] HRESULT getMaxValueByName([in] BSTR name, [out,retval] double *pVal);
+		[id(42), helpstring("method getMaxValueByTag")] HRESULT getMaxValueByTag([in] BSTR tag,  [out,retval] double *pVal);
+		[id(43), helpstring("method getMinValueByName")] HRESULT getMinValueByName([in] BSTR name, [out,retval] double *pVal);
+		[id(44), helpstring("method getMinValueByTag")] HRESULT getMinValueByTag([in] BSTR tag, [out,retval] double *pVal);
+		[id(45), helpstring("method getMeanValueByName")] HRESULT getMeanValueByName([in] BSTR name, [out,retval] double *pVal);
+		[id(46), helpstring("method getMeanValueByTag")] HRESULT getMeanValueByTag([in] BSTR tag, [out,retval] double *pVal);
+		[id(47), helpstring("method getMedianValueByName")] HRESULT getMedianValueByName([in] BSTR name, [out,retval] double *pVal);
+		[id(48), helpstring("method getMedianValueByTag")] HRESULT getMedianValueByTag([in] BSTR tag, [out,retval] double *pVal);
+		[id(49), helpstring("method getSumValueByName")] HRESULT getSumValueByName([in] BSTR name, [out,retval] double *pVal);
+		[id(50), helpstring("method getSumValueByTag")] HRESULT getSumValueByTag([in] BSTR tag, [out,retval] double *pVal);
+		[id(51), helpstring("method getSTDValueByName")] HRESULT getSTDValueByName([in] BSTR name, [out,retval] double *pVal);
+		[id(52), helpstring("method getSTDValueByTag")] HRESULT getSTDValueByTag([in] BSTR tag, [out,retval] double *pVal);
+		[id(53), helpstring("method getVarianceValueByName")] HRESULT getVarianceValueByName([in] BSTR name, [out,retval] double *pVal);
+		[id(54), helpstring("method getVarianceValueByTag")] HRESULT getVarianceValueByTag([in] BSTR tag, [out,retval] double *pVal);
+		[id(55), helpstring("method getKurtValueByName")] HRESULT getKurtValueByName([in] BSTR name, [out,retval] double *pVal);
+		[id(56), helpstring("method getKurtValueByTag")] HRESULT getKurtValueByTag([in] BSTR tag, [out,retval] double *pVal);
+		[id(57), helpstring("method getSkewValueByName")] HRESULT getSkewValueByName([in] BSTR name, [out,retval] double *pVal);
+		[id(58), helpstring("method getSkewValueByTag")] HRESULT getSkewValueByTag([in] BSTR tag, [out,retval] double *pVal);
+		[id(59), helpstring("method getRangeValueByName")] HRESULT getRangeValueByName([in] BSTR name, [out,retval] double *pVal);
+		[id(60), helpstring("method getRangeValueByTag")] HRESULT getRangeValueByTag([in] BSTR tag, [out,retval] double *pVal);
+		[id(61), helpstring("method clearDataBuffer")] HRESULT clearDataBuffer();
+	};
+
+[
+	uuid(CDE0EF53-4E9A-11D4-B8A0-0000861E0389),
+	version(1.0),
+	helpstring("NolOnline 5.0r0")
+]
+library NOLONLINELib
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+	[
+		uuid(CDE0EF60-4E9A-11D4-B8A0-0000861E0389),
+		helpstring("_INolPredictorEvents Interface")
+	]
+	dispinterface _INolPredictorEvents
+	{
+		properties:
+		methods:
+	};
+
+	[
+		uuid(5B0BEE9F-4DD6-11D4-B8A0-0000861E0389),
+		helpstring("NolPredictor Class")
+	]
+	coclass NolPredictor
+	{
+		[default] interface INolPredictor;
+		[default, source] dispinterface _INolPredictorEvents;
+	};
+
+	[
+		uuid(BF5BD744-4EA2-11D4-8704-00609703E392),
+		helpstring("_INolPredictorPropEvents Interface")
+	]
+	dispinterface _INolPredictorPropEvents
+	{
+		properties:
+		methods:
+	};
+	
+
+	[
+		object,
+		uuid(49079011-4EB0-11D4-8704-00609703E392),
+		dual,
+		helpstring("INolOptimizer Interface"),
+		pointer_default(unique)
+	]
+	interface INolOptimizer : IDispatch
+	{
+		[propput, id(DISPID_CAPTION)]
+		HRESULT Caption([in]BSTR strCaption);
+		[propget, id(DISPID_CAPTION)]
+		HRESULT Caption([out,retval]BSTR* pstrCaption);
+		[propput, id(DISPID_VALID)]
+		HRESULT Valid([in]VARIANT_BOOL vbool);
+		[propget, id(DISPID_VALID)]
+		HRESULT Valid([out, retval]VARIANT_BOOL* pbool);
+		[propget, id(1), helpstring("property optimizationName")] HRESULT optimizationName([out, retval] BSTR *pVal);
+		[propput, id(1), helpstring("property optimizationName")] HRESULT optimizationName([in] BSTR newVal);
+		[propget, id(2), helpstring("property optimizationComment")] HRESULT optimizationComment([out, retval] BSTR *pVal);
+		[propput, id(2), helpstring("property optimizationComment")] HRESULT optimizationComment([in] BSTR newVal);
+		[propget, id(3), helpstring("property optimizationFullPath")] HRESULT optimizationFullPath([out, retval] BSTR *pVal);
+		[propput, id(3), helpstring("property optimizationFullPath")] HRESULT optimizationFullPath([in] BSTR newVal);
+		[propget, id(4), helpstring("property outputNames")] HRESULT outputNames(short index, [out, retval] BSTR *pVal);
+		[id(5), helpstring("Loads the optimization object from the specified directory/file location.")] HRESULT loadOptimization([in] BSTR file,[in, defaultvalue("")] BSTR directory);
+		[propget, id(6), helpstring("property optimizationFileName")] HRESULT optimizationFileName([out, retval] BSTR *pVal);
+		[propput, id(6), helpstring("property optimizationFileName")] HRESULT optimizationFileName([in] BSTR newVal);
+		[propget, id(7), helpstring("property optimizationFilePath")] HRESULT optimizationFilePath([out, retval] BSTR *pVal);
+		[propput, id(7), helpstring("property optimizationFilePath")] HRESULT optimizationFilePath([in] BSTR newVal);
+		[propget, id(8), helpstring("property manipulatedNames")] HRESULT manipulatedNames(short index, [out, retval] BSTR *pVal);
+		[propget, id(9), helpstring("property exogenousNames")] HRESULT exogenousNames(short index, [out, retval] BSTR *pVal);
+		[propget, id(10), helpstring("property stateNames")] HRESULT stateNames([in] short index, [out, retval] BSTR *pVal);
+		[id(11), helpstring("Performs the calculation of the optimization problem.")] HRESULT calculate();
+		[id(12), helpstring("Returns the double array for variable bounds.")] HRESULT getBoundsByName([in] BSTR name, [out, retval] VARIANT * bounds);
+		[propget, id(13), helpstring("property outputTags")] HRESULT outputTags(short index,[out, retval] BSTR *pVal);
+		[propget, id(14), helpstring("property manipulatedTags")] HRESULT manipulatedTags(short index, [out, retval] BSTR *pVal);
+		[propget, id(15), helpstring("property exogenousTags")] HRESULT exogenousTags(short index, [out, retval] BSTR *pVal);
+		[propget, id(16), helpstring("property stateTags")] HRESULT stateTags(short index, [out, retval] BSTR *pVal);
+		[id(17), helpstring("Sets the bounds for a variable using the variable's name for identification.")] HRESULT setBoundsByName([in] BSTR name, [in] VARIANT value);
+		[id(18), helpstring("Returns the double array for variable bounds.")] HRESULT getBoundsByTag([in] BSTR tag, [out, retval] VARIANT * bounds);
+		[id(19), helpstring("Sets the bounds for a variable using the variable's name for identification.")] HRESULT setBoundsByTag([in] BSTR name, [in] VARIANT value);
+		[id(20), helpstring("Returns the double value for given variable.")] HRESULT getValueByName([in] BSTR name, [out, retval] double * pVal);
+		[id(21), helpstring("Sets the initial values for manipulated variables and constants for exogenous variables.")] HRESULT setValueByName([in] BSTR name, double value);
+		[id(22), helpstring("Returns the double value for given variable.")] HRESULT getValueByTag([in] BSTR tag, [out, retval] double * pVal);
+		[id(23), helpstring("Sets the initial values for manipulated variables and constants for exogenous variables.")] HRESULT setValueByTag([in] BSTR tag, [in] double value);
+		[id(24), helpstring("Returns the double array for all variables of given type.")] HRESULT getValues([in] short type, [out, retval] VARIANT  * pVal);
+		[id(25), helpstring("Sets the initial values for manipulated variables and constants for exogenous variables.")] HRESULT setValues([in] short index, [in] VARIANT values);
+		[id(26), helpstring("Returns a double array of variable weights using the variable's name for identification.")] HRESULT getWeightsByName([in] BSTR name, [out, retval] VARIANT * pVal);
+		[id(27), helpstring("Sets the weights for a variable using the variable's name for identification.")] HRESULT setWeightsByName([in] BSTR name, [in] VARIANT values);
+		[id(28), helpstring("Returns a double array of variable weights using the variable's tag for identification.")] HRESULT getWeightsByTag([in] BSTR tag, [out, retval] VARIANT * pVal);
+		[id(29), helpstring("Sets the weights for a variable using the variable's tag for identification.")] HRESULT setWeightsByTag([in] BSTR tag, [in] VARIANT values);
+		[id(30), helpstring("Returns the number of specified variables.")] HRESULT getNumberOfVariables([in] short type, [out, retval] short * pVal);
+		[propget, id(31), helpstring("Stores the information on whether an optimization should be loaded automatically at run time.  If true the optimization should be loaded automatically at run time.  If false, the optimization can only be loaded through the loadOptimization method.")] HRESULT loadOnRun([out, retval] BOOL *pVal);
+		[propput, id(31), helpstring("Stores the information on whether an optimization should be loaded automatically at run time.  If true the optimization should be loaded automatically at run time.  If false, the optimization can only be loaded through the loadOptimization method.")] HRESULT loadOnRun([in] BOOL newVal);
+		[id(32), helpstring("Calculate the optimization and return the status flag.")] HRESULT calculateOptimization([out, retval] short * pVal);
+		[id(33), helpstring("method trainOutputModel")] HRESULT trainOutputModel(VARIANT input, VARIANT output, double timeInMinute, VARIANT_BOOL autoStop, VARIANT_BOOL newTraining, VARIANT_BOOL display);
+		[id(34), helpstring("method trainStateModel")] HRESULT trainStateModel(VARIANT input, VARIANT output, double timeInMinute, VARIANT_BOOL autoStop, VARIANT_BOOL newTraining, VARIANT_BOOL display);
+		[id(35), helpstring("method trainOutputModelFromFile")] HRESULT trainOutputModelFromFile(BSTR inputFileName, BSTR outputFileName, double timeInMinute, VARIANT_BOOL autoStop, VARIANT_BOOL newTraining, VARIANT_BOOL display);
+		[id(36), helpstring("method trainStateModelFromFile")] HRESULT trainStateModelFromFile(BSTR inputFileName, BSTR outputFileName, double timeInMinute, VARIANT_BOOL autoStop, VARIANT_BOOL newTraining, VARIANT_BOOL display);
+		[id(37), helpstring("method trainModelFromFiles")] HRESULT trainModelFromFiles(VARIANT dataFileNames, double timeInMinute, VARIANT_BOOL autoStop, VARIANT_BOOL newTraining, VARIANT_BOOL display);
+		[id(38), helpstring("method getOutputModelRate")] HRESULT getOutputModelRate([out, retval] double *pVal);
+		[id(39), helpstring("method getOutputTestRmse")] HRESULT getOutputTestRmse([out, retval] VARIANT *pVal);
+		[id(40), helpstring("method getOutputTrainingRmse")] HRESULT getOutputTrainingRmse([out, retval] VARIANT *pVal);
+		[id(41), helpstring("method getOutputTestCorr")] HRESULT getOutputTestCorr([out, retval] VARIANT *pVal);
+		[id(42), helpstring("method getOutputTrainingCorr")] HRESULT getOutputTrainingCorr([out, retval] VARIANT *pVal);
+		[id(43), helpstring("method getStateModelRate")] HRESULT getStateModelRate([out, retval] double *pVal);
+		[id(44), helpstring("method getStateTestRmse")] HRESULT getStateTestRmse([out, retval] VARIANT *pVal);
+		[id(45), helpstring("method getStateTrainingRmse")] HRESULT getStateTrainingRmse([out, retval] VARIANT *pVal);
+		[id(46), helpstring("method getStateTestCorr")] HRESULT getStateTestCorr([out, retval] VARIANT *pVal);
+		[id(47), helpstring("method getStateTrainingCorr")] HRESULT getStateTrainingCorr([out, retval] VARIANT *pVal);
+		[propget, id(48), helpstring("property output units")] HRESULT outputUnits(short index,[out, retval] BSTR *pVal);
+		[propget, id(49), helpstring("property manipulated units")] HRESULT manipulatedUnits(short index, [out, retval] BSTR *pVal);
+		[propget, id(50), helpstring("property exogenous units")] HRESULT exogenousUnits(short index, [out, retval] BSTR *pVal);
+		[propget, id(51), helpstring("property state units")] HRESULT stateUnits(short index, [out, retval] BSTR *pVal);
+		[id(52), helpstring("method getMaxValueByName")] HRESULT getMaxValueByName([in] BSTR name, [out,retval] double *pVal);
+		[id(53), helpstring("method getMaxValueByTag")] HRESULT getMaxValueByTag([in] BSTR tag, [out,retval] double *pVal);
+		[id(54), helpstring("method getMinValueByName")] HRESULT getMinValueByName([in] BSTR name, [out,retval] double *pVal);
+		[id(55), helpstring("method getMinValueByTag")] HRESULT getMinValueByTag([in] BSTR tag, [out,retval] double *pVal);
+		[id(56), helpstring("method getMeanValueByName")] HRESULT getMeanValueByName([in] BSTR name, [out,retval] double *pVal);
+		[id(57), helpstring("method getMeanValueByTag")] HRESULT getMeanValueByTag([in] BSTR tag, [out,retval] double *pVal);
+		[id(58), helpstring("method getMedianValueByName")] HRESULT getMedianValueByName([in] BSTR name, [out,retval] double *pVal);
+		[id(59), helpstring("method getMedianValueByTag")] HRESULT getMedianValueByTag([in] BSTR tag, [out,retval] double *pVal);
+		[id(60), helpstring("method getSumValueByName")] HRESULT getSumValueByName([in] BSTR name, [out,retval] double *pVal);
+		[id(61), helpstring("method getSumValueByTag")] HRESULT getSumValueByTag([in] BSTR tag, [out,retval] double *pVal);
+		[id(62), helpstring("method getSTDValueByName")] HRESULT getSTDValueByName([in] BSTR name, [out,retval] double *pVal);
+		[id(63), helpstring("method getSTDValueByTag")] HRESULT getSTDValueByTag([in] BSTR tag, [out,retval] double *pVal);
+		[id(64), helpstring("method getVarianceValueByName")] HRESULT getVarianceValueByName([in] BSTR name, [out,retval] double *pVal);
+		[id(65), helpstring("method getVarianceValueByTag")] HRESULT getVarianceValueByTag([in] BSTR tag, [out,retval] double *pVal);
+		[id(66), helpstring("method getKurtValueByName")] HRESULT getKurtValueByName([in] BSTR name, [out,retval] double *pVal);
+		[id(67), helpstring("method getKurtValueByTag")] HRESULT getKurtValueByTag([in] BSTR tag, [out,retval] double *pVal);
+		[id(68), helpstring("method getSkewValueByName")] HRESULT getSkewValueByName([in] BSTR name, [out,retval] double *pVal);
+		[id(69), helpstring("method getSkewValueByTag")] HRESULT getSkewValueByTag([in] BSTR tag, [out,retval] double *pVal);
+		[id(70), helpstring("method getRangeValueByName")] HRESULT getRangeValueByName([in] BSTR name, [out,retval] double *pVal);
+		[id(71), helpstring("method getRangeValueByTag")] HRESULT getRangeValueByTag([in] BSTR tag, [out,retval] double *pVal);
+		[id(72), helpstring("method getNumberOfVariablesReachHardbound")] HRESULT getNumberOfVariablesReachHardbound([out,retval] short *pVal);
+
+	};
+
+	[
+		uuid(BF5BD743-4EA2-11D4-8704-00609703E392),
+		helpstring("NolPredictorProp Class")
+	]
+	coclass NolPredictorProp
+	{
+		interface IUnknown;
+		[default, source] dispinterface _INolPredictorPropEvents;
+	};
+	[
+		uuid(49079013-4EB0-11D4-8704-00609703E392),
+		helpstring("_INolOptimizerEvents Interface")
+	]
+	dispinterface _INolOptimizerEvents
+	{
+		properties:
+		methods:
+	};
+
+	[
+		uuid(49079012-4EB0-11D4-8704-00609703E392),
+		helpstring("NolOptimizer Class")
+	]
+	coclass NolOptimizer
+	{
+		[default] interface INolOptimizer;
+		[default, source] dispinterface _INolOptimizerEvents;
+	};
+
+	[
+		uuid(49079015-4EB0-11D4-8704-00609703E392),
+		helpstring("_INolOptimizerPropEvents Interface")
+	]
+	dispinterface _INolOptimizerPropEvents
+	{
+		properties:
+		methods:
+	};
+
+	[
+		uuid(49079014-4EB0-11D4-8704-00609703E392),
+		helpstring("NolOptimizerProp Class")
+	]
+	coclass NolOptimizerProp
+	{
+		interface IUnknown;
+		[default, source] dispinterface _INolOptimizerPropEvents;
+	};
+};

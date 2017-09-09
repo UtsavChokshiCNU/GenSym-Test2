@@ -1,0 +1,457 @@
+//Javalink setup file for InstallShield3
+//  start at function main
+
+declare
+
+// Function declarations.
+prototype main();
+
+prototype CustomJavalinkCreateComponents(STRING, BYREF STRING,
+                                         BYREF LIST, BYREF LIST);
+prototype CustomJavalinkRequirementsStep(NUMBER);
+prototype CustomJavalinkProgramFolderStep(STRING, STRING, STRING);
+prototype CustomJavalinkEnvVarStep(STRING, BOOL, BOOL);
+
+#define COMPANY_DIR           "\\gensym"
+#define PRODUCT_DIR           "Javalink"
+
+#define BMP_FIRST               "g2.bmp"
+#define BMP_COPY_FILES_STEP     "bb1.BMP"
+#define BMP_PROGRAM_FOLDER_STEP "dl1.BMP"
+#define BMP_LAST                "nb1logo.BMP"
+
+#define PROGRAM_FOLDER_NAME      "Javalink"
+
+// Constant declarations needed for gensym common dialogs
+#define PRODUCT_NAME          "G2 Javalink/Gateway"
+#define PRODUCT_VERSION       "1.1 Rev 1"
+#define HOME_ENV_VARIABLE     "JAVALINK_HOME"
+#define MAIN_APP_NAME         "Download Interfaces"
+#define MAIN_APP_SUBDIR       "bin"
+#define MAIN_APP_FILE         "DownloadInterfaces.bat"
+#define MAIN_APP_PARAMETERS   ""
+#define MAIN_APP_ICON         ""
+
+#define CORE_FILE_SUBDIR "classes"
+#define CORE_FILE        "javalink.jar"
+
+// The numbering of steps determinines there order and must have no gaps.
+#define WELCOME_STEP               1
+#define ALL_USERS_STEP             2
+#define OLD_VERSION_STEP           3
+#define REQUIREMENTS_STEP          4
+#define GET_TARGET_DIR_STEP        5
+#define SELECT_PROGRAM_FOLDER_STEP 6
+#define GET_ENV_MODS_STEP          7
+#define GET_PROPS_OPTION_STEP      8
+#define CONFIRM_STEP               9
+#define SETUP_TARGET_STEP         10
+#define COPY_FILES_STEP           11
+#define PROGRAM_FOLDER_STEP       12
+#define HOME_ENV_VAR_STEP         13
+#define OPT_ENV_VAR_STEP          14
+#define PROPERTIES_STEP           15
+
+// Include this after the last define statement to use the gensym dialogs
+#include "gensym.h"
+
+// This include this to use the system dialog boxes and the gensym dialogs.
+#include "sddialog.h"
+
+program
+manditoryLabel:
+  // For slow systems disable the main window until we set the title
+  Disable( BACKGROUND );
+  main();
+exit;
+
+#include "gensym.rul"
+
+function main()
+  BOOL dontCare;
+  STRING targetDir;
+  STRING setupDir;
+  STRING componentDir;
+  NUMBER bitMapID;
+  NUMBER xSpacing;
+  NUMBER ySpacing;
+  NUMBER mainWindowCorner;
+  NUMBER nextStep;
+  NUMBER currentStep;
+  NUMBER prevStep;
+  NUMBER dlgDirection;
+  STRING reqComponents;
+  LIST reqSubDirs;
+  LIST reqIncludeSubDirs;
+  LIST optSubDirs;
+  LIST optIncludeSubDirs;
+  STRING oldDir;
+  STRING oldUninstallApp;
+  STRING oldUninstallParameters;
+  STRING uninstallLogFile;
+  STRING programFolder;
+  NUMBER otherVersionOption;
+  BOOL modPath;
+  BOOL modClasspath;
+  NUMBER propertiesOption;
+  STRING userHomeDir;
+  BOOL displayReadme;
+  STRING finalMessage;
+begin
+
+  // Set up the installation screen.
+  SetupScreen();
+
+  InitializeGlobals();
+
+  if (!globalIsWinNT) && (!globalIsWin95) then
+    SdFinish("", "This product is for 32 bit Intel Windows platforms only.",
+      "Setup will now end.", "", "", dontCare, dontCare);
+    abort;
+  endif;
+
+  // InstallShield uses SRCDIR a parameter to certain functions
+  // so save the location of the setup directory now
+  setupDir = SRCDIR;
+  componentDir = setupDir ^ COMPONENT_DIR;
+
+  bitMapID = 12;
+  xSpacing = 10;
+  ySpacing = 10;
+  mainWindowCorner = LOWER_LEFT;
+
+  // Enable bitmap fade in.
+  Enable(BITMAPFADE);
+
+  // Position the first bitmap on the screen.
+  PlaceBitmap(setupDir ^ BMP_FIRST, bitMapID, xSpacing, ySpacing,
+    mainWindowCorner);
+
+  // set defaults
+  CustomJavalinkCreateComponents(componentDir, reqComponents,
+    reqSubDirs, reqIncludeSubDirs);
+
+  targetDir = TARGETDISK ^ COMPANY_DIR ^ PRODUCT_DIR;
+  modPath = TRUE;
+  modClasspath = TRUE;
+  programFolder = PROGRAM_FOLDER_NAME;
+
+  nextStep = WELCOME_STEP;
+  currentStep = nextStep;
+  while nextStep != EXIT_STEP
+    prevStep = currentStep;
+    currentStep = nextStep;
+
+    if currentStep < prevStep then
+      dlgDirection = BACKWARD;
+    else
+      dlgDirection = FOREWARD;
+    endif;
+
+    switch (currentStep)
+    case WELCOME_STEP:
+      nextStep = WelcomeStep();
+    case ALL_USERS_STEP:
+      nextStep = AllUsersStep(dlgDirection, globalAllUsersInstall);
+    case OLD_VERSION_STEP:
+      nextStep = OldVersionStep(dlgDirection, otherVersionOption, oldDir,
+                 oldUninstallApp, oldUninstallParameters);
+    case REQUIREMENTS_STEP:
+      nextStep = CustomJavalinkRequirementsStep(dlgDirection);
+    case GET_TARGET_DIR_STEP:
+      nextStep = GetTargetDirStep(dlgDirection, targetDir, otherVersionOption);
+    case SELECT_PROGRAM_FOLDER_STEP:
+      nextStep = SelectProgramFolderStep(dlgDirection, programFolder);
+    case GET_ENV_MODS_STEP:
+      nextStep = JavaProductGetEnvModsStep(dlgDirection, modPath,
+                 modClasspath);
+    case GET_PROPS_OPTION_STEP:
+      nextStep = GetPropertiesOptionStep(dlgDirection, PROPERTIES_FILE,
+                 propertiesOption, userHomeDir);
+    case CONFIRM_STEP:
+      nextStep = JavaProductConfirmStep(dlgDirection, otherVersionOption,
+                 reqComponents, "", targetDir, programFolder,
+                 modPath, modClasspath, propertiesOption);
+    case SETUP_TARGET_STEP:
+      nextStep = SetupTargetStep(targetDir, otherVersionOption, oldDir,
+                 oldUninstallApp, oldUninstallParameters, uninstallLogFile);
+    case COPY_FILES_STEP:
+      PlaceBitmap("", bitMapID, 0, 0, REMOVE);
+      PlaceBitmap(setupDir ^ BMP_COPY_FILES_STEP, bitMapID, xSpacing, ySpacing,
+        mainWindowCorner);
+      nextStep = CopyFilesStep(componentDir, targetDir,
+                 reqComponents, reqSubDirs, reqIncludeSubDirs);
+    case PROGRAM_FOLDER_STEP:
+      PlaceBitmap("", bitMapID, 0, 0, REMOVE);
+      PlaceBitmap(setupDir ^ BMP_PROGRAM_FOLDER_STEP, bitMapID, xSpacing,
+        ySpacing, mainWindowCorner);
+      nextStep = CustomJavalinkProgramFolderStep(targetDir, programFolder,
+                 uninstallLogFile);
+    case HOME_ENV_VAR_STEP:
+      nextStep = HomeEnvVarStep(targetDir);
+    case OPT_ENV_VAR_STEP:
+      nextStep = CustomJavalinkEnvVarStep(targetDir, modPath, modClasspath);
+    case PROPERTIES_STEP:
+      nextStep = InstallPropertiesStep(setupDir, RAW_PROPERTIES_FILE,
+                 targetDir, PROPERTIES_DIR, PROPERTIES_FILE, propertiesOption,
+                 userHomeDir);
+    default:
+      nextStep = EXIT_STEP;
+    endswitch;
+  endwhile;
+
+  LoggingStep(targetDir, "");
+
+  if !IsBDK() then
+    finalMessage =  "To test G2 Beans created using the G2 Bean Builder " +
+                    "Gensym advises that you install Sun's BDK on this " +
+                    "machine and that the BDK is included in CLASSPATH.\n\n"
+                    + "Click Finish to complete Setup.";
+  else
+    finalMessage = "";
+  endif;
+
+  PlaceBitmap("", bitMapID, 0, 0, REMOVE);
+  PlaceBitmap(setupDir ^ BMP_LAST, bitMapID, xSpacing,
+    ySpacing, mainWindowCorner);
+
+  // If reboot is selected then this function will reboot the system instead
+  // of returning.
+  ReadMeOrRebootWithMessageStep(displayReadme, finalMessage);
+  if displayReadme then
+    DisplayHtmlFile(targetDir, "");
+  endif;
+end;
+
+/*
+ * Function: CustomJavalinkCreateComponents
+ * Purpose: Create the component list for Javalink
+ */
+function CustomJavalinkCreateComponents(sourceDir, components, subDirs,
+                                        includeSubDirs)
+  STRING subDir;
+  NUMBER size;
+begin
+  subDirs = ListCreate(STRINGLIST);
+  includeSubDirs = ListCreate(NUMBERLIST);
+
+  // Create the components list. Select everything.
+  components = PRODUCT_NAME + " required";
+
+  // This component is just what is in the top level direcory.
+  size = GetComponentSizeWithoutSubDirs(sourceDir);
+  ComponentAddItem(components, "ReadMe", size, TRUE);
+  ListAddString(subDirs, "", AFTER);
+  ListAddItem(includeSubDirs, FALSE, AFTER);
+
+  subDir = "bin";
+  size = GetComponentSize(sourceDir ^ subDir);
+  ComponentAddItem(components, "Native DLL and Batch Files", size, TRUE);
+  ListAddString(subDirs, subDir, AFTER);
+  ListAddItem(includeSubDirs, TRUE, AFTER);
+
+  subDir = "classes";
+  size = GetComponentSize(sourceDir ^ subDir);
+  ComponentAddItem(components, "Java Classes and Demos", size, TRUE);
+  ListAddString(subDirs, subDir, AFTER);
+  ListAddItem(includeSubDirs, TRUE, AFTER);
+
+  subDir = "kbs";
+  size = GetComponentSize(sourceDir ^ subDir);
+  ComponentAddItem(components, "KB's",
+                   size, TRUE);
+  ListAddString(subDirs, subDir, AFTER);
+  ListAddItem(includeSubDirs, TRUE, AFTER);
+
+  // The doc is not included in the web install.
+  subDir = "docs";
+  if ExistsDir(sourceDir ^ subDir) = EXISTS then
+    size = GetComponentSize(sourceDir ^ subDir);
+    ComponentAddItem(components, "G2 Javalink/Gateway Docmentation", size,
+      TRUE);
+    ListAddString(subDirs, subDir, AFTER);
+    ListAddItem(includeSubDirs, TRUE, AFTER);
+  endif;
+
+end;
+
+/*
+ * Function: CustomJavalinkRequirementsStep
+ * Purpose: This inform the user of this products requirments and set
+ *           some global lines to log missing requirements later
+ */
+function CustomJavalinkRequirementsStep(dlgDirection)
+  STRING stringResult;
+  STRING stringParameter;
+  BOOL missingRequirement;
+  STRING jdkVersion;
+begin
+  // Since the requirements step will not display anything
+  // if all of the requirements are met,
+  // we need special code to keep from going directly to the next step
+  // if we just performed that step.
+  if dlgDirection = BACKWARD then
+    return REQUIREMENTS_STEP - 1;
+  endif;
+
+  // This may not be the first time here
+  ListDestroy(globalRequirementsLog);
+  globalRequirementsLog = ListCreate(STRINGLIST);
+
+  missingRequirement = FALSE;
+
+  // Check for JDK2
+  if !GetSunJDKVersion(jdkVersion) then
+    if missingRequirement then
+      ListAddString(globalRequirementsLog, "", AFTER);
+    endif;
+
+    ListAddString(globalRequirementsLog,
+      "Sun JDK 1.2 or greater is not installed.",
+      AFTER);
+    ListAddString(globalRequirementsLog,
+      "  The " + PRODUCT_NAME + " will not work until it is installed.",
+      AFTER);
+    missingRequirement = TRUE;
+  elseif jdkVersion < "1.2" then
+    if missingRequirement then
+      ListAddString(globalRequirementsLog, "", AFTER);
+    endif;
+
+    ListAddString(globalRequirementsLog,
+      "JDK version " + jdkVersion + " is not supported.",
+      AFTER);
+    missingRequirement = TRUE;
+  else
+    // see if JAVA_HOME has been set
+    stringParameter = "JAVA_HOME";
+    if IsEnvVar(stringParameter) < 0 then
+      if missingRequirement then
+        ListAddString(globalRequirementsLog, "", AFTER);
+      endif;
+
+      ListAddString(globalRequirementsLog,
+        "Missing JAVA_HOME Environment Variable",
+        AFTER);
+      ListAddString(globalRequirementsLog,
+        "  The " + PRODUCT_NAME + " uses the JAVA_HOME environment variable",
+        AFTER);
+      ListAddString(globalRequirementsLog,
+        "  to find classes that provided with Sun's JDK 1.2 or greater.",
+        AFTER);
+      ListAddString(globalRequirementsLog,
+        "  Please ensure that the environment variable JAVA_HOME is set to",
+        AFTER);
+      ListAddString(globalRequirementsLog,
+        "  the directory of Sun's JDK 1.2 or greater.",
+        AFTER);
+      missingRequirement = TRUE;
+    endif;
+  endif;
+
+  if missingRequirement then
+    MessageBeep(0);
+    if SdShowInfoList("Missing Requirements",
+        "The following will prevent the product from running properly.",
+        globalRequirementsLog) = BACK then
+      return REQUIREMENTS_STEP - 1;
+    endif;
+  endif;
+
+  return REQUIREMENTS_STEP + 1;
+end;
+
+/*
+ * Function: CustomJavalinkProgramFolderStep
+ * Purpose: Creates the start menu program folder and the standard shortcuts
+ *          and some extra stuff.
+ */
+function CustomJavalinkProgramFolderStep(targetDir, folderName,
+                                         uninstallLogFile)
+  STRING targetApp;
+  STRING commandLine;
+begin
+  // This may be an existing folder, so we want delete unwanted icons.
+  DeleteProgramFolder(folderName);
+
+  // start with the standard stuff, this will do Download Interfaces,
+  // uninstall, and readme
+  ProgramFolderStep(targetDir, folderName, "", uninstallLogFile);
+
+  // add the extra applications
+  AddShortcutToFolder(folderName, "G2 Bean Builder", targetDir, "bin",
+    "G2BeanBuilder.bat", "", "");
+  AddShortcutToFolder(folderName, "Examples Readme", targetDir, "",
+    "ExamplesReadme.html", "", "");
+  AddShortcutToFolder(folderName, "Known Problems", targetDir, "",
+    "KnownProblems.html", "", "");
+
+  return PROGRAM_FOLDER_STEP + 1;
+end;
+
+/*
+ * Function: CustomJavalinkEnvVarStep
+ * Purpose: Sets Javalink specific values in environment variables
+ */
+function CustomJavalinkEnvVarStep(targetDir, modPath, modClassPath);
+  // when strings are used to receive system info
+  // there are not auto resized, so declare the max length
+  STRING path[1024];
+  STRING varName;
+  STRING dir;
+  STRING newDirs;
+  STRING classesDirEnvVarName;
+  STRING coreJarEnvVarName;
+  STRING classToolsJarEnvVarName;
+  STRING javaLinkJarEnvVarName;
+  STRING beanBuilderJarEnvVarName;
+  LIST dirs;
+begin
+  classesDirEnvVarName = "GNSM_JVL_CL";
+  coreJarEnvVarName = "GNSM_CORE";
+  classToolsJarEnvVarName = "GNSM_CT";
+  javaLinkJarEnvVarName = "GNSM_JVL";
+  beanBuilderJarEnvVarName = "GNSM_BB";
+  if modPath then
+    varName = "PATH";
+    GetEnvVarDef(varName, path);
+    dir = targetDir + "\\bin";
+    if !IsInPath(path, dir) then
+      AppendPathToEnvVar(varName, dir);
+    endif;
+  endif;
+
+  if modClassPath then
+    newDirs = "";
+    varName = "CLASSPATH";
+    GetEnvVarDef(varName, path);
+    dirs = CreateDirListFromPath(path);
+
+    dir = "%JAVA_HOME%\\lib\\tools.jar";
+    AddToEndIfNotInList(dirs, dir, newDirs);
+
+    dir = targetDir + "\\classes";
+    AddToEndIfNotInListForSubEnv(dirs, dir, classesDirEnvVarName, newDirs);
+
+    dir = targetDir + "\\classes\\core.jar";
+    AddToEndIfNotInListForSubEnv(dirs, dir, coreJarEnvVarName, newDirs);
+
+    dir = targetDir + "\\classes\\classtools.jar";
+    AddToEndIfNotInListForSubEnv(dirs, dir, classToolsJarEnvVarName, newDirs);
+
+    dir = targetDir + "\\classes\\javalink.jar";
+    AddToEndIfNotInListForSubEnv(dirs, dir, javaLinkJarEnvVarName, newDirs);
+
+    dir = targetDir + "\\classes\\beanbuilder.jar";
+    AddToEndIfNotInListForSubEnv(dirs, dir, beanBuilderJarEnvVarName, newDirs);
+
+    if newDirs != "" then
+      AppendPathToEnvVar(varName, newDirs);
+    endif;
+  endif;
+  
+  return OPT_ENV_VAR_STEP + 1;
+end;
+
+//This last to use the system dialog boxes and the gensym dialogs.
+#include "Sddialog.rul"

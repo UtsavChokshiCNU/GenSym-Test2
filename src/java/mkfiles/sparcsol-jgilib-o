@@ -1,0 +1,91 @@
+# Makefile for JGI Shareable Object Library
+# Machine type: sparcsol
+
+#   This makefile is to be run in the object directory with a command
+# such as "make -f $SRCBOX/java/mkfiles/<platform>-jgilib-o".
+# The following environment variables must be set.
+#     JAVA_HOME: needed for jdk jni include files
+#     SRCBOX:    needed for .c and .h files
+#     DSTBOX:    path for emitted objects and libraries
+#     GSIBOX:    needed for gsi libraries
+# The following files are required, which are created by javah.
+#     $(H_DIR)/com_gensym_jgi_JGInterface.h
+#     $(H_DIR)/com_gensym_jgi_GsiLoopThread.h
+
+#------------------------------------------------
+# Variables
+#-----------------------
+# Directory variables
+
+C_DIR   = $(SRCBOX)/java/c
+H_DIR   = $(SRCBOX)/java/include
+EXE_DIR = ../lib
+JAVA_DIR      = ${SRCBOX}/java/com/gensym/jgi
+SPECIFIC = $(SRCBOX)/specific/sparcsol
+
+PACKAGE_PREFIX = com.gensym.jgi.
+PP = com_gensym_jgi_
+
+#-----------------------
+# Flag variables
+
+CCFLAGS = -G -g -D_REENTRANT -DNEW_CLASS_MAPPING \
+  -I$(JAVA_HOME)/include -I$(GSIBOX) -I$(JAVA_HOME)/include/solaris -I$(SRCBOX)/java/include
+
+JAVAH = $(JAVA_HOME)/bin/javah
+JAVAH_OPTIONS = -jni -d $(H_DIR)
+JAVAH_STUBS_OPTIONS = -d $(C_DIR) -stubs
+
+
+#-----------------------
+# File variables
+
+GSI_LIBS = $(GSIBOX)/libgsi.a $(GSIBOX)/libtcp.a $(GSIBOX)/libnogsec.a $(GSIBOX)/librtl.a
+#  $(SPECIFIC)/libssl.a $(SPECIFIC)/libcrypto.a $(SPECIFIC)/libgcc.a
+
+H_FILES = $(GSIBOX)/gsi_main.h $(H_DIR)/jni_gi.h $(H_DIR)/jgi_gsi_options.h \
+  $(GSIBOX)/gsi_misc.h $(H_DIR)/jgi_info.h \
+  $(H_DIR)/com_gensym_jgi_JGInterface.h $(H_DIR)/com_gensym_jgi_GsiLoopThread.h
+
+O_FILES = $(GSIBOX)/gsi_misc.o jni_gi.o jni_gi_gsiconv.o jni_gi_init.o \
+  jni_gi_javaconv.o jni_gi_utils.o 
+
+#------------------------------------------------
+# Targets
+
+$(EXE_DIR)/libJgiInterface.so : $(O_FILES) $(GSI_LIBS)
+	ld -o $(EXE_DIR)/libJgiInterface.so -G $(O_FILES) $(GSI_LIBS) -lthread -lsocket -lintl -lm -lnsl
+
+jni_gi.o : $(C_DIR)/jni_gi.c $(H_FILES)
+	gcc -c $(CCFLAGS) $(C_DIR)/jni_gi.c -o jni_gi.o
+
+jni_gi_gsiconv.o : $(C_DIR)/jni_gi_gsiconv.c $(H_FILES)
+	gcc -c $(CCFLAGS) $(C_DIR)/jni_gi_gsiconv.c -o jni_gi_gsiconv.o
+
+jni_gi_init.o : $(C_DIR)/jni_gi_init.c $(H_FILES)
+	gcc -c $(CCFLAGS) $(C_DIR)/jni_gi_init.c -o jni_gi_init.o
+
+jni_gi_javaconv.o : $(C_DIR)/jni_gi_javaconv.c $(H_FILES)
+	gcc -c $(CCFLAGS) $(C_DIR)/jni_gi_javaconv.c -o jni_gi_javaconv.o
+ 
+jni_gi_utils.o : $(C_DIR)/jni_gi_utils.c $(H_FILES)
+	gcc -c $(CCFLAGS) $(C_DIR)/jni_gi_utils.c -o jni_gi_utils.o
+
+javah : $(H_DIR)/$(PP)GsiLoopThread.h $(H_DIR)/$(PP)JGInterface.h
+
+$(H_DIR)/$(PP)GsiLoopThread.h : $(JAVA_DIR)/GsiLoopThread.class
+	$(JAVAH) $(JAVAH_OPTIONS) $(PACKAGE_PREFIX)GsiLoopThread
+	@ touch $(H_DIR)/$(PP)GsiLoopThread.h
+
+$(H_DIR)/$(PP)JGInterface.h : $(JAVA_DIR)/JGInterface.class
+	$(JAVAH) $(JAVAH_OPTIONS) $(PACKAGE_PREFIX)JGInterface
+	@ touch $(H_DIR)/$(PP)JGInterface.h
+
+
+
+
+#------------------------------------------------
+# Cleanup
+
+clean :
+	rm -f $(EXE_DIR)/libJgiInterface.so *.o

@@ -1,0 +1,933 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.06 [en] (WinNT; U) [Netscape]">
+   <TITLE>readme</TITLE>
+</HEAD>
+<BODY>
+
+<H1>
+<U>Welcome to G2 JavaLink/Gateway V1.0 rev 1 for Windows NT</U></H1>
+
+<H2>
+Version 1.0 Rev 1 Release Notes (Jan 1999)</H2>
+This release will only work with G2 5.1 rev 0 (or later) and Sun's JDK
+1.1.6 (or later released <A HREF="http://java.sun.com/products/jdk/1.1/index.html">JDK
+1.1.x Java Development Kit</A>), which should be correctly installed on
+your machine before using this software. (If you are an existing G2 JavaLink/Gateway
+user we strongly recommend that you refer to the <A HREF="ChangeLog.html">Change
+Log for this release</A>).
+<P>In order to easily test G2 Bean Builder beans, Sun's <A HREF="http://java.sun.com/beans/software/bdk_download.html">Bean
+Development Kit</A> should be correctly installed on your machine.
+<P>To allow the creation of ActiveX components from beans created with
+G2 Bean Builder, Sun's<A HREF="http://java.sun.com/products/plugin/download/windows.html">
+Java Plug-in</A> must be correctly installed on your machine.
+<UL><U><B>ActiveX users please note</B>:</U>
+<P>1. Previous versions of JavaLink have required the use of Sun's ActiveX
+Packager (version 1.0) downloaded from JavaSoft's Java Bean site, however,
+the Packager version from this site has been superseded by a more reliable
+ActiveX Packager version (1.1) supplied as part of Sun's Java Plug-in product.
+G2 JavaLink/Gateway will, from now on, only support the latest ActiveX
+Packager version as supplied with the Java Plug-in. If you are creating
+ActiveX components with JavaLink, we strongly recommend that you read <A HREF="#Problems when Using  G2 BeanBuilder to create an">Problems
+when using G2 Bean Builder with Sun's Java Plug-in.</A>
+<P>2.&nbsp; JDK1.1.7 is not fully compatible with the Java Plug-in 1.1.1.
+You must use Java Plug-in 1.1.2 with JDK1.1.7.&nbsp; If you are using JDK1.1.6
+we recommend that you either upgrade to JDK1.1.7 or use Java Plug-in 1.1.1
+(if you are creating ActiveX controls using the G2 Bean Builder).
+<BR>&nbsp;</UL>
+Note: Installation of the aforementioned products does not automatically
+add them to either the <B>CLASSPATH</B> or <B>PATH</B> of your machine.
+To do this see the section "Setting Environment Variables" below.
+<H3>
+G2 JavaLink/Gateway</H3>
+G2 JavaLink/Gateway defines the language mapping from Java types to G2
+types and vice versa. It hides the finer details of G2 communication and
+thus provides a multi-threaded OO link between G2 and Java. G2 JavaLink/Gateway
+provides:
+<UL>
+<LI>
+Mapping between G2 and Java types.</LI>
+
+<LI>
+Support for object passing by handle or by copy.</LI>
+
+<LI>
+Java Class to handle a connection to G2.</LI>
+
+<LI>
+G2 DownloadInterfaces to export Java classes for any G2 class (user or
+system defined).</LI>
+
+<LI>
+Support for adding and exporting the Java Bean Event model for G2 classes.</LI>
+
+<LI>
+Support for synchronous RPC/Method calling (G2-Java, Java-G2).</LI>
+
+<LI>
+Thread Safe access to G2.</LI>
+
+<LI>
+Unicode support.</LI>
+
+<LI>
+Error handling from Java to G2 and vice versa.</LI>
+
+<LI>
+Multi-connection support (Many G2s to one Gateway).</LI>
+
+<LI>
+Control of unsolicited connections from G2 to Java.</LI>
+
+<LI>
+Enable the Java Gateway to initiate connections with G2 servers.</LI>
+
+<LI>
+History passing.</LI>
+
+<LI>
+Data Services.</LI>
+
+<LI>
+RMI wrapper classes for JavaLink G2 connection classes.</LI>
+
+<LI>
+G2 Bean Builder to facilitate the creation of Java Beans from G2 classes.</LI>
+</UL>
+
+<H2>
+What's In This Release?</H2>
+When G2 JavaLink/Gateway is installed, it contains the following directories
+and files:
+<BR>&nbsp;
+<BR>&nbsp;
+<TABLE BORDER COLS=2 WIDTH="75%" >
+<TR>
+<TD>File</TD>
+
+<TD>Description</TD>
+</TR>
+
+<TR>
+<TD><B>bin</B></TD>
+
+<TD></TD>
+</TR>
+
+<TR>
+<TD>&nbsp;&nbsp; DownloadInterfaces.bat</TD>
+
+<TD>Runs the G2 DownloadInterfaces Utility</TD>
+</TR>
+
+<TR>
+<TD>&nbsp;&nbsp; G2BeanBuilder.bat</TD>
+
+<TD>Runs the G2 Bean Builder Utility</TD>
+</TR>
+
+<TR>
+<TD>&nbsp;&nbsp; InstallProperties.bat</TD>
+
+<TD>Installs a Java properties file required to run JavaLink</TD>
+</TR>
+
+<TR>
+<TD>&nbsp;&nbsp; JgiInterface.dll</TD>
+
+<TD>Native network interface to G2</TD>
+</TR>
+
+<TR>
+<TD><B>classes</B></TD>
+
+<TD></TD>
+</TR>
+
+<TR>
+<TD>&nbsp;&nbsp;&nbsp;&nbsp; javalink.jar</TD>
+
+<TD>G2 JavaLink/Gateway java classes&nbsp;</TD>
+</TR>
+
+<TR>
+<TD><B>&nbsp;&nbsp;&nbsp;&nbsp; com</B></TD>
+
+<TD></TD>
+</TR>
+
+<TR>
+<TD><B>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gensym</B></TD>
+
+<TD></TD>
+</TR>
+
+<TR>
+<TD><B>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+classes</B></TD>
+
+<TD></TD>
+</TR>
+
+<TR>
+<TD><B>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+modules</B></TD>
+
+<TD>Default directory for class downloading from G2</TD>
+</TR>
+
+<TR>
+<TD><B>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+g2evliss</B></TD>
+
+<TD></TD>
+</TR>
+
+<TR>
+<TD><B>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+jgidemo</B></TD>
+
+<TD></TD>
+</TR>
+
+<TR>
+<TD><B>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+pseudo</B></TD>
+
+<TD></TD>
+</TR>
+
+<TR>
+<TD><B>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+demos</B></TD>
+
+<TD></TD>
+</TR>
+
+<TR>
+<TD><B>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+jgi</B></TD>
+
+<TD>This directory contains various examples and demos&nbsp;</TD>
+</TR>
+
+<TR>
+<TD><B>&nbsp;&nbsp;&nbsp;&nbsp; jars</B></TD>
+
+<TD></TD>
+</TR>
+
+<TR>
+<TD><B>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; activex</B></TD>
+
+<TD></TD>
+</TR>
+
+<TR>
+<TD>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; beans.ocx</TD>
+
+<TD>From Sun's Java Plug-in 1.1.2</TD>
+</TR>
+
+<TR>
+<TD><B>docs</B></TD>
+
+<TD></TD>
+</TR>
+
+<TR>
+<TD><B>&nbsp;&nbsp;&nbsp;&nbsp; api</B></TD>
+
+<TD>This directory contains the javadoc for G2 JavaLink/Gateway public
+api&nbsp;</TD>
+</TR>
+
+<TR>
+<TD>&nbsp;&nbsp;&nbsp;&nbsp; <B>guides</B></TD>
+
+<TD>This directory contains the on-line version of the JavaLink Documentation
+set</TD>
+</TR>
+
+<TR>
+<TD><B>kbs</B></TD>
+
+<TD></TD>
+</TR>
+
+<TR>
+<TD>&nbsp;&nbsp; g2evliss.kb</TD>
+
+<TD>Optional G2 Event support module that enables Java Bean events to be
+added to G2 classes</TD>
+</TR>
+
+<TR>
+<TD>&nbsp;&nbsp;&nbsp; javalink.kb</TD>
+
+<TD>Optional G2 support module for G2 JavaLink/Gateway</TD>
+</TR>
+
+<TR>
+<TD>&nbsp;&nbsp;&nbsp; jgidemo.kb&nbsp;</TD>
+
+<TD>KB for use with demos&nbsp;</TD>
+</TR>
+
+<TR>
+<TD>ChangeLog.html</TD>
+
+<TD>List of changes since Beta1</TD>
+</TR>
+
+<TR>
+<TD>ExamplesReadme.html</TD>
+
+<TD>Details examples supplied with this release</TD>
+</TR>
+
+<TR>
+<TD>KnownProblems.html</TD>
+
+<TD>Current known bugs</TD>
+</TR>
+
+<TR>
+<TD>readme.html&nbsp;</TD>
+
+<TD>This file&nbsp;</TD>
+</TR>
+</TABLE>
+
+<H2>
+A Note on Documentation</H2>
+The \docs\api directory contain Javadoc output of the relevant Java classes
+required to use G2 JavaLink/Gateway. Reading this documentation in conjunction
+with the example classes supplied (i.e. com.gensym.demos.jgi.ExampleG2Gateway)
+should provide a good foundation for understanding how G2 JavaLink/Gateway
+can be used to write effective G2 connectivity solutions using Java.
+<P>Additionally, there is the online version of the G2 JavaLink/Gateway
+User's Guide, G2 Bean Builder User's Guide and G2 DownloadInterfaces User's
+Guide supplied in the directory \docs\guides.
+<H2>
+Setup Instructions - Windows NT</H2>
+This distribution of G2 JavaLink/Gateway is found in&nbsp; <B>javalink-10rx.exe</B>
+- a self extracting archive containing the G2 JavaLink/Gateway files.
+<H3>
+Installation of G2 JavaLink/Gateway</H3>
+Steps 1 and 3 must be performed by all installations, Step 4 may be omitted
+if you do not want to test the G2 beans created from the G2 Bean Builder
+within Sun's Bean Box (part of the Java Bean Development kit, BDK). Step
+5 may be omitted if you do not intend to interface with ActiveX.
+<UL>&nbsp;
+<LI>
+1.&nbsp; Install G2 JavaLink/Gateway.</LI>
+
+<UL>
+<LI>
+To install G2 JavaLink/Gateway, run the file <B>javalink-10rx.exe</B></LI>
+
+<UL>
+<LI>
+double clicking on the<B> javalink-10rx.exe</B> icon</LI>
+
+<BR>&nbsp;</UL>
+This will start the InstallShield installation process. Follow the prompts
+to perform the installation.</UL>
+
+<UL>&nbsp;</UL>
+
+<LI>
+&nbsp;2.&nbsp; Ensure that your G2 server is version <U>5.1 rev 1</U> (or
+later) and is authorized to connect to G2 JavaLink/Gateway clients. Your
+G2 is authorized to use G2 JavaLink/Gateway when it has the code, "jl"
+listed in the "authorized-products" attribute of its .ok product authorization
+file. This G2 JavaLink/Gateway release will not work with G2 releases before
+5.1 rev 0, but 5.1 rev 1 is recommended. Please contact Gensym customer
+support if you encounter any authorization problems.</LI>
+
+<UL>
+<UL>
+<UL>&nbsp;</UL>
+</UL>
+</UL>
+
+<LI>
+3. Ensure that Sun's <A HREF="http://java.sun.com/products/jdk/1.1/index.html">JDK
+1.1.7 Java Development Kit</A> (or later) is installed.<B> THIS RELEASE
+WILL NOT WORK WITH JDK VERSIONS EARLIER THAN JDK1.1.6.</B> The default
+install directory for the JDK 1.1.7 is <B>c:\jdk1.1.7.</B></LI>
+
+<BR>&nbsp;
+<LI>
+4. Ensure that Sun's <A HREF="http://java.sun.com/beans/software/bdk_download.html">Bean
+Development Kit</A> V1.0 (Sept 97) or later is installed.</LI>
+
+<BR>The default install directory for the BDK is <B>c:\Bdk.</B>
+<BR>&nbsp;
+<LI>
+5. Ensure that Sun's<A HREF="http://java.sun.com/products/plugin/download/windows.html">
+Java Plug-in</A> V1.1.2 is installed (please note that JDK1.1.7. is not
+fully compatible with Plug-in 1.1.1). The default install directory for
+Java Plug-in is within the c:\Program Files directory; however, we recommend
+you install it on your root drive and with no spaces in the path name,
+to ensure that its libraries can be loaded,</LI>
+
+<DIR>e.g. <B>c:\JavaPlugin\</B></DIR>
+&nbsp;(We strongly recommend that you refer to&nbsp; <A HREF="#Problems when Using  G2 BeanBuilder to create an">Problems
+when Using G2 Bean Builder to create ActiveX controls with Sun's Java Plug-In).</A></UL>
+
+<H3>
+Setting Environment Variables</H3>
+
+<UL>In order for G2 JavaLink/Gateway to function, additions must be made
+to the machines <B>PATH</B> and <B>CLASSPATH</B> environment variables.
+<P>While the InstallShield installation program is capable of making the
+necessary changes to the environment variables, this facility may be vetoed
+by the installer.
+<P><U>Note: Step 2 of the following instructions apply only if you elect
+<B>not</B>
+to allow the JavaLink install shield process to make JavaLink specific
+changes to the machines <B>PATH</B> and <B>CLASSPATH</B> environment variables
+for you.</U> Also, if you allow the JavaLink install shield process to
+perform step 2 for you (the default) then you must reboot or logout/login
+for the changes to take effect.
+<P>Steps 1 and 2 (See Note above) must be performed by all installations,
+Step 3 may be omitted if you do not intend to test beans created by the
+G2 Bean Builder in Sun's Bean Box while Step 4 may be omitted if you do
+not intend to interface with ActiveX.
+<P>The following examples assume that products have been installed in their
+default location. Modifications should be made where appropriate when products
+have been installed in an alternative directory.
+<BR>&nbsp;
+<LI>
+&nbsp;1. Your <B>PATH</B> and <B>CLASSPATH</B> must be modified to include
+the JDK</LI>
+
+<UL>
+<LI>
+To setup your current NT session for all applications you must use the
+<B>system</B>
+icon on the NT control panel. Select the ENVIRONMENT tab and enter the
+following:</LI>
+
+<UL>
+<LI>
+variable <B>JAVA_HOME</B>, set to the location of JDK, e.g. <B>c:\jdk1.1.7\</B></LI>
+
+<LI>
+variable <B>CLASSPATH</B>, add the following <B>;%JAVA_HOME%\lib\classes.zip</B></LI>
+
+<LI>
+variable <B>PATH</B>, add the following <B>;%JAVA_HOME%\bin</B></LI>
+</UL>
+
+<LI>
+<B>Some JavaLink applications (G2 Bean Builder and G2 DownloadInterfaces)
+call the javac compiler. In JDK1.2 the compiler class can be found in \jdk1.2\lib\tools.jar,
+which must be on the CLASSPATH to allow JavaLink to use the 1.2 compiler.</B></LI>
+
+<UL>&nbsp;</UL>
+</UL>
+
+<LI>
+2. Your <B>PATH</B> and <B>CLASSPATH</B> must be setup to point to the
+G2 JavaLink/Gateway files</LI>
+
+<UL>
+<LI>
+To setup your current NT session for all applications you must use the
+<B>system</B>
+icon on the NT control panel. Select the ENVIRONMENT tab and enter the
+following:</LI>
+
+<UL>
+<LI>
+variable <B>JAVALINK_HOME</B>, value (installation directory, e.g.<B> c:\gensym\javalink</B>)</LI>
+
+<LI>
+variable <B>CLASSPATH</B>, add the following <B>;%JAVALINK_HOME%\classes\javalink.jar;%JAVALINK_HOME%\classes</B></LI>
+
+<LI>
+variable <B>PATH</B>, add the following <B>;%JAVALINK_HOME%\bin</B></LI>
+
+<BR>&nbsp;</UL>
+</UL>
+
+<LI>
+3. Your <B>CLASSPATH</B> must be modified to include BDK</LI>
+
+<UL>
+<LI>
+To setup your current NT session for all applications you must use the
+<B>system</B>
+icon on the NT control panel. Select the ENVIRONMENT tab and enter the
+following:</LI>
+
+<UL>
+<LI>
+variable <B>CLASSPATH</B>, add the following <B>;c:\Bdk\beanbox</B></LI>
+
+<UL>&nbsp;</UL>
+</UL>
+</UL>
+
+<LI>
+4. Your <B>PATH</B> and <B>CLASSPATH</B> must be modified to include Sun's
+Java Plug-in</LI>
+
+<UL>
+<LI>
+To setup your current NT session for all applications you must use the
+<B>system</B>
+icon on the NT control panel. Select the ENVIRONMENT tab and enter the
+following (assuming that the Plug-In has been installed at <B>c:\JavaPlugIn</B>):</LI>
+
+<UL>
+<LI>
+variable <B>CLASSPATH</B>, add the following <B>;c:\JavaPlugIn\lib\jaws.jar</B></LI>
+
+<LI>
+variable <B>PATH</B>, add the following <B>;c:\JavaPlugIn\bin</B></LI>
+</UL>
+</UL>
+(We strongly recommend that you refer to&nbsp; <A HREF="#Problems when Using  G2 BeanBuilder to create an">Problems
+when Using G2 Bean Builder to create ActiveX controls with Sun's Java Plug-In).</A></UL>
+
+<H3>
+Setting the defaults file</H3>
+The file <B>.com.gensym.properties</B> contains references to directory
+locations essential for G2 JavaLink/Gateway to function correctly.
+<P><U>The JavaLink install shield process <B>will</B> automatically create
+this file. However, if you need to change this file for any reason then
+the following instructions should be followed.</U>
+<P>An example of this file is provided in <B>JAVALINK_HOME\bin\.com.gensym.properties</B>.
+<P><B>For JDK1.1 users:</B>
+<BR>To install the default property file, copy the file <B>.com.gensym.properties
+</B>into
+your default home directory, which is specified in the environment variable
+<B>HOME</B>
+or <B>HOMEDRIVE</B>\<B>HOMEPATH</B> if the variable <B>HOME</B> is not
+defined.
+<BR>e.g. c:\users\default
+<P><B>For JDK1.2 users:</B>
+<BR>To install the default property file, copy the file <B>.com.gensym.properties
+</B>into
+your default NT user profile directory, which is specified in the environment
+variable <B>USERPROFILE</B>.
+<BR>e.g. c:\winnt\Profiles\davis
+<P>The file <B>JAVALINK_HOME\bin\InstallProperties.bat</B> will copy <B>.com.gensym.properties</B>
+to the correct directory and set the properties correctly to point to your
+current <B>JAVALINK_HOME</B>.
+<P>The created <B>.com.gensym.properties</B> file should not need changing.
+However, if JavaLink is moved from its installation directory, then <B>.com.gensym.properties</B>
+must be amended to reflect this. The G2 JavaLink/Gateway User's Guide explains
+the contents and usage of this file in more detail.
+<H2>
+Examples</H2>
+This release comes with an example KB and source code files that utilize
+G2 JavaLink/Gateway.&nbsp; The KB is located in:
+<P><B>JAVALINK_HOME\kbs\jgidemo.kb</B>
+<P>This KB contains tests that allow you to try out G2 JavaLink/Gateway
+features demonstrating: Java-G2 data conversion, RPC calling, Multi-threaded
+access, Java downloading from G2 and much more.
+<DIR>
+<LI>
+1. Load and start <B>jgidemo.kb</B></LI>
+
+<LI>
+2. From a DOS (NT) prompt set your current directory to<B> JAVALINK_HOME\classes\com\gensym\demos\jgi</B></LI>
+
+<LI>
+3. Startup the example Java applet by typing <B>appletviewer JgiTestApplet.html</B></LI>
+
+<LI>
+4. Follow the instructions in<B> jgidemo.kb</B></LI>
+</DIR>
+This KB can also be used with the other example G2 JavaLink/Gateway examples
+found in <B>com.gensym.demos.jgi:</B>
+<BR>&nbsp;
+<TABLE BORDER COLS=2 WIDTH="100%" >
+<TR>
+<TD>
+<H4>
+&nbsp;Example File</H4>
+</TD>
+
+<TD>
+<H3>
+Description</H3>
+</TD>
+</TR>
+
+<TR>
+<TD>ConnectionEventListener.java</TD>
+
+<TD>An example java client listening for G2 connection events. (Note1)</TD>
+</TR>
+
+<TR>
+<TD>ExampleDataService.java</TD>
+
+<TD>An example of using JavaLink to write a DataService for Gsi Variables.
+(Note2)</TD>
+</TR>
+
+<TR>
+<TD>ExampleG2Gateway.java</TD>
+
+<TD>Large java class, containing many JavaLink tests/examples used by JgiTestApplet.
+(Note1)</TD>
+</TR>
+
+<TR>
+<TD>G2CallingJavaMethod.java</TD>
+
+<TD>An example of G2 calling Java from G2. (Note2)</TD>
+</TR>
+
+<TR>
+<TD>JavaCallingG2Methods.java</TD>
+
+<TD>An example of Java calling a G2 method of a previously downloaded class.
+(Note1)</TD>
+</TR>
+
+<TR>
+<TD>JavaCallingG2Procedure.java</TD>
+
+<TD>An example of Java calling a G2 procedure. (Note1)</TD>
+</TR>
+
+<TR>
+<TD>JavaG2EventListener.java</TD>
+
+<TD>An example of a Java client listening for events generated by a G2
+Event source. (Note 1)</TD>
+</TR>
+
+<TR>
+<TD>JavaThreadsCallingG2.java</TD>
+
+<TD>An example of many Java threads calling G2. (Note1)</TD>
+</TR>
+
+<TR>
+<TD>JgiTestApplet.java</TD>
+
+<TD>Java applet class for <B>JgiTestApplet.html</B>.</TD>
+</TR>
+
+<TR>
+<TD>SendG2Message.java</TD>
+
+<TD>Sending a message from Java to the G2 Message Board. (Note1)</TD>
+</TR>
+
+<TR>
+<TD>SimpleSubscription.java</TD>
+
+<TD>An example of a Java client receiving Item change notification from
+G2. (Note1)</TD>
+</TR>
+
+<TR>
+<TD>SimpleVariableSubscription.java</TD>
+
+<TD>An example of a Java client receiving Variable change notification
+from G2. (Note 1)</TD>
+</TR>
+
+<TR>
+<TD>UnsolicitedConnection.java</TD>
+
+<TD>How to set up a Java client to except an unsolicited connection. (Note2)</TD>
+</TR>
+</TABLE>
+(See <A HREF="ExamplesReadme.html">More Information on the JavaLink Examples</A>)
+<P>Notes
+<BR>1. usage: java com.gensym.demos.jgi.exampleclassname -g2host hostname
+[-g2port port]
+<BR>&nbsp;&nbsp;&nbsp; e.g. java com.gensym.demos.jgi.ExampleG2Gateway
+-g2host localhost
+<BR>2. usage: java com.gensym.demos.jgi.exampleclassname
+<BR>&nbsp;&nbsp;&nbsp; e.g. java com.gensym.demos.jgi.UnsolictedConnection
+<P>Please refer to the G2 JavaLink/Gateway User's Guide for more information
+about these examples.
+<BR>&nbsp;
+<BR>&nbsp;
+<H2>
+<U>Problem Solving</U></H2>
+
+<H3>
+<U>General</U></H3>
+
+<H4>
+<U>(please refer to the current know problems/bugs list in KnownProblems.html)</U></H4>
+
+<H4>
+Memory Heap Size</H4>
+The Java interpreter utilizes a memory heap for all object references and
+values. When the heap becomes full, the interpreter will not try to allocate
+any more memory, but will throw an OutOfMemoryException. If Java throws
+an OutOfMemoryException while running a Java application or applet, then
+try the Java interpreter's -ms option. e.g. <TT>java -ms20m classname</TT>
+will increase the Java heap size from its default (currently 16meg) to
+20meg.
+<H4>
+Java Thread Memory usage</H4>
+Java on the NT platform creates a&nbsp; native NT thread for each java.lang.Thread
+that is started. We have found that a significant amount of memory is allocated
+for each thread that is created. Additionally, thread memory is not allocated
+from the Java heap, but allocated from the overall process memory.
+<BR>&nbsp;
+<H3>
+<U>Problems when using Symantec's&nbsp; JIT supplied with the JDK1.1.6</U></H3>
+We have not seen any significant problems when testing JavaLink with the
+Symantec Just In Time Compiler (JIT) supplied (and turned on by default)
+with JDK1.1.6. However, if you experience any instability we would first
+recommend that you run the JDK VM with the JIT turned off by using <B>java
+-nojit classname, </B>and then retesting.
+<H3>
+<U>Problems when downloading Java stubs from G2</U></H3>
+To ensure that JavaLink can successfully download Java stub classes for
+G2 classes:
+<UL>
+<LI>
+JavaLink must be correctly installed, and the JavaLink class library and
+directory must be added to the systems <B>CLASSPATH </B>(setting the <B>CLASSPATH</B>
+is part of the JavaLink install process, see the installation details above).</LI>
+
+<LI>
+The <B>.com.gensym.properties</B> file supplied with JavaLink must be placed
+in the systems current <B>%HOMEPATH%</B>. e.g. <B>c:\user\default</B> (see
+the installation details above).</LI>
+
+<LI>
+The property, com.gensym.class.user.repository must point to the root of
+where JavaLink will find existing downloaded classes and where JavaLink
+will download classes to. e.g. <B>c:\gensym\javalink-10rx\classes</B>.&nbsp;
+Please refer to the G2 JavaLink User's Guide for more information on JavaLink
+properties.</LI>
+
+<LI>
+When JavaLink creates a G2Connection to a G2 server, it is, by default
+said to be "permanent" (i.e. the connection is maintained even if the G2
+is reset). However, if the G2Connection has not been made permanent (using
+an appropriately configured com.gensym.jgi.G2ConnectionInfo as a parameter
+to G2Gateway.getOrMakeConnection()), then G2 must be started for class
+downloading to function correctly.</LI>
+
+<LI>
+Class definitions exported to Java and those held in G2 can become out
+of synch if the original G2 class (or any of its superiors) is altered
+in the following ways:</LI>
+
+<UL>
+<LI>
+Attribute changes: new attributes are added, attributes are removed or
+attribute types are changed.</LI>
+
+<LI>
+Method changes: new methods are added, methods are removed or method signatures
+are altered.</LI>
+
+<LI>
+Hierarchy changes: the class has a new superior, any mixin classes were
+added or removed.</LI>
+</UL>
+It is, therefore recommended that class export to JavaLink should only
+occur when G2 classes and their inheritance path is stable. When a G2 class
+is altered which will be used by a JavaLink client, make sure that the
+Class definition interface and implementation is forced to be re-exported
+using the JavaLink download utility:
+<P>&nbsp;&nbsp;&nbsp; java com.gensym.jgi.download.DownloadInterfaces -force
+-stubs -class G2-CLASS-NAME1
+<P>Note: Future versions of JavaLink will attempt to automatically detect
+and rectify such situations where G2 classes become out of synch with those
+exported to JavaLink.
+<LI>
+When the Java class loader attempts to load an exported Java class that
+represents a G2 class, it must first attempt to load every class that is
+required by the exported Java class. This includes all Java interfaces
+that defined its inheritance path, classes and interfaces required for
+attributes and method signatures. If during this loading process Java reports
+a NoClassDefFoundError then this is probably due to the Java class loader
+not finding a required class (or finding an invalid class) which was required.
+This could happen if superior or required classes were re-exported from
+G2, but the lower class was not, or for some reason a required class was
+deleted or could not be found on Java's <B>CLASSPATH</B>.</LI>
+</UL>
+
+<H3>
+<U>Problems with the G2 Bean Builder</U></H3>
+
+<H4>
+Testing Java beans created from G2 Bean Builder with Sun’s Beans Development
+Kit V1.0.</H4>
+The current BDK can be found at <A HREF="http://java.sun.com/beans/software/bdk_download.html">Bean
+Development Kit</A>, Sun’s BDK is normally run from a small batch file:
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<TT> <B>../BDK/beanbox/run.bat</B></TT>
+<P>In the version 1.0 (Sep) release its contents are:
+<UL><TT>if "%OS%" == "Windows_NT" setlocal</TT>
+<BR><TT>set CLASSPATH=classes</TT>
+<BR><TT>java sun.beanbox.BeanBoxFrame</TT></UL>
+Unfortunately the batch file overrides the <B>CLASSPATH</B> so that JavaLink
+classes are not visible to the Bean Box application. If a G2 Java Bean
+jar is loaded into the Bean Box, with these current settings, then the
+Bean Box will print in its console window the following exception message
+(assuming we attempted to load ATestClassBean from <B>C:\bt\mg\java\jars\ATestClassBean.jar</B>):
+<UL><TT>WARNING: Could not instantiate bean "com.gensym.classes.modules.jgidemo.ATestClassBean"
+from JAR "C:\bt\mg\java\jars\ATestClassBean.jar" BeanBox caught exception
+java.lang.SecurityException: No access through getResource() to .class
+in 1.1 while processing: LoadJar…msg: No access through getResource() to
+.class in 1.1</TT></UL>
+This problem can be resolved by editing the run.bat file to ensure that
+all required JavaLink classes are on the Bean Box’s <B>CLASSPATH</B>. As
+a JavaLink installation will ensure that the default <B>CLASSPATH</B> points
+to the correct JavaLink classes, the following change to line 2 will normally
+solve the problem:
+<UL><TT>if "%OS%" == "Windows_NT" setlocal</TT>
+<BR><TT>set CLASSPATH=%CLASSPATH%;classes</TT>
+<BR><TT>java sun.beanbox.BeanBoxFrame</TT></UL>
+Note also <U>Problems when using Symantec's JIT supplied with the JDK1.1.6</U>
+above
+<H3>
+<A NAME="Problems when Using  G2 BeanBuilder to create an"></A><U>Problems
+when Using G2 Bean Builder to create an ActiveX control with Sun's Java
+Plug-in</U></H3>
+G2 Bean Builder uses Sun's Java Plug-in ActiveX Packager to create ActiveX
+controls from Java Beans created for G2 objects. When G2 Bean Builder starts
+up, it searches for the ActiveX Packager Java startup class (sun.beans.ole.Packager)
+from the current <B>CLASSPATH</B>. If the Packager cannot be found, then
+G2 Bean Builder will not give the user the option of creating an ActiveX
+control. This release of JavaLink was tested with V1.1.2 of Sun's<A HREF="http://java.sun.com/products/plugin/download/windows.html">
+Java Plug-in</A>. To ensure that G2 Bean Builder can find the Packager's
+<B>jaws.jar</B>
+in the Java Plug-in's classes directory, it must be added to the <B>CLASSPATH</B>;
+i.e.
+<UL><TT>set CLASSPATH=%CLASSPATH%;c:\JavaPlugIn\lib\jaws.jar</TT></UL>
+and the bin directory of the Java Plug-in must also be added to the systems
+<B>PATH</B>
+so that the Java Packager classes can load <B>packager.dll</B>; i.e.
+<UL><TT>set PATH=%PATH%;c:\JavaPlugIn\bin</TT></UL>
+(Assuming that the Packager has been installed at <B>c:\JavaPlugIn</B>)
+<P>If you have set the <B>PATH</B> and <B>CLASSPATH</B> as above and G2
+Bean Builder still does not give you the option to create an ActiveX control:
+<UL>
+<LI>
+On some installations Java cannot find the Plug-in libraries; by default
+the Plug-in may attempt to install in <B>c:\Program Files\Plug-in 1.1</B>.
+We have found that if the Plug-in is re-installed into a directory without
+spaces (e.g.<B> c:\JavaPlugIn</B>) then these libraries can be loaded.</LI>
+
+<LI>
+Make sure that the G2 Bean Builder is launched in an environment where
+the <B>PATH</B> and <B>CLASSPATH</B> reflect the above changes.</LI>
+</UL>
+<B><U>Removing an earlier version of Sun's ActiveX Packager from your PATH
+and CLASSPATH</U></B>
+<P>If you have been using a previous version (before JavaLink beta 5) of
+Javalink's G2 Bean Builder to create ActiveX Components, you would have
+installed Sun's ActiveX Packager from Sun's Java Bean web site. This ActiveX
+Packager version (1.0) has been superseded by a far more reliable version
+of the ActiveX Packager (1.1) which is now part of Sun's Java Plug-in download.
+Version 1.1 is far more robust, which is why Gensym now recommends that
+this version is used. <B>If you have a previous version of the ActiveX
+Packager (1.0) installed, you must remove any references to it from your
+PATH and CLASSPATH.</B>
+<BR>i.e. If Version 1.0 of the Packager was installed at c:\Bdk\bridge,
+then:
+<UL>Your <B>PATH</B> would contain an entry: c:\Bdk\bridge\bin, which must
+be removed
+<BR>Your <B>CLASSPATH</B> would contain an entry: c:\Bdk\bridge\classes,
+which must also be removed</UL>
+When switching over to a new version of the Packager, your G2 Beans must
+be recreated using the G2 Bean Builder.
+<BR>If you have copies of <B>beans.ocx</B> from the previous version of&nbsp;
+the Packager, this must be replaced by the newer version <B>beans.ocx </B>supplied
+with Sun's Plug-in (found in the \bin directory below the Plug-in's installation
+directory).
+<P><B><U>Which version of the Java Plug-in should be used?</U></B>
+<P>The table below shows which version of the Java Plug-in that is recommended
+to be compatible with your installed JDK version:
+<BR>&nbsp;
+<TABLE BORDER COLS=2 WIDTH="66%" >
+<TR>
+<TD><B>JDK Version</B></TD>
+
+<TD><B>Plug-in Version</B></TD>
+</TR>
+
+<TR>
+<TD>JDK1.1.6</TD>
+
+<TD>Plug-in 1.1.1</TD>
+</TR>
+
+<TR>
+<TD>JDK1.1.7</TD>
+
+<TD>Plug-in 1.1.2</TD>
+</TR>
+
+<TR>
+<TD>JDK1.2</TD>
+
+<TD>Plug-in 1.2 (supplied with the JDK 1.2 JRE)</TD>
+</TR>
+</TABLE>
+
+<P><B><U>ActiveX Packager Generated Files</U></B>
+<P>The G2 Bean Builder will place ActiveX registration (.reg) and type
+library (.tlb) files generated for the G2 Bean, in a directory called “activex”,
+which is automatically created below the Java bean Jar directory specified
+while building the Bean. For example, assuming the user specified the Jar
+is to be generated at <B>c:\gensym\javalink\classes\jars</B>, then the
+ActiveX control files would be created in <B>c:\gensym\javalink\classes\jars\activex</B>.
+<P>Packager Notes:
+<UL>
+<LI>
+The registration file created contains absolute references to where the
+Java bean Jar and other files are located. If any of these files are moved,
+the registration file must be edited appropriately (a .reg file can be
+entered into the Windows registry by double clicking on the .reg file from
+a file view, or by using regedit from a DOS prompt).</LI>
+
+<LI>
+If the Packager is used to recreate the same ActiveX control, then the
+.reg and .tlb files will be overwritten and any edits will have to be re-entered.</LI>
+
+<LI>
+If an ActiveX control is previously registered, and the Packager is re-run
+to recreate the same ActiveX Control, then the Packager will maintain the
+same GUID for the ActiveX control.</LI>
+
+<LI>
+The Packager uses a common control file called <B>beans.ocx</B> that is
+normally placed in <B>c:\JavaPlugIn\bin</B> (assuming the Plug-In is installed
+at <B>c:\JavaPlugIn)</B>. This file must be copied to any activex directory
+created by the G2 Bean Builder, or the generated ActiveX controls will
+fail to function. For example; if <B>beans.ocx</B> is not found, Visual
+Basic would report that the generated G2 ActiveX Bean control has not been
+registered, when a user attempts to draw the control on a VB form. The
+<B>beans.ocx</B>
+supplied with this version of JavaLink is the version downloaded with Sun's
+Java Plug-in 1.1.2.</LI>
+</UL>
+
+<H3>
+<U>Problems when using JavaLink with Sun's Activator or Java Plug-in</U></H3>
+Due to security reasons Java Activator or Java Plug-in will sometimes fail
+to find the properties file <B>.com.gensym.properties</B> required for
+JavaLink to execute correctly. This problem is normally solved by putting
+a copy of <B>.com.gensym.properties</B> into the JDK or JRE&nbsp; home
+directory. The <B>.com.gensym.properties</B> file is placed in <B>%HOME%</B>
+or <B>%HOMEDRIVE%\%HOMEPATH%</B> (if <B>HOME</B> is not defined) by the
+JavaLink installation process. It may also be necassary to install Java
+Plug-in onto your root drive, and do not put spaces in any of the file
+names.
+</BODY>
+</HTML>

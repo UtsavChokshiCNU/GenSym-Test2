@@ -1,0 +1,103 @@
+SHELL=/bin/sh
+ 
+# Sample makefile for GSI programs.
+#   GSI Version 8.3.
+# Machine type: Itanium HP-UX
+ 
+C_DIR = 
+OBJ_DIR = 
+EXE_DIR = 
+H_DIR = ./
+INCLUDE_DIR = $(H_DIR)
+CCFLAGS = -O
+LIB_DIR = ./
+ 
+DEFAULT_LIBS = -lgsi -ltcp -lrtl
+NOSSL_LIBS = -lnogsec
+PLATFORM_SPECIFIC_LIBS = -lm
+LIBS = -L$(LIB_DIR) $(DEFAULT_LIBS) $(PLATFORM_SPECIFIC_LIBS) 
+ 
+H_FILES = $(H_DIR)gsi_main.h
+EXECUTABLES = $(EXE_DIR)filetest $(EXE_DIR)typetest $(EXE_DIR)skeleton $(EXE_DIR)alarmer $(EXE_DIR)itemtest $(EXE_DIR)matrix $(EXE_DIR)pub_subscribe $(EXE_DIR)reposit $(EXE_DIR)mapchar
+FILETEST_FILES = $(OBJ_DIR)filetest.o $(OBJ_DIR)rpcfuncs.o
+TYPETEST_FILES = $(OBJ_DIR)typetest.o $(OBJ_DIR)gsi_main.o
+SKELETON_FILES = $(OBJ_DIR)skeleton.o $(OBJ_DIR)gsi_main.o
+ALARMER_FILES = $(OBJ_DIR)alarmer.o $(OBJ_DIR)gsi_main.o
+MAPCHAR_FILES = $(OBJ_DIR)mapchar.o $(OBJ_DIR)gsi_main.o
+ITEMTEST_FILES = $(OBJ_DIR)itemtest.o $(OBJ_DIR)gsi_misc.o
+MATRIX_FILES = $(OBJ_DIR)matrix.o $(OBJ_DIR)gsi_main.o
+PUB_SUBSCRIBE_FILES = $(OBJ_DIR)pub_subscribe.o $(OBJ_DIR)gsi_main.o $(OBJ_DIR)gsi_misc.o
+REPOSIT_FILES = $(OBJ_DIR)reposit.o $(OBJ_DIR)gsi_main.o $(OBJ_DIR)gsi_misc.o
+ 
+ALL : $(EXECUTABLES)
+ 
+$(EXE_DIR)filetest : $(FILETEST_FILES)
+	cc -o filetest $(FILETEST_FILES) $(LIBS) $(NOSSL_LIBS)
+ 
+$(EXE_DIR)skeleton : $(SKELETON_FILES)
+	cc -o skeleton $(SKELETON_FILES) $(LIBS) $(NOSSL_LIBS)
+ 
+$(EXE_DIR)typetest : $(TYPETEST_FILES)
+	cc -o typetest $(TYPETEST_FILES) $(LIBS) $(NOSSL_LIBS)
+ 
+$(EXE_DIR)alarmer : $(ALARMER_FILES)
+	cc -o alarmer $(ALARMER_FILES) $(LIBS) $(NOSSL_LIBS)
+ 
+$(EXE_DIR)mapchar : $(MAPCHAR_FILES)
+	cc -o mapchar $(MAPCHAR_FILES) $(LIBS) $(NOSSL_LIBS)
+ 
+$(EXE_DIR)itemtest : $(ITEMTEST_FILES)
+	cc -o itemtest $(ITEMTEST_FILES) $(LIBS) $(NOSSL_LIBS)
+ 
+$(EXE_DIR)matrix : $(MATRIX_FILES)
+	cc -o matrix $(MATRIX_FILES) $(LIBS) $(NOSSL_LIBS)
+ 
+$(EXE_DIR)pub_subscribe : $(PUB_SUBSCRIBE_FILES)
+	cc -o pub_subscribe $(PUB_SUBSCRIBE_FILES) $(LIBS) $(NOSSL_LIBS)
+ 
+$(EXE_DIR)reposit : $(REPOSIT_FILES)
+	cc -o reposit $(REPOSIT_FILES) $(LIBS) $(NOSSL_LIBS)
+ 
+$(OBJ_DIR)filetest.o : $(C_DIR)filetest.c $(H_FILES)
+	cc -c $(CCFLAGS) -I$(INCLUDE_DIR) $(C_DIR)filetest.c
+ 
+$(OBJ_DIR)typetest.o : $(C_DIR)typetest.c $(H_FILES)
+	cc -c $(CCFLAGS) -I$(INCLUDE_DIR) $(C_DIR)typetest.c
+ 
+$(OBJ_DIR)rpcfuncs.o : $(C_DIR)rpcfuncs.c $(H_FILES)
+	cc -c $(CCFLAGS) -I$(INCLUDE_DIR) $(C_DIR)rpcfuncs.c
+ 
+$(OBJ_DIR)skeleton.o : $(C_DIR)skeleton.c $(H_FILES)
+	cc -c $(CCFLAGS) -I$(INCLUDE_DIR) $(C_DIR)skeleton.c
+ 
+$(OBJ_DIR)alarmer.o : $(C_DIR)alarmer.c $(H_FILES)
+	cc -c $(CCFLAGS) -I$(INCLUDE_DIR) $(C_DIR)alarmer.c
+ 
+$(OBJ_DIR)gsi_misc.o : $(C_DIR)gsi_misc.c $(H_FILES) $(H_DIR)gsi_misc.h
+	cc -c $(CCFLAGS) -I$(INCLUDE_DIR) $(C_DIR)gsi_misc.c
+ 
+$(OBJ_DIR)mapchar.o : $(C_DIR)mapchar.c $(H_FILES)
+	cc -c $(CCFLAGS) -I$(INCLUDE_DIR) $(C_DIR)mapchar.c
+ 
+$(OBJ_DIR)itemtest.o : $(C_DIR)itemtest.c $(H_FILES) $(H_DIR)gsi_misc.h
+	cc -c $(CCFLAGS) -I$(INCLUDE_DIR) $(C_DIR)itemtest.c
+ 
+$(OBJ_DIR)matrix.o : $(C_DIR)matrix.c $(H_FILES)
+	cc -c $(CCFLAGS) -I$(INCLUDE_DIR) $(C_DIR)matrix.c
+ 
+$(OBJ_DIR)pub_subscribe.o : $(C_DIR)pub_subscribe.c $(H_FILES)
+	cc -c $(CCFLAGS) -I$(INCLUDE_DIR) $(C_DIR)pub_subscribe.c
+ 
+$(OBJ_DIR)reposit.o : $(C_DIR)reposit.c $(H_FILES)
+	cc -c $(CCFLAGS) -I$(INCLUDE_DIR) $(C_DIR)reposit.c
+ 
+$(OBJ_DIR)gsi_main.o : $(C_DIR)gsi_main.c $(H_FILES)
+	cc -c $(CCFLAGS) -I$(INCLUDE_DIR) $(C_DIR)gsi_main.c
+ 
+clean :
+	@for file in $(EXECUTABLES); do \
+		if [ -f $$file ] ; then \
+			rm $$file; \
+		fi ;\
+	done
+	@rm *.o

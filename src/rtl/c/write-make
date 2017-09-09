@@ -1,0 +1,61 @@
+#!/bin/sh
+#############################################################################
+#
+# Makefile generation script
+#
+#  To reuse: 
+#   1. copy to new place
+#   2. edit upper-case names and comments
+#
+#############################################################################
+#
+#  Usage:  % write-make <filename>
+#
+#############################################################################
+
+#backup 
+test -f $1 && cp $1 $1.bak
+
+cat >$1  <<'the end'
+
+#
+#  include file for library-building Makefile
+# 
+#  produced automatically by sh write-make
+#
+
+
+#
+# .h file dependencies
+#
+
+the end
+
+#
+# Generate dependencies extracting "#include" declarations.
+#
+# Note: for some cases it might be more appropriate to enforce
+# a bigger/smaller/different list. 
+# To achieve this goal for any file foo.h you can create a file
+# with the name foo.h.dep and specify the desirable dependencies
+# in direct format, say:  $(CONFIG.H) $(OBJECT.H) $(VALUES.H) $(CORE.H)
+# Empty file means "no dependencies"
+#
+for i in *.h
+do
+  echo -n "."
+  rm -f sedXX*
+  echo "^^$i" |  tr a-z A-Z   >sedXX
+  echo " = $(HDIR)/$i " >>sedXX
+  if test -f $i.dep
+  then
+       cat $i.dep >>sedXX
+  else 
+       awk ' $1 == "#include" { print $2 }' $i | sed 's/["]//g' |                     grep -v "[/<>A-Z]" | sed 's/^/\$\(/' | sed 's/$/\)/' | tr '\012' ' '           | tr a-z A-Z  >>sedXX
+  fi
+  cat sedXX* | tr '\012' ' ' | tr '^' '\012' >>$1
+done
+echo " "
+
+rm -f sedXX*
+ 

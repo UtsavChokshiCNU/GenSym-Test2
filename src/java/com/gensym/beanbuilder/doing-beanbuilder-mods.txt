@@ -1,0 +1,63 @@
+Modification of G2 Bean Builder
+
+Where modification of G2 Bean Builder code does not involve the physical layout/composition of the GUI, 
+java files may be loaded into an editor such as EMACS. Where changes to the GUI are needed, it is often easier to 
+make these changes while the code is loaded into an IDE such as Symantecs' VisualCafe.
+
+Only the .java , resource files and image files for G2 Bean Builder are stored under CVS. Project files for IDE's 
+such as VisualCafe are not stored. 
+
+This document outlines the steps that need to be taken in order to load   G2 Bean Builder into VisualCafe.
+
+(1) extract the G2 Bean Builder source code from CVS
+   
+three directories need to be created:
+   	com\gensym\beanbuilder
+   	com\gensym\beanbuilder\images
+   	com\gensym\beanbuilder\text
+
+the first holds the .java files, the second holds the image files for the GUI and the latter holds the resource files 
+for the GUI internationalization.
+
+
+(2) Ensure that the CLASSPATH and PATH settings of the sc.ini file found in the Visual Cafe\bin directory are modified 
+to relect the location of the G2 Bean Builder code 
+	e.g.   c:\bt\jp\java
+
+(3) Compile all the java files. (Symantec VisualCafe produces depecated code) 
+
+(4) Create a new project() in Symantec VisualCafe. 
+
+(5) Select the Project-Options menu choice. This will display a dialog box. Within the 
+"Show diretories for classfiles option" add an entry to reflect the location of the bean builder source
+	e.g. c:\bt\jp\java
+
+(6) Select the Insert-Component into library menu option and
+insert class com.gensym.ImageDisplay. This class is used by the G2 Bean Builder to display its graphics images. 
+The action of inserting this class into the newly created project will facilitate the loading of the remainder of the 
+G2 Bean Builder code. If this step is omitted, the ImageDisplay objects within the GUI are not re-created.
+
+(7) Delete all of the objects from the Project window.
+
+(8) Select the Insert-Files into Project menu option and add the following files:-
+	
+	G2BeanBuilder.java
+	AboutDialog.java
+	AttentionDialog.java
+	ConfirmDialog.java
+
+Check the Message window to see that the files were all correctly added to the project.
+
+When all the files have been added, double click on the G2BeanBuilder component of the project. 
+This should display the G2BeanBuilder GUI. If the backgroud image is not visible, DO NOT save the project / files. 
+In all probability, the ImageDisplay.class has not been found, as a result, all of the ImageDisplay instances will have 
+been lost from the code. Close down Symantec Cafe and try again.
+
+
+(9) Select File-Save As menu option and specify a file name for the project e.g. G2BBB2
+Note it has been observed that from the stage of inserting the class com.gensym.ImageDisplay into VC sometimes fails 
+(bug in VC?)
+
+In the event of this happening, all subsequent attempt to load the class and hence G2 Bean Builder will fail. 
+The only resolution to this problem appears to be to re install SVC.
+

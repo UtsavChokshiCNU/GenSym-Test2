@@ -1,0 +1,63 @@
+<project name="rtl" default="api-tests">
+	<property name="module.name" value="rtl"/>
+	<property name="${module.name}.basedir" value=".."/> 
+	<property file="${rtl.basedir}/ant/build.properties"/>
+
+	<!-- Build section -->
+	<target name="clean-build">
+		<delete dir="${rtl.basedir}/../dst/${module.name}"/>
+	</target>
+
+	<target name="clean-results">
+		<delete dir="${result.dir}/${module.name}"/>
+    </target>
+
+    <target name="build_32_std_tests">
+        <ant dir="${rtl.basedir}/ant" target="vstudio" inheritAll="false">
+            <property name="type" value="Release|Win32"/>
+            <property name="module" value="librtl"/>
+            <property name="solution" value="rtl_tests"/>
+        </ant>
+    </target>
+
+    <target name="build_64_ent_tests">
+        <ant dir="${rtl.basedir}/ant" target="vstudio" inheritAll="false">
+            <property name="type" value="Release|x64"/>
+            <property name="module" value="librtl"/>
+            <property name="solution" value="rtl_tests"/>
+        </ant>
+    </target>
+
+    <target name="build_64_ent_wout_32_tests" depends="build_64_ent_tests" />
+
+	<!-- End of Build section -->
+	
+	<!-- Tests section -->
+	<target name="api-tests">
+		<ant dir="${rtl.basedir}/ant" target="run-api-tests" inheritAll="false">
+			<property name="module" value="${module.name}"/>
+			<property name="project" value="librtl_tests"/>
+		</ant>
+	</target>
+    
+	<!-- End of Tests section -->
+	
+	<!-- Checks section -->
+	<target name="check-coverage">
+		<ant dir="${rtl.basedir}/ant" target="check-c-coverage"/>
+	</target>
+  
+	<target name="check-static-metrics" depends="check-findbugs, check-cpd"/>
+  
+	<target name="check-findbugs">
+    <property name="c.findbugs.srcfolder" value="${rtl.basedir}/${module.name}/c"/>
+    <ant dir="${rtl.basedir}/ant" target="check-c-findbugs"/>
+	</target>  
+  
+  <target name="check-cpd">
+    <property name="c.cpd.srcfolder" value="${rtl.basedir}/${module.name}/c"/>
+    <ant dir="${rtl.basedir}/ant" target="check-c-cpd"/>
+  </target>
+	<!-- End of Checks section -->
+  
+</project>

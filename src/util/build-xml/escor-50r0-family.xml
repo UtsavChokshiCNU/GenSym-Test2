@@ -1,0 +1,549 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<g2-family xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" directory="escor_rethink-5.0r0" file-syntax-version="10" guid="6c10f73d-11d6-4fb0-b814-ab96c5063440" index="52" license-text="escor-license.txt" platforms="nt" print-name="eSCOR_ReThink" splash-screen="escor-setup.bmp" xsi:noNamespaceSchemaLocation="g2-family_final.xsd">
+    <g2-ok-components>
+        <bundle-name>escor-offline</bundle-name>
+        <options>
+            <list>-may25-2005</list>
+            <list>-jun25-2005</list>
+            <list>-jul25-2005</list>
+            <list>-aug25-2005</list>
+            <list>-sep25-2005</list>
+            <list>-oct25-2005</list>
+            <list>-nov25-2005</list>
+            <list>-dec25-2005</list>
+            <list>-jan25-2006</list>
+            <list>-feb25-2006</list>
+            <list>-mar25-2006</list>
+            <list>-apr25-2006</list>
+            <list>-may25-2006</list>
+            <list>-jun25-2006</list>
+            <list>-jul25-2006</list>
+            <list>-aug25-2006</list>
+        </options>
+        <family-name>escor-50r0-family</family-name>
+        <print-name>e-SCOR Offline</print-name>
+        <n-clients-list>
+            <list>1</list>
+        </n-clients-list>
+    </g2-ok-components>
+    <g2-ok-components>
+        <bundle-name>escor-online</bundle-name>
+        <options>
+            <list>-may25-2005</list>
+            <list>-jun25-2005</list>
+            <list>-jul25-2005</list>
+            <list>-aug25-2005</list>
+            <list>-sep25-2005</list>
+            <list>-oct25-2005</list>
+            <list>-nov25-2005</list>
+            <list>-dec25-2005</list>
+            <list>-jan25-2006</list>
+            <list>-feb25-2006</list>
+            <list>-mar25-2006</list>
+            <list>-apr25-2006</list>
+            <list>-may25-2006</list>
+            <list>-jun25-2006</list>
+            <list>-jul25-2006</list>
+            <list>-aug25-2006</list>
+        </options>
+        <family-name>escor-50r0-family</family-name>
+        <print-name>e-SCOR Online</print-name>
+        <n-clients-list>
+            <list>1</list>
+            <list>2</list>
+            <list>3</list>
+            <list>4</list>
+            <list>5</list>
+            <list>6</list>
+            <list>7</list>
+            <list>8</list>
+        </n-clients-list>
+    </g2-ok-components>
+    <bundles>
+        <bundle directory="escor" version="50r0">
+            <bundlename>escor-offline</bundlename>
+            <print-name>e-SCOR Offline</print-name>
+            <components>
+                <component>
+                    <componentname>rethink-common</componentname>
+                </component>
+                <component>
+                    <componentname>rethink-offline-component</componentname>
+                </component>
+                <component optional="false">
+                    <componentname>escor-server</componentname>
+                    <print-name>e-SCOR Server</print-name>
+                    <componentpart version="50r0">
+                        <componentpartname>escor-kbs</componentpartname>
+                        <source>escor</source>
+                        <source-subdirectory>kbs</source-subdirectory>
+                        <platforms>
+                            <platform>nt</platform>
+                        </platforms>
+                        <source-filename>
+                            <src-file-name>escor-customiz.kb</src-file-name>
+                            <src-file-name>e-scor.kb</src-file-name>
+                        </source-filename>
+                        <destination-directory>escor/kbs</destination-directory>
+                        <source-ship-type>internal</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                    <componentpart version="50r0">
+                        <componentpartname>escor-server-binaries</componentpartname>
+                        <source>escor</source>
+                        <source-subdirectory>bin</source-subdirectory>
+                        <platforms>
+                            <platform>nt</platform>
+                        </platforms>
+                        <source-filename>
+                            <src-file-name>StartServer.bat</src-file-name>
+                            <src-file-name>e-SCOR.ico</src-file-name>
+                        </source-filename>
+                        <destination-directory>escor/bin</destination-directory>
+                        <source-ship-type>internal</source-ship-type>
+                        <indep>t</indep>
+                        <shortcuts>
+                            <shortcut>
+                                <shortcut-name>escor-server-shortcut</shortcut-name>
+                                <folder-name>Gensym e-SCOR &amp; ReThink 5.0r0</folder-name>
+                                <application-display-name>Start e-SCOR Server</application-display-name>
+                                <application-directory>g2</application-directory>
+                                <target-name>StartServer.bat</target-name>
+                                <parameters>-kb ..\\escor\\kbs\\e-scor.kb -nowindow</parameters>
+                                <icon-file>../escor/bin/e-SCOR.ico</icon-file>
+                                <icon-index>0</icon-index>
+                                <run-style>minimized</run-style>
+                            </shortcut>
+                        </shortcuts>
+                        <postinstall-code>replace_rootdir( \"escor \"^ \"bin \",  \"StartServer.bat \");</postinstall-code>
+                    </componentpart>
+                    <componentpart version="50r0">
+                        <componentpartname>escor-images</componentpartname>
+                        <source>escor</source>
+                        <source-subdirectory>kbs/images</source-subdirectory>
+                        <platforms>
+                            <platform>nt</platform>
+                        </platforms>
+                        <destination-directory>escor/kbs/images</destination-directory>
+                        <source-ship-type>internal</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                    <componentpart version="50r0">
+                        <componentpartname>escor-examples</componentpartname>
+                        <source>escor</source>
+                        <source-subdirectory>examples</source-subdirectory>
+                        <platforms>
+                            <platform>nt</platform>
+                        </platforms>
+                        <source-filename>
+                            <src-file-name>escor-demo.kb</src-file-name>
+                            <src-file-name>escor-tutorial-acme.kb</src-file-name>
+                            <src-file-name>escor-tutorial-vmi.kb</src-file-name>
+                        </source-filename>
+                        <destination-directory>escor/examples</destination-directory>
+                        <source-ship-type>internal</source-ship-type>
+                        <indep>t</indep>
+                        <shortcuts>
+                            <shortcut>
+                                <shortcut-name>demo-tutorial</shortcut-name>
+                                <folder-name>Gensym e-SCOR &amp; ReThink 5.0r0</folder-name>
+                                <subfolder-name>Examples</subfolder-name>
+                                <subsubfolder-name>e-SCOR</subsubfolder-name>
+                                <application-display-name>e-SCOR 5.0 Tutorial</application-display-name>
+                                <application-directory>g2</application-directory>
+                                <target-name>StartServer.bat</target-name>
+                                <parameters>-kb ..\\escor\\kbs\\escor-demo.kb -nowindow</parameters>
+                                <icon-file>../escor/bin/e-SCOR.ico</icon-file>
+                                <icon-index>0</icon-index>
+                                <run-style>minimized</run-style>
+                            </shortcut>
+                            <shortcut>
+                                <shortcut-name>acme-tutorial</shortcut-name>
+                                <folder-name>Gensym e-SCOR &amp; ReThink 5.0r0</folder-name>
+                                <subfolder-name>Examples</subfolder-name>
+                                <subsubfolder-name>e-SCOR</subsubfolder-name>
+                                <application-display-name>ACME Tutorial</application-display-name>
+                                <application-directory>g2</application-directory>
+                                <target-name>StartServer.bat</target-name>
+                                <parameters>-kb ..\\escor\\kbs\\escor-tutorial-acme.kb -nowindow</parameters>
+                                <icon-file>../escor/bin/e-SCOR.ico</icon-file>
+                                <icon-index>0</icon-index>
+                                <run-style>minimized</run-style>
+                            </shortcut>
+                            <shortcut>
+                                <shortcut-name>vmi-tutorial</shortcut-name>
+                                <folder-name>Gensym e-SCOR &amp; ReThink 5.0r0</folder-name>
+                                <subfolder-name>Examples</subfolder-name>
+                                <subsubfolder-name>e-SCOR</subsubfolder-name>
+                                <application-display-name>VMI Tutorial</application-display-name>
+                                <application-directory>g2</application-directory>
+                                <target-name>StartServer.bat</target-name>
+                                <parameters>-kb ..\\escor\\kbs\\escor-tutorial-vmi.kb -nowindow</parameters>
+                                <icon-file>../escor/bin/e-SCOR.ico</icon-file>
+                                <icon-index>0</icon-index>
+                                <run-style>minimized</run-style>
+                            </shortcut>
+                        </shortcuts>
+                    </componentpart>
+                    <componentpart version="50r0">
+                        <componentpartname>escor-resources</componentpartname>
+                        <source>escor</source>
+                        <source-subdirectory>resources</source-subdirectory>
+                        <platforms>
+                            <platform>nt</platform>
+                        </platforms>
+                        <destination-directory>escor/resources</destination-directory>
+                        <source-ship-type>internal</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                    <componentpart version="50r0">
+                        <componentpartname>escor-log-part</componentpartname>
+                        <source>escor</source>
+                        <source-subdirectory>logs</source-subdirectory>
+                        <platforms>
+                            <platform>nt</platform>
+                        </platforms>
+                        <destination-directory>escor/logs</destination-directory>
+                        <source-ship-type>internal</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                    <componentpart version="50r0">
+                        <componentpartname>escor-archives-part</componentpartname>
+                        <source>escor</source>
+                        <source-subdirectory>archives</source-subdirectory>
+                        <platforms>
+                            <platform>nt</platform>
+                        </platforms>
+                        <destination-directory>escor/archives</destination-directory>
+                        <source-ship-type>internal</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                </component>
+                <component optional="true">
+                    <componentname>escor-documentation</componentname>
+                    <print-name>e-SCOR Documentation</print-name>
+                    <componentpart version="50r0">
+                        <componentpartname>escor-documentation</componentpartname>
+                        <source>escor</source>
+                        <source-subdirectory>doc</source-subdirectory>
+                        <platforms>
+                            <platform>nt</platform>
+                        </platforms>
+                        <destination-directory>doc/escor</destination-directory>
+                        <source-ship-type>internal</source-ship-type>
+                        <indep>t</indep>
+                        <shortcuts>
+                            <shortcut>
+                                <shortcut-name>escor-documentation-quick</shortcut-name>
+                                <folder-name>Gensym e-SCOR &amp; ReThink 5.0r0</folder-name>
+                                <subfolder-name>Documentation</subfolder-name>
+                                <subsubfolder-name>e-SCOR</subsubfolder-name>
+                                <application-display-name>e-SCOR Quick Reference</application-display-name>
+                                <application-directory>doc/escor</application-directory>
+                                <target-name>e-SCOR-Quick-Reference.pdf</target-name>
+                            </shortcut>
+                            <shortcut>
+                                <shortcut-name>escor-documentation-user</shortcut-name>
+                                <folder-name>Gensym e-SCOR &amp; ReThink 5.0r0</folder-name>
+                                <subfolder-name>Documentation</subfolder-name>
+                                <subsubfolder-name>e-SCOR</subsubfolder-name>
+                                <application-display-name>e-SCOR Users Guide</application-display-name>
+                                <application-directory>doc/escor</application-directory>
+                                <target-name>e-SCOR-Users-Guide.pdf</target-name>
+                            </shortcut>
+                            <shortcut>
+                                <shortcut-name>escor-documentation-scor</shortcut-name>
+                                <folder-name>Gensym e-SCOR &amp; ReThink 5.0r0</folder-name>
+                                <subfolder-name>Documentation</subfolder-name>
+                                <subsubfolder-name>e-SCOR</subsubfolder-name>
+                                <application-display-name>SCOR Version 4.0</application-display-name>
+                                <application-directory>doc/escor</application-directory>
+                                <target-name>SCOR-Version-4.0.pdf</target-name>
+                            </shortcut>
+                            <shortcut>
+                                <shortcut-name>escor-tutorial</shortcut-name>
+                                <folder-name>Gensym e-SCOR &amp; ReThink 5.0r0</folder-name>
+                                <subfolder-name>Documentation</subfolder-name>
+                                <subsubfolder-name>e-SCOR</subsubfolder-name>
+                                <application-display-name>e-SCOR Tutorials</application-display-name>
+                                <application-directory>doc/escor</application-directory>
+                                <target-name>e-SCOR-Tutorials.pdf</target-name>
+                            </shortcut>
+                        </shortcuts>
+                    </componentpart>
+                </component>
+                <component>
+                    <componentname>rethink-documentation</componentname>
+                </component>
+                <component>
+                    <componentname>escor-offline-family-ok-components</componentname>
+                </component>
+            </components>
+        </bundle>
+        <bundle directory="escor" version="50r0">
+            <bundlename>escor-online</bundlename>
+            <print-name>e-SCOR Online</print-name>
+            <components>
+                <component>
+                    <componentname>rethink-common</componentname>
+                </component>
+                <component>
+                    <componentname>rethink-online-component</componentname>
+                </component>
+                <component optional="false">
+                    <componentname>escor-server</componentname>
+                    <print-name>e-SCOR Server</print-name>
+                    <componentpart version="50r0">
+                        <componentpartname>escor-kbs</componentpartname>
+                        <source>escor</source>
+                        <source-subdirectory>kbs</source-subdirectory>
+                        <platforms>
+                            <platform>nt</platform>
+                        </platforms>
+                        <source-filename>
+                            <src-file-name>escor-customiz.kb</src-file-name>
+                            <src-file-name>e-scor.kb</src-file-name>
+                        </source-filename>
+                        <destination-directory>escor/kbs</destination-directory>
+                        <source-ship-type>internal</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                    <componentpart version="50r0">
+                        <componentpartname>escor-server-binaries</componentpartname>
+                        <source>escor</source>
+                        <source-subdirectory>bin</source-subdirectory>
+                        <platforms>
+                            <platform>nt</platform>
+                        </platforms>
+                        <source-filename>
+                            <src-file-name>StartServer.bat</src-file-name>
+                            <src-file-name>e-SCOR.ico</src-file-name>
+                        </source-filename>
+                        <destination-directory>escor/bin</destination-directory>
+                        <source-ship-type>internal</source-ship-type>
+                        <indep>t</indep>
+                        <shortcuts>
+                            <shortcut>
+                                <shortcut-name>escor-server-shortcut</shortcut-name>
+                                <folder-name>Gensym e-SCOR &amp; ReThink 5.0r0</folder-name>
+                                <application-display-name>Start e-SCOR Server</application-display-name>
+                                <application-directory>g2</application-directory>
+                                <target-name>StartServer.bat</target-name>
+                                <parameters>-kb ..\\escor\\kbs\\e-scor.kb -nowindow</parameters>
+                                <icon-file>../escor/bin/e-SCOR.ico</icon-file>
+                                <icon-index>0</icon-index>
+                                <run-style>minimized</run-style>
+                            </shortcut>
+                        </shortcuts>
+                        <postinstall-code>replace_rootdir( \"escor \"^ \"bin \",  \"StartServer.bat \");</postinstall-code>
+                    </componentpart>
+                    <componentpart version="50r0">
+                        <componentpartname>escor-images</componentpartname>
+                        <source>escor</source>
+                        <source-subdirectory>kbs/images</source-subdirectory>
+                        <platforms>
+                            <platform>nt</platform>
+                        </platforms>
+                        <destination-directory>escor/kbs/images</destination-directory>
+                        <source-ship-type>internal</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                    <componentpart version="50r0">
+                        <componentpartname>escor-examples</componentpartname>
+                        <source>escor</source>
+                        <source-subdirectory>examples</source-subdirectory>
+                        <platforms>
+                            <platform>nt</platform>
+                        </platforms>
+                        <source-filename>
+                            <src-file-name>escor-demo.kb</src-file-name>
+                            <src-file-name>escor-tutorial-acme.kb</src-file-name>
+                            <src-file-name>escor-tutorial-vmi.kb</src-file-name>
+                        </source-filename>
+                        <destination-directory>escor/examples</destination-directory>
+                        <source-ship-type>internal</source-ship-type>
+                        <indep>t</indep>
+                        <shortcuts>
+                            <shortcut>
+                                <shortcut-name>demo-tutorial</shortcut-name>
+                                <folder-name>Gensym e-SCOR &amp; ReThink 5.0r0</folder-name>
+                                <subfolder-name>Examples</subfolder-name>
+                                <subsubfolder-name>e-SCOR</subsubfolder-name>
+                                <application-display-name>e-SCOR 5.0 Tutorial</application-display-name>
+                                <application-directory>g2</application-directory>
+                                <target-name>StartServer.bat</target-name>
+                                <parameters>-kb ..\\escor\\kbs\\escor-demo.kb -nowindow</parameters>
+                                <icon-file>../escor/bin/e-SCOR.ico</icon-file>
+                                <icon-index>0</icon-index>
+                                <run-style>minimized</run-style>
+                            </shortcut>
+                            <shortcut>
+                                <shortcut-name>acme-tutorial</shortcut-name>
+                                <folder-name>Gensym e-SCOR &amp; ReThink 5.0r0</folder-name>
+                                <subfolder-name>Examples</subfolder-name>
+                                <subsubfolder-name>e-SCOR</subsubfolder-name>
+                                <application-display-name>ACME Tutorial</application-display-name>
+                                <application-directory>g2</application-directory>
+                                <target-name>StartServer.bat</target-name>
+                                <parameters>-kb ..\\escor\\kbs\\escor-tutorial-acme.kb -nowindow</parameters>
+                                <icon-file>../escor/bin/e-SCOR.ico</icon-file>
+                                <icon-index>0</icon-index>
+                                <run-style>minimized</run-style>
+                            </shortcut>
+                            <shortcut>
+                                <shortcut-name>vmi-tutorial</shortcut-name>
+                                <folder-name>Gensym e-SCOR &amp; ReThink 5.0r0</folder-name>
+                                <subfolder-name>Examples</subfolder-name>
+                                <subsubfolder-name>e-SCOR</subsubfolder-name>
+                                <application-display-name>VMI Tutorial</application-display-name>
+                                <application-directory>g2</application-directory>
+                                <target-name>StartServer.bat</target-name>
+                                <parameters>-kb ..\\escor\\kbs\\escor-tutorial-vmi.kb -nowindow</parameters>
+                                <icon-file>../escor/bin/e-SCOR.ico</icon-file>
+                                <icon-index>0</icon-index>
+                                <run-style>minimized</run-style>
+                            </shortcut>
+                        </shortcuts>
+                    </componentpart>
+                    <componentpart version="50r0">
+                        <componentpartname>escor-resources</componentpartname>
+                        <source>escor</source>
+                        <source-subdirectory>resources</source-subdirectory>
+                        <platforms>
+                            <platform>nt</platform>
+                        </platforms>
+                        <destination-directory>escor/resources</destination-directory>
+                        <source-ship-type>internal</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                    <componentpart version="50r0">
+                        <componentpartname>escor-log-part</componentpartname>
+                        <source>escor</source>
+                        <source-subdirectory>logs</source-subdirectory>
+                        <platforms>
+                            <platform>nt</platform>
+                        </platforms>
+                        <destination-directory>escor/logs</destination-directory>
+                        <source-ship-type>internal</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                    <componentpart version="50r0">
+                        <componentpartname>escor-archives-part</componentpartname>
+                        <source>escor</source>
+                        <source-subdirectory>archives</source-subdirectory>
+                        <platforms>
+                            <platform>nt</platform>
+                        </platforms>
+                        <destination-directory>escor/archives</destination-directory>
+                        <source-ship-type>internal</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                </component>
+                <component>
+                    <componentname>rethink-g2-bridges-common</componentname>
+                </component>
+                <component optional="true">
+                    <componentname>escor-documentation</componentname>
+                    <print-name>e-SCOR Documentation</print-name>
+                    <componentpart version="50r0">
+                        <componentpartname>escor-documentation</componentpartname>
+                        <source>escor</source>
+                        <source-subdirectory>doc</source-subdirectory>
+                        <platforms>
+                            <platform>nt</platform>
+                        </platforms>
+                        <destination-directory>doc/escor</destination-directory>
+                        <source-ship-type>internal</source-ship-type>
+                        <indep>t</indep>
+                        <shortcuts>
+                            <shortcut>
+                                <shortcut-name>escor-documentation-quick</shortcut-name>
+                                <folder-name>Gensym e-SCOR &amp; ReThink 5.0r0</folder-name>
+                                <subfolder-name>Documentation</subfolder-name>
+                                <subsubfolder-name>e-SCOR</subsubfolder-name>
+                                <application-display-name>e-SCOR Quick Reference</application-display-name>
+                                <application-directory>doc/escor</application-directory>
+                                <target-name>e-SCOR-Quick-Reference.pdf</target-name>
+                            </shortcut>
+                            <shortcut>
+                                <shortcut-name>escor-documentation-user</shortcut-name>
+                                <folder-name>Gensym e-SCOR &amp; ReThink 5.0r0</folder-name>
+                                <subfolder-name>Documentation</subfolder-name>
+                                <subsubfolder-name>e-SCOR</subsubfolder-name>
+                                <application-display-name>e-SCOR Users Guide</application-display-name>
+                                <application-directory>doc/escor</application-directory>
+                                <target-name>e-SCOR-Users-Guide.pdf</target-name>
+                            </shortcut>
+                            <shortcut>
+                                <shortcut-name>escor-documentation-scor</shortcut-name>
+                                <folder-name>Gensym e-SCOR &amp; ReThink 5.0r0</folder-name>
+                                <subfolder-name>Documentation</subfolder-name>
+                                <subsubfolder-name>e-SCOR</subsubfolder-name>
+                                <application-display-name>SCOR Version 4.0</application-display-name>
+                                <application-directory>doc/escor</application-directory>
+                                <target-name>SCOR-Version-4.0.pdf</target-name>
+                            </shortcut>
+                            <shortcut>
+                                <shortcut-name>escor-tutorial</shortcut-name>
+                                <folder-name>Gensym e-SCOR &amp; ReThink 5.0r0</folder-name>
+                                <subfolder-name>Documentation</subfolder-name>
+                                <subsubfolder-name>e-SCOR</subsubfolder-name>
+                                <application-display-name>e-SCOR Tutorials</application-display-name>
+                                <application-directory>doc/escor</application-directory>
+                                <target-name>e-SCOR-Tutorials.pdf</target-name>
+                            </shortcut>
+                        </shortcuts>
+                    </componentpart>
+                </component>
+                <component>
+                    <componentname>rethink-documentation</componentname>
+                </component>
+                <component>
+                    <componentname>escor-online-family-ok-components</componentname>
+                </component>
+            </components>
+        </bundle>
+    </bundles>
+    <previous-versions>
+        <version>
+            <versionid>4.0r4</versionid>
+            <versionguid>045E9660-BBF8-445c-9D54-4F677C054F23</versionguid>
+        </version>
+    </previous-versions>
+    <previous-versions>
+        <version>
+            <versionid>4.0r3</versionid>
+            <versionguid>83B0DEEF-70A4-4339-82C9-290058CA0E29</versionguid>
+        </version>
+    </previous-versions>
+    <previous-versions>
+        <version>
+            <versionid>4.0r2</versionid>
+            <versionguid>CCD24411-CF01-4661-BAA0-90E52E487142</versionguid>
+        </version>
+    </previous-versions>
+    <previous-versions>
+        <version>
+            <versionid>4.0r1</versionid>
+            <versionguid>3BFDD0B2-F895-489B-A51C-9C44F6BB4405</versionguid>
+        </version>
+    </previous-versions>
+    <previous-versions>
+        <version>
+            <versionid>2.1r1</versionid>
+            <versionguid>243D4BBB-9EE7-11D4-8111-00A02431D004</versionguid>
+        </version>
+    </previous-versions>
+    <previous-versions>
+        <version>
+            <versionid>2.1r0</versionid>
+            <versionguid>243D4BB8-9EE7-11D4-8111-00A02431D004</versionguid>
+        </version>
+    </previous-versions>
+    <previous-versions>
+        <version>
+            <versionid>2.0r0</versionid>
+            <versionguid>243D4BAE-9EE7-11D4-8111-00A02431D004</versionguid>
+        </version>
+    </previous-versions>
+</g2-family>

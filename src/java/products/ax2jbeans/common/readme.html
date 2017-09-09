@@ -1,0 +1,429 @@
+<html>
+
+<head>
+<title>Gensym BeanXporter 1.0 Rev 2</title>
+</head>
+
+<CENTER><H2>Gensym <FONT COLOR="#008080">BeanXporter</FONT> 1.0 Rev 2</H2></CENTER>
+
+
+Gensym <b>BeanXporter</b> automatically converts an ActiveX control to a JavaBean component by wrapping the control to meet
+JavaBean standards. Once converted, the new Java Bean is ready for use in your Windows-based Java applications as you
+would any other Bean. Since the new Java Bean bridges to the original ActiveX control, you get the assurance that you
+are working with the original functionality of the ActiveX control. 
+<P>
+<b>BeanXporter</b> also lets you use Microsoft Office documents as Java Beans. With <b>BeanXporter</b> your Windows-based Java
+projects can take advantage of ActiveX controls and Office documents such as those for spreadsheets, charts, calendars,
+word processors, reports, specialized graphics, and many more. 
+
+<p>
+<hr>
+
+<CENTER><H2>Table of Contents</H2></CENTER>
+<b>
+<ol>
+<li>
+<a href="#requirements">Requirements</a>	 <br>
+<li>
+<a href="#installation">Installation</a>	 <br>
+<li>
+<a href="#doc">Documentation</a>  <br>
+<li>
+<a href="#configuration">Configuration</a>  <br>
+<li>
+<a href="#contents">Installed Contents</a>  <br>
+<li>
+<a href="#changes">Changes in this release</a>  <br>
+<li>
+<a href="#faq">Frequently Asked Questions</a>  <br>
+<li>
+<a href="#support">Support and Further Information</a>  <br>
+</ol>
+</b>
+<hr>
+
+<CENTER><A name="requirements"></a><H2>Requirements</H2></CENTER>
+<ul>
+<li>Hardware: Intel-based PC
+<li>Operating Systems: Windows 95/98, Windows NT 4.0
+<li>Java: Sun’s Java Development Kit (JDK) 1.1.6 or later, including Sun's JDK 1.2 Beta 4 
+<li>Memory for Runtime:8 Meg of RAM
+<li>Memory for Export: Minimum: 16 Meg of RAM, Preferred: 32 Meg of RAM
+<li>Storage for Runtime: 3 Meg
+<li>Storage for Export: Minimum 10 Meg, Preferred: 30 Meg
+</ul>
+
+<hr>
+
+<h2 align="center"><A name = "installation">Installation</a> </h2>
+<p>
+</p>
+If you have not done so already - download the software by visiting the <b>BeanXporter</b>
+home page at <a href="http://www.gensym.com/java"> "http://www.gensym.com/java"</a>
+
+<ul> 
+<li> Check you have installed Sun's Java Development Kit 
+(JDK) 1.1.6 or greater, available from the
+ <A HREF="http://www.javasoft.com/products/jdk/1.1/">JDK
+Download Page.</A>
+<li> Check that the environment variable <b>JAVA_HOME</b> refers to the installation
+ of the JDK. 
+<li> Run the self extracting executable which will guide you through installing the
+  software and documentation.
+</ul>
+
+<h3> Setting Environment Variables </h3>
+
+BeanXporter requires environment variables that specify the locations of your
+Java Development Kit (JDK) and BeanXporter installations.  The following table
+describes the environment variables that must be created or appended to:
+
+<p>
+<TABLE BORDER COLS=2 WIDTH="100%">
+
+<TR>
+<TD> 
+<b>Variable</b>
+</TD>
+
+<TD>
+<b>Description</b>
+</TD>
+</TR>
+
+<TR>
+<TD> 
+<b>JAVA_HOME</b>
+</TD>
+
+<TD>
+Specifies the absolute path to your installation of the JDK.  
+The beanxporter.bat file uses the JAVA_HOME variable to locate
+a Java interpreter to launch BeanXporter.
+</TD>
+</TR>
+
+
+<TR>
+<TD> 
+<b>BEANXPORTER_HOME</b>
+</TD>
+
+<TD>
+Specifies the absolute path of the BeanXporter installation.
+</TD>
+</TR>
+
+<TR>
+<TD> 
+<b>PATH</b>
+</TD>
+
+<TD>
+Specifies the absolute path to the directory containing the
+beanXporter.bat file and the JavaContainer.dll library, so that 
+the Java interpreter can locate the library at runtime.
+<br>
+</TD>
+</TR>
+
+<TR>
+<TD> 
+<b>CLASSPATH</b>
+</TD>
+
+<TD>
+Specifies the absolute path to directories used by BeanXporter,
+which enables the Java interpreter to:
+<ul>
+<li> Load the Java classes required by BeanXporter. These classes 
+are located in the ax2jbeans.jar file.
+<li> Load classes that were emitted by BeanXporter.
+</ul>
+</TD>
+</TR>
+
+</TABLE>
+
+<h4> Setting Environment Variables on Windows NT</h4>
+
+On Windows NT, all the environment variables are automatically set
+during installation, except for the JAVA_HOME variable.  Setting the
+JAVA_HOME variable is described in this section.  If you want, you can
+modify all the environment variables using the Control Panel.
+<p>
+The following table shows examples of the environment variables defined
+for Windows NT:
+<p>
+<TABLE BORDER COLS=2 WIDTH="100%">
+
+<TR>
+<TD> 
+<b>Variable</b>
+</TD>
+
+<TD>
+<b>Example Value on Windows NT</b>
+</TD>
+</TR>
+
+<TR>
+<TD> 
+<b>JAVA_HOME</b>
+</TD>
+
+<TD>
+C:\jdk-1.1.6
+</TD>
+</TR>
+
+<TR>
+<TD> 
+<b>BEANXPORTER_HOME</b>
+</TD>
+
+<TD>
+C:\gensym\bx-10r2
+</TD>
+</TR>
+
+<TR>
+<TD> 
+<b>PATH</b>
+</TD>
+
+<TD>
+C:\WINNT\system32;<br>
+C:\WINNT;C:\JDK-1.1.6\bin;<br>
+%BEANXPORTER_HOME%\bin
+</TD>
+</TR>
+
+
+<TR>
+<TD> 
+<b>CLASSPATH</b>
+</TD>
+
+<TD>
+.;C:\jdk-1.1.6\lib\classes.zip;<br>
+%BEANXPORTER_HOME%\classes;<br>
+%BEANXPORTER_HOME%\classes\ax2jbeans.jar
+</TD>
+</TR>
+
+
+</TABLE>
+<p>
+<b>To set the JAVA_HOME variable on Windows NT:</b>
+
+<ol>
+<li> Open the System icon in the Control Panel.
+<li> Click the Environment tab.
+<li> Create the JAVA_HOME variable, or, if one exists, check to
+see that it is correct.
+<li> Set the value of the JAVA_HOME variable, for example:<br>
+	C:\JDK-1.1.6
+</ol>
+
+<h4>Setting Environment Variables on Windows 95/98</h4>
+
+On Windows 95, you must edit the autoexec.bat file to set
+the environment variables.
+<p>
+<b>To set environment variables on Windows 95/98</b>
+<ol>
+<li> Open a text editor, such as NotePad or WordPad;
+<li> Open the autoexec.bat file on drive C;
+<li> Set the value of the JAVA_HOME variable, for example:<br>
+	 SET JAVA_HOME=C:\JDK-1.1.6
+<li> Set the value of the BEANXPORTER_HOME variable, for example:<br>
+	 SET BEANXPORTER_HOME=C:\GENSYM\BX-10R2
+<li> Modify the value of the PATH variable, for
+	example<br>
+	SET PATH=C:\WINDOWS;C:\WINDOWS\COMMAND;C:\JDK-1.1.6\BIN;<br>
+	%BEANXPORTER_HOME%\BIN
+<li> Modify the value of the CLASSPATH variable, for example:<br>
+	SET CLASSPATH=.;C:\JDK-1.1.6\lib\classes.zip;%BEANXPORTER_HOME%\classes;<br>
+	%BEANXPORTER_HOME%\classes\ax2jbeans.jar
+<li> After completing all the edits to the AUTOEXEC.BAT file change the environment variables by executing the following in a DOS shell:<br> 
+	C:> autoexec.bat 
+</ol>
+
+Note - Beta users on Windows 95/98 who are upgrading to 1.0 Rev 2,
+only need to edit the BEANXPORTER_HOME environment variable.
+
+<hr>
+
+<h2 align="center"><a name="doc">Documentation </a></h2>
+<p>
+</p>
+
+<ul>
+<li><a href="docs/guides/titlepag.htm"> Users Guide</a> A guide to using <b>BeanXporter</b>.
+<li><a href="docs/api/packages.html"> API</a>  The javadoc for the com.gensym.com package. 
+</ul>
+
+<hr>
+
+<h2 align="center"><A name = "configuration"> Configuration</a> </h2>
+<p>
+</p>
+
+Configuration of <b>BeanXporter</b> is controlled by the .com.gensym.properties
+file.  During installation this file will be added to the directory specified
+by the <b>HOME</b> environment variable.  If a <b>HOME</b> environment variable
+is not defined the properties file is added to the classes directory of the
+BeanXporter install.
+
+The .com.gensym.properties file defines the following properties:
+
+<ul>
+<li>com.gensym.emitdir  - the default root location where BeanXporter will emit files
+<li>com.gensym.emitpackage	- the default root package into which BeanXporter will emit classes	
+</ul>
+
+See the <a href="docs/guides/titlepag.htm"> Users Guide</a> for a more detailed 
+discussion of these properties.
+
+<hr>
+
+<h2 align="center"><a name="contents">Installed Contents</a> </h2>
+<p>
+</p>
+The following contents can be found in the <b>BeanXporter</b> 1.0 Rev 0
+installation:
+
+<ul>
+<li>
+<b>bin\JavaContainer.dll</b> 
+	- DLL that provides native support for BeanXporter conversion and runtime
+<li>
+<b>bin\beanXporter.bat</b> 
+	- Batch file for launching BeanXporter
+<li> 
+<b>classes\ax2jbeans.jar</b> - the Java classes that implement BeanXporter
+ and provide the com.gensym.com API.
+<li> 
+<b>classes\axtools.jar</b> - A jar containing the ActiveXGenericComponent and ActiveXTraceTool
+beans.
+<li> 
+<b>classes\com\gensym\demos\axbeanbox</b> - Files for using BeanXporter with Sun's
+BeanBox.
+<li> 
+<b>classes\com\gensym\demos\inetbrowser</b> - Example using Internet Explorer 4.0. 
+<li> 
+<b>classes\com\gensym\demos\tablebrowser</b> - Example using Excel 98.  Requires
+Swing 1.0 to be installed.
+<li>
+<b>docs</b> - API and other documentation.
+</ul>
+
+<hr>
+
+<H2 ALIGN="CENTER"><a name="changes">Changes in this release</a></H2>
+
+<h4>Licensing</h4>
+
+Support for licensed ActiveX components has been added to BeanXporter 
+1.0r2.  See the <a href="docs/guides/titlepag.htm"> Users Guide</a> 
+for more information.
+
+
+<h4>Bug fixes</h4>
+
+See the on-line list of <a href="http://www.gensym.com/java/known.html"> known
+problems</a> for information on which bugs have been fixed since Beta 0.
+<p>
+
+<U>BeanXporter 1.0 Rev 2 also includes the following changes that were made in
+Rev 1, Rev 0, Beta 1 and Beta 2:</U>
+
+<h4>Runtime Error reporting</h4>
+
+BeanXporter 1.0 Rev 1 includes better error reporting.  Failures to 
+dispatch ActiveX methods are now propagated to Java.  If the "emit 
+exceptions" option is chosen in the BeanXporter wizard these failures
+will result in an ActiveXDispatchException being thrown at runtime.  
+The ActiveXDispatchException will contain the error code of the failure
+and additional information when provided by the ActiveX component. If
+the "emit exceptions" option is not chosen in the BeanXporter wizard
+the error will appear in a trace that can be retrieved by using the
+ActiveTraceTool class.
+
+<h4>BeanInfo classes</h4>
+
+BeanXporter 1.0 Rev 1 will create one BeanInfo class for every Java Bean
+that is emitted. The BeanInfo class simplifies the method, property and
+event interfaces presented to a Beans editing tool. 
+
+<h4>Events</h4>
+
+If an ActiveX component has an event source interface an analogous Java Listener
+interface and event class is emitted by BeanXporter.  1.0 Rev 1 makes it possible
+to add listeners to events taking place in ActiveX components.  See the
+InternetExplorer example in classes\com\gensym\demos\inetbrowser for an
+example use of the Events facility.
+
+<hr>
+
+<H2 ALIGN="CENTER"><a name="faq">Frequently Asked Questions </a></H2>
+
+<H4>Q. How does BeanXporter work?</H4>
+<P>
+A. For developers, BeanXporter provides a conversion tool that first reads the type library associated with the ActiveX
+control, and then emits the appropriate Java code needed to export the control for use as a JavaBean component with all the
+original properties, methods, and events. The Java code is automatically compiled into Java bytecode and added to Java
+Archive Files (.JAR). The end result is that the original ActiveX control is wrapped with the appropriate Java code. 
+
+For runtime use, BeanXporter provides a lightweight Dynamic Linked Library (DLL) and a small set of Java classes that
+enable runtime communication between Java and ActiveX controls.
+
+<H4>Q. What platforms does BeanXporter support?</H4>
+<P>
+A. BeanXporter's developer conversion tool and runtime files run on Intel-based Microsoft Windows 95 and NT platforms. At
+this time, Gensym does not plan to support platforms other than those based on Microsoft Windows.
+
+<H4>Q. Does BeanXporter convert ALL ActiveX controls to JavaBean components?</H4>
+<P>
+A. There are thousands of commercially available ActiveX controls. The vast majority of these controls will be convertible with
+the BeanXporter. Gensym has tested the BeanXporter with the most popular ActiveX controls and OLE documents. 
+
+<H4>Q. Is BeanXporter available for resale by other software vendors?</H4>
+<P>
+A. Yes. Software vendors interested in repackaging and reselling BeanXporter as part of their product offerings should
+contact Gensym. Please either email your inquiry to beanxporter@gensym.com or contact the BeanXporter Product
+Marketing Manager at (617) 547-2500 x225.
+
+<hr>
+
+<P><A NAME="support"></A></P>
+<H2 ALIGN="CENTER">Support and Further Information </H2>
+
+You can check the on-line list of <a href="http://www.gensym.com/java/known.html"> known problems</a> for further information.
+<P>
+<P>If you would like further information about <B>BeanXporter</B>, or have a bug to report 
+please contact us via email at
+ <A HREF="mailto:beanxporter@gensym.com">beanxporter@gensym.com</A> </P>
+
+When reporting <b>BeanXporter</b> issues and bugs, please include as much of the following information as possible:
+<p>
+<ul>
+<li>Your name</li>
+<li>Your organization's name</li>
+<li>Your email address</li>
+<li>Your phone number</li>
+<li>BeanXporter Version Number</li>
+<li>Operating system and version</li>
+<li>Name, vendor, and version of the ActiveX control or OLE document you are converting with BeanXporter</li>
+<li>The name and version of the Java Virtual Machine (JVM) you are using -- remember BeanXporter supports the JVM shipped with Java Development Kit (JDK) 1.1.6 or later
+<li>Details of the symptoms you are experiencing -- please be as specific as possible since our goal, of course, is to reproduce your symptoms so that we can best resolve problems
+</ul>
+</li>
+
+<P>
+<hr>
+
+
+</body>
+</html>

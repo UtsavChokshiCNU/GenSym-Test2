@@ -1,0 +1,459 @@
+<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="Author" CONTENT="default">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.05 [en] (WinNT; I) [Netscape]">
+   <TITLE>G2Script Guide</TITLE>
+</HEAD>
+<BODY>
+
+<H1>
+G2 Script Guide</H1>
+
+<H2>
+Introduction</H2>
+G2Script is a subset of the G2 Programming Language which is compiled into
+Java class files. It can be easily used as a scripting language in Java
+deployment environments for users of G2.&nbsp; It can also be used to export
+parts of G2 Knowledge Bases to Java Virtual machine, typically as agents
+of the G2 server.&nbsp; The definition and implementation of G2Script is
+based on the semantics of the G2 programming language and the Java Virtual
+Machine.&nbsp; G2Script does not rely upon JavaLink.&nbsp; It does, however,
+provide open interfaces for the implementation of a compile-time environment
+that allow JavaLink, or any other system, to override the default behavior
+regarding the lookup of classes on the classpath, handling of namespaces,
+etc.
+
+<P>G2Script's coverage of the G2 Language will grow from release to release.&nbsp;
+Because it is a true subset of G2 and that the definitions of binary compatibility
+in Java are well-established forward migration is assured.&nbsp; Early
+releases of G2Script do not address some of the more difficult compatibility
+issues.&nbsp; Most of these issues, like G2's global namespace or threading
+model, will be addressed through user-selectable features in the compilation
+and/or execution environments.&nbsp;&nbsp; These compatibility modes are
+still in design; it is hoped that the number of these switches is limited.
+
+<P>Readers of this document must be familiar with the G2 programming language.&nbsp;
+There are some sections of the document that present detailed information
+about Java compatibility.&nbsp; These sections will be confined for the
+most part the appendices and can be safely ignore by readers who want to
+use G2Script, rather than understand the subtleties of its implementation,
+compilation, and deployment.
+
+<P>G2 and G2Script example code will be shown in a sans serif, e.g. "<FONT FACE="Arial,Helvetica">smoked-gouda
+:class cheese;</FONT>".&nbsp; Java will be shown in monospaced, "t1.<TT>fillTank(desiredLevel)</TT>".&nbsp;
+In syntax descriptions, braces "{}" delimit optional syntax "*", "+" are
+postfix modifiers for zero-or-more and one-or-more respectively.&nbsp;
+Syntactic variables are shown as "&lt;statement>".&nbsp; Plain-text parentheses,
+"(" and ")" are used for grouping and vertical bar "|" for alternatives.
+<H2>
+Procedures and Methods</H2>
+G2Script provides procedures in methods in much the same manner as G2.
+Some errors that are caught at compile time in G2 are caught at runtime
+in G2Script, and vice-versa.&nbsp; This is done to provide some leeway
+in the implementation, while not changing (correct) application behavior.
+
+<P>The set of methods of a given name over the class hierarchy must have
+the same return type specification.&nbsp; This (sadly) is not true in G2.&nbsp;
+This not considered to be a great loss, as good object-oriented use of
+G2 would rarely or never exploit this "feature".
+
+<P>Multiple return values are not supported in G2Script.
+<H3>
+Parameters, Variables, and Data Types</H3>
+G2Script presents the same type system and class hierarchy to users as
+G2. The exceptions are:
+
+<P>For the <B>integer</B> type, the range of the integer is 32 bits in
+G2Script, as opposed to 30 bits in G2.
+
+<P>For the <B>float</B> type, the G2 script implementation is always a
+IEEE-754 double.&nbsp; The G2 implementation is allowed to have two fewer
+bits in the mantissa (is this perfectly accurate?).
+
+<P>For the <B>truth-value</B> type, fuzzy truth values are not yet supported.
+
+<P>The <B>class</B> type is supported with two exceptions.&nbsp; One is
+that the full G2 class hierarchy is not available in G2Script.&nbsp; One
+cannot "<FONT FACE="Arial,Helvetica">create a trend-chart my-tc;</FONT>".&nbsp;
+The other exception is a more a convention.&nbsp; Class names that follow
+the normal hyphenation style of G2 developers are assumed to be classes
+that came from G2 and/or created from G2Script.&nbsp; Classes that are
+proceeded by a package-prefix, "<FONT FACE="Arial,Helvetica">foo :class
+java.lang.string-buffer</FONT>" are assumed to be classes that came fundamentally
+from Java.&nbsp; Even though this class name seems a like a strange symbol,
+veteran G2 programmers know that periods are allowable symbol characters.
+<H3>
+Supported Statements</H3>
+<B>&lt;actions></B>
+
+<P>All actions are useable as statements within procedures.&nbsp; Please
+see the section on actions &lt;link> for details.
+
+<P><B><FONT FACE="Arial,Helvetica">allow other processing</FONT></B>
+
+<P>The allow-other-processing statement does nothing in the current implementation
+of G2Script.&nbsp; If and when a compatibility switch for the G2 threading
+model (a.k.a cooperative threading) is implemented, it will have the same
+meaning it does in G2.
+
+<P><B><FONT FACE="Arial,Helvetica">begin</FONT></B> &lt;statement>* <B><FONT FACE="Arial,Helvetica">end</FONT></B>
+{<B><FONT FACE="Arial,Helvetica">on</FONT></B> <B><FONT FACE="Arial,Helvetica">error</FONT></B>
+(&lt;symbol>, &lt;text>) &lt;statement>* <B><FONT FACE="Arial,Helvetica">end
+</FONT></B>}
+
+<P>Begin-end blocks have the same behavior as it does in G2.&nbsp; The
+G2 5.0 one-argument on-error clause is not yet supported.&nbsp; For top
+level begin-end blocks that use the optional on-error block, G2Script enforces
+compatible return types between both blocks at runtime.&nbsp; In G2 this
+is not caught until runtime, but always signals.&nbsp; It is assumed that
+this not necessary compatibility because no sane application wants to catch
+and recover from syntax errors.
+<BR>&nbsp;
+
+<P>{&lt;local-variable> <B><FONT FACE="Arial,Helvetica">=</FONT></B> }
+<B><FONT FACE="Arial,Helvetica">call </FONT></B>&lt;constant-symbol> <B><FONT FACE="Arial,Helvetica">(</FONT></B>&lt;expression>+<B><FONT FACE="Arial,Helvetica">)</FONT></B>
+<BR>{&lt;local-variable> <B><FONT FACE="Arial,Helvetica">=</FONT></B> }
+<B><FONT FACE="Arial,Helvetica">call the procedure named by the </FONT></B>&lt;symbol-expression>
+<B><FONT FACE="Arial,Helvetica">of the class-methods of </FONT></B>&lt;definition>
+<B><FONT FACE="Arial,Helvetica">(</FONT></B>&lt;expression>*<B><FONT FACE="Arial,Helvetica">)</FONT></B>
+
+<P>Two forms of the call statement are supported in G2.&nbsp; The first
+corresponds to instance method calling, where the first argument must have
+some class is type.&nbsp; The second corresponds to static method invocation.&nbsp;
+The syntax is somewhat stilted, but preserves G2 compatibility.&nbsp; Zero
+or one local variables may be assigned from the result of a call.&nbsp;
+The compile-time checking of call assignments may be stricter in G2Script
+than G2.
+
+<P>Evaluated expressions to produce a procedure object is not support in
+G2Script.&nbsp; Methods are not first-class objects in Java; creating this
+illusion would be difficult for implementation and slow at runtime.&nbsp;
+The Java reflectio Method class does not provide a viable alternative feature
+here, as it is not implemented be even close the normally virtual machine
+method invocation in speed.
+
+<P>Calling accross interfaces is not supported.&nbsp; There may be a future
+compatibility switch to allow such calling to map into RMI calls and/or
+JavaLink calls.
+
+<P>The on-error local variable bindings get the class name of exception
+and the message of the exception respectively.
+
+<P>&lt;local-variable> <B><FONT FACE="Arial,Helvetica">=</FONT></B> &lt;expression>
+
+<P>Assignment is fully supported, including casting.&nbsp; The assignment
+operator in G2 does implicit casting. For example:
+
+<P><FONT FACE="Arial,Helvetica">x :item-or-value;</FONT>
+<BR><FONT FACE="Arial,Helvetica">y:class java.awt.event.mouse-event;</FONT>
+<BR><FONT FACE="Arial,Helvetica">begin</FONT>
+<BR><FONT FACE="Arial,Helvetica">&nbsp; { some code }</FONT>
+<BR><FONT FACE="Arial,Helvetica">&nbsp; y = x;</FONT>
+<BR><FONT FACE="Arial,Helvetica">&nbsp; { more code }</FONT>
+<BR><FONT FACE="Arial,Helvetica">end</FONT>
+
+<P>will work the same as it does in G2.&nbsp; This means either the (casting)
+assignment succeeds because x contain a java.awt.event.MouseEvent, or an
+error will be signalled.
+
+<P><B><FONT FACE="Arial,Helvetica">exit if</FONT></B> &lt;logical-expresion>
+
+<P>Exit-if works the same as it does in G2.
+
+<P><B><FONT FACE="Arial,Helvetica">for</FONT></B> &lt;integer-variable>
+<B><FONT FACE="Arial,Helvetica">=</FONT></B> &lt;integer> <B><FONT FACE="Arial,Helvetica">to</FONT></B>|<B><FONT FACE="Arial,Helvetica">down
+to</FONT></B> &lt;integer> { <B><FONT FACE="Arial,Helvetica">by</FONT></B>
+&lt;integer> }
+
+<P>For-loops support only integer iteration.&nbsp; It may support class
+iteration in the future under a compatibility switch that will state whether
+the instances of a class are enumerable at runtime in a given environment.
+
+<P><B><FONT FACE="Arial,Helvetica">if</FONT></B> &lt;logical-expresion>
+<B><FONT FACE="Arial,Helvetica">then</FONT></B> &lt;statement> {<B><FONT FACE="Arial,Helvetica">else</FONT></B>
+&lt;statement>}
+
+<P>If works the same as it does in G2.
+
+<P><B><FONT FACE="Arial,Helvetica">repeat</FONT></B> &lt;statement>* <B><FONT FACE="Arial,Helvetica">end</FONT></B>
+
+<P>Repeat-blocks work the same as in G2.
+
+<P><B><FONT FACE="Arial,Helvetica">return</FONT></B> {&lt;expression>}
+
+<P>is limited to returning 0 or 1 items or values.&nbsp; The checking of
+the use of returns versus procedure declaration is more stringent in G2Script
+than in G2.&nbsp; This is feature, not a bug, because G2's laxity in this
+regard merely puts off syntax error detection until runtime.
+
+<P><B><FONT FACE="Arial,Helvetica">signal</FONT></B> &lt;symbol-expression><B><FONT FACE="Arial,Helvetica">,
+</FONT></B>&lt;text-expression>
+
+<P>Signal is supported.&nbsp; The G2 5.0 one-arg version of signal will
+be supported in a future release.
+
+<P>Java Note:&nbsp; The two-arg version of signal will create an exception
+of type com.gensym.g2scriptruntime.G2ScriptException.
+
+<P>wait for (&lt;time-constant> | &lt;quantity-expression>)
+
+<P>One form of G2's wait statement is currently supported in G2 script,
+waiting for a specific amount of time.&nbsp; Waiting for other conditions
+is very similar to the event-detection that G2 whenever rules perform,
+and is being developed
+<BR>for a later release.
+<H2>
+Actions</H2>
+<B><FONT FACE="Arial,Helvetica">conclude that the</FONT></B> &lt;attribute-name>
+<B><FONT FACE="Arial,Helvetica">of</FONT></B> &lt;item-expression> ( <B><FONT FACE="Arial,Helvetica">=</FONT></B>
+&lt;expression> | <B><FONT FACE="Arial,Helvetica">has no value</FONT></B>)
+<BR><B><FONT FACE="Arial,Helvetica">conclude that the</FONT></B> &lt;attribute-name>
+<B><FONT FACE="Arial,Helvetica">of the class-fields of</FONT></B> &lt;definition-expression>
+<BR>&nbsp;&nbsp;&nbsp; ( <B><FONT FACE="Arial,Helvetica">=</FONT></B> &lt;expression>
+| <B><FONT FACE="Arial,Helvetica">has no value</FONT></B>)
+<BR><B><FONT FACE="Arial,Helvetica">conclude that </FONT></B>&lt;expression>[&lt;integer-expression>]
+( <B><FONT FACE="Arial,Helvetica">=</FONT></B> &lt;expression> | <B><FONT FACE="Arial,Helvetica">has
+no value</FONT></B>)
+
+<P>Conclude supports attribute and array references currently.&nbsp; Concluding
+into variables is not supported and will not be until a compatibility switch
+for global name spaces is provided.&nbsp; Collection times are not yet
+supported and will be if and when support for G2-style variables and parameters
+with histories is introduced.&nbsp; Concluding symbols with "is &lt;symbol>"
+rather than "= the symbol &lt;symbol>" is not yet supported.
+
+<P><B><FONT FACE="Arial,Helvetica">create</FONT></B> (<B><FONT FACE="Arial,Helvetica">a</FONT></B>|<B><FONT FACE="Arial,Helvetica">an</FONT></B>)
+&lt;class-name-expression> &lt;local-variable>
+
+<P>The create action is supported.&nbsp; It is required that local variables
+be assigned.&nbsp; This will cause the zero-arg constructor of a given
+class to fire.&nbsp; For the ability to refer to other constructors, please
+see &lt;link>.
+
+<P><B><FONT FACE="Arial,Helvetica">delete</FONT></B> &lt;item-expression>
+
+<P>Delete is support, in a fashion.&nbsp; Java-aware readers will immediately
+recognize that Java does not support explicit de-allocation of objects,
+offering garbage collection instead.&nbsp; Because G2 programs rely on
+the fact that local variables that point at objects that are deleted are
+said to no longer "exist" (as in G2's exists operator), delete is made
+to function that has as "conclude that the &lt;item-expression> has no
+value".&nbsp; This is illustrated in the following example:
+
+<P><FONT FACE="Arial,Helvetica">begin</FONT>
+<BR><FONT FACE="Arial,Helvetica">&nbsp; create a my-object x;</FONT>
+<BR><FONT FACE="Arial,Helvetica">&nbsp; delete x;</FONT>
+<BR><FONT FACE="Arial,Helvetica">&nbsp; if x exists</FONT>
+<BR><FONT FACE="Arial,Helvetica">&nbsp;&nbsp;&nbsp; then inform the operator
+that "if you're seeing this message, then G2 is broken"</FONT>
+<BR><FONT FACE="Arial,Helvetica">&nbsp;&nbsp;&nbsp; else infrom the operator
+that "if you're seeing this message, then G2 is working correctly";</FONT>
+<BR><FONT FACE="Arial,Helvetica">end</FONT>
+
+<P>The "removing connection stubs" and "without permanence checks" are
+not yet supported.&nbsp; If they are supported, they are likely to be no-ops.
+
+<P><B><FONT FACE="Arial,Helvetica">inform the operator that</FONT></B>
+&lt;text-expression>
+
+<P>One form, the most common, of the inform action is supported.&nbsp;
+This currently writes its results to Java's standard output stream.&nbsp;
+Two future extensions to this are envisioned.&nbsp; One is to let applications
+handle where output goes through a callback interface.&nbsp; The second,
+which depends on the first, is to allow "inform &lt;item-expression> that
+&lt;text-expression>", where the items would somehow be associated with
+different handlers provided by the user.
+
+<P><B><FONT FACE="Arial,Helvetica">start </FONT></B>&lt;constant-symbol>
+<B><FONT FACE="Arial,Helvetica">(</FONT></B>&lt;expression>+<B><FONT FACE="Arial,Helvetica">)
+</FONT></B>{<B><FONT FACE="Arial,Helvetica">at priority</FONT></B> &lt;integer>}
+{ <B><FONT FACE="Arial,Helvetica">after</FONT></B> &lt;quanitity-expression>
+}
+<BR><B><FONT FACE="Arial,Helvetica">start the procedure named by the </FONT></B>&lt;symbol-expression>
+<B><FONT FACE="Arial,Helvetica">of the class-methods of </FONT></B>&lt;definition>
+<B><FONT FACE="Arial,Helvetica">(</FONT></B>&lt;expression>*<B><FONT FACE="Arial,Helvetica">)
+</FONT></B>{<B><FONT FACE="Arial,Helvetica">at priority</FONT></B> &lt;integer>}
+{ <B><FONT FACE="Arial,Helvetica">after</FONT></B> &lt;quanitity-expression>
+}
+
+<P>Start is supported.&nbsp; See the section on call &lt;link> for details
+on the procedure object and arguments.&nbsp; Priority suffixes are ignored.&nbsp;
+Delay suffixes are supported.
+<H2>
+Expressions</H2>
+The primary arithmetic operators on quantity-expressions (+, -, *, and
+/) are supported.
+<BR>Relation operations (=, /=, &lt;=, >=, &lt;, >) and logical operations
+(and, or, not) are as well.
+
+<P>&lt;attribute-name> OF ( &lt;item-expression> | &lt;structure-expression>
+)
+
+<P>Attribute reference, "OF" is supported for attributes of items and structures.&nbsp;
+The "named by", (aka evaluated) form of attribute reference is not yet
+supported.
+
+<P>&lt;array-expression>, <B><FONT FACE="Arial,Helvetica">[</FONT></B>&lt;integer-expression><B><FONT FACE="Arial,Helvetica">]</FONT></B>
+
+<P>array reference, [&lt;integer>], is supported for both arrays and sequences.
+<BR>&nbsp; [arrays refs are still under constructio in current beta]
+
+<P>&lt;item-expression> <B><FONT FACE="Arial,Helvetica">is</FONT></B> {
+not } the same item as &lt;item-expression>
+
+<P>Most forms of the "is" operator are supported, with "is an instance
+of the class named by &lt;symbol-expression>", "is &lt;relation-name> &lt;item-expression>"
+being the notable exceptions.
+
+<P>&lt;item-expression> { <B><FONT FACE="Arial,Helvetica">exists</FONT></B>
+| <B><FONT FACE="Arial,Helvetica">does not exist</FONT></B> }
+
+<P>The exists operator is implemented, although in the current release
+it does not check n levels of failure to exist safely.
+<BR>Fortunately 99% of the use of exists is one-level, e.g. "if the foo
+of bar exists then ...".
+
+<P>The special structure(name1 : value1, name2 : value2, ...) constructor
+is implemented
+
+<P>"the current real time" and "the current subsecond real time" are supported.&nbsp;
+"the current time" is not supported because it refers to the G2 scheduler
+clock, rather than the operating system clock.&nbsp; In the future, parts
+of the G2 scheduler may be supported or reflected in G2Script.
+<BR>&nbsp;
+<H2>
+Functions</H2>
+Function support is nearly complete.&nbsp; Included groups are:
+
+<P>Arithmetic
+<BR>Bitwise Logical Operations
+<BR>Quantity
+<BR>Symbol
+<BR>Text
+<BR>Time
+
+<P>The connection evaluation functions, call-function (the function-calling
+function), and user-defined functions are not supported.&nbsp; Connection-evaluation
+functions depend on the existence of workspace, connections and are not
+currently under consideration.&nbsp; Call-function and user defined functions
+are being considered.
+<H2>
+Literals/Constants</H2>
+Text constants do not yet support the escape sequences of G2, such as "@L"
+for new lines.&nbsp; All other constants are supported the same.&nbsp;
+While not a constant in the true sense, embedded values in texts, e.g "<FONT FACE="Arial,Helvetica">Foo
+is [foo]</FONT>" is supported.
+<H2>
+Efficiency Considerations</H2>
+
+<H3>
+Data Type Specificity</H3>
+The execution efficiency of G2Script depends almost entirely on the specificity
+of local variable types in methods in procedures.&nbsp; Variances of 1
+or 2 orders of magnitude can be expected between generic and specific code.&nbsp;
+For example
+
+<P><FONT FACE="Arial,Helvetica">p1()</FONT>
+<BR><FONT FACE="Arial,Helvetica">x1, x2, x3 :item-or-value;</FONT>
+<BR><FONT FACE="Arial,Helvetica">f1, f2, f3 :float;</FONT>
+<BR><FONT FACE="Arial,Helvetica">begin</FONT>
+<BR><FONT FACE="Arial,Helvetica">&nbsp; { omitted code }</FONT>
+<BR><FONT FACE="Arial,Helvetica">&nbsp; x1 = x2 + x3;&nbsp; { statement
+1 }</FONT>
+<BR><FONT FACE="Arial,Helvetica">&nbsp; f1 = f2 + f3;&nbsp;&nbsp;&nbsp;
+{ statement 2 }</FONT>
+<BR><FONT FACE="Arial,Helvetica">end</FONT>
+
+<P>has both generic and specific arithmetic.&nbsp; The first statement
+will always call a method that in turn does some type checking.&nbsp; The
+latter will compile to a single java virtual machine instruction.&nbsp;
+In many Java implementations this may become a hardware instruction that
+could be executed in parallel and/or pipelined with other instructions.&nbsp;
+Ratios of 100-to-, and even higher, between statement-1 and statement-2
+are quite possible.
+
+<P>The above example is just one case.&nbsp; The rule in general is to
+limit the use of the item-or-value, value, and quantity data-types in G2
+and G2Script.&nbsp; If such types much be used, they should not be in time-critical
+code, and if so they should be analyzed and subcased into type-specific
+code.
+<H3>
+Compile-Time Visibility of Methods and Attributes</H3>
+Another general area of efficiency consideration is around the visibility
+of attributes and methods at compile time.&nbsp; G2 allows code to refer
+to variables, attributes, methods, and procedures that do not currently
+exist.&nbsp; G2 penalizes the execution efficiency such references and
+calls in all cases (modulo stability declarations, but then only to a degree)
+to provide this flexibility.&nbsp; In G2Script this issue is addressed
+by breaking each reference or call into two cases.&nbsp; One is the "blessed"
+case where the reference is findable at compile time and has the proper
+data types.&nbsp; This will compile into the lowest level java virtual
+machine primitives.&nbsp; References and calls that do not meet this criteria
+are compiled into runtime lookups.&nbsp; G2Script has a small kernel of
+runtime operations that perform calls, attribute references, et cetera,
+through the java.lang.reflect.API.
+<H3>
+Interface Classes</H3>
+G2Script allows the use of interface classes.&nbsp; It should be noted
+that interface method invocation is slower than instance method invocation.&nbsp;
+Various Java implementors claim that this will be addressed in future releases
+of their Virtual Machines.
+<BR>&nbsp;
+<H2>
+Appendix A: Compilation Interfaces</H2>
+The G2Script compiler is itself an object, an instance of com.gensym.g2script.Compiler.&nbsp;
+To compile G2Script source code, one must make an instance of a compiler
+and call one of the variants of compileMethod.&nbsp; The compiler object
+accumalates environment information and can and should be used to compile
+multiple methods of multiple classes.&nbsp; The G2Script compiler works
+in tandem with com.gensym.classtools.&nbsp; Classtools is a module that
+allows one to build Java classes from nested data structures, representing
+fields, methods, statements, expressions, constants, etc.&nbsp;&nbsp; The
+top-level representation class in Classtools is ClassInfo, which is used
+to hold a class as it is being built.&nbsp; ClassInfo's can either be written
+to files or loaded into memory directly by a java.lang.ClassLoader.&nbsp;
+Please refer to the Javadoc for Classtools for details.
+
+<P>The G2Script compilation interface (on com.gensym.Compiler) is:
+
+<P>public MethodInfo compileMethod(String methodText, ClassInfo uncompiledClass)
+<BR>&nbsp; throws CompilerException
+
+<P>public MethodInfo compileMethod(java.io.Reader reader,&nbsp; ClassInfo
+uncompiledClass,&nbsp;&nbsp; boolean verbose)
+<BR>&nbsp;&nbsp; throws CompilerException
+
+<P>The G2Script compiler can make use of more detailed information about
+the target deployment environment&nbsp; interface called com.gensym.g2script.ClassInfoFactory.&nbsp;
+Classnames in G2Script that do not contain package qualification, can be
+resolved by a ClassInfoFactory, as well as providing a means of resolving
+circular compile-time dependencies.&nbsp; This interface is used by JavaLink
+to allow G2Script to follow JavaLink naming and package conventions.&nbsp;
+This interface is not perfectly set in stone yet.&nbsp; Parties with an
+interest in controlling compile-time naming should contact the G2Script
+developers.
+<H2>
+Appendix B: Runtime Interfaces</H2>
+The package com.gensym.g2scriptruntime provides runtime suport for G2Script.&nbsp;
+It contains a class, Kernel, which has a few interfaces for configuring
+the execution of G2Script.&nbsp; They include
+
+<P>public static void setBaseRealTime(long newBaseTime)
+
+<P>This method controls the base-time of "the current {subsecond} time"
+expression in G2.&nbsp; Its argument should be the number of milliseconds
+since midnight, January 1,&nbsp; 1970.&nbsp; The default base time is unspecified,
+which is no impediment to using the current real time for interval timing
+purposes.
+
+<P>public static void setDomain(NamingService namingService)
+
+<P>The setDomain method allows a naming service to be specified, to provide
+a global name space for G2Script that emulates G2's namespace.&nbsp; The
+use of namespaces is important for rules and a few other G2 expressions
+and actions.&nbsp; These facilities are in alpha stage of development.&nbsp;
+Most users, aside from alpha and beta testers of JavaLink Professional,
+should not worry about this interface.
+</BODY>
+</HTML>

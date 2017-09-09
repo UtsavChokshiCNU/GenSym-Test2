@@ -1,0 +1,1054 @@
+<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="Author" CONTENT="Joe">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.02 [en] (X11; I; SunOS 5.5 sun4u) [Netscape]">
+   <TITLE>Nevada:  Technical Description</TITLE>
+</HEAD>
+<BODY>
+
+<H2>
+Nevada Technical Description&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Gensym Confidential</H2>
+
+<H3>
+28 January 1998&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+DRAFT</H3>
+<I>This document will be completed for the Telewindows2 1.0b0 release.&nbsp;
+Please send questions, comments, and spelling and grammar corrections to
+Joe Devlin (jed@gensym.com).</I>
+<H2>
+Contents</H2>
+<A HREF="#section-0.0">0 Audience</A>
+<BR><A HREF="#section-1.0">1 Introduction</A>
+<BR><A HREF="#section-2.0">2 Terminology</A>
+<BR><A HREF="#section-2.1">&nbsp;&nbsp;&nbsp; 2.1 Users</A>
+<BR><A HREF="#section-2.2">&nbsp;&nbsp;&nbsp; 2.2 The Names of this Product</A>
+<BR><A HREF="#section 3.0">3 Nevada Architecture Overview</A>
+<BR><A HREF="#section-4.0">4 JavaLink</A>
+<BR><A HREF="#section-4.1">&nbsp;&nbsp;&nbsp; 4.1 Overview</A>
+<BR><A HREF="#section-4.1.1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+4.1.1 The Properties File</A>
+<BR><A HREF="#section-4.2">&nbsp;&nbsp;&nbsp; 4.2 G2 Connections</A>
+<BR><A HREF="#section-4.3">&nbsp;&nbsp;&nbsp; 4.3 Two and three-tier models</A>
+<BR><A HREF="#section-4.4">&nbsp;&nbsp;&nbsp; 4.4 Stub classes</A>
+<BR><A HREF="#section-4.5">&nbsp;&nbsp;&nbsp; 4.5 JavaLink and G2 5.0</A>
+<BR><A HREF="#section-4.5.1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+4.5.1 System-defined Remote Procedure Calls</A>
+<BR><A HREF="#section-4.5.2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+4.5.2 New Data Types</A>
+<BR><A HREF="#section-4.5.3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+4.5.3 Attribute Export</A>
+<BR><A HREF="#section-4.5.4">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+4.5.4 Introspection</A>
+<BR><A HREF="#section-4.5.5">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+4.5.5 The G2 API</A>
+<BR><A HREF="#section-4.6">&nbsp;&nbsp;&nbsp; 4.6 JavaLink in Nevada</A>
+<BR><A HREF="#section-4.6.1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+4.6.1 Licensing Considerations</A>
+<BR><A HREF="#section-4.6.2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+4.6.2 The showing Protocol</A>
+<BR><A HREF="#section-4.6.3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+4.6.3 Media Bins</A>
+<BR><A HREF="#section-5.0">5 Nevada Components</A>
+<BR><A HREF="#section-5.1">&nbsp;&nbsp;&nbsp; 5.1 General Guidelines</A>
+<BR><A HREF="#section-5.1.1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+5.1.1 Reference</A>
+<BR><A HREF="#section-5.1.2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+5.1.2 State</A>
+<BR><A HREF="#section-5.1.3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+5.1.3 Communication</A>
+<BR><A HREF="#section-5.1.4">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+5.1.4 Restrictions</A>
+<BR><A HREF="#section-5.2">&nbsp;&nbsp;&nbsp; 5.2 Example: A trivial Nevada
+Component</A>
+<BR><A HREF="#section-5.3">&nbsp;&nbsp;&nbsp; 5.3 The Workspace Component</A>
+<BR><A HREF="#section-5.4">&nbsp;&nbsp;&nbsp; 5.4 High-level Dialog Components</A>
+<BR><A HREF="#section-5.4.1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+5.4.1 G2 Data Structure and Attribute Export</A>
+<BR><A HREF="#section-5.4.2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+5.4.2 Data Aware Components</A>
+<BR><A HREF="#section-5.4.2.1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+5.4.2.1 Scalar Components</A>
+<BR><A HREF="#section-5.4.2.2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+5.4.2.2 Aggregate Components</A>
+<BR><A HREF="#section-5.4.2.3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+5.4.2.3 Update and Change Events</A>
+<BR><A HREF="#section-5.4.2.4">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+5.4.2.4 Item Proxies</A>
+<BR><A HREF="#section-5.4.3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+5.4.3 Event Adaptation and Non-Gensym Components</A>
+<BR><A HREF="#section-5.5">&nbsp;&nbsp;&nbsp; 5.5 ActiveX Components</A>
+<BR><A HREF="#section-6.0">6 Containers</A>
+<BR><A HREF="#section-6.1">&nbsp;&nbsp;&nbsp; 6.1 The Telewindows2 Shell</A>
+<BR><A HREF="#section-6.1.1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+6.1.1 Menu/Command Interface</A>
+<BR><A HREF="#section-6.2">&nbsp;&nbsp;&nbsp; 6.2 Dialogs</A>
+<BR><A HREF="#section-6.2.1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+6.2.1 Editing</A>
+<BR><A HREF="#section-6.2.2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+6.2.2 Storage</A>
+<BR><A HREF="#section-6.2.3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+6.2.3 Workspace Views as Containers</A>
+<BR><A HREF="#section-6.2.4">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+6.2.4 Item-Editing Dialogs</A>
+<BR><A HREF="#section-6.2.5">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+6.2.5 Dialog Shutdown</A>
+<BR><A HREF="#section-6.2.6">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+6.2.6 ActiveX Considerations</A>
+<BR>&nbsp;
+<H2>
+<A NAME="section-0.0"></A>0&nbsp; Audience</H2>
+This document is intended for a technical audience.&nbsp; This document
+assumes a fair degree of knowledge of Java, Java Beans, HTML, JavaScript,
+ActiveX, and ActiveX scripting tools such as Visual Basic.&nbsp; These
+subjects are documented very thoroughly in other publications.
+<BR>&nbsp;
+<H2>
+<A NAME="section-1.0"></A>1 Introduction</H2>
+Nevada is a user interface system for G2.&nbsp; Its goals are:
+<UL>
+<LI>
+Provide a native Windows and Motif look and feel user interface for G2.</LI>
+
+<LI>
+Be a part of modern, open user interface, emphasizing cross-platform component
+standards</LI>
+
+<LI>
+Be extensible at a fundamental level to provide KB developers and VAR's
+the appropriate interfaces so that they can extend Gensym-provided components
+or make new components that are "first class" as compared with the ones
+provided by Gensym.</LI>
+</UL>
+Nevada is implemented in Java and adheres to the Java Beans component architecture.&nbsp;
+One can find the&nbsp; <A HREF="http://www.javasoft.com/beans">Java Beans
+Specification</A>&nbsp; at the Javasoft website.&nbsp; Beans has the stated
+goal "... to define a software component model for Java so that third party
+ISV's can create and ship Java components that can be composed into applications
+by end users.
+
+<P>A principal reason for having chosen Java for the implementation of
+Nevada is that it provides platform independent user interface programming
+tools called the Abstract Windowing Toolkit.&nbsp; The AWT provides UI
+classes that have the correct native platform look and feel for the operating
+system upon which Java is running.&nbsp; Java applications on Windows 95/NT
+are virtually indistinguishable from those written in Visual C++/MFC.&nbsp;
+The same story goes for Motif on UNIX and VMS DecWindows systems.
+
+<P>One of the hallmarks of current user interface design tools is the use
+of a combination of graphical tools and scripting to make end-user UI.&nbsp;
+Examples include Visual Basic, Delphi, Visual JavaScript.&nbsp; The Java
+Beans architecture has a lot to offer in service of this paradigm.&nbsp;
+It also has the goal of platform-neutrality, or more prosaically, that
+a Java Bean can be written once and used in heterogeneous development environments.
+Another quote from the Java Beans specification illustrates:&nbsp; "...
+this means that on the Microsoft platforms, the Java Beans APIs will be
+bridged through into COM and ActiveX.&nbsp; Similarly, it will be possible
+to treat a bean as a Live Object (nee Open Doc) part, or to integrate a
+bean with Live Connect inside Netscape Navigator"
+
+<P>The components that comprise Nevada are written in Java.&nbsp; In fact
+Nevada solely rests upon Java and G2 JavaLink (G2 JavaLink will be explained
+later).&nbsp; Most classes in Nevada will be public.&nbsp; Third party
+developers are welcomed and encouraged to build additional components to
+the ones provided by Gensym.&nbsp; The components provided by Gensym may
+be subclassed, except where prohibited by "final" declarations in the implementing
+classes.&nbsp; Any user-defined class will have an equal footing with Gensym-defined
+ones; i.e. can be as graphically intensive or highly interactive.
+
+<P>Some Gensym-defined classes will not be made public in earlier releases
+of Nevada.&nbsp; Certain API's are not stable enough to warrant permanent
+support.
+<BR>&nbsp;
+<H2>
+<A NAME="section-2.0"></A>2 Terminology</H2>
+
+<H3>
+<A NAME="section-2.1"></A>2.1 Users</H3>
+Nevada is used by different people in different ways.&nbsp; In order to
+not make the rest of this document confusing the following terms categorize
+specific types of users.
+
+<P>End User
+
+<P>An End User is someone who interacts with user interfaces that contain
+Nevada components. This user typically expects an interface to be Windows
+or Motif compliant.
+
+<P>UI Builder
+
+<P>A UI Builder is a user who builds end-user UI by assembling, connecting
+and configuring Nevada (and 3rd party) components.&nbsp; This person will
+use any of a broad variety of tools to get this job done, including Visual
+Basic, HTML and JavaScript or VBScript, Delphi, IBM's Visual Age, Symantec
+Cafe, Sun's Java Studio, or Java itself.&nbsp; This list is by no means
+complete; the set of Java Beans-oriented graphical development environments
+is growing rapidly.
+
+<P>Component Developer
+
+<P>A Component Developer makes new Nevada Components, and writes them in
+Java.&nbsp; This person should have a good understanding of AWT (and Swing
+in the near future), Java Beans, JavaLink, G2,&nbsp; this document, and
+the API documentation of Nevada.
+<H3>
+<A NAME="section-2.2"></A>2.2 The Names of this Product</H3>
+Throughout the development of this new user interface for G2 the project
+as been called "Nevada".&nbsp; This is a <I>project name</I>, like "Chicago"
+for Windows95.&nbsp; With the first beta of Nevada imminent;, a&nbsp; <I>product
+name</I> was (hastily) chosen, Telewindows2.&nbsp; This document uses Nevada,
+because it was written before the naming of Telewindows2.&nbsp; There is
+some chance that Telewindows2 will refer to a portion of the Nevada project
+that is a&nbsp; <A HREF="#section-6.1">KB Developers application shell.</A>&nbsp;
+The name Sequoia is also sometimes seen.&nbsp; This is the project name
+for the first release of Nevada.&nbsp; The later releases have the project
+names Yosemite and Tahoe.
+<H2>
+<A NAME="section 3.0"></A>3 Nevada Architecture Overview</H2>
+<IMG SRC="nevada-block-diagram-image.GIF" HEIGHT=719 WIDTH=767>
+
+<P>This diagram illustrates that Nevada components communicate to G2 through
+JavaLink, taking advantage of many G2 and GSI 5.0 enhancements, particularly
+attribute export.&nbsp; These components can in turn be embedded in a variety
+of UI containers.&nbsp; One of these containers is Telewindows2, which
+will be a G2 developers environment made from Nevada components.&nbsp;
+It is at the same level as the use of these components inside Visual Basic
+(or any other Windows/ActiveX container).&nbsp; Complete user interfaces
+for vertical applications can be created using G2 as a server as well.
+<BR>&nbsp;
+<H2>
+<A NAME="section-4.0"></A>4 JavaLink</H2>
+
+<H3>
+<A NAME="section-4.1"></A>4.1 Overview</H3>
+Nevada does all of its communication with G2 through JavaLink.&nbsp; Interested
+readers are encouraged to read the&nbsp; <A HREF="../../../javalink-10b0/docs/usersguide/titlepag.htm">JavaLink
+User's Guide</A> .&nbsp; JavaLink encapsulates GSI completely, and presents
+a Java Beans oriented view of G2.&nbsp; G2 is seen as a set of objects
+with properties events and methods rather than a broad set of API calls,
+or a complex wire protocol.&nbsp; The GSI type system is not visible in
+any way.&nbsp; JavaLink provides a high-level mapping of the G2 type system
+into Java.&nbsp; JavaLink takes advantage of GSI 5.0 features to initiate
+a connection and keep it up and running even when G2 is paused or reset.
+<H4>
+<A NAME="section-4.1.1"></A>4.1.1 The Properties File</H4>
+JavaLink (and JavaLink-based products) find a description of the installation
+and customization of a given machine in its .com.gensym.properties file.&nbsp;
+This file is place in the home directory of the computer.&nbsp; This is
+usually the root of the C: drive on windows and the users home directory,
+i.e. ~/, on Unix.
+<H4>
+<A NAME="section-4.2"></A>4.2 G2 connections in JavaLink</H4>
+A class in JavaLink that represents a connection to a G2 process implements
+an interface called G2Access.&nbsp; The management of the connection (e.g.
+host and port), the state of G2 (e.g. running, reset, paused), and the
+management of KB loading and clearing is done through this G2Access object.&nbsp;
+All other interaction with G2 takes place through instances of "stub classes"
+for G2 items, described later.
+<H3>
+<A NAME="section-4.3"></A>4.3&nbsp; Two and three-tier models.</H3>
+The reason why G2Access is an interface and not a class is that JavaLink
+supports 2 and 3 tier connection models to G2 which have different implementations.&nbsp;
+The JavaVM that is talking to G2 directly has GSI loaded into it, and is
+talking to G2 through Gensym's proprietary protocol.&nbsp; This is called
+a 2nd or middle-tier JavaLink process.&nbsp; A third-tier JavaLink process
+communicates to G2 through RMI to a 2nd process.&nbsp; This might seem
+a little ornate at first glance, but there is good reason.&nbsp; A middle
+2nd tier JavaLink process is larger, imposes a communication cost on G2,
+and is not 100% Pure Java.&nbsp; Third-tier processes have none of these
+drawbacks, and because they are Pure Java can be installed and administered
+over a network.&nbsp; Middle-tier JavaLink processes can concentrate and
+replicate information for 3rd tier processes.
+<H3>
+<A NAME="section-4.4"></A>4.4 JavaLink Stub Classes</H3>
+JavaLink automatically generates instances of stub classes when remote
+method calls are made between G2 and Java that reference G2 items in arguments
+or return values.&nbsp; These stubs can be used for the lifetime of the
+connection to make further remote methods into G2.&nbsp; This is very similar
+in spirit to RMI, and somewhat simpler because stub generation is implicit.&nbsp;
+JavaLink is not built on RMI because RMI assumes the existence of a Java
+Virtual Machine on both sides of the connection.
+
+<P>JavaLink projects the G2 class hierarchy into an isomorphic Java interface
+hierarchy. This is necessary due to the fact that G2 supports multiple
+inheritence of classes, where Java only allows multiple inheritence of
+interfaces.&nbsp; These interfaces and the underlying Java classes that
+implement them are generated through introspective system procedures, provided
+in G2 5.0.&nbsp; The root of this interface hierarchy is in&nbsp; <A HREF="../../../javalink-10b0/docs/api/com.gensym.classes.Item.html#_top_">com.gensym.classes.Item.</A>
+The generated stub classes are Java Beans, i.e. they have public methods,
+properties (presented as get/set method pairs), and events.&nbsp;&nbsp;&nbsp;
+The default stub generation for methods in properties takes place in a
+straightforward fashion.&nbsp; This default behavior can be overridden
+and extended by developers, usually in order to define events for the stubs
+to generate.&nbsp; The stubs for G2-defined classes, such as KB-Workspace
+make use of this facility.&nbsp; Please see the JavaLink reference for
+the specifics of overriding default stub generation. Stub classes for G2
+system-defined classes are placed in the com.gensym.classes directory;
+user defined classes are placed in a sub-package of the package specified
+by the .com.gensym.user.repository property in the .com.gensym.properties
+file.
+
+<P>Stubs are generated implicitly as the result of passing item arguments
+from G2 into Java or as the return values of calls into G2.&nbsp; This
+does not make it possible to reference a particular method of a generated
+interface at compile time.&nbsp; If it is necessary to do so, there is
+a utility, called DownloadInterfaces, that can pre-load stub interfaces.&nbsp;
+It can be called by invoking
+
+<P>java&nbsp; <A HREF="../../../javalink-10b0/docs/api/com.gensym.util.DownloadInterfaces.html#_top_">com.gensym.util.DownloadInterfaces</A>&nbsp;
+-host &lt;hostname> -port &lt;portnumber> -classes &lt;class1> &lt;class2>...
+
+<P>The host and port should reference G2 with some KB loaded that contains
+all classes mentioned.&nbsp; The generated stubs will be placed in the
+directory/package defined by the "com.gensym.class.user.repository" property
+in the .com.gensym.properties file.&nbsp; This file is placed in the home
+directory of the user as specified the java user.home system property.&nbsp;
+See&nbsp; <A HREF="http://java.sun.com/products/jdk/1.1/docs/api/java.lang.System.html">java.lang.System</A>
+for details.
+<H3>
+<A NAME="section-4.5"></A>4.5 JavaLink and G2 5.0</H3>
+JavaLink exposes a JavaBeans interface for any G2 class.&nbsp; This would
+not have been possible using G2 and GSI 5.0.&nbsp; There are several 5.0
+features that make JavaLink possible.&nbsp; These features are available
+to alll KBs and bridges as well.
+<H4>
+<A NAME="section-4.5.1"></A>4.5.1 System-Defined Remote Procedure Calls</H4>
+Most system procedures in G2 are now directly callable through GSI.&nbsp;
+SYSMOD.KB does not need to be loaded and G2 does not need to be running
+for them to function.&nbsp; This feature is usually called "System RPC"'s.&nbsp;
+JavaLink and Nevada make heavy use of this feature.
+
+<P><I>N.B.&nbsp; At the time of G2 5.0rev3 there are some System RPC's
+that are only available remotely, e.g. g2-get-class-info.</I>
+<H4>
+<A NAME="section-4.5.2"></A>4.5.2 New Data Types</H4>
+G2 5.0 has two new data types, Sequences and Structures.&nbsp; They are
+values, not items, and therefore provide automatic storage management and
+are NOT mutable (although it easy to make modified copies of either) in
+G2.&nbsp; In JavaLink these data types are represented by instances of&nbsp;
+<A HREF="../../../javalink-10b0/docs/api/com.gensym.util.Sequence.html#_top_">com.gensym.util.Sequence</A>
+and <A HREF="../../../javalink-10b0/docs/api/com.gensym.util.Structure.html#_top_">com.gensym.util.Structure.</A>&nbsp;
+These objects are mutable in JavaLink.
+<H4>
+<A NAME="section-4.5.3"></A>4.5.3 Attribute Export</H4>
+In G2 5.0 nearly every system-defined attribute has been given a definition
+as some G2 data structure and is concludable and accessible directly as
+a value.&nbsp; The G2 5.0 documentation contains a volume, The Attribute
+Export Class Reference Manual, which presents a description of the acceptable
+values for every exported attribute.
+<H4>
+<A NAME="section-4.5.4"></A>4.5.4 Introspection</H4>
+In G2 5.0 there is a system procedure g2-get-attribute-descriptions-of-class
+that returns a sequence of structures that describe all attributes of an
+item.&nbsp; This feature is the basis of the stub generation facility in
+JavaLink.
+<H4>
+<A NAME="section-4.5.5"></A>4.5.5 "The G2 API"</H4>
+G2 5.0 introduces a set of inter-related system procedures that provide
+access to all attributes of G2 items.&nbsp; This is can be done through
+a small number of calls, because each of these API procedures takes an
+argument called a denotation.&nbsp; These denotations can describe a large
+and growing number of data relationships of G2 Items and their attributes.&nbsp;
+The G2 API allows clients to subscribe to the state of attributes in a
+programmatic fashion (i.e. not necessitating a new "whenever rule" for
+every object in that one wants to display in the UI).&nbsp; This subscription
+API allows one to create remote replications of G2 items that are kept
+in synch without polling G2.&nbsp; This is something upon which Nevada
+is based.&nbsp; Please refer to the &lt;TAG: G2 API Reference> for details.
+<H3>
+<A NAME="section-4.6"></A>4.6 JavaLink in Nevada.</H3>
+Nevada uses a sub-interface of&nbsp; <A HREF="../../../javalink-10b0/docs/api/com.gensym.jgi.G2Access.html#_top_">G2Access</A>
+called&nbsp; <A HREF="../api/com.gensym.ntw.TwAccess.html#_top_">TwAccess</A>,
+short for Telewindows Access.&nbsp; This interface adds some additional
+capabilities for running a remote UI for G2.&nbsp; When a connection to
+G2 is made that implements TwAccess, it specifies that G2 should make an
+instance of ui-client-interface, which is a subclass of gsi-interface.
+The ui-client-interface has a user mode associated with it, like a g2-window.&nbsp;
+This user-mode is visible through the &lt;get/set>UserMode() methods of
+TwAccess.&nbsp; This user mode is available to guide the display and input-handling
+behavior of any Nevada component.&nbsp; The&nbsp; <A HREF="#section-5.3">WorkspaceView</A>&nbsp;
+makes extensive use of it.
+<H4>
+<A NAME="section-4.6.1"></A>4.6.1 Licensing and special capabilities</H4>
+A ui-client-interface has most of the same rights and restrictions as a
+g2-window item when representing a floating Telewindows connection.&nbsp;
+ui-client-interfaces are counted by the G2 licensing manager to be the
+same as a Telewindows connection.&nbsp; Certain system-procedures that
+provide the means of running workspaces remotely only work when calling
+across a ui-client-interface.
+
+<P><I>n.b.:&nbsp; The licensing of ui-client-interfaces is not implemented
+in 1.0beta0.</I>
+<H4>
+<A NAME="section-4.6.2"></A>4.6.2 The "Showing" Protocol</H4>
+G2 is able to minimize the amount of computation it does to run its UI
+by knowing the set of which workspaces are showing on which windows.&nbsp;
+This allows G2 to turn off costly data displays on workspaces that are
+not visible anywhere.&nbsp; In 5.0 this is extended to ui-client-interfaces
+as well.
+
+<P>The show and hide actions of G2 5.0 can use ui-client-interface in the
+same way that earlier versions of G2 use G2-windows.&nbsp; If the target
+of these actions is a ui-client-interface, an event is generated in the
+TwAccess object to inform the remote UI that it should show or hide a given
+workspace.&nbsp; If and how it does so is a private affair of the remote
+UI.&nbsp; In a UI client that looks like a MS-Windows Multiple Document
+Interface (MDI) application, it could choose to bring up another document
+window inside the application window.&nbsp; In a browser, it could react
+to these events by navigating to different pages, showing a different workspace
+in the same page, or even bringing up a new browser window.&nbsp; The JavaBeans
+event class that this protocol uses is called&nbsp; <A HREF="../api/com.gensym.ntw.WorkspaceShowingEvent.html#_top_">WorkspaceShowingEvent</A>.&nbsp;
+These events describe whether the client should show or hide a workspace,
+and, if it's a show event, additional information about where and how it
+should be shown based on the arguments to the show action initiated in
+G2.&nbsp; To receive WorkspaceShowing events a class should implement&nbsp;
+<A HREF="../api/com.gensym.ntw.WorkspaceShowingListener.html#_top_">WorkspaceShowingListener</A>
+and register/deregister interest in these events through the&nbsp; <A HREF="../api/com.gensym.ntw.TwAccess.html#addWorkspaceShowingListener(com.gensym.ntw.WorkspaceShowingListener)">addWorkspaceShowingListener</A>
+and <A HREF="../api/com.gensym.ntw.TwAccess.html#removeWorkspaceShowingListener(com.gensym.ntw.WorkspaceShowingListener)">removeWorkspaceShowingListener</A>
+methods of TwAccess.&nbsp; G2 considers a workspace to be showing upon
+receipt of the <A HREF="../api/com.gensym.ntw.TwAccess.html#representWorkspace(com.gensym.classes.KbWorkspace)">representWorkspace</A>
+call throught the TwAccess/ui-client-interface, and hidden upon receipt
+of&nbsp; <A HREF="../api/com.gensym.ntw.TwAccess.html#unrepresentWorkspace(int)">unrepresentWorkspace</A>.
+<H4>
+<A NAME="section-4.6.3"></A>4.6.3&nbsp; Media Bins</H4>
+Java&nbsp; Beans states that all beans are serializeable, meaning their
+state can be written as a stream of bytes and later restored.&nbsp; UI
+client state can, of course, be stored on client machines in binary files.&nbsp;
+However, for many cases, such as the layout of a dialog, it makes more
+sense to store this data in the KB with which it is associated.&nbsp; Media
+Bins are a new G2 5.0 class that act as self-contained hierarchical file
+systems to provide storage of arbitrary byte streams.&nbsp; The JavaLink
+stub,&nbsp; <A HREF="../../../javalink-10b0/docs/api/com.gensym.classes.MediaBin.html#_top_">com.gensym.classes.MediaBin</A>,
+for media bins provides the means of getting a&nbsp; <A HREF="../../../javalink-10b0/docs/api/com.gensym.util.G2BinaryInputStream.html">com.gensym.util.G2BinaryInputStream</A>
+or&nbsp; <A HREF="../../../javalink-10b0/docs/api/com.gensym.util.G2BinaryOutputStream.html">com.gensym.util.G2BinaryOutputStream</A>
+from a given media bin.&nbsp; These streams are subclasses of java.io.InputStream
+and java.io.OutputStream and are thus compatible with any kind of serialization
+and deserialization of JavaBeans that needs to take place on the client.&nbsp;
+That is to say, any higher-order java.io.* stream or reader can be constructed
+by aggregating one of them, most notably ObjectInputStream and ObjectOutputStream.
+<H2>
+<A NAME="section-5.0"></A>5 Nevada Components</H2>
+
+<H3>
+<A NAME="section-5.1"></A>5.1 General Guidelines</H3>
+A Nevada Component is a Java Bean that is used to display or edit data
+from G2.&nbsp; Components get data directly from G2 through a JavaLink
+stub, or by calling methods and listening to the events of another Nevada
+component.
+<H4>
+<A NAME="section-5.1.1"></A>5.1.1 Reference</H4>
+Directly connected components establish their links to G2 when they are
+created, or cloned, for presentation to the user.&nbsp; These links should
+be represented by transient fields that refer to JavaLink objects.&nbsp;
+JavaLink does not have, and may not ever have, a persistent distributed
+naming scheme for all objects in all G2's, therefore it is meaningless
+to serialize a stub.&nbsp; However, denotational information can be stored
+permanently in the stub object.&nbsp; In a simple example a Nevada component
+could have non-transient instance fields that hold host name, port, and
+G2 item name information.&nbsp; When created or deserialized such information
+can be used to make a JavaLink connection and request a stub from it by
+name from G2.&nbsp; In practice linkage to G2 is usually done more indirectly
+and rarely is based on names.
+
+<P>There is work proposed in the G2, GSI, JavaLink that may allow persistent
+references between G2 and its bridges, specifically JavaLink.&nbsp; If
+and when this work becomes public, this section will be updated to loosen
+the restrictions on the storage of references to G2 items.
+<H4>
+<A NAME="section-5.1.2"></A>5.1.2 State</H4>
+Nevada is designed to allow large-scale, widely-distributed user interfaces
+for G2.&nbsp; One of the principal reasons that this is possible is that
+Nevada components have client-side state, whereas classic Telewindows,
+does not.&nbsp; Nevada components should store at least enough state data
+to paint themselves on the clients screen without having to call G2 or
+any another remote process.&nbsp; Input components should also be designed
+to have most editing to occur locally as well.&nbsp; It is recommended
+that only at the end of an editing gesture (e.g. dragging the mouse, hitting
+the "Enter" key) that G2 should be called to accept or reject the edit.&nbsp;
+Again the components should have sufficient state data to continue functioning
+in either case.
+<H4>
+<A NAME="section-5.1.3"></A>5.1.3 Communication</H4>
+Nevada components should fill themselves with whatever information they
+need from G2, when they are JavaLink-ed.&nbsp; If the component needs to
+stay up to date with state changes from G2 items, it should do so through
+subscriptions, not polling.&nbsp; Subscription to data in G2 can be done
+at a high-level through JavaLink stubs, or at all low-level by calling
+the G2 API through JavaLink remote procedure calls.&nbsp; There are options
+on subscriptions to throttle down the number of update callbacks received
+by the subscriber/client.&nbsp; These options include being updated only
+at the end of G2 scheduler time-slices, and not to be updated more frequently
+than some given interval.&nbsp; These options, and other details, are described
+in <A HREF="../../../javalink-10b0/docs/usersguide/titlepag.htm">JavaLink
+User's Guide</A> and &lt;Tag G2 API guide>.
+<H4>
+<A NAME="section-5.1.4"></A>5.1.4 Restrictions</H4>
+Nevada components should be useable in Java Applets, as well as applications,
+and third-party containers like Visual Basic.&nbsp; If a component is to
+be useable in all of these places it is subject to the same restrictions
+that Applets have.&nbsp; The most prominent of these restrictions is that
+it does not have access to the file system by default and it cannot load
+native (i.e. C language) code.&nbsp; The specifics of what is allowed is
+covered in greater detail in the the Java JDK documentation.
+<H3>
+<A NAME="section-5.2"></A>5.2 Example: A Trivial Nevada Component</H3>
+The following code sample defines a very simple Nevada Component.&nbsp;
+This component exists to provide a graphical display of the level of an
+instance of a class called "TANK" in G2.&nbsp; This graphical display looks
+like a a thermometer, but without the scale markings.&nbsp;&nbsp; There
+is a main method that makes a frame window and a connection to G2, demonstrating
+a trivial Java container for this component.
+
+<P><I>n.b. This example is built on alpha software; the naming of packages,
+classes, and methods may change</I>
+
+<P><TT>// Component code starts here</TT>
+<BR><TT>package COM.gensym.tests;</TT>
+
+<P><TT>import COM.gensym.classes.Item;</TT>
+<BR><TT>import COM.gensym.util.Symbol;</TT>
+<BR><TT>import COM.gensym.util.Structure;</TT>
+<BR><TT>import COM.gensym.util.ItemListener;</TT>
+<BR><TT>import COM.gensym.util.G2ItemEvent;</TT>
+<BR><TT>import COM.gensym.ntw.TwAccess;</TT>
+<BR><TT>import COM.gensym.ntw.TwGateway;</TT>
+<BR><TT>import java.awt.*;</TT>
+<BR><TT>import jed.Tank;</TT>
+
+<P><TT>public class Simple extends Component implements ItemListener</TT>
+<BR><TT>{</TT>
+<BR><TT>&nbsp; private transient Tank tank;</TT>
+<BR><TT>&nbsp; private transient int currentLevel = 0;</TT>
+<BR><TT>&nbsp; private static final int margin = 20;</TT>
+<BR><TT>&nbsp; private static final Symbol tank_ = Symbol.intern("TANK");</TT>
+<BR><TT>&nbsp; private static final Symbol level_ = Symbol.intern("LEVEL");</TT>
+
+<P><TT>&nbsp; public Simple(TwAccess connection,</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+String thingName)</TT>
+<BR><TT>&nbsp; {</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; try {</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tank</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = (Tank) connection.getUniqueNamedItem(tank_,Symbol.intern(thingName));</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tank.addItemListener(this);</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; }</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; catch (Exception e) {</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.printStackTrace();</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; }</TT>
+<BR><TT>&nbsp; }</TT>
+
+<P><TT>&nbsp; public void receivedInitialValues (Structure initialValues)</TT>
+<BR><TT>&nbsp; {</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; currentLevel</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = ((Integer)(initialValues.getAttributeValue(level_,null)))</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .intValue();</TT>
+<BR><TT>&nbsp; }</TT>
+
+<P><TT>&nbsp; public void itemModified (G2ItemEvent e)</TT>
+<BR><TT>&nbsp; {</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; currentLevel</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = ((Integer)e.getNewValue()).intValue();</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; repaint();</TT>
+<BR><TT>&nbsp; }</TT>
+
+<P><TT>&nbsp; public void itemDeleted (G2ItemEvent e)</TT>
+<BR><TT>&nbsp; {</TT>
+<BR><TT>&nbsp; }</TT>
+
+<P><TT>&nbsp; public void paint(Graphics g)</TT>
+<BR><TT>&nbsp; {</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; Dimension size = getSize();</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; g.setColor(Color.lightGray);</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; g.fill3DRect(0,0,size.width,size.height,true);</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; if ((size.width > 2 * margin) &amp;&amp;</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (size.height > 2 * margin))
+{</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; g.setColor(Color.red);</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; g.fillRect(margin,size.height -
+(margin + currentLevel),</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+size.width - (2 * margin), currentLevel);</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; }</TT>
+<BR><TT>&nbsp; }</TT>
+
+<P><TT>&nbsp; public static void main(String[] args)</TT>
+<BR><TT>&nbsp; {</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; TwAccess connection = null;</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; Frame frame = new Frame();</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; try {</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; connection</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = (TwAccess)TwGateway.getOrMakeConnection("ganesha","1111");</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; frame.setSize(600,400);</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; frame.setLayout(null);</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Simple simple = new Simple(connection,"TANK-1");</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; frame.add(simple);</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; simple.setSize(100,200);</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; frame.show();</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; }</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; catch (Exception e) {</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.printStackTrace();</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; }</TT>
+<BR><TT>&nbsp; }</TT>
+<BR><TT>}</TT>
+
+<P><TT>// Stub interface code starts here</TT>
+<BR>&nbsp;
+<BR>&nbsp;
+
+<P><TT>// Code ends here</TT>
+<BR>&nbsp;
+<BR>The package declaration is, of course, optional and could be any package
+the component developer chooses.&nbsp; The imports make a number of common
+JavaLink and Nevada classes visible.&nbsp; The example also uses AWT.
+
+<P>The most interesting import is that of jed.Tank.&nbsp; It is a stub
+interface for a G2 class called tank.&nbsp; This G2 class has Object as
+direct superior and contains one attribute, level, which is an integer.&nbsp;
+This class was created using the DownloadInterfaces utility (see&nbsp;
+<A HREF="#section-4.4">section 4.4)</A>&nbsp; and was placed in the authors
+test package, jed.
+
+<P>The Simple class itself extends java.awt.Component, and thus is a Java
+1.1 "Lightweight" component.&nbsp; It also implements the COM.gensym.util.ItemListener
+interface, which allows Java classes to be clients of changes in the attributes
+of a specific G2 item.
+
+<P>The constructor of Simple does a lookup of an item in the G2 represented
+by TwAccess interface, connection using the&nbsp; <A HREF="../../../javalink-10b0/docs/api/com.gensym.jgi.G2Access.html#getUniqueNamedItem(com.gensym.util.Symbol, com.gensym.util.Symbol)">getUniqueNamedItem()</A>&nbsp;
+method. Instances of G2Access (TwAccess is a sub-interfaces of G2Access)&nbsp;
+provide naming as a bootstrapping mechanism for distributed programming.&nbsp;
+Later versions of JavaLink will probably provide a broader set of roots.&nbsp;
+The return value of getUniqueNamedItem is a JavaLink stub.&nbsp; All of
+these stubs implement COM.gensym.classes.Item.&nbsp; Because this is a
+simple example, and exceptional conditions are not of interest, this stub
+is boldly cast to be of the interface Tank.&nbsp; The constructor ends
+by making the new instance of Simple be a listener of changes to the Tank
+object in G2.
+
+<P>The next three (of four total) instance methods of the Simple class
+are the implementation of the three interface methods of COM.gensym.util.ItemListener.&nbsp;
+The receivedInitialValues method is actually called within the extent of
+calls to addItemListener.&nbsp; This allows initial values to be reliably
+obtained from G2 before any updates are sent over the connection.&nbsp;
+If this were not done, and subscribers to G2 items had to poll g2 by calling
+some getter method, a state change in that item could be lost.&nbsp;&nbsp;
+In the current example the receivedInitialValues method establishes the
+locally cached currentLevel variable. The item modified method receives
+a G2ItemEvent method that carries the details about what changed in the
+G2 item.&nbsp; In the example this method updates the local cache variable.&nbsp;
+The itemDeleted method does nothing because this is a trivial example of
+a Nevada component.
+
+<P>The remaining instance method is the paint method.&nbsp; Paint methods
+are normally specified for Lightweight AWT components.&nbsp; This paint
+method merely draws a gray rectangle for the background of this component
+and a red rectangle over the background to graphically represent the level
+value cached in currentLevel.
+
+<P>The static main method of this class builds AWT Frame (i.e. a top-level
+application window) and makes a connection to G2 at port 1111 of a machine
+called "ganesha".&nbsp; It places an instance of the Simple component in
+the frame.
+
+<P>For more detail on the specific classes and methods used here, please
+refer to&nbsp; <A HREF="http://java.sun.com/products/jdk/1.1/docs/index.html">Java
+JDK 1.1 Documtation</A> and&nbsp; <A HREF="../api/packages.html">Nevada
+API Documentation</A> .
+<H3>
+<A NAME="section-5.3"></A>5.3 The workspace component</H3>
+&nbsp;G2 workspaces are represented in Nevada by instances of <A HREF="../api/com.gensym.wksp.WorkspaceView.html">com.gensym.wksp.WorkspaceView.</A>&nbsp;&nbsp;
+The implementation of this class is analogous to the Simple example, albeit
+many orders of magnitude more complex.&nbsp; It links to G2 through the
+JavaLink stub classes&nbsp; <A HREF="../../../javalink-10b0/docs/api/com.gensym.classes.KbWorkspace.html">com.gensym.classes.KbWorkspace,</A>
+getting the initial state of the workspace and subscribing to events that
+describe each state change of the workspace.&nbsp; It does not change its
+internal state directly in response to editing actions of the user, but
+instead makes requests to G2, for example, to move or change the size of
+an item.&nbsp; If this request is satisfied, an update event is generated
+that is received and causes the drawing in the WorkspaceView to change.
+
+<P>The WorkspaceView draws itself to look as similar as possible to the
+way workspaces are drawn in classic Telewindows.&nbsp; Most differences
+are minor, if intentional, or bugs.&nbsp; The major difference is that
+scaling is not supported, and will not be supported in the 1.0 release
+of Nevada.&nbsp; Input-handling has a number of differences that are intended
+to modernize and standardize the user interactions.&nbsp; Context-sensitive
+menus are only activate by the right mouse button.&nbsp; The left mouse
+button drives selection, which is represented by outlines and sizing handles
+that are drawn on selected objects.&nbsp; The WorkspaceView has command
+that are applied to the selection.&nbsp; Many applications (such as the
+Telewindows2 application development shell) will have menu choices and
+toolbar buttons that invoke these commands. This selection model is meant
+to be immediately useable by anyone who has used a standards-based drawing
+program, cad application, or presentation authoring environment (read MS-PowerPoint).&nbsp;
+Selection is local to a view; it cannot be seen by G2 or other ui-clients.
+
+<P>The customization of workspace behavior through item-configurations
+is supported in Nevada, with some restrictions.&nbsp; This is due to the
+fact that restrictions are interpreted for every mouse click and key typed
+in any Telewindows in the G2 server.&nbsp; This is not something that fits
+in with the distributed UI model of Nevada very well.&nbsp; In Nevada,
+components are supposed to be able to draw themselves and interact with
+the user without necessarily communicating with G2.&nbsp; This is done
+to allow place less of a burden on the G2 server thus promoting scalability
+to far greater numbers of UI clients than permitted by classic Telewindows.&nbsp;
+The handling of item-configurations in Nevada is compromise.&nbsp; Item-configurations
+are downloaded for the workspace and its contained items when the workspace
+is shown.&nbsp; (The same goes for the evaluation user-menu-choice condition).&nbsp;
+These item-configurations are then used locally to modify input handling.&nbsp;
+This strategy is fine for the end-users of an application, because this
+configuration information is typically pretty stable and user-modes tend
+to change slowly.&nbsp; This is less true in development situations.&nbsp;
+There are interfaces for forcing an update to the configuration state of
+a WorkspaceView.&nbsp; These will be invoked automatically if the user-mode
+of the TwAccess changes.
+
+<P><I>n.b. As of the 1.0beta0 release of Nevada, there are problems with
+item-configuration and user-menu-choice condition handling.&nbsp; One may
+be able to move or delete objects that one could not in classic Telewindows.&nbsp;
+This is a high-priority issue and will be dealt with in the next 1.0beta1.</I>
+<H3>
+<A NAME="section-5.4"></A>5.4 High-level Dialog components</H3>
+Nevada provides dialog components that are designed to display and edit
+the data of G2 easily and to composed simply to in a JavaBeans GUI building
+environment.&nbsp; This by no means restricts one to build UI using these
+components; Nevada is an open, JavaBeans architecture.&nbsp; However, an
+inspection of the components provided in "classic" (i.e. JDK 1.1) AWT and
+the newer Swing Set leads one to the conclusion that their data types and
+events are very generic and thus low-level.&nbsp; Considerable data type
+mapping and event interpretation is needed around nearly all of these components
+to get them to work easily with G2.&nbsp; The Nevada high-level dialog
+components are subclasses of many of the AWT, and eventually Swing, components.&nbsp;
+Their API's are not hidden, merely extended.
+<H4>
+<A NAME="section-5.4.1"></A>5.4.1 G2 Data Structure and Attribute Export</H4>
+One of the major goals of version 5 of G2 was to provide a virtually complete
+system programming interface for G2, accessible from KB's and bridges.&nbsp;
+This project was christened "attribute export".&nbsp; Attribute export
+extends the basic getter and setter of the attributes of G2 items, the
+conclude action and the "of" operator to system-defined attributes and
+other implicit properties of items.&nbsp; Nevada components use Attribute
+Export to display and edit the attributes of items.
+
+<P>In 5.0 nearly all system-defined attributes are available directly through
+the "the &lt;attr-name> of &lt;item>" syntax.&nbsp; The value is nearly
+always something more complex than a simple scalar, like an integer or
+a float.&nbsp; To serve this need the G2 type system was extended with
+two new kinds of values, sequences and structures.&nbsp; Sequences are
+like lightweight lists or arrays, and structures are like lightweight items.&nbsp;
+These data structures are "values" in the G2 type hierarchy, this implies
+the that they are not mutable, have no identity (meaning they cannot be
+tested for equality through "same as" operator), and have implicit reclamation.&nbsp;
+One can make modified copies of sequences and structures through a variety
+of operations (please see the G2 5.0 reference manual for a complete treatment)
+and can be tested for equality by the value equality operator, "=".&nbsp;
+Each system-attribute that is exported has a data type definition in terms
+of a composition of sequences and structures over all the value types and
+G2 items.&nbsp; There is a whole book in the G2 5.0 documentation set devoted
+to this subject, the Attribute Export manual.
+
+<P>An example of an exported system-defined attribute that has an interesting,
+i.e. non-trivial export is that of the class-specific-attributes of any
+of the definition classes.&nbsp; This attribute is exported as a sequence
+of structure describing each attribute defined for the class.&nbsp; The
+attribute-describing structures always contain an attribute holding a symbol
+which names the class.&nbsp; Optionally, these structures also contain
+the data type, initial value, range of values, and whether the attribute
+should maintain an index or not.
+
+<P>The attribute export project also exposes many other properties of items
+in pre-5.0 G2 that had non-uniform or incomplete programmablility, such
+as the layout and contents of the attribute-displays of the item, or the
+name of the module that contains a given item.&nbsp; This data is exported
+as "virtual" attributes, meaning that these properties can be accessed
+or changed in the same way that attributes are, although they are not necessarily
+stored in the items themselves.&nbsp; Two interesting and complex virtual
+attributes are the current-attribute-displays of an item, and the relationships
+of an item.&nbsp; The former allows one to layout the attribute displays
+of a G2 item and the latter allows one to view and edit all relations in
+which a given item participates.&nbsp; The virtual attributes of all G2
+classes are also documented in the aforementioned Attribute Export manual.
+<H4>
+<A NAME="section-5.4.2"></A>5.4.2 Data-aware Components</H4>
+
+<H4>
+<A NAME="section-5.4.2.1"></A>5.4.2.1 Scalar Components</H4>
+The Nevada high-level dialog components are aware of the data types of
+G2 as presented through JavaLink.&nbsp; One does not need to write setter
+and getter code to display, for instance, a text field that allows the
+user to edit an attribute that contains a floating point value.&nbsp; The
+currently set of scalar editing components include <A HREF="../api/com.gensym.controls.G2TextField.html">G2TextField</A>,&nbsp;
+<A HREF="../api/com.gensym.controls.G2DropDownChoice.html">G2DropDownChoice</A>,
+and&nbsp; <A HREF="../api/com.gensym.controls.G2Checkbox.html">G2Checkbox</A>.
+Every one of these components has a property called FieldType.&nbsp; Field
+types include Text, TruthValue, Integer, Float, Symbol, Structure and Sequence,
+i.e. any G2 value type.&nbsp; The FieldType governs the translation of
+data from G2 (as presented by JavaLink) in to the data types needed by
+the components underlying AWT or Swing object.&nbsp; For example if a G2TextField
+is being used to edit an attribute of a G2 item that is defined to contain
+an integer, the it will use the FieldType object to take the integer and
+turn it into a java.lang.String before calling the setText() method on
+itself.&nbsp; Conversely when the field has been edited, the field will
+use the FieldType object to parse the string back into an a java.lang.Integer.
+
+<P><I>n.b.&nbsp; As of Nevada1.0b0 there&nbsp; is a G2 data-aware version&nbsp;
+of radio-buttons under development.</I>
+
+<P>G2TextFields are somewhat more complex than the other scalar components,
+because textfields&nbsp; allow any value to be typed in, rather than choosing
+1 of many possibilities, as is done in Drop-DownChoices Checkboxes, and
+RadioButtons.&nbsp; They contain additional properties to say whether unparseable
+input, i.e. input that does not match the field type, should bring up a
+warning dialog box.&nbsp; They also have a property that controls whether
+empty fields are to interpreted as null.&nbsp; This can be used to match
+up with the G2 concept that an empty attribute "does not exist" (from the
+perspective of the G2 evaluator) or is "none" (from the perspective of
+G2 attribute tables).
+<H4>
+<A NAME="section-5.4.2.2"></A>5.4.2.2 Aggregate Components</H4>
+G2 Sequences and Structures have no simple analog in the AWT component
+set.&nbsp; The High-level Nevada Components include two Beans to simplify
+their editing.&nbsp; For sequences (actually instances of java.util.Vector
+of which com.gensym.util.Sequence is a subclass) that hold a collection
+of like elements, one can use the&nbsp; <A HREF="../api/com.gensym.controls.G2Listbox.html">G2ListBox</A>.&nbsp;
+It is a collection list, rather than a selection list.&nbsp; In other words
+it maintains a set of objects that can grow or shrink in which the currently
+selected element can be edited through other dialog components.
+
+<P>For G2 structures there is an invisible bean called&nbsp; <A HREF="../api/com.gensym.controls.StructureMUX.html">StructureMUX</A>
+.&nbsp; A more accurate, but painfully long, name for this bean would be
+G2StructureMultiplexerDemultiplexer.&nbsp; This bean can route the attributes
+of a structure into separate dialog components for browsing or editing.
+<H4>
+<A NAME="section-5.4.2.3"></A>5.4.2.3 Update and Change events.</H4>
+Java Beans communicate through defined events and event listener interfaces.&nbsp;
+The actual transport between events and event listeners can be done in
+a variety of ways depending upon the container implementation.&nbsp; For
+example, in Visual Basic, beans communicate through fragments of Basic
+code; in Netscape's Live Connect, Java Beans can be glued together with
+JavaScript.&nbsp; Requiring Nevada UI Builders to master the intricacies
+of making these connections at a very low level (AWT Events) would be painstaking
+and non-obvious.&nbsp; For that reason Nevada offers two simple events
+that can link the High-Level Dialog Components together to edit reasonably
+complex data structures.&nbsp; These two events are called&nbsp; <A HREF="../api/com.gensym.controls.ObjectChangeEvent.html">ObjectChangeEvent</A>&nbsp;
+and&nbsp; <A HREF="../api/com.gensym.controls.ObjectUpdateEvent.html">ObjectUpdateEvent</A>.&nbsp;
+Most high-level dialog components in com.gensym.controls implement <A HREF="../api/com.gensym.controls.ObjectChangeListener.html">ObjectChangeListener</A>
+, except the scalar controls.&nbsp; Nearly every component implements&nbsp;
+<A HREF="../api/com.gensym.controls.ObjectUpdateListener.html">ObjectUpdateListener</A>,
+except the ItemProxy.
+
+<P>ObjectUpdateEvents flow from beans that represent containing data structures&nbsp;
+to beans that represent contained data.&nbsp; They stop flowing when an
+atomic/scalar component is reached, such as a text field or a radio button.&nbsp;
+They normally start flowing when a dialog is launched, or when a dialog
+that subscribes to attribute values in G2 receives an update.&nbsp; ObjectChangeEvents
+flow in the opposite direction, and are usually initiated by the end-user
+editing a particular atomic/scalar control.&nbsp; The following diagram
+shows a simple dialog for a G2 item that has two attributes called, imaginatively,
+Attr1 and Attr2.
+
+<P><IMG SRC="nevadaevents1.GIF" HEIGHT=575 WIDTH=671>
+<BR>A more complex example for a fragment of a dialog that could edit the
+sequence of structure that is exported for the class-specific-attributes
+of one of the definition classes of G2 could be built like the following
+diagram.&nbsp; ActionEvents are also included to illustrate how these components
+are wired into the ubiquitous apply and ok buttons of editing dialogs.
+<BR><IMG SRC="nevadaevents2.GIF" HEIGHT=575 WIDTH=671>
+<BR>&nbsp;
+<H4>
+<A NAME="section-5.4.2.4"></A>5.4.2.4 Item Proxies</H4>
+An&nbsp; <A HREF="../api/com.gensym.controls.ItemProxy.html">ItemProxy</A>
+bean is very much like a StructureMUX except that it splits and joins the
+editing events of the attributes of a G2 Item, rather Structure.&nbsp;
+It also contains a reference to a JavaLink stub of a G2 item.&nbsp; It
+has upload and download methods that can be used to fill up a dialogs components
+upon launch or can store the results of the dialog when the dialog is closed.
+<H4>
+<A NAME="section-5.4.3"></A>5.4.3 Event Adaptation and non-Gensym components</H4>
+G2 data-aware components listen to low-level events, such as the TextChanged,
+and generate an ObjectUpdate event if and only if the event occurred as
+a result of end-user type.&nbsp; UI builders in many cases will build components
+into dialogs that did not come from Gensym.&nbsp; Of course they would
+like to hook up these components to Gensym components.&nbsp; To this end,
+two classes are provided, ObjectUpdateAdapter, and ObjectChangeAdapter.&nbsp;
+They implement various standard AWT listeners and provide generate the
+appropriate high-level events.&nbsp; They can be subclassed to provide
+adaptation for other non-Gensym, non-AWT events.
+<H3>
+<A NAME="section-5.5"></A>5.5 ActiveX components</H3>
+Nevada contains a special feature on the Windows NT and 95 platforms to
+support the use of ActiveX components in Nevada Containers as well.&nbsp;
+These components are imported into JavaBeans by a utility and given Java
+"wrapper" classes.&nbsp; Once this is done these components behave as any
+other Nevada component.&nbsp; Their use is restricted to a subset of Nevada
+containers that implement a handful of special support interfaces.&nbsp;
+Also, using ActiveX-based Nevada components makes an application not 100%
+pure Java.
+
+<P><I>n.b. A prototype of ActiveX Component import can be seen in the ComponentEditor
+of the 1.0beta0 release of Nevada.&nbsp; The menus of this application
+provide access to ActiveX import facilities.&nbsp; These facilities are
+currently under development and the exact nature of the ActiveX to Java
+Beans import is likely to change.</I>
+<H2>
+<A NAME="section-6.0"></A>6 Containers</H2>
+There are several kinds of UI containers in Nevada in addition to the components.&nbsp;
+Some of the components, such as the WorkspaceView, are themselves containers.&nbsp;
+Other top-level windows such as application shells and dialogs are purely
+containers.
+<H3>
+<A NAME="section-6.1"></A>6.1 The "Telewindows2" shell.</H3>
+Nevada will contain an application shell that will be the eventually serve
+as a replacement for the current Telewindows.&nbsp; It will be a customizable
+environment for users to develop KB's and end-user UI for these KB's.&nbsp;
+It will not assume that its users have Java, or Visual Basic for that matter,
+skills.&nbsp; It focus on the G2 object model and language and visual programming.&nbsp;
+A complete version of this shell is coming in a post 1.0 release of Nevada.&nbsp;
+Regardless the version of the shell&nbsp; <A HREF="../api/com.gensym.shell.Telewindows.html">com.gensym.shell.Telewindows</A>
+that is currently available has a prototype version of the top-level UI
+controls, such as menubars, toolbars, status lines, and multiple-document
+interface handling that will be present in a final product.
+<H4>
+<A NAME="section-6.1.1"></A>6.1.1.&nbsp; Menu/Command Interface</H4>
+An area of particular concern of these is the relationship between a shell
+and it contained components.&nbsp; A good abstraction of this interaction
+is necessary to make components like WorkspaceView be driven easily from
+menus and toolbars while not relying upon their presence.&nbsp; In Nevada
+this done in a JavaBeans style.&nbsp; The command interface that a component
+presents is precisely the set of publicly visible methods.&nbsp; To make
+good UI, one needs to know that certain commands only make sense at a certain
+times.&nbsp; For example, cut or copy menu choices should only be allowed
+when the component currently has a selection.&nbsp; A well-written Nevada
+component publishes the availability of its commands through events. Command
+initiators, such as menus and toolbars listen to these events and do the
+appropriate "graying-out" of menu choices or the like.
+
+<P>A second abstraction that simplifies the interaction of the component
+and container is the Command
+<BR>class, located in the package com.gensym.ui.&nbsp; Subclasses of this
+class group related methods of the component in question and listens to
+specific events to determine command availability.&nbsp; Menubars and toolbars
+can be created from these command objects and are wired to the components
+through them.
+<BR>The precise way in which this is done in the Telewindows shell is illustrated
+in the following diagram.
+
+<P><IMG SRC="command-diagram-image.GIF" HEIGHT=719 WIDTH=959>
+<BR>&nbsp;
+
+<P><I>Note:&nbsp; As of early beta releases of Nevada there are some deviations
+from the practices around menus, commands, and events, particulary regarding
+workspaces.&nbsp; Gensym will clear these up in the very near future.</I>
+<H3>
+<A NAME="section-6.2"></A>6.2 Dialogs</H3>
+There are many kinds of dialogs in Nevada.&nbsp; The two most important
+types to understand are user-defined application-specific dialogs and G2
+Item-editing dialogs.&nbsp; They share many concepts.&nbsp;&nbsp; This
+section applies primarily to Java based environments.&nbsp; Visual Basic
+edits and stores its forms, HTML editors and browsers use web-pages as
+their primary UI containers.&nbsp; The section on G2-item-editing dialogs
+is still relevant.
+<H4>
+<A NAME="section-6.2.1"></A>6.2.1 Editing</H4>
+Dialogs can be created in any Java Beans oriented editor, including Nevada's
+bean editor.&nbsp; These dialogs can be launch programmatically from Nevada
+applications and/or associated with G2 classes.
+<H4>
+<A NAME="section-6.2.2"></A>6.2.2 Storage</H4>
+In most cases, dialogs are created and saved at "design time" and recreated
+from a stored form and activated at "run time".&nbsp; Because Nevada containers
+are composed of JavaBeans and ActiveX components it is possible to serialize
+(save as a stream of bytes) any dialog.&nbsp; There are two common means
+of doing so in Nevada, others are certainly possible.&nbsp; If one wants
+to store dialogs in a KB module one can do so into a G2 5.0 class called
+a&nbsp; <A HREF="#section-4.6.3">Media Bin</A>. The JavaLink stub for this
+G2 class provides methods to obtain java.io package InputStream's and OutputStream's.&nbsp;
+Serializing and deserializing into these streams is straightforward.&nbsp;
+For client-side one can simply (de-)serialize objects into the local file
+system.&nbsp; G2 item-editing dialogs use a combination of the two methods.
+<H4>
+<A NAME="section-6.2.3"></A>6.2.3 WorkspaceViews as Containers</H4>
+The WorkspaceView component is an AWT lightweight container.&nbsp; Currently
+the only things it contains are the components that represent G2 items.&nbsp;
+WorkspaceViews have the contract of being able to represent data compatibly
+with G2 and "classic" Telewindows.&nbsp; There is a special client-server
+relationship in the implementation of the Workspace.&nbsp; The real object
+upon a workspace exists only in the G2 server.&nbsp; What is seen in any
+client is just a representation that must be kept in synch with the server
+in other clients.&nbsp; This makes it somewhat challenging to allow WorkspaceViews
+to be "open" containers, accepting any kind of JavaBean or ActiveX control
+as a container.&nbsp; Gensym is working a protocol for this feature, and
+will publish it in a later version of this document.
+<H4>
+<A NAME="section-6.2.4"></A>6.2.4 Item-Editing Dialogs</H4>
+One of the most important kinds of dialogs in Nevada is item-editing dialogs,
+i.e. dialogs that allow a G2 item to be edited.&nbsp; These dialogs are
+given special support because of their ubiquity and great need for customization.&nbsp;
+These are typically launched by user interaction on a workspace, but can
+be launched programmatically for any reason.&nbsp; They are typically customized
+for based on user mode, client locale, module membership, and other application
+needs.&nbsp; They also need to work well regardless of where the outermost
+container environment (e.g. Telewindows2, VisualBasic, Netscape) from which
+they are launched.&nbsp; Furthermore these dialogs are sometimes expensive
+to build or generate, and need to be cached on the client.
+
+<P>Every instance of TwAccess has an instance of&nbsp; <A HREF="../api/com.gensym.dlgruntime.DialogManager.html#_top_">DialogManager</A>
+associated with it.&nbsp; This can be found through the&nbsp; <A HREF="../api/com.gensym.ntw.TwAccess.html#getDialogManager()">getDialogManager()</A>&nbsp;
+method.&nbsp; DialogManagers organize how item-editing dialogs are stored,
+found, and launched for given G2 connection of a given client.&nbsp; The
+DialogManager builds and shows a dialog for an item through its <A HREF="../api/com.gensym.dlgruntime.DialogManager.html#editItem(com.gensym.classes.Item, com.gensym.util.Symbol, java.util.Locale)">editItem()</A>
+method.
+
+<P>The DialogManager maintains a table, called a resource table, that holds
+an association of between the arguments of the editItem method and a&nbsp;
+<A HREF="../api/com.gensym.dlgruntime.DialogResource.html">DialogResource</A>.&nbsp;
+This association maps the combination of either a G2 class name or a specific
+item, a user-mode and a locale with a DialogResource. This mapping can
+be modified through the <A HREF="../api/com.gensym.dlgruntime.DialogManager.html#setDialogResourceEntry">setResourceDialogEntry</A>
+method of DialogManager.&nbsp; If one desires to do so from a G2 KB, this
+can be done by calling one of the variants of this method that take structures.&nbsp;
+Note that if this method is called remotely from G2, that the remote procedure
+declaration should specify that all items and structures be passed "as
+handle".
+
+<P>DialogResources normalize the storage and launching of dialogs that
+come from different authoring environments.&nbsp; Dialogs might be written
+by hand in Java, or in some 3rd party JavaBeans visual development environment,
+or could even be Visual Basic forms or web pages. DialogResources have
+three essential pieces of information:&nbsp; a URL of where to find the
+stored form of the dialog, a&nbsp;&nbsp; <A HREF="../api/com.gensym.dlgruntime.DialogReader.html">DialogReader</A>,&nbsp;
+and a&nbsp; <A HREF="../api/com.gensym.dlgruntime.DialogLauncher.html">DialogLauncher</A>.&nbsp;
+The URL can use any protocol (e.g. file, http, gopher).&nbsp; A special
+protocol, eg "g2://..." allows resources to be found from the KB in the
+G2 for that TwAccess.&nbsp; [ <I>n.b. As of 1.0b0 the "g2://hostname:port/..."
+URL syntax only supports named media bins and locations within them.&nbsp;
+This will be changed and extended in a later release. </I>]&nbsp; A DialogReader
+knows how to take a stream of bytes found in the URL and created/deserialize
+a dialog.&nbsp; DialogReaders must implement methods that allow DialogLaunchers
+to hookup the&nbsp; <A HREF="../api/com.gensym.controls.ItemProxy.html">ItemProxy</A>'s
+within the dialog to actual Item stub class instances.&nbsp; DialogLaunchers
+must implement the launch method that actually creates and shows the top-level
+window that will hold the dialog and perform the Item to ItemProxy hookups.
+<H4>
+<A NAME="section-6.2.5"></A>6.2.5 Dialog Shutdown</H4>
+When a dialog is closed, it should shutdown properly and remove items from
+ItemProxies.&nbsp; This allows the Java garbage collecter to do its job
+better and earlier.&nbsp; Furthermore, there may be parts of an application
+outside of that dialog that need to know when the dialog is finished.&nbsp;
+Typically, the piece of software that launches a non-modal dialog might
+want to know when that dialog is done.&nbsp; There is a Bean in com.gensym.controls
+called&nbsp; <A HREF="../api/com.gensym.controls.DialogCloser.html">DialogCloser</A>
+that accomplishes both of these goals.&nbsp;&nbsp; When the close() or
+ok() methods of this bean are called it unhooks items from ItemProxies.&nbsp;
+It then sends&nbsp; <A HREF="../api/com.gensym.dlgruntime.DialogStateEvent.html">DialogStateEvents</A>
+to all registered <A HREF="../api/com.gensym.dlgruntime.DialogStateListener.html">DialogStateListeners.</A>
+<H4>
+<A NAME="section-6.2.6"></A>6.2.6 ActiveX considerations</H4>
+When a Gensym-written container (e.g. a WorkspaceView or Dialog)&nbsp;
+is used on a Window NT/95 machine it has additional support for hosting
+ActiveX controls in it.&nbsp; There is a short document explaining how
+to use ActiveX controls&nbsp; with Nevada.&nbsp; Detailed technical information
+is not yet available.
+</BODY>
+</HTML>

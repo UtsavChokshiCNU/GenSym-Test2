@@ -1,0 +1,36 @@
+# Sample makefile for foreign images to connect to G2.
+# Machine type: DEC NT AXP
+ 
+!include <ntwin32.mak>
+ 
+C_DIR = 
+OBJ_DIR = 
+EXE_DIR = 
+TEMPLATE_DIR = $(C_DIR)
+OVERLAY_DIR = 
+H_DIR = 
+CCFLAGS = $(common) $(cflags) $(cvarsmt) -MT
+LINKFLAGS = $(conflags)
+LIB_DIR = 
+ 
+# DEFAULT_LIBS = libforgn.lib winio.lib
+DEFAULT_LIBS = libforgn.lib
+LIBS = $(DEFAULT_LIBS) $(guilibsmt) advapi32.lib wsock32.lib netapi32.lib rpcrt4.lib
+ 
+H_FILES = $(H_DIR)foreign.h
+EXECUTABLES = $(EXE_DIR)fgntest.fgn
+FGNTEST_FILES = $(OBJ_DIR)fgntest.obj $(OBJ_DIR)fgnover.obj
+ 
+ALL : $(EXECUTABLES)
+ 
+$(EXE_DIR)fgntest.fgn : $(FGNTEST_FILES)
+	$(link) -out:$(EXE_DIR)fgntest.fgn $(LINKFLAGS) $(FGNTEST_FILES) $(LIBS)
+ 
+$(OBJ_DIR)fgntest.obj : $(C_DIR)fgntest.c $(H_FILES)
+	$(cc) -c $(CCFLAGS) -o $(OBJ_DIR)fgntest.obj $(C_DIR)fgntest.c
+ 
+$(OBJ_DIR)fgnover.obj : $(C_DIR)fgnover.c $(H_FILES)
+	$(cc) -c $(CCFLAGS) -o $(OBJ_DIR)fgnover.obj $(C_DIR)fgnover.c
+ 
+$(C_DIR)fgnover.c : $(TEMPLATE_DIR)fgntest.tpl
+	$(OVERLAY_DIR)overlay $(TEMPLATE_DIR)fgntest.tpl  $(C_DIR)fgnover.c

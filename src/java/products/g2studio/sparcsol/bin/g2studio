@@ -1,0 +1,25 @@
+#!/bin/csh -f
+
+echo "Starting G2Studio. Please wait..."
+
+if (! $?G2STUDIO_HOME) then
+	echo "G2STUDIO_HOME not set"
+	exit 1
+endif
+
+setenv LOCAL_CLASSPATH ${G2STUDIO_HOME}/classes:${G2STUDIO_HOME}/classes/core.jar:${G2STUDIO_HOME}/classes/classtools.jar:${G2STUDIO_HOME}/classes/javalink.jar:${G2STUDIO_HOME}/classes/coreui.jar:${G2STUDIO_HOME}/classes/sequoia.jar:${G2STUDIO_HOME}/classes/generic-uitools.jar:${G2STUDIO_HOME}/classes/uiutil.jar:${G2STUDIO_HOME}/classes/ntw-uitools.jar:${G2STUDIO_HOME}/classes/sequoia-soon.jar:${G2STUDIO_HOME}/classes/iconeditor.jar:${G2STUDIO_HOME}/classes/g2studio.jar
+
+if ($?CLASSPATH) then
+	setenv CLASSPATH ${LOCAL_CLASSPATH}:${CLASSPATH}
+else
+	setenv CLASSPATH ${LOCAL_CLASSPATH}
+endif
+
+if ( $?LD_LIBRARY_PATH ) then
+  setenv LD_LIBRARY_PATH ${G2STUDIO_HOME}/bin:${LD_LIBRARY_PATH}
+else
+  setenv LD_LIBRARY_PATH ${G2STUDIO_HOME}/bin
+endif
+
+java -Djava.protocol.handler.pkgs=com.gensym.net -Djava.content.handler.pkgs=com.gensym.net.contents com.gensym.demos.g2studiosample.Shell -title "G2Studio" $*
+

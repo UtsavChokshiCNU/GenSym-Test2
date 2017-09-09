@@ -1,0 +1,46 @@
+# Sample makefile for foreign images to connect to G2.
+# Machine type: Intel NT 486/586
+
+TARGETOS = WINNT
+!include <ntwin32.mak>
+
+C_DIR = 
+OBJ_DIR = 
+EXE_DIR = 
+TEMPLATE_DIR = $(C_DIR)
+OVERLAY_DIR = 
+H_DIR = 
+CCFLAGS = $(common) $(cflags) $(cvarsmt) -MT
+# When creating images to execute under Win32s, you should use
+# $(guilflags) for LINKFLAGS as well as the appropriate DEFAULT_LIBS below.
+# LINKFLAGS = $(guilflags)
+
+# LIBPATH: This is set up to work in a bundle installation which has GSI installed.
+# If you move your GSI installation, you may need to update this value.
+
+LINKFLAGS = $(conflags) /LIBPATH:..\..\gsi
+LIB_DIR = 
+
+# When creating images to execute under Win32s, you should
+# use the DEFAULT_LIBS below that has winio.lib.
+# DEFAULT_LIBS = libforgn.lib winio.lib
+DEFAULT_LIBS = libforgn.lib
+LIBS = $(DEFAULT_LIBS) $(guilibsmt) advapi32.lib wsock32.lib netapi32.lib
+
+H_FILES = $(H_DIR)foreign.h
+EXECUTABLES = $(EXE_DIR)fgntest.fgn
+FGNTEST_FILES = $(OBJ_DIR)fgntest.obj $(OBJ_DIR)fgnover.obj
+
+ALL : $(EXECUTABLES)
+
+$(EXE_DIR)fgntest.fgn : $(FGNTEST_FILES)
+	$(link) -out:$(EXE_DIR)fgntest.fgn $(LINKFLAGS) $(FGNTEST_FILES) $(LIBS)
+
+$(OBJ_DIR)fgntest.obj : $(C_DIR)fgntest.c $(H_FILES)
+	$(cc) -c $(CCFLAGS) -o $(OBJ_DIR)fgntest.obj $(C_DIR)fgntest.c
+
+$(OBJ_DIR)fgnover.obj : $(C_DIR)fgnover.c $(H_FILES)
+	$(cc) -c $(CCFLAGS) -o $(OBJ_DIR)fgnover.obj $(C_DIR)fgnover.c
+
+$(C_DIR)fgnover.c : $(TEMPLATE_DIR)fgntest.tpl
+	$(OVERLAY_DIR)overlay $(TEMPLATE_DIR)fgntest.tpl $(C_DIR)fgnover.c

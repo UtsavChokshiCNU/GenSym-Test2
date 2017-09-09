@@ -1,0 +1,10 @@
+#!/bin/csh -f
+ 
+setenv JAVADOC_CLASSPATH ${JAVA_HOME}/lib/classes.zip:${SWING_HOME}/swingall.jar
+setenv SOURCE_DIR ${SRCBOX}
+setenv TARGET_DIR ${SOURCE_DIR}/sequoia/sequoia-${MACHINE}-staging
+setenv TARGET_CLASSES ${TARGET_DIR}/classes
+setenv TARGET_BIN ${TARGET_DIR}/bin
+
+${JAVA_HOME}/bin/java -mx50m com.gensym.devtools.BuildProductRepository sequoia ${SOURCE_DIR} ${TARGET_DIR} ${JAVADOC_CLASSPATH}
+

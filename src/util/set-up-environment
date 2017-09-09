@@ -1,0 +1,119 @@
+
+# set-up-environment
+# 
+# Author: jv, based on use-this-sandbox
+# 
+# This file is like use-this-sandbox, but takes full paths for
+# srcbx and dstbx, not assuming anything about where sandboxes
+# can be.  Normally, a sandbox needs to have a link in /bt.
+# 
+# This is NOT a shell script.  Note the absence of a #! line at the
+# top.  The reason is that a shell script forks a shell, which is 
+# a separate process.  That shell script enherits environment variables
+# from its parent (the shell that ran it), and it will pass on
+# environment variables to its children.  But it cannot update its
+# parent.  Therefore, to set up environment variables in the C Shell
+# one must either use aliases or "source".  This file does not solve
+# that problem, but integrates all of the information into one place.
+
+# This file is only useful if sourced!!!
+
+set util_name=util
+
+if !(-d $srcbx) then
+   echo "ERROR: srcbox $srcbx does not exist."
+   goto ERROR
+endif
+if !(-d $dstbx) then
+   echo "ERROR: srcbox $dstbx does not exist."
+   goto ERROR
+endif
+if !(-d $tlsdir) then
+   echo "ERROR: toolsdir $tlsdir does not exist."
+   goto ERROR
+endif
+
+if !(-f $tlsdir/$util_name/CVS/Root) then
+   echo -n "ERROR: Sandbox $srcbx has not properly checked out the "
+   echo "'${util_name}' module."
+   goto ERROR
+endif
+
+set potential_cvsroot = `cat $tlsdir/$util_name/CVS/Root | tr -d '\015'`
+if !(-d $potential_cvsroot) then
+   echo "ERROR: Spinoff $potential_cvsroot does not exist"
+   echo "  This is a potentially serious problem with your sandbox\!\!\!"
+   goto ERROR
+endif
+
+if ($?suggested_repos) then
+  if ("/gensym/${suggested_repos}-repos" != "$potential_cvsroot") then
+    echo "ERROR: $srcbx is not an $suggested_repos sandbox"
+    goto ERROR
+  endif
+endif
+
+
+# At this point, we're convinced the sandbox is OK.  The rest of the 
+# file just sets things up.  There are no more checks to be performed.
+# Note that we do not affect the environment in a failure case.
+
+# The following lines establish a dynamic extent of enviroment variables
+# describing the roots of the build, spin, and mount trees.  This can only be
+# established after establishing the sandbox's existence.
+
+# This sets: hostname, machine, and path.  
+
+set hostname=`hostname`
+if ( -x /usr/local/bin/machine ) set machine=`/usr/local/bin/machine`
+
+setenv HOSTNAME $hostname
+setenv MACHINE $machine
+
+setenv SRCBOX "$srcbx"
+setenv DSTBOX "$dstbx"
+setenv TOOLSDIR "$tlsdir"
+setenv UTIL_DIR "$tlsdir/$util_name"
+setenv LISP_DIR "$srcbx/lisp"
+setenv RTL_DIR "$srcbx/rtl"
+setenv G2_C_INCLUDE_DIRECTORY "${RTL_DIR}/c"
+
+# The path is set to include a wild assortment of things, but <dot>, the
+# util_dir, the auto directory, and the translator directory are included.
+
+# The path should be set correctly for all machines during login.  However,
+# it is necessary to add the util_dir for the current spin id.  The
+# following removes all occurrences of /bt/<anyname>/<util_name> from the
+# existing path and appends the path to the util_dir in the current
+# sandbox.  The pattern to sed allows any spinid as well as a trailing
+# backslash.
+
+# This is not really very smart, given that we in no way really require a
+# sandbox to use TREE_ID.  Fix later. - jv, 8/20/99
+
+setenv TREE_ID bt
+
+setenv PATH `echo $PATH | sed "s+:/${TREE_ID}/[^/]*/scripts/*++g"`:$tlsdir/scripts
+setenv PATH `echo $PATH | sed "s+:/${TREE_ID}/[^/]*/${util_name}/*++g"`:$UTIL_DIR
+
+if ($?LD_LIBRARY_PATH) then
+   setenv LD_LIBRARY_PATH `echo $LD_LIBRARY_PATH | sed "s+:/${TREE_ID}/[^/]*/java/lib/*++g"`
+   if (-d $dstbx/java/lib) setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:$dstbx/java/lib
+else
+   if (-d $dstbx/java/lib) setenv LD_LIBRARY_PATH $dstbx/java/lib
+endif
+
+goto END
+
+
+ERROR:
+
+echo "Your environment has not been modified"
+
+
+END:
+
+unset srcbx
+unset dstbx
+unset tlsdir
+unset potential_cvsroot

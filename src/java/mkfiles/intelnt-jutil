@@ -1,0 +1,79 @@
+# Sample makefile for JUTIL programs.
+#   GSI Version 5.0
+# Machine type: IntelNT
+
+#
+# JAVA_HOME should be set!
+# SPIN_ID should be set!
+# SRCBOX should be set!
+#
+
+!include <ntwin32.mak>
+
+PACKAGE_PREFIX = com.gensym.util.
+PP = com_gensym_util_
+BT_JAVA = $(SRCBOX)\java
+
+JAVA_DIR = $(BT_JAVA)\com\gensym\util
+C_DIR  = $(BT_JAVA)\c
+OBJ_DIR = $(BT_JAVA)\o
+EXE_DIR       = $(BT_JAVA)\lib
+WINUTIL_LIB = $(EXE_DIR)\libwinutils.dll
+
+JAVAH = $(JAVA_HOME)\bin\javah
+CC = cl
+#JAVAH = $(JAVA_HOME)\bin\msjavah
+
+CC_OPTIONS = /c /I$(JAVA_HOME)\include /I$(JAVA_HOME)\include\win32 /I$(OBJ_DIR)
+JAVAH_OPTIONS =  -d $(OBJ_DIR)
+JAVAH_STUBS_OPTIONS = -stubs -d $(OBJ_DIR)
+
+WINLIBS =  libcmt.lib netapi32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib 
+DEFAULT_LIBS =
+JAVA_LIBS = $(JAVA_HOME)\lib\javai.lib
+LIBS = $(WINLIBS) $(DEFAULT_LIBS) $(JAVA_LIBS)
+LDEBUGFLAGS = -debug:full -debugtype:cv	
+LINKFLAGS = /DLL /nodefaultlib:"libc.lib" $(LDEBUGFLAGS)
+
+H_FILES = $(OBJ_DIR)\$(PP)Structure.h $(OBJ_DIR)\$(PP)Sequence.h\
+	  $(OBJ_DIR)\$(PP)Symbol.h $(OBJ_DIR)\$(PP)G2ItemProxy.h\
+	  $(OBJ_DIR)\$(PP)WindowUtil.h
+
+ALL : $(H_FILES) $(WINUTIL_LIB)
+
+$(WINUTIL_LIB) : $(OBJ_DIR)\$(PP)WindowUtil.obj $(OBJ_DIR)\win32_WindowUtilImplmn.obj $(DEFAULT_LIBS)
+	$(link) -out:$(EXE_DIR)\libwinutils.dll $(LINKFLAGS) $(JAVA_FILES) $(LIBS) $(OBJ_DIR)\$(PP)WindowUtil.obj $(OBJ_DIR)\win32_WindowUtilImplmn.obj
+
+$(OBJ_DIR)\$(PP)WindowUtil.obj : $(OBJ_DIR)\$(PP)WindowUtil.c
+	$(CC) $(CC_OPTIONS) $(OBJ_DIR)\$(PP)WindowUtil.c -Fo$(OBJ_DIR)\$(PP)WindowUtil.obj
+
+$(OBJ_DIR)\win32_WindowUtilImplmn.obj : $(C_DIR)\win32_WindowUtilImplmn.c
+	$(CC) $(CC_OPTIONS) $(C_DIR)\win32_WindowUtilImplmn.c -Fo$(OBJ_DIR)\win32_WindowUtilImplmn.obj
+
+$(OBJ_DIR)\$(PP)Structure.h : $(JAVA_DIR)\Structure.class
+	$(JAVAH) $(JAVAH_OPTIONS) $(PACKAGE_PREFIX)Structure
+	@ touch $(OBJ_DIR)\$(PP)Structure.h
+
+$(OBJ_DIR)\$(PP)Sequence.h : $(JAVA_DIR)\Sequence.class
+	$(JAVAH) $(JAVAH_OPTIONS) $(PACKAGE_PREFIX)Sequence
+	@ touch $(OBJ_DIR)\$(PP)Sequence.h
+
+$(OBJ_DIR)\$(PP)Symbol.h : $(JAVA_DIR)\Symbol.class
+	$(JAVAH) $(JAVAH_OPTIONS) $(PACKAGE_PREFIX)Symbol
+	@ touch $(OBJ_DIR)\$(PP)Symbol.h
+
+$(OBJ_DIR)\$(PP)G2ItemProxy.h : $(JAVA_DIR)\G2ItemProxy.class
+	$(JAVAH) $(JAVAH_OPTIONS) $(PACKAGE_PREFIX)G2ItemProxy
+	@ touch $(OBJ_DIR)\$(PP)G2ItemProxy.h
+
+$(OBJ_DIR)\$(PP)WindowUtil.h : $(JAVA_DIR)\WindowUtil.class
+	$(JAVAH) $(JAVAH_OPTIONS) $(PACKAGE_PREFIX)WindowUtil
+	@ touch $(OBJ_DIR)\$(PP)WindowUtil.h
+
+$(OBJ_DIR)\$(PP)WindowUtil.c : $(JAVA_DIR)\WindowUtil.class
+	$(JAVAH) $(JAVAH_STUBS_OPTIONS) $(PACKAGE_PREFIX)WindowUtil
+	@ touch $(OBJ_DIR)\$(PP)WindowUtil.c
+
+clean :
+	erase $(OBJ_DIR)\com_gensym_util*.h $(OBJ_DIR)\$(PP)WindowUtil.c $(WINUTIL_LIB) $(EXE_DIR)\libwinutils.*
+

@@ -1,0 +1,181 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<xsd:element name="g2-family" type="FamilyType"/>
+
+		<xsd:complexType name="FamilyType">
+			<xsd:sequence>
+			    <xsd:element name="g2-ok-components" minOccurs="0" maxOccurs="unbounded" type="G2-ok-components"/>
+				<xsd:element name="bundles" type="RequiredBundles"/>
+				<xsd:element name="compatible-previous-versions" type="Compatible-Prev-Versions"/>
+				<xsd:element name="previous-versions" type="Previous-Versions"/>
+			</xsd:sequence>
+			<xsd:attribute name="index" type="xsd:decimal"/>
+			<xsd:attribute name="file-syntax-version" type="xsd:decimal"/>
+			<xsd:attribute name="print-name" type="xsd:string"/>
+			<xsd:attribute name="directory" type="xsd:string"/>
+			<xsd:attribute name="guid" type="xsd:string"/>
+			<xsd:attribute name="splash-screen" type="xsd:string"/>
+			<xsd:attribute name="license-text" type="xsd:string"/>
+			<xsd:attribute name="platforms" type="xsd:string"/>
+		</xsd:complexType>
+
+		<xsd:complexType name="G2-ok-components">
+			<xsd:sequence>
+				<xsd:element name="bundle-name" type="xsd:string"/>
+				<xsd:element name="options" type="Options"/>
+				<xsd:element name="family-name" type="xsd:string"/>
+				<xsd:element name="print-name" type="xsd:string"/>
+				<xsd:element name="n-clients-list" type="ClientList"/>
+			</xsd:sequence>
+		</xsd:complexType>
+
+		<xsd:complexType name="ClientList">
+			<xsd:sequence>
+				<xsd:element name="list" minOccurs="1" maxOccurs="unbounded" type="xsd:decimal"/>
+			</xsd:sequence>
+		</xsd:complexType>
+
+		<xsd:complexType name="Options">
+			<xsd:sequence>
+				<xsd:element name="list" minOccurs="1" maxOccurs="unbounded" type="xsd:string"/>
+			</xsd:sequence>
+		</xsd:complexType>
+
+		<xsd:complexType name="RequiredBundles">
+			<xsd:sequence>
+				<xsd:element name="bundle" minOccurs="1" maxOccurs="unbounded" type="Bundle"/>
+			</xsd:sequence>
+		</xsd:complexType>
+
+		<xsd:complexType name="Bundle">
+			<xsd:sequence>
+				<xsd:element name="bundlename" type="xsd:string"/>
+				<xsd:element name="print-name" type="xsd:string"/>
+				<xsd:element name="components" type="Components"/>
+			</xsd:sequence>
+			<xsd:attribute name="version" type="xsd:string"/>
+			<xsd:attribute name="directory" type="xsd:string"/>
+		</xsd:complexType>
+
+		<xsd:complexType name="Components">
+			<xsd:sequence>
+				<xsd:element name="component" minOccurs="1" maxOccurs="unbounded" type="Component"/>
+			</xsd:sequence>
+		</xsd:complexType>
+
+		<xsd:complexType name="Component">
+			<xsd:sequence>
+			    <xsd:element name="componentname" type="xsd:string"/>
+				<xsd:element name="print-name" type="xsd:string"/>
+				<xsd:element name="platforms" minOccurs="0" type="Platforms"/>
+				<xsd:element name="componentpart" minOccurs="1" maxOccurs="unbounded" type="ComponentPart"/>
+			</xsd:sequence>
+			<xsd:attribute name="watermark" type="xsd:string"/>
+			<xsd:attribute name="typical" type="xsd:string"/>
+			<xsd:attribute name="optional" type="xsd:string"/>
+			<xsd:attribute name="radio-button-group-index" type="xsd:decimal"/>
+		</xsd:complexType>
+
+		<xsd:complexType name="ComponentPart">
+			<xsd:sequence>
+				<xsd:element name="name" type="xsd:string"/>
+				<xsd:element name="print-name" minOccurs="0" type="xsd:string"/>
+				<xsd:element name="source" minOccurs="0" type="xsd:string"/>
+				<xsd:element name="source-subdirectory" minOccurs="0" type="xsd:string"/>
+				<xsd:element name="platforms" minOccurs="0" type="Platforms"/>
+				<xsd:element name="source-filename" minOccurs="0" type="SourceFileName"/>
+				<xsd:element name="destination-directory" minOccurs="0" type="xsd:string"/>
+				<xsd:element name="destination-filename" minOccurs="0" type="xsd:string"/>
+				<xsd:element name="source-ship-type" default="external" type="xsd:string"/>
+				<xsd:element name="indep" default="t" type="xsd:string"/>
+				<xsd:element name="remove-from-source" minOccurs="0" type="FilesToBeRemoved"/>
+				<xsd:element name="environment-variables" minOccurs="0" type="EnvironmentVariables"/>
+				<xsd:element name="registry-entries" minOccurs="0" type="RegistryEntries"/>
+				<xsd:element name="shortcuts" minOccurs="0" type="ShortCuts"/>				
+				<xsd:element name="postinstall-code" minOccurs="0" type="xsd:string"/>				
+				<xsd:element name="non-platforms" minOccurs="0" type="Platforms"/>				
+			</xsd:sequence>
+			<xsd:attribute name="version" type="xsd:string"/>
+			<xsd:attribute name="register" default="NIL" type="xsd:string"/>
+			<xsd:attribute name="make-not-read-only" type="xsd:string"/>
+		</xsd:complexType>
+
+		<xsd:complexType name="Platforms">
+			<xsd:sequence>
+				<xsd:element name="platform" minOccurs="1" maxOccurs="unbounded" type="xsd:string"/>
+			</xsd:sequence>
+		</xsd:complexType>
+		
+		<xsd:complexType name="SourceFileName">
+			<xsd:sequence>
+				<xsd:element name="src-file-name" minOccurs="1" maxOccurs="unbounded" type="xsd:string"/>
+			</xsd:sequence>
+		</xsd:complexType>
+
+		<xsd:complexType name="EnvironmentVariables">
+			<xsd:sequence>
+			    <xsd:element name="environment-variable" minOccurs="1" maxOccurs="unbounded" type="EnvironmentVariable"/>				
+			</xsd:sequence>
+		</xsd:complexType>
+		
+		<xsd:complexType name="EnvironmentVariable">
+			<xsd:sequence>
+                <xsd:element name="name" minOccurs="1" maxOccurs="unbounded" type="xsd:string"/>			
+				<xsd:element name="env-var-name" minOccurs="1" maxOccurs="unbounded" type="xsd:string"/>
+				<xsd:element name="value" minOccurs="0" type="xsd:string"/>
+				<xsd:element name="append-or-merge" minOccurs="0" type="xsd:string"/>
+			</xsd:sequence>
+		</xsd:complexType>
+
+		<xsd:complexType name="RegistryEntries">
+			<xsd:sequence>
+				<xsd:element name="registry-entry-name" minOccurs="1" maxOccurs="unbounded" type="xsd:string"/>
+			</xsd:sequence>
+		</xsd:complexType>
+
+		<xsd:complexType name="ShortCuts">
+			<xsd:sequence>
+				<xsd:element name="shortcut" minOccurs="1" maxOccurs="unbounded" type="Shortcut"/>
+			</xsd:sequence>
+		</xsd:complexType>
+		
+		<xsd:complexType name="Shortcut">
+			<xsd:sequence>				
+				<xsd:element name="shortcut-name" minOccurs="1" type="xsd:string"/>
+                <xsd:element name="folder-name" minOccurs="0" type="xsd:string"/>
+                <xsd:element name="subfolder-name" minOccurs="0" type="xsd:string"/>
+                <xsd:element name="subsubfolder-name" minOccurs="0" type="xsd:string"/>	
+                <xsd:element name="application-display-name" minOccurs="0" type="xsd:string"/>
+                <xsd:element name="application-directory" minOccurs="0" type="xsd:string"/>
+                <xsd:element name="target-name" minOccurs="0" type="xsd:string"/>
+				<xsd:element name="parameters" minOccurs="0" type="xsd:string"/>
+                <xsd:element name="icon-file" minOccurs="0" type="xsd:string"/>
+                <xsd:element name="icon-index" minOccurs="0" type="xsd:decimal"/>
+                <xsd:element name="run-style" minOccurs="0" type="xsd:string"/>				
+			</xsd:sequence>
+		</xsd:complexType>
+
+		<xsd:complexType name="FilesToBeRemoved">
+			<xsd:sequence>
+				<xsd:element name="file-name" minOccurs="1" maxOccurs="unbounded" type="xsd:string"/>
+			</xsd:sequence>
+		</xsd:complexType>
+
+		<xsd:complexType name="Compatible-Prev-Versions">
+			<xsd:sequence>
+				<xsd:element name="version" minOccurs="1" maxOccurs="unbounded" type="Version"/>
+			</xsd:sequence>
+		</xsd:complexType>
+
+		<xsd:complexType name="Previous-Versions">
+			<xsd:sequence>
+				<xsd:element name="version" minOccurs="1" maxOccurs="unbounded" type="Version"/>
+			</xsd:sequence>
+		</xsd:complexType>
+
+		<xsd:complexType name="Version">
+			<xsd:sequence>
+				<xsd:element name="versionid" type="xsd:string"/>
+				<xsd:element name="versionguid" type="xsd:string"/>
+			</xsd:sequence>
+		</xsd:complexType>	
+</xsd:schema>

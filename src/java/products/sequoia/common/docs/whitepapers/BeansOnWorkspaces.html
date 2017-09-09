@@ -1,0 +1,508 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Vikram Pillai">
+   <meta name="GENERATOR" content="Mozilla/4.6 [en] (WinNT; U) [Netscape]">
+   <title>Beans on Workspaces</title>
+</head>
+<body>
+
+<h2>
+Beans on Workspaces</h2>
+
+<h3>
+Specification and Users' Guide</h3>
+
+<h5>
+<font face="Arial,Helvetica">Telewindows2Toolkit 1.0 Rev. 1 --&nbsp; February
+1999</font></h5>
+<i>Please send questions, comments, and spelling and grammar corrections
+to service@gensym.com.</i>
+<h3>
+Contents</h3>
+0.0 <a href="#audience">Audience</a>
+<br>&nbsp;&nbsp;&nbsp; 0.1 <a href="#notation">Notation</a>
+<br>1.0 <a href="#introduction">Introduction</a>
+<br>2.0 <a href="#overview">Overview</a>
+<br>3.0 <a href="#terminology">Terminology</a>
+<br>4.0 <a href="#mechanics-and-storage">Mechanics and Storage</a>
+<br>5.0 <a href="#operation">Operation</a>
+<br>6.0 <a href="#api">t2beans API</a>
+<br>&nbsp;&nbsp;&nbsp; 6.1 <a href="#procedure-api">Procedure API</a>
+<br>&nbsp;&nbsp;&nbsp; 6.2 <a href="#bean-listener-api">The G2-BEAN-LISTENER
+interface</a>
+<br>7.0 <a href="#interaction">Interacting with Beans</a>
+<br>8.0 <a href="#activex-beans">ActiveX controls as Beans</a>
+<br>9.0 <a href="#demo">Demo</a>
+<h3>
+<a NAME="audience"></a>0.0 Audience</h3>
+This document is intended for a technical audience. It assumes a deep knowledge
+of G2, Java, JavaBeans, Java Serialization, AWT, JavaLink/G2-Gateway, and
+the architecture of Telewindows2 components. These subjects are documented
+throughly in other publications. A complete understanding of these topics
+is ncessary to follow the material presented here.
+<h3>
+<a NAME="notation"></a>0.1 Notation</h3>
+G2 keywords such as classes and modules are denoted using a sans-serif
+font, e.g. <font face="Bookshelf Symbol 1"><font size=-1>G2-JAVA-BEAN</font>.
+</font>Java
+keywords and classes are denoted using a fixed width font such as <tt>java.awt.Component</tt>.
+Terms with special meaning that are defined later in the document are italicized,
+such as <i>stub</i>.
+<h3>
+<a NAME="introduction"></a>1.0 Introduction</h3>
+The <tt>WorkspaceView</tt> component in the Telewindows2Toolkit (abbreviated
+as T2T) can be used to display <font face="Bookshelf Symbol 1"><font size=-1>kb-workspace</font></font>s
+in a T2 client. WorkspaceViews have the contract of being able to represent
+data compatibly with G2 and classic Telewindows. <tt>WorkspaceView</tt>
+is a lightweight AWT Container. It typically contains <tt>Component</tt>s
+that visually represent the G2 items resident on the workspace. The choice
+of <tt>Component</tt> to represent a particular item is dependent upon
+its representation-type. Using this criterion, all G2 system-defined classes
+can be classified into iconic-objects, text-boxes, trend-charts, charts,
+connections, buttons, etc. User-defined sub-classes inherit the representation-type
+of their parent.
+<p>However, the WorkspaceView is capable of hosting arbitrary native widgets
+and controls. Any Java bean (as defined by the <a href="http://www.javasoft.com/beans">Java
+Bean Specification</a>) that is a subclass of <tt>java.awt.Component</tt>
+can be hosted by a WorkspaceView. This facility allows the UI developer
+to integrate built-in and 3rd-party controls into their G2 application.
+For example, developers can hook up a variety of charts to display real-time
+information from G2 or use sophisticated widgets to manipulate G2 data.
+<br>&nbsp;
+<h3>
+<a NAME="overview"></a>2.0 Overview</h3>
+In order to provide this feature, T2T leverages functionality provided
+by <i>JavaLink</i>. In addition todefining a mapping between G2 types and
+classes and Java types and classes, JavaLink also defines the reverse mapping
+from Java to G2. Any Java class that is imported in G2 is represented by
+a G2 class that bears the fully qualified name of the Java class, with
+a small degree of mangling. For example, the class
+<tt>java.awt.TextField</tt>
+is imported as the G2 class
+<font face="Bookshelf Symbol 1"><font size=-1>JAVA.AWT.TEXT-FIELD</font></font>.
+The methods of the Java class are available as G2 methods on the generated
+G2 class, which subclasses <font face="Bookshelf Symbol 1"><font size=-1>JGI-JAVA-PROXY</font></font>.
+The classes and types of all methods are also imported. When an instance
+of the Java class is passed to G2 (via a JavaLink RPC call argument or
+a return value), an instance of the corresponding G2 class is created and
+substituted for every occurrence of the original instance in the RPC call.
+This G2 object is referred to as a <i>stub</i> that is a placeholder for
+the Java object in G2. It can be transparently used in place of the Java
+object for all operations. These stubs are, however, transient and have
+utility and meaning only as long as the Virtual Machine in which the Java
+object lives is running.
+<p>If the KB contains the module <font face="Bookshelf Symbol 1"><font size=-1>t2beans</font></font>
+(packaged with Telewindows2Toolkit), users can optionally generate a <i>G2
+bean</i> class for any Java class. This bean class extends <font face="Bookshelf Symbol 1"><font size=-1>G2-JAVA-BEAN</font></font>,
+a new system-class introduced for ths purpose. The name follows the protocol
+of appending "-BEAN" to the name of the stub class. For example the G2
+bean class corresponding to the java class <tt>java.awt.TextField</tt>
+would be <font face="Bookshelf Symbol 1"><font size=-1>JAVA.AWT.TEXT-FIELD-BEAN</font></font>.
+<u>The
+bean class reflects all the methods available on the stub</u>. Such
+<font face="Bookshelf Symbol 1"><font size=-1>G2-JAVA-BEAN</font></font>s
+can be instantiated and placed on kb-workspaces in G2. They can be made
+permanent and saved in the KB. Their appearance is dependent on where the
+workspace is viewed. In G2 and classic Telewindows, they inherit the iconic
+appearance of <font face="Bookshelf Symbol 1"><font size=-1>G2-JAVA-BEAN</font></font>.
+However, when the workspace is viewed in a WorkspaceView within a T2T client,
+an instance of the Java class is instantiated and placed in the View.
+<br>&nbsp;
+<h3>
+<a NAME="terminology"></a>3.0 Terminology</h3>
+&nbsp;
+<table BORDER WIDTH="100%" >
+<tr>
+<td>JavaLink</td>
+
+<td>a product that allows close integration of Java and G2 worlds. It allows
+G2 and Java objects to be transparently passed between the two environments.</td>
+</tr>
+
+<tr>
+<td>Java bean</td>
+
+<td>an instance of any Java class that exposes its properties, events,
+and methods in a standard fashion.</td>
+</tr>
+
+<tr>
+<td>Java stub</td>
+
+<td>an instance of a G2 class that corresponds to a Java bean. It is essentially
+a handle to the Java bean.</td>
+</tr>
+
+<tr>
+<td>G2 bean</td>
+
+<td>an instance of a G2 class that will be represented by a Java bean in
+a WorkspaceView.</td>
+</tr>
+</table>
+
+<h3>
+<a NAME="mechanics-and-storage"></a>4.0 Mechanics and Storage</h3>
+It is not immediately apparent from the previous section what the G2 bean
+class offers over the stub class generated by Javalink, given that they
+expose the exact same API. The differences are detailed below:
+<ul>
+<li>
+The stub is the handle to a Java object in G2. There is a one-to-one correspondence
+between the two. The bean class, on the other hand, is a repository of
+information on how to instantate the Java bean. Besides the obvious information
+of which Java class to instantiate (each <font face="Bookshelf Symbol 1"><font size=-1>G2-JAVA-BEAN</font></font>
+subclass corresponds to a different Java class) and the dimensions (from
+the extent of the bean on the workspace), the bean can be used to hold
+more data for initialization. In particular, it provides a stream for serializing
+any Java object, which then serves as a template for all subsequent instances.
+The storage for this stream is provided by a <font face="Bookshelf Symbol 1"><font size=-1>MEDIA-BIN</font></font>
+object. This embedded media-bin is not directly accessible. However, access
+to saving and retrieving the data is provided in the Java interface <tt><a href="../../../../JavaLink/docs/api/com.gensym.classes.G2JavaBean.html">com.gensym.classes.G2JavaBean</a></tt>.
+Since a workspace can be viewed on many T2T clients at the same time (or
+for that matter, in many views on the same client), there is a many-to-one
+relationship between the Java instances and the G2 bean they represent.</li>
+
+<li>
+The bean provides broadcast behavior over all the Java objects representing
+a particular bean. In particular all void methods (the ones that do not
+return any value) called on the G2 bean with result in the method being
+called on all the corresponding Java beans with the same arguments. <u>At
+this time, the semantics of method calls with return values is not defined.</u>
+If in any future release of Telewindows2Toolkit, the semantics of such
+calls is decided, the details will be documented in this specification.</li>
+
+<li>
+The bean provides a locus for adding listeners to the Java beans. Consider
+the <tt>addTextListener</tt> method on the java class <tt>java.awt.TextField</tt>.
+This causes the generation of <font face="Bookshelf Symbol 1">add-text-listener
+</font>methods
+on the <font face="Bookshelf Symbol 1"><font size=-1>JAVA.AWT.TEXT-FIELD</font></font>
+stub class and the <font face="Bookshelf Symbol 1"><font size=-1>JAVA.AWT.TEXT-FIELD-BEAN</font></font>
+bean class. If the application is interested in receiving text events from
+the Java instances, it can add a listener to the G2 bean by calling add-text-istener
+on it at any time (before or after the Java beans have been instantiated).
+This typically involves defining a subclass of <font face="Bookshelf Symbol 1"><font size=-1>JAVA.AWT.EVENT.TEXT-LISTENER</font></font>
+in the KB and writing the code to be executed in the <font face="Bookshelf Symbol 1"><font size=-1>text-value-changed</font></font>
+method of the subclass. This listener list is permanent and the hookup
+is saved with the KB.</li>
+</ul>
+
+<h3>
+<a NAME="operation"></a>5.0 Operation</h3>
+Consider a T2T client logging in to a G2 application over a <font face="Bookshelf Symbol 1"><font size=-1>UI-CLIENT-SESSION</font></font>
+and downloading a kb-workspace containing a <font face="Bookshelf Symbol 1"><font size=-1>G2-JAVA-BEAN</font></font>
+(say a <font face="Bookshelf Symbol 1"><font size=-1>JAVA.AWT.TEXT-FIELD-BEAN</font></font>).
+When this kb-workspace is added to a <tt>WorkspaceView</tt>, a <tt>java.awt.TextField</tt>
+is created. The instantiation can happen in one of two ways: if there is
+a saved instance within the G2 bean, it is retrieved using the <tt><a href="../../../../JavaLink/docs/api/com.gensym.classes.G2JavaBean.html#retrieveObject">retrieveObject</a></tt>
+method of <a href="../../../../JavaLink/docs/api/com.gensym.classes.G2JavaBean.html">G2JavaBean</a>.
+The new instance is created by deserialization. If no saved data is available,
+the no-argument constructor of the Java class corresponding to the G2 bean
+is called. If the Java class is not found, a default representation is
+used to indicate the presence of the item on the workspace. The Java bean
+is added to the view at the location occupied by the G2 bean. Each Java
+bean is then registered with the KB so that subsequent operations can find
+it. There is a facility for a public callback through the <font face="Bookshelf Symbol 1"><font size=-1>BEAN-LISTENER</font></font>
+interface. Then, all listeners that were added to the bean by the application
+are hooked up to the stub so that events generated by the Java bean can
+be transmitted to the listeners. At this point, the Java bean and G2 bean
+are set up for two way communication of methods (from G2 -> Java) and events
+(from Java -> G2). When the workspace is removed from the view, the Java
+bean is deregistered with the KB so that it can be properly disposed off
+and garbage collected. This causes the removal of all KB listeners from
+the Java bean.
+<br>&nbsp;
+<h3>
+<a NAME="api"></a>6.0 T2BEANS API</h3>
+The API of the <font face="Bookshelf Symbol 1"><font size=-1>t2beans</font></font>
+module that are documented below:
+<h4>
+<a NAME="procedure-api"></a>6.1 PROCEDURE API</h4>
+
+<h4>
+<font face="Bookshelf Symbol 1"><font size=-1>T2BEANS-GENERATE-CLASS</font></font>,
+a procedure:</h4>
+T2BEANS-GENERATE-CLASS (Intf: class gsi-interface, JavaClassName: text,
+Refresh: truth-value) = (
+<blockquote>Generates the bean class for the desired Java class. This class
+is generated in the g2-beans module. Also results in generation of the
+stub classes corresponding to the target class and all Java classes encountered
+in the methods of the class. Stub classes are generated into different
+modules based on the package of the class being imported. <b>When new modules
+are created, the module hierarchy of the KB is changed to include the new
+modules in a consistent manner. Once the import is complete, you must save
+all the affected modules before shutting G2 down. <u>Failure to do so may
+result in unspecified behavior and might require redoing all the imports</u>.</b></blockquote>
+Arguments:&nbsp;
+<div ALIGN=right><table BORDER WIDTH="100%" >
+<tr>
+<td>Intf</td>
+
+<td>the gsi-interface connected to JavaLink</td>
+</tr>
+
+<tr>
+<td>JavaClassName</td>
+
+<td>&nbsp;the name of the Java class to import. This must specify a subclass
+of java.awt.Component. Otherwise, the results of the call are unspecified.</td>
+</tr>
+
+<tr>
+<td>Refresh</td>
+
+<td>a truth-value specifying whether or not to regenerate existing classes.
+Use a value of <font face="Bookshelf Symbol 1">true</font> to discard previously
+generated classes if the Java class has changed between the two calls to
+t2beans-generate-class.</td>
+</tr>
+</table></div>
+Return Values:
+<table BORDER WIDTH="100%" >
+<tr>
+<td>None</td>
+</tr>
+</table>
+
+<h5>
+T2BEANS-GET-SESSION-FOR-STUB, a procedure:</h5>
+T2BEANS-GET-SESSION-FOR-STUB (BeanStub: class jgi-java-proxy) = (class
+ui-client-session)
+<blockquote>Returns the UI-CLIENT-SESSION of the view on which this stub
+was created. This is used to respond to a event on a particular session.</blockquote>
+Arguments:
+<table BORDER WIDTH="100%" >
+<tr>
+<td>BeanStub</td>
+
+<td>The stub for which the session is to be determined. An error is signalled
+if there is no session associated with the stub. This happens only of the
+stub is not <a href="#operation">registered</a> properly.</td>
+</tr>
+</table>
+ReturnValues:
+<table BORDER WIDTH="100%" >
+<tr>
+<td>Session</td>
+
+<td>The ui-client-session representing the T2T client connection.</td>
+</tr>
+</table>
+
+<h5>
+T2BEANS-CREATE-BEAN, a procedure:</h5>
+T2BEANS-CREATE-BEAN (ClassName: text) = (Bean: class g2-java-bean)
+<blockquote>Used to create a bean.</blockquote>
+Arguments:
+<table BORDER WIDTH="100%" >
+<tr>
+<td>ClassName</td>
+
+<td>the name of the Java bean class</td>
+</tr>
+</table>
+Return Values:
+<table BORDER WIDTH="100%" >
+<tr>
+<td>Bean</td>
+
+<td>the newly created G2 bean</td>
+</tr>
+</table>
+
+<h5>
+T2BEANS-GET-BEAN-FOR-STUB, a procedure:</h5>
+T2BEANS-GET-BEAN-FOR-STUB (JavaStub: class jgi-java-proxy) = (Bean: class
+g2-java-bean)
+<blockquote>Returns the G2 bean corresponding to a stub. This is useful
+when you receive an event from a stub and want to determine which G2 bean
+it represents. If the stub is not registered with any bean, an error is
+signalled.</blockquote>
+Arguments:
+<table BORDER WIDTH="100%" >
+<tr>
+<td>JavaStub</td>
+
+<td>a stub that is the handle to a Java bean</td>
+</tr>
+</table>
+Return Values:
+<table BORDER WIDTH="100%" >
+<tr>
+<td>Bean</td>
+
+<td>the G2 bean with which this stub is registered</td>
+</tr>
+</table>
+
+<h4>
+<a NAME="bean-listener-api"></a>6.2 The BEAN-LISTENER interface</h4>
+<font face="Bookshelf Symbol 1"><font size=-1>G2-JAVA-BEAN</font></font>
+defines two methods, <font face="Bookshelf Symbol 1"><font size=-1>add-g2-bean-listener</font></font>
+and <font face="Bookshelf Symbol 1"><font size=-1>remove-g2-bean-listener</font></font>.
+These take a single argument which is of the class <font face="Bookshelf Symbol 1"><font size=-1>G2-BEAN-LISTENER</font></font>.
+This class provides a hook to listen for stubs being registered and deregistered
+from the G2 bean. There are two methods in this interface class: <font face="Bookshelf Symbol 1"><font size=-1>bean-stub-created</font></font>,
+which is called when any Java bean is registered with the G2 bean and <font face="Bookshelf Symbol 1"><font size=-1>bean-stub-disposed</font></font>,
+which is called when any Java bean is deregistered. The single argument
+to these methods is of the class <font face="Bookshelf Symbol 1"><font size=-1>G2-BEAN-EVENT</font></font>.
+There are two methods in the event class: <font face="Bookshelf Symbol 1"><font size=-1>get-source</font></font>,
+which returns the <font face="Bookshelf Symbol 1"><font size=-1>G2-JAVA-BEAN</font></font>
+for which the stub has been created or disposed, and <font face="Bookshelf Symbol 1"><font size=-1>get-stub</font></font>,
+which returns the relevant stub. These classes and methods are summarized
+below.
+<br>&nbsp;
+<table BORDER COLS=2 WIDTH="100%" >
+<tr>
+<td COLSPAN="2">Methods on <font face="Bookshelf Symbol 1"><font size=-1>G2-JAVA-BEAN</font></font></td>
+
+<td></td>
+</tr>
+
+<tr>
+<td><font face="Bookshelf Symbol 1"><font size=-1>add-g2-bean-listener</font></font></td>
+
+<td>(Bean: class g2-java-bean, Listener: class g2-bean-listener)</td>
+</tr>
+
+<tr>
+<td><font face="Bookshelf Symbol 1"><font size=-1>remove-g2-bean-listener</font></font></td>
+
+<td>(Bean: class g2-java-bean, Listener: class g2-bean-listener)</td>
+</tr>
+</table>
+
+<br>&nbsp;
+<table BORDER COLS=2 WIDTH="100%" >
+<tr>
+<td COLSPAN="2">Methods on <font face="Bookshelf Symbol 1"><font size=-1>G2-BEAN-LISTENER</font></font></td>
+
+<td></td>
+</tr>
+
+<tr>
+<td><font face="Bookshelf Symbol 1"><font size=-1>bean-stub-created</font></font></td>
+
+<td>(Listener: class g2-bean-listener, BeanEvent: class g2-bean-event)</td>
+</tr>
+
+<tr>
+<td><font face="Bookshelf Symbol 1"><font size=-1>bean-stub-disposed</font></font></td>
+
+<td>(Listener: class g2-bean-listener, BeanEvent: class g2-bean-event)</td>
+</tr>
+</table>
+
+<br>&nbsp;
+<table BORDER COLS=2 WIDTH="100%" >
+<tr>
+<td COLSPAN="2">Methods on <font face="Bookshelf Symbol 1"><font size=-1>G2-BEAN-EVENT</font></font></td>
+
+<td></td>
+</tr>
+
+<tr>
+<td><font face="Bookshelf Symbol 1"><font size=-1>get-source</font></font></td>
+
+<td>(BeanEvent: class g2-bean-event) = (class g2-java-bean)</td>
+</tr>
+
+<tr>
+<td><font face="Bookshelf Symbol 1"><font size=-1>get-stub</font></font></td>
+
+<td>(BeanEvent: class g2-bean-event) = (class jgi-java-proxy)</td>
+</tr>
+</table>
+
+<h3>
+<a NAME="interaction"></a>7.0 Interacting with Beans</h3>
+For the most part, the Java beans on <tt>WorkspaceView</tt> are good citizens
+within the <tt>Container</tt>. They behave similarly to the other <tt>WorkspaceElements</tt>
+on the view. All the <tt>Components</tt> contained within a <tt>WorkspaceView</tt>
+without beans are <i>lightweight</i>, in that they share a common resource
+on the native windowing system and are rendered completely in Java. However,
+when the WorkspaceView hosts beans that are <i>heavyweight</i>, unexpected
+consequences follow. These heavyweight Components have their own opaque,
+native window. These windows float over all the other lightweight <tt>Components</tt>
+in the application and do not observe expected layering constraints. Other
+anomalies include increased flickering while scrolling and failure to indicate
+WorkspaceElement state (such as when the element is "cut").
+<p>There are a couple of new entries in the popup menu for these beans.
+<li>
+Edit Bean...</li>
+
+<ul>
+<li>
+This displays a Property sheet that allows the user to edit the public
+fields of the bean. It can be used to customize the appearance from the
+public properties of the bean (e.g. Colors, Fonts, State).</li>
+</ul>
+
+<li>
+Save Bean...</li>
+
+<ul>
+<li>
+If the bean is customized (using the Property Sheet) or by other means,
+the state of the bean can be serialized into the G2 bean with this menu
+choice.&nbsp;<b> </b>All subsequent views will create beans using this
+data. <b>Note: This action will fail on objects which fail to serialize
+properly. This action must be performed before G2 listeners are added to
+the bean. G2 listeners are not serializable and interfere with the saving
+of the bean.</b></li>
+</ul>
+Some beans handle all mouse events within the component, which might result
+in it being impossible to "grab" them or post the context-menu on them.
+In order to allow these operations on such beans, a new property <tt>com.gensym.wksp.beans.borderwidth</tt>
+is used. If it is missing, a value of <tt>0</tt> is used. The value of
+this property is the number of pixels of padding around the bean that can
+be used to do these operations. This border area is usually transparent.
+The color can be specified by using the property <tt>com.gensym.wksp.beans.bordercolor</tt>
+as a String containing hexadecimal representation of the color (e.g. "0xFF00FF").
+<p>In addition, when connected to a G2 KB with T2BEANS loaded, there is
+an extra menu choice on the popup menu for the WorkspaceView - "New Bean..."
+Choosing it brings up a palette of the beans currently imported into G2.
+This palette can be used to drop G2 beans off on workspaces. It also allows
+the user to import new beans directly.
+<h3>
+<a NAME="activex-beans"></a>8.0 ActiveX Beans</h3>
+Developers can use the BeanXporter functionality built-in to Telewindows2Toolit
+to convert ActiveX controls on Windows NT/95/98 machines to Java beans.
+These beans can then be imported into G2 and hosted on workspaces. Please
+see the BeanXporter Users' Guide for more information about this functionality.
+<br>&nbsp;
+<h3>
+<a NAME="demo"></a>9.0 Demo</h3>
+Included in the T2T install is a demo of the Beans on Workspaces functionality.
+To run the demo, execute the following script:
+<ul>
+<li>
+On NT, %SEQUOIA_HOME%\Java\classes\com\gensym\demos\wkspbeans\rundemo.bat</li>
+
+<li>
+On Solaris, ${SEQUOIA_HOME}/classes/com/gensym/demos/wkspbeans/rundemo.sh</li>
+</ul>
+This brings up a G2 with the appropriate KB and opens a T2 client shell
+to connect to it. There are 4 different demo workspaces that display different
+levels of usage of the functionality:
+<ol>
+<li>
+Chart Demo: shows how to push data to a 3rd-party charting tool.</li>
+
+<li>
+Button Demo: shows how to set up listeners for Java controls and handle
+events from them.</li>
+
+<li>
+Widget Demo: shows how to hook up native controls to G2 data.</li>
+
+<li>
+ActiveX Demo (NT only):&nbsp; shows how to hookup the Microsoft Calendar
+Control to a G2 application.</li>
+</ol>
+
+</body>
+</html>

@@ -1,0 +1,71 @@
+BEANROOT=
+
+
+PACKAGER = java sun.beans.ole.Packager -noreg
+
+GROUP_NAME = trace
+
+JAVADIR=$(SRCBOX)\java
+
+JARDIR=jars
+
+JARFILE= $(JARDIR)\$(GROUP_NAME).jar
+
+ACTIVEXDIR = $(JAVADIR)\activex
+
+ACTIVEX_JARFILE = $(ACTIVEXDIR)\$(GROUP_NAME)X.jar
+
+CLASSDIR=com\gensym\tracebeans
+
+PACKAGE=com.gensym.tracebeans
+
+CLASSFILES= \
+	com\gensym\tracebeans\TraceElement.class \
+	com\gensym\tracebeans\TraceElementVector.class \
+	com\gensym\tracebeans\TraceElementVectorEditor.class \
+	com\gensym\tracebeans\TraceFilter.class \
+	com\gensym\tracebeans\TraceDisplay.class \
+	com\gensym\tracebeans\TraceControlPanel.class \
+	com\gensym\tracebeans\TraceTool.class \
+	com\gensym\tracebeans\ExceptionTraceDisplay.class 
+
+all: $(JARDIR) $(ACTIVEXDIR) $(JARFILE) $(ACTIVEX_JARFILE)
+
+
+$(JARDIR):
+	mkdir "$(JARDIR)"
+
+$(ACTIVEXDIR):
+	mkdir "$(ACTIVEXDIR)"
+
+# Create a JAR file with a suitable manifest.
+
+$(JARFILE): $(CLASSFILES)
+	jar cfm $(JARFILE) <<manifest.tmp $(CLASSFILES)
+Name: com/gensym/tracebeans/TraceDisplay.class
+Java-Bean: True
+
+Name: com/gensym/tracebeans/TraceFilter.class
+Java-Bean: True
+
+Name: com/gensym/tracebeans/TraceTool.class
+Java-Bean: True
+
+Name: com/gensym/tracebeans/ExceptionTraceDisplay.class
+Java-Bean: True
+<<
+
+# We only need to convert certain beans to activeX controls. If an more are added
+# do not forget to change unInstallControls.bat
+$(ACTIVEX_JARFILE) : $(JARFILE)
+	copy "$(JARFILE)" "$(ACTIVEX_JARFILE)"
+	$(PACKAGER) -n $(PACKAGE).ExceptionTraceDisplay -jar "$(ACTIVEX_JARFILE)" -o "$(ACTIVEXDIR)"
+
+
+.SUFFIXES: .java .class
+
+{com\gensym\tracebeans}.java{com\gensym\tracebeans}.class :
+	javac $<
+
+clean:
+	-del $(JARFILE) "$(ACTIVEX_JARFILE)"

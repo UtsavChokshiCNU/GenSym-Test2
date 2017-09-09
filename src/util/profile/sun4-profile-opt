@@ -1,0 +1,78 @@
+TRANSLATOR = /home/development/chestnut/trans-32b3c
+SHELL = /bin/sh
+ODIR = opt
+AUTODIR = $(DSTBOX)/auto
+CDIR = $(SRCBOX)/util/profile
+BINDIR = $(DSTBOX)/util/profile/$(ODIR)
+RTHDIR = $(SRCBOX)/rtl/c
+RTLDIR = $(DSTBOX)/rtl/$(ODIR)
+CC_FLAGS = -O
+
+all : $(BINDIR)/add-postfix $(BINDIR)/generate-backtrace-report \
+      $(BINDIR)/g2-profile $(BINDIR)/trace-network-data $(BINDIR)/g2-startup-profile \
+      $(BINDIR)/show-unreclaimed-conses $(BINDIR)/show-all-unreclaimed-conses \
+      $(BINDIR)/show-recent-functions \
+      $(BINDIR)/make-backtrace-report $(BINDIR)/convert-backtraces-to-lists \
+      $(BINDIR)/pid-exec $(BINDIR)/generate-names-file
+
+$(BINDIR)/add-postfix : $(CDIR)/add-postfix.c
+	gcc $(CC_FLAGS) $(CDIR)/add-postfix.c -o $(BINDIR)/add-postfix
+
+$(BINDIR)/generate-backtrace-report : $(CDIR)/generate-backtrace-report.lisp $(CDIR)/gbr-stubs.c
+	cp -p $(CDIR)/generate-backtrace-report.lisp $(BINDIR)/generate-backtrace-report.lisp
+	gcc -c $(CDIR)/gbr-stubs.c -o $(BINDIR)/stubs.o
+	echo '(cd "'$(BINDIR)'")' > $(BINDIR)/trans-gbr.lisp
+	echo '(trans:translate-files '"'"'("generate-backtrace-report"))' >> $(BINDIR)/trans-gbr.lisp
+	echo '(quit)' >> $(BINDIR)/trans-gbr.lisp
+	(cd $(BINDIR);$(TRANSLATOR)) < $(BINDIR)/trans-gbr.lisp
+	(cd $(BINDIR) ; \
+	 RUNTIME="$(RTHDIR)" ; \
+	 LIBDIR="$(RTLDIR)/" ; \
+	 OLIB="$(RTLDIR)/librtl.a stubs.o" ; \
+	 INCLUDEDIR="$(RTHDIR)/" ; \
+	 OEXE="$(BINDIR)/generate-backtrace-report" ; \
+	 OBIN="$(BINDIR)/" ; \
+	 CC=gcc ; \
+	 export RUNTIME LIBDIR OLIB INCLUDEDIR OEXE OBIN CC ; \
+	 make -e optimized)
+
+$(BINDIR)/g2-profile : $(CDIR)/g2-profile
+	cp $(CDIR)/g2-profile $(BINDIR)/g2-profile
+	chmod 755 $(BINDIR)/g2-profile
+
+$(BINDIR)/g2-startup-profile : $(CDIR)/g2-startup-profile
+	cp $(CDIR)/g2-startup-profile $(BINDIR)/g2-startup-profile
+	chmod 755 $(BINDIR)/g2-startup-profile
+
+$(BINDIR)/trace-network-data : $(CDIR)/trace-network-data
+	cp $(CDIR)/trace-network-data $(BINDIR)/trace-network-data
+	chmod 755 $(BINDIR)/trace-network-data
+
+$(BINDIR)/show-unreclaimed-conses : $(CDIR)/show-unreclaimed-conses
+	cp $(CDIR)/show-unreclaimed-conses $(BINDIR)/show-unreclaimed-conses
+	chmod 755 $(BINDIR)/show-unreclaimed-conses
+
+$(BINDIR)/show-all-unreclaimed-conses : $(CDIR)/show-all-unreclaimed-conses
+	cp $(CDIR)/show-all-unreclaimed-conses $(BINDIR)/show-all-unreclaimed-conses
+	chmod 755 $(BINDIR)/show-all-unreclaimed-conses
+
+$(BINDIR)/show-recent-functions : $(CDIR)/show-recent-functions
+	cp $(CDIR)/show-recent-functions $(BINDIR)/show-recent-functions
+	chmod 755 $(BINDIR)/show-recent-functions
+
+$(BINDIR)/make-backtrace-report : $(CDIR)/make-backtrace-report
+	cp $(CDIR)/make-backtrace-report $(BINDIR)/make-backtrace-report
+	chmod 755 $(BINDIR)/make-backtrace-report
+
+$(BINDIR)/convert-backtraces-to-lists : $(CDIR)/convert-backtraces-to-lists
+	cp $(CDIR)/convert-backtraces-to-lists $(BINDIR)/convert-backtraces-to-lists
+	chmod 755 $(BINDIR)/convert-backtraces-to-lists
+
+$(BINDIR)/pid-exec : $(CDIR)/pid-exec
+	cp $(CDIR)/pid-exec $(BINDIR)/pid-exec
+	chmod 755 $(BINDIR)/pid-exec
+
+$(BINDIR)/generate-names-file : $(CDIR)/generate-names-file-sun4
+	cp $(CDIR)/generate-names-file-sun4 $(BINDIR)/generate-names-file
+	chmod 755 $(BINDIR)/generate-names-file
+

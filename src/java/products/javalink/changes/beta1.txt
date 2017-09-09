@@ -1,0 +1,61 @@
+MAJOR API CHANGES
+=================
+1. Change the name of com.gensym.util.G2ItemEvent to com.gensym.util.ItemEvent.
+2. Removed com.gensym.util.G2ItemListener.
+   Fanout:
+   - removed
+     public Structure subscribeToItem (G2ItemListener client,
+ 				      Item itm,
+ 				      Sequence denotation,
+ 				      Object userData) 
+     throws G2AccessException
+
+     from com.gensym.jgi.G2Access and G2Gateway
+
+3. com.gensym.util.ItemEvent now has a method 
+   public int getID() that should be used instead of getModificationCode()
+   for branching operations. getModificationCode() remains to allow for
+   readability of printouts.
+
+4. Certain API calls will only be available through a UI-CLIENT-INTERFACE, and
+   there are licensing restrictions on UI-CLIENT-INTERFACE.
+   - Apart from the API restrictions, this licensing will not affect
+     Javalink customers.
+   - The following is a list of the calls that are restricted to 
+     UI-CLIENT-INTERFACE:
+     g2-add-trend-chart-component
+     g2-delete-trend-chart-component
+     g2-make-ui-client-session
+     g2-release-ui-client-session
+     g2-subscribe-to-modules
+     g2-unsubscribe-to-modules
+     g2-represent-workspace
+     g2-represent-trend-chart
+     g2-unrepresent-workspace
+     g2-get-containment-hierarchy
+     g2-get-current-user-menu-choices
+     g2-get-user-menu-choice
+     g2-change-mode-for-window
+     g2-fire-action-button
+     g2-fire-user-menu-choice
+     g2-create-parsing-context
+     g2-clear-parsing-context
+     g2-delete-parsing-context
+     g2-commit-parse-result
+     g2-update-parsing-context
+     g2-shift-cursor-position
+     g2-menu-of-names-for-category
+
+MINOR API CHANGES
+=================
+1. Created com.gensym.util.VariableValueEvent and corresponding Listener
+   for use with com.gensym.classes.VariableOrParameter and its subclasses.
+
+2. com.gensym.util.ItemEvent#makeRelayEvent has been removed.
+
+MINOR UI CHANGES
+================
+1. The capitalization of command-line arguments for 
+   com.gensym.jgi.rmi.G2RMIAccessBrokerImpl has changed. Please refer to the
+   API documentation for this class to see the current set of supported 
+   arguments.

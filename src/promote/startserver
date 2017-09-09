@@ -1,0 +1,26 @@
+#!/bin/sh
+
+# startserver -- Start a G2 server, with a module search path that contains all
+# installed bundle products.
+
+# Any G2 command line arguments may be supplied to this script, and will be
+# passed along.
+
+HM=%ROOTDIR%
+
+if [ -z "$G2_EXEC" ]; then
+  G2_EXEC=g2
+fi
+
+# find bundled kbs for our module search path
+for dir in ${HM}/g2i/kbs ${HM}/jmail/kbs ${HM}/jms/kbs ${HM}/jdbc/kbs ${HM}/g2/kbs/utils ${HM}/gda/kbs ${HM}/gda-4.5r1/kbs ${HM}/oracle/kbs ${HM}/pi/kbs ${HM}/sybase/kbs ${HM}/opcclient/kbs ${HM}/protools/kbs ${HM}/corbalink/kbs ${HM}/javalink/kbs ${HM}/tw2/kbs ${HM}/sockman/kbs ${HM}/jsnmp/kbs ${HM}/optegrity/kbs ${HM}/nol/kbs ${HM}/rethink/kbs ${HM}/escor/kbs ${HM}/integrity/kbs ${HM}/gw/kbs ${HM}/hla/kbs
+  do
+  if [ -d ${dir} ] 
+  then
+    G2_MODULE_SEARCH_PATH="${G2_MODULE_SEARCH_PATH} ${dir}/"
+  fi
+done
+
+export G2_MODULE_SEARCH_PATH
+
+${HM}/g2/${G2_EXEC} $* -resourcefile ${HM}/g2i/kbs/resources-\*.txt -configfile ${HM}/g2i/kbs/config.txt

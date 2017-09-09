@@ -1,0 +1,92 @@
+# Makefile for the Denali packages (RMI)
+#   JDK 1.2
+# Machine type: IntelNT
+
+#
+# JAVA_HOME should be set!
+# SPIN_ID should be set!
+# SRCBOX should be set!
+# RMI_IIOP_HOME shoube be set!
+#
+
+
+BT_JAVA = $(SRCBOX)\java
+RMIC	= $(RMI_IIOP_HOME)\bin\rmic
+TMPFILE	= $(TMP)\rmic.txt
+PPFIDA	= com.gensym.fida
+DENALI_DIR = $(BT_JAVA)\com\gensym\denali
+DENALI_PK = com.gensym.denali
+DENALI_MODEL_DIR = $(DENALI_DIR)\model
+DENALI_MODEL_PK = $(DENALI_PK).model
+DENALI_GRAPHICS_DIR = $(DENALI_DIR)\graphics
+DENALI_GRAPHICS_PK = $(DENALI_PK).graphics
+DENALI_SIMPLECLIENT_DIR = $(DENALI_DIR)\simpleclient
+DENALI_SIMPLECLIENT_PK = $(DENALI_PK).simpleclient
+DENALI_EVENTS_DIR = $(DENALI_DIR)\events
+DENALI_EVENTS_PK = $(DENALI_PK).events
+
+RMIC_FLAGS	= -d $(BT_JAVA)
+
+
+
+RMI_STUBS	= $(DENALI_MODEL_DIR)\ServerImpl_Stub.class \
+		  $(DENALI_MODEL_DIR)\ModuleImpl_Stub.class \
+		  $(DENALI_MODEL_DIR)\SchematicImpl_Stub.class \
+	          $(DENALI_MODEL_DIR)\AbstractNode_Stub.class \
+	          $(DENALI_MODEL_DIR)\AbstractTerminal_Stub.class \
+	          $(DENALI_MODEL_DIR)\AbstractConnection_Stub.class \
+	          $(DENALI_MODEL_DIR)\DataNodeImpl_Stub.class \
+	          $(DENALI_MODEL_DIR)\TableDataNodeImpl_Stub.class \
+	          $(DENALI_GRAPHICS_DIR)\RemoteTableListener_Stub.class \
+	          $(DENALI_GRAPHICS_DIR)\TextListener_Stub.class \
+	          $(DENALI_SIMPLECLIENT_DIR)\ClientSession_Stub.class \
+	          $(DENALI_SIMPLECLIENT_DIR)\ModuleView_Stub.class \
+	          $(DENALI_SIMPLECLIENT_DIR)\SchematicAdapter_Stub.class \
+	          $(DENALI_EVENTS_DIR)\EventForwardingDemultiplexer_Stub.class \
+
+
+all: $(RMI_STUBS)
+
+
+$(DENALI_MODEL_DIR)\ServerImpl_Stub.class: $(DENALI_MODEL_DIR)\ServerImpl.class
+	$(RMIC) $(RMIC_FLAGS) $(DENALI_MODEL_PK).ServerImpl
+
+$(DENALI_MODEL_DIR)\ModuleImpl_Stub.class: $(DENALI_MODEL_DIR)\ModuleImpl.class
+	$(RMIC) $(RMIC_FLAGS) $(DENALI_MODEL_PK).ModuleImpl
+
+$(DENALI_MODEL_DIR)\SchematicImpl_Stub.class: $(DENALI_MODEL_DIR)\SchematicImpl.class
+	$(RMIC) $(RMIC_FLAGS) $(DENALI_MODEL_PK).SchematicImpl
+
+$(DENALI_MODEL_DIR)\AbstractNode_Stub.class: $(DENALI_MODEL_DIR)\AbstractNode.class
+	$(RMIC) $(RMIC_FLAGS) $(DENALI_MODEL_PK).AbstractNode
+
+$(DENALI_MODEL_DIR)\AbstractTerminal_Stub.class: $(DENALI_MODEL_DIR)\AbstractTerminal.class
+	$(RMIC) $(RMIC_FLAGS) $(DENALI_MODEL_PK).AbstractTerminal
+
+$(DENALI_MODEL_DIR)\AbstractConnection_Stub.class: $(DENALI_MODEL_DIR)\AbstractConnection.class
+	$(RMIC) $(RMIC_FLAGS) $(DENALI_MODEL_PK).AbstractConnection
+
+$(DENALI_MODEL_DIR)\DataNodeImpl_Stub.class: $(DENALI_MODEL_DIR)\DataNodeImpl.class
+	$(RMIC) $(RMIC_FLAGS) $(DENALI_MODEL_PK).DataNodeImpl
+
+$(DENALI_MODEL_DIR)\TableDataNodeImpl_Stub.class: $(DENALI_MODEL_DIR)\TableDataNodeImpl.class
+	$(RMIC) $(RMIC_FLAGS) $(DENALI_MODEL_PK).TableDataNodeImpl
+
+$(DENALI_GRAPHICS_DIR)\RemoteTableListener_Stub.class: $(DENALI_GRAPHICS_DIR)\RemoteTableListener.class
+	$(RMIC) $(RMIC_FLAGS) $(DENALI_GRAPHICS_PK).RemoteTableListener
+
+$(DENALI_GRAPHICS_DIR)\TextListener_Stub.class: $(DENALI_GRAPHICS_DIR)\TextListener.class
+	$(RMIC) $(RMIC_FLAGS) $(DENALI_GRAPHICS_PK).TextListener
+
+$(DENALI_SIMPLECLIENT_DIR)\ClientSession_Stub.class: $(DENALI_SIMPLECLIENT_DIR)\ClientSession.class
+	$(RMIC) $(RMIC_FLAGS) $(DENALI_SIMPLECLIENT_PK).ClientSession
+
+$(DENALI_SIMPLECLIENT_DIR)\ModuleView_Stub.class: $(DENALI_SIMPLECLIENT_DIR)\ModuleView.class
+	$(RMIC) $(RMIC_FLAGS) $(DENALI_SIMPLECLIENT_PK).ModuleView
+
+$(DENALI_SIMPLECLIENT_DIR)\SchematicAdapter_Stub.class: $(DENALI_SIMPLECLIENT_DIR)\SchematicAdapter.class
+	$(RMIC) $(RMIC_FLAGS) $(DENALI_SIMPLECLIENT_PK).SchematicAdapter
+	
+
+$(DENALI_EVENTS_DIR)\EventForwardingDemultiplexer_Stub.class: $(DENALI_EVENTS_DIR)\EventForwardingDemultiplexer.class
+	$(RMIC) $(RMIC_FLAGS) $(DENALI_EVENTS_PK).EventForwardingDemultiplexer

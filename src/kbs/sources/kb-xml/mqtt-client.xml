@@ -1,0 +1,594 @@
+<?xml version="1.0"?>
+<rdf:RDF
+ xmlns:rdf="http://www.w3.org/TR/WD-rdf-syntax#"
+ xmlns:g2="g2-beta-12-0-18.rdf"
+ xmlns="">
+
+<g2:Module ID="MQTT-CLIENT">
+  <g2:version>
+    <g2:Structure>
+      <g2:sa.MAJOR-VERSION g2:type="Integer">12</g2:sa.MAJOR-VERSION>
+      <g2:sa.MINOR-VERSION g2:type="Integer">0</g2:sa.MINOR-VERSION>
+      <g2:sa.RELEASE-QUALITY g2:type="Text">Beta</g2:sa.RELEASE-QUALITY>
+      <g2:sa.REVISION g2:type="Integer">18</g2:sa.REVISION>
+      <g2:sa.BUILD-IDENTIFICATION g2:type="Text">TF23</g2:sa.BUILD-IDENTIFICATION></g2:Structure></g2:version>
+  <g2:systemtables>
+    <g2:Sequence>
+      <rdf:li>
+      <g2:c.MODULE-INFORMATION ID="c96c5973565c11e790869eb6d01063cf">
+        <g2:a.TOP-LEVEL-MODULE g2:type="Symbol">MQTT-CLIENT</g2:a.TOP-LEVEL-MODULE>
+        </g2:c.MODULE-INFORMATION></rdf:li>
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      <rdf:li>
+      <g2:c.MISCELLANEOUS-PARAMETERS ID="c96c5984565c11e790869eb6d01063cf">
+        <g2:a.BACKWARD-COMPATIBILITY-FEATURES>
+          <g2:Sequence>
+            <rdf:li g2:type="Symbol">PRINT-MEANS-PRINT-TO-SERVER-IN-CONFIGURATIONS</rdf:li>
+            <rdf:li g2:type="Symbol">INCONSISTENT-BEHAVIOR-OF-MOVE-IN-CONFIGURATIONS</rdf:li></g2:Sequence></g2:a.BACKWARD-COMPATIBILITY-FEATURES>
+        </g2:c.MISCELLANEOUS-PARAMETERS></rdf:li>
+      
+      
+      </g2:Sequence></g2:systemtables>
+  <g2:panes>
+    <g2:Sequence>
+      <rdf:li>
+      <g2:Structure>
+        <g2:sa.WORKSPACE><g2:c.KB-WORKSPACE rdf:resource="#c96c5988565c11e790869eb6d01063cf"/></g2:sa.WORKSPACE>
+        <g2:sa.X-IN-WORKSPACE g2:type="Integer">0</g2:sa.X-IN-WORKSPACE>
+        <g2:sa.Y-IN-WORKSPACE g2:type="Integer">0</g2:sa.Y-IN-WORKSPACE>
+        <g2:sa.X-MAGNIFICATION g2:type="Integer">256</g2:sa.X-MAGNIFICATION>
+        <g2:sa.Y-MAGNIFICATION g2:type="Integer">256</g2:sa.Y-MAGNIFICATION></g2:Structure></rdf:li></g2:Sequence></g2:panes>
+  </g2:Module>
+
+<g2:c.KB-WORKSPACE ID="c96c5988565c11e790869eb6d01063cf">
+  <g2:a.NAMES g2:type="Symbol">MQTT</g2:a.NAMES>
+  <g2:a.MODULE-ASSIGNMENT g2:type="Symbol">MQTT-CLIENT</g2:a.MODULE-ASSIGNMENT>
+  <g2:a.EDGES-OF-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.LEFT g2:type="Integer">-354</g2:sa.LEFT>
+      <g2:sa.TOP g2:type="Integer">250</g2:sa.TOP>
+      <g2:sa.RIGHT g2:type="Integer">350</g2:sa.RIGHT>
+      <g2:sa.BOTTOM g2:type="Integer">-251</g2:sa.BOTTOM></g2:Structure></g2:a.EDGES-OF-WORKSPACE>
+  <g2:a.NAME-BOX>
+    <g2:Structure>
+      <g2:sa.COLOR>
+        <g2:Structure>
+          <g2:sa.BACKGROUND-COLOR g2:type="Symbol">BLACK</g2:sa.BACKGROUND-COLOR>
+          <g2:sa.TEXT-COLOR g2:type="Symbol">WHITE</g2:sa.TEXT-COLOR></g2:Structure></g2:sa.COLOR>
+      <g2:sa.POSITION>
+        <g2:Structure>
+          <g2:sa.X-OFFSET g2:type="Integer">-318</g2:sa.X-OFFSET>
+          <g2:sa.Y-OFFSET g2:type="Integer">220</g2:sa.Y-OFFSET></g2:Structure></g2:sa.POSITION></g2:Structure></g2:a.NAME-BOX></g2:c.KB-WORKSPACE>
+
+<g2:c.CLASS-DEFINITION ID="59873165566011e790869eb6d01063cf">
+  
+  <g2:a.ITEM-CONFIGURATION>
+    <g2:Sequence>
+      <rdf:li>
+      <g2:Structure>
+        <g2:sa.TYPE g2:type="Symbol">COMMENT</g2:sa.TYPE>
+        <g2:sa.CLAUSES>
+          <g2:Sequence>
+            <rdf:li>
+            <g2:Structure>
+              <g2:sa.TAG-NAME g2:type="Symbol">MQTT-BROKER</g2:sa.TAG-NAME>
+              <g2:sa.ASSOCIATED-TEXT g2:type="Text">This class holds configuration parameters and state for a MQTT server connection.</g2:sa.ASSOCIATED-TEXT></g2:Structure></rdf:li>
+            <rdf:li>
+            <g2:Structure>
+              <g2:sa.TAG-NAME g2:type="Symbol">HOST</g2:sa.TAG-NAME>
+              <g2:sa.ASSOCIATED-TEXT g2:type="Text">Server host</g2:sa.ASSOCIATED-TEXT></g2:Structure></rdf:li>
+            <rdf:li>
+            <g2:Structure>
+              <g2:sa.TAG-NAME g2:type="Symbol">PORT</g2:sa.TAG-NAME>
+              <g2:sa.ASSOCIATED-TEXT g2:type="Text">Server port</g2:sa.ASSOCIATED-TEXT></g2:Structure></rdf:li>
+            <rdf:li>
+            <g2:Structure>
+              <g2:sa.TAG-NAME g2:type="Symbol">CLIENT-ID</g2:sa.TAG-NAME>
+              <g2:sa.ASSOCIATED-TEXT g2:type="Text">MQTT Client id</g2:sa.ASSOCIATED-TEXT></g2:Structure></rdf:li>
+            <rdf:li>
+            <g2:Structure>
+              <g2:sa.TAG-NAME g2:type="Symbol">CLEAN-SESSION</g2:sa.TAG-NAME>
+              <g2:sa.ASSOCIATED-TEXT g2:type="Text">Is session persistent?</g2:sa.ASSOCIATED-TEXT></g2:Structure></rdf:li>
+            <rdf:li>
+            <g2:Structure>
+              <g2:sa.TAG-NAME g2:type="Symbol">USERNAME</g2:sa.TAG-NAME>
+              <g2:sa.ASSOCIATED-TEXT g2:type="Text">User name</g2:sa.ASSOCIATED-TEXT></g2:Structure></rdf:li>
+            <rdf:li>
+            <g2:Structure>
+              <g2:sa.TAG-NAME g2:type="Symbol">PASSWORD</g2:sa.TAG-NAME>
+              <g2:sa.ASSOCIATED-TEXT g2:type="Text">Password</g2:sa.ASSOCIATED-TEXT></g2:Structure></rdf:li>
+            <rdf:li>
+            <g2:Structure>
+              <g2:sa.TAG-NAME g2:type="Symbol">LAST-WILL-FLAG</g2:sa.TAG-NAME>
+              <g2:sa.ASSOCIATED-TEXT g2:type="Text">Will to be stored?</g2:sa.ASSOCIATED-TEXT></g2:Structure></rdf:li>
+            <rdf:li>
+            <g2:Structure>
+              <g2:sa.TAG-NAME g2:type="Symbol">LAST-WILL-TOPIC</g2:sa.TAG-NAME>
+              <g2:sa.ASSOCIATED-TEXT g2:type="Text">Will topic</g2:sa.ASSOCIATED-TEXT></g2:Structure></rdf:li>
+            <rdf:li>
+            <g2:Structure>
+              <g2:sa.TAG-NAME g2:type="Symbol">LAST-WILL-QOS</g2:sa.TAG-NAME>
+              <g2:sa.ASSOCIATED-TEXT g2:type="Text">QoS of Will</g2:sa.ASSOCIATED-TEXT></g2:Structure></rdf:li>
+            <rdf:li>
+            <g2:Structure>
+              <g2:sa.TAG-NAME g2:type="Symbol">LAST-WILL-MESSAGE</g2:sa.TAG-NAME>
+              <g2:sa.ASSOCIATED-TEXT g2:type="Text">Will message</g2:sa.ASSOCIATED-TEXT></g2:Structure></rdf:li>
+            <rdf:li>
+            <g2:Structure>
+              <g2:sa.TAG-NAME g2:type="Symbol">LAST-WILL-RETAIN</g2:sa.TAG-NAME>
+              <g2:sa.ASSOCIATED-TEXT g2:type="Text">Retain Will?</g2:sa.ASSOCIATED-TEXT></g2:Structure></rdf:li>
+            <rdf:li>
+            <g2:Structure>
+              <g2:sa.TAG-NAME g2:type="Symbol">KEEP-ALIVE</g2:sa.TAG-NAME>
+              <g2:sa.ASSOCIATED-TEXT g2:type="Text">The Keep Alive is the maximum time interval that is permitted to elapse between the point at which the Client finishes transmitting one Control Packet and the point it starts sending the next. A Keep Alive value of zero (0) has the effect of turning off the keep alive mechanism.</g2:sa.ASSOCIATED-TEXT></g2:Structure></rdf:li>
+            <rdf:li>
+            <g2:Structure>
+              <g2:sa.TAG-NAME g2:type="Symbol">LOG-TOPIC-DATA</g2:sa.TAG-NAME>
+              <g2:sa.ASSOCIATED-TEXT g2:type="Text">Log topic data?</g2:sa.ASSOCIATED-TEXT></g2:Structure></rdf:li>
+            <rdf:li>
+            <g2:Structure>
+              <g2:sa.TAG-NAME g2:type="Symbol">LOG-PACKET-DATA</g2:sa.TAG-NAME>
+              <g2:sa.ASSOCIATED-TEXT g2:type="Text">Log packet data?</g2:sa.ASSOCIATED-TEXT></g2:Structure></rdf:li></g2:Sequence></g2:sa.CLAUSES></g2:Structure></rdf:li></g2:Sequence></g2:a.ITEM-CONFIGURATION>
+  <g2:a.CLASS-NAME g2:type="Symbol">MQTT-BROKER</g2:a.CLASS-NAME>
+  <g2:a.DIRECT-SUPERIOR-CLASSES>
+    <g2:Sequence>
+      <rdf:li g2:type="Symbol">OBJECT</rdf:li></g2:Sequence></g2:a.DIRECT-SUPERIOR-CLASSES>
+  <g2:a.CLASS-SPECIFIC-ATTRIBUTES>
+    <g2:Sequence>
+      <rdf:li>
+      <g2:Structure>
+        <g2:sa.ATTRIBUTE-NAME g2:type="Symbol">HOST</g2:sa.ATTRIBUTE-NAME>
+        <g2:sa.ATTRIBUTE-TYPE-SPECIFICATION g2:type="Symbol">TEXT</g2:sa.ATTRIBUTE-TYPE-SPECIFICATION>
+        <g2:sa.ATTRIBUTE-INITIAL-VALUE g2:type="Text"></g2:sa.ATTRIBUTE-INITIAL-VALUE></g2:Structure></rdf:li>
+      <rdf:li>
+      <g2:Structure>
+        <g2:sa.ATTRIBUTE-NAME g2:type="Symbol">PORT</g2:sa.ATTRIBUTE-NAME>
+        <g2:sa.ATTRIBUTE-TYPE-SPECIFICATION g2:type="Symbol">INTEGER</g2:sa.ATTRIBUTE-TYPE-SPECIFICATION>
+        <g2:sa.ATTRIBUTE-INITIAL-VALUE g2:type="Integer">1883</g2:sa.ATTRIBUTE-INITIAL-VALUE></g2:Structure></rdf:li>
+      <rdf:li>
+      <g2:Structure>
+        <g2:sa.ATTRIBUTE-NAME g2:type="Symbol">CLIENT-ID</g2:sa.ATTRIBUTE-NAME>
+        <g2:sa.ATTRIBUTE-TYPE-SPECIFICATION g2:type="Symbol">TEXT</g2:sa.ATTRIBUTE-TYPE-SPECIFICATION>
+        <g2:sa.ATTRIBUTE-INITIAL-VALUE g2:type="Text">MQTT-client-1</g2:sa.ATTRIBUTE-INITIAL-VALUE></g2:Structure></rdf:li>
+      <rdf:li>
+      <g2:Structure>
+        <g2:sa.ATTRIBUTE-NAME g2:type="Symbol">CLEAN-SESSION</g2:sa.ATTRIBUTE-NAME>
+        <g2:sa.ATTRIBUTE-TYPE-SPECIFICATION g2:type="Symbol">TRUTH-VALUE</g2:sa.ATTRIBUTE-TYPE-SPECIFICATION>
+        <g2:sa.ATTRIBUTE-INITIAL-VALUE g2:type="TruthValue">false</g2:sa.ATTRIBUTE-INITIAL-VALUE></g2:Structure></rdf:li>
+      <rdf:li>
+      <g2:Structure>
+        <g2:sa.ATTRIBUTE-NAME g2:type="Symbol">USERNAME</g2:sa.ATTRIBUTE-NAME>
+        <g2:sa.ATTRIBUTE-TYPE-SPECIFICATION g2:type="Symbol">TEXT</g2:sa.ATTRIBUTE-TYPE-SPECIFICATION>
+        <g2:sa.ATTRIBUTE-INITIAL-VALUE g2:type="Text">username</g2:sa.ATTRIBUTE-INITIAL-VALUE></g2:Structure></rdf:li>
+      <rdf:li>
+      <g2:Structure>
+        <g2:sa.ATTRIBUTE-NAME g2:type="Symbol">PASSWORD</g2:sa.ATTRIBUTE-NAME>
+        <g2:sa.ATTRIBUTE-TYPE-SPECIFICATION g2:type="Symbol">TEXT</g2:sa.ATTRIBUTE-TYPE-SPECIFICATION>
+        <g2:sa.ATTRIBUTE-INITIAL-VALUE g2:type="Text">password</g2:sa.ATTRIBUTE-INITIAL-VALUE></g2:Structure></rdf:li>
+      <rdf:li>
+      <g2:Structure>
+        <g2:sa.ATTRIBUTE-NAME g2:type="Symbol">LAST-WILL-FLAG</g2:sa.ATTRIBUTE-NAME>
+        <g2:sa.ATTRIBUTE-TYPE-SPECIFICATION g2:type="Symbol">TRUTH-VALUE</g2:sa.ATTRIBUTE-TYPE-SPECIFICATION>
+        <g2:sa.ATTRIBUTE-INITIAL-VALUE g2:type="TruthValue">true</g2:sa.ATTRIBUTE-INITIAL-VALUE></g2:Structure></rdf:li>
+      <rdf:li>
+      <g2:Structure>
+        <g2:sa.ATTRIBUTE-NAME g2:type="Symbol">LAST-WILL-TOPIC</g2:sa.ATTRIBUTE-NAME>
+        <g2:sa.ATTRIBUTE-TYPE-SPECIFICATION g2:type="Symbol">TEXT</g2:sa.ATTRIBUTE-TYPE-SPECIFICATION>
+        <g2:sa.ATTRIBUTE-INITIAL-VALUE g2:type="Text"></g2:sa.ATTRIBUTE-INITIAL-VALUE></g2:Structure></rdf:li>
+      <rdf:li>
+      <g2:Structure>
+        <g2:sa.ATTRIBUTE-NAME g2:type="Symbol">LAST-WILL-QOS</g2:sa.ATTRIBUTE-NAME>
+        <g2:sa.ATTRIBUTE-TYPE-SPECIFICATION g2:type="Symbol">INTEGER</g2:sa.ATTRIBUTE-TYPE-SPECIFICATION>
+        <g2:sa.ATTRIBUTE-INITIAL-VALUE g2:type="Integer">2</g2:sa.ATTRIBUTE-INITIAL-VALUE></g2:Structure></rdf:li>
+      <rdf:li>
+      <g2:Structure>
+        <g2:sa.ATTRIBUTE-NAME g2:type="Symbol">LAST-WILL-MESSAGE</g2:sa.ATTRIBUTE-NAME>
+        <g2:sa.ATTRIBUTE-TYPE-SPECIFICATION g2:type="Symbol">TEXT</g2:sa.ATTRIBUTE-TYPE-SPECIFICATION>
+        <g2:sa.ATTRIBUTE-INITIAL-VALUE g2:type="Text"></g2:sa.ATTRIBUTE-INITIAL-VALUE></g2:Structure></rdf:li>
+      <rdf:li>
+      <g2:Structure>
+        <g2:sa.ATTRIBUTE-NAME g2:type="Symbol">LAST-WILL-RETAIN</g2:sa.ATTRIBUTE-NAME>
+        <g2:sa.ATTRIBUTE-TYPE-SPECIFICATION g2:type="Symbol">TRUTH-VALUE</g2:sa.ATTRIBUTE-TYPE-SPECIFICATION>
+        <g2:sa.ATTRIBUTE-INITIAL-VALUE g2:type="TruthValue">false</g2:sa.ATTRIBUTE-INITIAL-VALUE></g2:Structure></rdf:li>
+      <rdf:li>
+      <g2:Structure>
+        <g2:sa.ATTRIBUTE-NAME g2:type="Symbol">KEEP-ALIVE</g2:sa.ATTRIBUTE-NAME>
+        <g2:sa.ATTRIBUTE-TYPE-SPECIFICATION g2:type="Symbol">QUANTITY</g2:sa.ATTRIBUTE-TYPE-SPECIFICATION>
+        <g2:sa.ATTRIBUTE-INITIAL-VALUE g2:type="Integer">60</g2:sa.ATTRIBUTE-INITIAL-VALUE>
+        <g2:sa.ATTRIBUTE-INITIAL-TYPE g2:type="Symbol">SECONDS</g2:sa.ATTRIBUTE-INITIAL-TYPE></g2:Structure></rdf:li>
+      <rdf:li>
+      <g2:Structure>
+        <g2:sa.ATTRIBUTE-NAME g2:type="Symbol">LOG-TOPIC-DATA</g2:sa.ATTRIBUTE-NAME>
+        <g2:sa.ATTRIBUTE-TYPE-SPECIFICATION g2:type="Symbol">TRUTH-VALUE</g2:sa.ATTRIBUTE-TYPE-SPECIFICATION>
+        <g2:sa.ATTRIBUTE-INITIAL-VALUE g2:type="TruthValue">true</g2:sa.ATTRIBUTE-INITIAL-VALUE></g2:Structure></rdf:li>
+      <rdf:li>
+      <g2:Structure>
+        <g2:sa.ATTRIBUTE-NAME g2:type="Symbol">LOG-PACKET-DATA</g2:sa.ATTRIBUTE-NAME>
+        <g2:sa.ATTRIBUTE-TYPE-SPECIFICATION g2:type="Symbol">TRUTH-VALUE</g2:sa.ATTRIBUTE-TYPE-SPECIFICATION>
+        <g2:sa.ATTRIBUTE-INITIAL-VALUE g2:type="TruthValue">true</g2:sa.ATTRIBUTE-INITIAL-VALUE></g2:Structure></rdf:li></g2:Sequence></g2:a.CLASS-SPECIFIC-ATTRIBUTES>
+  <g2:a.ICON-DESCRIPTION>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT>
+      <g2:sa.REGIONS>
+        <g2:Sequence>
+          <rdf:li>
+          <g2:Structure>
+            <g2:sa.REGION-NAME g2:type="Symbol">G2-ICON-LEFT-EDGE</g2:sa.REGION-NAME>
+            <g2:sa.COLOR-NAME g2:type="Symbol">EXTRA-LIGHT-GRAY</g2:sa.COLOR-NAME></g2:Structure></rdf:li>
+          <rdf:li>
+          <g2:Structure>
+            <g2:sa.REGION-NAME g2:type="Symbol">G2-ICON-TOP-EDGE</g2:sa.REGION-NAME>
+            <g2:sa.COLOR-NAME g2:type="Symbol">LIGHT-GRAY</g2:sa.COLOR-NAME></g2:Structure></rdf:li>
+          <rdf:li>
+          <g2:Structure>
+            <g2:sa.REGION-NAME g2:type="Symbol">G2-ICON-RIGHT-EDGE</g2:sa.REGION-NAME>
+            <g2:sa.COLOR-NAME g2:type="Symbol">EXTRA-LIGHT-GRAY</g2:sa.COLOR-NAME></g2:Structure></rdf:li>
+          <rdf:li>
+          <g2:Structure>
+            <g2:sa.REGION-NAME g2:type="Symbol">G2-ICON-BOTTOM-EDGE</g2:sa.REGION-NAME>
+            <g2:sa.COLOR-NAME g2:type="Symbol">GRAY</g2:sa.COLOR-NAME></g2:Structure></rdf:li>
+          <rdf:li>
+          <g2:Structure>
+            <g2:sa.REGION-NAME g2:type="Symbol">ICON-COLOR</g2:sa.REGION-NAME>
+            <g2:sa.COLOR-NAME g2:type="Symbol">FOREGROUND</g2:sa.COLOR-NAME></g2:Structure></rdf:li></g2:Sequence></g2:sa.REGIONS>
+      <g2:sa.LAYERS>
+        <g2:Sequence>
+          <rdf:li>
+          <g2:Structure>
+            <g2:sa.REGION-OR-COLOR g2:type="Symbol">G2-ICON-LEFT-EDGE</g2:sa.REGION-OR-COLOR>
+            <g2:sa.LINE-DRAWING-ELEMENTS>
+              <g2:Sequence>
+                <rdf:li>
+                <g2:Structure>
+                  <g2:sa.TYPE g2:type="Symbol">FILLED-POLYGON</g2:sa.TYPE>
+                  <g2:sa.POINTS>
+                    <g2:Sequence>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.X g2:type="Integer">0</g2:sa.X>
+                        <g2:sa.Y g2:type="Integer">0</g2:sa.Y></g2:Structure></rdf:li>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.X g2:type="Integer">25</g2:sa.X>
+                        <g2:sa.Y g2:type="Integer">25</g2:sa.Y></g2:Structure></rdf:li>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.X g2:type="Integer">0</g2:sa.X>
+                        <g2:sa.Y g2:type="Integer">50</g2:sa.Y></g2:Structure></rdf:li></g2:Sequence></g2:sa.POINTS></g2:Structure></rdf:li></g2:Sequence></g2:sa.LINE-DRAWING-ELEMENTS></g2:Structure></rdf:li>
+          <rdf:li>
+          <g2:Structure>
+            <g2:sa.REGION-OR-COLOR g2:type="Symbol">G2-ICON-TOP-EDGE</g2:sa.REGION-OR-COLOR>
+            <g2:sa.LINE-DRAWING-ELEMENTS>
+              <g2:Sequence>
+                <rdf:li>
+                <g2:Structure>
+                  <g2:sa.TYPE g2:type="Symbol">FILLED-POLYGON</g2:sa.TYPE>
+                  <g2:sa.POINTS>
+                    <g2:Sequence>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.X g2:type="Integer">25</g2:sa.X>
+                        <g2:sa.Y g2:type="Integer">25</g2:sa.Y></g2:Structure></rdf:li>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.X g2:type="Integer">0</g2:sa.X>
+                        <g2:sa.Y g2:type="Integer">0</g2:sa.Y></g2:Structure></rdf:li>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.X g2:type="Integer">50</g2:sa.X>
+                        <g2:sa.Y g2:type="Integer">0</g2:sa.Y></g2:Structure></rdf:li></g2:Sequence></g2:sa.POINTS></g2:Structure></rdf:li></g2:Sequence></g2:sa.LINE-DRAWING-ELEMENTS></g2:Structure></rdf:li>
+          <rdf:li>
+          <g2:Structure>
+            <g2:sa.REGION-OR-COLOR g2:type="Symbol">G2-ICON-RIGHT-EDGE</g2:sa.REGION-OR-COLOR>
+            <g2:sa.LINE-DRAWING-ELEMENTS>
+              <g2:Sequence>
+                <rdf:li>
+                <g2:Structure>
+                  <g2:sa.TYPE g2:type="Symbol">FILLED-POLYGON</g2:sa.TYPE>
+                  <g2:sa.POINTS>
+                    <g2:Sequence>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.X g2:type="Integer">25</g2:sa.X>
+                        <g2:sa.Y g2:type="Integer">25</g2:sa.Y></g2:Structure></rdf:li>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.X g2:type="Integer">50</g2:sa.X>
+                        <g2:sa.Y g2:type="Integer">0</g2:sa.Y></g2:Structure></rdf:li>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.X g2:type="Integer">50</g2:sa.X>
+                        <g2:sa.Y g2:type="Integer">50</g2:sa.Y></g2:Structure></rdf:li></g2:Sequence></g2:sa.POINTS></g2:Structure></rdf:li></g2:Sequence></g2:sa.LINE-DRAWING-ELEMENTS></g2:Structure></rdf:li>
+          <rdf:li>
+          <g2:Structure>
+            <g2:sa.REGION-OR-COLOR g2:type="Symbol">G2-ICON-BOTTOM-EDGE</g2:sa.REGION-OR-COLOR>
+            <g2:sa.LINE-DRAWING-ELEMENTS>
+              <g2:Sequence>
+                <rdf:li>
+                <g2:Structure>
+                  <g2:sa.TYPE g2:type="Symbol">FILLED-POLYGON</g2:sa.TYPE>
+                  <g2:sa.POINTS>
+                    <g2:Sequence>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.X g2:type="Integer">0</g2:sa.X>
+                        <g2:sa.Y g2:type="Integer">50</g2:sa.Y></g2:Structure></rdf:li>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.X g2:type="Integer">25</g2:sa.X>
+                        <g2:sa.Y g2:type="Integer">25</g2:sa.Y></g2:Structure></rdf:li>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.X g2:type="Integer">50</g2:sa.X>
+                        <g2:sa.Y g2:type="Integer">50</g2:sa.Y></g2:Structure></rdf:li></g2:Sequence></g2:sa.POINTS></g2:Structure></rdf:li></g2:Sequence></g2:sa.LINE-DRAWING-ELEMENTS></g2:Structure></rdf:li>
+          <rdf:li>
+          <g2:Structure>
+            <g2:sa.REGION-OR-COLOR g2:type="Symbol">ICON-COLOR</g2:sa.REGION-OR-COLOR>
+            <g2:sa.LINE-DRAWING-ELEMENTS>
+              <g2:Sequence>
+                <rdf:li>
+                <g2:Structure>
+                  <g2:sa.TYPE g2:type="Symbol">OUTLINE</g2:sa.TYPE>
+                  <g2:sa.POINTS>
+                    <g2:Sequence>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.X g2:type="Integer">0</g2:sa.X>
+                        <g2:sa.Y g2:type="Integer">0</g2:sa.Y></g2:Structure></rdf:li>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.X g2:type="Integer">0</g2:sa.X>
+                        <g2:sa.Y g2:type="Integer">50</g2:sa.Y></g2:Structure></rdf:li>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.X g2:type="Integer">50</g2:sa.X>
+                        <g2:sa.Y g2:type="Integer">50</g2:sa.Y></g2:Structure></rdf:li>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.X g2:type="Integer">50</g2:sa.X>
+                        <g2:sa.Y g2:type="Integer">0</g2:sa.Y></g2:Structure></rdf:li></g2:Sequence></g2:sa.POINTS></g2:Structure></rdf:li>
+                <rdf:li>
+                <g2:Structure>
+                  <g2:sa.TYPE g2:type="Symbol">LINES</g2:sa.TYPE>
+                  <g2:sa.POINTS>
+                    <g2:Sequence>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.X g2:type="Integer">0</g2:sa.X>
+                        <g2:sa.Y g2:type="Integer">0</g2:sa.Y></g2:Structure></rdf:li>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.X g2:type="Integer">25</g2:sa.X>
+                        <g2:sa.Y g2:type="Integer">25</g2:sa.Y></g2:Structure></rdf:li></g2:Sequence></g2:sa.POINTS></g2:Structure></rdf:li>
+                <rdf:li>
+                <g2:Structure>
+                  <g2:sa.TYPE g2:type="Symbol">LINES</g2:sa.TYPE>
+                  <g2:sa.POINTS>
+                    <g2:Sequence>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.X g2:type="Integer">25</g2:sa.X>
+                        <g2:sa.Y g2:type="Integer">25</g2:sa.Y></g2:Structure></rdf:li>
+                      <rdf:li>
+                      <g2:Structure>
+                        <g2:sa.X g2:type="Integer">50</g2:sa.X>
+                        <g2:sa.Y g2:type="Integer">0</g2:sa.Y></g2:Structure></rdf:li></g2:Sequence></g2:sa.POINTS></g2:Structure></rdf:li></g2:Sequence></g2:sa.LINE-DRAWING-ELEMENTS></g2:Structure></rdf:li></g2:Sequence></g2:sa.LAYERS></g2:Structure></g2:a.ICON-DESCRIPTION>
+  <g2:a.ICON-VARIABLES>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">60</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">52</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES>
+  <g2:a.POSITION-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.X g2:type="Integer">-117</g2:sa.X>
+      <g2:sa.Y g2:type="Integer">128</g2:sa.Y>
+      <g2:sa.SUPERIOR><g2:c.KB-WORKSPACE rdf:resource="#c96c5988565c11e790869eb6d01063cf"/></g2:sa.SUPERIOR></g2:Structure></g2:a.POSITION-IN-WORKSPACE>
+  <g2:a.SIZE-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">60</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">52</g2:sa.HEIGHT></g2:Structure></g2:a.SIZE-IN-WORKSPACE>
+  <g2:a.NAME-BOX>
+    <g2:Structure>
+      <g2:sa.COLOR>
+        <g2:Structure>
+          <g2:sa.BACKGROUND-COLOR g2:type="Symbol">TRANSPARENT</g2:sa.BACKGROUND-COLOR>
+          <g2:sa.TEXT-COLOR g2:type="Symbol">FOREGROUND</g2:sa.TEXT-COLOR></g2:Structure></g2:sa.COLOR>
+      <g2:sa.POSITION>
+        <g2:Structure>
+          <g2:sa.X-OFFSET g2:type="Integer">-64</g2:sa.X-OFFSET>
+          <g2:sa.Y-OFFSET g2:type="Integer">-30</g2:sa.Y-OFFSET></g2:Structure></g2:sa.POSITION></g2:Structure></g2:a.NAME-BOX></g2:c.CLASS-DEFINITION>
+
+<g2:c.METHOD ID="1001521e5b2d11e7ec2e014703bc01ce">
+  <g2:a.TEXT><![CDATA[
+set-topic-data-log-flag(b: class mqtt-broker {broker properties},
+flag: truth-value {log topic data?}) = (truth-value {previous value of log-topic-data})
+{Sets log-topic-data flag.}
+log0: truth-value;
+log1: truth-value;
+begin
+log0 = the log-topic-data of b;
+log1 = system call g2-mqtt-log-topic-data(b, flag);
+conclude that the log-topic-data of b = log1;
+return log0;
+end
+]]></g2:a.TEXT>
+  <g2:a.ICON-VARIABLES>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES>
+  <g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING><g2:c.METHOD-DECLARATION rdf:resource="#1002521e5b2d11e7ec2e014703bc01ce"/></g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING>
+  <g2:a.POSITION-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.X g2:type="Integer">-151</g2:sa.X>
+      <g2:sa.Y g2:type="Integer">-53</g2:sa.Y>
+      <g2:sa.SUPERIOR><g2:c.KB-WORKSPACE rdf:resource="#c96c5988565c11e790869eb6d01063cf"/></g2:sa.SUPERIOR></g2:Structure></g2:a.POSITION-IN-WORKSPACE>
+  <g2:a.SIZE-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.SIZE-IN-WORKSPACE>
+  <g2:a.NAME-BOX>
+    <g2:Structure>
+      <g2:sa.COLOR>
+        <g2:Structure>
+          <g2:sa.BACKGROUND-COLOR g2:type="Symbol">TRANSPARENT</g2:sa.BACKGROUND-COLOR>
+          <g2:sa.TEXT-COLOR g2:type="Symbol">FOREGROUND</g2:sa.TEXT-COLOR></g2:Structure></g2:sa.COLOR>
+      <g2:sa.POSITION>
+        <g2:Structure>
+          <g2:sa.X-OFFSET g2:type="Integer">-168</g2:sa.X-OFFSET>
+          <g2:sa.Y-OFFSET g2:type="Integer">-29</g2:sa.Y-OFFSET></g2:Structure></g2:sa.POSITION></g2:Structure></g2:a.NAME-BOX></g2:c.METHOD>
+
+<g2:c.METHOD-DECLARATION ID="1002521e5b2d11e7ec2e014703bc01ce">
+  <g2:a.NAMES g2:type="Symbol">SET-TOPIC-DATA-LOG-FLAG</g2:a.NAMES>
+  <g2:a.ICON-VARIABLES>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES>
+  <g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING><g2:c.CLASS-DEFINITION rdf:resource="#59873165566011e790869eb6d01063cf"/></g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING>
+  <g2:a.POSITION-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.X g2:type="Integer">130</g2:sa.X>
+      <g2:sa.Y g2:type="Integer">49</g2:sa.Y>
+      <g2:sa.SUPERIOR><g2:c.KB-WORKSPACE rdf:resource="#c96c5988565c11e790869eb6d01063cf"/></g2:sa.SUPERIOR></g2:Structure></g2:a.POSITION-IN-WORKSPACE>
+  <g2:a.SIZE-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.SIZE-IN-WORKSPACE>
+  <g2:a.NAME-BOX>
+    <g2:Structure>
+      <g2:sa.COLOR>
+        <g2:Structure>
+          <g2:sa.BACKGROUND-COLOR g2:type="Symbol">TRANSPARENT</g2:sa.BACKGROUND-COLOR>
+          <g2:sa.TEXT-COLOR g2:type="Symbol">FOREGROUND</g2:sa.TEXT-COLOR></g2:Structure></g2:sa.COLOR>
+      <g2:sa.POSITION>
+        <g2:Structure>
+          <g2:sa.X-OFFSET g2:type="Integer">-113</g2:sa.X-OFFSET>
+          <g2:sa.Y-OFFSET g2:type="Integer">-29</g2:sa.Y-OFFSET></g2:Structure></g2:sa.POSITION></g2:Structure></g2:a.NAME-BOX></g2:c.METHOD-DECLARATION>
+
+<g2:c.METHOD ID="4f14584d5b4f11e7e3f7014703bc01ce">
+  
+  <g2:a.TEXT><![CDATA[
+set-packet-data-log-flag(b: class mqtt-broker {broker properties},
+flag: truth-value {log packet data?}) = (truth-value {previous value of log-packet-data})
+{Sets log-packet-data flag.}
+log0: truth-value;
+log1: truth-value;
+begin
+log0 = the log-packet-data of b;
+log1 = system call g2-mqtt-log-packet-data(b, flag);
+conclude that the log-packet-data of b = log1;
+return log0;
+end 
+]]></g2:a.TEXT>
+  <g2:a.ICON-VARIABLES>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES>
+  <g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING><g2:c.METHOD-DECLARATION rdf:resource="#4f15584d5b4f11e7e3f7014703bc01ce"/></g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING>
+  <g2:a.POSITION-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.X g2:type="Integer">-149</g2:sa.X>
+      <g2:sa.Y g2:type="Integer">-160</g2:sa.Y>
+      <g2:sa.SUPERIOR><g2:c.KB-WORKSPACE rdf:resource="#c96c5988565c11e790869eb6d01063cf"/></g2:sa.SUPERIOR></g2:Structure></g2:a.POSITION-IN-WORKSPACE>
+  <g2:a.SIZE-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.SIZE-IN-WORKSPACE>
+  <g2:a.NAME-BOX>
+    <g2:Structure>
+      <g2:sa.COLOR>
+        <g2:Structure>
+          <g2:sa.BACKGROUND-COLOR g2:type="Symbol">TRANSPARENT</g2:sa.BACKGROUND-COLOR>
+          <g2:sa.TEXT-COLOR g2:type="Symbol">FOREGROUND</g2:sa.TEXT-COLOR></g2:Structure></g2:sa.COLOR>
+      <g2:sa.POSITION>
+        <g2:Structure>
+          <g2:sa.X-OFFSET g2:type="Integer">-175</g2:sa.X-OFFSET>
+          <g2:sa.Y-OFFSET g2:type="Integer">-29</g2:sa.Y-OFFSET></g2:Structure></g2:sa.POSITION></g2:Structure></g2:a.NAME-BOX></g2:c.METHOD>
+
+<g2:c.METHOD-DECLARATION ID="4f15584d5b4f11e7e3f7014703bc01ce">
+  
+  <g2:a.NAMES g2:type="Symbol">SET-PACKET-DATA-LOG-FLAG</g2:a.NAMES>
+  <g2:a.ICON-VARIABLES>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES>
+  <g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING><g2:c.METHOD rdf:resource="#1001521e5b2d11e7ec2e014703bc01ce"/></g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING>
+  <g2:a.POSITION-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.X g2:type="Integer">139</g2:sa.X>
+      <g2:sa.Y g2:type="Integer">-64</g2:sa.Y>
+      <g2:sa.SUPERIOR><g2:c.KB-WORKSPACE rdf:resource="#c96c5988565c11e790869eb6d01063cf"/></g2:sa.SUPERIOR></g2:Structure></g2:a.POSITION-IN-WORKSPACE>
+  <g2:a.SIZE-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.SIZE-IN-WORKSPACE>
+  <g2:a.NAME-BOX>
+    <g2:Structure>
+      <g2:sa.COLOR>
+        <g2:Structure>
+          <g2:sa.BACKGROUND-COLOR g2:type="Symbol">TRANSPARENT</g2:sa.BACKGROUND-COLOR>
+          <g2:sa.TEXT-COLOR g2:type="Symbol">FOREGROUND</g2:sa.TEXT-COLOR></g2:Structure></g2:sa.COLOR>
+      <g2:sa.POSITION>
+        <g2:Structure>
+          <g2:sa.X-OFFSET g2:type="Integer">-120</g2:sa.X-OFFSET>
+          <g2:sa.Y-OFFSET g2:type="Integer">-29</g2:sa.Y-OFFSET></g2:Structure></g2:sa.POSITION></g2:Structure></g2:a.NAME-BOX></g2:c.METHOD-DECLARATION>
+
+<g2:c.KB-WORKSPACE ID="d371e4e5566811e790869eb6d01063cf">
+  <g2:a.MODULE-ASSIGNMENT g2:type="Symbol">MQTT-CLIENT</g2:a.MODULE-ASSIGNMENT>
+  <g2:a.EDGES-OF-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.LEFT g2:type="Integer">-350</g2:sa.LEFT>
+      <g2:sa.TOP g2:type="Integer">250</g2:sa.TOP>
+      <g2:sa.RIGHT g2:type="Integer">350</g2:sa.RIGHT>
+      <g2:sa.BOTTOM g2:type="Integer">-250</g2:sa.BOTTOM></g2:Structure></g2:a.EDGES-OF-WORKSPACE></g2:c.KB-WORKSPACE>
+
+<g2:c.KB-WORKSPACE ID="3dacec5e5a4811e790879cb6d01063d0">
+  <g2:a.MODULE-ASSIGNMENT g2:type="Symbol">MQTT-CLIENT</g2:a.MODULE-ASSIGNMENT>
+  <g2:a.EDGES-OF-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.LEFT g2:type="Integer">-350</g2:sa.LEFT>
+      <g2:sa.TOP g2:type="Integer">250</g2:sa.TOP>
+      <g2:sa.RIGHT g2:type="Integer">350</g2:sa.RIGHT>
+      <g2:sa.BOTTOM g2:type="Integer">-250</g2:sa.BOTTOM></g2:Structure></g2:a.EDGES-OF-WORKSPACE></g2:c.KB-WORKSPACE>
+
+<g2:c.KB-WORKSPACE ID="1000521e5b2d11e7ec2e014703bc01ce">
+  <g2:a.MODULE-ASSIGNMENT g2:type="Symbol">MQTT-CLIENT</g2:a.MODULE-ASSIGNMENT>
+  <g2:a.EDGES-OF-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.LEFT g2:type="Integer">-350</g2:sa.LEFT>
+      <g2:sa.TOP g2:type="Integer">250</g2:sa.TOP>
+      <g2:sa.RIGHT g2:type="Integer">350</g2:sa.RIGHT>
+      <g2:sa.BOTTOM g2:type="Integer">-250</g2:sa.BOTTOM></g2:Structure></g2:a.EDGES-OF-WORKSPACE></g2:c.KB-WORKSPACE>
+
+<g2:c.KB-WORKSPACE ID="4800193c5b3011e7ec2e014703bc01ce">
+  <g2:a.MODULE-ASSIGNMENT g2:type="Symbol">MQTT-CLIENT</g2:a.MODULE-ASSIGNMENT>
+  <g2:a.EDGES-OF-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.LEFT g2:type="Integer">-350</g2:sa.LEFT>
+      <g2:sa.TOP g2:type="Integer">250</g2:sa.TOP>
+      <g2:sa.RIGHT g2:type="Integer">350</g2:sa.RIGHT>
+      <g2:sa.BOTTOM g2:type="Integer">-250</g2:sa.BOTTOM></g2:Structure></g2:a.EDGES-OF-WORKSPACE></g2:c.KB-WORKSPACE>
+
+<g2:c.KB-WORKSPACE ID="4f00584d5b4f11e7e3f7014703bc01ce">
+  <g2:a.MODULE-ASSIGNMENT g2:type="Symbol">MQTT-CLIENT</g2:a.MODULE-ASSIGNMENT>
+  <g2:a.EDGES-OF-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.LEFT g2:type="Integer">-350</g2:sa.LEFT>
+      <g2:sa.TOP g2:type="Integer">250</g2:sa.TOP>
+      <g2:sa.RIGHT g2:type="Integer">350</g2:sa.RIGHT>
+      <g2:sa.BOTTOM g2:type="Integer">-250</g2:sa.BOTTOM></g2:Structure></g2:a.EDGES-OF-WORKSPACE></g2:c.KB-WORKSPACE>
+</rdf:RDF>

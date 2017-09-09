@@ -1,0 +1,34 @@
+
+JAVADIR=$(SRCBOX)\java\com\gensym\controls
+
+CLASSFILES= \
+	$(JAVADIR)\G2DataSource.class
+
+DATAFILES= 
+
+JARFILE= $(JAVA_HOME)\beans\jars\g2datasource.jar
+
+all: $(JARFILE)
+
+# Create a JAR file with a suitable manifest.
+
+$(JARFILE): $(CLASSFILES) $(DATAFILES)
+	jar cfm $(JARFILE) <<manifest.tmp com\gensym\controls\G2DataSource.class $(DATAFILES)
+Name: com/gensym/controls/G2DataSource.class
+Java-Bean: True
+<<
+
+
+.SUFFIXES: .java .class
+
+{$(JAVADIR)}.java{$(JAVADIR)}.class :
+	set CLASSPATH=.
+	javac $<
+
+# Run the Juggler as an applet inside AppletViewer.
+view: all
+	appletviewer html\datasource.html
+
+clean:
+	-del $(JAVADIR)\G2DataSource.class
+	-del $(JARFILE)

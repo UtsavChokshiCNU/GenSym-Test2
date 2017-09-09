@@ -1,0 +1,367 @@
+<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="Author" CONTENT="Allan Scott">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.04 [en] (WinNT; I) [Netscape]">
+   <TITLE>planned-features</TITLE>
+</HEAD>
+<BODY>
+<U><FONT SIZE=+1>BeanXporter Future Work</FONT></U>
+<BR><FONT SIZE=+1>Allan Scott</FONT>
+<BR><FONT SIZE=+1>September 1998</FONT><U><FONT SIZE=+1></FONT></U>
+
+<P>The features described below are those that have been the most requested
+in the last 3 months of BeanXporter Beta testing
+<BR>and 1.0 use.&nbsp; I have tried to describe in as much detail how I
+intended to add these features.&nbsp; Since I never implemented these
+<BR>features the proposed solutions may not work, but I hope they will
+give useful pointers.
+
+<P>To read and understand this documentation you will need to have read
+the following doc:
+<BR>&nbsp;
+
+<P><U>Completing Data Type Coverage</U>
+
+<P>The following table shows the most important remaining data types that
+need to be addressed.&nbsp; Key to adding all of these
+<BR>in a maintainable way will be to continue jv's declarative approach
+to define handlers for receiving and sending each
+<BR>data type.&nbsp; Currently this work is done in case statements by
+vartypes.c: make_jobject_from_variant() and dispatch.c:
+<BR>create_dispparams.
+<BR>&nbsp;
+<TABLE BORDER COLS=3 WIDTH="100%" >
+<TR>
+<TD>Type</TD>
+
+<TD>Description of Problem</TD>
+
+<TD>Proposed Solution</TD>
+</TR>
+
+<TR>
+<TD>VT_BYREF&nbsp;</TD>
+
+<TD>The ability to pass and receive all other data types by reference.&nbsp;
+
+<P>VT_BYREF is a bitflag that can be included in the vtype of a VARIANT.&nbsp;</TD>
+
+<TD>C Code:
+<BR>vartypes.c, make_jobject_from_variant()
+<BR>recognize that the VT_BYREF flag has been included.&nbsp; If it has
+been included then for each vtype get the value by reference.&nbsp; For
+example to get an int by reference use the piVal member of VARIANT rather
+than the iVal member
+
+<P>dispatch.c,&nbsp; create_dispparams
+<BR>recognize that the VT_BYREF flag has been included.&nbsp; If it has
+been included then need to create a parallel data structure to store pointers
+to the type value that is being sent.
+
+<P>dispatch.c, Java_com_gensym_com_ActiveXProxy_com_1Invoke
+<BR>Support is also&nbsp; needed to retrieve what is pointed to after a
+call to Invoke.&nbsp; To do this after Invoke traverse the parallel data-structure
+that was created by create_dispparams and then call setXValue methods on
+the Java Variant to set the value back into the Java Variant.
+
+<P>Java Code:
+<BR>Add another constant to ActiveXRuntimeConstants called AX_BYREF.&nbsp;
+It will have to be an int.
+<BR>Change the type used by Variant to be an int rather than a short.&nbsp;
+This will require making some methods obsolete.
+<BR>Add setXValue methods, where X is the names of the types of data that
+Variant can contain, eg setFloatValue.&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+
+<TR>
+<TD>VT_CUR</TD>
+
+<TD>&nbsp;Ole CURRENCY type</TD>
+
+<TD>C Code:
+<BR>dispatch.c, create_dispparams()
+<BR>vartypes.c, make_jobject_from_variant()
+<BR>Both need to handle VT_CUR type.
+
+<P>Java Code:
+<BR>Add com.gensym.com.Currency to closely mimic the Ole data type</TD>
+</TR>
+
+<TR>
+<TD>VT_SAFEARRAY</TD>
+
+<TD>Support N-dimensional arrays being passed from Java to ActiveX and
+visa-versa.</TD>
+
+<TD>C Code:
+<BR>dispatch.c, create_dispparams()
+<BR>Recognize that a VT_SAFEARRAY type is being sent
+
+<P>vartypes.c, make_jobject_from_variant()
+<BR>Recognize that a VT_SAFEARRAY type is being received.
+
+<P>autojava.c, add a get_safearray_value()
+<BR>This will take a jobject that represents an N-dimensional array of
+com.gensym.com.Variant objects and convert it into a SAFEARRAY object.&nbsp;
+It will have to call SafeArrayCreate and will need to be able to add individual
+values into the array
+
+<P>autojava.c,&nbsp; create_java_array()
+<BR>This will take a SAFEARRAY and will return an array of com.gensym.com.Variant's
+of the appropriate dimensions.&nbsp; It will have to call various Variant
+constructors for various data types.
+
+<P>Note that SAFEARRAY's can also be passed by pointer, so implementing
+this will also require integration with the work to support VT_BYREF</TD>
+</TR>
+
+<TR>
+<TD>VT_DATE</TD>
+
+<TD>This currently is implemented.&nbsp; There is a bug in BeanXporter
+1.0 with the conversion between OLE Date and java.util.Date.&nbsp;</TD>
+
+<TD>Java code: Variant.java
+<BR>C code: dispatch.c, create_dispparams
+<BR>vartypes.c,&nbsp; make_jobject_from_variant,
+<BR>vartypes.c: date_value
+
+<P>Between these locations a consistent two way conversion must be supported.</TD>
+</TR>
+
+<TR>
+<TD></TD>
+
+<TD></TD>
+
+<TD></TD>
+</TR>
+
+<TR>
+<TD></TD>
+
+<TD></TD>
+
+<TD></TD>
+</TR>
+
+<TR>
+<TD></TD>
+
+<TD></TD>
+
+<TD></TD>
+</TR>
+
+<TR>
+<TD></TD>
+
+<TD></TD>
+
+<TD></TD>
+</TR>
+
+<TR>
+<TD></TD>
+
+<TD></TD>
+
+<TD></TD>
+</TR>
+</TABLE>
+&nbsp;
+
+<P><U>Creation Shortcuts</U><U></U>
+
+<P>A class com.gensym.com.ActiveXClassFactory should be created.&nbsp;
+It would have the following methods:
+
+<P>ActiveXDispatchable create(Guid clsid);
+
+<P>ActiveXDispatchable create(String progID);
+
+<P>ActiveXDispatchable get(Guid clsid);
+
+<P>ActiveXDispatchable get(String progID);
+
+<P>This implementation of the create() methods should do the two following
+things:
+<OL>
+<LI>
+Locate the appropriate Java class that wraps the component, and create
+one of those</LI>
+
+<LI>
+If there is no appropriate Java class to wrap the component then create
+the component generically.</LI>
+</OL>
+Either ActiveXModes will need to be modified to support passing in a progID
+String rather than a Guid or the
+<BR>implementation of&nbsp; create(String progID) will need to call a native
+method to get the appropriate Guid.
+
+<P>The trick of locating the appropriate Java class that wraps a specific
+class will requre some sort of a registration mechanism.
+<BR>Without locating the appropriate Java class, the best that can be offered
+for the user it the ability to "cast" to the class that
+<BR>they want by using a constructor that takes ActiveXDispatchable.
+
+<P>Note that all these methods return ActiveXDispatchable rather than ActiveXComponent.&nbsp;
+That is because these
+<BR>should not be restricted to the creation of CO_CLASS components.&nbsp;
+In many ActiveX API's it is possible to create
+<BR>interfaces (TKIND_DISPATCH, TKIND_INTERFACE, etc) directly rather than
+through using QuerInterface)().
+
+<P>The get() methods are necessary for the case where a user is planning
+to&nbsp; connect to an already created ActiveX
+<BR>component.&nbsp; In the C implementation of get() the running object
+table must be checked to see whether an instance
+<BR>of that Guid has already been created and registered as running.<U></U>
+
+<P>The creation shortcuts features are among the most commonly requested
+because they reflect expectations that
+<BR>are set by using Visual Basic and also the structure of many ActiveX
+API's.
+<BR>&nbsp;
+
+<P><U>Support for Reflection</U>
+
+<P>BeanXporter will emit the methods of components that implement IUnknown
+and IDispatch.&nbsp; It is therefore fairly
+<BR>common to find QueryInterface() and friends in the Java files produced
+by BeanXporter.
+
+<P>In BeanXporter 1.0 a number of factors conspire to make most of the
+reflection methods unusable.&nbsp; It is important
+<BR>to make them useable because they provide a degree of reflection that
+is often necessary to get an ActiveX API
+<BR>to work.
+
+<P>The main thing that will be required to get these reflection methods
+to work is support for VT_BYREF.
+<BR>QueryInterface in particular returns result by changing the IUknown
+component that one of it's arguments
+<BR>points to.
+
+<P>Greater support for reflection has been the major feature request of
+OptimaSoft, our most enthusiastic
+<BR>customer.
+<BR>&nbsp;
+
+<P><U>Property Binding</U><U></U>
+
+<P>BeanXporter 1.0 provides the ability to add listeners to arbitrary ActiveX
+event sources.
+
+<P>When this was conceived I also wanted to add the ability to listen to
+property change events in ActiveX
+<BR>components.
+
+<P>In ActiveX the IPropertyNotify and IPropertyNotifySink interfaces provide
+special support for property binding.
+
+<P>At emit-time BeanXporter must emit an addPropertyChangeListener and
+removePropertyChangeListener method for every ActiveXComponent that supports
+property binding.
+
+<P>At run-time the ActiveXProxy object must provide the ability to register
+a PropertyChangeListener.
+
+<P>See "Notes on Implementing an OLE Control Container”&nbsp; Kraig Brockshmidt,
+Microsoft Developer Relations, MSDN Library
+<BR>for information on how to implement this facility.
+
+<P>Also see the stub functions in events.c that show where I was thinking
+of implementing this facility.
+<BR>&nbsp;
+
+<P><U>Architecture Thoughts</U>
+
+<P>Think of the com.gensym.com API in terms of the following object-oriented
+design patterns:
+
+<P>Bridge:&nbsp;&nbsp;&nbsp; The interfaces ActiveXComponent, ActiveXDisplayComponent
+and ActiveXDispatchable allow these
+<BR>to be implemented in multiple ways.
+
+<P>Proxy:&nbsp; ActiveXGenericComponent, and the Java classes that are
+emitted by BeanXporters are examples of
+<BR>proxy's.&nbsp; They are essentially stubs that wrap COM components.
+
+<P>The actual ActiveXProxy class itself is an overweight workhorse that
+would have benefited by being an Impl class
+<BR>and broken up into various Bridge pattern interfaces.
+
+<P>Another way to look at the com.gensym.com API is in terms of it's representational
+capacity.&nbsp; What percentage
+<BR>of ActiveX data can be represented using com.gensym.com.&nbsp; The
+nearer we are to being able to represent as
+<BR>much data as something like Visual Basic the better shape we are in.
+
+<P>Another way to look at the com.gensym.com.API is in terms of the lifecycle
+of the components.&nbsp; How well does it
+<BR>support creation, activation (in-place, out of place), display, peristence,
+deletion, etc. relative to a tool like
+<BR>Visual Basic?
+<BR>&nbsp;
+
+<P><U>Performance Thoughts</U><U></U>
+
+<P>The marshalling of data from Java to ActiveX in BeanXporter 1.0 seems
+excessively slow.&nbsp; Things to consider:
+<OL>
+<LI>
+The use of Vector, probably Variant[] should have been used from the start</LI>
+
+<LI>
+Push data into the C code rather than pull from the C code.</LI>
+
+<LI>
+Relative performance with JIT's</LI>
+
+<LI>
+Profiling with an advanced tool</LI>
+
+<LI>
+The cost of the multi-apartment model vs the use of the free-threading
+model</LI>
+</OL>
+
+
+<P><U>Most Commonly Requested Crazy Things</U><U></U>
+
+<P>These are all crazy requests.&nbsp; Sooner or later someone will embark
+on solving them, since the demand
+<BR>to solve crazy problems is always high:<U></U>
+
+<P>Support for running BeanXporter from inside an applet.&nbsp; BeanXporter
+requires a runtime dll which, unless it
+<BR>has already been installed on the machine using it, will not be available
+in an applet.&nbsp; The best hope of being
+<BR>able to run in applets in the future would be that Sun decide's to
+bundle BeanXporter with activator.&nbsp; This seems
+<BR>unlikely, but you never know.
+
+<P>Support for running BeanXporter on non-Windows platforms.&nbsp; Crazy
+though this seems it is a fairly common
+<BR>request.&nbsp; One idea to quiten these requests is to have BeanXporter
+use rmic to create RMI stubs during the emit.
+<BR>This would allow ActiveX controls wrapped by BeanXporter on a Windows
+machine to be accessed and controlled
+<BR>from&nbsp; a non-Windows machine.&nbsp;&nbsp; Another idea is to convert
+BeanXporter with a tool like MainWin from Main
+<BR>software.&nbsp; That would allow BeanXporter to run on other platforms
+with components there that have also been
+<BR>converted for those other platforms.
+
+<P>Support for running BeanXporter inside Microsofts VM.&nbsp; Microsoft's
+VM does not currently support JNI.&nbsp; Microsoft
+<BR>has a comparable tool JActiveX, which covers much of the functionality
+of BeanXporter.&nbsp; Nevertheless people have
+<BR>asked for this.
+<BR>&nbsp;
+<BR>&nbsp;
+</BODY>
+</HTML>

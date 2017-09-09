@@ -1,0 +1,623 @@
+//Telewindows2 setup file for InstallShield3
+//  start at function main
+
+declare
+
+// Function declarations.
+prototype main();
+
+prototype CustomT2CreateRequiredComponents(STRING, BYREF STRING, BYREF LIST,
+                                           BYREF LIST);
+prototype CustomT2CreateOptionalComponents(STRING, BYREF STRING, BYREF LIST,
+                                           BYREF LIST);
+prototype CustomT2RequirementsStep(NUMBER, STRING);
+prototype CustomT2ProgramFolderStep(STRING, STRING, STRING, STRING);
+prototype CustomT2EnvVarStep(BOOL, BOOL, STRING);
+
+#define COMPANY_DIR           "\\gensym"
+#define PRODUCT_DIR           "G2Studio"
+
+#define ACTIVEX_COMPONENT "ActiveX Toolkit"
+#define DOC_COMPONENT     "G2Studio Documentation"
+
+// Constant declarations needed for gensym common dialogs
+#define PRODUCT_NAME          "G2Studio"
+#define PRODUCT_VERSION       "1.0 Rev 0"
+#define HOME_ENV_VARIABLE     "G2STUDIO_HOME"
+#define MAIN_APP_NAME         "G2Studio"
+#define MAIN_APP_SUBDIR       "bin"
+#define MAIN_APP_FILE         "shell.bat"
+#define MAIN_APP_PARAMETERS   ""
+
+#define CORE_FILE_SUBDIR "classes"
+#define CORE_FILE        "g2studio.jar"
+
+// The numbering of steps determinines there order and must have no gaps.
+#define WELCOME_STEP               1
+#define ALL_USERS_STEP             2
+#define OLD_VERSION_STEP           3
+#define REQUIREMENTS_STEP          4
+#define GET_TARGET_DIR_STEP        5
+#define SELECT_PROGRAM_FOLDER_STEP 6
+#define GET_ENV_MODS_STEP          7
+#define GET_PROPS_OPTION_STEP      8
+#define CONFIRM_STEP               9
+#define SETUP_TARGET_STEP         10
+#define COPY_FILES_STEP           11
+#define PROGRAM_FOLDER_STEP       12
+#define HOME_ENV_VAR_STEP         13
+#define OPT_ENV_VAR_STEP          14
+#define PROPERTIES_STEP           15
+
+// Include this after the last define statement to use the gensym dialogs
+#include "gensym.h"
+
+// This include this to use the system dialog boxes and the gensym dialogs.
+#include "sddialog.h"
+
+program
+manditoryLabel:
+  // For slow systems disable the main window until we set the title
+  Disable( BACKGROUND );
+  main();
+exit;
+
+#include "gensym.rul"
+
+function main()
+  BOOL dontCare;
+  STRING targetDir;
+  STRING setupDir;
+  STRING componentDir;
+  NUMBER nextStep;
+  NUMBER currentStep;
+  NUMBER prevStep;
+  NUMBER dlgDirection;
+  STRING reqComponents;
+  LIST reqSubDirs;
+  LIST reqIncludeSubDirs;
+  STRING optComponents;
+  LIST optSubDirs;
+  LIST optIncludeSubDirs;
+  STRING oldDir;
+  STRING oldUninstallApp;
+  STRING oldUninstallParameters;
+  STRING uninstallLogFile;
+  STRING programFolder;
+  NUMBER otherVersionOption;
+  BOOL modPath;
+  BOOL modClasspath;
+  NUMBER propertiesOption;
+  STRING userHomeDir;
+  BOOL displayReadme;
+  STRING firstPart;
+  STRING finalMessage;
+begin
+
+  // Set up the installation screen.
+  SetupScreen();
+
+  InitializeGlobals();
+
+  if (!globalIsWinNT) && (!globalIsWin95) then
+    SdFinish("", "This product is for 32 bit Intel Windows platforms only.",
+      "Setup will now end.", "", "", dontCare, dontCare);
+    abort;
+  endif;
+
+  // InstallShield uses SRCDIR a parameter to certain functions
+  // so save the location of the setup directory now
+  setupDir = SRCDIR;
+  componentDir = setupDir ^ COMPONENT_DIR;
+
+  // set defaults
+  CustomT2CreateRequiredComponents(componentDir, reqComponents, reqSubDirs,
+    reqIncludeSubDirs);
+
+  // All custom optional components will be selected by default
+//  CustomT2CreateOptionalComponents(componentDir, optComponents, optSubDirs,
+//    optIncludeSubDirs);
+  targetDir = TARGETDISK ^ COMPANY_DIR ^ PRODUCT_DIR;
+  modPath = FALSE;
+  modClasspath = FALSE;
+  programFolder = PRODUCT_NAME;
+
+  nextStep = WELCOME_STEP;
+  currentStep = nextStep;
+  while nextStep != EXIT_STEP
+    prevStep = currentStep;
+    currentStep = nextStep;
+
+    if currentStep < prevStep then
+      dlgDirection = BACKWARD;
+    else
+      dlgDirection = FOREWARD;
+    endif;
+
+    switch (currentStep)
+    case WELCOME_STEP:
+      nextStep = WelcomeStep();
+    case ALL_USERS_STEP:
+      nextStep = AllUsersStep(dlgDirection, globalAllUsersInstall);
+    case OLD_VERSION_STEP:
+      nextStep = OldVersionStep(dlgDirection, otherVersionOption, oldDir,
+                 oldUninstallApp, oldUninstallParameters);
+    case OPT_COMPONENTS_STEP:  // skip this step
+      if dlgDirection == FOREWARD then
+        nextStep = REQUIREMENTS_STEP;
+      else
+        nextStep = OLD_VERSION_STEP;
+    case REQUIREMENTS_STEP:
+      nextStep = CustomT2RequirementsStep(dlgDirection, optComponents);
+    case GET_TARGET_DIR_STEP:
+      nextStep = GetTargetDirStep(dlgDirection, targetDir, otherVersionOption);
+    case SELECT_PROGRAM_FOLDER_STEP:
+      nextStep = SelectProgramFolderStep(dlgDirection, programFolder);
+    case GET_ENV_MODS_STEP:
+      nextStep = JavaProductGetEnvModsStep(dlgDirection, modPath,
+                 modClasspath);
+    case GET_PROPS_OPTION_STEP:
+      nextStep = GetPropertiesOptionStep(dlgDirection, PROPERTIES_FILE,
+                 propertiesOption, userHomeDir);
+    case CONFIRM_STEP:
+      nextStep = JavaProductConfirmStep(dlgDirection, otherVersionOption,
+                 reqComponents, optComponents, targetDir, programFolder,
+                 modPath, modClasspath, propertiesOption);
+    case SETUP_TARGET_STEP:
+      nextStep = SetupTargetStep(targetDir, otherVersionOption, oldDir,
+                 oldUninstallApp, oldUninstallParameters, uninstallLogFile);
+    case COPY_FILES_STEP:
+      nextStep = CopyFilesStep(componentDir, targetDir,
+                 reqComponents, reqSubDirs, reqIncludeSubDirs);
+      if nextStep > COPY_FILES_STEP then
+        nextStep = CopyFilesStep(componentDir, targetDir,
+                   optComponents, optSubDirs, optIncludeSubDirs);
+      endif;
+    case PROGRAM_FOLDER_STEP:
+      nextStep = CustomT2ProgramFolderStep(targetDir, programFolder,
+                 uninstallLogFile, optComponents);
+    case HOME_ENV_VAR_STEP:
+      nextStep = HomeEnvVarStep(targetDir);
+    case OPT_ENV_VAR_STEP:
+      nextStep = CustomT2EnvVarStep(modPath, modClasspath, optComponents);
+    case PROPERTIES_STEP:
+      nextStep = InstallPropertiesStep(setupDir, RAW_PROPERTIES_FILE,
+                 targetDir, PROPERTIES_DIR, PROPERTIES_FILE, propertiesOption,
+                 userHomeDir);
+    default:
+      nextStep = EXIT_STEP;
+    endswitch;
+  endwhile;
+
+  LoggingStep(targetDir, "");
+
+  if ComponentIsItemSelected(optComponents, ACTIVEX_COMPONENT) then
+    if globalRebootNeeded then
+      firstPart = "After updating the environment, finish";
+    else
+      firstPart = "Finish";
+    endif;
+
+    finalMessage =  firstPart + " installing the " +
+                    ACTIVEX_COMPONENT + " by selecting\n" +
+                    "\"Programs->G2Studio->" +
+                    "ActiveX->Install Controls\"\nfrom the Start menu. " +
+                    "See the ReadMe file for more information.\n" +
+                    "Click Finish to complete Setup.";
+  else
+    // The is display the default message.
+    finalMessage = "";
+  endif;
+
+  // If reboot is selected then this function will reboot the system instead
+  // of returning.
+  ReadMeOrRebootWithMessageStep(displayReadme, finalMessage);
+
+  if displayReadme then
+    DisplayHtmlFile(targetDir, "");
+  endif;
+end;
+
+/*
+ * Function: CustomT2CreateRequiredComponents
+ * Purpose: Create the component list for T2
+ */
+function CustomT2CreateRequiredComponents(sourceDir, components, subDirs,
+                                          includeSubDirs)
+  STRING subDir;
+  NUMBER size;
+begin
+  subDirs = ListCreate(STRINGLIST);
+  includeSubDirs = ListCreate(NUMBERLIST);
+
+  // Create the components list. Select everything.
+  components = PRODUCT_NAME + " required";
+
+  // This component is just what is in the top level direcory.
+  size = GetComponentSizeWithoutSubDirs(sourceDir);
+  ComponentAddItem(components, "ReadMe", size, TRUE);
+  ListAddString(subDirs, "", AFTER);
+  ListAddItem(includeSubDirs, FALSE, AFTER);
+
+  subDir = "bin";
+  size = GetComponentSize(sourceDir ^ subDir);
+  ComponentAddItem(components, "Native DLL and Batch Files", size, TRUE);
+  ListAddString(subDirs, subDir, AFTER);
+  ListAddItem(includeSubDirs, TRUE, AFTER);
+
+  subDir = "classes";
+  size = GetComponentSize(sourceDir ^ subDir);
+  ComponentAddItem(components, "Java Classes and Demos", size, TRUE);
+  ListAddString(subDirs, subDir, AFTER);
+  ListAddItem(includeSubDirs, TRUE, AFTER);
+end;
+
+/*
+ * Function: CustomT2CreateOptionalComponents
+ * Purpose: Create the component list for T2
+ */
+function CustomT2CreateOptionalComponents(sourceDir, components, subDirs,
+                                          includeSubDirs)
+  STRING subDir;
+  NUMBER size;
+begin
+  subDirs = ListCreate(STRINGLIST);
+  includeSubDirs = ListCreate(NUMBERLIST);
+
+  // Create the components list. Select everything by default.
+  components = PRODUCT_NAME + " optional";
+
+  subDir = "kbs";
+  size = GetComponentSize(sourceDir ^ subDir);
+  ComponentAddItem(components, "KB's", size, TRUE);
+  ListAddString(subDirs, subDir, AFTER);
+  ListAddItem(includeSubDirs, TRUE, AFTER);
+
+  // The doc is not included in the web install.
+  subDir = "docs";
+  if ExistsDir(sourceDir ^ subDir) = EXISTS then
+    size = GetComponentSize(sourceDir ^ subDir);
+    ComponentAddItem(components, DOC_COMPONENT, size, TRUE);
+    ListAddString(subDirs, subDir, AFTER);
+    ListAddItem(includeSubDirs, TRUE, AFTER);
+  endif;
+
+  subDir = "ActiveX";
+  size = GetComponentSize(sourceDir ^ subDir);
+  ComponentAddItem(components, ACTIVEX_COMPONENT, size, TRUE);
+  ListAddString(subDirs, subDir, AFTER);
+  ListAddItem(includeSubDirs, TRUE, AFTER);
+end;
+
+/*
+ * Function: CustomT2RequirementsStep
+ * Purpose: This inform the user of this products requirments and set
+ *           some global lines to log missing requirements later
+ */
+function CustomT2RequirementsStep(dlgDirection, optComponents)
+  STRING stringResult;
+  STRING stringParameter;
+  BOOL missingRequirement;
+  STRING jdkVersion;
+begin
+  // Since the requirements step will not display anything
+  // if all of the requirements are met,
+  // we need special code to keep from going directly to the next step
+  // if we just performed that step.
+  if dlgDirection = BACKWARD then
+    return REQUIREMENTS_STEP - 1;
+  endif;
+
+  // This may not be the first time here
+  ListDestroy(globalRequirementsLog);
+  globalRequirementsLog = ListCreate(STRINGLIST);
+
+  missingRequirement = FALSE;
+
+  // Check to see that Javalink is installed 
+  RegDBSetDefaultRoot (HKEY_LOCAL_MACHINE);
+  if RegDBKeyExist("SOFTWARE\\" + COMPANY_NAME+ "\\G2 Javalink/Gateway") < 0
+      then 
+    ListAddString(globalRequirementsLog,
+      "G2 Javalink/Gateway version " + PRODUCT_VERSION + " is not installed.",
+      AFTER);
+    ListAddString(globalRequirementsLog,
+      "  The " + PRODUCT_NAME + " will not work until it is installed.",
+      AFTER);
+    missingRequirement = TRUE;
+  endif;
+
+  // Check for JDK2
+  if !GetSunJDKVersion(jdkVersion) then
+    if missingRequirement then
+      ListAddString(globalRequirementsLog, "", AFTER);
+    endif;
+
+    ListAddString(globalRequirementsLog,
+      "Sun JDK 1.2 or greater is not installed.",
+      AFTER);
+    ListAddString(globalRequirementsLog,
+      "  The " + PRODUCT_NAME + " will not work until it is installed.",
+      AFTER);
+    missingRequirement = TRUE;
+  elseif (jdkVersion < "1.2") then
+    if (missingRequirement) then
+      ListAddString(globalRequirementsLog, "", AFTER);
+    endif;
+
+    ListAddString(globalRequirementsLog,
+      "JDK version " + jdkVersion + " is not supported.",
+      AFTER);
+    missingRequirement = TRUE;
+  else
+    // see if JAVA_HOME has been set
+    stringParameter = "JAVA_HOME";
+    if GetEnvVarDef(stringParameter, stringResult) < 0 then
+      if missingRequirement then
+        ListAddString(globalRequirementsLog, "", AFTER);
+      endif;
+
+      ListAddString(globalRequirementsLog,
+        "Missing JAVA_HOME Environment Variable",
+        AFTER);
+      ListAddString(globalRequirementsLog,
+        "  The " + PRODUCT_NAME + " uses the JAVA_HOME environment variable",
+        AFTER);
+      ListAddString(globalRequirementsLog,
+        "  to find classes that provided with Sun's JDK 1.2 or greater.",
+        AFTER);
+      ListAddString(globalRequirementsLog,
+        "  Please ensure that the environment variable JAVA_HOME is set to",
+        AFTER);
+      ListAddString(globalRequirementsLog,
+        "  the directory of Sun's JDK 1.2 or greater.",
+        AFTER);
+      missingRequirement = TRUE;
+    endif;
+  endif;
+
+
+  if (ComponentIsItemSelected(optComponents, ACTIVEX_COMPONENT)) then
+    // Check to see if MS VM is installed
+    RegDBSetDefaultRoot (HKEY_LOCAL_MACHINE);
+    if (RegDBKeyExist("SOFTWARE\\Microsoft\\Java VM") < 0) then
+      if (missingRequirement) then
+        ListAddString(globalRequirementsLog, "", AFTER);
+      endif;
+
+      ListAddString(globalRequirementsLog,
+        "Microsoft VM is not installed.",
+        AFTER);
+      ListAddString(globalRequirementsLog,
+        "   The Microsoft VM and SDK for Java are required by the",
+        AFTER);
+      ListAddString(globalRequirementsLog,
+        "   ActiveX Toolkit.",
+        AFTER);
+      missingRequirement = TRUE;
+    else
+      // see if MS_JAVA_HOME has been set
+      stringParameter = "MS_JAVA_HOME";
+      if GetEnvVarDef(stringParameter, stringResult) < 0 then
+        if missingRequirement then
+          ListAddString(globalRequirementsLog, "", AFTER);
+        endif;
+
+        ListAddString(globalRequirementsLog,
+          "Missing MS_JAVA_HOME Environment Variable",
+          AFTER);
+        ListAddString(globalRequirementsLog,
+          "  The " + PRODUCT_NAME + " uses the MS_JAVA_HOME environment",
+        AFTER);
+        ListAddString(globalRequirementsLog,
+          "  variable to register the Java Beans needed for the",
+          AFTER);
+        ListAddString(globalRequirementsLog,
+          "  ActiveX Toolkit.",
+          AFTER);
+        ListAddString(globalRequirementsLog,
+          "  Please ensure that the environment variable MS_JAVA_HOME is set",
+          AFTER);
+        ListAddString(globalRequirementsLog,
+          "  to the directory of Microsoft's SDK for Java.",
+          AFTER);
+        missingRequirement = TRUE;
+      endif;
+
+      // see if SWING_HOME has been set since the current MS JVM does not
+      // come with swing built in
+      stringParameter = "SWING_HOME";
+      if GetEnvVarDef(stringParameter, stringResult) < 0 then
+        if missingRequirement then
+          ListAddString(globalRequirementsLog, "", AFTER);
+        endif;
+
+        ListAddString(globalRequirementsLog,
+         "  The " + PRODUCT_NAME + " uses the SWING_HOME environment variable",
+          AFTER);
+        ListAddString(globalRequirementsLog,
+          "  to find classes that provided with Sun's Swing 1.1.x API.",
+          AFTER);
+        ListAddString(globalRequirementsLog,
+         "  Please ensure that the environment variable SWING_HOME is set to",
+          AFTER);
+        ListAddString(globalRequirementsLog,
+          "  the directory of Sun's Swing 1.1.x.",
+          AFTER);
+        missingRequirement = TRUE;
+      endif;
+    endif;
+  endif;
+
+  if missingRequirement then
+    MessageBeep(0);
+    if SdShowInfoList("Missing Requirements",
+        "The following will prevent the product from running properly.",
+        globalRequirementsLog) = BACK then
+      return REQUIREMENTS_STEP - 1;
+    endif;
+  endif;
+
+  return REQUIREMENTS_STEP + 1;
+end;
+
+/*
+ * Function: CustomT2ProgramFolderStep
+ * Purpose: Creates the start menu program folder and the standard shortcuts
+ *          and some extra stuff.
+ */
+function CustomT2ProgramFolderStep(targetDir, folderName, uninstallLogFile,
+                                   optComponents)
+  STRING activeXFolder;
+  STRING uninstallKey;
+  STRING targetApp;
+  STRING commandLine;
+begin
+  // start with the standard stuff, this will take care of the default shell
+  // and readme
+  ProgramFolderStep(targetDir, folderName, "", uninstallLogFile);
+
+  // This may be an existing folder, so we want delete unwanted icons.
+  // delete the install controls icon, because it is now in the ActiveX folder
+  // delete the G2 icon, because we don't include G2 anymore
+  // delete the activexfolder since they may not have want activex this time
+  // delete old name for the uninstall
+  DeleteFolderIcon(folderName, "Install Controls");
+  DeleteFolderIcon(folderName, "G2");
+  DeleteFolderIcon(folderName, "unInstallShield");
+  activeXFolder = folderName ^ "ActiveX";
+  DeleteProgramFolder(activeXFolder);
+
+  // we want to override the default uninstall
+  // UNINST global variable stores the file name (with full path) of
+  // the uninstaller file.
+  AddShortcutToFolder(folderName, "Uninstall " + PRODUCT_NAME, targetDir,
+    "bin", "unInstall.bat", "", UNINST);
+
+  // we as so want to override the default uninstall for
+  // Control Panel Add/Remove Programs
+  RegDBSetDefaultRoot(HKEY_LOCAL_MACHINE);
+  uninstallKey = "Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\" +
+                 PRODUCT_NAME + " " + PRODUCT_VERSION;
+  targetApp = targetDir ^ "bin\\unInstall.bat";
+  LongPathToQuote(targetApp, TRUE);
+  commandLine = targetApp;
+  RegDBSetKeyValueEx(uninstallKey, "UninstallString",
+    REGDB_STRING, commandLine, -1);
+
+  // add the extra applications
+  AddShortcutToFolder(folderName, "Component Editor", targetDir, "bin",
+    "beaneditor.bat", "", "");
+  AddShortcutToFolder(folderName, "G2Studio Demo", targetDir,
+    "bin", "t2demo.bat", "", "");
+
+  // now the optional stuff
+  if ComponentIsItemSelected(optComponents, ACTIVEX_COMPONENT) then
+    CreateProgramFolder(activeXFolder);
+    AddShortcutToFolder(activeXFolder, "Install Controls", targetDir,
+      "bin", "InstallControls.bat", "", "");
+    AddShortcutToFolder(activeXFolder, "Uninstall Controls", targetDir,
+      "bin", "unInstallControls.bat", "", "");
+    AddShortcutToFolder(activeXFolder, "Visual Basic Mill Demo", targetDir,
+      "ActiveX\\vbDemo", "vbDemo.bat", "", "");
+    AddShortcutToFolder(activeXFolder, "Visual Basic Telewindows2 Shell",
+      targetDir, "ActiveX\\vbShell", "Tw2Prj.exe", "", "");
+    AddShortcutToFolder(activeXFolder,
+      "G2Studio for ActiveX Reference Manual",
+      targetDir, "ActiveX", "AXClient.hlp", "", "");
+
+    if ExistsDir(targetDir ^ "docs\\guides\\ActiveXDevelopersGuide") =
+        EXISTS then
+      AddShortcutToFolder(activeXFolder,
+        "G2Studio Application Developer's Guide for ActiveX",
+        targetDir, "docs\\guides\\ActiveXDevelopersGuide",
+        "titlepag.htm", "", "");
+    endif;
+  endif;
+
+  return PROGRAM_FOLDER_STEP + 1;
+end;
+
+/*
+ * Function: CustomT2EnvVarStep
+ * Purpose: Sets Telewindows2 specific values in environment variables
+ */
+function CustomT2EnvVarStep(modPath, modClassPath, optComponents);
+  // when strings are used to receive system info
+  // there are not auto resized, so declare the max length
+  STRING path[1024];
+  STRING varName;
+  STRING dir;
+  STRING newDirs;
+  LIST dirs;
+begin
+  if modPath then
+    varName = "PATH";
+    GetEnvVarDef(varName, path);
+    dir = "%" + HOME_ENV_VARIABLE + "%\\bin";
+    if !IsInPath(path, dir) then
+      AppendPathToEnvVar(varName, dir);
+    endif;
+  endif;
+
+  if modClassPath then
+    newDirs = "";
+    varName = "CLASSPATH";
+    GetEnvVarDef(varName, path);
+    dirs = CreateDirListFromPath(path);
+
+    if ComponentIsItemSelected(optComponents, ACTIVEX_COMPONENT) then
+      // The Microsoft JVM does not include swing.
+      dir = "%SWING_HOME%\\windows.jar";
+      AddToEndIfNotInList(dirs, dir, newDirs);
+
+      dir = "%SWING_HOME%\\swing.jar";
+      AddToEndIfNotInList(dirs, dir, newDirs);
+    endif;
+
+    dir = "%" + HOME_ENV_VARIABLE + "%\\classes";
+    AddToEndIfNotInList(dirs, dir, newDirs);
+
+    dir = "%" + HOME_ENV_VARIABLE + "%\\classes\\core.jar";
+    AddToEndIfNotInList(dirs, dir, newDirs);
+
+    dir = "%" + HOME_ENV_VARIABLE + "%\\classes\\classtools.jar";
+    AddToEndIfNotInList(dirs, dir, newDirs);
+
+    dir = "%" + HOME_ENV_VARIABLE + "%\\classes\\javalink.jar";
+    AddToEndIfNotInList(dirs, dir, newDirs);
+
+    dir = "%" + HOME_ENV_VARIABLE + "%\\classes\\coreui.jar";
+    AddToEndIfNotInList(dirs, dir, newDirs);
+
+    dir = "%" + HOME_ENV_VARIABLE + "%\\classes\\generic-uitools.jar";
+    AddToEndIfNotInList(dirs, dir, newDirs);
+
+    dir = "%" + HOME_ENV_VARIABLE + "%\\classes\\ntw-uitools.jar";
+    AddToEndIfNotInList(dirs, dir, newDirs);
+
+    dir = "%" + HOME_ENV_VARIABLE + "%\\classes\\uiutils.jar";
+    AddToEndIfNotInList(dirs, dir, newDirs);
+
+    dir = "%" + HOME_ENV_VARIABLE + "%\\classes\\sequoia.jar";
+    AddToEndIfNotInList(dirs, dir, newDirs);
+
+    dir = "%" + HOME_ENV_VARIABLE + "%\\classes\\g2studio.jar";
+    AddToEndIfNotInList(dirs, dir, newDirs);
+
+    dir = "%" + HOME_ENV_VARIABLE + "%\\classes\\antlr.jar";
+    AddToEndIfNotInList(dirs, dir, newDirs);
+
+    dir = "%" + HOME_ENV_VARIABLE + "%\\classes\\ax2jbeans.jar";
+    AddToEndIfNotInList(dirs, dir, newDirs);
+
+    if newDirs != "" then
+      AppendPathToEnvVar(varName, newDirs);
+    endif;
+  endif;
+  
+  return OPT_ENV_VAR_STEP + 1;
+end;
+
+//This last to use the system dialog boxes and the gensym dialogs.
+#include "Sddialog.rul"

@@ -1,0 +1,2590 @@
+//gensym.rul
+
+//code for common fuctions
+
+/*
+ * Function: SetupScreen
+ * Purpose: This function will set up the screen look.  This includes
+ *          colors, fonts, text to be displayed, etc.
+ */
+function SetupScreen()
+begin
+   Enable(FULLWINDOWMODE);
+   Enable(BITMAP256COLORS);
+
+   // Needed to have our product name appear in the standard places
+   SdProductName(PRODUCT_NAME);
+
+   // Set the text and color of the main window.
+   SetTitle(PRODUCT_NAME + " Setup", 24, WHITE );
+
+   // Title Bar bar text, which will be the Windows app title.
+   SetTitle(PRODUCT_NAME + " Setup", 0, BACKGROUNDCAPTION);
+
+   // We want the big window in the background
+   Enable( BACKGROUND );
+
+   Enable( DIALOGCACHE );
+end;
+
+/*
+ * Function: InitializeGlobals
+ * Purpose: This function will initialize the standard global variables.
+ */
+function InitializeGlobals()
+  NUMBER numberResult;
+  STRING stringResult;
+begin
+  // Determine the target system's operating system.
+  GetSystemInfo(OS, numberResult, stringResult);
+  if numberResult =  IS_WINDOWSNT then
+    globalIsWinNT = TRUE;                   // Running Windows NT.
+  elseif numberResult = IS_WINDOWS95  then
+    globalIsWin95 = TRUE;
+  endif;
+
+  globalAutoexecLoaded = FALSE;
+  globalIsAdmin = FALSE;
+  globalAllUsersInstall = FALSE;
+  if Is(USER_ADMINISTRATOR, "") = TRUE then
+    globalIsAdmin = TRUE;
+    globalAllUsersInstall = TRUE;
+  endif;
+
+  globalUninstallInitialized = FALSE;
+  globalRebootNeeded = FALSE;
+  globalLinesToLog = ListCreate(STRINGLIST);
+  globalOverwriteExistingProduct = FALSE;
+end;
+
+/*
+ * Function: GetComponentSize
+ * Purpose: Return the total size of the files in a component dir tree.
+ *          Return a -1 if component dir not found
+ */
+function GetComponentSize(sourceDir)
+begin
+  return GetComponentSizeEx(sourceDir, TRUE);
+end;
+
+/*
+ * Function: GetComponentSizeWithoutSubDirs
+ * Purpose: Return the total size of the files in a components first level
+ *          directory.
+ *          Return a -1 if component dir not found
+ */
+function GetComponentSizeWithoutSubDirs(sourceDir)
+begin
+  return GetComponentSizeEx(sourceDir, FALSE);
+end;
+
+/*
+ * Function: GetComponentSizeEx
+ * Purpose: Return the total size of the files in a component.
+ *          Return a -1 if component dir not found
+ */
+function GetComponentSizeEx(sourceDir, includeSubDirs)
+  NUMBER totalSize;
+  STRING fileFilter;
+  NUMBER result;
+  STRING fileName;
+  STRING parentDir;
+  NUMBER size;
+  STRING temp;
+begin
+  if ExistsDir(sourceDir) = NOTEXISTS then
+    return -1;
+  endif;
+
+  totalSize = 0;
+
+  fileFilter = "*";
+  result = FindAllFiles(sourceDir, fileFilter, fileName, RESET);
+  while result = 0
+    if !includeSubDirs then
+      // we are done if get a file that is not in source dir
+      ParsePath(parentDir, fileName, PATH);
+      StrRemoveLastSlash(parentDir);
+      if parentDir != sourceDir then
+        return totalSize;
+      endif;
+    endif;
+
+    size = 0;
+    GetFileInfo(fileName, FILE_SIZE, size, temp);
+    totalSize = totalSize + size;
+    result = FindAllFiles(sourceDir, fileFilter, fileName, CONTINUE);
+  endwhile;
+
+  return totalSize;
+end;
+
+/*
+ * Function: WelcomeStep
+ * Purpose: This function will welcome to user to our setup.
+ */
+function WelcomeStep()
+begin
+  SdWelcome("", "");
+  return WELCOME_STEP + 1;
+end;
+
+/*
+ * Function: LicenseStep
+ * Purpose:  This function will make sure the user agrees to our license
+ *           agreement before continuing.
+ */
+function LicenseStep(dlgDirection, licenseFile)
+begin
+  if SdLicense("", "", "", licenseFile) = BACK then
+    return LICENSE_STEP - 1;
+  endif;
+
+  return LICENSE_STEP + 1;
+end;
+
+/*
+ * Function: AllUsersStep
+ * Purpose: This function will give the user chance to change the install
+ *          from all users to the current user.
+ */
+function AllUsersStep(dlgDirection, allUsersInstall)
+  BOOL allUsers;
+  BOOL singleUser;
+begin
+  // Since the all users step will not display anything
+  // the user is not an administrator,
+  // we need special code to keep from going directly to the next step
+  // if we just performed that step.
+  if (dlgDirection = BACKWARD) && (!globalIsAdmin) then
+     return ALL_USERS_STEP - 1;
+  endif;
+
+  // We can only do an all users install if the user is an administrator.
+  // Windows 95 is a single user system.
+  if (!globalIsAdmin) || (globalIsWin95) then
+    allUsersInstall = FALSE;
+    return ALL_USERS_STEP + 1;
+  endif;
+
+  SetDialogTitle(DLG_ASK_OPTIONS, "Select Install Type");
+
+  allUsers = FALSE;
+  singleUser = FALSE;
+
+  if allUsersInstall then
+    allUsers = TRUE;
+  else
+    singleUser = TRUE;
+  endif;
+
+  if AskOptions(EXCLUSIVE,
+      "Choose which type of install you want Setup to do.",
+      ALL_USERS_STRING, allUsers,
+      SINGLE_USER_STRING, singleUser) = BACK then
+    return ALL_USERS_STEP - 1;
+  endif;
+
+  if allUsers then
+    allUsersInstall = TRUE;
+  else
+    allUsersInstall = FALSE;
+  endif;
+
+  return ALL_USERS_STEP + 1;
+end;
+
+/*
+ * Function: OldVersionStep
+ * Purpose: This function will give the user chance to unstall
+ *          the old version.
+ */
+function OldVersionStep(dlgDirection, otherVersionOption, otherDir,
+                        otherUninstallApp, otherUninstallParameters)
+  STRING otherVersion;
+  STRING otherUninstallLog;
+  BOOL uninstall;
+  BOOL renameDir;
+  BOOL nothing;
+  STRING logDir;
+  STRING logFileName;
+begin
+  // Since the old version step will not display anything if
+  // there is not another version,
+  // we need special code to keep from going directly to the next step
+  // if we just performed that step.
+  if (dlgDirection = BACKWARD) &&
+      (otherVersionOption = NO_OTHER_VERSION) then
+    return OLD_VERSION_STEP - 1;
+  endif;
+
+  // Find the other version in the registry
+  if !OtherVersionInstalled(otherVersion, otherDir, otherUninstallLog,
+      otherUninstallApp, otherUninstallParameters) then
+    otherVersionOption = NO_OTHER_VERSION;
+    return OLD_VERSION_STEP + 1;
+  endif;
+
+  uninstall = FALSE;
+  renameDir = FALSE;
+  nothing = FALSE;
+
+  if otherVersionOption = UNINSTALL_OTHER_VERSION then
+    uninstall = TRUE;
+  elseif otherVersionOption = RENAME_OTHER_VERSION then
+    renameDir = TRUE;
+  elseif otherVersionOption = DO_NOTHING_OTHER_VERSION then
+    nothing = TRUE;
+  else
+    uninstall = TRUE;
+    renameDir = TRUE;
+  endif;
+
+  SetDialogTitle(DLG_ASK_OPTIONS, "Select Other Version Option");
+
+  // Only if the other uninstall log file exist, do we offer uninstall option.
+  ParsePath(logDir, otherUninstallLog, PATH);
+  ParsePath(logFileName, otherUninstallLog, FILENAME);
+  if FindFile(logDir, logFileName, logFileName) = 0 then
+    if AskOptions(EXCLUSIVE,
+        "Setup has detected version " + otherVersion + " of " + PRODUCT_NAME +
+        ". It is recommended that it be uninstalled before installing " +
+        "version " + PRODUCT_VERSION + ". Choose what you want Setup to do.",
+        UNINSTALL_OPT_STRING, uninstall,
+        RENAME_OPT_STRING, renameDir,
+        NOTHING_OPT_STRING, nothing) = BACK then
+      return OLD_VERSION_STEP - 1;
+    endif;
+  else   
+    if AskOptions(EXCLUSIVE,
+        "Setup has detected version " + otherVersion + " of " + PRODUCT_NAME +
+        ". It is recommended that its directory be renamed before installing "
+        + "version " + PRODUCT_VERSION + ". Choose what you want Setup to do.",
+        RENAME_OPT_STRING, renameDir,
+        NOTHING_OPT_STRING, nothing) = BACK then
+      return OLD_VERSION_STEP - 1;
+    endif;
+  endif;
+
+  if nothing then
+    otherVersionOption = DO_NOTHING_OTHER_VERSION;
+  elseif renameDir then
+    otherVersionOption = RENAME_OTHER_VERSION;
+  else
+    otherVersionOption = UNINSTALL_OTHER_VERSION;
+  endif;
+
+  return OLD_VERSION_STEP + 1;
+end;
+
+/*
+ * Function: OtherVersionInstalled
+ * Purpose: This function determines if a version of this software already
+ *          exist and returns information of that version. The existance
+ *          of the version's directory will be returned.
+ */
+function OtherVersionInstalled(version, directory, uninstallLog, uninstallApp,
+                               uninstallParameters)
+  STRING baseKey;
+  STRING versionKey;
+  STRING infoKey;
+  LIST subKeys;
+  NUMBER type;
+  NUMBER size;
+  BOOL versionFound;
+  BOOL versionDirFound;
+begin
+  // Check for a registry entry from an InstallShield install
+  version = "(unknown)";
+  directory = "";
+  uninstallLog = "";
+  uninstallApp = "";
+  uninstallParameters = "";
+
+  RegDBSetDefaultRoot(HKEY_LOCAL_MACHINE);
+  baseKey = "SOFTWARE\\" + COMPANY_NAME + "\\" + PRODUCT_NAME;
+
+  if RegDBKeyExist(baseKey) < 0 then
+    return FALSE;
+  endif;
+
+  subKeys = ListCreate (STRINGLIST);
+  if RegDBQueryKey (baseKey, REGDB_KEYS, subKeys) < 0 then
+    return FALSE;
+  endif;
+
+  versionFound = TRUE;
+  if ListGetFirstString(subKeys, version) != 0 then
+    versionFound = FALSE;
+  endif;
+
+  versionDirFound = FALSE;
+  while versionFound && !versionDirFound
+    infoKey = "";
+    versionKey = baseKey + "\\" + version;
+
+    // try to get the directory then the unstall log file after a directory
+    // check.
+    // Search the place RegDBSetAppInfo sets
+    if RegDBGetKeyValueEx(versionKey, INSTALL_DIR_STRING, type, directory,
+        size) = 0 then
+      infoKey = versionKey;
+    elseif RegDBGetKeyValueEx(baseKey, INSTALL_DIR_STRING, type, directory,
+        size) = 0 then
+      // Some of our products did not use the standard function
+      // RegDBSetAppInfo function and set the information under the per product
+      // key instead of the per version key.
+      infoKey = baseKey;
+    endif;
+
+    if ExistsDir(directory) = EXISTS then
+      versionDirFound = TRUE;
+    elseif ListGetNextString(subKeys, version) != 0 then
+      versionFound = FALSE;
+    endif;
+  endwhile;
+
+  if !versionFound then
+    // If the product was moved by hand, there is a chance that the home
+    // environment variable was updated.
+    if GetEnvVarDef(HOME_ENV_VARIABLE, directory) < 0 then
+      return FALSE;
+    endif;
+
+    if ExistsDir(directory) != EXISTS then
+      return FALSE;
+    endif;
+  endif;
+
+  if infoKey = "" then
+    // Now we have to find the log file in the home directory
+    if FindFile(directory, "*.isu", uninstallLog) < 0 then
+      return TRUE;
+    endif;
+
+    uninstallLog = directory ^ uninstallLog;
+  else
+    if RegDBGetKeyValueEx(infoKey, UNINSTALL_FILE_STRING, type,
+        uninstallLog, size) < 0 then
+      return TRUE;
+    endif;
+
+    RegDBGetKeyValueEx(infoKey, UNINSTALL_APP_STRING, type,
+        uninstallApp, size);
+    RegDBGetKeyValueEx(infoKey, UNINSTALL_PARAM_STRING, type,
+        uninstallParameters, size);
+  endif;
+
+  // The previous version of the product did not register an
+  // uninstaller use ours.
+  if uninstallApp = "" then
+    uninstallApp = UNINST;
+  endif;
+
+  // The previous version of the product did not register
+  // uninstaller parameters use ours.
+  if uninstallParameters = "" then
+    uninstallParameters = "-f\"" + uninstallLog + "\"";
+  endif;
+
+  return TRUE;
+end;
+
+/*
+ * Function: OptionalComponentsStep
+ * Purpose: Let the user change the typical list of options
+ */
+function OptionalComponentsStep(dlgDirection, components)
+begin
+  if SdAskOptions("Select Optional Components", "", "", "", components,
+      NONEXCLUSIVE) = BACK then
+    return OPT_COMPONENTS_STEP - 1;
+  endif;
+
+  return OPT_COMPONENTS_STEP + 1;
+end;
+
+/*
+ * Function: GetSunJDKVersion
+ * Purpose: This function will check to see if Sun's JDK is installed and
+ *          get which version is installed. Returns true if the JDK is found
+ *          else returns false.
+ */
+function GetSunJDKVersion(version)
+  STRING key;
+  NUMBER type
+  NUMBER size;
+  STRING javaHome;
+  STRING dontCare;
+begin
+  version = "";
+
+  RegDBSetDefaultRoot(HKEY_LOCAL_MACHINE);
+
+  key = "SOFTWARE\\JavaSoft\\Java Development Kit";
+  if RegDBKeyExist(key) < 0 then
+      return FALSE;
+  endif;
+
+  // Java key found, Get Current version
+  RegDBGetKeyValueEx(key, "CurrentVersion", type, version, size);
+
+  // Check Current version for installation location
+  key = key + "\\" + version;
+  if RegDBKeyExist(key) < 0 then
+    return FALSE;
+  endif;
+
+  // version key found, Get JavaHome
+  RegDBGetKeyValueEx(key, "JavaHome", type, javaHome, size);
+
+  // Verify that the installation location exists
+  if ExistsDir(javaHome) = NOTEXISTS then
+      return FALSE;
+  endif;
+
+  // Verify that java.exe is in the bin directory
+  if FindFile(javaHome ^ "bin", "java.exe", dontCare) < 0 then
+    return FALSE;
+  endif;
+
+  return TRUE;
+end;
+
+/*
+ * Function: GetSunJREVersion
+ * Purpose: This function will check to see if Sun's JRE is installed and
+ *          get which version is installed. Returns true if the JRE is found
+ *          else returns false.
+ * By:      Frank Wu of ASBU, 2-5-2000
+ */
+function GetSunJREVersion(version)
+  STRING key;
+  NUMBER type
+  NUMBER size;
+  STRING javaHome;
+  STRING dontCare;
+begin
+  version = "";
+
+  RegDBSetDefaultRoot(HKEY_LOCAL_MACHINE);
+
+  key = "SOFTWARE\\JavaSoft\\Java Runtime Environment";
+  if RegDBKeyExist(key) < 0 then
+      return FALSE;
+  endif;
+
+  // JRE key found, Get Current version
+  RegDBGetKeyValueEx(key, "CurrentVersion", type, version, size);
+
+  // Check Current version for installation location
+  key = key + "\\" + version;
+  if RegDBKeyExist(key) < 0 then
+    return FALSE;
+  endif;
+
+  // version key found, Get JavaHome
+  RegDBGetKeyValueEx(key, "JavaHome", type, javaHome, size);
+
+  // Verify that the installation location exists
+  if ExistsDir(javaHome) = NOTEXISTS then
+      return FALSE;
+  endif;
+
+  // Verify that java.exe is in the bin directory
+  if FindFile(javaHome ^ "bin", "java.exe", dontCare) < 0 then
+    return FALSE;
+  endif;
+
+  return TRUE;
+end;
+
+/*
+ * Function: IsAcrobatReadInstalled
+ * Purpose: This function will check to see if Acrobat Reader is installed.
+ */
+function IsAcrobatReaderInstalled()
+  STRING key;
+  LIST subKeys;
+  STRING product;
+begin
+  RegDBSetDefaultRoot(HKEY_LOCAL_MACHINE);
+
+  key = "SOFTWARE\\Adobe";
+  if RegDBKeyExist(key) < 0 then
+    return FALSE;
+  endif;
+
+  // loop though the Adobe products and look for Acrobat Reader
+  subKeys = ListCreate (STRINGLIST);
+  if RegDBQueryKey (key, REGDB_KEYS, subKeys) < 0 then
+    return FALSE;
+  endif;
+
+  if ListGetFirstString(subKeys, product) != 0 then
+    return FALSE;
+  endif;
+
+  while TRUE
+    if product % "Acrobat Reader" then
+      // older version do not put directories in registry so assume it
+      // is installed and return TRUE.
+      return TRUE;
+    endif;
+
+    if ListGetNextString(subKeys, product) != 0 then
+       return FALSE;
+    endif;
+  endwhile;
+end;
+
+/*
+ * Function: GetTargetDirStep
+ * Purpose: This obtains the target directory from the user, and checks it.
+ */
+function GetTargetDirStep(dlgDirection, targetDir, otherVersionOption)
+begin
+  // Select target directory.
+  while TRUE
+    if AskDestPathWithoutCreate("", "", targetDir, 0) = BACK then
+      return GET_TARGET_DIR_STEP - 1;
+    endif;
+
+    if CheckTargetDir(targetDir, otherVersionOption) = NEXT then
+      return GET_TARGET_DIR_STEP + 1;
+    endif;
+  endwhile;
+end;
+
+/*
+ * Function: CheckTargetDir
+ * Purpose: This function will make sure the select product directory is
+ *          either not created or does not have the main product file.
+ *          If main product file exist it will prompt the user if they
+ *          want to continue.
+ */
+function CheckTargetDir(targetDir, otherVersionOption)
+  STRING firstMatch;
+begin
+  globalOverwriteExistingProduct = FALSE;
+  if ExistsDir(targetDir) != EXISTS  then
+    return NEXT;
+  endif;
+
+  if (otherVersionOption = UNINSTALL_OTHER_VERSION) ||
+      (otherVersionOption = RENAME_OTHER_VERSION) then
+    return NEXT;
+  endif;
+
+  // The last uninstall may not have deleted the directory
+  // so check for the core file.
+  if FindFile(targetDir ^ CORE_FILE_SUBDIR, CORE_FILE,
+      firstMatch) < 0 then
+    return NEXT;
+  endif;
+
+  if AskYesNo( targetDir + " already has product files.\n"+
+      "Would you like to install into \n" +
+      "that directory anyway?",
+      YES ) = NO then
+    return BACK;
+  endif;
+
+  globalOverwriteExistingProduct = TRUE;
+  return NEXT;
+end;
+
+/*
+ * Function: SelectProgramFolderStep
+ * Purpose: Lets the user change the default folder name.
+ */
+function SelectProgramFolderStep(dlgDirection, folderName)
+begin
+  if SdSelectFolder("", "", folderName) = BACK then
+    return SELECT_PROGRAM_FOLDER_STEP - 1;
+  endif;
+
+  return SELECT_PROGRAM_FOLDER_STEP + 1;
+end;
+
+/*
+ * Function: JavaProductGetEnvModsStep
+ * Purpose: Lets the user change what environment variables get modified.
+ */
+function JavaProductGetEnvModsStep(dlgDirection, modPath, modClasspath)
+begin
+  SetDialogTitle(DLG_ASK_OPTIONS, "Shared Enviroment Variables");
+  if AskOptions(NONEXCLUSIVE,
+      "The following shared environment variables must be setup\n" +
+      "properly for " + PRODUCT_NAME + " to run. The selected variables\n" +
+      "will be modified by Setup.",
+      "PATH", modPath,
+      "CLASSPATH", modClasspath) = BACK then
+    return GET_ENV_MODS_STEP - 1;
+  endif;
+
+  return GET_ENV_MODS_STEP + 1;
+end;
+
+/*
+ * Function: GetPropertiesOptionStep
+ * Purpose: Lets the user decide if there properties should be merged, when
+ *          performing a single user install and the properties file exists.
+ */
+function GetPropertiesOptionStep(dlgDirection, fileName, propertiesOption,
+                                 userHome)
+  STRING netHomeDrive;
+  STRING netHomePath;
+  STRING dontCare;
+  STRING options;
+begin
+  // Since the requirements step will not display anything
+  // if all of the requirements are met,
+  // we need special code to keep from going directly to the next step
+  // if we just performed that step.
+  if (dlgDirection = BACKWARD) &&
+      ((propertiesOption = NO_USER_HOME) ||
+       (propertiesOption = ADD_USER_PROPS)) then
+    return GET_PROPS_OPTION_STEP - 1;
+  endif;
+
+  propertiesOption = NO_USER_HOME;
+
+  if globalAllUsersInstall then
+    return GET_PROPS_OPTION_STEP + 1;
+  endif;
+
+  // Find the users local home, if no local home, try the network home
+  if GetEnvVar("HOME", userHome) < 0 then
+    if GetEnvVar("HOMEDRIVE", netHomeDrive) < 0 then
+      return GET_PROPS_OPTION_STEP + 1;
+    endif;
+
+    if GetEnvVar("HOMEPATH", netHomePath) < 0 then
+      return GET_PROPS_OPTION_STEP + 1;
+    endif;
+
+    userHome = netHomeDrive + netHomePath;
+  endif;
+
+  if ExistsDir(userHome) = NOTEXISTS then
+    return GET_PROPS_OPTION_STEP + 1;
+  endif;
+
+  if FindFile(userHome, fileName, dontCare) < 0 then
+    propertiesOption = ADD_USER_PROPS;
+    return GET_PROPS_OPTION_STEP + 1;
+  endif;
+
+  options = "propertiesOptions";
+  ComponentAddItem(options, MERGE_PROPS_STRING, 0, TRUE);
+  if SdAskOptions("Select Properties Option",
+      "Setup has detected a user specific " + fileName + " file. " +
+      "Choose what you want Setup to do.",
+      "For " + PRODUCT_NAME + " to run properly, " +
+      "its properties should be merged " +
+      "into the user specific properties file.\n\n" +
+      "Note: " + fileName +
+      " will be backed up before the new properties are merged into it.",
+      "", options, NONEXCLUSIVE) = BACK then
+    return GET_PROPS_OPTION_STEP - 1;
+  endif;
+
+  if ComponentIsItemSelected(options, MERGE_PROPS_STRING) then
+    propertiesOption = MERGE_USER_PROPS;
+  else
+    propertiesOption = NO_USER_PROPS;
+  endif;
+
+  return GET_PROPS_OPTION_STEP + 1;
+end;
+
+/*
+ * Function: JavaProductConfirmStep
+ * Purpose: To let the review their choices before installing.
+ *          has the path and classpath environment variable options.
+ *          Also includes properties file options.
+ */
+function JavaProductConfirmStep(dlgDirection, otherVersionOption,
+                                reqComponents, optComponents, targetDir,
+                                programFolder, modPath, modClasspath,
+                                propertiesOption)
+begin
+  return CommonProductConfirmStep(dlgDirection, otherVersionOption,
+                                reqComponents, optComponents, targetDir,
+                                programFolder, modPath, modClasspath,
+                                propertiesOption, TRUE);
+end;
+
+/*
+ * Function: JavaProductConfirmStep2
+ * Purpose: To let the review their choices before installing.
+ *          Also includes properties file options.
+ */
+function JavaProductConfirmStep2(dlgDirection, otherVersionOption,
+                                reqComponents, optComponents, targetDir,
+                                programFolder, propertiesOption)
+begin
+  return CommonProductConfirmStep(dlgDirection, otherVersionOption,
+                                reqComponents, optComponents, targetDir,
+                                programFolder, FALSE, FALSE,
+                                propertiesOption, FALSE);
+end;
+
+/*
+ * Function: CommonProductConfirmStep
+ * Purpose: To let the review their choices before installing.
+ *          has the path and classpath environment variable options.
+ *          Also includes properties file options.
+ */
+function CommonProductConfirmStep(dlgDirection, otherVersionOption,
+                                reqComponents, optComponents, targetDir,
+                                programFolder, modPath, modClasspath,
+                                propertiesOption, sharedEnvVars)
+  LIST componentNames;
+  STRING currentComponent;
+  NUMBER result;
+  BOOL noOptionalComponents;
+  NUMBER size;
+  STRING msg;
+begin
+  // This may not be the first time here
+  ListDestroy(globalOptionsLog);
+  globalOptionsLog = ListCreate(STRINGLIST);
+
+  // Start with the install type
+  ListAddString(globalOptionsLog, "Install Type", AFTER);
+  if globalAllUsersInstall then
+    ListAddString(globalOptionsLog, "  " + ALL_USERS_STRING, AFTER);
+  else
+    ListAddString(globalOptionsLog, "  " + SINGLE_USER_STRING, AFTER);
+  endif;
+
+
+  // Next the other version options
+  if otherVersionOption != NO_OTHER_VERSION then
+    ListAddString(globalOptionsLog, "", AFTER);
+    ListAddString(globalOptionsLog, "Other Version Option", AFTER);
+    switch (otherVersionOption)
+    case UNINSTALL_OTHER_VERSION:
+      ListAddString(globalOptionsLog, "  " + UNINSTALL_OPT_STRING, AFTER);
+    case RENAME_OTHER_VERSION:
+      ListAddString(globalOptionsLog, "  " + RENAME_OPT_STRING, AFTER);
+    case DO_NOTHING_OTHER_VERSION:
+      ListAddString(globalOptionsLog, "  " + NOTHING_OPT_STRING, AFTER);
+    endswitch;
+  endif;
+
+  if optComponents != "" then
+    ListAddString(globalOptionsLog, "", AFTER);
+    ListAddString(globalOptionsLog, "Optional Components", AFTER);
+    noOptionalComponents = TRUE;
+
+    // Create a string list to associate with the components list.
+    componentNames = ListCreate(STRINGLIST);
+    ComponentListItems(optComponents, componentNames);
+    result = ListGetFirstString(componentNames, currentComponent);
+    while result != END_OF_LIST
+      if ComponentIsItemSelected(optComponents, currentComponent) then
+        noOptionalComponents = FALSE;
+        ListAddString(globalOptionsLog, "  " + currentComponent, AFTER);
+      endif;
+
+      result = ListGetNextString(componentNames, currentComponent);
+    endwhile;
+
+    if noOptionalComponents then
+      ListAddString(globalOptionsLog, "    None", AFTER);
+    endif;
+  endif;
+
+  ListAddString(globalOptionsLog, "", AFTER);
+  ListAddString(globalOptionsLog, "Target Directory", AFTER);
+  ListAddString(globalOptionsLog, "  " + targetDir, AFTER);
+  if globalOverwriteExistingProduct then
+    ListAddString(globalOptionsLog, "  (Overwrite existing product)", AFTER);
+  endif;
+
+  ListAddString(globalOptionsLog, "", AFTER);
+  ListAddString(globalOptionsLog, "Program Folder", AFTER);
+  ListAddString(globalOptionsLog, "  " + programFolder, AFTER);
+
+  if sharedEnvVars then
+    ListAddString(globalOptionsLog, "", AFTER);
+    ListAddString(globalOptionsLog, "Shared Environment Variables to Modify",
+      AFTER);
+
+    if modPath then
+      ListAddString(globalOptionsLog, "  PATH", AFTER);
+    endif;
+
+    if modClasspath then
+      ListAddString(globalOptionsLog, "  CLASSPATH", AFTER);
+    endif;
+
+    if (!modPath) && (!modClasspath) then
+      ListAddString(globalOptionsLog, "  None (not recomended)", AFTER);
+    endif;
+
+    if propertiesOption = MERGE_USER_PROPS then
+      ListAddString(globalOptionsLog, "", AFTER);
+      ListAddString(globalOptionsLog, MERGE_PROPS_STRING, AFTER);
+    elseif propertiesOption = NO_USER_PROPS then
+      ListAddString(globalOptionsLog, "", AFTER);
+      ListAddString(globalOptionsLog,
+        "Do not merge properties with user's properties. " +
+        "(not recomended)", AFTER);
+    endif;
+  endif;
+
+  if SdStartCopy("Start Install", "", globalOptionsLog) = BACK then
+    return CONFIRM_STEP - 1;
+  endif;
+
+  // Perform space check of target drive.
+  if !EnoughDiskSpace(targetDir, reqComponents, optComponents,
+      EXTRA_DISKSPACE, size) then
+    // covert to megs and round up
+    size = (size / 1024 + 1023) / 1024;
+    msg = "There is not enough space available, %ld MB,\n" +
+          "at the destination location " + targetDir + ".\n\n" +
+          "Please free up some space or change the destination\n" +
+          "location to a different disk.";
+    SprintfBox(WARNING, "Setup", msg, size);
+    return GET_TARGET_DIR_STEP;
+  endif;
+
+  return CONFIRM_STEP + 1;
+end;
+
+/*
+ * Function: EnoughDiskSpace
+ * Purpose: Add up the component sizes and determine if there is enough
+ *          space for the product on the target disk. Return true is there is
+ *          else false.
+ */
+function EnoughDiskSpace(targetDir, reqComponents, optComponents,
+                         pad, size)
+begin
+  // InstallShield3 cannot handle a call to the  same function more than once
+  // in statement.
+  size = AddUpSelectedComponentSizes(reqComponents);
+  size = size + AddUpSelectedComponentSizes(optComponents) + pad;
+
+  if GetDiskSpace(targetDir) < size then
+    return FALSE;
+  endif;
+
+  return TRUE;
+end;
+
+/*
+ * Function: AddUpSelectedComponentSizes
+ * Purpose: Add up the selected component sizes and return the result.
+ */
+function AddUpSelectedComponentSizes(components)
+  LIST componentNames;
+  STRING currentComponent;
+  NUMBER result;
+  NUMBER size;
+  NUMBER totalSize;
+begin
+  if components = "" then
+    return 0;
+  endif;
+
+  totalSize = 0;
+  // Create a string list to associate with the components list.
+  componentNames = ListCreate(STRINGLIST);
+  ComponentListItems(components, componentNames);
+
+  result = ListGetFirstString(componentNames, currentComponent);
+  while result = 0
+    if ComponentIsItemSelected(components, currentComponent) then
+      size = 0;
+      ComponentGetItemSize(components, currentComponent, size);
+      totalSize = totalSize + size;
+    endif;
+
+    result = ListGetNextString(componentNames, currentComponent);
+  endwhile;
+
+  return totalSize;
+end;
+
+/*
+ * Function: SetupTargetStep
+ * Purpose: Uninstalls or renames other version, Start the uninstall log,
+ *          and creates the target directory.
+ *            If the option for the other version fails
+ *              OLD_VERSION_STEP is returned.
+ *            If the target directory cannot be created
+ *              TARGET_STEP is returned.
+ */
+function SetupTargetStep(targetDir, otherVersionOption, otherDir,
+                         otherUninstallApp, otherUninstallParameters,
+                         uninstallLogFile)
+begin
+  if !PerformOtherVersionOption(otherVersionOption, targetDir, otherDir,
+      otherUninstallApp, otherUninstallParameters) then
+    // Let the user pick another option for the other version.
+    return OLD_VERSION_STEP;
+  endif;
+
+  if !BeginUninstallLogging(targetDir, uninstallLogFile) then
+    return GET_TARGET_DIR_STEP;
+  endif;
+
+  return SETUP_TARGET_STEP + 1;
+end;
+
+/*
+ * Function: PerformOtherVersionOption
+ * Purpose: Uninstalls or renames other version and create the target
+ *          directory.
+ */
+function PerformOtherVersionOption(otherVersionOption, targetDir, otherDir,
+    otherUninstallApp, otherUninstallParameters)
+  STRING newDir;
+begin
+  if otherVersionOption = UNINSTALL_OTHER_VERSION then
+    if UninstallOtherVersion(otherUninstallApp,
+        otherUninstallParameters) then
+       return TRUE;
+    endif;
+
+    if StrCompare(otherDir, targetDir) != 0 then
+      // Since this install will not overwrite the other install, 
+      // it is as if the user has renamed the directory instead,
+      // so we can proceed.
+      return TRUE;
+    endif;
+
+    ListAddString(globalLinesToLog,
+      "Could not uninstall other version using:\n  " +
+      otherUninstallApp + " " + otherUninstallParameters,
+      AFTER);
+    MessageBox("Cannot uninstall the other version,\n" +
+               "try renaming its directory.", WARNING);
+    return FALSE;
+  endif;
+
+  if otherVersionOption = RENAME_OTHER_VERSION then
+    if otherDir != targetDir then
+      // only rename if need
+      return TRUE;
+    endif;
+
+    MakeDirNameUnique(otherDir, newDir);
+    if RenameDirectory(otherDir, newDir) then
+      return TRUE;
+    endif;
+
+    ListAddString(globalLinesToLog,
+      "Could not rename the direcory of the other version: " + otherDir,
+      AFTER);
+    MessageBox("Cannot rename the directory of the other version:\n  " +
+      otherDir, WARNING);
+    return FALSE;
+  endif;
+
+  return TRUE;
+end;
+
+/*
+ * Function: UninstallOtherVersion
+ * Purpose: Uninstall the version.
+ */
+function UninstallOtherVersion(uninstallApp, uninstallParameters)
+begin
+  if LaunchAppAndWait(uninstallApp, uninstallParameters, WAIT) = 1 then
+     return TRUE;
+  endif;
+
+  return FALSE;
+end;
+
+/*
+ * Function: MakeDirNameUnique
+ * Purpose: Create a unique directory from a base directory by adding a number
+ *          and checking if the new directory exists.
+ */
+function MakeDirNameUnique(base, directory)
+  NUMBER i;
+  STRING suffix;
+begin
+  i = 1;
+  repeat
+    NumToStr(suffix, i);
+    directory = base + suffix;
+    i = i + 1;
+  until (ExistsDir(directory) != EXISTS);
+end;
+
+/*
+ * Function: MakeFileNameUnique
+ * Purpose: Create a file name in the base directory by adding a number
+ *          and checking if the new file exists.
+ */
+function MakeFileNameUnique(directory, in, out)
+  NUMBER i;
+  STRING suffix;
+  STRING dontCare;
+begin
+  i = 1;
+  repeat
+    NumToStr(suffix, i);
+    out = in + suffix;
+    i = i + 1;
+  until (FindFile(directory, out, dontCare) < 0);
+end;
+
+/*
+ * Function: RenameDirectory
+ * Purpose: Renames a directory.
+ *          InstallShield should have provided this function.
+ */
+function RenameDirectory(oldDir, newDir)
+  STRING oldParentDir;
+  STRING oldSubDir;
+  STRING newParentDir;
+  STRING newSubDir;
+begin
+  ParsePath(oldParentDir, oldDir, PATH);
+  ParsePath(oldSubDir, oldDir, FILENAME);
+  ParsePath(newParentDir, newDir, PATH);
+  ParsePath(newSubDir, newDir, FILENAME);
+  SRCDIR = oldParentDir;
+  TARGETDIR = newParentDir;
+  if RenameFile(oldSubDir, newSubDir) < 0 then
+    return FALSE;
+  endif;
+
+  return TRUE;
+end;
+
+/*
+ * Function: BeginUninstallLogging
+ * Purpose: This sets up the logging for uninstall. Including
+ *          creating the target directory if needed.
+ */
+function BeginUninstallLogging(targetDir, uninstallLogFile)
+  STRING uninstallName;
+begin
+  // This may not be our first time here and some functions should
+  // be called twice.
+  if !globalUninstallInitialized then
+    globalUninstallInitialized = TRUE;
+  
+    // Set installation information, which is required for uninstall.
+    // Also creates a the "Company Name\Product\Product Version" registry key
+    // entry under system standard key "HKEY_LOCAL_MACHINE\SOFTWARE" and
+    // set the internal value for REGDB_APPPATH to MAIN_APP_NAME under under
+    // the standard entry
+    // "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths"
+    InstallationInfo(COMPANY_NAME, PRODUCT_NAME, PRODUCT_VERSION,
+      MAIN_APP_NAME);
+
+    // Prepare InstallSHIELD to record uninstallation information.
+    // Creates an uninstall reg entry key with the file name.
+    uninstallName = PRODUCT_NAME + " " + PRODUCT_VERSION;
+  endif;
+
+  // This will create the target dir if needed
+  if DeinstallStart(targetDir, uninstallLogFile, uninstallName, 0) < 0 then
+    // Maybe we could not create the target directory.
+    if ExistsDir(targetDir) != EXISTS then
+      if AskYesNo("Cannot create the directory " + targetDir + ".\n" +
+                   "Would you like to select another directoy?\n" +
+                   "Clicking No will end Setup.",
+          YES ) = NO then
+        abort;
+      endif;
+
+      return FALSE;
+    endif;
+
+    MessageBox("Unexpected error starting the uninstall log.", SEVERE);
+    abort;
+  endif;
+
+  // We should never get here more than once
+
+  // This is standard, we need this to show up in the
+  // Control Panel Add/Remove Dialog
+  RegDBSetItem(REGDB_UNINSTALL_NAME, uninstallName);
+
+  // This is standard, so someone can type MAIN_APP_NAME in the "Run" Dialog
+  // it will start this file if it is an .exe or .bat file.
+  RegDBSetItem(REGDB_APPPATH_DEFAULT,
+    targetDir ^ MAIN_APP_SUBDIR ^ MAIN_APP_FILE);
+  RegDBSetItem(REGDB_APPPATH, targetDir ^ MAIN_APP_SUBDIR);
+
+  // We need this so the next install can find this version.
+  RegDBSetAppInfo(INSTALL_DIR_STRING, REGDB_STRING, targetDir, -1);
+  RegDBSetAppInfo(UNINSTALL_FILE_STRING, REGDB_STRING, uninstallLogFile, -1);
+
+  // The next version of the product may use a different uninstaller
+  // so we need to register every thing need for our uninstall.
+  RegDBSetAppInfo(UNINSTALL_APP_STRING, REGDB_STRING, UNINST, -1);
+  RegDBSetAppInfo(UNINSTALL_PARAM_STRING, REGDB_STRING,
+    "-f\"" + uninstallLogFile + "\"", -1);
+
+  return TRUE;
+end;
+
+/*
+ * Function: CopyFilesStep
+ * Purpose: Installs the files of selected components.
+ */
+function CopyFilesStep(sourceDir, targetDir, components, subDirs,
+                       includeSubDirs)
+  STRING currentSubDir;
+  STRING currentComponent;
+  BOOL currentIncludeSubDir;
+  LIST componentNames;
+  NUMBER result;
+begin
+  // Create a string list to associate with the components list.
+  componentNames = ListCreate(STRINGLIST);
+  ComponentListItems(components, componentNames);
+
+  result = ListGetFirstString(componentNames, currentComponent);
+           ListGetFirstString(subDirs, currentSubDir);
+           ListGetFirstItem(includeSubDirs, currentIncludeSubDir);
+  while result = 0
+    if ComponentIsItemSelected(components, currentComponent) then
+      Enable(STATUS);
+      result = CopyComponentDirectory(sourceDir, targetDir, currentComponent,
+               currentSubDir, currentIncludeSubDir);
+      if result < 0 then
+        SprintfBox(SEVERE, "", "Cannot copy " + SRCDIR + " to " +
+          TARGETDIR + ". (%d)", result);
+        return COPY_FILES_STEP - 1;
+      endif;
+    endif;
+
+    result = ListGetNextString(componentNames, currentComponent);
+             ListGetNextString(subDirs, currentSubDir);
+             ListGetNextItem(includeSubDirs, currentIncludeSubDir);
+  endwhile;
+
+  Disable(STATUS);
+
+  return COPY_FILES_STEP + 1;
+end;
+
+/*
+ * Function: CopyComponentDirectory
+ * Purpose: Installs the files of a component.
+ */
+function CopyComponentDirectory(sourceDir, targetDir, component, subDir,
+    includeSubDirs)
+  NUMBER options;
+begin
+  SRCDIR = sourceDir ^ subDir;
+  TARGETDIR = targetDir ^ subDir;
+  options = COMP_NORMAL;
+  if includeSubDirs then
+    options = options | INCLUDE_SUBDIR;
+  endif;
+
+  SetStatusWindow(0, "Copying " + component + " ...");
+  StatusUpdate(ON, 100);
+  return XCopyFile("*.*", "*.*", options);
+end;
+
+/*
+ * Function: ProgramFolderStep
+ * Purpose: Creates the start menu program folder and the standard shortcuts
+ */
+function ProgramFolderStep(targetDir, folderName, readme, uninstallLogFile)
+  STRING statusMsg;
+  NUMBER result;
+  STRING tempReadme;
+  STRING appIcon;
+begin
+  SdShowMsg("Creating " + folderName + " Program Folder and Icons...", TRUE);
+
+  // Create the PROGRAM FOLDER.
+  if globalAllUsersInstall then
+    ProgDefGroupType(COMMON);
+  else
+    ProgDefGroupType(PERSONAL);
+  endif;
+
+  result = CreateProgramFolder(folderName);
+  if (result < 0) && globalAllUsersInstall then
+    // try just the user for an all users install
+    ProgDefGroupType(PERSONAL);
+    result = CreateProgramFolder(folderName);
+  endif;
+
+  if result < 0 then
+    SdShowMsg("", FALSE);
+    MessageBox("Cannot create the " + folderName + " program folder.",
+      WARNING);
+    return PROGRAM_FOLDER_STEP + 1;
+  endif;
+
+  if readme = "" then
+    tempReadme = README_FILE;
+  else
+    tempReadme = readme;
+  endif;
+
+  AddShortcutToFolder(folderName, "Readme", targetDir, "", tempReadme, "", "");
+
+  if MAIN_APP_NAME != "" then
+    if MAIN_APP_ICON != "" then
+      appIcon = targetDir ^ MAIN_APP_SUBDIR ^ MAIN_APP_ICON;
+    else
+      appIcon = "";
+    endif;
+
+    AddShortcutToFolder(folderName, MAIN_APP_NAME, targetDir, MAIN_APP_SUBDIR,
+      MAIN_APP_FILE, MAIN_APP_PARAMETERS, appIcon);
+  endif;
+
+  AddShortcutToFolder(folderName, "Uninstall " + folderName, "", "",
+    UNINST, "-f\"" + uninstallLogFile + "\"", "");
+
+  SdShowMsg("", FALSE);
+  return PROGRAM_FOLDER_STEP + 1;
+end;
+
+/*
+ * Function: AddShortcutToFolder
+ * Purpose: To add an item with a long file name to a folder
+ */
+function AddShortcutToFolder(folder, name, targetDir, workingSubDir, fileName,
+                             parameters, iconFile)
+  STRING workingDir;
+  STRING targetApp;
+  STRING commandLine;
+begin
+  workingDir = targetDir ^ workingSubDir;
+  targetApp = workingDir ^ fileName;
+  LongPathToQuote(targetApp, TRUE);
+  commandLine = targetApp + " " + parameters;
+  AddFolderIcon(folder, name, commandLine, workingDir, iconFile, 0, "",
+    REPLACE);
+end;
+
+/*
+ * Function: GetEnvVarDef
+ * Purpose: This gets the value part of the system definition for a variable
+ *          from where ever that is may be on a particular platform.
+ *          For WinNT the registry, for Win95 autoexec.bat. The main
+ *          difference is that the definition will show the embedded variables
+ *          unresolved and will the latest value. The install shield
+ *          funtion GetEnvVar on has the values from boot.
+ */
+function GetEnvVarDef(name, def)
+begin
+  if globalIsWin95 then
+    return GetEnvVarDef95(name, def); 
+  endif;
+
+  return GetEnvVarDefNT(name, def);
+end;
+
+/*
+ * Function: IsEnvVar
+ * Purpose: This checks if the system definition for a variable is set
+ *          from where ever that is may be on a particular platform.
+ *          For WinNT the registry, for Win95 autoexec.bat. 
+ */
+function IsEnvVar(name)
+STRING def;
+begin
+  if globalIsWin95 then
+    return GetEnvVarDef95(name, def); 
+  endif;
+
+  return IsEnvVarDefNT(name);
+end;
+
+/*
+ * Function: GetEnvVarDef95
+ * Purpose: This gets the value part of the system definition for a variable
+ *          from the Win95 autoexec.bat.
+ */
+function GetEnvVarDef95(name, def)
+  NUMBER defStart;
+begin
+  if !globalAutoexecLoaded then
+    globalAutoexecLoaded = TRUE;
+    BatchFileLoad("");
+  endif;
+
+  if BatchFind(name, def, RESTART) < 0 then
+    return -1;
+  endif;
+
+  defStart = StrFind(def, "=");
+  if defStart <= 0 then
+    return -1;
+  endif;
+
+  StrSub(def, def, defStart + 1, StrLength(def));
+  return 0;
+end;
+
+/*
+ * Function: GetEnvVarDefNT
+ * Purpose: This gets the value part of the system definition for a variable
+ *          from the registry.
+ */
+function GetEnvVarDefNT(name, def)
+  STRING baseKey;
+  NUMBER type;
+  NUMBER size;
+begin
+  if globalAllUsersInstall then
+    // Try to get a system level environment variable
+    RegDBSetDefaultRoot(HKEY_LOCAL_MACHINE);
+    baseKey =
+      "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment";
+    if RegDBGetKeyValueEx(baseKey, name, type , def, size) = 0 then
+      return 0;
+    endif;
+  endif;
+
+  // Try to get a user level environment variable
+  RegDBSetDefaultRoot(HKEY_CURRENT_USER);
+  baseKey = "Environment";
+  if RegDBGetKeyValueEx(baseKey, name, type , def, size) = 0 then
+    return 0;
+  endif;
+
+  return -1;
+end;
+
+/*
+ * Function: IsEnvVarDefNT
+ * Purpose: This checks  the value part of the system definition for a variable
+ *          from the registry.
+ */
+function IsEnvVarDefNT(name)
+  STRING def;
+  STRING baseKey;
+  NUMBER type;
+  NUMBER size;
+begin
+
+  // Try to get a system level environment variable
+  RegDBSetDefaultRoot(HKEY_LOCAL_MACHINE);
+  baseKey =
+    "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment";
+  if RegDBGetKeyValueEx(baseKey, name, type , def, size) = 0 then
+    return 0;
+  endif;
+
+  // Try to get a user level environment variable
+  RegDBSetDefaultRoot(HKEY_CURRENT_USER);
+  baseKey = "Environment";
+  if RegDBGetKeyValueEx(baseKey, name, type , def, size) = 0 then
+    return 0;
+  endif;
+ 
+  return -1;
+end;
+
+/*
+ * Function: HomeEnvVarStep
+ * Purpose: Adds the home enviroment variable for this product.
+ */
+function HomeEnvVarStep(targetDir)
+  STRING currentValue;
+begin
+  // Since modifing the enviroment means tell the user to reboot,
+  // do not replace the value if it is already set to the target dir.
+  if (GetEnvVarDef(HOME_ENV_VARIABLE, currentValue) = 0) &&
+      (currentValue = targetDir) then
+    return HOME_ENV_VAR_STEP + 1;
+  endif;
+
+  ReplaceEnvVar(HOME_ENV_VARIABLE, targetDir);
+
+  return HOME_ENV_VAR_STEP + 1;
+end;
+
+/*
+ * Function: ReplaceEnvVar
+ * Purpose: Replaces or adds an enviroment variable.
+ */
+function ReplaceEnvVar(name, value)
+begin
+  SdShowMsg("Setup is modifing the " + name + " environment variable...",
+    TRUE);
+  Disable(LOGGING);
+
+  if globalIsWin95 then
+    ReplaceEnvVar95(name, value);
+  else
+    ReplaceEnvVarNT(name, value);
+  endif;
+
+  globalRebootNeeded = TRUE;
+
+  Enable(LOGGING);
+  SdShowMsg("", FALSE);
+end;
+
+/*
+ * Function: ReplaceEnvVarNT
+ * Purpose: Replaces or adds an enviroment variable on 95.
+ */
+function ReplaceEnvVar95(name, value)
+begin
+    if !globalAutoexecLoaded then
+      BatchFileLoad("");
+    endif;
+
+    BatchAdd(name, value, "", REPLACE);
+    BatchFileSave("");
+end;
+
+/*
+ * Function: ReplaceEnvVarNT
+ * Purpose: Replaces or adds an enviroment variable on NT.
+ */
+function ReplaceEnvVarNT(name, value)
+  STRING baseKey;
+begin
+  if globalAllUsersInstall then
+    // Create a system level environment variable
+    RegDBSetDefaultRoot(HKEY_LOCAL_MACHINE);
+    baseKey =
+      "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment";
+    if RegDBKeyExist(baseKey) < 0 then
+      RegDBCreateKeyEx(baseKey, "");
+    endif;
+
+    if RegDBSetKeyValueEx(baseKey, name, REGDB_STRING, value, -1 ) = 0 then
+      return;
+    endif;
+  endif;
+
+  // Create a user level environment variable
+  RegDBSetDefaultRoot(HKEY_CURRENT_USER);
+  baseKey = "Environment";
+  if RegDBKeyExist(baseKey) < 0 then
+    RegDBCreateKeyEx(baseKey, "");
+  endif;
+
+  RegDBSetKeyValueEx(baseKey, name, REGDB_STRING, value, -1 );
+end;
+
+/*
+ * Function: AppendPathToEnvVar
+ * Purpose: Appends to the value of an enviroment variable.
+ */
+function AppendPathToEnvVar(name, value)
+begin
+  SdShowMsg("Setup is modifing the " + name + " environment variable...",
+    TRUE);
+  Disable(LOGGING);
+
+  if globalIsWin95 then
+    AppendPathToEnvVar95(name, value); 
+  else
+    AppendPathToEnvVarNT(name, value);
+  endif;
+
+  globalRebootNeeded = TRUE;
+
+  Enable(LOGGING);
+  SdShowMsg("", FALSE);
+end;
+
+/*
+ * Function: AppendPathToEnvVar95
+ * Purpose: Appends to the value of an enviroment variable on Win95.
+ */
+function AppendPathToEnvVar95(name, value)
+  STRING oldValue;
+begin
+  if !globalAutoexecLoaded then
+    globalAutoexecLoaded = TRUE;
+    BatchFileLoad("");
+  endif;
+
+  oldValue = "";
+  BatchFind(name, oldValue, RESTART);
+  if oldValue != "" then
+    oldValue = oldValue + ";";
+  endif;
+
+  oldValue = oldValue + value;
+  BatchAdd(name, oldValue, "", REPLACE);
+  BatchFileSave("");
+end;
+
+/*
+ * Function: AppendPathToEnvVarNT
+ * Purpose: Appends to the value of an enviroment variable on NT.
+ */
+function AppendPathToEnvVarNT(name, value)
+  BOOL isSystemLevelVar;
+  STRING baseKey;
+  STRING oldValue[1024];
+  NUMBER type;
+  NUMBER size;
+  STRING newValue;
+  STRING msg;
+begin
+  // See if a system level environment variable exists
+  oldValue = "";
+  isSystemLevelVar = FALSE;
+  RegDBSetDefaultRoot(HKEY_LOCAL_MACHINE);
+  baseKey =
+    "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment";
+  if RegDBGetKeyValueEx(baseKey, name, type , oldValue, size) = 0 then
+    isSystemLevelVar = TRUE;
+  endif;
+
+  // See if we should create a system level variable
+  if globalAllUsersInstall then
+    // Create a system level environment variable
+    if (!isSystemLevelVar) && (RegDBKeyExist(baseKey) < 0) then
+      RegDBCreateKeyEx(baseKey, "");
+    endif;
+
+    if oldValue != "" then
+      oldValue = oldValue + ";";
+    endif;
+    
+    /* Setting a system environment variable to the more than 256 bytes
+       will crash some NT machines and make the unbootable, requiring a
+       reinstall of NT. */
+    if (StrLength(oldValue) + StrLength(value)) > 256 then
+	msg = "\nPlease refer to the readme file for information on the contents of " 
+		 + "\nthis environment variable. Note that long System environment variables "
+		 + "\nhave been shown to cause severe problems, so exercise caution when "
+		 + "\nsetting it manually as well (unless a setting as User variable, "
+		 + "\nwhich does not appear to have these problems).";
+      MessageBox("Could not append to the system environment variable " +
+        name + "\n because its value is too long.\n\n" +
+        "You will have to update this manually." + msg, WARNING);
+      return;
+    endif;
+    newValue = oldValue + value;
+    if RegDBSetKeyValueEx(baseKey, name, REGDB_STRING, newValue, -1) = 0 then
+      return;
+    endif;
+  endif; 
+
+  // Create a user level environment variable
+  RegDBSetDefaultRoot(HKEY_CURRENT_USER);
+  baseKey = "Environment";
+
+  if RegDBKeyExist(baseKey) < 0 then
+    RegDBCreateKeyEx(baseKey, "");
+  else
+    oldValue = "";
+    if (RegDBGetKeyValueEx(baseKey, name, type , oldValue, size) < 0) &&
+        (isSystemLevelVar) && StrCompare(name, "PATH") then
+      // If we are going to create a user level variable and a system level
+      // one exists, we should chain them together, but not for PATH,
+      // NT chains PATH automatically.
+      oldValue = "%" + name + "%";
+    endif;
+  endif;
+
+  if oldValue != "" then
+    oldValue = oldValue + ";";
+  endif;
+
+  newValue = oldValue + value;
+  RegDBSetKeyValueEx(baseKey, name, REGDB_STRING, newValue, -1);
+end;
+
+/*
+ * Function: 
+ * Purpose: Check (ignoring case) to see the directory to is in the list
+ *          of directries and if not add it to the end of a path string.
+ *          Add a semicolon if needed.
+ */
+function AddToEndIfNotInList(dirs, dirToAdd, pathString)
+begin
+  if IsInList(dirs, dirToAdd) then
+    return;
+  endif;
+
+  if pathString != "" then
+    pathString = pathString + ";";
+  endif;
+
+  pathString = pathString + dirToAdd;
+end;
+
+/*
+ * Function: 
+ * Purpose: Check (ignoring case) to see the directory to or subenv variables is 
+ *          in the list of directries and if not add sub env var to the end of a path string.
+ *          Add a semicolon if needed.
+ */
+function AddToEndIfNotInListForSubEnv(dirs, dirToAdd, subEnvVarName, pathString)
+  STRING envVarName;
+begin
+  envVarName =  subEnvVarName ;
+  if !IsInList(dirs, dirToAdd) && !IsInList(dirs, envVarName) then
+      ReplaceEnvVarNT(envVarName, dirToAdd);
+	if pathString != "" then
+    	  pathString = pathString + ";";
+  	endif;
+      pathString = pathString + "%"+ envVarName + "%";
+  endif;
+end;
+
+/*
+ * Function: IsInPath
+ * Purpose: Find a directory in path. This had to be written because the
+ *          PathSet function for InstallShield3 did not like paths that
+ *          contain directories with spaces like "C:\Program Files".
+ */
+function IsInPath(path, dir)
+  LIST dirs;
+begin
+  dirs = CreateDirListFromPath(path);
+  return IsInList(dirs, dir);
+end;
+
+/*
+ * Function: CreateDirListFromPath
+ * Purpose: Create a list of directories from a given path string.
+ */
+function CreateDirListFromPath(path)
+  LIST dirs;
+begin
+  dirs = ListCreate(STRINGLIST);
+  StrGetTokens(dirs, path, ";");
+  return dirs;
+end;
+
+/*
+ * Function: IsInList
+ * Purpose: Find a string in a list ignoring case.
+ */
+function IsInList(strings, match)
+  STRING currentString;
+  NUMBER result;
+begin
+  result = ListGetFirstString(strings, currentString);
+  while result = 0
+    // StrCompare is NOT case sensitive.
+    if StrCompare(currentString, match) = 0 then
+      return TRUE;
+    endif;
+
+    result = ListGetNextString(strings, currentString);
+  endwhile;
+
+  return FALSE;
+end;
+/*
+ * Function: InstallPropertiesStep
+ * Purpose: Install a customized version of the properties needed in
+ *          the users home directory and handle the Setup message.
+ */
+function InstallPropertiesStep(sourceDir, rawFileName, targetDir, subDir,
+                               fileName, propertiesOption, userHomeDir)
+begin
+  SdShowMsg("Installing " + fileName + "...", TRUE);
+  InstallPropertiesFile(sourceDir, rawFileName, targetDir, subDir, fileName,
+    propertiesOption, userHomeDir);
+  SdShowMsg("", FALSE);
+  return PROPERTIES_STEP + 1;
+end;
+
+/*
+ * Function: InstallPropertiesFile
+ * Purpose: Install a customized version of the properties needed in
+ *          the users home directory. Merging with the old one.
+ */
+function InstallPropertiesFile(sourceDir, rawFileName, targetDir, subDir,
+                               fileName, propertiesOption, userHome)
+  NUMBER result;
+  STRING backupFileName;
+  LIST mergedLines;
+begin
+  // Read the raw properties file from the source dir,
+  // replace %ROOTDIR% with the target dir,
+  // and write the fixed up file to target dir.
+  if !FixupPropertiesFile(sourceDir, rawFileName, targetDir, subDir,
+      fileName) then
+    return;
+  endif;
+
+  if (propertiesOption = NO_USER_HOME) ||
+      (propertiesOption = NO_USER_PROPS) then
+    return;
+  endif;
+
+  if propertiesOption = ADD_USER_PROPS then
+    if NoUninstallCopyFile(targetDir ^ subDir, fileName, userHome,
+        fileName) < 0 then
+      WarnAndLog("Could not write user's copy of properties file.");
+    endif;
+
+    return;
+  endif;
+
+  if MergePropertiesFiles(userHome ^ fileName, targetDir ^ subDir ^ fileName,
+      mergedLines) < 0 then
+    return;
+  endif;
+
+  MakeFileNameUnique(userHome, fileName, backupFileName);
+  SRCDIR = userHome;
+  TARGETDIR = userHome;
+  if RenameFile(fileName, backupFileName) < 0 then
+    WarnAndLog("Cannot write the user's properties file because,\n" +
+      "Setup cannot backup the old properties file.");
+    return;
+  endif;
+
+  // The user may add properties to the user copy of file for other Gensym
+  // products. So do not have it uninstalled later.
+  Disable(LOGGING);
+  if !OverwriteLinesOfText(userHome, fileName, mergedLines) then
+    WarnAndLog("Could not write user's copy of properties file.");
+  endif;
+
+  Enable(LOGGING);
+end;
+
+/*
+ * Function: FixupPropertiesFile
+ * Purpose: Read the raw properties file from the source dir,
+ *          replace %ROOTDIR% with the target dir,
+ *          and write the fixed up file to target dir.
+ */
+function FixupPropertiesFile(sourceDir, rawFileName, targetDir, subDir,
+                             fileName)
+  LIST sourceLines;
+  STRING fixedTargetDir;
+  STRING currentLine;
+  NUMBER result;
+  BOOL lineChanged;
+  LIST tokens;
+  STRING currentToken;
+begin
+  sourceLines = ListCreate(STRINGLIST);
+  if ListReadFromFile(sourceLines, sourceDir ^ rawFileName) < 0 then
+    WarnAndLog("Could not read properties template.");
+    return FALSE;
+  endif;
+
+  // Java properties file use the \ as an escape char.
+  // So we must double each single \
+  DoubleSlashify(targetDir, fixedTargetDir);
+
+  // loop through lines and replace %root dir%
+  result = ListGetFirstString(sourceLines, currentLine);
+  while result = 0
+    lineChanged = FALSE;
+    tokens = ListCreate(STRINGLIST);
+    StrGetTokens(tokens, currentLine, "%");
+    currentLine = "";
+    result = ListGetFirstString(tokens, currentToken);
+    while result = 0
+      if currentToken = "ROOTDIR" then
+        currentLine = currentLine + fixedTargetDir;
+        lineChanged = TRUE;
+      else
+        currentLine = currentLine + currentToken;
+      endif;
+
+      result = ListGetNextString(tokens, currentToken);
+    endwhile;
+
+    ListDestroy(tokens);
+    if lineChanged then
+      ListSetCurrentString(sourceLines, currentLine);
+    endif;
+
+    result = ListGetNextString(sourceLines, currentLine);
+  endwhile;
+
+  if !OverwriteLinesOfText(targetDir ^ subDir, fileName, sourceLines) then
+    WarnAndLog("Could not write " + targetDir ^ subDir ^ fileName + ".");
+    return FALSE;
+  endif;
+
+  return TRUE;
+end;
+
+/*
+ * Function: DoubleSlashify
+ * Purpose: Replace each back slash with 2 for use in Java properties files.
+ */
+function DoubleSlashify(inString, outString)
+  LIST tokens;
+  BOOL firstToken;
+  NUMBER result;
+  STRING token;
+begin
+  tokens = ListCreate(STRINGLIST);
+  if StrGetTokens(tokens, inString, "\\") < 0 then
+    outString = inString;
+    return;
+  endif;
+
+  outString = "";
+  firstToken = TRUE;  
+  result = ListGetFirstString(tokens, token);
+  while result = 0
+    if !firstToken then
+      outString = outString + "\\\\";
+    endif;
+
+    outString = outString + token;
+    result = ListGetNextString(tokens, token);
+    firstToken = FALSE;  
+  endwhile;
+end;
+
+/*
+ * Function: WarnAndLog
+ * Purpose: Warn the user and log the warning in the global log.
+ */
+function WarnAndLog(warning)
+begin
+  MessageBox(warning, WARNING);
+  ListAddString(globalLinesToLog, "", AFTER);
+  ListAddString(globalLinesToLog, warning, AFTER);
+end;
+
+/*
+ * Function: NoUninstallCopyFile
+ * Purpose: Copy a file, and not have the new copy uninstalled later.
+ */
+function NoUninstallCopyFile(sourceDir, sourceFile, targetDir, newFileName)
+  NUMBER result;
+begin
+  SRCDIR = sourceDir;
+  TARGETDIR = targetDir;
+
+  Disable(LOGGING);
+  result = CopyFile(sourceFile, newFileName);
+  Enable(LOGGING);
+  return result;
+end;
+
+/*
+ * Function: MergePropertiesFiles
+ * Purpose: Read the 2 properties and merge them based on keys.
+ *          Append the new file to the old file but drop any
+ *          of the old lines that have a properties that exist in
+ *          the old file. The files are small to we will not try
+ *          an fancy stuff.
+ */
+function MergePropertiesFiles(oldFile, newFile, mergedLines)
+  LIST oldFileLines;
+  LIST newFileLines;
+  NUMBER result;
+  STRING currentLine;
+  NUMBER endOfKey;
+  STRING propertyKey;
+begin
+  oldFileLines = ListCreate(STRINGLIST);
+  if ListReadFromFile(oldFileLines, oldFile) < 0 then
+    WarnAndLog("Could not read old properties file.");
+    return FALSE;
+  endif;
+
+  newFileLines = ListCreate(STRINGLIST);
+  if ListReadFromFile(newFileLines, newFile) < 0 then
+    WarnAndLog("Could not read new properties file.");
+    return FALSE;
+  endif;
+
+  mergedLines = ListCreate(STRINGLIST);
+
+  // loop through the lines of the old file and
+  // add the old lines but do not add properties that exist in the new file
+  result = ListGetFirstString(oldFileLines, currentLine);
+  while result = 0
+    endOfKey = StrFind(currentLine, "=");
+    StrSub(propertyKey, currentLine, 0, endOfKey);
+    if KeyInList(newFileLines, propertyKey) < 0 then
+      ListAddString(mergedLines, currentLine, AFTER);
+    endif;
+    result = ListGetNextString(oldFileLines, currentLine);
+  endwhile;
+
+  // now just add all of the lines of the new file
+  result = ListGetFirstString(newFileLines, currentLine);
+  while result = 0
+    ListAddString(mergedLines, currentLine, AFTER);
+    result = ListGetNextString(newFileLines, currentLine);
+  endwhile;
+
+  return TRUE;
+end;
+
+/*
+ * Function: KeyInList
+ * Purpose: Given a unique key see if is in the list an return the index
+ *          or -1.
+ */
+function KeyInList(listOfStrings, key)
+  NUMBER result;
+  STRING currentString;
+  NUMBER i;
+begin
+  result = ListGetFirstString(listOfStrings, currentString);
+  i = 0;
+  while result = 0
+    if currentString % key then
+      return i;
+    endif;
+
+    result = ListGetNextString(listOfStrings, currentString);
+    i = i + 1;
+  endwhile;
+
+  return -1;
+end;
+/*
+ * Function: LoggingStep
+ * Purpose: Write the global install log. The default is installLog.txt
+ */
+function LoggingStep(targetDir, logFileName)
+  LIST headerLines;
+  BOOL logRequirements;
+  BOOL logEvents;
+  STRING localLogFileName;
+begin
+  SdShowMsg("Writing Install Log...", TRUE);
+  headerLines = ListCreate(STRINGLIST);
+
+  logRequirements = ListCount(globalRequirementsLog) > 0;
+  logEvents = ListCount(globalLinesToLog) > 0;
+
+  ListAddString(headerLines, "Installation Log for " + PRODUCT_NAME + " " +
+    PRODUCT_VERSION, AFTER);
+  if logRequirements || logEvents then
+    ListAddString(headerLines, "", AFTER);
+    ListAddString(headerLines, LOG_HEADER_WARN, AFTER);
+  endif;
+
+  if logFileName = "" then
+    localLogFileName = LOG_FILE_NAME;
+  else
+    localLogFileName = LOG_FILE_NAME;
+  endif;
+
+  WriteLinesOfText(targetDir, localLogFileName, headerLines, FALSE, FALSE);
+
+  if logRequirements then
+    WriteLinesOfText(targetDir, localLogFileName, globalRequirementsLog, TRUE,
+       TRUE);
+  endif;
+
+  if logEvents then
+    WriteLinesOfText(targetDir, localLogFileName, globalLinesToLog, TRUE,
+      TRUE);
+  endif;
+
+  if ListCount(globalOptionsLog) > 0 then
+    WriteLinesOfText(targetDir, localLogFileName, globalOptionsLog, TRUE,
+      FALSE);
+  endif;
+
+  SdShowMsg("", FALSE);
+end;
+
+/*
+ * Function: WriteLinesOfText
+ * Purpose: Writes a list of strings to a file. Appends the text if the
+ *          file exists.
+ */
+function WriteLinesOfText(directory, fileName, linesOfText, addBlankLine,
+                          indentLines)
+  STRING dummy;
+  STRING tempFileName;
+  NUMBER result;
+  NUMBER fileHandle;
+  STRING currentLine;
+begin
+  if FindFile(directory, fileName, dummy) < 0 then
+    tempFileName = "temp.txt";
+    OpenFileMode(FILE_MODE_APPEND);
+    result = CreateFile(fileHandle, directory, tempFileName);
+    CloseFile(fileHandle);
+    SRCDIR = directory;
+    TARGETDIR = directory;
+ 
+    // uninstall does not uninstall files created by CreateFile
+    // so make a copy and delete the original.
+    CopyFile(tempFileName, fileName);
+    DeleteFile(tempFileName);
+  endif;
+
+  OpenFileMode(FILE_MODE_APPEND);
+  result = OpenFile(fileHandle, directory, fileName);
+  if result < 0 then
+    return FALSE;
+  endif;
+
+  if addBlankLine then
+    WriteLine(fileHandle, "");
+  endif;
+
+  result = ListGetFirstString(linesOfText, currentLine);
+  while result = 0
+    if indentLines then
+      currentLine = "  " + currentLine;
+    endif;
+
+    WriteLine(fileHandle, currentLine);
+    result = ListGetNextString(linesOfText, currentLine);
+  endwhile;
+
+  CloseFile(fileHandle);
+  return TRUE;
+end;
+
+/*
+ * Function: OverwriteLinesOfText
+ * Purpose: Writes a list of strings to a file. Overwrites the text if the
+ *          file exists.
+ */
+function OverwriteLinesOfText(directory, fileName, linesOfText)
+  STRING tempFileName;
+  NUMBER result;
+  NUMBER fileHandle;
+  STRING currentLine;
+begin
+  tempFileName = "temp.txt";
+  OpenFileMode(FILE_MODE_APPEND);
+  result = CreateFile(fileHandle, directory, tempFileName);
+  CloseFile(fileHandle);
+ 
+  // uninstall does not uninstall files created by CreateFile
+  // so make a copy and delete the original.
+  SRCDIR = directory;
+  TARGETDIR = directory;
+  CopyFile(tempFileName, fileName);
+  DeleteFile(tempFileName);
+  
+  if ListWriteToFile(linesOfText, directory ^ fileName) < 0 then
+    return FALSE;
+  endif;
+
+  return TRUE;
+end;
+
+/*
+ * function IsBDK
+ * purpose: Check for Sun's Bean Development Kit. Return true if found else
+ *          false.
+ */
+function IsBDK()
+  STRING classpath[1024];
+begin
+  if GetEnvVarDef("CLASSPATH", classpath) < 0 then
+    return FALSE;
+  endif;
+
+  StrToLower(classpath, classpath);
+
+  if StrFind(classpath, "\\bdk\\") < 0 then
+    return FALSE;
+  endif;
+
+  return TRUE;
+end;
+
+/*
+ * Function: ReadMeOrRebootStep
+ * Purpose: The last dialog, asked the user if the want to read the 
+ *          readme file or reboot. Only display the reboot option if
+ *          the global reboot needed state is true. If the user selects
+ *          reboot the reboot instead of returning.
+ */
+function ReadMeOrRebootStep(displayReadme)
+begin
+  ReadMeOrRebootWithMessageStep(displayReadme, "");
+end;
+
+/*
+ * Function: ReadMeOrRebootWithMessageStep
+ * Purpose: The last dialog, asked the user if the want to read the 
+ *          readme file or reboot. Only display the reboot option if
+ *          the global reboot needed state is true. If the user selects
+ *          reboot the reboot instead of returning.
+ */
+function ReadMeOrRebootWithMessageStep(displayReadme, bottomMsg)
+  STRING exitOption;
+begin
+  ComponentAddItem(AFTER_INSTALL_OPTIONS, README_OPTION, 0, TRUE);
+
+  if globalRebootNeeded then
+    ComponentAddItem(AFTER_INSTALL_OPTIONS, REBOOT_OPTION, 0, FALSE);
+    exitOption = EXIT_OPTION;
+  else
+    exitOption = EXIT_OPTION_NO_REBOOT_NEEDED;
+  endif;
+ 
+  ComponentAddItem(AFTER_INSTALL_OPTIONS, exitOption, 0, FALSE);
+
+  GetAfterInstallOption("", "", bottomMsg, AFTER_INSTALL_OPTIONS);
+
+  if ComponentIsItemSelected(AFTER_INSTALL_OPTIONS, REBOOT_OPTION) then
+    // ensure the files were commited properly
+    CommitSharedFiles(0);
+    System(SYS_BOOTMACHINE);
+  endif;
+
+  if ComponentIsItemSelected(AFTER_INSTALL_OPTIONS, README_OPTION) then
+    displayReadme = TRUE;
+  else
+    displayReadme = FALSE;
+  endif;
+end;
+
+/*
+ * Function: DisplayHtmlFile
+ * Purpose: Displays an html file. The default is readme.html
+ */
+function DisplayHtmlFile(directory, fileName)
+  STRING localFileName;
+  STRING fileApp;
+begin
+  if fileName = ""  then  
+    localFileName = README_FILE;
+  else 
+    localFileName = fileName;
+  endif;
+
+  // see if a html browser is on the machine and linked to html files.
+  if FindFileOpenApp("html", fileApp) < 0 then
+    MessageBox("Cannot open " + localFileName + ", because there is\n" +
+               "no application listed to open html files on this system.",
+               WARNING);
+    return;
+  endif;
+
+  LaunchApp(fileApp, directory ^ localFileName);
+end;
+
+/*
+ * Function: FindFileOpenApp
+ * Purpose: Find the application that open a file type.
+ */
+function FindFileOpenApp(fileExtension, fileApp);
+  STRING fileExtensionKey;
+  NUMBER valueType;
+  STRING fileType;
+  NUMBER size;
+  STRING fileOpenKey;
+  NUMBER location;
+begin
+  // see if a html browser is on the machine and linked to html files.
+  RegDBSetDefaultRoot(HKEY_CLASSES_ROOT);
+
+  fileExtensionKey = "." + fileExtension;
+
+  if RegDBGetKeyValueEx(fileExtensionKey, "", valueType,
+      fileType, size) < 0 then
+    return -1;
+  endif;
+
+  fileOpenKey = fileType + "\\shell\\open\\command\\";
+
+  if RegDBGetKeyValueEx(fileOpenKey, "", valueType, fileApp, size) < 0 then
+    return -1;
+  endif;
+
+  // Strip off things like the %1 from the entry
+  location = StrFind(fileApp, "%");
+
+  if location > 0 then
+    // include the text before the % like app.exe
+    location = location;
+    StrSub(fileApp, fileApp , 0, location);
+  endif;
+
+  return 0;
+end;
+
+/*
+ * Function: AskDestPathWithoutCreate (Custom AskDestPathWithCreate)
+ * Purpose: This dialog will ask user for the destination directory
+ *          for installation and allow the user click on Browse
+ *          button and select a directory without forcing the user to
+ *          create a directory that we have to clean up if the
+ *          user changes their mind.
+ * Misc: Copied from InstallShield 3 sdadpath.rul.
+ *       Except for calling SelectDir with create dir parameter as false.
+ *       The function works just like the SdAskDestPath script dialog
+ *       function.
+ */
+function AskDestPathWithoutCreate(sTitle, sMsg, svDir, nReserved)
+  STRING  sDlg, svDirLoc, sTemp;
+  INT     nId, nTemp;
+  HWND    hwndDlg;
+  BOOL    bDone;
+begin
+
+  sDlg     = SD_DLG_ASKDESTPATH;
+  nSdDialog = SD_NDLG_ASKDESTPATH;
+  svDirLoc = svDir;
+
+  // record data produced by this dialog
+  if MODE=SILENTMODE then
+    SdMakeName(szAppKey, sDlg, sTitle, nSdAskDestPath );
+    SilentReadData( szAppKey, "Result", DATA_NUMBER, sTemp, nId );
+    if (nId != BACK) && (nId != CANCEL) then
+      SilentReadData( szAppKey, "sDir", DATA_STRING, svDir, nTemp );
+    endif;
+
+    return nId;
+  endif;
+
+  // ensure general initialization is complete
+  if !bSdInit then
+    SdInit();
+  endif;
+
+  if EzDefineDialog( sDlg, "", "", SD_NDLG_ASKDESTPATH ) = DLG_ERR then
+    return -1;
+  endif;
+
+  // Loop in dialog until the user selects a standard button
+  bDone = FALSE;
+
+  while !bDone
+    nId = WaitOnDialog( sDlg );
+
+    switch (nId)
+    case DLG_INIT:
+      CtrlSetText( sDlg, 0x80000000 | SD_STA_DESTDIR, svDirLoc );
+
+      if sMsg != "" then
+        SdSetStatic( sDlg, SD_STA_CHANGEDIRMSG, sMsg );
+      endif;
+
+      hwndDlg = CmdGetHwndDlg( sDlg );
+      SdGeneralInit(sDlg, hwndDlg, nReserved, szSdProduct);
+
+      if sTitle != "" then
+        SetWindowText( hwndDlg, sTitle );
+      endif;
+
+    case SD_PBUT_CHANGEDIR:
+      nTemp = MODE;
+      MODE  = NORMALMODE;
+      SelectDir( "",
+                 "",
+                 svDirLoc,
+                 FALSE );
+      CtrlSetText( sDlg, 0x80000000 | SD_STA_DESTDIR, svDirLoc );
+      MODE = nTemp;
+
+     case SD_PBUT_CONTINUE:
+       svDir = svDirLoc;
+       nId   = NEXT;
+       bDone = TRUE;
+
+     case BACK:
+       nId    = BACK;
+       bDone  = TRUE;
+
+     case DLG_ERR:
+       SdError( -1, "SdAskDestPath" );
+       nId   = -1;
+       bDone = TRUE;
+
+     case DLG_CLOSE:
+       SdCloseDlg( hwndDlg, nId, bDone );
+
+     default:
+       // check standard handling
+       if SdIsStdButton( nId ) && SdDoStdButton( nId ) then
+         bDone = TRUE;
+       endif;
+     endswitch;
+  endwhile;
+
+  EndDialog( sDlg );
+  ReleaseDialog( sDlg );
+
+  SdUnInit( );
+
+  // record data produced by this dialog
+  SdMakeName( szAppKey, sDlg, sTitle, nSdAskDestPath );
+  SilentWriteData( szAppKey, "sDir", DATA_STRING, svDir, 0 );
+  SilentWriteData( szAppKey, "Result", DATA_NUMBER, "", nId );
+
+  return nId;
+end;
+
+/*
+ * Function: GetAfterInstallOption
+ * Purpose: This dialog will allow the user to choose 1 of upto 4 options.
+ *          It is custom dialog function for the SD Ask Options dialog.
+ *          That looks and acts like the SD Finish dialog.
+ */
+function GetAfterInstallOption(title, topMsg, bottomMsg, options)
+begin
+  return AfterInstallOptions(title, topMsg, bottomMsg, options, EXCLUSIVE);
+end;
+
+/*
+ * Function: GetAfterInstallOptions
+ * Purpose: This dialog will allow the user to choose upto 4 options.
+ *          It is custom dialog function for the SD Ask Options dialog
+ *          That looks and acts like the SD Finish dialog.
+ */
+function GetAfterInstallOptions(title, topMsg, bottomMsg, options)
+begin
+  return AfterInstallOptions(title, topMsg, bottomMsg, options, NONEXCLUSIVE);
+end;
+
+/*
+ * Function: AfterInstallOptions
+ * Purpose: This dialog will allow the user to choose 1 of upto 4 options.
+ *          It is custom dialog function for the SD Ask Options dialog.
+ *          That looks and acts like the SD Finish dialog.
+ */
+function AfterInstallOptions(title, topMsg, bottomMsg, options, exclusiveFlag)
+  STRING tempTitle;
+  STRING tempTopMsg;
+  STRING tempBottomMsg;
+begin
+  if title = "" then
+    tempTitle = "Setup Complete";
+  else
+    tempTitle = title;
+  endif;
+
+  if topMsg = "" then
+    tempTopMsg = "Setup has finished installing %P on your computer. ";
+    if exclusiveFlag = EXCLUSIVE then
+      tempTopMsg = tempTopMsg + "Choose the option you want below.";
+    else
+      tempTopMsg = tempTopMsg + "Choose the options you want below.";
+    endif;
+  else
+    tempTopMsg = topMsg;
+  endif;
+
+  if bottomMsg = "" then
+    tempBottomMsg = "Click Finish to complete Setup.";
+  else
+    tempBottomMsg = bottomMsg;
+  endif;
+
+  return GetOptionsEx(tempTitle, tempTopMsg, tempBottomMsg, "Finish", TRUE,
+    TRUE, options, exclusiveFlag);
+end;
+
+/*
+ * Function: GetOptionsEx
+ * Purpose: This dialog will allow the user to choose upto 4 different options.
+ *          It is custom dialog function for the SD Ask Options dialog.
+ *          This function is base function easier to use functions.
+ * Misc: Taken from the InstallShield3 file sdopts.rul
+ */
+function GetOptionsEx(sTitle, sMsg1, sMsg2, sNextButtonName, bDisableBack,
+                      bNoCancel, sOptions, nExclusiveFlag)
+  STRING  sDlg, sTemp;
+  INT     nId, nReturn, nCount, nCheck, nTemp;
+  HWND    hwndDlg;
+  HWND    hwndCancel;
+  BOOL    bDone;
+  LIST    lOptions;
+  STRING  sOption;
+begin
+  sDlg     = "GetOptions";
+  nSdDialog = SD_NDLG_ASKOPTIONS;
+
+  // record data produced by this dialog
+  if MODE=SILENTMODE then
+    SdMakeName( szAppKey, sDlg, sTitle, nSdAskOptions);
+    SilentReadData( szAppKey, "Result", DATA_NUMBER, sTemp, nId );
+    return nId;
+  endif;
+
+  // ensure general initialization is complete
+  if !bSdInit then
+    SdInit();
+  endif;
+
+  if EzDefineDialog(sDlg, "", "", nSdDialog) = DLG_ERR then
+    return -1;
+  endif;
+
+  if bDisableBack then
+    Disable(BACKBUTTON);
+  endif;
+
+  // Loop in dialog until the user selects a standard button
+  bDone = FALSE;
+  while !bDone
+    nId = WaitOnDialog(sDlg);
+
+    switch (nId)
+    case DLG_INIT:
+      hwndDlg = CmdGetHwndDlg(sDlg);
+
+      // Set the correct check boxes if necessary.
+      if nExclusiveFlag = EXCLUSIVE then
+        ChangeBoxesToButtons(hwndDlg, SD_CHECK1);
+      endif;
+
+      InitOptions(sOptions, SD_CHECK1, sDlg, nExclusiveFlag, hwndDlg);
+
+      if sTitle != "" then
+        SetWindowText(hwndDlg, sTitle);
+      endif;
+
+      if sMsg1 != "" then
+        SdSetStatic(sDlg, SD_STA_MSG1, sMsg1);
+      endif;
+
+      if sMsg2 != "" then
+        SdSetStatic(sDlg, SD_STA_MSG2, sMsg2);
+      endif;
+
+      if sNextButtonName != "" then
+        SdSetStatic(sDlg, SD_PBUT_OK, sNextButtonName);
+      endif;
+
+      if bNoCancel then
+        // Hide the cancel button
+        hwndCancel = GetDlgItem(hwndDlg, SD_PBUT_EXITSETUP);
+        ShowWindow(hwndCancel, WM_HIDE);
+      endif;
+
+      SdGeneralInit(sDlg, hwndDlg, STYLE_BOLD, szSdProduct);
+    case SD_PBUT_OK:
+      lOptions = ListCreate(STRINGLIST);
+      ComponentListItems(sOptions, lOptions);
+      nReturn = ListGetFirstString(lOptions, sOption);
+      nCount = 0;
+      while nReturn = 0
+        nCheck = CtrlGetState(sDlg, SD_CHECK1 + nCount);
+        if nCheck = BUTTON_CHECKED then
+          ComponentSelectItem(sOptions, sOption, TRUE);
+        else
+          ComponentSelectItem(sOptions, sOption, FALSE);
+        endif;
+
+        nReturn = ListGetNextString(lOptions, sOption);
+        nCount = nCount + 1;
+      endwhile;
+
+      nId   = OK;
+      bDone = TRUE;
+    case BACK:
+      nId    = BACK;
+      bDone  = TRUE;
+    case DLG_ERR:
+      SdError(-1, "SdAskOptions");
+      nId   = -1;
+      bDone = TRUE;
+    case DLG_CLOSE:
+      if !bNoCancel then
+        SdCloseDlg(hwndDlg, nId, bDone);
+      endif;
+    default:
+      // check standard handling
+      if SdIsStdButton(nId) && SdDoStdButton(nId) then
+        bDone = TRUE;
+      endif;
+    endswitch;
+  endwhile;
+
+  EndDialog(sDlg);
+  ReleaseDialog(sDlg);
+
+  SdUnInit();
+
+  if bDisableBack then
+    Enable(BACKBUTTON);
+  endif;
+
+  // record data produced by this dialog
+  SdMakeName(szAppKey, sDlg, sTitle, nSdAskOptions);
+  SilentWriteData(szAppKey, "Result", DATA_NUMBER, "", nId);
+  return nId;
+end;
+
+/*
+ * Function: ChangeBoxesToButtons
+ * Purpose: This funciton changes the check boxes to radio buttons in
+ *          GetOptions dialog.
+ */
+function ChangeBoxesToButtons(hwndDlg, nControlID)
+  NUMBER nCount;
+  HWND   hwndStatic;
+begin
+  nCount = 0;
+  hwndStatic = GetDlgItem(hwndDlg, nControlID + nCount);
+  while hwndStatic > 0
+    SendMessage(hwndStatic, WM_SETSTYLE_32, BS_AUTORADIOBUTTON, TRUE);
+    nCount = nCount + 1;
+    hwndStatic = GetDlgItem(hwndDlg, nControlID + nCount);
+  endwhile;
+end;
+
+/*
+ *   Function: InitOptions
+ *   Purpose: This funciton initializes check boxes or radio button in
+ *            GetOptions dialog.
+ */
+function InitOptions(sOptions, nControlID, sDlg, nExclusiveFlag,
+                     hwndDlg)
+  NUMBER  nCount, nReturn;
+  HWND    hwndStatic;
+  BOOL    bSet;
+  LIST    lOptions;
+  STRING  sOption;
+begin
+  bSet = FALSE;
+  lOptions = ListCreate(STRINGLIST);
+  ComponentListItems(sOptions, lOptions);
+  nReturn = ListGetFirstString(lOptions, sOption);
+  nCount = 0;
+  while nReturn = 0
+    hwndStatic = GetDlgItem(hwndDlg, nControlID + nCount);
+    if hwndStatic != 0 then
+      CtrlSetText(sDlg, nControlID + nCount, sOption);
+
+      if ComponentIsItemSelected(sOptions, sOption) then
+        if nExclusiveFlag = EXCLUSIVE then
+          if !bSet then
+            CtrlSetState(sDlg, nControlID + nCount, BUTTON_CHECKED);
+          endif;
+        else
+          CtrlSetState(sDlg, nControlID + nCount, BUTTON_CHECKED);
+        endif;
+
+        // if first one then set as focus
+        if !bSet then
+          SetFocus(hwndStatic);
+        endif;
+
+        bSet = TRUE;
+      endif;
+    endif;
+
+    nReturn = ListGetNextString(lOptions, sOption);
+    nCount = nCount + 1;
+  endwhile;
+
+  // Hide rest of the controls, if there are any
+  hwndStatic = GetDlgItem(hwndDlg, nControlID + nCount);
+  while hwndStatic != 0
+    ShowWindow(hwndStatic, WM_HIDE);
+    nCount = nCount + 1;
+    hwndStatic = GetDlgItem(hwndDlg, nControlID + nCount);
+  endwhile;
+end;

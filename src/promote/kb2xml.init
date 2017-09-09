@@ -1,0 +1,20 @@
+;;;; A G2 initialization file for save KB into XML.
+;;
+;; You can either use G2 "-kb" command line to specify the KB to convert:
+;;
+;;   e.g. StartServer -kb tsdriver.kb -init kb2xml.init -no-window
+;;
+;; or directly put a "load KB" command in this file.
+;;
+;; The KB must be modularized, otherwise XML saving is not supported.
+
+;; Step 1. Load a KB (or use "-kb" command line option to load it)
+; load KB "tsdriver.kb"
+
+;; Step 2. Save XML KB into another directory (e.g. "kb-xml\") for top-level module
+save top-level module into "kb-xml\", using clear text
+;; Step 2a. Or save all required modules:
+; save top-level module into "kb-xml\", including all required modules, using clear text
+
+;; Step 3. Shut down G2 after saving, uncomment this if anything goes wrong.
+shut down g2

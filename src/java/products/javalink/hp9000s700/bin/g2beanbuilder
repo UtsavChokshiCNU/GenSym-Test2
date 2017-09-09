@@ -1,0 +1,17 @@
+#!/bin/csh -f
+
+if (! $?JAVALINK_HOME) then
+  if ($?0) then
+    if (-f `dirname $0`/../../tw2/bin/set-envvars) then
+#     if tw2 is installed, prefer its environment variables
+      source `dirname $0`/../../tw2/bin/set-envvars
+    else
+      source `dirname $0`/set-envvars
+    endif
+  else
+    echo "JAVALINK_HOME not set and can't determine directory for environment variable script"
+    exit -1
+  endif
+endif
+
+java -ss5m com.gensym.beanbuilder.G2BeanBuilder $*

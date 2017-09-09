@@ -1,0 +1,47 @@
+# Machine type: IntelNT
+
+#
+# JAVA_HOME should be set! ...pointing to JDK1.2
+# SPIN_ID should be set!
+# SRCBOX should be set!
+# GSIBOX should be set!
+#
+#
+#
+
+
+BT_JAVA = $(SRCBOX)\java
+
+C_DIR         = $(BT_JAVA)\c
+OBJ_DIR       = $(DSTBOX)\java\lib
+EXE_DIR       = $(DSTBOX)\java\lib
+H_DIR         = $(BT_JAVA)\include
+
+# Uncomment to see preprocessed output
+CDEBUG_FLAGS = -Od -Zi
+C_FLAGS  = $(cflags) $(CDEBUG_FLAGS) -DWIN32
+#INCLUDE_FLAGS = -I$(JAVA_HOME)\include-old -I$(JAVA_HOME)\include -I$(H_DIR) -I$(H_DIR) -I$(JAVA_HOME)\include-old\win32 -I$(JAVA_HOME)\include\win32 -I$(SRCBOX)\specific\intelnt
+INCLUDE_FLAGS = -I$(JAVA_HOME)\include -I$(H_DIR) 
+COMMON = -DNEW_CLASS_MAPPING
+#CCFLAGS       = /nologo $(COMMON) $(C_FLAGS) $(cvars) $(INCLUDE_FLAGS)
+CCFLAGS=/nologo /ML /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" $(COMMON) $(C_FLAGS) $(cvars) $(INCLUDE_FLAGS) /Fo"$(H_DIR)\\" /Fd"$(H_DIR)\\" /FD /c 
+link = link
+CC = cl
+
+WINLIBS =  libcmt.lib ws2_32.lib
+LIBS = $(WINLIBS)
+LDEBUGFLAGS = -debug:full -debugtype:cv	
+LINKFLAGS = /nodefaultlib:"libc.lib" $(LDEBUGFLAGS)
+
+H_FILES =
+	  
+EXECUTABLES = $(EXE_DIR)\winstart.exe 
+
+ALL :  $(EXECUTABLES)
+
+$(EXE_DIR)\winstart.exe : $(OBJ_DIR)\winstart.obj
+	$(link) -out:$(EXE_DIR)\winstart.exe $(LINKFLAGS) $(OBJ_DIR)\winstart.obj $(LIBS)
+
+$(OBJ_DIR)\winstart.obj : $(C_DIR)\winstart.cpp $(H_FILES) 
+	$(CC) -c $(CCFLAGS) $(C_DIR)\winstart.cpp -Fo$(OBJ_DIR)\winstart.obj
+

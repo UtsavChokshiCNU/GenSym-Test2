@@ -1,0 +1,122 @@
+
+BEANROOT =
+
+GROUP_NAME = controls
+
+PACKAGER = java sun.beans.ole.Packager -noreg
+
+JAVADIR = $(SRCBOX)\java
+
+JARDIR = $(JAVADIR)\jars
+
+JARFILE = $(JARDIR)\$(GROUP_NAME).jar
+
+ACTIVEXDIR = $(JAVADIR)\activex
+
+ACTIVEX_JARFILE = $(ACTIVEXDIR)\$(GROUP_NAME)X.jar
+
+CLASSDIR = com\gensym\controls
+
+PACKAGE = com.gensym.controls
+
+CLASSFILES= \
+	$(CLASSDIR)\G2TextField.class \
+	$(CLASSDIR)\G2DropDownChoice.class \
+	$(CLASSDIR)\G2Radiobox.class \
+	$(CLASSDIR)\G2Checkbox.class \
+	$(CLASSDIR)\FieldType.class \
+	$(CLASSDIR)\FieldTypeEditor.class \
+	$(CLASSDIR)\LimitMode.class \
+	$(CLASSDIR)\LimitModeEditor.class \
+	$(CLASSDIR)\G2Label.class \
+	$(CLASSDIR)\G2Button.class \
+	$(CLASSDIR)\G2Listbox.class \
+	$(CLASSDIR)\Formatter.class \
+	$(CLASSDIR)\FormatterEditor.class \
+	$(CLASSDIR)\ItemProxy.class \
+	$(CLASSDIR)\ItemProxyBeanInfo.class \
+	$(CLASSDIR)\ItemProxyCustomizer.class \
+	$(CLASSDIR)\AttributeHolder.class \
+	$(CLASSDIR)\AWTDerivedBeanInfo.class \
+	$(CLASSDIR)\StructureMUX.class\
+	$(CLASSDIR)\DialogCommand.class \
+	$(CLASSDIR)\ItemRetriever.class \
+	$(CLASSDIR)\ItemRetrievalListener.class \
+	$(CLASSDIR)\ItemRetrievalEvent.class \
+	$(CLASSDIR)\ControlsEventMulticaster.class \
+	$(CLASSDIR)\ScriptUtilities.class \
+	$(CLASSDIR)\TwConnector.class
+
+ALLCLASSFILES=$(CLASSDIR)\*.class
+
+all: $(JARDIR) $(ACTIVEXDIR) $(JARFILE) $(ACTIVEX_JARFILE)
+
+$(JARDIR):
+	mkdir "$(JARDIR)"
+
+$(ACTIVEXDIR):
+	mkdir "$(ACTIVEXDIR)"
+
+# Create a JAR file with a suitable manifest.
+
+$(JARFILE): $(CLASSFILES)
+	jar cfm "$(JARFILE)" <<manifest.tmp $(ALLCLASSFILES)
+Name: com/gensym/controls/G2Label.class
+Java-Bean: True
+
+Name: com/gensym/controls/G2Button.class
+Java-Bean: True
+
+Name: com/gensym/controls/G2TextField.class
+Java-Bean: True
+
+Name: com/gensym/controls/G2DropDownChoice.class
+Java-Bean: True
+
+Name: com/gensym/controls/G2Checkbox.class
+Java-Bean: True
+
+Name: com/gensym/controls/G2Radiobox.class
+Java-Bean: True
+
+Name: com/gensym/controls/G2Listbox.class
+Java-Bean: True
+
+Name: com/gensym/controls/StructureMUX.class
+Java-Bean: True
+
+Name: com/gensym/controls/ItemProxy.class
+Java-Bean: True
+
+Name: com/gensym/controls/DialogCommand.class
+Java-Bean: True
+
+Name: com/gensym/controls/ItemRetriever.class
+Java-Bean: True
+
+Name: com/gensym/controls/ScriptUtilities.class
+Java-Bean: True
+
+Name: com/gensym/controls/TwConnector.class
+Java-Bean: True
+<<
+
+# We only need to convert certain beans to activeX controls. If an more are added
+# do not forget to change unInstallControls.bat
+$(ACTIVEX_JARFILE) : $(JARFILE)
+	copy "$(JARFILE)" "$(ACTIVEX_JARFILE)"
+	$(PACKAGER) -n $(PACKAGE).ItemProxy -jar "$(ACTIVEX_JARFILE)" -o "$(ACTIVEXDIR)"
+	$(PACKAGER) -n $(PACKAGE).ScriptUtilities -jar "$(ACTIVEX_JARFILE)" -o "$(ACTIVEXDIR)"
+	$(PACKAGER) -n $(PACKAGE).TwConnector -jar "$(ACTIVEX_JARFILE)" -o "$(ACTIVEXDIR)"
+
+.SUFFIXES: .java .class
+
+{$(CLASSDIR)}.java{$(CLASSDIR)}.class :
+	javac $<
+
+# Run the Juggler as an applet inside AppletViewer.
+view: all
+	appletviewer html\trendchart.html
+
+clean:
+	-del "$(JARFILE)" "$(ACTIVEX_JARFILE)"

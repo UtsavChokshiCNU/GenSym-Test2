@@ -1,0 +1,404 @@
+<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="Author" CONTENT="default">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.05 [en] (WinNT; I) [Netscape]">
+   <TITLE>ControlsOnlineHelp</TITLE>
+</HEAD>
+<BODY>
+
+<H1>
+Telewindows2 Dialog Controls Online Guide</H1>
+TODO LIST
+<BR>- links to API documents
+<BR>- canonical dialog examples
+<BR>- editing cookbook
+<BR>- notes on internationalization
+
+<P>&nbsp;This document presents a high-level description of the properties,
+events, and methods of the standard dialog controls that come with Telewindows2.&nbsp;
+Only the features that are visible in non-expert mode are described.&nbsp;
+These features should be sufficient to build dialogs to edit nearly any
+attribute of any G2 Item.&nbsp; This Guide is intended to be used in conjunction
+with the Telewindows2 ComponentEditor.&nbsp; For a more in-depth look at
+these controls please refer to the &lt;Tag com.gensym.controls api doc>.
+
+<P>These controls are optimized for building dialogs to edit and browse
+the values in the attributes of G2 Items.&nbsp; Such item-editing dialogs
+are special, in that they are managed used by WorkspaceViews to provide
+a dialog for the properties menu choice on the items on workspaces.&nbsp;
+Item-editing dialogs can be associated with G2 Classes, user modes, client
+locales (for internationalization), or even with specific instances of
+classes.&nbsp; This association is maintained by the TwAccess object that
+owns the workspace view.&nbsp; Consult its documentation &lt;TAG>, or the
+Blah-Blah book for more information.
+
+<P>The controls (referred to alternatively as components) are defined by
+their properties, events, and methods.&nbsp; Simple, yet powerful, customized
+dialogs can be built with these components by configuring their properties,
+and connecting their events that they generate to call methods in other
+components.&nbsp; This control set makes use of equivalently named events
+and methods, to emphasize the patterns in which these controls are typically
+connected.
+<BR>&nbsp;
+<H1>
+<IMG SRC="item_proxy.gif" HEIGHT=32 WIDTH=32>&nbsp; ItemProxy</H1>
+The ItemProxy is an invisible control that stands in for a G2 Item.&nbsp;
+It does not represent any specific G2 Item, but rather a set of attributes
+that should be available on some item. This is done to promote the re-usability
+of dialogs.&nbsp; This set of attributes is the client side state of the
+object.&nbsp; It can be maintained in synch with the G2 Item or can be
+used to batch up a set of changes.&nbsp; The item which is the ItemProxy
+currently represents at run-time is called the <I>associated item</I>.
+
+<P>ItemProxies have a special function when dialogs are launched.&nbsp;
+After the dialog has been built, but before it is shown on the screen each
+item proxy on the dialog is linked with its associated item.&nbsp; If more
+than proxy is on a dialog, the name property of the proxy can be used to
+sort out which proxy goes with which item.&nbsp; Please see &lt;Tag dialoglauncher>
+for details.
+<H2>
+Properties</H2>
+
+<H3>
+attributeNames</H3>
+attributeNames is a set of Symbols that name attributes of a G2 Item.&nbsp;
+This set is usually a subset of the attributes seen in G2.&nbsp; This property
+must be filled for the ItemProxy to have any useful function.
+<H3>
+autoDownload</H3>
+The autoDownload property controls whether this ItemProxy will generate
+objectUpdated events when the underlying G2 item has a change in one of
+its attributes.
+<H3>
+autoUpload.</H3>
+The autoUpload property controls whether this ItemProxy upload data to
+G2, via the upload method, whenever it receives and objectChanged event.
+<H3>
+name</H3>
+The name property allows multiple ItemProxies in the same dialog to be
+distinguished by the dialog launcher.&nbsp; It need not be filled when
+a single proxy is in use.
+<H3>
+subObjectAttributeName</H3>
+The subObjectAttributeName field should be filled when the ItemProxy is
+being used to represent an item that resides in an attribute of another
+item.&nbsp; This slot would then contain the name of that attribute from
+the parent item.
+<H2>
+Events Generated</H2>
+
+<H3>
+objectUpdated</H3>
+The ItemProxy generates an objectUpdated event when the download method
+is called or if autoDownload is true AND the ItemProxy's associated G2
+Item changes.&nbsp; This event is typically linked to call the objectUpdated
+method in other Telewindows controls.
+<H2>
+Methods</H2>
+
+<H3>
+download()</H3>
+The download method forces a download of the set of attribute values from
+G2 into the proxy.&nbsp; The local copy is updated.&nbsp; objectChanged
+events are propagated to any connected components.
+<H3>
+editItem()</H3>
+The editItem method launches the same dialog that the would be launched
+from the WorkspaceView for the associated G2 Item.&nbsp; This can be either
+a Gensym-generated dialog or a customized dialog.&nbsp; This choice is
+governed by the DialogManager of the T2Access connection object.&nbsp;
+See &lt;TAG DialogManager> documentation for details.
+<H3>
+itemRetrieved(ItemRetrievalEvent)</H3>
+This method is typically called to handle an itemRetrieved event from an
+ItemRetriever.&nbsp; When it is called it associates the ItemProxy with
+the retrieved item and then calls the download method.
+
+<P>itemRetrievalFailed(ItemRetrievalEvent)
+
+<P>The itemRetrievalFailed method is typically called to handle an itemRetrievalFailed
+event from an ItemRetriever.&nbsp; When it is called the association between
+the ItemProxy and any G2 Item is cleared.&nbsp; In this state the ItemProxy
+is not very useful.
+<H3>
+objectChanged(ObjectChangeEvent)</H3>
+The objectChanged method takes an objectChanged event and modifies the
+local copy of the value maintained for a named attribute.&nbsp; The
+<H3>
+upload()</H3>
+The upload method sends the local copy of attribute values to be concluded
+into the corresponding attributes of the associated G2 Item.
+<H1>
+<IMG SRC="item_retriever.gif" HEIGHT=32 WIDTH=32> ItemRetriever</H1>
+The ItemRetriever component can lookup objects in a G2 process by class
+and item name and forward the lookup results to ItemProxies.&nbsp; The
+ItemRetriever plays two typical roles.&nbsp; One is to provide a means
+of testing an item-editing dialog without needing to bring up a Telewindows2
+client of one type or another.&nbsp; The other is to provide a simple means
+of bootstrapping reference for simple client applications.
+<H2>
+Properties</H2>
+
+<H3>
+host</H3>
+The host property defines the machine name of the desired G2 connection.&nbsp;
+Note that when testing from the Telewindows2 ComponentEditor, this property
+need not be specified.&nbsp; The host name provided when launching the
+component editor will be used for all testing purposes as a convenience.
+<H3>
+itemClassName</H3>
+The itemClassName property provides one half of a lookup key into a G2
+server/host process for finding an item.
+<H3>
+itemName</H3>
+The itemName property provides the other half of a lookup key into a G2
+server/host process for finding an item.
+<H3>
+port</H3>
+The port property defines the network listener port of the desired G2.&nbsp;
+Note that when testing from the Telewindows2 ComponentEditor, this property
+need not be specified.&nbsp; The port number provided when launching the
+component editor will be used for all testing purposes as a convenience.
+<H2>
+Events</H2>
+
+<H3>
+itemRetrieved</H3>
+The itemRetrieved event is fired when the retrieveItem method successfully
+finds an item in G2.&nbsp; This event is typically used to invoke the itemRetrieved
+method of an ItemProxy.
+<H3>
+itemRetrievedFailed</H3>
+The itemRetrievedFailed event is fired when the retrieveItem method is
+unsuccessful.
+<H2>
+Methods</H2>
+
+<H3>
+retrieveItem()</H3>
+The retrieveItem method looks up an item in G2, based on the name and class
+specified in the properties.&nbsp; It will establish a TwAccess connection
+to G2 if one has not already been made from this client process.&nbsp;
+If the retrieval finds a unique item for the given name and class it fires
+an itemRetrieved event, else it fires an itemRetrievalFailed event.
+<H1>
+<A NAME="EditingControlCommonFeatures"></A>Editing Control Common Features</H1>
+
+<H2>
+Properties</H2>
+
+<H3>
+attribute</H3>
+The attribute holds the name of the item or structure attribute that this
+text field represents.
+<H3>
+background</H3>
+The background property holds the background color of this component.
+<H3>
+fieldType</H3>
+The fieldType property indicates which G2 value type this component represents.&nbsp;
+It will be used to format strings to present to users, and to parse input
+from users.&nbsp; The supported types are:
+<UL>
+<LI>
+Text</LI>
+
+<LI>
+Symbol</LI>
+
+<LI>
+Integer</LI>
+
+<LI>
+Float</LI>
+
+<LI>
+Quantity</LI>
+
+<LI>
+Sequence</LI>
+
+<LI>
+Structure</LI>
+
+<LI>
+BooleanTruthValue</LI>
+
+<LI>
+Value</LI>
+</UL>
+Fuzzy truth values are not supported, but may be in a future release.&nbsp;
+G2 Item subclasses and the item-or-value type are not supported because
+attributes containing Items are not editable as text in G2.
+
+<P>font
+
+<P>The font property controls the appearance of all text in the component.&nbsp;
+Fonts vary by operating system, but will always include at least one each
+of monospaced, serif, and san serif Latin character sets at a wide variety
+of point sizes.
+<H3>
+foreground</H3>
+The foreground property holds the background color of this component.
+<H2>
+Events</H2>
+
+<H3>
+objectChanged</H3>
+The objectChanged event is sent whenever a value is changed by this component.&nbsp;
+That could be when checkbox is checked or unchecked, a text field loses
+keyboard focus, a new choice is made in a drop-down list, etcetera.
+<H2>
+Methods</H2>
+
+<H3>
+hide()</H3>
+The hide method makes the component invisible.
+<H3>
+objectUpdated(ObjectUpdateEvent)</H3>
+The objectUpdated method changes the value
+<H3>
+show()</H3>
+The show method makes the component visible.
+<BR>&nbsp;
+<H1>
+<IMG SRC="g2textfield.gif" HEIGHT=32 WIDTH=32> G2TextField</H1>
+The G2TextField is a normal, editable text field enhanced with the ability
+to format, parse, and verify most G2 values.&nbsp; Verification happens
+either character-by-character, or after keyboard focus leaves the textField.
+
+<P>Please see&nbsp; <A HREF="#EditingControlCommonFeatures">Editing Contol
+Common Features</A> for shared properties and methods.
+<H2>
+Properties</H2>
+
+<H3>
+defaultContents</H3>
+The defaultContents is a string that will be used as input if no value
+is received in this text field from an objectUpdated event.
+<H3>
+editable</H3>
+The editable property indicates whether this text field can accept input.&nbsp;
+The visual appearance of the field will change if this is the case.
+<H3>
+emptyFieldImpliesNull</H3>
+The emptyFieldImpliesNull property is used to resolve the ambiguity between
+an empty field indicating a empty string, or a null reference.&nbsp; Null
+references are useful in editing G2 Items, because editing an attribute
+to be null in Telewindows2 is equivalent to concluding that an attribute
+"has no value" in the G2 Programming language.
+<H3>
+lowerLimit, upperLimit</H3>
+The lowerLimit and upperLimit properties constrain the input values allowable,
+if the field type is quantity, number, or float and the associated limitMode
+property is configured.
+<H3>
+lowerLimitMode, upperLimitMode</H3>
+The lowerLimitMode and upperLimitMode configure whether range bounds are
+being enforced.&nbsp; They only take effect if the fieldType is quantitative.&nbsp;
+The limit can be inclusive or exclusive, which is of particular utility
+for integer fieldTypes.
+<H3>
+warnOnBadSyntax</H3>
+The warnOnBadSyntax property controls whether a modal warning dialog is
+generated upon input that does not match the field type and range limits
+of this text field.&nbsp; Note that regardless of whether a warning is
+issued, objectChanged events are not generated for input with syntax errors.
+<H1>
+<IMG SRC="g2dropdown.gif" HEIGHT=32 WIDTH=32> G2DropDownChoice</H1>
+The G2DropDownChoice control allows users to select one of a fixed set
+of choice of values.
+
+<P>Please see&nbsp; <A HREF="#EditingControlCommonFeatures">Editing Contol
+Common Features</A> for shared properties and methods.
+<H2>
+Properties</H2>
+
+<H3>
+choices</H3>
+The choices property is a set of string representations of the values this
+component may take.&nbsp; Choice string are interpreted by the fieldType
+property of this component before being sent out in objectChanged events.
+<H3>
+defaultContents</H3>
+The defaultContents property holds the string representation of the default
+value of this component.&nbsp; It should be filled by one of the elements
+of the choices property.
+<BR>&nbsp;
+<H1>
+<IMG SRC="g2checkbox.gif" HEIGHT=32 WIDTH=32> G2Checkbox</H1>
+The G2Checkbox allows the editing of boolean (non-fuzzy) truth-values.
+
+<P>Please see&nbsp; <A HREF="#EditingControlCommonFeatures">Editing Contol
+Common Features</A> for shared properties and methods.
+<H2>
+Properties</H2>
+
+<H3>
+label</H3>
+The label property specifies a label to be placed adjacent to the checkbox.&nbsp;
+Leave this property blank to have no label.
+<BR>&nbsp;
+<H1>
+<IMG SRC="g2radiobutton.gif" HEIGHT=32 WIDTH=32>G2Radiobox</H1>
+The G2Radiobox provides a visual alternative to the G2DropDownChoice for
+choosing a value from an enumerated set.
+
+<P>Please see&nbsp; <A HREF="#EditingControlCommonFeatures">Editing Contol
+Common Features</A> for shared properties and methods.
+<H2>
+Properties</H2>
+
+<H3>
+columns</H3>
+The columns property indicates how many columns in which to organize the
+radio button choices.
+<H3>
+labels</H3>
+The labels property should be filled by a set of strings that will label
+the radio button choices.&nbsp; The number of labels should equal the number
+of columns times rows.
+<H3>
+members</H3>
+The members property should be filled with a set of strings that go in
+one-to-one correspondence with the elements of the labels property.&nbsp;
+These strings will be interpreted through the component's fieldType into
+a G2 value when a selection occurs, and forward to connected components
+through the objectChanged event.
+<H3>
+rows</H3>
+The rows property indicates the number of rows in whcih to organize the
+radio button choices.
+<BR>&nbsp;
+<H1>
+<IMG SRC="structure_mux.gif" HEIGHT=32 WIDTH=32>StructureMUX</H1>
+asdf
+<BR>&nbsp;
+<H1>
+<IMG SRC="g2listbox.gif" HEIGHT=32 WIDTH=32> G2Listbox</H1>
+&nbsp;
+<BR>&nbsp;asdf
+
+<P><IMG SRC="g2label.gif" HEIGHT=32 WIDTH=32> G2Label
+
+<P>qwr
+
+<P><IMG SRC="g2button.gif" HEIGHT=32 WIDTH=32> G2Button
+
+<P>asdf
+
+<P><IMG SRC="dialog_command.gif" HEIGHT=32 WIDTH=32> DialogCommand
+
+<P>asf
+
+<P><IMG SRC="connector.gif" HEIGHT=32 WIDTH=32>TWConnector
+
+<P><IMG SRC="script_utilities.gif" HEIGHT=32 WIDTH=32> ScriptUtilities
+
+<P>The ScriptUtilities component exists to provide access for a few features
+of Telewindows2 that may be harder to use from scripting environments like
+Visual Basic or Delphi.&nbsp; Please see its API documentation for details.
+<BR>&nbsp;
+</BODY>
+</HTML>

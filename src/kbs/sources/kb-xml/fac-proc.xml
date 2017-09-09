@@ -1,0 +1,176 @@
+<?xml version="1.0"?>
+<rdf:RDF
+ xmlns:rdf="http://www.w3.org/TR/WD-rdf-syntax#"
+ xmlns:g2="g2-beta-12-0-17.rdf"
+ xmlns="">
+
+<g2:Module ID="FAC-PROC">
+  <g2:version>
+    <g2:Structure>
+      <g2:sa.MAJOR-VERSION g2:type="Integer">12</g2:sa.MAJOR-VERSION>
+      <g2:sa.MINOR-VERSION g2:type="Integer">0</g2:sa.MINOR-VERSION>
+      <g2:sa.RELEASE-QUALITY g2:type="Text">Beta</g2:sa.RELEASE-QUALITY>
+      <g2:sa.REVISION g2:type="Integer">17</g2:sa.REVISION>
+      <g2:sa.BUILD-IDENTIFICATION g2:type="Text">TE28</g2:sa.BUILD-IDENTIFICATION></g2:Structure></g2:version>
+  <g2:systemtables>
+    <g2:Sequence>
+      <rdf:li>
+      <g2:c.MODULE-INFORMATION ID="de1bd419455c11e790849eb6d01063cf">
+        <g2:a.TOP-LEVEL-MODULE g2:type="Symbol">FAC-PROC</g2:a.TOP-LEVEL-MODULE>
+        </g2:c.MODULE-INFORMATION></rdf:li>
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      <rdf:li>
+      <g2:c.MISCELLANEOUS-PARAMETERS ID="de1bd42a455c11e790849eb6d01063cf">
+        <g2:a.BACKWARD-COMPATIBILITY-FEATURES>
+          <g2:Sequence>
+            <rdf:li g2:type="Symbol">PRINT-MEANS-PRINT-TO-SERVER-IN-CONFIGURATIONS</rdf:li>
+            <rdf:li g2:type="Symbol">INCONSISTENT-BEHAVIOR-OF-MOVE-IN-CONFIGURATIONS</rdf:li></g2:Sequence></g2:a.BACKWARD-COMPATIBILITY-FEATURES>
+        </g2:c.MISCELLANEOUS-PARAMETERS></rdf:li>
+      
+      
+      </g2:Sequence></g2:systemtables>
+  <g2:panes>
+    <g2:Sequence>
+      <rdf:li>
+      <g2:Structure>
+        <g2:sa.WORKSPACE><g2:c.KB-WORKSPACE rdf:resource="#de1bd42e455c11e790849eb6d01063cf"/></g2:sa.WORKSPACE>
+        <g2:sa.X-IN-WORKSPACE g2:type="Integer">0</g2:sa.X-IN-WORKSPACE>
+        <g2:sa.Y-IN-WORKSPACE g2:type="Integer">0</g2:sa.Y-IN-WORKSPACE>
+        <g2:sa.X-MAGNIFICATION g2:type="Integer">256</g2:sa.X-MAGNIFICATION>
+        <g2:sa.Y-MAGNIFICATION g2:type="Integer">256</g2:sa.Y-MAGNIFICATION></g2:Structure></rdf:li></g2:Sequence></g2:panes>
+  </g2:Module>
+
+<g2:c.KB-WORKSPACE ID="de1bd42e455c11e790849eb6d01063cf">
+  <g2:a.MODULE-ASSIGNMENT g2:type="Symbol">FAC-PROC</g2:a.MODULE-ASSIGNMENT>
+  <g2:a.EDGES-OF-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.LEFT g2:type="Integer">-350</g2:sa.LEFT>
+      <g2:sa.TOP g2:type="Integer">250</g2:sa.TOP>
+      <g2:sa.RIGHT g2:type="Integer">350</g2:sa.RIGHT>
+      <g2:sa.BOTTOM g2:type="Integer">-250</g2:sa.BOTTOM></g2:Structure></g2:a.EDGES-OF-WORKSPACE></g2:c.KB-WORKSPACE>
+
+<g2:c.PROCEDURE ID="c4635b22455c11e790849eb6d01063cf">
+  
+  <g2:a.TEXT><![CDATA[
+g2-faction-is-running (f: class item {A faction.}) = (truth-value {`false` if the faction was stopped, `true` otherwise.})
+{Returns `true` iff the faction is not stopped.}
+Result: truth-value;
+begin
+if the class of f is not faction then signal the symbol not-a-faction, "The argument is not a faction";
+Result = system call faction-is-running-lisp-side(f);
+return Result;
+end
+]]></g2:a.TEXT>
+  <g2:a.ICON-VARIABLES>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES>
+  <g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING><g2:c.PROCEDURE rdf:resource="#c4635b23455c11e790849eb6d01063cf"/></g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING>
+  <g2:a.POSITION-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.X g2:type="Integer">-159</g2:sa.X>
+      <g2:sa.Y g2:type="Integer">-39</g2:sa.Y>
+      <g2:sa.SUPERIOR><g2:c.KB-WORKSPACE rdf:resource="#de1bd42e455c11e790849eb6d01063cf"/></g2:sa.SUPERIOR></g2:Structure></g2:a.POSITION-IN-WORKSPACE>
+  <g2:a.SIZE-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.SIZE-IN-WORKSPACE>
+  <g2:a.NAME-BOX>
+    <g2:Structure>
+      <g2:sa.COLOR>
+        <g2:Structure>
+          <g2:sa.BACKGROUND-COLOR g2:type="Symbol">TRANSPARENT</g2:sa.BACKGROUND-COLOR>
+          <g2:sa.TEXT-COLOR g2:type="Symbol">FOREGROUND</g2:sa.TEXT-COLOR></g2:Structure></g2:sa.COLOR>
+      <g2:sa.POSITION>
+        <g2:Structure>
+          <g2:sa.X-OFFSET g2:type="Integer">-101</g2:sa.X-OFFSET>
+          <g2:sa.Y-OFFSET g2:type="Integer">-29</g2:sa.Y-OFFSET></g2:Structure></g2:sa.POSITION></g2:Structure></g2:a.NAME-BOX></g2:c.PROCEDURE>
+
+<g2:c.PROCEDURE ID="c4635b23455c11e790849eb6d01063cf">
+  
+  <g2:a.TEXT><![CDATA[
+g2-stop-faction(f: class item {The faction that is to be stopped.}) = (truth-value {`false` if the faction was stopped.})
+{Stops a faction. If the faction was running some task when this procedure was called, that task runs to completion and is not aborted.}
+Result: truth-value;
+begin
+if the class of f is not faction then signal the symbol not-a-faction, "The argument is not a faction"; 
+Result = system call stop-faction-lisp-side(f);
+return Result;
+end
+]]></g2:a.TEXT>
+  <g2:a.ICON-VARIABLES>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES>
+  <g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING><g2:c.PROCEDURE rdf:resource="#c4635b24455c11e790849eb6d01063cf"/></g2:a.FOLLOWING-ITEM-IN-WORKSPACE-LAYERING>
+  <g2:a.POSITION-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.X g2:type="Integer">-164</g2:sa.X>
+      <g2:sa.Y g2:type="Integer">70</g2:sa.Y>
+      <g2:sa.SUPERIOR><g2:c.KB-WORKSPACE rdf:resource="#de1bd42e455c11e790849eb6d01063cf"/></g2:sa.SUPERIOR></g2:Structure></g2:a.POSITION-IN-WORKSPACE>
+  <g2:a.SIZE-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.SIZE-IN-WORKSPACE>
+  <g2:a.NAME-BOX>
+    <g2:Structure>
+      <g2:sa.COLOR>
+        <g2:Structure>
+          <g2:sa.BACKGROUND-COLOR g2:type="Symbol">TRANSPARENT</g2:sa.BACKGROUND-COLOR>
+          <g2:sa.TEXT-COLOR g2:type="Symbol">FOREGROUND</g2:sa.TEXT-COLOR></g2:Structure></g2:sa.COLOR>
+      <g2:sa.POSITION>
+        <g2:Structure>
+          <g2:sa.X-OFFSET g2:type="Integer">-78</g2:sa.X-OFFSET>
+          <g2:sa.Y-OFFSET g2:type="Integer">-29</g2:sa.Y-OFFSET></g2:Structure></g2:sa.POSITION></g2:Structure></g2:a.NAME-BOX></g2:c.PROCEDURE>
+
+<g2:c.PROCEDURE ID="c4635b24455c11e790849eb6d01063cf">
+  
+  <g2:a.TEXT><![CDATA[
+g2-start-faction(f: class item {The faction that is to be restarted.}) = (truth-value {`true` if the faction is running.})
+{Restarts a faction if it was previously stopped.}
+Result: truth-value;
+begin
+if the class of f is not faction then signal the symbol not-a-faction, "The argument is not a faction"; 
+Result = system call start-faction-lisp-side(f);
+return Result;
+end
+]]></g2:a.TEXT>
+  <g2:a.ICON-VARIABLES>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.ICON-VARIABLES>
+  <g2:a.POSITION-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.X g2:type="Integer">-165</g2:sa.X>
+      <g2:sa.Y g2:type="Integer">181</g2:sa.Y>
+      <g2:sa.SUPERIOR><g2:c.KB-WORKSPACE rdf:resource="#de1bd42e455c11e790849eb6d01063cf"/></g2:sa.SUPERIOR></g2:Structure></g2:a.POSITION-IN-WORKSPACE>
+  <g2:a.SIZE-IN-WORKSPACE>
+    <g2:Structure>
+      <g2:sa.WIDTH g2:type="Integer">50</g2:sa.WIDTH>
+      <g2:sa.HEIGHT g2:type="Integer">50</g2:sa.HEIGHT></g2:Structure></g2:a.SIZE-IN-WORKSPACE>
+  <g2:a.NAME-BOX>
+    <g2:Structure>
+      <g2:sa.COLOR>
+        <g2:Structure>
+          <g2:sa.BACKGROUND-COLOR g2:type="Symbol">TRANSPARENT</g2:sa.BACKGROUND-COLOR>
+          <g2:sa.TEXT-COLOR g2:type="Symbol">FOREGROUND</g2:sa.TEXT-COLOR></g2:Structure></g2:sa.COLOR>
+      <g2:sa.POSITION>
+        <g2:Structure>
+          <g2:sa.X-OFFSET g2:type="Integer">-83</g2:sa.X-OFFSET>
+          <g2:sa.Y-OFFSET g2:type="Integer">-29</g2:sa.Y-OFFSET></g2:Structure></g2:sa.POSITION></g2:Structure></g2:a.NAME-BOX></g2:c.PROCEDURE>
+</rdf:RDF>

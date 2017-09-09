@@ -1,0 +1,40 @@
+<project name="jpeg" default="api-tests">
+	<property name="module.name" value="jpeg"/>
+	<property name="${module.name}.basedir" value=".."/> 
+	<property file="${jpeg.basedir}/ant/build.properties"/>
+
+	<!-- Build section -->
+	<target name="clean-build">
+		<delete dir="${jpeg.basedir}/../dst/${module.name}"/>
+	</target>
+
+	<target name="clean-results">
+		<delete dir="${result.dir}/${module.name}"/>
+	</target>
+	<!-- End of Build section -->
+
+	<!-- Tests section -->
+	<target name="api-tests">
+		<mkdir dir="${result.dir}/${module.name}"/>
+	</target>
+	<!-- End of Tests section -->
+  
+	<!-- Checks section -->
+	<target name="check-coverage">
+		<ant dir="${jpeg.basedir}/ant" target="check-c-coverage"/>
+	</target>
+  
+	<target name="check-static-metrics" depends="check-findbugs, check-cpd"/>
+
+	<target name="check-findbugs">
+		<property name="c.findbugs.srcfolder" value="${jpeg.basedir}/${module.name}/c"/>
+		<ant dir="${jpeg.basedir}/ant" target="check-c-findbugs"/>
+	</target>
+  
+	<target name="check-cpd">
+		<property name="c.cpd.srcfolder" value="${jpeg.basedir}/${module.name}/c"/>
+		<ant dir="${jpeg.basedir}/ant" target="check-c-cpd"/>
+	</target>
+	<!-- End of Checks section -->
+  
+</project>

@@ -1,0 +1,1185 @@
+declare
+    #define UK_PHONE_AREA_CODE      "1753";
+    #define UK_PHONE                "550088";
+    #define UK_ZIP_CODE             "SL13UA";
+    #define UK_FAX                  "1753578199";
+    #define LIVE                    FALSE;
+    #define doDeInstall TRUE;
+    // Constant declarations.
+    #define SPACE_REQUIRED           100000          // Disk space in bytes.
+    #define APP_NAME                 "G2 Javalink Professional"
+    #define PROGRAM_FOLDER_NAME      "Javalinkprof"
+    #define APPBASE_PATH             "gensym\\Javalinkprof"
+    #define APPBASE_PATH_WIN32S      "gensym\\Javalinkprof"
+    #define COMPANY_NAME             "Gensym"
+    #define PRODUCT_NAME             "G2 Javalink Professional "
+    #define PRODUCT_VERSION          "V1R0B0"
+    #define DEINSTALL_KEY            "G2JavalinkprofDeinstKey"
+    #define UNINSTALL_NAME           "G2 Javalink Professional 1.0"
+    #define PRODUCT_KEY              "g2Javalinkprof"
+    #define ROOT_INST_DIR            "c:\\"
+    #define PROPERTIES_FILE          ".com.gensym.properties";
+    #define RAW_PROPERTIES_FILE      "rawprop.gen";
+    #define RAW_PROPERTIES_FILE_PATH ".\\";
+    #define TAGSTRING                "%ROOTDIR%";
+
+
+    #define BMP_PATH1                "g2.BMP"
+    #define BMP_PATH2                "jl1.BMP"
+    #define BMP_PATH3                "jl1.BMP"
+    #define BMP_PATH4                "jl1.BMP"
+
+    #define SD_SINGLE_DIALOGS 1
+    #define SD_REGISTERUSEREX 1
+    #define SD_SETUPTYPE      1
+    #define SD_STARTCOPY      1
+
+    // Global variable declarations.
+       STRING   szMsg1, szMsg2, szOpt1, szOpt2;
+   BOOL     bvOpt1, bvOpt2;
+    BOOL preBeta2Installed;
+    STRING  svFolder, svDir,sJAVALINKPROFHOME, szFileSet, svUninstLogFile,szDisk,sINSTALLDIR;
+    STRING  svStringBuffer1, svStringBuffer2, svTestString,sVClassPathAddition;
+    STRING  szTarget, szProgram, szParam, szTemp, szAppPath ,svResultPath;
+    BOOL    bSpaceOk, bWinNT, bWin32s, bIsShellExplorer, bHtmlSet, bJAVALINKPROFHOMEExists;
+    BOOL    bNewInstallation, bRenameExistingDir,bClassPathFound, bClassPathSet;
+    BOOL bModifiedClassPath , bModifiedPath;
+    NUMBER  nResult,nReturnValue,nJarLocation;
+    STRING  szField1, svEdit1,svResult;
+    STRING svNumFiles, TEMPDIR, sGlobalClassPath;
+    STRING mixedSlashString, doubleSlashString;
+    STRING svHomepath , svHomedrive , svPropsHome , sHtmHandler;
+
+   STRING  szTitle, szMsg, svName, svCompany, svSerial, svSetupType;
+   LIST    listData;
+
+   STRING  szText1, szText2, szText3;
+
+   NUMBER nValue, nCheck1, nCheck2, nCheck3;
+   NUMBER          nCounter, nNumFiles;
+   STRING         genFileName,genDirName ,  rootFileName , szFilePath ;
+
+    #include "Sddialog.h";
+
+    LIST   listID;
+
+    //STRING oldStr, newStr , sourceStr;
+
+    STRING szBitmap;
+    NUMBER nID_BITMAP, nDx, nDy, nCorner;
+
+    STRING  args,svClassPathLowerCase;
+
+    STRING szDefFolder, svResultFolder;
+    STRING szParameter, svValue , svJLDirValue, szHtmlHandler,sVersionPrompt;
+    STRING szKey, szNumName,szBaseKey , szValue ,szNumValue, svNumValue , sPos , sSubString;
+    NUMBER nType,nFlag, nReturn , nSize, nvType, nvSize ,nLocation, nRes;
+    STRING uniqueDirName, uniqueFileName;
+
+    STRING szFile1,szFile2;
+
+    STRING sVERSION;
+    STRING sProblemDir
+    STRING sHTMAPP;
+
+    //for file stuff
+    STRING  szFileName, szPath, szText, svLine;
+    NUMBER  nFileHandle,ndFileHandle;
+    BOOL createThePropertiesFile;
+
+    // Function declarations.
+    prototype SetupScreen ();
+    prototype CheckRequirements ();
+    prototype renameExistingDirectory();
+
+
+    prototype replaceStrWithStrInStr(STRING,STRING,STRING);
+    prototype doubleSlashify( );
+    
+    prototype modifyClassPath();
+
+    prototype genFile();
+    prototype genDir();
+    prototype modifyJAVALINKPROFHOME();
+
+program
+
+start:
+
+   Disable( BACKGROUND );
+
+   // Set up the installation screen.
+   SetupScreen();
+   Enable( DIALOGCACHE );
+
+   szBitmap   = SRCDIR^BMP_PATH1;
+   nID_BITMAP = 12;
+   nDx        = 10;
+   nDy        = 10;
+   nCorner    = LOWER_LEFT;
+   // Enable bitmap fade in.
+   Enable(BITMAPFADE);
+
+   // Position the first bitmap on the screen.
+   if (PlaceBitmap(szBitmap, nID_BITMAP, nDx, nDy, nCorner) < 0) then
+   endif;
+
+
+  // Set installation info., which is required for registry entries.
+   InstallationInfo( COMPANY_NAME, PRODUCT_NAME, PRODUCT_VERSION, PRODUCT_KEY );
+
+
+// this is the dir from which InstallShield started
+    TEMPDIR=SRCDIR;
+
+   // Create a Welcome dialog.
+   WelcomeDlg:
+      Disable( BACKBUTTON );
+      Welcome( "", 0 );
+      Enable( BACKBUTTON );
+
+      // Test target system for proper configuration.
+      CheckRequirements();
+
+   // look at the HKEY_CURRENT_USER registry entries
+   if (RegDBSetDefaultRoot(HKEY_CURRENT_USER) < 0) then
+      MessageBox("Call to RegDBSetDefaultRoot  HKEY_CURRENT_USER failed.\n\nYou must be Administrator to install this software.", SEVERE);
+      exit;
+   else
+    //  MessageBox("Root key successfully set to HKEY_CURRENT_USER", INFORMATION);
+   endif;
+
+    nvType = REGDB_STRING;
+    bNewInstallation = FALSE;
+    nvType = REGDB_STRING;
+
+    RegDBSetDefaultRoot( HKEY_LOCAL_MACHINE );
+    szBaseKey = "SOFTWARE\\"+COMPANY_NAME+"\\"+PRODUCT_NAME+"\\";
+//    RegDBCreateKeyEx( szBaseKey, "" );
+
+    if(RegDBKeyExist(szBaseKey)<0)then
+         bNewInstallation = TRUE;
+    else
+         bNewInstallation = FALSE;
+    endif;
+
+
+    askOptionalSetting:
+      if (SetDialogTitle (DLG_ASK_OPTIONS, "Permitted modifications ") < 0) then
+   //   MessageBox("SetDialogTitle failed.", SEVERE);
+   else
+    //  AskYesNo("Did SetDialogTitle change this title?", YES);
+   endif;
+
+   szMsg = "To ensure that G2 Javalink Professional is "+
+           "installed correctly, the following actions "+
+           "will be performed during the install process.";
+
+   szText1 = "Modify the CLASSPATH environmental variable";
+   szText2 = "Modify the PATH environmental variable";
+   szText3 = "Create a   .com.gensym.properties file";
+
+   nCheck1 = TRUE;
+   nCheck2 = TRUE;
+   nCheck3 = TRUE;
+
+
+   // Display the check box (NONEXCLUSIVE-style) dialog box.
+   nValue = NONEXCLUSIVE;
+   nReturn = AskOptions(nValue, szMsg, szText1, nCheck1);
+
+   if (nReturn = BACK) then
+     goto WelcomeDlg;
+   endif;
+
+   if(nCheck1 = FALSE ||nCheck2 = FALSE  ||nCheck3 = FALSE ) then
+     MessageBox("Be sure to make the necessary modifications manually in order"+
+     "\nfor the software to function correctly\n\n"+
+     "Please see the readme at the end of this installation.", WARNING);
+   endif;
+
+
+
+    if(bNewInstallation = FALSE) then
+        if (RegDBGetKeyValueEx(szBaseKey, "version",nvType , sVERSION, nvSize) < 0) then
+
+        endif;
+
+        if (PRODUCT_VERSION  = sVERSION) then
+            sVersionPrompt = "This ";
+        elseif ( PRODUCT_VERSION <  sVERSION /*szNumValue*/) then
+            sVersionPrompt = "A newer ";
+        elseif ( PRODUCT_VERSION > sVERSION /*szNumValue*/) then
+            sVersionPrompt = "An older ";
+        endif;
+         bRenameExistingDir = FALSE;
+    endif;
+
+
+
+
+
+//
+//
+
+// if bRenameExistingDir = TRUE;
+// get installdir variable from reg entry
+// if installdir exists - ask question to rename or exits.
+    if (bRenameExistingDir = TRUE) then
+        RegDBSetDefaultRoot( HKEY_LOCAL_MACHINE );
+        szBaseKey = "SOFTWARE\\"+COMPANY_NAME+"\\"+PRODUCT_NAME+"\\";
+            RegDBCreateKeyEx( szBaseKey, "" );
+
+        if (RegDBGetKeyValueEx(szBaseKey, "installdir", nvType , sINSTALLDIR, nvSize) = 0) then
+            if (ExistsDir(sINSTALLDIR) = EXISTS ) then
+
+//            nCounter=0;
+//            genFileName="filename1";
+//            rootFileName = ROOT_INST_DIR^APPBASE_PATH;
+            // create a new dir name
+//            genDir();
+
+            if(ParsePath(genDirName , genFileName , FILENAME)<0) then
+             genDirName = "orig-javalink";
+            endif;
+
+               if (AskYesNo(sVersionPrompt+" version of the product is already on your machine."+
+                                           "\n\nContinue with the installation ?", YES) = YES) then
+                        sProblemDir = sINSTALLDIR;
+                        renameExistingDirectory();
+
+               else
+                 MessageBox("Please remove or rename or uninstall "+svValue+
+                    "\nbefore attempting to install "+
+                    PRODUCT_NAME, SEVERE);
+                 exit;
+               endif;
+
+             else
+            endif;
+         else
+        endif;
+    else
+     //MessageBox("Problem -2- "+szValue , INFORMATION);
+    endif;
+
+
+
+   bJAVALINKPROFHOMEExists = FALSE;
+
+
+   szTitle    = "RegDBSetKeyValueEx & RegDBGetKeyValueEx";
+
+   RegDBSetDefaultRoot( HKEY_CURRENT_USER );
+   szParameter = "JAVALINK_PROF_HOME";
+   szBaseKey = "Environment\\";
+   RegDBCreateKeyEx( szBaseKey, "" );
+
+   sJAVALINKPROFHOME = "";
+
+   if (RegDBGetKeyValueEx(szBaseKey, szParameter, nvType , sJAVALINKPROFHOME, nvSize) = 0) then
+    if (ExistsDir(sJAVALINKPROFHOME) = EXISTS ) then
+     bJAVALINKPROFHOMEExists = FALSE;
+    endif;
+   endif;
+
+//MessageBox("HKEY_CURRENT_USER Environment JAVALINK_PROF_HOME is "+sJAVALINKPROFHOME,WARNING);
+
+
+   if(bJAVALINKPROFHOMEExists = TRUE)then
+        if (AskYesNo("Installshield has detected components of a previous installation."+
+			"in a directory named "+sJAVALINKPROFHOME+
+                        "\n\nTo avoid possible class incompatabilities it is highly recommended "+
+                        "\n\nthat this existing installation should be removed from the classpath."+
+                        "\n\n\nRename this existing directory ?", YES) = YES) then
+            nFlag = ALLCONTENTS;
+
+            sProblemDir = sJAVALINKPROFHOME;
+
+//            rootFileName="Javalink-old";
+//            genFile();
+//            genDirName=genFileName;
+
+//		genDirName();
+            renameExistingDirectory();
+        else
+            MessageBox("Please remove or rename or uninstall "+sJAVALINKPROFHOME+
+                        "\nbefore attempting to install "+
+                        PRODUCT_NAME, SEVERE);
+            exit;
+        endif;
+   else
+    // we have a case whereby JAVALINK_PROF_HOME is set to a non existant directory
+
+   endif;
+
+
+svValue=sJAVALINKPROFHOME; // not sure about this
+
+	   // Ask user for a destination location for the installation.--
+
+GetTargetDirectory:
+
+	   // InstallShield sets PROGRAMFILES such that it points to 'Program Files' 	directory location.
+
+    PROGRAMFILES = ROOT_INST_DIR;
+
+      if (bWin32s) then
+         szTarget = TARGETDISK ^ APPBASE_PATH_WIN32S;
+      else
+         if ( PROGRAMFILES = "") then
+              szTarget = TARGETDISK ^ "\\gensym\\" ^ APPBASE_PATH;
+         else
+         //     szTarget =  ^ APPBASE_PATH;
+             szTarget = PROGRAMFILES ^ APPBASE_PATH;
+
+         endif;
+      endif;
+
+
+      szMsg = UNINSTALL_NAME+" will be in the following directory."+
+           "\n\nClick Next to install to this directory."+
+           "\n\nClick Browse and select another directory to install to a different location."+
+           "\n\nClick Cancel and exit setup to abort this installation.";
+
+
+//hacky
+
+         nReturnValue = AskDestPath( "", szMsg, szTarget, 0 );
+
+      if ( nReturnValue= BACK) then
+         goto askOptionalSetting;
+      endif;
+
+    if(ExistsDir(szTarget)=EXISTS )then
+
+            // create a new dir name
+
+//            rootFileName="Javalink";
+//            genFile();
+//            genDirName=genFileName;
+//            MessageBox("genDirName = "+genFileName,WARNING);
+            sProblemDir = szTarget;
+            renameExistingDirectory();
+
+    endif;
+
+
+// at this point szTarget MUST be unique and empty
+// currently it snot
+
+
+
+
+    // see where the user has selected - may be a different drive
+    GetDisk(szTarget , szDisk);
+
+    nNumFiles=-10;
+
+
+    while(ExistsDir(szTarget)=EXISTS )
+        nResult = FindAllFiles(szTarget+"\\", "*.*", svResult, RESET);
+        while(nResult = 0)
+            nNumFiles = nNumFiles + 1;
+            nResult = FindAllFiles(szTarget+"\\", "*.*", svResult, CONTINUE);
+        endwhile;
+        // Convert the file count to a string for display.
+        NumToStr(svNumFiles, nNumFiles);
+        if (nNumFiles = -10) goto exitSinceDirIsEmpty;
+        MessageBox("You may not install into an existing directory containing files.\n\n"+
+        "(If you were to do so, class differences/incompatabilities may arise.)", SEVERE);
+        if (nNumFiles>0) then
+            goto GetTargetDirectory;
+        endif;
+    endwhile;
+
+goto exitSinceDirIsEmpty;
+
+getAnotherDirName:
+goto GetTargetDirectory;
+
+exitSinceDirIsEmpty:
+
+      // Perform space check of target drive.
+      bSpaceOk = TRUE;
+      if (GetDiskSpace( szTarget ) < SPACE_REQUIRED) then
+         szMsg = "There is not enough space available on the disk\n" +
+                 "'" + szTarget + "' \n" +
+                 "Please free up some space or change the target location\n" +
+                 "to a different disk";
+         MessageBox( szMsg, WARNING );
+         bSpaceOk = FALSE;
+      endif;
+
+      // If not enough space, ask user to try again.
+      if (bSpaceOk = FALSE) then
+         goto GetTargetDirectory;
+      endif;
+
+
+
+// see if a html browser is on the machine and linked to html files.
+   bHtmlSet=TRUE;
+    RegDBSetDefaultRoot( HKEY_CLASSES_ROOT );
+
+    szBaseKey = ".htm";
+
+    if (RegDBGetKeyValueEx(szBaseKey, "", nvType, sHtmHandler,
+                      nvSize) < 0) then
+        // key not found
+        MessageBox("Dont know how to handle htm files"+"\n\nPlease install a html reader", WARNING);
+        bHtmlSet=FALSE;
+    endif;
+
+    if(bHtmlSet=TRUE) then
+	    // need to get this from the registry
+	    RegDBSetDefaultRoot( HKEY_CLASSES_ROOT );
+	    szBaseKey = sHtmHandler+"\\shell\\open\\command\\";
+
+
+	    if (RegDBGetKeyValueEx(szBaseKey, "", nvType, sHTMAPP,
+	                      nvSize) < 0) then
+	        // key not found
+	        MessageBox("HTML reader application <"+sHTMAPP+"> was not found.",
+				 WARNING);
+	        bHtmlSet=FALSE;
+	    endif;
+
+	    nLocation = StrFind(sHTMAPP, ".exe");
+	    nLocation = nLocation + 5;
+
+	    if ( StrSub(szHtmlHandler , sHTMAPP , 0, nLocation ) < 0 )then
+	        bHtmlSet=FALSE;
+	    endif;
+	//       MessageBox(" html files "+ szHtmlHandler, INFORMATION);
+
+    endif;
+
+
+
+   // Set the App Paths key for the main program.
+   szAppPath = szTarget ^ "PROGRAM";
+   RegDBSetItem( REGDB_APPPATH, szAppPath );
+   szProgram = szTarget ^ "PROGRAM\\myapp.exe";
+   RegDBSetItem( REGDB_APPPATH_DEFAULT, szProgram );
+
+   SetupFilesToTransfer:
+      szFileSet = "General";
+      TARGETDIR = szTarget;
+
+      // Define the file set.
+      FileSetBeginDefine( szFileSet );
+
+      SetStatusWindow( -1, "Copying program files..." );
+      CompressGet( "DATA.Z", "*.*", INCLUDE_SUBDIR );
+
+      FileSetEndDefine( szFileSet );
+
+
+   TransferFiles:
+      // Prepare InstallShield3 to record deinstallation information.
+
+
+          DeinstallStart( szTarget, svUninstLogFile, DEINSTALL_KEY, 0 );
+          RegDBSetItem( REGDB_UNINSTALL_NAME, UNINSTALL_NAME );
+
+
+      // Set up progress indicator and information gauge.
+      Disable( DIALOGCACHE );
+      Enable( STATUSDLG );
+
+      StatusUpdate( ON, 90 );
+
+      // Perform the file set.
+      SetStatusWindow( 0, "Copying program files..." );
+
+    PlaceBitmap("", 12, 0, 0, REMOVE);
+    PlaceBitmap(SRCDIR^BMP_PATH2, 13,  nDx, nDy, nCorner);
+
+      nResult = FileSetPerformEz( szFileSet, 0 );
+
+      switch (nResult)
+         case FS_DONE: // Successful completion.
+
+         case FS_CREATEDIR: // Create directory error.
+            MessageBox( "Unable to create a directory under " + TARGETDIR + "."+
+                         "Please check write access to this directory.", SEVERE );
+            abort;
+
+         default: // Group all other errors under default label.
+             NumToStr( szTemp, nResult );
+             MessageBox( "General file transfer error." +
+                         "Please check your target location and try again." +
+                         "\n\n Error Number:" + szTemp +
+                          "\n Related File: " + ERRORFILENAME,
+                          SEVERE );
+             abort;
+      endswitch;
+
+
+   // Create program folders and icons.
+   InstallProgramItems:
+
+        szTitle = "Select Folder";
+        szDefFolder = PROGRAM_FOLDER_NAME;
+
+        nReturn = SelectFolder(szTitle, szDefFolder, svResultFolder);
+
+        if (nReturn < 0) then
+            MessageBox("SelectFolder failed.", SEVERE);
+        else
+//            SprintfBox(INFORMATION, szTitle, ": %s", svResultFolder);
+
+        endif;
+
+      SetStatusWindow( 93, "Creating Program Folder and Icons...." );
+
+      Delay(1);
+      if ( !bIsShellExplorer ) then
+         AppCommand( PROGMAN, CMD_RESTORE );
+         LongPathToShortPath( szTarget );
+      endif;
+
+//here
+//  svFolder = PROGRAM_FOLDER_NAME;
+      svFolder = svResultFolder;
+      CreateProgramFolder( svFolder );
+      ShowProgramFolder( svFolder, 0 );
+
+  //   Delay(1);
+
+      szParam = szTarget ^ "readme.html";
+      LongPathToShortPath( szParam );
+      AddFolderIcon( svFolder, "Readme", szHtmlHandler + " " + szParam,
+                     szTarget ^ "Help", "", 0, "", REPLACE );
+  //    Delay( 1 );
+
+      szParam = szTarget ^ "ExamplesReadme.html";
+      LongPathToShortPath( szParam );
+      AddFolderIcon( svFolder, "Examples Readme", szHtmlHandler + " " + szParam,
+                     szTarget ^ "Help", "", 0, "", REPLACE );
+  //  Delay( 1 );
+
+      szParam = szTarget ^ "KnownProblems.html";
+      LongPathToShortPath( szParam );
+      AddFolderIcon( svFolder, "Known Problems", szHtmlHandler + " " + szParam,
+                     szTarget ^ "Help", "", 0, "", REPLACE );
+
+//C:\WINNT\uninst.exe -fc:\gensym\Javalink\DeIsL2.isu
+
+   Delay( 1 );
+      PlaceBitmap("", 13, 0, 0, REMOVE);
+      PlaceBitmap(SRCDIR^BMP_PATH3, 14,  nDx, nDy, nCorner);
+   Delay( 2 );
+
+      //if ( !bIsShellExplorer ) then
+	      // Global variable UNINST stores the name and location of the
+	      // uninstaller file.
+	      szProgram = UNINST;
+	      LongPathToShortPath( szProgram );
+	      LongPathToShortPath( svUninstLogFile );
+	      szProgram = szProgram + " -f" + svUninstLogFile;
+	      AddFolderIcon( svFolder, "unInstallShield", szProgram,
+	                     WINDIR, "", 0, "", REPLACE );
+	      Delay( 1 );
+      //endif;
+
+   PlaceBitmap("", 14, 0, 0, REMOVE);
+   PlaceBitmap(SRCDIR^BMP_PATH4, 15,  nDx, nDy, nCorner);
+
+
+
+//    if (AskYesNo("Allow the install process to modify CLASSPATH ?", NO) = YES) then
+    if(nCheck1 = TRUE) then
+        modifyClassPath();
+    else
+//        MessageBox("You have elected not to allow the install process to modify CLASSPATH and PATH.\n\n"+"Please make sure that CLASSPATH and PATH are modified to reflect this installation.\n\nSee the readme at the end of this install process.", WARNING);
+    endif;
+
+
+// now set version reg value
+   RegDBSetDefaultRoot( HKEY_LOCAL_MACHINE );
+   szBaseKey = "SOFTWARE\\"+COMPANY_NAME+"\\"+PRODUCT_NAME+"\\";
+   RegDBCreateKeyEx( szBaseKey, "" );
+   RegDBSetKeyValueEx( szBaseKey, "version", REGDB_STRING, PRODUCT_VERSION , -1 );
+   RegDBSetKeyValueEx( szBaseKey, "installdir", REGDB_STRING, szTarget , -1 );
+   RegDBSetKeyValueEx( szBaseKey, "dereg", REGDB_STRING, svUninstLogFile , -1 );
+
+
+   // Announce setup complete and offer to read README file.e
+   FinalInstallProcess:
+      SetStatusWindow( 100, "Installation complete." );
+      Delay( 1 );
+      Disable( STATUSDLG );
+
+   PlaceBitmap("", 15, 0, 0, REMOVE);
+   PlaceBitmap(SRCDIR^BMP_PATH1, 16,  nDx, nDy, nCorner);
+
+    if (AskYesNo( "Do you want to view the README file now?\n\n(If you select YES, this installation will pause\nutill you exit the readme file.))", YES ) = YES) then
+        LaunchAppAndWait( szHtmlHandler, szTarget ^ "README.HTML" ,WAIT);
+    endif;
+
+
+
+
+// reboot machine ?
+    if(bModifiedClassPath=TRUE || bModifiedPath=TRUE)then
+       szTemp =
+       "PLEASE NOTE: Before changes made to your system can take effect you should reboot the machine."+
+       " (or at the very least you should log off and then log back on again.)";
+     RebootDialog(PRODUCT_NAME+" Installation is complete",  szTemp,0);
+    endif;
+
+    MessageBox("Make sure that CLASSPATH and PATH are\nconfigued as per Installation Guide before running "+PRODUCT_NAME+".",WARNING );
+
+exit;
+
+/*---------------------------------------------------------------------------*\
+ *
+ * Function:  SetupScreen
+ *
+ *  Purpose:  This function will set up the screen look.  This includes
+ *            colors, fonts, text to be displayed, etc.
+ *
+\*-------------------------------------------------------------------------*/
+
+function SetupScreen()
+  NUMBER  nDx, nDy;
+
+begin
+   GetExtents( nDx, nDy );
+
+   Enable( FULLWINDOWMODE );
+   Enable( INDVFILESTATUS );
+   Enable( BITMAP256COLORS );
+
+   SetTitle( "Installing " + APP_NAME, 24, WHITE );
+
+   SetColor( BACKGROUND, BK_BLUE ); // Dark blue.
+   SetColor( STATUSBAR, BLUE );     // Bright blue.
+   SetTitle( "G2 Javalink Professional Setup", 0, BACKGROUNDCAPTION ); // Caption bar text.
+
+   Enable( BACKGROUND );
+
+   Delay( 1 );
+end;
+
+/*---------------------------------------------------------------------------*\
+ *
+ * Function:  CheckRequirements
+ *
+ *  Purpose:  This function will check all minimum requirements for the
+ *            application being installed.  If any fail, then the user
+ *            is informed and the installation is terminated.
+ *
+\*---------------------------------------------------------------------------*/
+
+function CheckRequirements()
+   NUMBER  nvDx, nvDy, nvResult, nvRes,nStrLocation;
+   STRING  svResult;
+ STRING szParameter, svValue, szTitle , svJLDirValue,sLcaseCLASSPATH;
+ STRING szKey, szNumName, szNumValue, svNumValue,  szMsg , nMsg;
+ NUMBER nType, nSize, nvType, nvSize ,nLocation, nRes;
+BOOL  classpathHasJava , regHasJava , javaNotFound;
+begin
+
+
+classpathHasJava = FALSE;
+regHasJava = FALSE;
+javaNotFound = TRUE;
+
+
+   // Check screen resolution.
+    if(LIVE=TRUE) then
+       //1754078751
+       // szKey = "1754078751";
+       Disable( BACKBUTTON );
+
+        if (AskText("Please enter the key to unlock this software.\n\nKeys may be obtained Gensym Support.",
+                       "", szKey) = NEXT) then
+            //  TARGETDIR = svResultPath;
+           endif;
+
+        nvResult=StrToNum(nRes,UK_PHONE);
+
+        nvResult=StrToNum(nvDx,UK_FAX);
+        nvResult=StrToNum(nvDy,szKey);
+
+      //  nRes=NumToStr(nMsg,nRes ^ nvDx );
+      //  MessageBox("CUSTOMERKEY= "+nMsg,WARNING);
+
+        nvResult=NumToStr(nMsg,nvDy ^ nvDx );
+      //  MessageBox("KEY= "+nMsg,WARNING);
+
+        nLocation = nvDy ^ nvDx;
+
+        if(nLocation=nRes)then
+             Enable( BACKBUTTON );
+        else
+            MessageBox("You have entered an invalid key.\n\nKeys may be obtained Gensym Support.",SEVERE);
+            abort;
+        endif;
+    endif;
+
+   GetExtents( nvDx, nvDy );
+
+   if (nvDy < 600) then
+      MessageBox( "This program requires SVGA or better resolution.", WARNING );
+      abort;
+   endif;
+
+   // Determine the target system's operating system.
+   GetSystemInfo( OS, nvResult, svResult );
+
+
+
+   nRes=NumToStr(nMsg,nvResult);
+
+   bWinNT           = FALSE;
+   bWin32s          = FALSE;
+   bIsShellExplorer = FALSE;
+
+
+
+   if (nvResult =  IS_WINDOWSNT) then
+      bWinNT = TRUE;                   // Running Windows NT.
+      // Check to see if the shell being used is EXPLORER shell.
+      if (( nvResult = IS_WINDOWSNT ) || ( nvResult = IS_WINDOWS95 )) then
+//         if (GetSystemInfo( OSMAJOR, nvResult, svResult ) = 0) then
+//            if (nvResult >= 4) then
+               bIsShellExplorer = TRUE;
+//            endif;
+//         endif;
+
+      endif;
+
+   elseif (nvResult =  IS_WIN32S) then
+      bWin32s = TRUE; // Running Win32s.
+
+   elseif (nvResult = IS_WINDOWS95 ) then
+      bIsShellExplorer = TRUE;
+
+   endif;
+
+// see if CLASSPATH has been set
+    bClassPathFound = FALSE;
+
+   szParameter = "CLASSPATH";
+
+// look for class path being set
+
+   if (GetEnvVar(szParameter, sGlobalClassPath) < 0) then
+
+      MessageBox("CLASSPATH not found\n\n"+
+                 "Possible reasons for this are:\n\n"+
+                 "	CLASSPATH environmental variable has not been set.\n\n"+
+                 "Please ensure that Sun Microsystems JDK 1.1.5 or greater is\n"+
+                 "installed on this machine and that CLASSPATH has been set\n\n"+
+                 "See G2 Javalink Professional installation guide for details.", SEVERE);
+   		exit;
+   endif;
+
+
+
+bClassPathFound = TRUE;
+
+// see if java is in the classpath
+// again this is not foolproof
+
+
+   	  StrToLower(sLcaseCLASSPATH, sGlobalClassPath);
+
+        nStrLocation= StrFind(sLcaseCLASSPATH,"\\lib\\classes.zip" );
+        if(nStrLocation >= 0 )then
+            classpathHasJava = TRUE;
+	  endif;
+
+
+	if(classpathHasJava=FALSE) then
+		MessageBox("CLASSPATH does not appear to contain a refence to the JDK.\n\n"+
+                 "Possible reasons for this are:\n\n"+
+                 "	(1) JDK 1.1.6 or earlier has been installed but\n"+
+                 "	    CLASSPATH has not been modified.\n"+
+                 "	(2) <javainstalldir>\\lib\\classes.zip has been renamed.\n"+
+                 "	(3) JDK/JRE is not installed on this machine.\n\n"+
+                 "Please ensure that Sun Microsystems JDK 1.1.5 or greater is\n"+
+                 "installed on this machine and that CLASSPATH has been set\n\n"+
+                 "See G2 Javalink Professional installation guide for details.", SEVERE);
+		exit;
+	endif;
+
+
+  MessageBox("The install process will now check for an active VM",INFORMATION);
+	nvResult = LaunchAppAndWait("java.exe","",WAIT);
+
+	if (nvResult > -1 )then
+		MessageBox("Test run of Java passed.", INFORMATION);
+	else
+    nvResult = LaunchAppAndWait("jre.exe","",WAIT);
+      if (nvResult > -1 )then
+         MessageBox("Test run of JRE passed.", INFORMATION);
+      endif;
+  endif;
+
+	if (nvResult < 0 )then
+		MessageBox("Test run of Java failed.\n\n"+
+                 "Possible reasons for this are:\n\n"+
+                 "	(1) PATH and CLASSPATH are not configured.\n"+
+                 "	(2) JDK/JRE is not installed on this machine.\n\n"+
+                 "Please ensure that Sun Microsystems JDK 1.1.5 or greater is\n"+
+                 "installed on this machine and that CLASSPATH has been set\n\n"+
+                 "See G2 Javalink Professional installation guide for details.", SEVERE);
+		exit;
+	endif;
+
+// relatively foolproof,
+// check registry -- only works if JDK 1.1.6 or later has been installed
+
+	RegDBSetDefaultRoot( HKEY_LOCAL_MACHINE );
+	szBaseKey = "\\SOFTWARE\\JavaSoft\\Java Development Kit";
+	if (RegDBGetKeyValueEx(szBaseKey, "CurrentVersion", nvType , sINSTALLDIR, nvSize) < 0) then
+	      MessageBox("Registry does not contain reference to JDK.\n\n"+
+                 "Possible reasons for this are:\n\n"+
+                 "	(1) Sun Microsystems JDK1.1.6 (or greater) is not installed\n\n"+
+                 "	(2) Sun Microsystems JDK1.1.5 (or earlier) has been installed.\n\n"+
+                 "Please ensure that Sun Microsystems JDK 1.1.5 or greater is installed.\n"+
+                 "See G2 Javalink Professional installation guide for details.", WARNING);
+	endif;
+
+// we could look on the disk for java.exe or something, but if its not on the path...?
+
+end;
+
+/*
+ *
+ *
+ *
+ */
+function renameExistingDirectory()
+STRING sDirname, sFullTempDirName;
+begin
+ Disable(BACKBUTTON);
+
+    nCounter=0;
+    rootFileName =  sProblemDir;
+    genDir();
+
+    svStringBuffer1=uniqueDirName;
+    if (StrRemoveLastSlash(uniqueDirName) < 0) then
+      MessageBox("StrRemoveLastSlash failed.", SEVERE);
+    endif;
+
+    ParsePath(svStringBuffer2 , svStringBuffer1 , PATH);
+
+    ParsePath(sDirname , svStringBuffer1 , FILENAME_ONLY);
+
+       if (AskText("The given directory "+sProblemDir+"\nalready exists.\n\n"+
+                   "Please enter a new name for the exsiting directory.",
+                   sDirname, svResultPath) = NEXT) then
+        //  TARGETDIR = svResultPath;
+       endif;
+
+ //MessageBox("the dude has selected \n\nsvResultPath="+svResultPath, SEVERE);
+
+// put it back together again
+
+    sFullTempDirName = svStringBuffer2 ^ svResultPath;
+
+
+    while(ExistsDir(sFullTempDirName)=EXISTS)
+
+    //  if (AskText("XThe given directory "+sFullTempDirName +"already exists.\n\n"+
+    //              "Please enter a new name for the exsiting directory.",
+    //              uniqueDirName, svResultPath) = NEXT) then
+    //  endif;
+         sProblemDir = sFullTempDirName;
+         renameExistingDirectory();
+    endwhile;
+
+//svResultPath;
+
+
+    svStringBuffer1=sFullTempDirName;
+    if (StrRemoveLastSlash(uniqueDirName) < 0) then
+      MessageBox("StrRemoveLastSlash failed.", SEVERE);
+    endif;
+
+    //ParsePath(svStringBuffer2 , svStringBuffer1 , PATH);
+
+    ParsePath(sDirname , svStringBuffer1 , FILENAME_ONLY);
+
+
+ Enable(BACKBUTTON);
+  args = sProblemDir + " " + sDirname;
+
+//   MessageBox("args="+args, SEVERE);
+
+  if (LaunchAppAndWait(SRCDIR^"renamedir.bat", args, WAIT) < 0 ) then
+     MessageBox("Directory "+sProblemDir+"\ncould not be renamed to "+sDirname+
+        "\n\nPlease remove/rename or unistall "+
+        svValue+"\nbefore attempting to install "+
+        PRODUCT_NAME, SEVERE);
+           exit;
+  else
+
+  endif;
+end;
+
+
+
+
+function replaceStrWithStrInStr(oldStr, newStr, sourceStr)
+STRING retStr , frontSubStr, backSubStr;
+number nStrLocation, nOldStrLen, nSubLocation , nSrcLen;
+begin
+
+        nStrLocation= StrFind(sourceStr, oldStr);
+        if(nStrLocation<0)then
+            doubleSlashString = sourceStr;
+        else
+
+            // get the length of the old string
+            nSrcLen = StrLength(sourceStr);
+            nOldStrLen = StrLength(oldStr);
+            // we know the location of the old Str & its length
+            nSubLocation = StrSub(frontSubStr , sourceStr , 0 , nStrLocation);
+            nSubLocation = StrSub(backSubStr  , sourceStr, nStrLocation+nOldStrLen , nSrcLen);
+            retStr = frontSubStr + newStr + backSubStr;
+            mixedSlashString = retStr;
+            doubleSlashify();
+
+         //   MessageBox("got "+ sourceStr +"\n\n returned "+doubleSlashString,INFORMATION);
+        endif;
+
+end;
+
+
+
+function doubleSlashify( )
+STRING retString;
+STRING szString,szDelimiterSet,svString,svTempString;
+number nStringLength;
+begin
+ listID         = ListCreate(STRINGLIST);
+   szString       = mixedSlashString;
+   szDelimiterSet = "|\\";
+
+   doubleSlashString="";
+   if (StrGetTokens(listID, szString, szDelimiterSet) < 0) then
+   	  MessageBox("StrGetTokens failed.", SEVERE);
+   endif;
+
+    retString = "";
+    nResult = ListGetFirstString(listID, svString);
+
+   while (nResult != END_OF_LIST)
+
+      nStringLength = StrLength(svString);
+
+      nResult = NumToStr(svTempString, nStringLength);
+
+      if(svString = "")then
+
+      else
+          // concat $
+        if(retString = "") then
+          retString = svString ;
+        else
+          retString = retString +"\\\\"+svString ;
+        endif;
+      endif;
+      nResult = ListGetNextString(listID, svString);
+   endwhile;
+//    MessageBox("doubleSlashify RETURN - "+retString,INFORMATION);
+   // Destroy the list.
+   ListDestroy(listID);
+   doubleSlashString = retString;
+end;
+
+
+
+
+
+function modifyJAVALINKPROFHOME()
+begin
+//
+//variable JAVALINK_PROF_HOME, value (installation directory e.g. c:\gensym\javalink-10b0)
+//variable CLASSPATH, add the following ;%JAVALINK_PROF_HOME%\classes\javalink.jar;%JAVALINK_PROF_HOME%\classes
+
+// need to check for existance of the additions
+//  classes\javalink.jar
+
+  SetStatusWindow( 95, "Updating registry (JAVALINK_PROF_HOME)...." );
+
+   RegDBSetDefaultRoot( HKEY_CURRENT_USER );
+   szBaseKey = "Environment\\";
+   RegDBCreateKeyEx( szBaseKey, "" );
+   RegDBSetKeyValueEx( szBaseKey, "JAVALINK_PROF_HOME", REGDB_STRING, szTarget , -1 );
+
+end;
+
+
+
+
+function modifyClassPath()
+BOOL bSetClazzPathClass;
+BOOL bSetClazzPathJar;
+STRING sCLASSPATH;
+STRING sLcaseCLASSPATH, sR;
+NUMBER jarPos, CPLength;
+begin
+
+Disable(LOGGING);
+
+bSetClazzPathClass=FALSE;
+bSetClazzPathJar=FALSE;
+
+//
+//variable JAVALINK_PROF_HOME, value (installation directory e.g. c:\gensym\javalink-10b0)
+//variable CLASSPATH, add the following ;%JAVALINK_PROF_HOME%\classes\javalink.jar;%JAVALINK_PROF_HOME%\classes
+
+// need to check for existance of the additions
+//  classes\javalink.jar
+
+    bModifiedClassPath=FALSE;
+
+  SetStatusWindow( 95, "Updating registry (CLASSPATH) ...." );
+
+modifyJAVALINKPROFHOME();
+//som
+
+   RegDBSetDefaultRoot( HKEY_CURRENT_USER );
+   szParameter = "CLASSPATH";
+   szBaseKey = "Environment\\";
+   //RegDBCreateKeyEx( szBaseKey, "" );
+
+   if (RegDBGetKeyValueEx(szBaseKey, szParameter, nvType , sCLASSPATH, nvSize) < 0) then
+
+    sCLASSPATH = "%CLASSPATH%";
+  // MessageBox("Didnt find classpath setting it to " + sCLASSPATH,WARNING);
+   endif;
+
+    nReturn        = StrToLower(sLcaseCLASSPATH, sCLASSPATH);
+
+    nReturn        = StrToLower(svTestString, "%JAVALINK_PROF_HOME%\\classes\\javalinkprof.jar");
+    nJarLocation   = StrFind(sLcaseCLASSPATH,svTestString );
+
+    nReturn = StrToLower(svTestString, "%JAVALINK_PROF_HOME%\\classes");
+    nLocation = StrFind(sLcaseCLASSPATH,svTestString );
+
+
+    if (nLocation <0)then
+
+//         MessageBox("appending classpath with %JAVALINK_PROF_HOME%\\classes ("+sCLASSPATH+")",INFORMATION);
+
+            RegDBSetKeyValueEx( szBaseKey, szParameter, REGDB_STRING_EXPAND,
+                "%JAVALINK_PROF_HOME%\\classes;"+sCLASSPATH , -1 );
+
+         bModifiedPath=TRUE;
+         bSetClazzPathClass=TRUE; // weve changed the classpath for classes
+   endif;
+
+   if (RegDBGetKeyValueEx(szBaseKey, szParameter, nvType , sCLASSPATH, nvSize) < 0) then
+
+   endif;
+
+   if (nJarLocation <0 ) then
+
+             // MessageBox("appending classpath with %JAVALINK_PROF_HOME%\\classes\\javalink.jar",INFORMATION);
+
+            RegDBSetKeyValueEx( szBaseKey, szParameter, REGDB_STRING_EXPAND,
+                "%JAVALINK_PROF_HOME%\\classes\\javalinkprof.jar;%JAVALINK_PROF_HOME%\\classes\\antlr.jar;"+sCLASSPATH , -1 );
+
+        bModifiedPath=TRUE;
+        bSetClazzPathJar=TRUE;// changes classpath for jar
+   endif;
+
+//if they are found, leave them alone - since we are using jlh
+// but make sure that the reference to %jlh%\\classes is not the
+// substring of %jlh%\\classes\\javalink.jar
+
+   if (RegDBGetKeyValueEx(szBaseKey, szParameter, nvType , sCLASSPATH, nvSize) < 0) then
+
+   endif;
+
+    if (nLocation >= 0) then // found
+        // if its the same as the jar reference - add it
+        if (nLocation = nJarLocation) then
+            if(bSetClazzPathClass=FALSE) then
+
+            //get the remainder sR of the sLcaseCLASSPATH from nJarLocation,
+            //look in sR for %JAVALINK_PROF_HOME%\\classes, if not found , add it.
+
+                CPLength   = StrLength(sLcaseCLASSPATH);
+
+                nReturn = StrSub(sR,sLcaseCLASSPATH, nJarLocation+1, CPLength  - nJarLocation + 1);
+                //MessageBox("sR = "+sR,INFORMATION);
+                nLocation = StrFind(sR,svTestString );
+                if (nLocation < 0) then
+                  //  MessageBox("last setting classpath to %JAVALINK_PROF_HOME%\\classes",INFORMATION);
+                    RegDBSetKeyValueEx( szBaseKey, szParameter, REGDB_STRING_EXPAND,
+                        sCLASSPATH+";%JAVALINK_PROF_HOME%\\classes" , -1 );
+                    bModifiedPath=TRUE;
+                endif;
+            endif;
+        endif;
+    endif;
+
+// eom
+Enable(LOGGING);
+end;
+
+
+
+
+function genFile()
+STRING svString;
+begin
+
+    nCounter = nCounter + 1;
+    nResult = NumToStr (svString , nCounter);
+    genFileName = rootFileName + svString;
+    while(FindFile(szFilePath, genFileName, svResult) >-1)
+        genFile( );
+    endwhile;
+
+    // recusion safety valve -- if you hit this,
+    // there's something wrong, or you have a large disk!
+
+    if(nCounter > 100) then
+        abort;
+    endif;
+
+end;
+
+
+
+
+function genDir()
+STRING svString;
+begin
+
+    nCounter = nCounter + 1;
+    nResult = NumToStr (svString , nCounter);
+    genFileName = rootFileName + svString;
+
+    while(ExistsDir(genFileName)=EXISTS)
+        genDir();
+    endwhile;
+
+    uniqueDirName = genFileName;
+
+    // recusion safety valve -- if you hit this, there's something wrong!
+
+    if(nCounter > 100) then
+        abort;
+    endif;
+
+
+
+end;
+
+
+
+
+#include "Sddialog.rul"

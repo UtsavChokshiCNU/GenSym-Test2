@@ -1,0 +1,105 @@
+# Sample makefile for GSI programs.
+#   GSI Version 8.3.
+# Machine type: Intel NT 486/586
+ 
+ 
+TARGETOS = WINNT
+!include <ntwin32.mak>
+ 
+C_DIR = 
+OBJ_DIR = 
+EXE_DIR = 
+H_DIR = 
+CCFLAGS = $(common) $(cflags) $(cvarsmt) -MT
+LINKFLAGS = $(guilflags)
+LIB_DIR = 
+ 
+# When creating images to execute under Win32s, you should
+# use the DEFAULT_LIBS below that has winio.lib.
+# DEFAULT_LIBS = libgsi.lib libtcp.lib librtl.lib libnogsec.lib winio.lib
+DEFAULT_LIBS = libgsi.lib libtcp.lib librtl.lib
+NOSSL_LIBS = libnogsec.lib
+SSL_LIBS = libgsec.lib crypt32.lib
+LIBS = $(DEFAULT_LIBS) $(guilibsmt) advapi32.lib wsock32.lib netapi32.lib libircmt.lib libmmt.lib
+ 
+H_FILES = $(H_DIR)gsi_main.h
+EXECUTABLES = $(EXE_DIR)filetest.exe $(EXE_DIR)typetest.exe $(EXE_DIR)skeleton.exe $(EXE_DIR)alarmer.exe $(EXE_DIR)itemtest.exe $(EXE_DIR)matrix.exe $(EXE_DIR)pub_subscribe.exe $(EXE_DIR)reposit.exe $(EXE_DIR)mapchar.exe $(EXE_DIR)skeleton_ssl.exe
+FILETEST_FILES = $(OBJ_DIR)filetest.obj $(OBJ_DIR)rpcfuncs.obj $(OBJ_DIR)gsimmain.obj
+TYPETEST_FILES = $(OBJ_DIR)typetest.obj $(OBJ_DIR)gsi_main.obj $(OBJ_DIR)gsimmain.obj
+SKELETON_FILES = $(OBJ_DIR)skeleton.obj $(OBJ_DIR)gsi_main.obj $(OBJ_DIR)gsimmain.obj
+ALARMER_FILES = $(OBJ_DIR)alarmer.obj $(OBJ_DIR)gsi_main.obj $(OBJ_DIR)gsimmain.obj
+MAPCHAR_FILES = $(OBJ_DIR)mapchar.obj $(OBJ_DIR)gsi_main.obj $(OBJ_DIR)gsimmain.obj
+ITEMTEST_FILES = $(OBJ_DIR)itemtest.obj $(OBJ_DIR)gsi_misc.obj $(OBJ_DIR)gsimmain.obj
+MATRIX_FILES = $(OBJ_DIR)matrix.obj $(OBJ_DIR)gsi_main.obj $(OBJ_DIR)gsimmain.obj
+PUB_SUBSCRIBE_FILES = $(OBJ_DIR)pub_subscribe.obj $(OBJ_DIR)gsi_main.obj $(OBJ_DIR)gsi_misc.obj $(OBJ_DIR)gsimmain.obj
+REPOSIT_FILES = $(OBJ_DIR)reposit.obj $(OBJ_DIR)gsi_main.obj $(OBJ_DIR)gsi_misc.obj $(OBJ_DIR)gsimmain.obj
+ 
+ALL : $(EXECUTABLES)
+ 
+$(EXE_DIR)filetest.exe : $(FILETEST_FILES)
+	$(link) -out:filetest.exe $(LINKFLAGS) $(FILETEST_FILES) $(LIBS) $(NOSSL_LIBS)
+ 
+$(EXE_DIR)skeleton.exe : $(SKELETON_FILES)
+	$(link) -out:skeleton.exe $(LINKFLAGS) $(SKELETON_FILES) $(LIBS) $(NOSSL_LIBS)
+ 
+$(EXE_DIR)skeleton_ssl.exe : $(SKELETON_FILES)
+	$(link) -out:skeleton_ssl.exe $(LINKFLAGS) $(SKELETON_FILES) $(LIBS) $(SSL_LIBS)
+$(EXE_DIR)typetest.exe : $(TYPETEST_FILES)
+	$(link) -out:typetest.exe $(LINKFLAGS) $(TYPETEST_FILES) $(LIBS) $(NOSSL_LIBS)
+ 
+$(EXE_DIR)alarmer.exe : $(ALARMER_FILES)
+	$(link) -out:alarmer.exe $(LINKFLAGS) $(ALARMER_FILES) $(LIBS) $(NOSSL_LIBS)
+ 
+$(EXE_DIR)mapchar.exe : $(MAPCHAR_FILES)
+	$(link) -out:mapchar.exe $(LINKFLAGS) $(MAPCHAR_FILES) $(LIBS) $(NOSSL_LIBS)
+ 
+$(EXE_DIR)itemtest.exe : $(ITEMTEST_FILES)
+	$(link) -out:itemtest.exe $(LINKFLAGS) $(ITEMTEST_FILES) $(LIBS) $(NOSSL_LIBS)
+ 
+$(EXE_DIR)matrix.exe : $(MATRIX_FILES)
+	$(link) -out:matrix.exe $(LINKFLAGS) $(MATRIX_FILES) $(LIBS) $(NOSSL_LIBS)
+ 
+$(EXE_DIR)pub_subscribe.exe : $(PUB_SUBSCRIBE_FILES)
+	$(link) -out:pub_subscribe.exe $(LINKFLAGS) $(PUB_SUBSCRIBE_FILES) $(LIBS) $(NOSSL_LIBS)
+ 
+$(EXE_DIR)reposit.exe : $(REPOSIT_FILES)
+	$(link) -out:reposit.exe $(LINKFLAGS) $(REPOSIT_FILES) $(LIBS) $(NOSSL_LIBS)
+ 
+$(OBJ_DIR)filetest.obj : $(C_DIR)filetest.c $(H_FILES)
+	$(cc) -c $(CCFLAGS) $(C_DIR)filetest.c
+ 
+$(OBJ_DIR)typetest.obj : $(C_DIR)typetest.c $(H_FILES)
+	$(cc) -c $(CCFLAGS) $(C_DIR)typetest.c
+ 
+$(OBJ_DIR)rpcfuncs.obj : $(C_DIR)rpcfuncs.c $(H_FILES)
+	$(cc) -c $(CCFLAGS) $(C_DIR)rpcfuncs.c
+ 
+$(OBJ_DIR)skeleton.obj : $(C_DIR)skeleton.c $(H_FILES)
+	$(cc) -c $(CCFLAGS) $(C_DIR)skeleton.c
+ 
+$(OBJ_DIR)alarmer.obj : $(C_DIR)alarmer.c $(H_FILES)
+	$(cc) -c $(CCFLAGS) $(C_DIR)alarmer.c
+ 
+$(OBJ_DIR)gsi_misc.obj : $(C_DIR)gsi_misc.c $(H_FILES) $(H_DIR)gsi_misc.h
+	$(cc) -c $(CCFLAGS) $(C_DIR)gsi_misc.c
+ 
+$(OBJ_DIR)mapchar.obj : $(C_DIR)mapchar.c $(H_FILES)
+	$(cc) -c $(CCFLAGS) $(C_DIR)mapchar.c
+ 
+$(OBJ_DIR)itemtest.obj : $(C_DIR)itemtest.c $(H_FILES) $(H_DIR)gsi_misc.h
+	$(cc) -c $(CCFLAGS) $(C_DIR)itemtest.c
+ 
+$(OBJ_DIR)matrix.obj : $(C_DIR)matrix.c $(H_FILES)
+	$(cc) -c $(CCFLAGS) $(C_DIR)matrix.c
+ 
+$(OBJ_DIR)pub_subscribe.obj : $(C_DIR)pub_subscribe.c $(H_FILES)
+	$(cc) -c $(CCFLAGS) $(C_DIR)pub_subscribe.c
+ 
+$(OBJ_DIR)reposit.obj : $(C_DIR)reposit.c $(H_FILES)
+	$(cc) -c $(CCFLAGS) $(C_DIR)reposit.c
+ 
+$(OBJ_DIR)gsi_main.obj : $(C_DIR)gsi_main.c $(H_FILES)
+	$(cc) -c $(CCFLAGS) $(C_DIR)gsi_main.c
+ 
+$(OBJ_DIR)gsimmain.obj : $(C_DIR)gsimmain.c $(H_FILES)
+	$(cc) -c $(CCFLAGS) $(C_DIR)gsimmain.c

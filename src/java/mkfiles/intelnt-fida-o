@@ -1,0 +1,154 @@
+# Makefile for the FIDA/NAMING RMI packages
+#   JDK 1.2
+# Machine type: IntelNT
+
+#
+# JAVA_HOME should be set!
+# SPIN_ID should be set!
+# SRCBOX should be set!
+#
+
+
+BT_JAVA = $(SRCBOX)\java
+RMIC	= $(JAVA_HOME)\bin\rmic
+TMPFILE	= $(TMP)\rmic.txt
+PPFIDA	= com.gensym.fida
+NAMING_DIR = $(BT_JAVA)\com\gensym\naming
+NAMING_PK = com.gensym.naming
+NAMING_DIRECTORY_DIR = $(BT_JAVA)\com\gensym\naming\directory
+NAMING_DIRECTORY_PK = com.gensym.naming.directory
+NAMING_EVENT_DIR = $(BT_JAVA)\com\gensym\naming\event
+NAMING_EVENT_PK = com.gensym.naming.event
+DHNS_DIR = $(BT_JAVA)\com\gensym\dhns
+DHNS_PK = com.gensym.dhns
+DHNS_SPI_DHNS_DIR = $(BT_JAVA)\com\gensym\dhns\naming\spi\dhns
+DHNS_SPI_DHNS_PK = com.gensym.dhns.naming.spi.dhns
+DHNS_SPI_DOMAIN_DIR = $(BT_JAVA)\com\gensym\dhns\naming\spi\domain
+DHNS_SPI_DOMAIN_PK = com.gensym.dhns.naming.spi.domain
+FIDA_DIR = $(BT_JAVA)\com\gensym\fida
+FIDA_PK = com.gensym.fida 
+FIDA_RMI_DIR = $(FIDA_DIR)\support\rmi
+FIDA_RMI_PK = $(FIDA_PK).support.rmi
+FIDA_RULES_RMI_DIR = $(FIDA_DIR)\support\rules\rmi
+FIDA_RULES_RMI_PK = $(FIDA_PK).support.rules.rmi
+FIDA_VIEWERS_DIR = $(FIDA_DIR)\viewers\impl
+FIDA_VIEWERS_PK = $(FIDA_PK).viewers.impl
+FIDA_SUPPORT_SPI_DIR = $(FIDA_DIR)\support\spi
+FIDA_SUPORT_SPI_PK = $(FIDA_PK).support.spi
+RULES_DIR = $(BT_JAVA)\com\gensym\rules
+RULES_PK = com.gensym.rules
+SERVLET_DIR = $(BT_JAVA)\com\gensym\servlet
+SERVLET_PK = com.gensym.servlet
+UML_DIR = $(BT_JAVA)\com\gensym\uml
+UML_STEREOTYPES_DIR = $(UML_DIR)\view\common
+UML_STEREOTYPES_PK = com.gensym.uml.view.common
+
+
+RMIC_FLAGS	= -d $(BT_JAVA)
+
+
+
+RMI_STUBS	= $(NAMING_DIR)\RMIContextServerImpl_Stub.class \
+		  $(NAMING_DIRECTORY_DIR)\RMIDirContextServerImpl_Stub.class \
+	          $(NAMING_EVENT_DIR)\RMIEventContextServerImpl_Stub.class \
+	          $(NAMING_EVENT_DIR)\RMIEventDirContextServerImpl_Stub.class \
+	          $(NAMING_EVENT_DIR)\RMINamespaceChangeListenerServerImpl_Stub.class \
+		    $(NAMING_EVENT_DIR)\RMINamespaceAndObjectChangeListenerServerImpl_Stub.class \
+		  $(DHNS_SPI_DHNS_DIR)\DHNSImpl_Stub.class \
+		  $(DHNS_SPI_DHNS_DIR)\DHNSSessionImpl_Stub.class \
+		  $(DHNS_SPI_DOMAIN_DIR)\RMIDomainContextNodeServerImpl_Stub.class \
+	          $(DHNS_SPI_DOMAIN_DIR)\RMIDomainContextServerImpl_Stub.class \
+	          $(FIDA_RMI_DIR)\GensymRMIFIDARuntimeServerImpl_Stub.class \
+	          $(FIDA_RMI_DIR)\RMIObjectProxyServerImpl_Stub.class \
+	          $(FIDA_RMI_DIR)\RMIRemoteEnvironmentServerImpl_Stub.class \
+	          $(FIDA_RMI_DIR)\RMIRemoteObjectManagerServerImpl_Stub.class \
+	          $(FIDA_RMI_DIR)\RMIRemoteModuleManagerServerImpl_Stub.class \
+	          $(FIDA_RMI_DIR)\RMIRemoteApplicationEnvironmentServerImpl_Stub.class \
+		  $(FIDA_RMI_DIR)\DummyRemoteRMIFIDARuntimeServerImpl_Stub.class \
+	          $(FIDA_RULES_RMI_DIR)\RMIRemoteRuleManagerServerImpl_Stub.class \
+	          $(FIDA_VIEWERS_DIR)\RegisteredObjectNode_Stub.class \
+	          $(RULES_DIR)\RuleManager_Stub.class \
+		  $(FIDA_VIEWERS_DIR)\SchematicListAdapter_Stub.class \
+		  $(FIDA_SUPPORT_SPI_DIR)\RemoteDenaliServiceImpl_Stub.class \
+	          $(SERVLET_DIR)\RemoteServletImpl_Stub.class
+
+all: $(RMI_STUBS)
+
+
+$(NAMING_DIR)\RMIContextServerImpl_Stub.class: $(NAMING_DIR)\RMIContextServerImpl.class 
+	$(RMIC) $(RMIC_FLAGS) $(NAMING_PK).RMIContextServerImpl
+
+$(NAMING_DIRECTORY_DIR)\RMIDirContextServerImpl_Stub.class: $(NAMING_DIRECTORY_DIR)\RMIDirContextServerImpl.class 
+	$(RMIC) $(RMIC_FLAGS) $(NAMING_DIRECTORY_PK).RMIDirContextServerImpl
+
+$(NAMING_EVENT_DIR)\RMIEventContextServerImpl_Stub.class: $(NAMING_EVENT_DIR)\RMIEventContextServerImpl.class 
+	$(RMIC) $(RMIC_FLAGS) $(NAMING_EVENT_PK).RMIEventContextServerImpl
+
+$(NAMING_EVENT_DIR)\RMIEventDirContextServerImpl_Stub.class: $(NAMING_EVENT_DIR)\RMIEventDirContextServerImpl.class 
+	$(RMIC) $(RMIC_FLAGS) $(NAMING_EVENT_PK).RMIEventDirContextServerImpl
+
+$(NAMING_EVENT_DIR)\RMINamespaceChangeListenerServerImpl_Stub.class: $(NAMING_EVENT_DIR)\RMINamespaceChangeListenerServerImpl.class 
+	$(RMIC) $(RMIC_FLAGS) $(NAMING_EVENT_PK).RMINamespaceChangeListenerServerImpl
+
+$(NAMING_EVENT_DIR)\RMINamespaceAndObjectChangeListenerServerImpl_Stub.class: $(NAMING_EVENT_DIR)\RMINamespaceAndObjectChangeListenerServerImpl.class 
+	$(RMIC) $(RMIC_FLAGS) $(NAMING_EVENT_PK).RMINamespaceAndObjectChangeListenerServerImpl
+
+$(DHNS_SPI_DHNS_DIR)\DHNSImpl_Stub.class: $(DHNS_SPI_DHNS_DIR)\DHNSImpl.class 
+	$(RMIC) $(RMIC_FLAGS) $(DHNS_SPI_DHNS_PK).DHNSImpl
+
+$(DHNS_SPI_DHNS_DIR)\DHNSSessionImpl_Stub.class: $(DHNS_SPI_DHNS_DIR)\DHNSSessionImpl.class 
+	$(RMIC) $(RMIC_FLAGS) $(DHNS_SPI_DHNS_PK).DHNSSessionImpl
+
+$(DHNS_SPI_DOMAIN_DIR)\RMIDomainContextNodeServerImpl_Stub.class: $(DHNS_SPI_DOMAIN_DIR)\RMIDomainContextNodeServerImpl.class
+	$(RMIC) $(RMIC_FLAGS) $(DHNS_SPI_DOMAIN_PK).RMIDomainContextNodeServerImpl
+
+$(DHNS_SPI_DOMAIN_DIR)\RMIDomainContextServerImpl_Stub.class: $(DHNS_SPI_DOMAIN_DIR)\RMIDomainContextServerImpl.class
+	$(RMIC) $(RMIC_FLAGS) $(DHNS_SPI_DOMAIN_PK).RMIDomainContextServerImpl
+
+$(FIDA_RMI_DIR)\GensymRMIFIDARuntimeServerImpl_Stub.class: $(FIDA_RMI_DIR)\GensymRMIFIDARuntimeServerImpl.class
+	$(RMIC) $(RMIC_FLAGS) $(FIDA_RMI_PK).GensymRMIFIDARuntimeServerImpl
+
+$(FIDA_RMI_DIR)\RMIObjectProxyServerImpl_Stub.class: $(FIDA_RMI_DIR)\RMIObjectProxyServerImpl.class
+	$(RMIC) $(RMIC_FLAGS) $(FIDA_RMI_PK).RMIObjectProxyServerImpl
+
+$(FIDA_RMI_DIR)\RMIRemoteEnvironmentServerImpl_Stub.class: $(FIDA_RMI_DIR)\RMIRemoteEnvironmentServerImpl.class
+	$(RMIC) $(RMIC_FLAGS) $(FIDA_RMI_PK).RMIRemoteEnvironmentServerImpl
+
+$(FIDA_RMI_DIR)\RMIRemoteObjectManagerServerImpl_Stub.class: $(FIDA_RMI_DIR)\RMIRemoteObjectManagerServerImpl.class
+	$(RMIC) $(RMIC_FLAGS) $(FIDA_RMI_PK).RMIRemoteObjectManagerServerImpl
+
+$(FIDA_RMI_DIR)\RMIRemoteModuleManagerServerImpl_Stub.class: $(FIDA_RMI_DIR)\RMIRemoteModuleManagerServerImpl.class
+	$(RMIC) $(RMIC_FLAGS) $(FIDA_RMI_PK).RMIRemoteModuleManagerServerImpl
+
+
+$(FIDA_RMI_DIR)\RMIRemoteApplicationEnvironmentServerImpl_Stub.class: $(FIDA_RMI_DIR)\RMIRemoteApplicationEnvironmentServerImpl.class
+	$(RMIC) $(RMIC_FLAGS) $(FIDA_RMI_PK).RMIRemoteApplicationEnvironmentServerImpl
+
+$(FIDA_RULES_RMI_DIR)\RMIRemoteRuleManagerServerImpl_Stub.class: $(FIDA_RULES_RMI_DIR)\RMIRemoteRuleManagerServerImpl.class
+	$(RMIC) $(RMIC_FLAGS) $(FIDA_RULES_RMI_PK).RMIRemoteRuleManagerServerImpl
+
+$(FIDA_RMI_DIR)\DummyRemoteRMIFIDARuntimeServerImpl_Stub.class: $(FIDA_RMI_DIR)\DummyRemoteRMIFIDARuntimeServerImpl.class
+	$(RMIC) $(RMIC_FLAGS) $(FIDA_RMI_PK).DummyRemoteRMIFIDARuntimeServerImpl
+
+
+$(FIDA_VIEWERS_DIR)\RegisteredObjectNode_Stub.class: $(FIDA_VIEWERS_DIR)\RegisteredObjectNode.class
+	$(RMIC) $(RMIC_FLAGS) $(FIDA_VIEWERS_PK).RegisteredObjectNode
+
+$(FIDA_SUPPORT_SPI_DIR)\RemoteDenaliServiceImpl_Stub.class: $(FIDA_SUPPORT_SPI_DIR)\RemoteDenaliServiceImpl.class
+	$(RMIC) $(RMIC_FLAGS) $(FIDA_SUPORT_SPI_PK).RemoteDenaliServiceImpl
+
+$(RULES_DIR)\RuleManager_Stub.class: $(RULES_DIR)\RuleManager.class 
+	$(RMIC) $(RMIC_FLAGS) $(RULES_PK).RuleManager
+
+$(FIDA_VIEWERS_DIR)\SchematicListAdapter_Stub.class: $(FIDA_VIEWERS_DIR)\SchematicListAdapter.class
+	$(RMIC) $(RMIC_FLAGS) $(FIDA_VIEWERS_PK).SchematicListAdapter
+
+$(SERVLET_DIR)\RemoteServletImpl_Stub.class: $(SERVLET_DIR)\RemoteServletImpl.class
+	$(RMIC) $(RMIC_FLAGS) $(SERVLET_PK).RemoteServletImpl
+
+$(UML_STEREOTYPES_DIR)\StandardDiagramNode_Stub.class: $(UML_STEREOTYPES_DIR)\StandardDiagramNode.class
+	$(RMIC) $(RMIC_FLAGS) $(UML_STEREOTYPES_PK).StandardDiagramNode
+
+$(UML_STEREOTYPES_DIR)\DiagramElementNode_Stub.class: $(UML_STEREOTYPES_DIR)\DiagramElementNode.class
+	$(RMIC) $(RMIC_FLAGS) $(UML_STEREOTYPES_PK).DiagramElementNode
+

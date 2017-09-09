@@ -1,0 +1,57 @@
+#!/bin/csh -f
+
+# The -f option keeps the .cshrc file from loading!  Needed for
+# css's, since it sets SRCBOX!
+
+# alphaosf is not done for jgi yet!
+# rs6000 is not done for jgi yet!
+# hp9000s700 is not done for jgi yet!
+set all_platforms = (alphaosf rs6000 sparcsol linux)
+
+if ($#argv != 0) then 
+  set all_platforms = ($argv)
+endif
+
+echo "Platforms: $all_platforms"
+
+set all_targets = (ext gsi rtl)
+
+set all_build_types = (o opt)
+
+# for o type: change these files:
+#   gen/mfiles/sparcsol-ext-o, gen/mfiles/sparcsol-gsi-o,
+#   gen/mfiles/sparcsol-rtl-o, java/mkfiles/sparcsol-jgi-o
+
+foreach platform ( $all_platforms )
+  foreach target ( $all_targets )
+    foreach build_type ( $all_build_types )
+      set dir = $SRCBOX/gen/mfiles
+      set in = $dir/$platform-$target-$build_type
+      set mt = $in-mt
+      set no_mt = $in-no-mt
+
+      rm $in
+      cvs up $in
+      if ($platform == alphaosf) then
+        # -std1 defines __STDC__ (enables strict ansi compliance). -css
+	# also, remove dependence on real decnet library, use dnet_stub instead. -css
+        sed -e 's/CC_FLAGS = /CC_FLAGS = -std1 -D_REENTRANT /' -e 's/dnet/dnet_stub/' <$in >$mt
+      else
+        sed -e 's/CC_FLAGS = /CC_FLAGS = -D_REENTRANT /' <$in >$mt
+      endif
+
+      mv $in $no_mt
+      mv $mt $in
+      rm $no_mt
+    end
+  end
+end
+
+# show diffs:
+cvs diff $SRCBOX/gen/mfiles
+cvs diff $SRCBOX/java/mkfiles
+
+
+
+
+

@@ -1,0 +1,97 @@
+
+CLASSFILES= \
+	com/gensym/controls/G2TextField.class \
+	com/gensym/controls/G2DropDownChoice.class \
+	com/gensym/controls/G2Radiobox.class \
+	com/gensym/controls/G2Checkbox.class \
+	com/gensym/controls/FieldType.class \
+	com/gensym/controls/FieldTypeEditor.class \
+	com/gensym/controls/LimitMode.class \
+	com/gensym/controls/LimitModeEditor.class \
+	com/gensym/controls/G2Label.class \
+	com/gensym/controls/G2Button.class \
+	com/gensym/controls/G2Listbox.class \
+	com/gensym/controls/Formatter.class \
+	com/gensym/controls/FormatterEditor.class \
+	com/gensym/controls/ItemProxy.class \
+	com/gensym/controls/ItemProxyBeanInfo.class \
+	com/gensym/controls/ItemProxyCustomizer.class \
+	com/gensym/controls/AttributeHolder.class \
+	com/gensym/controls/AWTDerivedBeanInfo.class \
+	com/gensym/controls/StructureMUX.class \
+	com/gensym/controls/DialogCommand.class \
+ 	com/gensym/controls/ItemRetriever.class \
+ 	com/gensym/controls/ItemRetrievalEvent.class \
+	com/gensym/controls/ControlsEventMulticaster.class \
+	com/gensym/controls/ScriptUtilities.class \
+	com/gensym/controls/TwConnector.class
+
+
+JARFILE= jars/controls.jar
+
+ALLCLASSFILES=com/gensym/controls/*.class
+
+all: $(JARFILE)
+
+# Create a JAR file with a suitable manifest.
+
+$(JARFILE): $(CLASSFILES)
+	@echo "Building Manifest"
+	@echo "Name: com/gensym/controls/G2Label.class" >> manifest.tmp
+	@echo "Java-Bean: True" >> manifest.tmp
+	@echo "" >> manifest.tmp
+	@echo "Name: com/gensym/controls/G2Button.class" >> manifest.tmp
+	@echo "Java-Bean: True" >> manifest.tmp
+	@echo "" >> manifest.tmp
+	@echo "Name: com/gensym/controls/G2TextField.class" >> manifest.tmp
+	@echo "Java-Bean: True" >> manifest.tmp
+	@echo "" >> manifest.tmp
+	@echo "Name: com/gensym/controls/G2DropDownChoice.class" >> manifest.tmp
+	@echo "Java-Bean: True" >> manifest.tmp
+	@echo "" >> manifest.tmp
+	@echo "Name: com/gensym/controls/G2Checkbox.class" >> manifest.tmp
+	@echo "Java-Bean: True" >> manifest.tmp
+	@echo "" >> manifest.tmp
+	@echo "Name: com/gensym/controls/G2Radiobox.class" >> manifest.tmp
+	@echo "Java-Bean: True" >> manifest.tmp
+	@echo "" >> manifest.tmp
+	@echo "Name: com/gensym/controls/G2Listbox.class" >> manifest.tmp
+	@echo "Java-Bean: True" >> manifest.tmp
+	@echo "" >> manifest.tmp
+	@echo "Name: com/gensym/controls/StructureMUX.class" >> manifest.tmp
+	@echo "Java-Bean: True" >> manifest.tmp
+	@echo "" >> manifest.tmp
+	@echo "Name: com/gensym/controls/ItemProxy.class" >> manifest.tmp
+	@echo "Java-Bean: True" >> manifest.tmp
+	@echo "" >> manifest.tmp
+	@echo "Name: com/gensym/controls/DialogCommand.class" >> manifest.tmp
+	@echo "Java-Bean: True" >> manifest.tmp
+	@echo "" >> manifest.tmp
+	@echo "Name: com/gensym/controls/ItemRetriever.class" >> manifest.tmp
+	@echo "Java-Bean: True" >> manifest.tmp
+	@echo "" >> manifest.tmp
+	@echo "Name: com/gensym/controls/ScriptUtilities.class" >> manifest.tmp
+	@echo "Java-Bean: True" >> manifest.tmp
+	@echo "" >> manifest.tmp
+	@echo "Name: com/gensym/controls/TwConnector.class" >> manifest.tmp
+	@echo "Java-Bean: True" >> manifest.tmp
+	@echo "" >> manifest.tmp
+	jar cfm $(JARFILE) manifest.tmp ${ALLCLASSFILES}
+	@/bin/rm manifest.tmp
+	cp $(JARFILE) $(JAVA_HOME)/beans/jars
+
+
+.SUFFIXES: .java .class
+
+%.class: %.java
+	export CLASSPATH; CLASSPATH=. ; \
+	javac $<
+
+# Run the Juggler as an applet inside AppletViewer.
+view: all
+	appletviewer html\trendchart.html
+
+clean:
+	/bin/rm -f ALLCLASSFILES
+	/bin/rm -f $(JARFILE)
+

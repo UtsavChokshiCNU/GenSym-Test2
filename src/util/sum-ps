@@ -1,0 +1,81 @@
+#!/bin/csh
+onintr cleanup
+
+# usage: sum-ps <filename>
+
+# This assumes that the two files reside in the test-spool
+#   input is <filename>.ps
+#  output is <filename>.cs
+
+# When attempting to figure out what's wrong with this test you should
+# create this directory: /tmp/draw01-log
+# The script will then copy lots of useful files into that directory
+# where you can study them at your leisure.
+
+# This will use ghostscript to create a bitmap for
+# this the postscript file.  It will the compute a system 5
+# checksum on the file. and put that as a single line
+# in the checksum file.
+
+# This script is only intended to run on BALTIMORE.  It is
+# invoked by automation testing on many unix platforms
+# using rsh by the test draw01-test. (and maybe others)
+
+set buildsandbox = "/bt/ab"
+set test_spool = $buildsandbox/junk/test-spool
+set psfile = $test_spool/$1.ps
+set csfile = $test_spool/$1.cs
+echo "LOG: sum-ps $psfile into $csfile"
+
+# We may need to give a moment for NFS to get
+# things into synch?  
+if ( ! ( -e $psfile ) ) then
+   sleep 30
+endif
+
+cd /tmp
+if ( -e /tmp/draw01-log ) then
+  (echo $argv; date ; ls -l $test_spool) >> /tmp/draw01-log/dir
+  tail -200 /tmp/draw01-log/dir > /tmp/$$
+  mv /tmp/$$ /tmp/draw01-log/dir
+  cp $psfile /tmp/draw01-log
+  set files = ( `ls -1t /tmp/draw01-log` )
+  if ( $#files > 110 ) then
+     echo removing $files[110-]
+     pushd /tmp/draw01-log
+     rm -f $files[110-]
+     popd
+  endif
+endif
+if ( ! ( -e $psfile ) ) then
+  echo "ERROR: $psfile not found"
+  echo 'no-postscript-file-found' > /tmp/$$
+  cp /tmp/$$ $test_spool/$$
+  mv $test_spool/$$ $csfile
+  rm /tmp/$$
+  exit
+endif
+
+cp $psfile /tmp/$$.ps
+
+gs -dNODISPLAY - >/dev/null <<EOF
+(pstoppm.ps) run
+($$) ppm8run
+quit
+EOF
+
+# Uncomment this to create a mess of windows
+# on with each test in them.
+# /home/fmw/bin.sun4/xv /tmp/$$.ppm & sleep 5
+
+/usr/5bin/sum /tmp/$$.ppm > /tmp/$$.cs
+rm -rf $csfile
+cp /tmp/$$.cs $test_spool/$$
+mv $test_spool/$$ $csfile
+echo "LOG: sum-ps done `cat $csfile`"
+if ( -e /tmp/draw01-log ) then
+  cp $csfile /tmp/draw01-log
+  cp /tmp/$$.ppm /tmp/draw01-log/$1.ppm
+endif
+cleanup: 
+rm -rf /tmp/$$.cs /tmp/$$.ps /tmp/$$.ppm

@@ -1,0 +1,105 @@
+/*
+ *  Copyright (C) 1986-2017 Gensym Corporation.
+ *  All Rights Reserved.
+ *
+ *      GenericSimulationFormulaImpl.java
+ *
+ *   Description: Generated Interface file. Do not edit!
+ *
+ *        Author: Gensym Corp.
+ *
+ *       Version: 8.4 Rev 0 (JI21)
+ *
+ *          Date: Fri Sep 21 12:56:32 EDT 2007
+ *
+ */
+
+
+package com.gensym.classes;
+
+import com.gensym.util.Structure;
+import com.gensym.util.Sequence;
+import com.gensym.util.Symbol;
+import com.gensym.util.symbol.SystemAttributeSymbols;
+import com.gensym.jgi.*;
+
+public class GenericSimulationFormulaImpl extends com.gensym.classes.StatementImpl implements GenericSimulationFormula {
+
+
+  static final long serialVersionUID = 2L;
+
+  /* Generated constructors */
+
+  public GenericSimulationFormulaImpl() {
+    super();
+  }
+
+  public GenericSimulationFormulaImpl(G2Access context, int handle, Structure attributes) {
+    super (context, handle, attributes);
+  }
+
+
+  public GenericSimulationFormulaImpl(G2Access context, int handle, int handleVersion, G2__BaseImpl wrap, Structure attributes) {
+    super (context, handle, handleVersion, wrap, attributes);
+  }
+
+
+  /**
+   * Generated Property Setter for attribute -- AUTHORS
+   * @param authors new value to conclude for AUTHORS
+   * @exception G2AccessException if there are any communication problems
+   *              or the value does not match with the type specification
+   */
+  @Override
+  public void setAuthors(com.gensym.util.Structure authors) throws G2AccessException {
+    setAttributeValue (SystemAttributeSymbols.AUTHORS_, authors);
+  }
+
+  /**
+   * Generated Property Getter for attribute -- AUTHORS
+   * @return the value of the AUTHORS attribute of this item
+   * @exception G2AccessException if there are any communication problems
+   */
+  @Override
+  public com.gensym.util.Structure getAuthors() throws G2AccessException {
+    java.lang.Object retnValue = getAttributeValue (SystemAttributeSymbols.AUTHORS_);
+    return (com.gensym.util.Structure)retnValue;
+  }
+
+  /**
+   * Generated Property Getter for attribute -- CHANGE-LOG
+   * @return the value of the CHANGE-LOG attribute of this item
+   * @exception G2AccessException if there are any communication problems
+   */
+  @Override
+  public com.gensym.util.Sequence getChangeLog() throws G2AccessException {
+    java.lang.Object retnValue = getAttributeValue (SystemAttributeSymbols.CHANGE_LOG_);
+    return (com.gensym.util.Sequence)retnValue;
+  }
+
+  /**
+   * Generated Property Setter for attribute -- TRACING-AND-BREAKPOINTS
+   * @param tracingAndBreakpoints new value to conclude for TRACING-AND-BREAKPOINTS
+   * @exception G2AccessException if there are any communication problems
+   *              or the value does not match with the type specification
+   */
+  @Override
+  public void setTracingAndBreakpoints(java.lang.Object tracingAndBreakpoints) throws G2AccessException {
+    setAttributeValue (SystemAttributeSymbols.TRACING_AND_BREAKPOINTS_, tracingAndBreakpoints);
+  }
+
+  /**
+   * Generated Property Getter for attribute -- TRACING-AND-BREAKPOINTS
+   * @return the value of the TRACING-AND-BREAKPOINTS attribute of this item
+   * @exception G2AccessException if there are any communication problems
+   */
+  @Override
+  public java.lang.Object getTracingAndBreakpoints() throws G2AccessException {
+    java.lang.Object retnValue = getAttributeValue (SystemAttributeSymbols.TRACING_AND_BREAKPOINTS_);
+    return (java.lang.Object)retnValue;
+  }
+
+  private static String NoBodyExceptionString = "This method has no implementation for local access";
+  
+  
+}

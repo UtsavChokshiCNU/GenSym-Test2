@@ -1,0 +1,23 @@
+HKCR
+{
+	NolOnline.NolPredictorProp.1 = s 'NolPredictorProp Class'
+	{
+		CLSID = s '{BF5BD743-4EA2-11D4-8704-00609703E392}'
+	}
+	NolOnline.NolPredictorProp = s 'NolPredictorProp Class'
+	{
+		CLSID = s '{BF5BD743-4EA2-11D4-8704-00609703E392}'
+		CurVer = s 'NolOnline.NolPredictorProp.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {BF5BD743-4EA2-11D4-8704-00609703E392} = s 'NolPredictorProp Class'
+		{
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+		}
+	}
+}

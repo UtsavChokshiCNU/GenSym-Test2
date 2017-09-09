@@ -1,0 +1,301 @@
+<?xml version="1.0"?>
+
+<!-- Build file for the "Javalink" progect-->
+<project name="gensym" default="build_32_std" basedir="." xmlns:jacoco="antlib:org.jacoco.ant" >
+
+  <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
+    <classpath path="${basedir}/../../jacoco-0.7.9/lib/jacocoant.jar" />
+  </taskdef>
+  
+  <property environment="env"/>
+  
+  <condition property = "JAVA_HOME" value="${env.JAVA_HOME}">
+    <os family = "windows" />
+  </condition>
+
+  <condition property = "JAVA_HOME" value="/opt/jdk1.6.0_45">
+    <os family = "unix" />
+  </condition>
+  
+  <property name="SRCBOX" value="${basedir}/../../.."/>
+  <property name="DSTBOX" value="${SRCBOX}/../dst"/>
+
+  <!-- Property file to read various properties -->
+  <property file="${basedir}/build.properties"/>
+  <property name="g2.basedir" value="${basedir}/../../.."/>
+        
+  <path id="JDK_CLASSPATH">
+    <pathelement location="${JAVA_HOME}/lib/tools.jar" />
+  </path>
+
+  <!-- Clean targets -->
+  <target name="clean-all" depends="clean-class, clean-findbugs, clean-checkstyle, clean-test">
+    <delete dir="${dst.dir}"/>
+    <delete dir="${reports.dir}"/>
+    <delete dir="${out.dir}"/>
+    <delete dir="${jacoco.dir}" />
+    <delete>
+      <fileset dir="${src.dir}" includes="**/*.class" />
+    </delete>
+    <!--delete file= "jacoco.exec" /-->
+  </target>
+
+  <target name="clean-class">
+    <delete>
+      <fileset dir="${src.jgi.dir}" includes="**/*.class"/> 
+    </delete>
+  </target>
+
+  <target name="clean-findbugs">
+    <delete dir="${findbugs.dir}"/>
+  </target>
+
+  <target name="clean-checkstyle">
+    <delete dir="${checkstyle.dir}"/>
+  </target>
+
+  <target name="clean-test">
+    <delete dir="${out.jgi.test.dir}"/>
+    <delete dir="${out.junit.test.dir}"/>
+  </target>
+
+  <!-- Compilation target -->        
+  <target name="compile" depends="clean-class">
+    <javac srcdir="${src.dir}" 
+           destdir="${src.dir}" 
+           sourcepath=""
+           debug="off"
+           fork="true"
+	   executable="${JAVA_HOME}/bin/javac"
+	   classpathref="JDK_CLASSPATH"
+           memoryInitialSize="128m"
+           memoryMaximumSize="512m">
+    
+      <exclude name="com/gensym/g2export/**/*.*" />
+      <exclude name="com/gensym/util/DefaultStubFactory.java" />
+      <exclude name="com/gensym/classes/RootSpecialImpl.java" />
+      <exclude name="com/gensym/classes/DefinitionSpecialImpl.java" />
+      <exclude name="com/gensym/classes/ImageDefinitionSpecialImpl.java" />
+      <exclude name="com/gensym/classes/ItemSpecialImpl.java" />
+      <exclude name="com/gensym/classes/KbWorkspaceSpecialImpl.java" />
+      <exclude name="com/gensym/classes/MediaBinSpecialImpl.java" />
+            
+      <include name="com/gensym/classes/modules/g2evliss/*.*" />
+      <include name="com/gensym/classes/*.*" />
+      <include name="com/gensym/dlgevent/*.*" />
+      <include name="com/gensym/g2scriptruntime/*.*" />
+      <include name="com/gensym/jgi/dataservice/*.*" />
+      <include name="com/gensym/jgi/download/*.*" />
+      <include name="com/gensym/jgi/download/local/ClassFileGenerator.java" />
+      <include name="com/gensym/jgi/rmi/*.*" />
+      <include name="com/gensym/jgi/*.*" />
+      <include name="com/gensym/net/g2/*.*" />
+      <include name="com/gensym/net/memcache/*.*" />
+      <include name="com/gensym/types/*.*" />
+      <include name="com/gensym/util/symbol/*.*" />
+      <include name="com/gensym/util/*.*" />
+      <include name="com/gensym/beanbuilder/*.*"/>
+      <include name="com/gensym/classtools/*.*"/>
+      <include name="com/gensym/beansruntime/*.*"/>
+      <include name="com/gensym/beansruntime/jarresource/*.*"/>
+      <include name="com/gensym/core/*.*"/>
+      <include name="com/gensym/core/util/*.*"/>
+      <include name="com/gensym/data/*.*"/>
+      <include name="com/gensym/jartools/*.*"/>
+      <include name="com/gensym/message/*.*"/>
+      <include name="com/gensym/security/*.*"/>
+      <include name="com/gensym/demos/jgi/*.*"/>
+      <include name="com/gensym/classes/modules/javalink/*.*"/>
+      <include name="com/gensym/classes/modules/jgidemo/*.*"/>
+      <include name="com/gensym/devtools/MakeProductJar.java"/>
+      <include name="com/gensym/g2studio/*.*" />
+      <include name="com/gensym/com/*.*" />
+      <include name="com/gensym/ntw/*.*" />
+    </javac>
+  </target>
+
+  <target name="make-jars-init">
+    <mkdir dir="${jar.file.dir}"/>
+  </target>
+
+  <!-- Build JavaLink Bridge jar file -->
+  <target name="make-javalink-jar" depends="compile">
+    <jar destfile="${jar.file.dir}/${javalink.jar}"
+         basedir="${src.dir}">
+      <include name="com/gensym/classes/modules/g2evliss/*.class" />
+      <include name="com/gensym/classes/modules/g2evliss/*.ser" />
+      <include name="com/gensym/classes/*.class" />
+      <include name="com/gensym/classes/*.ser" />
+      <include name="com/gensym/classes/*.ovr" />
+      <include name="com/gensym/classes/*.properties" />
+      <include name="com/gensym/classes/*.txt" />
+      <include name="com/gensym/dlgevent/*.class" />
+      <include name="com/gensym/g2scriptruntime/*.class" />
+      <include name="com/gensym/jgi/dataservice/*.class" />
+      <include name="com/gensym/jgi/download/*.class" />
+      <include name="com/gensym/jgi/download/*.properties" />
+      <include name="com/gensym/jgi/rmi/*.class" />
+      <include name="com/gensym/jgi/rmi/*.properties" />
+      <include name="com/gensym/jgi/*.class" />
+      <include name="com/gensym/jgi/*.properties" />
+      <include name="com/gensym/jgi/*.gif" />
+      <include name="com/gensym/jgi/*.dat" />
+      <include name="com/gensym/net/g2/*.class" />
+      <include name="com/gensym/net/memcache/*.class" />
+      <include name="com/gensym/types/*.class" />
+      <include name="com/gensym/util/symbol/*.class" />
+      <include name="com/gensym/util/*.class" />
+      <include name="com/gensym/util/*.properties" />
+      <include name="com/gensym/resources/*.properties" />
+    </jar>
+  </target>
+
+  <target name="make-beanbuilder-jar" depends="compile">
+    <jar destfile="${jar.file.dir}/${beanbuilder.jar}"
+         basedir="${src.dir}">
+      <include name="com/gensym/beanbuilder/*.class"/>
+      <include name="com/gensym/beanbuilder/*.dat"/>
+      <include name="com/gensym/beanbuilder/*.gif"/>
+      <include name="com/gensym/beanbuilder/*.txt"/>
+      <include name="com/gensym/beanbuilder/images/*.gif"/>
+      <include name="com/gensym/beanbuilder/images/*.jpg"/>
+      <include name="com/gensym/beanbuilder/text/*.properties"/>
+    </jar>
+  </target>
+
+  <target name="make-classtools-jar" depends="compile">
+    <jar destfile="${jar.file.dir}/${classtools.jar}"
+         basedir="${src.dir}">
+      <include name="com/gensym/classtools/*.class"/>
+      <include name="com/gensym/classtools/*.dat"/>
+    </jar>
+  </target>
+
+  <target name="make-core-jar" depends="compile">
+     <jar destfile="${jar.file.dir}/${core.jar}"
+          basedir="${src.dir}">
+       <include name="com/gensym/beansruntime/*.class"/>
+       <include name="com/gensym/beansruntime/jarresource/*.class"/>
+       <include name="com/gensym/build/*.dat"/>
+       <include name="com/gensym/core/*.class"/>
+       <include name="com/gensym/core/*.dat"/>
+       <include name="com/gensym/core/*.gif"/>
+       <include name="com/gensym/core/util/*.class"/>
+       <include name="com/gensym/core/util/*.properties"/>
+       <include name="com/gensym/data/*.class"/>
+       <include name="com/gensym/jartools/*.class"/>
+       <include name="com/gensym/message/*.class"/>
+       <include name="com/gensym/message/*.properties"/>
+       <include name="com/gensym/security/*.class"/>
+     </jar>
+  </target>
+
+  <target name="make-jars" depends="make-jars-init, make-javalink-jar, make-beanbuilder-jar, make-classtools-jar, make-core-jar"/>
+  <!-- Compilation tests target -->        
+
+  <target name="compile-test" depends="compile, clean-test">
+    <mkdir dir="${out.jgi.test.dir}"/>
+    <javac srcdir="${src.test.dir}" 
+           destdir="${out.jgi.test.dir}" 
+	   debug="on" 
+	   classpathref="test.classpath"
+	   fork="yes"
+      	   executable="${JAVA_HOME}/bin/javac">
+      <include name="com/gensym/*.java"/>
+      <include name="com/gensym/classes/**/*.*"/>
+      <include name="com/gensym/classtools/*.java"/>
+      <include name="com/gensym/jgi/*.java"/>
+      <include name="com/gensym/jgi/download/*.java"/>
+      <include name="com/gensym/jgi/download/local/*.java"/>
+      <include name="com/gensym/jgi/rmi/*.java"/>
+	  <include name="com/gensym/beanbuilder/ItemBeanCreatorTest.java"/>
+    </javac>
+  </target>
+  
+  <path id="test.classpath">
+     <pathelement location="${src.dir}"/> 
+     <pathelement location="${out.jgi.test.dir}"/> 
+     <pathelement location="${JAVA_HOME}/lib/tools.jar" />
+     <fileset dir="${lib.dir.testlibs}/">
+       <include name="*.jar"/> 
+     </fileset>
+  </path>
+
+  
+  <!-- Runing JUnit tests target -->
+  <target name="junit" depends="compile-test">
+    <mkdir dir="${jacoco.dir}"/>
+    <mkdir dir="${out.junit.test.dir}"/>
+    <jacoco:coverage>
+      <!--making halt on failure no, this will ensure all test cases to be executed even if some tests failed in between.
+        Adding a failure property to ensure if some tests failed then this target build will be failed -->
+      <junit printsummary="yes" fork="yes" haltonfailure="no" showoutput="true" failureproperty="test.failed" >
+        <classpath refid="test.classpath"/> 
+        <formatter type="xml"/>
+        <batchtest fork="yes" todir="${out.junit.test.dir}">
+          <fileset dir="${src.test.dir}">
+            <include name="**/*Test.java"/>
+            <exclude name="**/PojoTest.java"/>
+            <exclude name="com/gensym/com/beans/**"/>
+            <exclude name="com/gensym/beanbuilder/**"/>
+          </fileset>
+        </batchtest>
+      </junit>
+    </jacoco:coverage>
+    <!--fail message="Some Tests Failed" if="test.failed"/-->
+  </target>
+
+  <target name="check-coverage" description="Run the Test Cases, generate the Coverage Report"> 
+    <jacoco:report>
+      <executiondata>
+        <file file="jacoco.exec" />
+      </executiondata>
+      <structure name="Java Test Coverage">
+        <classfiles>
+	  <fileset dir="${src.dir}/com/gensym/jgi"></fileset>
+        </classfiles>
+      </structure>
+      <html destdir="${jacoco.dir}/coverage" />
+    </jacoco:report>
+  </target>
+
+  <target name="G2Gateway">
+    <javac srcdir="${src.dir}" destdir="${src.dir}" debug="on">
+      <include name="com/gensym/jgi/G2Gateway.java" />
+    </javac>
+    <javah destdir="${basedir}/../../include/" classpath="${basedir}/../../" >
+      <class name="com.gensym.jgi.GsiLoopThread" />
+      <class name="com.gensym.jgi.JGInterface" />
+    </javah>
+  </target>
+
+  <target name="main" depends="clean-all, make-jars, G2Gateway" />
+  
+  <target name="jgi_32">
+    <ant dir="${g2.basedir}/ant" target="vstudio" inheritAll="false">
+      <property name="type" value="Release|Win32"/>
+      <property name="module" value="jgiinterface"/>
+    </ant>
+  </target>
+
+  <target name="jgi_64_wout_32">
+    <ant dir="${g2.basedir}/ant" target="vstudio" inheritAll="false">
+      <property name="type" value="Release - Enterprise|x64"/>
+      <property name="module" value="jgiinterface"/>
+    </ant>
+  </target>
+
+  <target name="jgi_64" depends="jgi_64_wout_32">
+    <ant dir="${g2.basedir}/ant" target="vstudio" inheritAll="false">
+      <property name="type" value="Release - Enterprise|Win32"/>
+      <property name="module" value="jgiinterface"/>
+    </ant>
+  </target>
+
+  <target name="build_32_std" depends="main, jgi_32" />
+  
+  <target name="build_64_ent" depends="main, jgi_64" />
+
+  <target name="build_64_ent_wout_32" depends="main, jgi_64_wout_32" />
+
+</project>

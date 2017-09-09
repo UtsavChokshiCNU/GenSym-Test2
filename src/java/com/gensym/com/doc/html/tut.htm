@@ -1,0 +1,996 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<META NAME="Generator" CONTENT="Microsoft Word 97">
+<TITLE>Using the ActiveX to Java Beans Package</TITLE>
+</HEAD>
+<BODY LINK="#0000ff">
+
+<I><FONT SIZE=5>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P><DIR>
+<DIR>
+<DIR>
+<DIR>
+
+</FONT><FONT SIZE=6><P>Using the ActiveX to Java Beans Package</P>
+<P>April 1998</P>
+</FONT><FONT SIZE=4><P>A Tutorial</P>
+</FONT>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<FONT SIZE=4><P>Allan Scott</P>
+</I></FONT><FONT SIZE=2>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P><IMG SRC="Image1.gif" WIDTH=336 HEIGHT=134></P>
+</FONT><U><FONT SIZE=5><P>1. Getting Started</P>
+</U></FONT><FONT SIZE=2>
+<P>&nbsp;</P>
+</FONT><P>ActiveX is the Windows standard component model.   Java Beans is the platform-independent component model written in 100%  Java.  The ActiveX to Java Beans package (also known as com.gensym.com) provides a means of importing ActiveX components into Java as Java Beans.  This allows the developer to benefit from the many ActiveX components that have been written and still develop their application primarily in Java.</P>
+<FONT SIZE=2>
+</FONT><P>Beans that are created by the ActiveX to Java Beans package can be used in a visual builder tool along with beans that are written in 100% pure Java.  Developers get full programmatic access to the properties and methods of the ActiveX control in the same manner as any Java Bean.</P>
+</DIR>
+</DIR>
+</DIR>
+</DIR>
+
+<FONT SIZE=5><P> com.gensym.com</FONT>      </P>
+<P> </P><DIR>
+<DIR>
+<DIR>
+<DIR>
+
+<P>The com.gensym.com package contains the ActiveX to Java Beans facility.  A full specification for the com package can be found in &quot;The ActiveX to Java Beans Package: Technical Specification&quot;.  </P>
+</DIR>
+</DIR>
+</DIR>
+</DIR>
+
+<FONT SIZE=5><P>Bean Editors</FONT>      </P><DIR>
+<DIR>
+<DIR>
+<DIR>
+
+<P>The com.gensym.com package can be used in conjunction with a number of different Visual Bean Editors (see section 6).  Throughout this tutorial Sun’s BeanBox will be used in all examples where a Bean Editor is required.</P>
+</DIR>
+</DIR>
+</DIR>
+</DIR>
+
+<FONT SIZE=5><P>ActiveX Components</P>
+<DIR>
+<DIR>
+<DIR>
+<DIR>
+
+</FONT><P>When an ActiveX class is installed on a Windows PC it registers itself in the Windows registry.  The classes that are available can vary from PC to PC depending on which classes have already been installed.  Users of  the Microsoft Office suite will be familiar with typical ActiveX classes such as Excel Spreadsheets, Word documents and PowerPoint slides.  To get an idea of the range of Active classes that are available visit an ActiveX  repository such as <A HREF="http://www.gamelan.com/">http://www.gamelan.com/</A>.</P>
+<P> </P>
+</DIR>
+</DIR>
+</DIR>
+</DIR>
+
+<FONT SIZE=5><P>Inserting Simple ActiveX Components</P>
+</FONT><DIR>
+<DIR>
+<DIR>
+<DIR>
+
+<P>Start Sun’s BeanBox with the following command:</P>
+
+<P>C:&gt;  java sun.beanbox.BeanBoxFrame</P>
+
+<P>Sun’s BeanBox will launch and you will see the three windows including the following work sheet:</P>
+<P><IMG SRC="Image2.gif" WIDTH=392 HEIGHT=539></P>
+
+<P>&nbsp;</P></DIR>
+</DIR>
+</DIR>
+</DIR>
+
+<P>&#9;&#9;</P>
+<DIR>
+<DIR>
+<DIR>
+<DIR>
+
+<P>To insert a simple ActiveX control:</P>
+</DIR>
+</DIR>
+</DIR>
+</DIR>
+
+<OL>
+<DIR>
+<DIR>
+
+<OL>
+
+<LI>Select File &gt; Load Jar…</LI>
+<LI>Load  axtools.jar</LI></OL>
+</DIR>
+</DIR>
+</OL>
+
+<DIR>
+<DIR>
+<DIR>
+<DIR>
+
+<P>Note that two new beans are now added to the list of available beans.  These are ActiveXGenericComponent and Beanifier.  Select ActiveXGenericComponent and then click on the editor panel.  The following dialog will appear.</P>
+<P><IMG SRC="Image3.gif" WIDTH=468 HEIGHT=282></P>
+
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>Select an object type and press OK.   The component will be inserted into the editor panel and it will be activated, bringing up an initialization dialog that is specific to that component.</P>
+
+<P>In the example we selected the Microsoft Clip Gallery object Type and selected a clip art picture to include in the worksheet:</P>
+
+<P><IMG SRC="Image4.gif" WIDTH=391 HEIGHT=487></P>
+
+<P>It is also possible to insert a simple component from a file.  Insert an ActiveXGenericComponent  again.  This time select the Create From File check-box and browse your hard disk for a file to insert.  The dialog will give you an indication of whether there is an ActiveX class associated with that file:</P>
+<P><IMG SRC="Image5.gif" WIDTH=446 HEIGHT=269></P>
+<P>In this example I have inserted this document into the work sheet:</P>
+<P><IMG SRC="Image6.gif" WIDTH=462 HEIGHT=564></P>
+
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<U><FONT SIZE=5><P>2. Saving ActiveX Components</P>
+</U></FONT>
+<P>The previous section shows that it is easy to insert ActiveX Components as Beans into a visual Bean Editor.  One feature of ActiveX components and Java Beans is that they can maintain a persistent state.  The com.gensym.com module provides a seamless way of integrating ActiveX persistence with Java Bean persistence. </P>
+
+<P>To demonstrate this do the following:</P>
+</DIR>
+</DIR>
+</DIR>
+</DIR>
+
+<OL>
+<DIR>
+<DIR>
+
+<OL>
+
+<LI>Create a work-sheet with an ActiveX component on it;</LI>
+<LI>Select the work sheet;</LI>
+<LI>On the work sheet select File&gt;&gt;Save, and choose a filename to save the work sheet</LI>
+<LI>On the work sheet select Clear to get a new Worksheet</LI>
+<LI>On the work sheet select Load, and load the file you have created.</LI></OL>
+</DIR>
+</DIR>
+</OL>
+
+<DIR>
+<DIR>
+<DIR>
+<DIR>
+
+<P>You will notice that your worksheet and the ActiveX component on it have been restored.</P>
+
+<P>By default the ActiveX component is activated on load.  You can control this behavior by changing the activateOnLoad property on the component.  To do this select the ActiveX component and choose Properties.  That will bring up a dialog like the following:</P>
+<P><IMG SRC="Image7.gif" WIDTH=322 HEIGHT=271></P>
+
+<P>&nbsp;</P>
+<P>Change the activateOnLoad property to false.  The next time you save and then reload this component it will not activate. </P>
+<U><FONT SIZE=5><P>3  Converting Specific Components</P>
+</U></FONT>
+<P>Up until now we have been inserting ActiveX components <B>generically</B>.<FONT SIZE=5> </FONT>This means that a stub object is created around the ActiveX component but the properties and methods of the ActiveX component are not included in that stub.  To create a smarter stub that will give the developer programmatic control over the component do the following:</P>
+
+<P>The com.gensym.properties file contains the configuration used by all Gensym products. Make sure that you have added the following properties to your com.gensym.properties file:</P>
+
+<P>com.gensym.com.emitdir=C\\Home</P>
+<P>com.gensym.com.emitpackage=com.acme.tests</P></DIR>
+</DIR>
+</DIR>
+</DIR>
+
+<P>&#9;&#9; </P><DIR>
+<DIR>
+<DIR>
+<DIR>
+
+<P>The property com.gensym.com.emitdir controls where stub classes are emitted to.  Note that the double slashes are necessary because \ is an escape character in Java property files.</P>
+
+<P>The property com.gensym.emitpackage controls the package into which stub classes are emitted.  In this case all stub classes will be emitted into the package com.acme.tests</P></DIR>
+</DIR>
+</DIR>
+</DIR>
+
+<P>&#9;&#9;&#9;&#9;&#9;&#9;</P><DIR>
+<DIR>
+<DIR>
+<DIR>
+
+<P>Launch the ActiveXConverter application from the command line using:</P>
+<P>java com.gensym.com.Beanifier</P>
+
+<P>Select File &gt; Convert Library.  A dialog will appear that summarizes the ActiveX libraries that are available to be converted. </P>
+<P><IMG SRC="Image8.gif" WIDTH=369 HEIGHT=321></P>
+
+<P>In this example we select the Microsoft Access Calender Control library. </P>
+
+<P>By default the &quot;Save as .jar file&quot; checkbox is selected, this indicates that we want a jar file to be created automatically when the control is emitted.</P>
+
+<P>Select OK and the java source file for this class is emitted. In this example the following files are created:</P>
+
+<P>D:\home\com\acme\test\msacal70\MsacalMsacalctrl.java</P>
+<P>D:\home\com\acme\test\msacal70\DMsacalEvents.java</P>
+<P>D:\home\com\acme\test\msacal70\DMsacal.java</P>
+
+<P>Next a save dialog appears. Select a jar file to save the stub classes into and select OK.  The source file will then be compiled and a new jar file will be created .</P>
+
+<P>Load the created Jar file into the BeanBox then create a new instance of the calendar control by selecting and inserting MsacalMsacalctrl.  The calendar control is then added and you will be given the opportunity configure this control.</P>
+
+<P>To see the difference between inserting an ActiveX component <B>specifically</B> and <B>generically </B>select the Properties of the Calendar control. In this example:</P>
+<P><IMG SRC="Image9.gif" WIDTH=299 HEIGHT=363></P>
+
+<P>   </P>
+<P>Note that there are a number of properties preceded by the &quot;ax&quot;.  These are properties on the ActiveX component itself.  You can see the difference between a generically inserted component and a specifically inserted one by inserting the same component generically and comparing the properties.</P>
+
+<P>It is now possible to change the properties of this ActiveX component by selecting an individual property.  In this example we select the axGridFontColor property.  This will bring us up a color property dialog that allows us to change the color of the Grid used by the calender:</P>
+<P><IMG SRC="Image10.gif" WIDTH=280 HEIGHT=105></P>
+
+<P>&nbsp;</P></DIR>
+</DIR>
+</DIR>
+</DIR>
+
+<U><FONT SIZE=5><P>   </P><DIR>
+<DIR>
+<DIR>
+<DIR>
+
+</U></FONT><P>In this example we select Magenta and the calender component now looks suitably gharish:</P>
+<P><IMG SRC="Image11.gif" WIDTH=366 HEIGHT=496></P>
+
+<P>If you were now to follow the steps outlined in Section 2 you could save and reload this control and these properties would persist.</P>
+
+<P>&nbsp;</P>
+<U><FONT SIZE=5><P>4  Programmatic Control of ActiveX Components</P>
+<P>     </P>
+</U></FONT><P>So far we imported ActiveX components both generically and specifically as Java Beans, and manipulated them visually inside Sun’s BeanBox.   The next step is to give the user programmatic access to the properties and methods of the ActiveX component from Java code. This can be demonstrated by using the Sun’s Bean Box hookup facility.</P>
+
+<P>Following on from the example in the last section we now have a Worksheet containing a Microsoft Access Calender Control.  Select ExplicitButton from the list of beans and place this bean on the worksheet beside or below the calendar control.  Then selecting the button created:</P>
+
+<P>Edit &gt;&gt; Event &gt;&gt; button push &gt;&gt; actionPerformed</P>
+
+<P>The mouse will now be controlling a connection.  Drop the end of this connection onto the Calendar control.  An Event Target dialog will appear like the following:</P>
+<P><IMG SRC="Image12.gif" WIDTH=300 HEIGHT=265></P>
+
+<P>&nbsp;</P>
+<P>In this example we select the NextDay method and press OK.  The BeanEditor will then create a hookup from the ExplicitButton to the Calendar control.  </P>
+
+<P>Now press the button. Note that the current day on the calendar control has changed to the next day.  </P>
+
+<P>&nbsp;</P>
+<U><FONT SIZE=5><P>5 An Example Application Using Excel                                                                       </P>
+</U></FONT>
+<P>As well as the translation of individual ActiveX controls the ActiveX to Java Beans package will also translate the full information provided by an ActiveX type library.  This will include subtypes that can only be accessed by creating an ActiveX control and invoking a particular method.  </P>
+
+<P>In this section we will step through the creation of a small Java application that uses the ActiveX to Java Beans package.  The full Java source for this example is provided in Appendix A.</P>
+
+<P>The example application is based upon Microsoft Excel 8.0.  The first step is to translate the library &quot;Microsoft Excel 8.0 Object Library&quot;.  This will emit three subdirectories into the location specified by the com.gensym.com.emitdir property:</P>
+
+<P>excel12/<br>
+  office20/<br>                 
+  vbide50/</P>
+
+<P>The first refers to contents of the Excel 8.0 object library (1 and 2 are the major and minor revision numbers of this library).  The other two libraries contain types that are referred to by the Excel 8.0 object library.</P>
+
+<P>Inside the excel12 directory there are a large number of emitted source files.  Of these only three have zero argument constructors and thus contain Java Beans.  These are:</P>
+
+<P>ExcelSheet.java<br>
+   ExcelChart.java<br>
+   ExcelApplication.java</P>
+
+<P>The example application we will create here is a simple table-browser.  The TableBrowser class will take information about the title, column headings, row headings and data of an arbitrary 2D table and will pass this information onto Excel.  A simple user interface based upon Sun’s Swing 1.0.1 set of widgets will allow the user to select part of the data and create graphs of the data.  The user will also be allowed to change the type of the graph created and to print either the graph or the data.</P>
+
+<P>When an instance of a TableBrowser is created a new ExcelSheet will be created:</P>
+
+<FONT SIZE=2><P>sheet = new ExcelSheet();</P>
+</FONT>
+<P>The ExcelSheet itself will not be activated until the TableBrowser has been added to a container. </P>
+
+<P>Excel is activated out of place in this example, so one of the first tasks the TableBrowser undertakes is to minimize the Excel application which contains the spreadsheet.  This is achieved by the following code (where app is a field of type ExcelApplication):</P>
+
+<code>
+app = sheet.getAxApplication();<br>
+app.setAxWindowState(XlWindowState.XL_MINIMIZED)
+</code>
+
+</FONT><P>Note that the class XlWindowState is an interface that was emitted by the Beanifier to contain static final constants that represent members of an enumeration type.</P>
+
+<P>After minimizing the ExcelApplication the TableBrowser then proceeds to add the data and titles to the ExcelSheet.  This is achieved by selecting a Range and setting a value:</P>
+
+<code>
+Range chosen = app.getAxRange(new Variant(range));</br>
+chosen.setAxValue(new Variant(value));
+</code>
+<P>The property set method setAxValue is defined in the Excel 8.0 type library to take a Variant type.  The Variant type is represented in Java by the com.gensym.com.Variant class.  Any primitive Java type can be used to construct the Variant class.  In the TableBrowser example String and int types are used.</P>
+
+<P>As well as adding data to the ExcelSheet the TableBrowser example also does some formatting of particular ranges of the ExcelSheet.  For example the following code is used to bold a particular range of the ExcelSheet.</P>
+
+<code>
+Range chosen = app.getAxRange(new Variant(range));</br>
+Font font = chosen.getAxFont();<br>
+font.setAxBold(new Variant(bold));
+</code>
+
+<P>While the data is being changed and reformatted the TableBrowser example uses the Frozen attribute of the ExcelSheet to prevent display updates until the data changes have been completed. </P>
+
+<P>Once the data has been added and formatted the resulting application looks like:</P>
+
+<P>&nbsp;</P>
+<P><IMG SRC="Image13.gif" WIDTH=560 HEIGHT=520></P>
+
+<P>This shows a Swing JFrame containing an ExcelSheet and a panel full of JButton and JComboBox components.  The data used by the example above is the default data stored used by the TableBrowser class</P>
+
+<P>The JComboBox  allows the user to change the area of the data that has been selected.  When this happens the color and selection status of a range  of data is changed.  When the ViewChart button is selected the following code is executed to add a new chart for the currently selected data:</P>
+
+<code>
+Sheets sheets = app.getAxCharts();<br>
+sheets.Add();<br>
+chart = app.getAxActiveChart();
+</code>
+
+<P>A pointer to the resulting ExcelChart that has been created is kept in the chart field.  The chart rather than the data will now appear to the user:</P>
+
+<P>&nbsp;</P>
+<P><IMG SRC="Image14.gif" WIDTH=560 HEIGHT=519></P>
+
+<P>The user can then use the JComboBox to change the type of the chart that is used.  This is implemented using the following code:</P>
+
+<PRE>
+<code>
+if (type != null) {
+	if (type.equals("Pie Chart")) {
+        chart.setAxChartType(XlChartType.XL_PIE);
+        return;
+    }
+    if (type.equals("Bar Chart")) {
+        chart.setAxChartType(XlChartType.XL_BAR_CLUSTERED);
+        return;
+    }
+    if (type.equals("3D Pie Chart")) {
+        chart.setAxChartType(XlChartType.XL3_D_PIE);
+        return;
+    }
+    if (type.equals("Pyramid")) {
+        chart.setAxChartType(XlChartType.XL_PYRAMID_COL);
+        return;
+    }
+}
+</code>
+</PRE>
+<P>XlChartType is an interface that contains static final fields for each of the chart types available in the XlChartType enumeration.</P>
+
+<P>The Print button is implemented using the PrintOut() method on either ExcelChart or ExcelSheet (depending on which is visible at the time). </P>
+
+<P>The Back button is implemented by deleting the ExcelChart and thus returning the display to the ExcelSheet.  In order to do this in an entirely programmatic way the normal warning dialogs provided by Excel need to be disable during the delete of the Chart:</P>
+
+<PRE><code>
+boolean oldDisplayAlerts = app.getAxDisplayAlerts()
+app.setAxDisplayAlerts(false);
+chart.Delete();
+app.setAxDisplayAlerts(oldDisplayAlerts);
+chart = null;
+</code></PRE>
+<P>This example shows that it is possible to manipulate powerful hierarchical ActiveX applications such as Excel from inside Java. </P>
+
+<P>&nbsp;</P>
+<U><FONT SIZE=5><P>Technical Details                                             6</P>
+</U></FONT>
+<P>Features:</P>
+<FONT FACE="Arial">Creation of new ActiveX components<br>
+Creation of ActiveX components from files<br>
+Out of place activation / Limited in place activation<br>
+Forwarding of method calls<br>
+Forwarding of property set/get<br>
+Access to subtypes<br>
+Full persistence of ActiveX component state in java object stream<br>
+
+</FONT><FONT SIZE=2><P>&#9;</P>
+</FONT><FONT FACE="Arial">
+
+<P>Requirements:</P>
+Windows 95 or Windows NT 4.0<br>
+Sun JDK 1.1, including javac<br>
+Sun JFC, Swing 1.0 or greater<br>
+Requires ability to load native library, JavaContainer.dll<br>
+</FONT>
+<P>&nbsp;</P>
+<U><FONT SIZE=5><P>Further Interest                                              6</P>
+</U></FONT>
+<P>If you have further interest in theActiveX to Java Beans package please contact the following email address:</P>
+
+<P><A HREF="mailto:ax2jbeans@gensym.com">ax2jbeans@gensym.com</A></P>
+
+<P>&nbsp;</P>
+<U><FONT SIZE=5><P>Appendix                                                     A</P>
+</U></FONT>
+
+<PRE> <code>
+package com.gensym.com.examples.tablebrowser;
+
+import com.gensym.com.beans.excel12.ExcelSheet;
+import com.gensym.com.beans.excel12.ExcelChart;
+import com.gensym.com.beans.excel12.ChartGroup;
+import com.gensym.com.beans.excel12.ChartTitle;
+import com.gensym.com.beans.excel12.Characters;
+import com.gensym.com.beans.excel12.ExcelApplication;
+import com.gensym.com.beans.excel12.Sheets;
+import com.gensym.com.beans.excel12.Range;
+import com.gensym.com.beans.excel12.Font;
+import com.gensym.com.beans.excel12.XlWindowState;
+import com.gensym.com.beans.excel12.XlChartType;
+import com.gensym.com.beans.excel12.XlHAlign;
+import com.gensym.com.beans.office20.Assistant;
+
+import com.gensym.com.ActiveXDispatchable;
+import com.gensym.com.Variant;
+import com.gensym.com.ActiveXException;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.Color;
+
+import com.sun.java.swing.JPanel;
+import com.sun.java.swing.JButton;
+import com.sun.java.swing.JPanel;
+import com.sun.java.swing.JLabel;
+import com.sun.java.swing.JFrame;
+import com.sun.java.swing.JComboBox;
+
+
+public class TableBrowser extends JPanel 
+                        implements WindowListener 
+{
+    public ExcelSheet sheet;
+    public ExcelChart chart;
+    public ExcelApplication app;
+
+    private JPanel choices;
+    private JButton viewChart;
+    private JButton back;
+    private JButton print;
+    private JLabel label;
+    private JComboBox combobox;
+
+    private String tableName;
+    private String[] columnNames;
+    private String[] rowNames;
+    private int[][] data;
+    private int numberOfColumns;
+    private int numberOfRows;
+    private int numberOfDataRows;
+    private int numberOfDataColumns;
+    private int maxLengthOfColumnNames;
+    private String tableExtrema;
+    private String selectionRange;
+    private Range selection;
+    private int selectedIndex;
+    private ActionListener actionListener;
+
+    private static final String defaultTableName 
+      = "Percentage Toys Sold By Category";
+    private static final String[] defaultColumnNames 
+      = {"Dolls", "Vehicles", "Computer", "Sports", "Other"};
+    private static final String[] defaultRowNames
+      = {"1991", "1993", "1995"};
+   
+    private static final int defaultData[][] 
+      = {{ 20, 15, 15, 10, 40},
+         { 20, 15, 20, 15, 30},
+         { 15, 20, 20, 10 ,35}};
+
+    private static final String[] alphabet = 
+    { "A", "B", "C", "D", "E", "F", "G", "H",
+      "I", "J", "K", "L", "M", "N", "O", "P",
+      "Q", "R", "S", "T", "U", "V", "W", "X",
+      "Y", "Z" };
+
+    private static final short MINIMUM_NUMBER_OF_ROWS = 20;
+    private static final short MINIMUM_NUMBER_OF_COLUMNS = 5;
+    private static final String defaultTableExtrema = "F22";
+    private static final String defaultTitleLocation = "A1";
+
+
+    public TableBrowser() 
+    {
+      this(defaultTableName, 
+           defaultColumnNames,
+           defaultRowNames,
+           defaultData);
+    }
+
+    public TableBrowser(String tableName,
+                        String[] columnNames,
+                        String[] rowNames,
+                        int[][] data) 
+    {
+      this.tableName = tableName;
+      this.columnNames = columnNames;
+      this.rowNames = rowNames;
+      this.data = data;
+
+      numberOfDataRows = rowNames.length;
+      numberOfDataColumns = columnNames.length;
+      numberOfRows = ((numberOfDataRows + 2) < MINIMUM_NUMBER_OF_ROWS) ?
+                     MINIMUM_NUMBER_OF_ROWS:
+                     (numberOfDataRows  + 2);
+      numberOfColumns = ((numberOfDataColumns + 2) < MINIMUM_NUMBER_OF_COLUMNS) ?
+                         MINIMUM_NUMBER_OF_COLUMNS :
+                         (numberOfDataColumns + 2);
+      
+      maxLengthOfColumnNames = 0;
+      for (int i = 0; i < numberOfDataColumns; i++)
+      { 
+         int length = columnNames[i].length();
+         if (length > maxLengthOfColumnNames)
+            maxLengthOfColumnNames = length;
+      }
+                                 
+      setLayout(new BorderLayout());
+      sheet = new ExcelSheet();
+
+      sheet.setSize(new Dimension(maxLengthOfColumnNames * 
+                                  numberOfColumns * 10,
+                                  numberOfRows * 25));
+      
+      add(sheet,"Center");
+      sheet.setBackground(Color.lightGray);
+
+      choices = new JPanel();
+      choices.setBackground(Color.lightGray);
+
+      actionListener = new TableBrowserActionListener();
+
+      label = new JLabel("Select row:");
+      label.setEnabled(false);
+
+      combobox = new JComboBox();
+      giveRowChoices();
+      combobox.addActionListener(actionListener);      
+      combobox.setEditable(false);
+      combobox.setEnabled(false);
+
+      back = new JButton("<< Back");
+      back.addActionListener(actionListener);
+      back.setEnabled(false);
+      
+      
+      print = new JButton("Print");
+      print.addActionListener(actionListener);
+      print.setEnabled(false);
+      
+      viewChart = new JButton("View Chart");
+      viewChart.addActionListener(actionListener);
+      viewChart.setEnabled(false);
+
+      choices.add(back);
+      choices.add(print);
+      choices.add(viewChart);      
+      choices.add(label);
+      choices.add(combobox);
+      
+      add(choices, "South");
+
+    }
+
+    public void activate() 
+         throws ActiveXException 
+    {      
+      app = sheet.getAxApplication();
+      app.setAxWindowState(XlWindowState.XL_MINIMIZED);
+      addTable();
+      viewChart.setEnabled(true);
+      print.setEnabled(true);
+      label.setEnabled(true);
+      combobox.setEnabled(true);
+    }
+
+    private void addTable() 
+      throws ActiveXException {
+        sheet.setFrozen(true);
+        addTableName(tableName);
+        addTableBounds(columnNames, rowNames);
+        addColumnNames(columnNames);
+        addRowNames(rowNames);
+        sheet.setBackground(Color.white);
+        sheet.setFrozen(false);
+        sheet.setFrozen(true);
+        addData(data);  
+        selectFromIndex(0);
+        centerSelection();
+        sheet.setFrozen(false);
+    }
+
+    private void addTableName(String tableName)
+              throws ActiveXException
+    {           
+      setValueOfCell("A1", tableName); 
+      setBoldRange("A1", true);
+    }
+
+    private void addTableBounds(String[] columnNames, String[] rowNames)
+              throws ActiveXException
+    { 
+      if ((numberOfDataColumns != numberOfColumns)
+          || (numberOfDataRows != numberOfRows))
+      {
+          setValueOfCell(defaultTableExtrema, " ");
+      }
+    }
+
+    private void addColumnNames(String[] columnNames) 
+              throws ActiveXException
+    {           
+      int length = columnNames.length;
+
+      for (int i = 0; i < length; i++) 
+      {  
+        setValueOfCell(determineColumn(i + 1) + 2,
+                       columnNames[i]);                         
+      }
+    }
+
+    private void addRowNames(String[] rowNames) 
+              throws ActiveXException
+    {           
+      int length = rowNames.length;
+
+      for (int i = 0; i < length; i++) 
+      {  
+        setValueOfCell("A" + (i + 3),
+                       rowNames[i]);                         
+      }
+    }
+
+    private void addData(int[][] data) 
+      throws ActiveXException 
+    {
+      int dataRows = data.length;
+      int dataColumns = data[0].length;
+
+      for (int i = 0; i < dataRows; i++)
+        for (int j = 0; j < dataColumns; j++)
+        {
+          String range = determineColumn(j + 1) + (i + 3);
+          if ((i == (dataRows - 1))
+              && (j == (dataColumns -1)))
+              tableExtrema = range;
+          setValueOfCell(range,
+                         data[i][j]);                         
+        }
+    }
+
+    private void giveRowChoices() {
+      label.setText("Select Row:    ");
+      combobox.removeAllItems();
+      combobox.addItem("All");      
+      for (int i =0 ; i < numberOfDataRows; i ++)
+        combobox.addItem(rowNames[i] + "     ");
+    }
+
+    private void giveChartTypeChoices() {
+      label.setText("Select Chart:   ");
+      combobox.removeAllItems();
+      combobox.addItem("Bar Chart");      
+      combobox.addItem("Pyramid");      
+      combobox.addItem("Pie Chart");      
+      combobox.addItem("3D Pie Chart");      
+    }
+
+    private String determineColumn(int i) 
+    {
+      int alphabetLength = alphabet.length;
+
+      if (i < alphabetLength) {
+        return alphabet[i];   
+      }
+      else {
+          int key1 = i / alphabetLength;
+          int key2 = i % alphabetLength;
+
+          if ((key1 < alphabetLength)
+              &&
+              (key2 < alphabetLength))
+              return alphabet[key1] + alphabet[key2];
+          else return "ZZ";
+      }
+    }
+
+    private void selectFromIndex(int index) 
+      throws ActiveXException
+    { 
+      if (selectionRange != null)
+        setBlueSelection(false); 
+      if (index == 0)
+        selectionRange =  "A2:" + tableExtrema;
+      else {
+        String lastColumn = determineColumn(numberOfDataColumns + 1);
+        String row = "" + (index + 2);
+        selectionRange = "A2:" + lastColumn + 2;
+        selectionRange = selectionRange + ", A" + 
+          row + ":" + lastColumn + row;
+      }
+      selectedIndex = index;
+      select(selectionRange);
+      setBlueSelection(true);
+    }
+
+    private void setValueOfCell(String range, String value) 
+                          throws ActiveXException
+    {
+      Range chosen = app.getAxRange(new Variant(range));
+      chosen.setAxValue(new Variant(value));
+    }
+
+    private void setValueOfCell(String range, int value) 
+                          throws ActiveXException
+    {
+      Range chosen = app.getAxRange(new Variant(range));
+      chosen.setAxValue(new Variant(value));
+    }
+
+    private void centerSelection()
+                                    throws ActiveXException
+    {
+      selection.setAxHorizontalAlignment(new Variant(XlHAlign.XL_H_ALIGN_CENTER));
+    }
+
+    private void setBoldRange(String range,
+                              boolean bold)
+                                    throws ActiveXException
+    {
+      Range chosen = app.getAxRange(new Variant(range));
+      Font font = chosen.getAxFont();
+      font.setAxBold(new Variant(bold));
+    }
+
+    private void select(String range)
+                    throws ActiveXException 
+    {
+      selection = app.getAxRange(new Variant(range));
+      selection.Select();
+    }
+
+    private void setBlueSelection(boolean setBlue) 
+                    throws ActiveXException
+    {
+      Font font = selection.getAxFont();
+      if (setBlue) 
+        font.setAxColorIndex(new Variant(5));
+      else font.setAxColorIndex(new Variant(0)); 
+    }
+
+
+    //********************* Handling Charts *************
+
+    private void addChart()
+                        throws ActiveXException
+    {
+      Sheets sheets = app.getAxCharts();
+      sheets.Add();
+      chart = app.getAxActiveChart();  
+    }
+
+    private void deleteChart() 
+                    throws ActiveXException
+    {
+      boolean oldDisplayAlerts = app.getAxDisplayAlerts();
+      app.setAxDisplayAlerts(false);
+      chart.Delete();
+      app.setAxDisplayAlerts(oldDisplayAlerts);
+      chart = null;
+    }
+
+    private void setChartType(String type) 
+                    throws ActiveXException
+    {
+      if (type != null) {
+        if (type.equals("Pie Chart")) {
+          chart.setAxChartType(XlChartType.XL_PIE);
+          return;
+        }
+        if (type.equals("Bar Chart")) {
+          chart.setAxChartType(XlChartType.XL_BAR_CLUSTERED);
+          return;
+        }
+        if (type.equals("3D Pie Chart")) {
+          chart.setAxChartType(XlChartType.XL3_D_PIE);
+          return;
+        }
+        if (type.equals("Pyramid")) {
+          chart.setAxChartType(XlChartType.XL_PYRAMID_COL);
+          return;
+        }
+      }
+    }
+
+    //************ Configuring dimensions *********************
+
+    public Dimension getMinimumSize() 
+    {
+      return getPreferredSize();
+    }
+
+    public Dimension getPreferredSize() 
+    {
+      Dimension sheetDimension = sheet.getSize();
+      int sheetWidth = sheetDimension.width;
+      int sheetHeight = sheetDimension.height;
+
+      return new Dimension(sheetWidth, sheetHeight + 20);
+    }
+
+    //******************** Deleting Excel resources when finished *******
+    
+    public void finalize() {        
+      try {
+      boolean oldDisplayAlerts = app.getAxDisplayAlerts();
+      app.setAxDisplayAlerts(false);
+      if (chart != null)
+        chart.Delete();
+      if (sheet != null)
+         sheet.Delete();
+      app.setAxDisplayAlerts(oldDisplayAlerts);
+      }
+      catch (ActiveXException e) { }
+    }
+
+    public void delete() {
+        finalize();
+    }
+    
+    //*************** ActionListener for button actions *****
+   
+    class TableBrowserActionListener implements ActionListener 
+    {
+
+      public void actionPerformed(ActionEvent e) {
+        Object cmdSource = (Object)e.getSource ();
+        
+        if (cmdSource == print) {
+           try {
+             if (chart == null)
+               sheet.PrintOut();
+             else chart.PrintOut();
+           }
+           catch (ActiveXException x) 
+           { }
+           return;
+        }
+
+        if (cmdSource == viewChart) {
+            try {
+              addChart();
+            }
+            catch (ActiveXException x) {    
+              return;
+            }   
+            viewChart.setEnabled(false);
+            back.setEnabled(true);
+            label.setEnabled(false);
+            giveChartTypeChoices();
+            return;
+        }
+
+        if (cmdSource == back) {
+          try {
+              deleteChart();
+          }
+          catch (ActiveXException x) {
+            return;
+          }
+          back.setEnabled(false);
+          viewChart.setEnabled(true);
+          label.setEnabled(true);
+          combobox.removeActionListener(actionListener);
+          giveRowChoices();
+          combobox.addActionListener(actionListener);
+          combobox.setSelectedIndex(selectedIndex);
+          chart = null;
+          return;
+        }
+
+        if (cmdSource == combobox) {
+          int selected = combobox.getSelectedIndex();
+          String selectedString = (String) combobox.getSelectedItem();
+          try {
+            if (chart == null)
+              selectFromIndex(selected);
+            else setChartType(selectedString);
+          }
+          catch (ActiveXException x) {
+              return;
+          }
+          return;
+        }
+      }
+    }
+
+    //***************  Testing Code ************************
+
+    public static void main(String[] args) {
+      JFrame frame =  new JFrame("Table Browser");
+      
+      try {
+        TableBrowser tableBrowser = new TableBrowser(); 
+        // Create a new TableBrowser and add to the frame
+        frame.getContentPane().setLayout(new BorderLayout());
+        frame.getContentPane().add(tableBrowser, "Center");
+        frame.resize(tableBrowser.getPreferredSize());
+        frame.addWindowListener(tableBrowser);
+        frame.show();
+        tableBrowser.activate();
+      }
+      catch(Exception e) {
+        e.printStackTrace();
+        System.out.println("Failure : " + e);
+      }      
+    }    
+
+    public void windowOpened(WindowEvent e) {
+    }
+
+    public void windowClosing(WindowEvent e) {
+        delete();
+        System.exit(0);
+    }
+    
+    public  void windowClosed(WindowEvent e) {
+        System.exit(0);
+    }
+
+    public void windowIconified(WindowEvent e) {
+    }
+
+    public  void windowDeiconified(WindowEvent e) {
+    }
+
+
+    public  void windowActivated(WindowEvent e) {
+    }
+
+    public void windowDeactivated(WindowEvent e) {
+    }
+
+}
+</code></PRE>
+
+<P>}</P>
+</DIR>
+</DIR>
+</DIR>
+</DIR>
+</BODY>
+</HTML>

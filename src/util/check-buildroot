@@ -1,0 +1,29 @@
+#!/bin/csh -f
+
+# Check-buildroot
+
+# Jim Allard
+
+# Part of the setup of Lisp directories in sandboxes is to place a file,
+# buildroot.dat, into the lisp directory.  This script should be run in the /bt
+# directory, and it will check each lisp directory in each sandbox and verify
+# that it has a valid buildroot.dat file.
+
+cd /bt
+
+foreach sandbox (*)
+  if (-d $sandbox/lisp) then
+    if (-f $sandbox/lisp/buildroot.dat) then
+      set buildroot = `cat $sandbox/lisp/buildroot.dat`
+      if ("$buildroot" != "$sandbox") then
+        echo "Mismatch in $sandbox : buildroot is $buildroot"
+      endif
+    else
+      echo "Missing in $sandbox"
+    endif
+  else
+    echo "    $sandbox has no lisp directory"
+  endif
+end
+
+exit 0

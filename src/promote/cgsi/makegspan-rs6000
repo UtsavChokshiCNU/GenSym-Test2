@@ -1,0 +1,53 @@
+SHELL=/bin/sh
+ 
+# Sample makefile for GSPAN programs.
+#   GSPAN Version 3.1.
+# Machine type: IBM RS6000
+ 
+C_DIR = 
+OBJ_DIR = 
+EXE_DIR = 
+H_DIR = ./
+INCLUDE_DIR = $(H_DIR)
+CCFLAGS = -O
+LIB_DIR = ./
+ 
+DEFAULT_LIBS = -lgspan -ltcp
+PLATFORM_SPECIFIC_LIBS = -lm -lbsd -lc
+LIBS = -L$(LIB_DIR) $(DEFAULT_LIBS) $(PLATFORM_SPECIFIC_LIBS) 
+ 
+H_FILES = $(H_DIR)gspan.h $(H_DIR)icp.h $(H_DIR)xs_sys.h
+EXECUTABLES= $(EXE_DIR)gsp_exm1 $(EXE_DIR)gsp_exm2
+GSP_EXM1_FILES = $(OBJ_DIR)gsp_exm1.o $(OBJ_DIR)gsp_mai1.o $(OBJ_DIR)gspan_main.o
+GSP_EXM2_FILES = $(OBJ_DIR)gsp_exm2.o $(OBJ_DIR)gsp_mai2.o $(OBJ_DIR)gspan_main.o
+ 
+ALL : $(EXECUTABLES)
+ 
+$(EXE_DIR)gsp_exm1 : $(GSP_EXM1_FILES)
+	cc -o gsp_exm1 $(GSP_EXM1_FILES) $(LIBS)
+ 
+$(EXE_DIR)gsp_exm2 : $(GSP_EXM2_FILES)
+	cc -o gsp_exm2 $(GSP_EXM2_FILES) $(LIBS)
+ 
+$(OBJ_DIR)gsp_exm1.o : $(C_DIR)gsp_exm1.c $(H_FILES)
+	cc -c $(CCFLAGS) -I$(INCLUDE_DIR) $(C_DIR)gsp_exm1.c
+ 
+$(OBJ_DIR)gsp_exm2.o : $(C_DIR)gsp_exm2.c $(H_FILES)
+	cc -c $(CCFLAGS) -I$(INCLUDE_DIR) $(C_DIR)gsp_exm2.c
+ 
+$(OBJ_DIR)gsp_mai1.o : $(C_DIR)gsp_mai1.c $(H_FILES)
+	cc -c $(CCFLAGS) -I$(INCLUDE_DIR) $(C_DIR)gsp_mai1.c
+ 
+$(OBJ_DIR)gsp_mai2.o : $(C_DIR)gsp_mai2.c $(H_FILES)
+	cc -c $(CCFLAGS) -I$(INCLUDE_DIR) $(C_DIR)gsp_mai2.c
+ 
+$(OBJ_DIR)gspan_main.o : $(C_DIR)gspan_main.c $(H_FILES)
+	cc -c $(CCFLAGS) -I$(INCLUDE_DIR) $(C_DIR)gspan_main.c
+ 
+clean :
+	@for file in $(EXECUTABLES); do \
+		if [ -f $$file ] ; then \
+			rm $$file; \
+		fi ;\
+	done
+	@rm *.o

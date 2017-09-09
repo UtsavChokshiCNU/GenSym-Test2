@@ -1,0 +1,59 @@
+# Sample makefile for GSI programs.
+#   GSI Version 3.2.
+# Machine type: Intel NT 486/586
+ 
+# To create an executable that runs under Windows 95 or NT alone, set
+# TARGETOS to WIN95 or WINNT. When TARGETOS is BOTH, the program
+# will use DLLs that are available on both Windows 95 and NT.
+ 
+TARGETOS = BOTH
+!include <ntwin32.mak>
+ 
+C_DIR = 
+OBJ_DIR = 
+EXE_DIR = 
+H_DIR = 
+CCFLAGS = $(common) $(cflags) $(cvars)
+# When creating images to execute under Win32s, you should use
+# $(guiflags) for LINKFLAGS as well as the appropriate DEFAULT_LIBS below.
+# LINKFLAGS = $(guiflags)
+LINKFLAGS = $(conflags)
+LIB_DIR = 
+ 
+# When creating images to execute under Win32s, you should
+# use the DEFAULT_LIBS below that has winio.lib.
+# DEFAULT_LIBS = libgsi.lib libtcp.lib winio.lib
+DEFAULT_LIBS = libgsi.lib libtcp.lib
+LIBS = $(DEFAULT_LIBS) $(conlibs) $(guilibs) advapi32.lib wsock32.lib netapi32.lib
+ 
+H_FILES = $(H_DIR)gsi.h $(H_DIR)icp.h
+EXECUTABLES = $(EXE_DIR)filetest.exe $(EXE_DIR)typetest.exe $(EXE_DIR)skeleton.exe
+FILETEST_FILES = $(OBJ_DIR)filetest.obj $(OBJ_DIR)rpcfuncs.obj
+TYPETEST_FILES = $(OBJ_DIR)typetest.obj $(OBJ_DIR)gsi_main.obj
+SKELETON_FILES = $(OBJ_DIR)skeleton.obj $(OBJ_DIR)gsi_main.obj
+ 
+ALL : $(EXECUTABLES)
+ 
+$(EXE_DIR)filetest.exe : $(FILETEST_FILES)
+	$(link) -out:filetest.exe $(LINKFLAGS) $(FILETEST_FILES) $(LIBS)
+ 
+$(EXE_DIR)skeleton.exe : $(SKELETON_FILES)
+	$(link) -out:skeleton.exe $(LINKFLAGS) $(SKELETON_FILES) $(LIBS)
+ 
+$(EXE_DIR)typetest.exe : $(TYPETEST_FILES)
+	$(link) -out:typetest.exe $(LINKFLAGS) $(TYPETEST_FILES) $(LIBS)
+ 
+$(OBJ_DIR)filetest.obj : $(C_DIR)filetest.c $(H_FILES)
+	$(cc) -c $(CCFLAGS) $(C_DIR)filetest.c
+ 
+$(OBJ_DIR)typetest.obj : $(C_DIR)typetest.c $(H_FILES)
+	$(cc) -c $(CCFLAGS) $(C_DIR)typetest.c
+ 
+$(OBJ_DIR)rpcfuncs.obj : $(C_DIR)rpcfuncs.c $(H_FILES)
+	$(cc) -c $(CCFLAGS) $(C_DIR)rpcfuncs.c
+ 
+$(OBJ_DIR)skeleton.obj : $(C_DIR)skeleton.c $(H_FILES)
+	$(cc) -c $(CCFLAGS) $(C_DIR)skeleton.c
+ 
+$(OBJ_DIR)gsi_main.obj : $(C_DIR)gsi_main.c $(H_FILES)
+	$(cc) -c $(CCFLAGS) $(C_DIR)gsi_main.c

@@ -1,0 +1,49 @@
+# Sample makefile for GSPAN programs.
+#   GSPAN Version 3.1.
+# Machine type: Intel NT 486/586
+ 
+# To create an executable that runs under Windows 95 or NT alone, set
+# TARGETOS to WIN95 or WINNT. When TARGETOS is BOTH, the program
+# will use DLLs that are available on both Windows 95 and NT.
+ 
+TARGETOS = BOTH
+!include <ntwin32.mak>
+ 
+C_DIR = 
+OBJ_DIR = 
+EXE_DIR = 
+H_DIR = 
+CCFLAGS = $(common) $(cflags) $(cvars)
+LINKFLAGS = $(conflags)
+LIB_DIR = 
+ 
+DEFAULT_LIBS = libgspan.lib libtcp.lib
+LIBS = $(DEFAULT_LIBS) $(conlibs) $(guilibs) advapi32.lib wsock32.lib netapi32.lib
+ 
+H_FILES = $(H_DIR)gspan.h $(H_DIR)icp.h $(H_DIR)xs_sys.h
+EXECUTABLES= $(EXE_DIR)gsp_exm1.exe $(EXE_DIR)gsp_exm2.exe
+GSP_EXM1_FILES = $(OBJ_DIR)gsp_exm1.obj $(OBJ_DIR)gsp_mai1.obj $(OBJ_DIR)gspan_main.obj
+GSP_EXM2_FILES = $(OBJ_DIR)gsp_exm2.obj $(OBJ_DIR)gsp_mai2.obj $(OBJ_DIR)gspan_main.obj
+ 
+ALL : $(EXECUTABLES)
+ 
+$(EXE_DIR)gsp_exm1.exe : $(GSP_EXM1_FILES)
+	$(link) -out:gsp_exm1.exe $(LINKFLAGS) $(GSP_EXM1_FILES) $(LIBS)
+ 
+$(EXE_DIR)gsp_exm2.exe : $(GSP_EXM2_FILES)
+	$(link) -out:gsp_exm2.exe $(LINKFLAGS) $(GSP_EXM2_FILES) $(LIBS)
+ 
+$(OBJ_DIR)gsp_exm1.obj : $(C_DIR)gsp_exm1.c $(H_FILES)
+	$(cc) -c $(CCFLAGS) $(C_DIR)gsp_exm1.c
+ 
+$(OBJ_DIR)gsp_exm2.obj : $(C_DIR)gsp_exm2.c $(H_FILES)
+	$(cc) -c $(CCFLAGS) $(C_DIR)gsp_exm2.c
+ 
+$(OBJ_DIR)gsp_mai1.obj : $(C_DIR)gsp_mai1.c $(H_FILES)
+	$(cc) -c $(CCFLAGS) $(C_DIR)gsp_mai1.c
+ 
+$(OBJ_DIR)gsp_mai2.obj : $(C_DIR)gsp_mai2.c $(H_FILES)
+	$(cc) -c $(CCFLAGS) $(C_DIR)gsp_mai2.c
+ 
+$(OBJ_DIR)gspan_main.obj : $(C_DIR)gspan_main.c $(H_FILES)
+	$(cc) -c $(CCFLAGS) $(C_DIR)gspan_main.c

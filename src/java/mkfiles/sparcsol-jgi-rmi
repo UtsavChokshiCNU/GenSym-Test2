@@ -1,0 +1,59 @@
+# Sample makefile for the RMI classes
+#   GSI Version 5.0
+#   JDK 1.1
+# Machine type: IntelNT
+
+#
+# JAVA_HOME should be set!
+# SPIN_ID should be set!
+# SRCBOX should be set!
+#
+
+BT_JAVA	= ${SRCBOX}/java
+RMIC	= ${JAVA_HOME}/bin/rmic
+PP	= com.gensym.jgi.rmi
+
+RMI_DIR	= ${BT_JAVA}/com/gensym/jgi/rmi
+
+RMIC_FLAGS	= -d ${BT_JAVA}
+
+BROKER		= G2RMIAccessBrokerImpl
+G2CLIENT	= G2RMIClientImpl
+G2SERVER	= G2RMIServerImpl
+G2JAVASTUBCTL   = G2RMIJavaStubControllerImpl
+
+RMI_STUBS	= ${RMI_DIR}/${BROKER}_Stub.class \
+		  ${RMI_DIR}/${G2CLIENT}_Stub.class \
+		  ${RMI_DIR}/${G2SERVER}_Stub.class \
+                  ${RMI_DIR}/${G2JAVASTUBCTL}_Stub.class \
+
+RMI_SKELS	= ${RMI_DIR}/${BROKER}_Skel.class \
+		  ${RMI_DIR}/${G2CLIENT}_Skel.class \
+		  ${RMI_DIR}/${G2SERVER}_Skel.class \
+                  ${RMI_DIR}/${G2JAVASTUBCTL}_Skel.class \
+
+all: ${RMI_STUBS} ${RMI_SKELS}
+
+${RMI_DIR}/${BROKER}_Stub.class: ${RMI_DIR}/${BROKER}.class
+	${RMIC} ${RMIC_FLAGS} ${PP}.${BROKER}
+
+${RMI_DIR}/${BROKER}_Skel.class: ${RMI_DIR}/${BROKER}.class
+	${RMIC} ${RMIC_FLAGS} ${PP}.${BROKER}
+
+${RMI_DIR}/${G2CLIENT}_Stub.class: ${RMI_DIR}/${G2CLIENT}.class
+	${RMIC} ${RMIC_FLAGS} ${PP}.${G2CLIENT}
+
+${RMI_DIR}/${G2CLIENT}_Skel.class: ${RMI_DIR}/${G2CLIENT}.class
+	${RMIC} ${RMIC_FLAGS} ${PP}.${G2CLIENT}
+
+${RMI_DIR}/${G2SERVER}_Stub.class: ${RMI_DIR}/${G2SERVER}.class
+	${RMIC} ${RMIC_FLAGS} ${PP}.${G2SERVER}
+
+${RMI_DIR}/${G2SERVER}_Skel.class: ${RMI_DIR}/${G2SERVER}.class
+	${RMIC} ${RMIC_FLAGS} ${PP}.${G2SERVER}
+
+${RMI_DIR}/${G2JAVASTUBCTL}_Stub.class: ${RMI_DIR}/${G2JAVASTUBCTL}.class
+	${RMIC} ${RMIC_FLAGS} ${PP}.${G2JAVASTUBCTL}
+
+${RMI_DIR}/${G2JAVASTUBCTL}_Skel.class: ${RMI_DIR}/${G2JAVASTUBCTL}.class
+	${RMIC} ${RMIC_FLAGS} ${PP}.${G2JAVASTUBCTL}

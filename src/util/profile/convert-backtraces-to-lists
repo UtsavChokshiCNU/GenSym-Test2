@@ -1,0 +1,13 @@
+#! /bin/csh -f
+grep -v 'Network Input/Output Trace'                          > /tmp/tmp1
+grep -v ':'                                         /tmp/tmp1 > /tmp/tmp2
+grep -v 'Function backtrace counts'                 /tmp/tmp2 > /tmp/tmp1
+grep -v '^ *[0-9][0-9]* [0-9a-zA-Z_][0-9a-zA-Z_]*$' /tmp/tmp1 > /tmp/tmp2
+sed -e 's/ /| |/g'                                  /tmp/tmp2 > /tmp/tmp1
+cat /tmp/tmp1 | add-postfix '|'                               > /tmp/tmp2
+sed -e 's/^|//g'                                    /tmp/tmp2 > /tmp/tmp1
+echo '(('
+sed -e 's/^$/)(/g'                                              /tmp/tmp1
+echo '))'
+rm /tmp/tmp1
+rm /tmp/tmp2

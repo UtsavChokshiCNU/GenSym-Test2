@@ -1,0 +1,11 @@
+#!/bin/csh -f
+
+# optimized:
+if ($?LD_LIBRARY_PATH) then
+  setenv LD_LIBRARY_PATH $DSTBOX/java/o-mt:$LD_LIBRARY_PATH
+else
+  setenv LD_LIBRARY_PATH $DSTBOX/java/o-mt
+endif
+
+
+java -classpath $SRCBOX/java com.gensym.shell.Shell

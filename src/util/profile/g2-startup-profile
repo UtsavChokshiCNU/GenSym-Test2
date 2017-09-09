@@ -1,0 +1,64 @@
+#! /bin/csh -f
+if ( $#argv == 0 ) then
+  echo "Usage: g2-startup-profile {g2, tw, or gsi command line}"
+  exit 1
+endif
+
+if (-e trace.done) rm trace.done
+
+cat - <<XXX >! trace.in
+
+set output "trace.out"
+start tracing backtrace
+continue
+
+stop tracing
+write backtrace summary
+### More roots can be added at the end of the line, if desired.
+set backtrace roots "main"
+write backtrace tree
+close output
+
+set output "trace.done"
+close output
+
+continue
+XXX
+
+setenv G2_TRACE_CONTROL_FILE "trace.in"
+
+echo "Starting G2 in the background ..."
+
+ # We create a file $pidfile that has a unique name and that serves both
+ # as an indicator of a process's existence and as means of storing its pid.
+
+set pidfile="/tmp/$$.pid"     
+touch $pidfile         # Create it if it doesn't exist (which it shouldn't).
+
+pid-exec $pidfile $*
+
+echo " "
+echo "Type <return> to stop tracing and generate a report in trace.out"
+echo "  (An interval of one to five minutes is recommended)"
+set answer = $<
+
+if ( ! -f $pidfile ) exit 0
+set childpid=`cat $pidfile`    # $pidfile contains the pid of $cmd
+kill -USR1 $childpid
+
+echo " "
+echo "Waiting for the report..."
+echo " "
+wait_some_more:
+sleep 5
+if (! -e trace.done) goto wait_some_more
+rm trace.done
+
+if (! -f $pidfile ) exit 0
+echo " "
+echo "Kill the G2? (yes/no) "
+set answer = $<
+if (! -f $pidfile ) exit 0
+if ("$answer" == "yes") kill $childpid
+
+

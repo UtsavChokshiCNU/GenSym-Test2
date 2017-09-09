@@ -1,0 +1,325 @@
+//Telewindows2 setup file for InstallShield3
+//  start at function main
+
+declare
+
+// Function declarations.
+prototype main();
+
+prototype CustomT2CreateRequiredComponents(STRING, BYREF STRING, BYREF LIST,
+                                           BYREF LIST);
+prototype CustomT2CreateOptionalComponents(STRING, BYREF STRING, BYREF LIST,
+                                           BYREF LIST);
+prototype CustomT2RequirementsStep(NUMBER, STRING);
+prototype CustomT2ProgramFolderStep(STRING, STRING, STRING, STRING);
+prototype CustomT2EnvVarStep(BOOL, BOOL, STRING);
+//prototype CustomG2StudioWaitSetupDoneStep (NUMBER);
+
+#define COMPANY_DIR           "\\gensym"
+#define PRODUCT_DIR           "G2Studio"
+
+#define ACTIVEX_COMPONENT "ActiveX Toolkit"
+#define DOC_COMPONENT     "G2Studio Documentation"
+
+// Constant declarations needed for gensym common dialogs
+#define PRODUCT_NAME          "G2Studio"
+#define PRODUCT_VERSION       "1.0 Beta Rev 0"
+#define HOME_ENV_VARIABLE     "G2STUDIO_HOME"
+#define MAIN_APP_NAME         "G2Studio"
+#define MAIN_APP_SUBDIR       "bin"
+#define MAIN_APP_FILE         "g2studio.bat"
+#define MAIN_APP_PARAMETERS   ""
+#define MAIN_APP_ICON         "gensym_logo.ico"
+#define RAW_PREFERENCES_FILE   "rawpref.gen"
+#define PREFERENCES_DIR        "classes"
+#define PREFERENCES_FILE       "g2studiopreferences.txt"
+
+#define CORE_FILE_SUBDIR "classes"
+#define CORE_FILE        "g2studio.jar"
+
+// The numbering of steps determinines there order and must have no gaps.
+#define WELCOME_STEP               1
+#define ALL_USERS_STEP             2
+#define OLD_VERSION_STEP           3
+#define GET_TARGET_DIR_STEP        4
+#define SELECT_PROGRAM_FOLDER_STEP 5
+#define CONFIRM_STEP               6
+#define GET_PROPS_OPTION_STEP      7
+#define SETUP_TARGET_STEP          8
+#define COPY_FILES_STEP            9
+#define PROGRAM_FOLDER_STEP       10
+#define HOME_ENV_VAR_STEP         11
+#define REQUIREMENTS_STEP         12
+
+BOOL SunJreInstalled;
+//globalAllUsersInstall = FALSE;
+
+// Include this after the last define statement to use the gensym dialogs
+#include "gensym.h"
+
+// This include this to use the system dialog boxes and the gensym dialogs.
+#include "sddialog.h"
+
+program
+manditoryLabel:
+  // For slow systems disable the main window until we set the title
+  Disable( BACKGROUND );
+  main();
+exit;
+
+#include "gensym.rul"
+
+function main()
+  BOOL dontCare;
+  STRING targetDir;
+  STRING setupDir;
+  STRING componentDir;
+  NUMBER nextStep;
+  NUMBER currentStep;
+  NUMBER prevStep;
+  NUMBER dlgDirection;
+  STRING reqComponents;
+  LIST reqSubDirs;
+  LIST reqIncludeSubDirs;
+  STRING optComponents;
+  LIST optSubDirs;
+  LIST optIncludeSubDirs;
+  STRING oldDir;
+  STRING oldUninstallApp;
+  STRING oldUninstallParameters;
+  STRING uninstallLogFile;
+  STRING programFolder;
+  NUMBER otherVersionOption;
+  NUMBER propertiesOption;
+  STRING userHomeDir;
+  BOOL displayReadme;
+  STRING firstPart;
+  STRING finalMessage;
+begin
+
+  // Set up the installation screen.
+  SetupScreen();
+
+  InitializeGlobals();
+
+  if (!globalIsWinNT) && (!globalIsWin95) then
+    SdFinish("", "This product is for 32 bit Intel Windows platforms only.",
+      "Setup will now end.", "", "", dontCare, dontCare);
+    abort;
+  endif;
+
+  // InstallShield uses SRCDIR a parameter to certain functions
+  // so save the location of the setup directory now
+  setupDir = SRCDIR;
+  componentDir = setupDir ^ COMPONENT_DIR;
+
+  // set defaults
+  CustomT2CreateRequiredComponents(componentDir, reqComponents, reqSubDirs,
+    reqIncludeSubDirs);
+
+  targetDir = TARGETDISK ^ COMPANY_DIR ^ PRODUCT_DIR;
+  programFolder = PRODUCT_NAME;
+
+  nextStep = WELCOME_STEP;
+  currentStep = nextStep;
+  while nextStep != EXIT_STEP
+    prevStep = currentStep;
+    currentStep = nextStep;
+
+    if currentStep < prevStep then
+      dlgDirection = BACKWARD;
+    else
+      dlgDirection = FOREWARD;
+    endif;
+
+    switch (currentStep)
+    case WELCOME_STEP:
+      nextStep = WelcomeStep();
+    case ALL_USERS_STEP:
+      globalAllUsersInstall = FALSE;
+      //nextStep = AllUsersStep(dlgDirection, globalAllUsersInstall);
+      nextStep = ALL_USERS_STEP + 1;
+    case OLD_VERSION_STEP:
+      nextStep = OldVersionStep(dlgDirection, otherVersionOption, oldDir,
+                 oldUninstallApp, oldUninstallParameters);
+    case GET_TARGET_DIR_STEP:
+      nextStep = GetTargetDirStep(dlgDirection, targetDir, otherVersionOption);
+    case SELECT_PROGRAM_FOLDER_STEP:
+      nextStep = SelectProgramFolderStep(dlgDirection, programFolder);
+    case GET_PROPS_OPTION_STEP:
+      nextStep = GetPropertiesOptionStep(dlgDirection, PROPERTIES_FILE,
+                 propertiesOption, userHomeDir);
+    case CONFIRM_STEP:
+      nextStep = JavaProductConfirmStep2(dlgDirection, otherVersionOption,
+                 reqComponents, optComponents, targetDir, programFolder,
+                 propertiesOption);
+    case SETUP_TARGET_STEP:
+      nextStep = SetupTargetStep(targetDir, otherVersionOption, oldDir,
+                 oldUninstallApp, oldUninstallParameters, uninstallLogFile);
+    case COPY_FILES_STEP:
+      InstallPropertiesStep(setupDir, RAW_PREFERENCES_FILE,
+	                    targetDir, PREFERENCES_DIR, PREFERENCES_FILE, ADD_USER_PROPS,
+                            userHomeDir);
+      nextStep = CopyFilesStep(componentDir, targetDir,
+                 reqComponents, reqSubDirs, reqIncludeSubDirs);
+    case PROGRAM_FOLDER_STEP:
+      nextStep = ProgramFolderStep(targetDir, programFolder, "", uninstallLogFile);
+    case HOME_ENV_VAR_STEP:
+      nextStep = HomeEnvVarStep(targetDir);
+    case REQUIREMENTS_STEP:
+      nextStep = REQUIREMENTS_STEP + 1;//CustomT2RequirementsStep(dlgDirection, optComponents);
+    default:
+      nextStep = EXIT_STEP;
+    endswitch;
+  endwhile;
+
+  LoggingStep(targetDir, "");
+
+  if ComponentIsItemSelected(optComponents, ACTIVEX_COMPONENT) then
+    if globalRebootNeeded then
+      firstPart = "After updating the environment, finish";
+    else
+      firstPart = "Finish";
+    endif;
+
+    finalMessage =  firstPart + " installing the " +
+                    ACTIVEX_COMPONENT + " by selecting\n" +
+                    "\"Programs->G2Studio->" +
+                    "ActiveX->Install Controls\"\nfrom the Start menu. " +
+                    "See the ReadMe file for more information.\n" +
+                    "Click Finish to complete Setup.";
+  else
+    // The is display the default message.
+    finalMessage = "";
+  endif;
+
+  // If reboot is selected then this function will reboot the system instead
+  // of returning.
+  ReadMeOrRebootWithMessageStep(displayReadme, finalMessage);
+
+  if displayReadme then
+    DisplayHtmlFile(targetDir, "");
+  endif;
+end;
+
+/*
+ * Function: CustomT2CreateRequiredComponents
+ * Purpose: Create the component list for T2
+ */
+function CustomT2CreateRequiredComponents(sourceDir, components, subDirs,
+                                          includeSubDirs)
+  STRING subDir;
+  NUMBER size;
+begin
+  subDirs = ListCreate(STRINGLIST);
+  includeSubDirs = ListCreate(NUMBERLIST);
+
+  // Create the components list. Select everything.
+  components = PRODUCT_NAME + " required";
+
+  // This component is just what is in the top level direcory.
+  size = GetComponentSizeWithoutSubDirs(sourceDir);
+  ComponentAddItem(components, "ReadMe", size, TRUE);
+  ListAddString(subDirs, "", AFTER);
+  ListAddItem(includeSubDirs, FALSE, AFTER);
+
+  subDir = "bin";
+  size = GetComponentSize(sourceDir ^ subDir);
+  ComponentAddItem(components, "Native DLL and Batch Files", size, TRUE);
+  ListAddString(subDirs, subDir, AFTER);
+  ListAddItem(includeSubDirs, TRUE, AFTER);
+
+  subDir = "classes";
+  size = GetComponentSize(sourceDir ^ subDir);
+  ComponentAddItem(components, "Java Classes and Demos", size, TRUE);
+  ListAddString(subDirs, subDir, AFTER);
+  ListAddItem(includeSubDirs, TRUE, AFTER);
+
+  subDir = "doc";
+  size = GetComponentSize(sourceDir ^ subDir);
+  ComponentAddItem(components, DOC_COMPONENT, size, TRUE);
+  ListAddString(subDirs, subDir, AFTER);
+  ListAddItem(includeSubDirs, TRUE, AFTER);
+
+  subDir = "kbs";
+  size = GetComponentSize(sourceDir ^ subDir);
+  ComponentAddItem(components, "KB's", size, TRUE);
+  ListAddString(subDirs, subDir, AFTER);
+  ListAddItem(includeSubDirs, TRUE, AFTER);
+
+
+end;
+
+/*
+ * Function: CustomT2CreateOptionalComponents
+ * Purpose: Create the component list for T2
+ */
+function CustomT2CreateOptionalComponents(sourceDir, components, subDirs,
+                                          includeSubDirs)
+  STRING subDir;
+  NUMBER size;
+begin
+  subDirs = ListCreate(STRINGLIST);
+  includeSubDirs = ListCreate(NUMBERLIST);
+
+  // Create the components list. Select everything by default.
+  components = PRODUCT_NAME + " optional";
+
+  subDir = "kbs";
+  size = GetComponentSize(sourceDir ^ subDir);
+  ComponentAddItem(components, "KB's", size, TRUE);
+  ListAddString(subDirs, subDir, AFTER);
+  ListAddItem(includeSubDirs, TRUE, AFTER);
+
+  // The doc is not included in the web install.
+  subDir = "docs";
+  if ExistsDir(sourceDir ^ subDir) = EXISTS then
+    size = GetComponentSize(sourceDir ^ subDir);
+    ComponentAddItem(components, DOC_COMPONENT, size, TRUE);
+    ListAddString(subDirs, subDir, AFTER);
+    ListAddItem(includeSubDirs, TRUE, AFTER);
+  endif;
+
+  subDir = "ActiveX";
+  size = GetComponentSize(sourceDir ^ subDir);
+  ComponentAddItem(components, ACTIVEX_COMPONENT, size, TRUE);
+  ListAddString(subDirs, subDir, AFTER);
+  ListAddItem(includeSubDirs, TRUE, AFTER);
+end;
+
+/*
+ * Function: CustomT2RequirementsStep
+ * Purpose: This inform the user of this products requirments and set
+ *           some global lines to log missing requirements later
+ */
+function CustomT2RequirementsStep(dlgDirection, optComponents)
+  STRING jreVersion, szCmd, szCmdline;
+  BOOL jreInstall, noInstall;
+begin
+  if GetSunJREVersion(jreVersion) && (jreVersion >= "1.3") then
+	SunJreInstalled = TRUE;
+	return REQUIREMENTS_STEP + 1;
+    endif;
+
+  if dlgDirection = BACKWARD then
+    return REQUIREMENTS_STEP - 1;
+  endif;
+
+  Disable(BACKBUTTON);
+
+  AskOptions(EXCLUSIVE, 
+	"Do you want to install the following software now or later?",
+	"JRE 1.3", jreInstall, "Install it later", noInstall);
+
+  if jreInstall then
+	szCmd = ".\\jre-install\\SETUP.EXE";
+	szCmdline = "";
+	LaunchAppAndWait(szCmd, szCmdline, WAIT);
+  endif;
+
+  return REQUIREMENTS_STEP + 1;
+end;
+
+
+//This last to use the system dialog boxes and the gensym dialogs.
+#include "Sddialog.rul"

@@ -1,0 +1,235 @@
+<?xml version="1.0"?>
+<!-- Build file for the project nolstudio -->
+<project name="gensym" default="makeJar" basedir="." xmlns:jacoco="antlib:org.jacoco.ant">
+
+  <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
+    <classpath path="${basedir}/../java/jacoco-0.7.9/lib/jacocoant.jar" />
+  </taskdef>
+  
+  <!-- The default JVM on the build agents is Java 1.6, yet unit tests
+       use Java 1.8 features. -->
+  <condition property="java-exe-for-tests" value="C:\program files\java\jdk1.8.0_92\bin\java.exe">
+    <os family="windows" />
+  </condition>
+  <condition property="java-exe-for-tests" value="java">
+    <os family="unix" />
+  </condition>
+  <condition property="javac-exe-for-tests" value="C:\program files\java\jdk1.8.0_92\bin\javac.exe">
+    <os family="windows" />
+  </condition>
+  <condition property="javac-exe-for-tests" value="javac">
+    <os family="unix" />
+  </condition>
+
+<!-- Property file to read various properties -->
+<property name="lib.dir"         value="lib"/>
+<property file="${basedir}/build.properties"/>
+<property file="${basedir}/threshold.properties"/>
+
+<path id="compile.classpath">
+	<fileset dir="${compile.classpath}">
+		<include name="core.jar"/>
+		<include name="javalink.jar"/>
+	</fileset>
+</path>
+<path id="testcompile.classpath">
+	<fileset dir="${compile.classpath}">
+		<include name="core.jar"/>
+		<include name="javalink.jar"/>
+	</fileset>
+	<fileset dir="${basedir}/lib" includes="**/*.jar"/>
+	<pathelement location="${out.classes}" />
+	<pathelement location="${testout.classes}" /> 
+</path>
+<path id="classes.classpath">
+	<pathelement location="${out.classes}" />
+</path>
+<path id="test.classes.classpath">
+	<pathelement location="${testout.classes}" />
+</path>
+<!-- Set the test classpath -->
+<path id="test.classpath">
+	<path refid="compile.classpath"/>
+	<path refid="classes.classpath"/>
+	<path refid="testcompile.classpath"/>
+	<pathelement location="${testout.classes}"/>
+</path>
+    
+<!-- Clean target -->
+<target name="clean">
+	<delete dir="${out.dir}"/>
+	<delete dir="${testout.dir}"/>
+</target>
+
+<!-- Compilation target -->		
+<!-- Compilation may fails if classes such as G2/src/java/com/gensym/classes/IntegerArray.jas is not compiled -->
+
+<target name="compile">
+	<delete dir="${out.classes}"/>
+	<mkdir dir="${out.classes}"/>
+	<!-- jgdidemo is needed when compile but no jar file contains them, copy them here. -->
+	<!-- If you have a better way doing this,go ahead. -->
+	<mkdir dir="${jgidemo.dst.dir}"/>
+	<copy todir="${jgidemo.dst.dir}">
+		<fileset dir="${jgidemo.src.dir}"/>
+	</copy>
+	<javac srcdir="${basedir}" verbose="yes" destdir="${out.classes}" classpathref="compile.classpath" debug="off" includeantruntime="false">
+		<include name="com/gensym/nols/data/function/**"/>
+		<include name="com/gensym/nols/deploy/**"/>
+		<include name="com/gensym/nols/main/NeurOnLine.java"/>
+		<include name="com/gensym/nols/deployutil/ActiveXRegisterManager.java"/>
+		<include name="com/gensym/nols/data/VersionManager.java"/>
+		<include name="com/gensym/nols/data/VersionManagerForOnlineProcessor.java"/>
+		<include name="com/gensym/nols/data/VersionManagerForOnlineOptimizer.java"/>
+		<include name="com/gensym/nols/Addition.java"/>
+	</javac>
+	<!-- copied jgdidemo directory is useless,remove them. -->
+	<delete dir="${jgidemo.dst.parentdir}"/>
+</target>
+
+<target name="copy-resources">
+  <copy todir="${out.classes}/com/gensym/nols/deploy">
+    <fileset dir="${basedir}/com/gensym/nols/deploy/"/>
+    <globmapper from="*.gif" to="*.gif"/>
+  </copy>
+  <copy todir="${out.classes}/com/gensym/nols/deployutil">
+    <fileset dir="${basedir}/com/gensym/nols/deployutil/">
+      <exclude name="**/*.java"/>
+    </fileset>
+  </copy>
+  <copy todir="${out.classes}/com/gensym/nols/dlg">
+    <fileset dir="${basedir}/com/gensym/nols/dlg/">
+      <exclude name="**/*.java"/>
+    </fileset>
+  </copy>
+  <copy todir="${out.classes}/com/gensym/nols/main">
+    <fileset dir="${basedir}/com/gensym/nols/main/">
+      <exclude name="**/*.java"/>
+    </fileset>
+  </copy>
+  <copy todir="${out.classes}/com/gensym/nols/wksp">
+    <fileset dir="${basedir}/com/gensym/nols/wksp/">
+      <exclude name="**/*.java"/>
+    </fileset>
+  </copy>
+</target>
+
+<!-- Make a jar file -->
+<target name="makeJar" depends="compile">
+	<delete dir="${out.dir}/Jar"/>
+	<mkdir dir="${out.dir}/Jar"/>
+	<antcall target="copy-resources" />
+	<jar jarfile="${out.dir}/Jar/nols.jar" basedir="${out.classes}" />
+	<jar jarfile="${out.dir}/Jar/NolStudioData.jar" basedir="${out.classes}">
+		<exclude name="com/gensym/DEBUG.class"/>
+		<exclude name="com/gensym/nols/Addition.class"/>
+		<exclude name="com/gensym/nols/deploy/OnlineOptimizerAPIG2.class"/>
+		<exclude name="com/gensym/nols/deploy/OnlineProcessorAPIG2.class"/>
+		<exclude name="com/gensym/nols/main/NeurOnLine.class"/>
+		<exclude name="com/gensym/nols/sampletest/"/>
+		<exclude name="com/gensym/classes/"/>
+		<exclude name="com/gensym/math/"/>
+	</jar>
+	<jar jarfile="${out.dir}/Jar/NolStudioDeploy.jar" basedir="${out.classes}">
+		<include name="com/gensym/nols/deploy/"/>
+	</jar>
+	<jar jarfile="${out.dir}/Jar/NolStudioGUI.jar" basedir="${out.classes}">
+		<include name="com/gensym/nols/main/NeurOnLine.class"/>
+	</jar>
+	<jar jarfile="${out.dir}/Jar/NolStudioMath.jar" basedir="${out.classes}">
+		<include name="com/gensym/math/"/>
+		<include name="com/gensym/DEBUG.class"/>
+	</jar>
+</target>
+
+<!-- target to run checkstyle and fails if there is any error  -->
+<target name="check-style" description="Prepare the Checkstyle report">
+	<delete dir="${checkstyle.report.dir}" /> 
+	<taskdef resource="checkstyletask.properties"> 
+		<classpath>
+			<path location="${lib.dir}/checkstyle-all-4.2.jar"/>
+		</classpath>
+	</taskdef> 
+	<mkdir dir="${checkstyle.report.dir}" description="Be sure that Check style report folder exists"/>
+	<checkstyle maxerrors="${checkstyle.error.threshold}"
+		failOnViolation="true"
+		failureProperty="checkstyle.fail"
+		config="${checkstyle.config}"
+		description="Run the Checkstyle">
+		<fileset dir="${java.src.dir}" > 
+			<include name="com/gensym/nols/data/function/**"/>
+			<include name="com/gensym/nols/deploy/**"/>
+			<include name="com/gensym/nols/main/NeurOnLine.java"/>
+			<include name="com/gensym/nols/deployutil/ActiveXRegisterManager.java"/>
+			<include name="com/gensym/nols/data/VersionManager.java"/>
+			<include name="com/gensym/nols/data/VersionManagerForOnlineProcessor.java"/>
+			<include name="com/gensym/nols/data/VersionManagerForOnlineOptimizer.java"/>
+			<include name="com/gensym/nols/Addition.java"/>
+		</fileset>
+		<formatter type="xml" toFile="${checkstyle.report.dir}/checkstyle.xml"/>
+	</checkstyle>
+	<style basedir="${checkstyle.report.dir}"
+		destdir="${checkstyle.report.dir}"
+		includes="checkstyle.xml"
+		style="${checkstyle.report.xsl}">
+		<param name="output.dir" expression="${checkstyle.report.dir}"/>
+	</style>
+</target>
+
+<!--  target to initialize findbugs -->
+<target name="findbugs-init" >
+	<taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask"> 
+		<classpath>
+			<path location ="${basedir}/lib/findbugs/lib/findbugs.jar"/>
+			<path location ="${basedir}/lib/findbugs/lib/findbugs-ant.jar"/>
+			<path location ="${basedir}/lib/findbugs/lib/bcel.jar"/>
+		</classpath> 
+	</taskdef>
+</target>
+<!--  target to run findbugs -->
+<target name="check-findbugs" depends="findbugs-init,makeJar" > 
+	<delete dir="${findbugs.out.dir}" />
+	<mkdir dir="${findbugs.out.dir}" />
+	<findbugs home="${findbugs.home}" output="xml" outputFile="${findbugs.out.dir}/bcel-fb.xml" jvmargs="-Xmx1024M">
+		<class location="${out.dir}/Jar/nols.jar" />  
+	</findbugs>
+</target>  
+
+<target name="check-coverage" depends="test" description="Run the Test Cases, generate the Coverage Report"> 
+  <jacoco:report>
+    <executiondata>
+      <file file="jacoco.exec" />
+    </executiondata>
+    <structure name="NOLStudio">
+      <classfiles>
+	<fileset dir="${out.classes}" />
+      </classfiles>
+    </structure>
+    <html destdir="${coverage.dir}/coverage" />
+  </jacoco:report>
+</target>
+
+<!-- Target to run the unit tests --> 
+<target name="test" depends="compile">
+  <delete dir="${testout.classes}"/> 
+  <mkdir dir="${testout.classes}"/>
+  <mkdir dir="${coverage.dir}" />
+  <antcall target="copy-resources" />
+  <javac srcdir="${java.testsrc.dir}" destdir="${testout.classes}" classpathref="testcompile.classpath" includes="**/*.java" encoding="UTF-8" debug="yes" debuglevel="source,lines,vars" fork="yes" executable="${javac-exe-for-tests}" includeantruntime="false" />
+
+  <jacoco:coverage>
+    <junit printsummary="yes" fork="yes" jvm="${java-exe-for-tests}" maxmemory="512000000">
+      <classpath>
+	<path refid="test.classpath"/>
+	<pathelement location="${testout.classes}"/>
+      </classpath>
+      <formatter type="xml"/>
+      <batchtest fork="yes" todir="${coverage.dir}">
+	<fileset dir="${java.testsrc.dir}">
+	  <include name="**/*Test.java" />
+	</fileset>
+      </batchtest>
+    </junit>
+  </jacoco:coverage>
+</target>
+</project>

@@ -1,0 +1,105 @@
+# Makefile for JGI Shareable Object Library
+# Machine type: Alpha NT 4.0
+
+#   This makefile is to be run in the object directory with a command
+# such as "nmake -f %SRCBOX%\java\mkfiles\<platform>-jgilib-o".
+# The following environment variables must be set.
+#     JAVA_HOME: needed for jdk jni include files
+#     SRCBOX:    needed for .c and .h files
+#     DSTBOX:    path for emitted objects and libraries
+#     GSIBOX:    needed for gsi libraries
+# The following files are required, which are created by javah.
+#     $(H_DIR)/com_gensym_jgi_JGInterface.h
+#     $(H_DIR)/com_gensym_jgi_GsiLoopThread.h
+
+#------------------------------------------------
+
+# The following is commented out for now until we understand why it
+# is absent from intelnt-jgi-o.
+#include <ntwin32.mak>
+cc = cl
+link = link
+
+#------------------------------------------------
+# Variables
+#-----------------------
+# Directory variables
+
+C_DIR      = $(SRCBOX)\java\c
+H_DIR      = $(SRCBOX)\java\include
+EXE_DIR    = ..\lib
+
+#-----------------------
+# Compilation flags
+
+CDEBUG_FLAGS  = -Od -Zi
+C_FLAGS       = $(cflags) $(CDEBUG_FLAGS) -DWIN32 -D_WIN32
+INCLUDE_FLAGS = -I$(JAVA_HOME)\include -I$(JAVA_HOME)\include\win32 -I$(H_DIR)
+CCFLAGS       = /nologo -DNEW_CLASS_MAPPING $(C_FLAGS) $(cvars) $(INCLUDE_FLAGS)
+
+#-----------------------
+# Link flags
+
+LDEBUGFLAGS = -debug:full -debugtype:cv	
+LINKFLAGS = /DLL /nodefaultlib:"libc.lib" $(LDEBUGFLAGS)
+
+#-----------------------
+# Library variables
+
+WINLIBS =  libcmt.lib netapi32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib 
+
+GSI_LIBS = $(GSIBOX)\libgsi.lib $(GSIBOX)\libtcp.lib $(GSIBOX)\librtl.lib
+
+LIBS = $(WINLIBS) $(GSI_LIBS) $(SRCBOX)\specific\$(MACHINE)\spromeps.lib
+
+#-----------------------
+# File variables
+
+H_FILES = $(H_DIR)\gsi_main.h $(H_DIR)\gsi_misc.h $(H_DIR)\id.h \
+ $(H_DIR)\jgi_gsi_options.h $(H_DIR)\jgi_locks_generate.h \
+ $(H_DIR)\jgi_info.h $(H_DIR)\jni_gi.h \
+ $(H_DIR)\com_gensym_jgi_JGInterface.h $(H_DIR)\com_gensym_jgi_GsiLoopThread.h
+	  
+O_FILES =  jni_gi.obj gsi_misc.obj \
+ jni_gi_gsiconv.obj jni_gi_javaconv.obj \
+ jgi_locks.obj jni_gi_utils.obj \
+ jni_gi_init.obj id.obj $(DSTBOX)\ext\o\nsleep.obj
+
+#------------------------------------------------
+# Targets
+
+$(EXE_DIR)\JgiInterface.dll : $(O_FILES) $(GSI_LIBS)
+	$(link) -out:$(EXE_DIR)\JgiInterface.dll $(LINKFLAGS) $(O_FILES) $(LIBS)
+
+jgi_locks.obj : $(C_DIR)\jgi_locks.c $(H_FILES)
+	$(cc) -c $(CCFLAGS) $(C_DIR)\jgi_locks.c
+
+jni_gi.obj : $(C_DIR)\jni_gi.c $(H_FILES)
+	$(cc) -c $(CCFLAGS) $(C_DIR)\jni_gi.c
+ 
+jni_gi_utils.obj : $(C_DIR)\jni_gi_utils.c $(H_FILES)
+	$(cc) -c $(CCFLAGS) $(C_DIR)\jni_gi_utils.c
+
+jni_gi_init.obj : $(C_DIR)\jni_gi_init.c $(H_FILES)
+	$(cc) -c $(CCFLAGS) $(C_DIR)\jni_gi_init.c
+
+jni_gi_gsiconv.obj : $(C_DIR)\jni_gi_gsiconv.c $(H_FILES)
+	$(cc) -c $(CCFLAGS) $(C_DIR)\jni_gi_gsiconv.c
+
+jni_gi_javaconv.obj : $(C_DIR)\jni_gi_javaconv.c $(H_FILES)
+	$(cc) -c $(CCFLAGS) $(C_DIR)\jni_gi_javaconv.c
+
+gsi_misc.obj : $(C_DIR)\gsi_misc.c $(H_FILES)
+	$(cc) -c $(CCFLAGS) $(C_DIR)\gsi_misc.c
+
+id.obj : $(C_DIR)\id.c $(H_FILES)
+	$(cc) -c $(CCFLAGS) $(C_DIR)\id.c
+
+$(DSTBOX)\ext\o\nsleep.obj : $(SRCBOX)\ext\c\nsleep.c
+	$(cc) -c -DWIN32 -I$(SRCBOX)\specific\$(MACHINE) $(SRCBOX)\ext\c\nsleep.c -Fo$(DSTBOX)\ext\o\nsleep.obj
+
+#------------------------------------------------
+# Cleanup
+
+clean :
+	erase $(EXE_DIR)\JgiInterface.dll *.obj

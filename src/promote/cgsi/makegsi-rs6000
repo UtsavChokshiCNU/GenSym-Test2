@@ -1,0 +1,57 @@
+SHELL=/bin/sh
+ 
+# Sample makefile for GSI programs.
+#   GSI Version 3.2.
+# Machine type: IBM RS6000
+ 
+C_DIR = 
+OBJ_DIR = 
+EXE_DIR = 
+H_DIR = ./
+INCLUDE_DIR = $(H_DIR)
+CCFLAGS = -O
+LIB_DIR = ./
+ 
+DEFAULT_LIBS = -lgsi -ltcp
+PLATFORM_SPECIFIC_LIBS = -lm -lbsd -lc
+LIBS = -L$(LIB_DIR) $(DEFAULT_LIBS) $(PLATFORM_SPECIFIC_LIBS) 
+ 
+H_FILES = $(H_DIR)gsi.h $(H_DIR)icp.h
+EXECUTABLES = $(EXE_DIR)filetest $(EXE_DIR)typetest $(EXE_DIR)skeleton
+FILETEST_FILES = $(OBJ_DIR)filetest.o $(OBJ_DIR)rpcfuncs.o
+TYPETEST_FILES = $(OBJ_DIR)typetest.o $(OBJ_DIR)gsi_main.o
+SKELETON_FILES = $(OBJ_DIR)skeleton.o $(OBJ_DIR)gsi_main.o
+ 
+ALL : $(EXECUTABLES)
+ 
+$(EXE_DIR)filetest : $(FILETEST_FILES)
+	cc -o filetest $(FILETEST_FILES) $(LIBS)
+ 
+$(EXE_DIR)skeleton : $(SKELETON_FILES)
+	cc -o skeleton $(SKELETON_FILES) $(LIBS)
+ 
+$(EXE_DIR)typetest : $(TYPETEST_FILES)
+	cc -o typetest $(TYPETEST_FILES) $(LIBS)
+ 
+$(OBJ_DIR)filetest.o : $(C_DIR)filetest.c $(H_FILES)
+	cc -c $(CCFLAGS) -I$(INCLUDE_DIR) $(C_DIR)filetest.c
+ 
+$(OBJ_DIR)typetest.o : $(C_DIR)typetest.c $(H_FILES)
+	cc -c $(CCFLAGS) -I$(INCLUDE_DIR) $(C_DIR)typetest.c
+ 
+$(OBJ_DIR)rpcfuncs.o : $(C_DIR)rpcfuncs.c $(H_FILES)
+	cc -c $(CCFLAGS) -I$(INCLUDE_DIR) $(C_DIR)rpcfuncs.c
+ 
+$(OBJ_DIR)skeleton.o : $(C_DIR)skeleton.c $(H_FILES)
+	cc -c $(CCFLAGS) -I$(INCLUDE_DIR) $(C_DIR)skeleton.c
+ 
+$(OBJ_DIR)gsi_main.o : $(C_DIR)gsi_main.c $(H_FILES)
+	cc -c $(CCFLAGS) -I$(INCLUDE_DIR) $(C_DIR)gsi_main.c
+ 
+clean :
+	@for file in $(EXECUTABLES); do \
+		if [ -f $$file ] ; then \
+			rm $$file; \
+		fi ;\
+	done
+	@rm *.o

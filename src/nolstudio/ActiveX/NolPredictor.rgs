@@ -1,0 +1,35 @@
+HKCR
+{
+	NolOnline.NolPredictor.1 = s 'NolPredictor Class'
+	{
+		CLSID = s '{5B0BEE9F-4DD6-11D4-B8A0-0000861E0389}'
+		'Insertable'
+	}
+	NolOnline.NolPredictor = s 'NolPredictor Class'
+	{
+		CLSID = s '{5B0BEE9F-4DD6-11D4-B8A0-0000861E0389}'
+		CurVer = s 'NolOnline.NolPredictor.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {5B0BEE9F-4DD6-11D4-B8A0-0000861E0389} = s 'NolPredictor Class'
+		{
+			ProgID = s 'NolOnline.NolPredictor.1'
+			VersionIndependentProgID = s 'NolOnline.NolPredictor'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			ForceRemove 'Control'
+			ForceRemove 'Insertable'
+			ForceRemove 'ToolboxBitmap32' = s '%MODULE%, 101'
+			'MiscStatus' = s '0'
+			{
+			    '1' = s '132497'
+			}
+			'TypeLib' = s '{CDE0EF53-4E9A-11D4-B8A0-0000861E0389}'
+			'Version' = s '1.0'
+		}
+	}
+}

@@ -1,0 +1,106 @@
+# Sample makefile for JGI programs.
+#   GSI Version 5.0 rev 1
+#   JDK 1.2 / JDK 1.1 support
+# Machine type: IntelNT
+
+#
+# JAVA_HOME should be set! ...pointing to JDK1.4
+# SRCBOX should be set!
+# DSTBOX should be set!
+# GSIBOX should be set!
+#
+#
+#
+
+
+ODIR = opt
+PACKAGE_PREFIX = com.gensym.jgi.
+PACKAGE_PREFIX_UTIL = com.gensym.util.
+PP = com_gensym_jgi_
+PPUTIL = com_gensym_util_
+BT_JAVA = $(SRCBOX)\java
+
+GSISRC = $(SRCBOX)\gsi\c
+RTHDIR = $(SRCBOX)\rtl\c
+EXTCDIR = $(SRCBOX)\ext\c
+JAVA_DIR      = $(BT_JAVA)\com\gensym\jgi
+JAVA_DIR_UTIL = $(BT_JAVA)\com\gensym\util
+C_DIR         = $(BT_JAVA)\c
+OBJ_DIR       = $(DSTBOX)\javalink\$(ODIR)
+EXE_DIR       = $(DSTBOX)\javalink\lib
+H_DIR         = $(BT_JAVA)\include
+
+C_FLAGS  = $(cflags) -DWIN32
+INCLUDE_FLAGS = -I"$(JAVA_HOME)\include" -I$(H_DIR) -I$(GSIBOX) -I$(GSISRC) -I"$(JAVA_HOME)\include\win32" -I$(SRCBOX)\specific\intelnt
+COMMON = -DNEW_CLASS_MAPPING
+CCFLAGS       = /nologo $(COMMON) $(C_FLAGS) $(cvars) $(INCLUDE_FLAGS)
+
+link = link
+CC = cl
+JAVAH = "$(JAVA_HOME)\bin\javah"
+JAVAC = "$(JAVA_HOME)\bin\javac"
+
+JAVAC_OPTIONS = 
+JAVAH_OPTIONS =  -jni -d $(H_DIR)
+JAVAH_STUBS_OPTIONS = -d $(C_DIR) -stubs
+
+
+WINLIBS =  libcmt.lib netapi32.lib wsock32.lib ws2_32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib rpcrt4.lib crypt32.lib
+# When creating images to execute under Win32s, you should
+# use the DEFAULT_LIBS below that has winio.lib.
+# DEFAULT_LIBS = $(GSIBOX)\libgsi.lib $(GSIBOX)\libtcp.lib $(GSIBOX)\librtl.lib winio.lib
+DEFAULT_LIBS = $(GSIBOX)\libgsi.lib $(GSIBOX)\libtcp.lib $(GSIBOX)\librtl.lib $(SRCBOX)\specific\intelnt\spromeps.lib
+LIBS = $(WINLIBS) $(DEFAULT_LIBS)
+LINKFLAGS = /DLL /nodefaultlib:"libc.lib"
+
+
+ 
+H_FILES = $(GSISRC)\gsi_main.h $(H_DIR)\jni_gi.h $(H_DIR)\jgi_gsi_options.h\
+	  $(H_DIR)\$(PP)JGInterface.h $(H_DIR)\$(PP)GsiLoopThread.h\
+	  $(GSISRC)\gsi_misc.h\
+	  $(H_DIR)\jgi_info.h $(H_DIR)\id.h
+	  
+EXECUTABLES = $(EXE_DIR)\JgiInterface.dll 
+JAVACLASSES = $(JAVA_DIR)\G2Gateway.class $(JAVA_DIR)\G2Connection.java
+
+JAVA_FILES =  $(OBJ_DIR)\jni_gi.obj $(GSIBOX)\gsi_misc.obj\
+			  $(OBJ_DIR)\jni_gi_gsiconv.obj $(OBJ_DIR)\jni_gi_javaconv.obj\
+			  $(OBJ_DIR)\jni_gi_utils.obj\
+			  $(OBJ_DIR)\jni_gi_init.obj $(OBJ_DIR)\id.obj $(SRCBOX)\specific\intelnt\nsleep.obj
+
+ALL :  $(JAVACLASSES) $(EXECUTABLES)
+
+$(EXE_DIR)\JgiInterface.dll : $(JAVA_FILES) $(DEFAULT_LIBS)
+	$(link) -out:$(EXE_DIR)\JgiInterface.dll $(LINKFLAGS) $(JAVA_FILES) $(LIBS)
+
+$(GSIBOX)\gsi_misc.obj : $(GSISRC)\gsi_misc.c $(GSISRC)\gsi_main.h $(GSISRC)\gsi_misc.h
+	$(CC) -c $(CCFLAGS) -I$(RTHDIR) -I$(EXTCDIR) $(GSISRC)\gsi_misc.c  -Fo$(GSIBOX)\gsi_misc.obj
+
+$(OBJ_DIR)\jni_gi.obj : $(C_DIR)\jni_gi.c $(H_FILES)
+	$(CC) -c $(CCFLAGS) $(C_DIR)\jni_gi.c -Fo$(OBJ_DIR)\jni_gi.obj
+ 
+$(OBJ_DIR)\jni_gi_utils.obj : $(C_DIR)\jni_gi_utils.c $(H_FILES)
+	$(CC) -c $(CCFLAGS) $(C_DIR)\jni_gi_utils.c -Fo$(OBJ_DIR)\jni_gi_utils.obj
+
+$(OBJ_DIR)\jni_gi_init.obj : $(C_DIR)\jni_gi_init.c $(H_FILES)
+	$(CC) -c $(CCFLAGS) $(C_DIR)\jni_gi_init.c -Fo$(OBJ_DIR)\jni_gi_init.obj
+
+$(OBJ_DIR)\jni_gi_gsiconv.obj : $(C_DIR)\jni_gi_gsiconv.c $(H_FILES)
+	$(CC) -c $(CCFLAGS) $(C_DIR)\jni_gi_gsiconv.c -Fo$(OBJ_DIR)\jni_gi_gsiconv.obj
+
+$(OBJ_DIR)\jni_gi_javaconv.obj : $(C_DIR)\jni_gi_javaconv.c $(H_FILES)
+	$(CC) -c $(CCFLAGS) $(C_DIR)\jni_gi_javaconv.c -Fo$(OBJ_DIR)\jni_gi_javaconv.obj
+
+ 
+$(OBJ_DIR)\id.obj : $(C_DIR)\id.c $(H_FILES)
+	$(CC) -c $(CCFLAGS) $(C_DIR)\id.c -Fo$(OBJ_DIR)\id.obj
+
+$(H_DIR)/$(PP)GsiLoopThread.h : $(JAVA_DIR)/GsiLoopThread.class
+	$(JAVAH) $(JAVAH_OPTIONS) $(PACKAGE_PREFIX)GsiLoopThread
+
+$(H_DIR)/$(PP)JGInterface.h : $(JAVA_DIR)/JGInterface.class
+	$(JAVAH) $(JAVAH_OPTIONS) $(PACKAGE_PREFIX)JGInterface
+
+clean :
+	erase $(EXE_DIR)\JgiInterface.dll $(OBJ_DIR)\*.obj
+

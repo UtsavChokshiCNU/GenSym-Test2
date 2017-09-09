@@ -1,0 +1,64 @@
+#!/bin/csh 
+###############################################################
+# This file contains environment variable settings for javalink.  It is intended
+# to be used with the "source" command in a csh script or interactive shell.
+# After use, your shell will be ready to go with javalink programs.
+#
+# Feel free to use this script as is, or modified to suit your needs.
+#
+# Although this software has been extensively tested, Gensym cannot guarantee
+# error-free performance in all applications.  Accordingly, use of the software
+# is at the customer's sole risk.
+###############################################################
+
+# If the following command does not contain the expanded G2 install home, then a problem 
+# occurred with the installer, and you should edit it to create the proper value
+setenv G2_INSTALL_HOME %ROOTDIR%
+
+# Set this variable before here if you want to override the default location of JAVALINK_HOME
+if ( ! $?JAVALINK_HOME ) then
+  setenv JAVALINK_HOME ${G2_INSTALL_HOME}/javalink
+endif
+
+setenv PATH ${JAVALINK_HOME}/bin\:$PATH
+
+set local_classpath=${JAVALINK_HOME}/classes:${JAVALINK_HOME}/classes/core.jar:${JAVALINK_HOME}/classes/classtools.jar:${JAVALINK_HOME}/classes/javalink.jar:${JAVALINK_HOME}/classes/beanbuilder.jar
+
+if ( $?CLASSPATH ) then
+  setenv CLASSPATH ${local_classpath}:${CLASSPATH}
+else
+  setenv CLASSPATH ${local_classpath}
+endif
+
+if ( $?LD_LIBRARY_PATH ) then
+  setenv LD_LIBRARY_PATH ${JAVALINK_HOME}/bin\:${LD_LIBRARY_PATH}
+else
+  setenv LD_LIBRARY_PATH ${JAVALINK_HOME}/bin
+endif
+
+java -version >& /dev/null
+if ( ${status} != 0 ) then
+# no java in path
+  if ( $?JAVA_HOME ) then
+    if ( -d ${JAVA_HOME}/bin ) then
+      setenv PATH ${PATH}:${JAVA_HOME}/bin
+      rehash
+    endif
+  else if ( -d ${G2_INSTALL_HOME}/jre/bin ) then
+    setenv JAVA_HOME ${G2_INSTALL_HOME}/jre
+    setenv PATH ${PATH}:${JAVA_HOME}/bin
+    rehash
+  else
+    echo Cannot find java or JAVA_HOME.   
+    echo Please set up JAVA_HOME environment variable or set up PATH and CLASSPATH.
+    exit 1
+  endif
+endif
+
+# make sure tools.jar is actually in classpath 
+# (but it might not exist if we are using JRE, so check.)
+if ( $?JAVA_HOME ) then
+  if ( -f ${JAVA_HOME}/lib/tools.jar ) then
+    setenv CLASSPATH ${CLASSPATH}\:${JAVA_HOME}/lib/tools.jar
+  endif
+endif

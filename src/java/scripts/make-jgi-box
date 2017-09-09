@@ -1,0 +1,80 @@
+#!/bin/csh
+
+# This script builds a jgi shared library for supported platforms, currently
+# solaris, and for supported build types, currently o and opt.
+#
+# It first creates a sandbox, named as per the
+# first required argument, with location given by the second required argument
+# if supplied, and /gensym/spare if there's no second argument.
+#
+# The GSI branch (for GSI and friends) is controlled by the optional arguments:
+#   -r <revision>  -- revision specifies a CVS revision or branch tag, e.g., -r G251_DEVELOPMENT_BRANCH
+#   -mainline  -- use the main line (no branch tag)
+#
+# Note that the two options, -r and -mainline, are mutually exclusive.
+# Note that the branch applies to gsi & friends, not to java (javalink/tw2).
+# Also, be sure to include a space character after the -r if that option is used.
+#
+# Then it builds the shared object library.  The optimized result library ends up
+# in $SRCBOX/java/lib/libJgiInterface.so.
+#
+# Then it runs the demo shell, so you can test it.  Make sure to connect and
+# try to show workspaces from a G2.
+
+set default_spec = "-r G251_DEVELOPMENT_BRANCH"
+
+set revision_spec = "$default_spec"
+
+set default_location = /gensym/spare
+
+
+if ($#argv > 0) then
+ if ($#argv > 1) then
+   if ("$1" == "-r") then
+     set revision_spec = "$1 $2"; shift; shift
+   endif
+ endif
+ if ($#argv > 0) then
+   if ("$1" == "-mainline") then
+     set revision_spec = ""; shift
+   endif
+ endif
+endif
+
+if ($revision_spec == "") then
+  echo "Using mainline for GSI & friends."
+else
+  echo "Using '$revision_spec' to check out GSI & friends"
+endif 
+
+
+
+if ($#argv < 1) then
+  echo "Usage: $0 [(-r revision)|-mainline] new-sandbox-name [location]"
+  echo "  '$default_spec' is the default; $default_location is the default location"
+  exit 1
+endif
+
+set SB = $1
+echo "Making new sandbox $SB . . ."
+echo "STARTING."
+
+if ($#argv > 1) then
+  set loc = $2
+else
+  set loc = $default_location
+endif
+
+echo "Using $loc as sandbox location . . ."
+
+make-sandbox $SB ab $loc -use-dst $revision_spec ext gen specific rtl gsi util
+sandbox $SB
+cd $SRCBOX    # same as doing bt
+make-dstbox   # this makes for all platforms (-use-dst just makes it for current)
+cvs co java
+
+echo "Sandbox made. Now building the jgi library in $SRCBOX . . ."
+$SRCBOX/java/scripts/jgi-do
+
+echo "DONE."
+

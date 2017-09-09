@@ -1,0 +1,13 @@
+#! /bin/csh -f
+if ( $#argv != 4 ) then
+  echo "Usage: make-backtrace-report root_function_file target_function_file trace_output_file report_output_file"
+  exit 1
+endif
+echo '"'$1'"' > /tmp/tmp1.lisp
+echo '"'$2'"' >> /tmp/tmp1.lisp
+echo '"/tmp/tmp2.lisp"' >> /tmp/tmp1.lisp
+echo '"'$4'"' >> /tmp/tmp1.lisp
+(cat $3 | convert-backtraces-to-lists) > /tmp/tmp2.lisp
+generate-backtrace-report < /tmp/tmp1.lisp >& /dev/null
+rm /tmp/tmp1.lisp
+rm /tmp/tmp2.lisp

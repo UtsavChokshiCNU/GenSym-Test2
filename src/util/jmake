@@ -1,0 +1,43 @@
+#!/bin/csh -f
+
+if (-e $SRCBOX/java/com/gensym/devtools/JavaMake.class) then
+  goto begin
+endif
+
+echo Compiling JavaMake
+javac $SRCBOX/java/com/gensym/devtools/JavaMake.java
+
+if (!(-e $SRCBOX/java/com/gensym/devtools/JavaMake.class)) then
+ goto error
+endif
+
+begin:
+set DIRECTORY=$1
+set PRODUCT=$2
+set CLEAN=$2
+
+if (!("$CLEAN" == "-clean")) then
+ goto compile
+endif
+echo cleaning
+java com.gensym.devtools.JavaMake -quiet -srcbox $SRCBOX -root $DIRECTORY -clean
+if (!($status == 0)) then
+    goto error
+endif
+goto end
+
+
+compile:
+java  -mx100m com.gensym.devtools.JavaMake -srcbox $SRCBOX -root $DIRECTORY -product $PRODUCT -quiet
+if (!($status == 0)) then
+    goto error
+endif
+goto end
+
+
+error:
+echo Could not compile com/gensym/devtools/JavaMake
+exit 1
+
+
+end:

@@ -1,0 +1,54 @@
+
+CLASSFILES= \
+	com/gensym/tracebeans/TraceElement.class \
+	com/gensym/tracebeans/TraceElementVector.class \
+	com/gensym/tracebeans/TraceElementVectorEditor.class \
+	com/gensym/tracebeans/TraceFilter.class \
+	com/gensym/tracebeans/TraceDisplay.class \
+	com/gensym/tracebeans/TraceControlPanel.class \
+	com/gensym/tracebeans/MyCheckbox.class \
+	com/gensym/tracebeans/ExceptionTraceDisplay.class \
+	com/gensym/tracebeans/TraceTool.class
+
+
+JARFILE= jars/trace.jar
+
+all: $(JARFILE)
+
+# Create a JAR file with a suitable manifest.
+
+$(JARFILE): $(CLASSFILES)
+	@echo "Building Manifest"
+	@echo "Name: com/gensym/tracebeans/TraceElement.class" >> manifest.tmp
+	@echo "Java-Bean: True" >> manifest.tmp
+	@echo "" >> manifest.tmp
+	@echo "Name: com/gensym/tracebeans/TraceElementVector.class" >> manifest.tmp
+	@echo "Java-Bean: True" >> manifest.tmp
+	@echo "" >> manifest.tmp
+	@echo "Name: com/gensym/tracebeans/TraceElementVectorEditor.class" >> manifest.tmp
+	@echo "Java-Bean: True" >> manifest.tmp
+	@echo "" >> manifest.tmp
+	@echo "Name: com/gensym/tracebeans/TraceFilter.class" >> manifest.tmp
+	@echo "Java-Bean: True" >> manifest.tmp
+	@echo "" >> manifest.tmp
+	@echo "Name: com/gensym/tracebeans/TraceDisplay.class" >> manifest.tmp
+	@echo "Java-Bean: True" >> manifest.tmp
+	@echo "" >> manifest.tmp
+	@echo "Name: com/gensym/tracebeans/TraceTool.class" >> manifest.tmp
+	@echo "Java-Bean: True" >> manifest.tmp
+	@echo "Name: com/gensym/tracebeans/ExceptionTraceDisplay.class" >> manifest.tmp
+	@echo "Java-Bean: True" >> manifest.tmp
+	jar cfm $(JARFILE) manifest.tmp ${CLASSFILES}
+	@/bin/rm manifest.tmp
+
+
+.SUFFIXES: .java .class
+
+%.class: %.java
+	export CLASSPATH; CLASSPATH=. ; \
+	javac $<
+
+clean:
+	/bin/rm -f com/gensym/tracebeans/*.class
+	/bin/rm -f $(JARFILE)
+

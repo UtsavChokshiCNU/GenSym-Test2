@@ -1,0 +1,13 @@
+#!/bin/csh -f 
+
+# Instead of launching a VM, forward requests to
+# a compiler daemon, listening on a pipe. Wait for
+# results to be finished and send to stdout.
+
+set resultsfile = /tmp/jr$$
+#echo $1 >> /tmp/pipe
+echo $* $resultsfile >> /tmp/pipe
+while ( ! { test -f $resultsfile } )
+  sleep 1;
+end
+cat $resultsfile

@@ -1,0 +1,9 @@
+@echo off
+cd ..\..\scripts\nt
+call set-boxes.bat
+set SBOX=%SRCBOX%
+set UTILS=%SRCBOX%\kbs\tools
+set MODMAP=sb.mm
+set G2EXE=%DSTBOX%\g2\opt\g2.exe
+set OKFILE=C:\G2\license\g2sitev83.ok
+cd ..\..\kbs\tools

@@ -1,0 +1,35 @@
+HKCR
+{
+	NolOnline.NolOptimizer.1 = s 'NolOptimizer Class'
+	{
+		CLSID = s '{49079012-4EB0-11D4-8704-00609703E392}'
+		'Insertable'
+	}
+	NolOnline.NolOptimizer = s 'NolOptimizer Class'
+	{
+		CLSID = s '{49079012-4EB0-11D4-8704-00609703E392}'
+		CurVer = s 'NolOnline.NolOptimizer.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {49079012-4EB0-11D4-8704-00609703E392} = s 'NolOptimizer Class'
+		{
+			ProgID = s 'NolOnline.NolOptimizer.1'
+			VersionIndependentProgID = s 'NolOnline.NolOptimizer'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			ForceRemove 'Control'
+			ForceRemove 'Insertable'
+			ForceRemove 'ToolboxBitmap32' = s '%MODULE%, 108'
+			'MiscStatus' = s '0'
+			{
+			    '1' = s '132497'
+			}
+			'TypeLib' = s '{CDE0EF53-4E9A-11D4-B8A0-0000861E0389}'
+			'Version' = s '1.0'
+		}
+	}
+}

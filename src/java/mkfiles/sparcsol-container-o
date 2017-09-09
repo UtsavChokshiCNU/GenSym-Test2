@@ -1,0 +1,236 @@
+cc	=	gcc
+link	=	gcc
+ccommon	=
+cflags	=
+cdebug	=
+cvars	=
+libc	=
+libcmt	=
+libcdll	=
+psxlibs	=
+optlibs	= 
+baselibs	=
+winlibs	=
+conlibs	=
+conlibsmt	=
+guilibs	=
+guilibsmt	=
+guilibsdll	=
+olelibs	=
+olelibsmt	=
+olelibsdll	=
+ole2libs	=
+ole2libsmt	=
+ole2libsdll	=
+
+
+
+
+# SRCBOX, DSTBOX and JAVA_HOME must be set!
+
+
+PLATFORM=solaris
+WIN32APIHOME=$(JAVA_HOME)/include
+
+CC=gcc
+LINK=ld
+DEL=/bin/rm -f
+COPY=cp
+JAVAC=javac -deprecation
+JAVAH=javah
+
+JAVA_LIBS=$(JAVA_HOME)/lib/sparc/green_threads/libjava.so
+BUCKETLIBS=
+CCONTAINLIBS=
+JCONTAINLIBS=
+
+JAVADIR=$(SRCBOX)/java
+H_DIR=$(JAVADIR)/include
+C_DIR=$(JAVADIR)/c
+OBJ_DIR=$(JAVADIR)/o
+EXE_DIR=$(JAVADIR)/lib
+PACKDIR=$(JAVADIR)/$(COMDIR)
+TESTSDIR=$(JAVADIR)/com/gensym/tests
+UTILDIR=$(JAVADIR)/com/gensym/ntw/util
+BEANS_DIR=$(JAVA_HOME)/beans/jars
+COMDIR=com/gensym/com
+PACKAGE=com.gensym.com.
+PACKH=com_gensym_com_
+TPACKAGE=com.gensym.tests.
+TESTSH=com_gensym_tests_
+
+
+QUIET=@ 
+OUTPUT=-o
+EXE=
+OBJ=.o
+LIB_PREFIX=lib
+LIB_SUFFIX=.a
+DLL=.so
+
+JINCLUDE=-I$(H_DIR) -I$(OBJ_DIR) -I$(WIN32APIHOME) -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/$(PLATFORM)
+DEFINES=-D"DEBUG" -D"DBG" -D"_DEBUG"
+CC_FLAGS=-c $(DEFINES) $(JINCLUDE) $(OUTPUT) $*$(OBJ)
+LINK_FLAGS=-G
+JAVAH_OPTIONS=-jni -d $(OBJ_DIR)
+
+
+TARGETS=javaApp
+
+all : $(TARGETS)
+
+##############################
+# Top Level Targets
+##############################
+
+cApp: $(EXE_DIR)/bucket$(EXE)
+
+javaApp: $(EXE_DIR)/$(LIB_PREFIX)JavaContainer$(DLL) $(PACKDIR)/NativeMethodBroker.class
+
+test: javaApp $(TESTSDIR)/ComContainer.class
+
+##############################
+# Executables
+##############################
+
+$(EXE_DIR)/bucket$(EXE) : $(OBJ_DIR)/bucket$(OBJ) $(EXE_DIR)/$(LIB_PREFIX)ccontain$(DLL)
+	$(QUIET) $(DEL) $(EXE_DIR)/bucket$(EXE)
+	$(CC) $(OUTPUT)$(EXE_DIR)/bucket$(EXE) $(OBJ_DIR)/bucket$(OBJ) $(EXE_DIR)/$(LIB_PREFIX)ccontain$(DLL) $(BUCKETLIBS)
+
+
+TAGS : $(C_DIR)/xcontain.c $(C_DIR)/dispatch.c $(C_DIR)/debug_bkt.c $(C_DIR)/typeinfo.c $(C_DIR)/interfaces.c $(C_DIR)/bucket.c
+	etags $(C_DIR)/xcontain.c $(C_DIR)/dispatch.c $(C_DIR)/debug_bkt.c $(C_DIR)/typeinfo.c $(C_DIR)/interfaces.c $(C_DIR)/bucket.c
+
+
+
+##############################
+# Libraries
+##############################
+
+$(EXE_DIR)/$(LIB_PREFIX)ccontain$(DLL): ccontainTarget
+
+ccontainTarget: $(OBJ_DIR)/xcontain$(OBJ) $(OBJ_DIR)/dispatch$(OBJ) $(OBJ_DIR)/debug_bkt$(OBJ) $(OBJ_DIR)/typeinfo$(OBJ) $(OBJ_DIR)/interfaces$(OBJ)
+	$(LINK) $(LINK_FLAGS) -o $(EXE_DIR)/$(LIB_PREFIX)ccontain$(DLL) $(OBJ_DIR)/xcontain$(OBJ) $(OBJ_DIR)/dispatch$(OBJ) $(OBJ_DIR)/debug_bkt$(OBJ) $(OBJ_DIR)/typeinfo$(OBJ) $(OBJ_DIR)/interfaces$(OBJ) $(CCONTAINLIBS)
+
+
+$(EXE_DIR)/$(LIB_PREFIX)JavaContainer$(DLL): JavaContainerTarget
+
+JavaContainerTarget: $(OBJ_DIR)/xcontain$(OBJ) $(OBJ_DIR)/dispatch$(OBJ) $(OBJ_DIR)/interfaces$(OBJ) $(OBJ_DIR)/autojava$(OBJ)
+	$(LINK) $(LINK_FLAGS) -o $(EXE_DIR)/$(LIB_PREFIX)JavaContainer$(DLL) $(OBJ_DIR)/xcontain$(OBJ) $(OBJ_DIR)/dispatch$(OBJ) $(OBJ_DIR)/interfaces$(OBJ) $(OBJ_DIR)/autojava$(OBJ) $(JCONTAINLIBS)
+
+
+
+##############################
+# Object Files
+##############################
+
+$(OBJ_DIR)/bucket$(OBJ): $(C_DIR)/bucket.c $(H_DIR)/shared.h $(H_DIR)/bucket.h $(H_DIR)/dprintf.h $(OBJ_DIR)/$(PACKH)ActiveXProxy.h $(OBJ_DIR)/$(PACKH)NativeMethodBroker.h
+	$(QUIET) $(DEL) $(OBJ_DIR)/bucket$(OBJ)
+	$(CC) $(CC_FLAGS) $(C_DIR)/bucket.c
+
+$(OBJ_DIR)/xcontain$(OBJ): $(C_DIR)/xcontain.c $(OBJ_DIR)/$(PACKH)NativeMethodBroker.h $(H_DIR)/shared.h $(H_DIR)/dprintf.h $(H_DIR)/xcontain.h
+	$(QUIET) $(DEL) $(OBJ_DIR)/xcontain$(OBJ)
+	$(CC) $(CC_FLAGS) $(C_DIR)/xcontain.c
+
+$(OBJ_DIR)/dispatch$(OBJ): $(C_DIR)/dispatch.c $(H_DIR)/shared.h $(H_DIR)/dprintf.h $(OBJ_DIR)/$(PACKH)NativeMethodBroker.h
+	$(QUIET) $(DEL) $(OBJ_DIR)/dispatch$(OBJ)
+	$(CC) $(CC_FLAGS) $(C_DIR)/dispatch.c
+
+$(OBJ_DIR)/typeinfo$(OBJ): $(C_DIR)/typeinfo.c $(H_DIR)/shared.h $(H_DIR)/dprintf.h $(OBJ_DIR)/$(PACKH)NativeMethodBroker.h
+	$(QUIET) $(DEL) $(OBJ_DIR)/typeinfo$(OBJ)
+	$(CC) $(CC_FLAGS) $(C_DIR)/typeinfo.c
+
+$(OBJ_DIR)/interfaces$(OBJ): $(C_DIR)/interfaces.c $(H_DIR)/shared.h $(H_DIR)/dprintf.h $(OBJ_DIR)/$(PACKH)NativeMethodBroker.h
+	$(QUIET) $(DEL) $(OBJ_DIR)/interfaces$(OBJ)
+	$(CC) $(CC_FLAGS) $(C_DIR)/interfaces.c
+
+$(OBJ_DIR)/debug_bkt$(OBJ): $(C_DIR)/debug_bkt.c $(H_DIR)/shared.h $(H_DIR)/dprintf.h
+	$(QUIET) $(DEL) $(OBJ_DIR)/debug_bkt$(OBJ)
+	$(CC) $(CC_FLAGS) $(C_DIR)/debug_bkt.c
+
+$(OBJ_DIR)/autojava$(OBJ): $(C_DIR)/autojava.c $(H_DIR)/shared.h $(H_DIR)/dprintf.h
+	$(QUIET) $(DEL) $(OBJ_DIR)/autojava$(OBJ)
+	$(CC) $(CC_FLAGS) $(C_DIR)/autojava.c
+
+
+
+##############################
+# Java Class Files
+##############################
+
+$(PACKDIR)/ActiveXObject.class :	$(PACKDIR)/ActiveXProxy.class $(PACKDIR)/ActiveXObject.java
+	$(QUIET) $(DEL) $(PACKDIR)/ActiveXObject.class
+	$(JAVAC) $(PACKDIR)/ActiveXObject.java
+
+$(PACKDIR)/ActiveXProxy.class :	$(PACKDIR)/NativeMethodBroker.class $(PACKDIR)/Guid.class $(PACKDIR)/ActiveXProxy.java
+	$(QUIET) $(DEL) $(PACKDIR)/ActiveXProxy.class
+	$(JAVAC) $(PACKDIR)/ActiveXProxy.java
+
+$(PACKDIR)/ThreadRequestQueue.class :	$(PACKDIR)/ThreadRequestQueue.java $(PACKDIR)/OleThreadRequest.class
+	$(JAVAC) $(PACKDIR)/OleThreadRequest.java
+
+$(PACKDIR)/OleThreadRequest.class :	$(PACKDIR)/OleThreadRequest.java
+	$(JAVAC) $(PACKDIR)/OleThreadRequest.java
+
+$(PACKDIR)/Guid.class :	$(PACKDIR)/NativeMethodBroker.class $(PACKDIR)/Guid.java
+	$(JAVAC) $(PACKDIR)/Guid.java
+
+$(PACKDIR)/NativeMethodBroker.class :	$(PACKDIR)/NativeMethodBroker.java
+	$(JAVAC) $(PACKDIR)/NativeMethodBroker.java
+
+$(PACKDIR)/MyButton.class : $(PACKDIR)/MyButton.java
+	$(JAVAC) $(PACKDIR)/MyButton.java
+
+
+$(TESTSDIR)/ComContainer.class :	$(TESTSDIR)/ComContainer.java $(TESTSDIR)/MenuWithHandles.java $(UTILDIR)/Hwnd.java
+	$(JAVAC) $(TESTSDIR)/ComContainer.java $(TESTSDIR)/MenuWithHandles.java $(UTILDIR)/Hwnd.java 
+
+
+
+
+
+##############################
+# Javah-generated H Files
+##############################
+
+$(OBJ_DIR)/$(PACKH)NativeMethodBroker.h : $(PACKDIR)/NativeMethodBroker.class
+	$(QUIET) $(DEL) $(OBJ_DIR)/$(PACKH)NativeMethodBroker.h
+	$(JAVAH) $(JAVAH_OPTIONS) $(PACKAGE)NativeMethodBroker
+
+
+$(OBJ_DIR)/$(PACKH)ActiveXProxy.h : $(PACKDIR)/ActiveXProxy.class
+	$(QUIET) $(DEL) $(OBJ_DIR)/$(PACKH)ActiveXProxy.h
+	$(JAVAH) $(JAVAH_OPTIONS) $(PACKAGE)ActiveXProxy
+
+
+
+
+##############################
+# TestBean
+##############################
+
+testbean.jar : $(PACKDIR)/NativeMethodBroker.class $(PACKDIR)/MyButton.class $(PACKDIR)/ActiveXObject.class
+	cd $(JAVADIR)
+	$(QUIET) $(DEL) testbean.jar
+	jar cfm testbean.jar $(COMDIR)/ActiveXObject.class $(COMDIR)/MyButton.class $(COMDIR)/ThreadRequestQueue.class $(COMDIR)/OleThreadRequest.class
+	$(COPY) testbean.jar $(BEANSDIR)/testbean.jar
+	$(QUIET) $(DEL) testbean.jar
+
+
+
+##############################
+# Clean
+##############################
+
+clean : 
+	$(DEL) $(EXE_DIR)/bucket$(EXE)
+	find $(PACKDIR) -name '*.class' -exec echo "Removing " '{}' -exec $(DEL) '{}' \;
+	find $(TESTSDIR) -name '*.class' -exec echo "Removing " '{}' -exec $(DEL) '{}' \;
+	$(DEL) $(OBJ_DIR)/$(TESTSH)*.c $(OBJ_DIR)/$(TESTSH)*.h $(OBJ_DIR)/$(PACKH)*.h $(OBJ_DIR)/*.RES $(OBJ_DIR)/*$(OBJ) $(OBJ_DIR)/*.jar
+	cd 
+	$(DEL) $(EXE_DIR)/J*$(DLL) $(EXE_DIR)/J*.exp $(EXE_DIR)/J*.ilk $(EXE_DIR)/J*.lib $(EXE_DIR)/J*.pdb $(EXE_DIR)/J*.mak 
+	$(DEL) $(EXE_DIR)/J*.mdp $(EXE_DIR)/J*.ncb $(EXE_DIR)/J*.pch $(EXE_DIR)/cc*$(DLL) $(EXE_DIR)/cc*.exp $(EXE_DIR)/cc*.ilk
+	$(DEL) $(EXE_DIR)/cc*.lib $(EXE_DIR)/cc*.pdb $(EXE_DIR)/cc*.mak $(EXE_DIR)/cc*.mdp $(EXE_DIR)/cc*.ncb $(EXE_DIR)/cc*.pch 
+	$(DEL) $(EXE_DIR)/bucket.lib $(EXE_DIR)/bucket.exp
+
+

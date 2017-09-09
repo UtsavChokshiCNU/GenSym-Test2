@@ -1,0 +1,50 @@
+STEP1:
+make sure the SpecialImpl has all the right code from the Impl you were developing with
+NOTE: It modifying ItemSpecialImpl, make sure that DeferredStub gets
+      all the methods that will be going into Item (i.e., all the new
+      public methods from ItemSpecialImpl)
+
+STEP2:
+back up the Impl you were developing with
+
+STEP3:
+run:
+
+java com.gensym.jgi.download.OverrideAnalyzer <source of overrides> <place to store overrides>
+
+e.g.:
+java com.gensym.jgi.download.OverrideAnalyzer ItemSpecialImpl.java Item.ovr
+
+NOTE: the name of the place to store overrides must match the class name of the
+relevant INTERFACE (e.g.: G2 Class ITEM maps to java interface com.gensym.classes.Item,
+not com.gensym.classes.ItemImpl), because the StubClassLoader actually looks for
+a .ovr file with the correct root name. 
+
+
+STEP4:
+Go to com.gensym.jgi.download.StubClassLoader, and change IS_BOOTSTRAPPING to true
+(so that the StubClassLoader will generate system classes) and compile
+
+DON'T FORGET TO CHANGE THIS BACK
+Or whenever you connect, all classes will get regenerated every time
+
+STEP5:
+run
+java -Dcom.gensym.class.g2.repository=%SRCBOX%\java -Dcom.gensym.class.g2.package=com.gensym.classes com.gensym.jgi.download.DownloadInterfaces -stubs -host <host> -port <port> -classes <classes that need regeneration>
+
+e.g.:
+java -Dcom.gensym.class.g2.repository=%SRCBOX%\java -Dcom.gensym.class.g2.package=com.gensym.classes com.gensym.jgi.download.DownloadInterfaces -stubs -host weasel -port 1111 -classes ITEM MEDIA-BIN REMOTE-ITEM
+
+Question: How do we know which classes need to be re-downloaded?
+Answer: All those that contain code from the original version of the SpecialImpl you changed
+
+If in doubt regenerate all (should actually be done with each major release of Javalink), 
+using the batch file, generate-classes (which is in java/com/gensym/classes)
+
+STEP6:
+Check that the generated Impl and the interface have all the right stuff.
+NOTE: The comments do not get put into the Impl (they only need to be in
+the interface, since the Impl is not "documented".
+
+STEP7:
+CHANGE IS_BOOTSTRAPPING BACK TO  false

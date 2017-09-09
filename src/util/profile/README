@@ -1,0 +1,172 @@
+Installation
+
+   cvs checkout util
+   cd util/profile
+   mkdir opt
+   make -f sun4-profile-opt
+or
+   make -f sparcsol-profile-opt
+   {Add util/profile/opt to your PATH.}
+
+   runmake ext opt
+   {For more complete profiling data, edit g2's makefile to link with -static}
+   runmake g2 opt
+
+----------------------------------------------------------------------
+
+Use the "g2-profile" command to profile G2, Telewindows, or GSI.
+
+  Usage: g2-profile {g2, tw, or gsi command line}
+
+Wait until G2 is running the code you want to profile, then type <return>.
+Wait for a minute or two, then type another <return>.
+In a minute or so, it will write the profile into "trace.out".
+
+Note: Use the optimized version of G2, not the debuggable, this gives
+      the most meaningful results, and also keeps report preparation 
+      reasonable fast, since one of the steps (processing the output 
+      of nm) is very slow otherwise.
+
+----------------------------------------------------------------------
+
+Use the "g2-startup-profile" command to profile the startup process for
+G2, Telewindows, or GSI.
+
+  Usage: g2-startup-profile {g2, tw, or gsi command line}
+
+Wait for a minute or two, then type a <return>.
+In a minute or so, it will write the profile into "trace.out".
+
+----------------------------------------------------------------------
+
+Use the "trace-network-data" command to trace network reading and writing, 
+including the actual data sent and received.
+
+  Usage: trace-network-data {g2, tw, or gsi command line}
+
+When you want to stop tracing, type a <return>.
+It will write the profile into "trace.out".
+
+----------------------------------------------------------------------
+
+Use the "show-unreclaimed-conses" command to find leaks.
+
+  Usage: show-unreclaimed-conses {g2, tw, or gsi command line}
+
+Identify an operation (or series of operations) which you want to test for leaks.
+Perform this "operation" one or two times, then type <return> to start the
+leak testing. Perform the "operation" at least two more times, then type <return> again.
+It will write a report containing a line for each object created after 
+the beginning of the test that is still in use at the end of the test.
+Each line begins with the top 12 functions on the stack when the object was allocated,
+followed by a sequence number.  Every allocation gets a new sequence number
+(including those allocations that are followed by a reclaim).  If the "operation"
+that is being tested is very repeatable, then if you divide the highest sequence
+number appearing in the report by the number of times the "operation" was repeated during
+the leak test, you will get the number of allocations per "operation" (call this N).  
+The last N allocations in the report do not represent a leak.  
+
+----------------------------------------------------------------------
+How it works.
+
+
+At the time G2 or Telewindows is started, or gsi_start is called,
+the environment variable G2_TRACE_CONTROL_FILE is checked.
+If this variable is set, and names an existing file,
+commands are read from this file and processed, until
+the "continue" command is read, or the end of the file is reached.
+At that point, normal execution resumes.  If the process receives
+a "USR1" signal, more commands are read from the file.
+If G2_TRACE_CONTROL_FILE is not set, and G2 receives a "USR1" signal,
+the file g2_trace_control_for_%d, where %d is G2's pid (process id)
+is checked.  If that file exists, it is opened and deleted.
+(Note that "man unlink" says: "If, however, the file was open in any 
+process, the actual resource reclamation is delayed until it is closed, 
+even though the directory entry has disappeared.")
+
+
+spaces and tabs are skipped
+empty lines are skipped
+The '#' character causes the rest of the line to be skipped
+case matters only inside quoted strings
+
+continue
+  stops command processing and continues normal G2 processing
+
+set output "file"
+  Send trace output to "file".  Trace output includes any
+  diagnostics from processing the trace control file, and
+  the output of the "write" commands.
+
+set next input "file"
+  If this command is used, then, when the end of the control
+  file is reached, "file" will be used as the control file.
+
+set backtrace type virtual
+set backtrace type prof
+  See the output of "man setitimer".  The default is "prof",
+  not "virtual".
+
+set backtrace roots "root1" "root2" ...
+set backtrace targets "root1" "root2" ...
+  See the command "write backtrace tree".
+
+set backtrace one line
+  Writes backtrace output on one (long) line, rather than a multiline format.
+
+set width <integer>
+
+set executable "executable_file"
+
+set address "address_file"
+
+set find leaks
+
+close output
+  Closes the current trace output file.
+
+start tracing network
+  Trace network reading and writing, but not the actual data
+  sent and received.
+
+start tracing network_data
+  Trace network reading and writing, including the actual data
+  sent and received.
+
+start tracing backtrace
+  Turn on profiling.
+
+start tracing consing
+
+start tracing functions
+
+start tracing
+start tracing all
+  Includes both "network_data" and "backtrace" tracing.
+
+stop tracing
+
+clear tracing
+
+write trace
+
+write unreclaimed conses
+
+write backtrace summary
+  For every function, prints the number of bactraces containing that function.
+
+write recent functions
+
+write backtrace tree
+  For each function in the backtrace root list, prints
+    a listing of all the backtraces containing that function,
+    where each backtrace is displayed starting after the earliest
+    invocation of that function in the backtrace.
+    This shows what functions are called by that function.
+  For each function in the backtrace target list, prints
+    a listing of all the backtraces containing that function,
+    where each backtrace is displayed ending before the last
+    invocation of that function in the backtrace.
+    This shows what functions call that function.
+
+call print_schedule

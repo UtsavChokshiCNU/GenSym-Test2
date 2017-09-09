@@ -1,0 +1,15 @@
+setenv JAVAHOME /export/home/sandboxes/jdk1.1.6
+
+setenv JAVA_HOME $JAVAHOME
+setenv HOTJAVA_HOME $JAVAHOME/HotJava
+setenv JDKHOME $JAVAHOME
+setenv SWING_HOME $JDKHOME/swing-1.0.3
+setenv SWING_JARS ${SWING_HOME}/swing.jar:${SWING_HOME}/rose.jar:${SWING_HOME}/motif.jar:${SWING_HOME}/jlf.jar
+setenv JSHIELD_HOME /home/wsallam/JShield
+
+setenv LD_LIBRARY_PATH $JAVAHOME/lib/sparc/green_threads
+if ( $?SPIN_ID ) then
+  setenv LD_LIBRARY_PATH /bt/ws/java/lib:$LD_LIBRARY_PATH
+endif
+setenv PATH ${PATH}:$JAVAHOME/bin:$JAVAHOME/HotJava/bin:/bt/ws/util:$JSHIELD_HOME/classes
+setenv CLASSPATH ${JAVAHOME}/lib/classes.zip:/net/akira/export/home/sandboxes/ws/java:$JAVAHOME/beans/classes/:$JAVAHOME/beans/beanbox/classes:/home/vkp/java1.1/wingdis/:/home/vkp/java1.1/dejavu/DeJaVu.zip:${SWING_JARS}:${JSHIELD_HOME}/classes:.

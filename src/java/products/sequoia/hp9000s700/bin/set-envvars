@@ -1,0 +1,65 @@
+#!/bin/csh 
+###############################################################
+# This file contains environment variable settings for Telewindows2 Toolkit.  It
+# is intended to be used with the "source" command in a csh script or
+# interactive shell.  After use, your shell will be ready to go with
+# Telewindows2 Toolkit programs.
+#
+# Feel free to use this script as is, or modified to suit your needs.
+#
+# Although this software has been extensively tested, Gensym cannot guarantee
+# error-free performance in all applications.  Accordingly, use of the software
+# is at the customer's sole risk.
+###############################################################
+
+# If the following command does not contain the expanded G2 install home, then a problem 
+# occurred with the installer, and you should edit it to create the proper value
+setenv G2_INSTALL_HOME %ROOTDIR%
+
+# Set this variable before here if you want to override the default location of JAVALINK_HOME
+if ( ! $?JAVALINK_HOME ) then
+  setenv JAVALINK_HOME ${G2_INSTALL_HOME}/javalink
+endif
+
+# Set this variable before here if you want to override the default location of SEQUOIA_HOME
+if ( ! $?SEQUOIA_HOME ) then
+  setenv SEQUOIA_HOME ${G2_INSTALL_HOME}/tw2
+endif
+
+if (-f ${G2_INSTALL_HOME}/g2/g2) then
+  setenv SEQUOIA_G2 ${G2_INSTALL_HOME}/g2
+endif
+
+setenv PATH ${JAVALINK_HOME}/bin:\${SEQUOIA_HOME}/bin\:$PATH
+
+set local_classpath=${JAVALINK_HOME}/classes:${JAVALINK_HOME}/classes/core.jar:${JAVALINK_HOME}/classes/classtools.jar:${JAVALINK_HOME}/classes/javalink.jar:${JAVALINK_HOME}/classes/beanbuilder.jar:${SEQUOIA_HOME}/classes/coreui.jar:${SEQUOIA_HOME}/classes/sequoia.jar:${SEQUOIA_HOME}/classes
+
+if ( $?CLASSPATH ) then
+  setenv CLASSPATH ${local_classpath}:${CLASSPATH}
+else
+  setenv CLASSPATH ${local_classpath}
+endif
+
+if ( $?SHLIB_PATH ) then
+  setenv SHLIB_PATH ${JAVALINK_HOME}/bin\:${SHLIB_PATH}
+else
+  setenv SHLIB_PATH ${JAVALINK_HOME}/bin
+endif
+
+java -version >& /dev/null
+if ( ${status} != 0 ) then
+# no java in path
+  if ( $?JAVA_HOME  && -d ${JAVA_HOME}/bin ) then
+    setenv PATH ${PATH}:${JAVA_HOME}/bin
+    rehash
+  else
+    echo Cannot find java or JAVA_HOME.   
+    echo Please set up JAVA_HOME environment variable or set up PATH and CLASSPATH.
+    exit 1
+  endif
+endif
+
+if ( $?JAVA_HOME ) then
+# make sure tools.jar is actually in classpath.
+  setenv CLASSPATH ${CLASSPATH}\:${JAVA_HOME}/lib/tools.jar
+endif

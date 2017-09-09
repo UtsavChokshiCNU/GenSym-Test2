@@ -1,0 +1,986 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<g2-family xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" directory="nol" file-syntax-version="20" guid="243D4BB6-9EE7-11D4-8111-00A02431D004" index="2" license-text="standard-license.txt" platforms="nt" print-name="NOL" splash-screen="nol-setup.bmp" xsi:noNamespaceSchemaLocation="g2-family_final.xsd">
+    <g2-ok-components>
+        <bundle-name>neuron-line-premium-development</bundle-name>
+        <family-name>nol-family</family-name>
+        <print-name>NeurOnline Premium Development</print-name>
+        <n-clients-list>
+            <list>1</list>
+            <list>2</list>
+            <list>3</list>
+            <list>4</list>
+            <list>5</list>
+            <list>6</list>
+            <list>7</list>
+            <list>8</list>
+            <list>9</list>
+            <list>10</list>
+            <list>12</list>
+            <list>16</list>
+            <list>20</list>
+            <list>24</list>
+            <list>28</list>
+            <list>32</list>
+        </n-clients-list>
+    </g2-ok-components>
+    <g2-ok-components>
+        <bundle-name>neuron-line-premium-deployment</bundle-name>
+        <family-name>nol-family</family-name>
+        <print-name>NeurOnline Premium Deployment</print-name>
+        <n-clients-list>
+            <list>4</list>
+            <list>8</list>
+            <list>12</list>
+            <list>16</list>
+            <list>20</list>
+            <list>24</list>
+            <list>28</list>
+            <list>32</list>
+        </n-clients-list>
+    </g2-ok-components>
+    <bundles>
+        <bundle version="22r0b">
+            <bundlename>nol-studio-development</bundlename>
+            <print-name>NOL Studio Development</print-name>
+            <components>
+                <component>
+                    <componentname>nolstudio-core-development</componentname>
+                    <print-name>NOL Studio Core</print-name>
+                    <componentpart version="22r0">
+                        <componentpartname>nolstudio-data</componentpartname>
+                        <print-name>Data</print-name>
+                        <source>nols</source>
+                        <source-subdirectory>nolstudio</source-subdirectory>
+                        <source-filename>
+                            <src-file-name>NolStudioData.jar</src-file-name>
+                        </source-filename>
+                        <destination-directory>nolstudio</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                        <environment-variables>
+                            <environment-variable>
+                                <name>nolstudio_home</name>
+                                <value>&lt;TARGETDIR&gt;\\\\nolstudio</value>
+                            </environment-variable>
+                        </environment-variables>
+                    </componentpart>
+                    <componentpart version="22r0">
+                        <componentpartname>nolstudio-math-library</componentpartname>
+                        <print-name>Math Library</print-name>
+                        <source>nols</source>
+                        <source-subdirectory>nolstudio</source-subdirectory>
+                        <source-filename>
+                            <src-file-name>NolStudioMath.jar</src-file-name>
+                        </source-filename>
+                        <destination-directory>nolstudio</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                    <componentpart version="22r0">
+                        <componentpartname>nolstudio-core-misc-demolicense</componentpartname>
+                        <print-name>Core Misc</print-name>
+                        <source>nols</source>
+                        <source-subdirectory>nolstudio</source-subdirectory>
+                        <source-filename>
+                            <src-file-name>demolicense.txt</src-file-name>
+                            <src-file-name>known-bugs.txt</src-file-name>
+                        </source-filename>
+                        <destination-directory>nolstudio</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                </component>
+                <component>
+                    <componentname>nolstudio-examples</componentname>
+                    <print-name>NolStudio Examples</print-name>
+                    <componentpart version="22r0">
+                        <componentpartname>nolstudio-examples</componentpartname>
+                        <source>nols</source>
+                        <source-subdirectory>nolstudio/examples</source-subdirectory>
+                        <destination-directory>nolstudio/examples</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                </component>
+                <component>
+                    <componentname>nolstudio-documentation</componentname>
+                    <print-name>NolStudio Documentation</print-name>
+                    <componentpart version="22r0">
+                        <componentpartname>nolstudio-documentation</componentpartname>
+                        <source>nols</source>
+                        <source-subdirectory>nolstudio/doc</source-subdirectory>
+                        <destination-directory>nolstudio/doc</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                </component>
+                <component>
+                    <componentname>nolstudio-jre</componentname>
+                    <print-name>JRE</print-name>
+                    <componentpart>
+                        <componentpartname>nolstudio-jre</componentpartname>
+                        <destination-directory>nolstudio/jre</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                        <environment-variables>
+                            <environment-variable>
+                                <name>nolstudio-jre</name>
+                                <env-var-name>PATH</env-var-name>
+                                <value>%NOLSTUDIO_HOME%\\\\jre\\\\bin;%NOLSTUDIO_HOME%\\\\jre\\\\bin\\\\classic</value>
+                                <append-or-merge>merge</append-or-merge>
+                            </environment-variable>
+                        </environment-variables>
+                    </componentpart>
+                </component>
+                <component>
+                    <componentname>nolstudio-gui</componentname>
+                    <print-name>NOL Studio GUI</print-name>
+                    <componentpart version="22r0">
+                        <componentpartname>nolstudio-gui</componentpartname>
+                        <print-name>NolStudio GUI</print-name>
+                        <source>nols</source>
+                        <source-subdirectory>nolstudio</source-subdirectory>
+                        <source-filename>
+                            <src-file-name>NolStudioGUI.jar</src-file-name>
+                        </source-filename>
+                        <destination-directory>nolstudio</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                    <componentpart version="22r0">
+                        <componentpartname>nolstudio-gui-misc</componentpartname>
+                        <source>nols</source>
+                        <source-subdirectory>nolstudio</source-subdirectory>
+                        <source-filename>
+                            <src-file-name>NolMainFrame.properties</src-file-name>
+                            <src-file-name>NolStringResources.properties</src-file-name>
+                            <src-file-name>nolstudio.bat</src-file-name>
+                        </source-filename>
+                        <destination-directory>nolstudio</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                        <shortcuts>
+                            <shortcut>
+                                <shortcut-name>nolstudio-batch-file</shortcut-name>
+                                <folder-name>Gensym NOLS</folder-name>
+                                <application-display-name>Neur-Online Studio</application-display-name>
+                                <application-directory>nolstudio</application-directory>
+                                <target-name>nolstudio.bat</target-name>
+                                <run-style>minimized</run-style>
+                            </shortcut>
+                        </shortcuts>
+                    </componentpart>
+                </component>
+            </components>
+        </bundle>
+        <bundle version="22r0b">
+            <bundlename>nol-premium-deployment</bundlename>
+            <print-name>NOL Premium Deployment</print-name>
+            <components>
+                <component>
+                    <componentname>nolstudio-core-deployment</componentname>
+                    <print-name>NOL Studio Core</print-name>
+                    <componentpart>
+                        <componentpartname>nolstudio-deployment-data</componentpartname>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                        <environment-variables>
+                            <environment-variable>
+                                <name>nolstudio_home</name>
+                                <value>&lt;TARGETDIR&gt;\\\\nolstudio</value>
+                            </environment-variable>
+                            <environment-variable>
+                                <name>nolstudio_classpath</name>
+                                <env-var-name>CLASSPATH</env-var-name>
+                                <value>%NOLSTUDIO_HOME%\\\\NolStudioData.jar;%NOLSTUDIO_HOME%\\\\NolStudioMath.jar</value>
+                                <append-or-merge>merge</append-or-merge>
+                            </environment-variable>
+                        </environment-variables>
+                    </componentpart>
+                    <componentpart version="22r0">
+                        <componentpartname>nolstudio-math-library</componentpartname>
+                        <print-name>Math Library</print-name>
+                        <source>nols</source>
+                        <source-subdirectory>nolstudio</source-subdirectory>
+                        <source-filename>
+                            <src-file-name>NolStudioMath.jar</src-file-name>
+                        </source-filename>
+                        <destination-directory>nolstudio</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                    <componentpart version="22r0">
+                        <componentpartname>nolstudio-core-misc-demolicense</componentpartname>
+                        <print-name>Core Misc</print-name>
+                        <source>nols</source>
+                        <source-subdirectory>nolstudio</source-subdirectory>
+                        <source-filename>
+                            <src-file-name>demolicense.txt</src-file-name>
+                            <src-file-name>known-bugs.txt</src-file-name>
+                        </source-filename>
+                        <destination-directory>nolstudio</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                </component>
+                <component>
+                    <componentname>nolstudio-examples</componentname>
+                    <print-name>NolStudio Examples</print-name>
+                    <componentpart version="22r0">
+                        <componentpartname>nolstudio-examples</componentpartname>
+                        <source>nols</source>
+                        <source-subdirectory>nolstudio/examples</source-subdirectory>
+                        <destination-directory>nolstudio/examples</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                </component>
+                <component>
+                    <componentname>nolstudio-documentation</componentname>
+                    <print-name>NolStudio Documentation</print-name>
+                    <componentpart version="22r0">
+                        <componentpartname>nolstudio-documentation</componentpartname>
+                        <source>nols</source>
+                        <source-subdirectory>nolstudio/doc</source-subdirectory>
+                        <destination-directory>nolstudio/doc</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                </component>
+                <component>
+                    <componentname>nolstudio-jre</componentname>
+                    <print-name>JRE</print-name>
+                    <componentpart>
+                        <componentpartname>nolstudio-jre</componentpartname>
+                        <destination-directory>nolstudio/jre</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                        <environment-variables>
+                            <environment-variable>
+                                <name>nolstudio-jre</name>
+                                <env-var-name>PATH</env-var-name>
+                                <value>%NOLSTUDIO_HOME%\\\\jre\\\\bin;%NOLSTUDIO_HOME%\\\\jre\\\\bin\\\\classic</value>
+                                <append-or-merge>merge</append-or-merge>
+                            </environment-variable>
+                        </environment-variables>
+                    </componentpart>
+                </component>
+                <component>
+                    <componentname>nolstudio-g2-deployment</componentname>
+                    <print-name>NolStudio G2 Deployment</print-name>
+                    <componentpart version="22r0">
+                        <componentpartname>nolstudio-deploy-library</componentpartname>
+                        <source>nols</source>
+                        <source-subdirectory>nolstudio</source-subdirectory>
+                        <source-filename>
+                            <src-file-name>NolStudioDeploy.jar</src-file-name>
+                        </source-filename>
+                        <destination-directory>nolstudio</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                        <environment-variables>
+                            <environment-variable>
+                                <name>nolstudio-deploy-classpath</name>
+                                <env-var-name>CLASSPATH</env-var-name>
+                                <value>%NOLSTUDIO_HOME%\\\\NolStudioDeploy.jar</value>
+                                <append-or-merge>merge</append-or-merge>
+                            </environment-variable>
+                        </environment-variables>
+                    </componentpart>
+                    <componentpart version="22r0">
+                        <componentpartname>nolstudio-kbs</componentpartname>
+                        <source>nols</source>
+                        <source-subdirectory>nolstudio/kbs</source-subdirectory>
+                        <source-filename>
+                            <src-file-name>java-module.kb</src-file-name>
+                            <src-file-name>nolexten.kb</src-file-name>
+                            <src-file-name>nolspack.kb</src-file-name>
+                            <src-file-name>nolstudio.kb</src-file-name>
+                        </source-filename>
+                        <destination-directory>nolstudio/kbs</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                    <componentpart version="51r7">
+                        <componentpartname>nolstudio-G2-kbs</componentpartname>
+                        <source>kbs</source>
+                        <source-subdirectory>utils</source-subdirectory>
+                        <source-filename>
+                            <src-file-name>gfr.kb</src-file-name>
+                            <src-file-name>sys-mod.kb</src-file-name>
+                            <src-file-name>uilroot.kb</src-file-name>
+                        </source-filename>
+                        <destination-directory>nolstudio/kbs</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                    <componentpart version="11r0a">
+                        <componentpartname>nolstudio-javalink-kbs</componentpartname>
+                        <source>jvl</source>
+                        <source-subdirectory>components/kbs</source-subdirectory>
+                        <source-filename>
+                            <src-file-name>javalink.kb</src-file-name>
+                        </source-filename>
+                        <destination-directory>nolstudio/kbs</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                    <componentpart version="11r0a">
+                        <componentpartname>nolstudio-tw2-kbs</componentpartname>
+                        <source>tw2</source>
+                        <source-subdirectory>components/kbs</source-subdirectory>
+                        <source-filename>
+                            <src-file-name>jlintf.kb</src-file-name>
+                        </source-filename>
+                        <destination-directory>nolstudio/kbs</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                    <componentpart version="22r0">
+                        <componentpartname>nolstudio-deploy-misc</componentpartname>
+                        <source>nols</source>
+                        <source-subdirectory>nolstudio</source-subdirectory>
+                        <source-filename>
+                            <src-file-name>nolonline.bat</src-file-name>
+                        </source-filename>
+                        <destination-directory>nolstudio</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                </component>
+                <component>
+                    <componentname>nolstudio-window-deployment</componentname>
+                    <print-name>NolStudio Window Deployment</print-name>
+                    <componentpart version="22r0">
+                        <componentpartname>nolstudio-window-misc</componentpartname>
+                        <source>nols</source>
+                        <source-subdirectory>nolstudio</source-subdirectory>
+                        <source-filename>
+                            <src-file-name>RegisterControls.bat</src-file-name>
+                            <src-file-name>UnRegisterControls.bat</src-file-name>
+                        </source-filename>
+                        <destination-directory>nolstudio</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                    <componentpart version="22r0">
+                        <componentpartname>nolstudio-ActiveX-control</componentpartname>
+                        <source>nols</source>
+                        <source-subdirectory>nolstudio/bin</source-subdirectory>
+                        <source-filename>
+                            <src-file-name>NolOnline.dll</src-file-name>
+                        </source-filename>
+                        <destination-directory>nolstudio/bin</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                        <shortcuts>
+                            <shortcut>
+                                <shortcut-name>nolstudio-install-control</shortcut-name>
+                                <folder-name>Gensym NOLS</folder-name>
+                                <application-display-name>Install Control</application-display-name>
+                                <application-directory>nolstudio</application-directory>
+                                <target-name>RegisterControls.bat</target-name>
+                                <run-style>minimized</run-style>
+                            </shortcut>
+                            <shortcut>
+                                <shortcut-name>nolstudio-uninstall-control</shortcut-name>
+                                <folder-name>Gensym NOLS</folder-name>
+                                <application-display-name>UnInstall Control</application-display-name>
+                                <application-directory>nolstudio</application-directory>
+                                <target-name>UnRegisterControls.bat</target-name>
+                                <run-style>minimized</run-style>
+                            </shortcut>
+                        </shortcuts>
+                    </componentpart>
+                </component>
+                <component>
+                    <componentname>nol-classic</componentname>
+                    <print-name>NOL Classic</print-name>
+                    <componentpart version="51r7">
+                        <componentpartname>nols-G2-kbs</componentpartname>
+                        <source>kbs</source>
+                        <source-subdirectory>utils</source-subdirectory>
+                        <source-filename>
+                            <src-file-name>g2uifile.kb</src-file-name>
+                            <src-file-name>gold.kb</src-file-name>
+                            <src-file-name>sys-mod.kb</src-file-name>
+                            <src-file-name>uildefs.kb</src-file-name>
+                            <src-file-name>uilsa.kb</src-file-name>
+                            <src-file-name>gfr.kb</src-file-name>
+                            <src-file-name>goldui.kb</src-file-name>
+                            <src-file-name>uil.kb</src-file-name>
+                            <src-file-name>uillib.kb</src-file-name>
+                            <src-file-name>uilslide.kb</src-file-name>
+                            <src-file-name>gms.kb</src-file-name>
+                            <src-file-name>gxl.kb</src-file-name>
+                            <src-file-name>uilcombo.kb</src-file-name>
+                            <src-file-name>uilroot.kb</src-file-name>
+                            <src-file-name>uiltdlg.kb</src-file-name>
+                        </source-filename>
+                        <destination-directory>nol</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                    <componentpart version="40r1">
+                        <componentpartname>nols-gda-kbs</componentpartname>
+                        <source>gda</source>
+                        <source-filename>
+                            <src-file-name>gcc.kb</src-file-name>
+                            <src-file-name>gdabasic.kb</src-file-name>
+                            <src-file-name>gdabsdlg.kb</src-file-name>
+                            <src-file-name>gdl.kb</src-file-name>
+                            <src-file-name>gens.kb</src-file-name>
+                            <src-file-name>glf.kb</src-file-name>
+                            <src-file-name>gqm.kb</src-file-name>
+                            <src-file-name>gqmv.kb</src-file-name>
+                            <src-file-name>gqs.kb</src-file-name>
+                            <src-file-name>gqsui.kb</src-file-name>
+                            <src-file-name>gqsviews.kb</src-file-name>
+                        </source-filename>
+                        <destination-directory>nol</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                    <componentpart version="22r0">
+                        <componentpartname>nol-classic</componentpartname>
+                        <source>nols</source>
+                        <source-subdirectory>nol</source-subdirectory>
+                        <source-filename>
+                            <src-file-name>nol.kb</src-file-name>
+                            <src-file-name>nolapps.kb</src-file-name>
+                            <src-file-name>noldemo.kb</src-file-name>
+                            <src-file-name>nolexten.kb</src-file-name>
+                            <src-file-name>nolstart.com</src-file-name>
+                            <src-file-name>nolui.kb</src-file-name>
+                            <src-file-name>ntnol.exe</src-file-name>
+                        </source-filename>
+                        <destination-directory>nol</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                </component>
+                <component>
+                    <componentname>nol-classic-documentation</componentname>
+                    <print-name>NOL Classic Documentation</print-name>
+                    <componentpart version="22r0">
+                        <componentpartname>nol-classic-documentation</componentpartname>
+                        <source>nols</source>
+                        <source-subdirectory>nol/noldoc</source-subdirectory>
+                        <destination-directory>nol/noldoc</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                </component>
+                <component>
+                    <componentname>core-g2-components</componentname>
+                </component>
+                <component>
+                    <componentname>additional-g2-deployment-components</componentname>
+                </component>
+                <component>
+                    <componentname>neuron-line-premium-deployment-family-ok-components</componentname>
+                </component>
+            </components>
+        </bundle>
+        <bundle version="22r0b">
+            <bundlename>nol-studio-deployment</bundlename>
+            <print-name>NOL Studio Deployment</print-name>
+            <components>
+                <component>
+                    <componentname>nolstudio-core-deployment</componentname>
+                    <print-name>NOL Studio Core</print-name>
+                    <componentpart>
+                        <componentpartname>nolstudio-deployment-data</componentpartname>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                        <environment-variables>
+                            <environment-variable>
+                                <name>nolstudio_home</name>
+                                <value>&lt;TARGETDIR&gt;\\\\nolstudio</value>
+                            </environment-variable>
+                            <environment-variable>
+                                <name>nolstudio_classpath</name>
+                                <env-var-name>CLASSPATH</env-var-name>
+                                <value>%NOLSTUDIO_HOME%\\\\NolStudioData.jar;%NOLSTUDIO_HOME%\\\\NolStudioMath.jar</value>
+                                <append-or-merge>merge</append-or-merge>
+                            </environment-variable>
+                        </environment-variables>
+                    </componentpart>
+                    <componentpart version="22r0">
+                        <componentpartname>nolstudio-math-library</componentpartname>
+                        <print-name>Math Library</print-name>
+                        <source>nols</source>
+                        <source-subdirectory>nolstudio</source-subdirectory>
+                        <source-filename>
+                            <src-file-name>NolStudioMath.jar</src-file-name>
+                        </source-filename>
+                        <destination-directory>nolstudio</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                    <componentpart version="22r0">
+                        <componentpartname>nolstudio-core-misc-demolicense</componentpartname>
+                        <print-name>Core Misc</print-name>
+                        <source>nols</source>
+                        <source-subdirectory>nolstudio</source-subdirectory>
+                        <source-filename>
+                            <src-file-name>demolicense.txt</src-file-name>
+                            <src-file-name>known-bugs.txt</src-file-name>
+                        </source-filename>
+                        <destination-directory>nolstudio</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                </component>
+                <component>
+                    <componentname>nolstudio-examples</componentname>
+                    <print-name>NolStudio Examples</print-name>
+                    <componentpart version="22r0">
+                        <componentpartname>nolstudio-examples</componentpartname>
+                        <source>nols</source>
+                        <source-subdirectory>nolstudio/examples</source-subdirectory>
+                        <destination-directory>nolstudio/examples</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                </component>
+                <component>
+                    <componentname>nolstudio-documentation</componentname>
+                    <print-name>NolStudio Documentation</print-name>
+                    <componentpart version="22r0">
+                        <componentpartname>nolstudio-documentation</componentpartname>
+                        <source>nols</source>
+                        <source-subdirectory>nolstudio/doc</source-subdirectory>
+                        <destination-directory>nolstudio/doc</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                </component>
+                <component>
+                    <componentname>nolstudio-jre</componentname>
+                    <print-name>JRE</print-name>
+                    <componentpart>
+                        <componentpartname>nolstudio-jre</componentpartname>
+                        <destination-directory>nolstudio/jre</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                        <environment-variables>
+                            <environment-variable>
+                                <name>nolstudio-jre</name>
+                                <env-var-name>PATH</env-var-name>
+                                <value>%NOLSTUDIO_HOME%\\\\jre\\\\bin;%NOLSTUDIO_HOME%\\\\jre\\\\bin\\\\classic</value>
+                                <append-or-merge>merge</append-or-merge>
+                            </environment-variable>
+                        </environment-variables>
+                    </componentpart>
+                </component>
+                <component>
+                    <componentname>nolstudio-window-deployment</componentname>
+                    <print-name>NolStudio Window Deployment</print-name>
+                    <componentpart version="22r0">
+                        <componentpartname>nolstudio-window-misc</componentpartname>
+                        <source>nols</source>
+                        <source-subdirectory>nolstudio</source-subdirectory>
+                        <source-filename>
+                            <src-file-name>RegisterControls.bat</src-file-name>
+                            <src-file-name>UnRegisterControls.bat</src-file-name>
+                        </source-filename>
+                        <destination-directory>nolstudio</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                    <componentpart version="22r0">
+                        <componentpartname>nolstudio-ActiveX-control</componentpartname>
+                        <source>nols</source>
+                        <source-subdirectory>nolstudio/bin</source-subdirectory>
+                        <source-filename>
+                            <src-file-name>NolOnline.dll</src-file-name>
+                        </source-filename>
+                        <destination-directory>nolstudio/bin</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                        <shortcuts>
+                            <shortcut>
+                                <shortcut-name>nolstudio-install-control</shortcut-name>
+                                <folder-name>Gensym NOLS</folder-name>
+                                <application-display-name>Install Control</application-display-name>
+                                <application-directory>nolstudio</application-directory>
+                                <target-name>RegisterControls.bat</target-name>
+                                <run-style>minimized</run-style>
+                            </shortcut>
+                            <shortcut>
+                                <shortcut-name>nolstudio-uninstall-control</shortcut-name>
+                                <folder-name>Gensym NOLS</folder-name>
+                                <application-display-name>UnInstall Control</application-display-name>
+                                <application-directory>nolstudio</application-directory>
+                                <target-name>UnRegisterControls.bat</target-name>
+                                <run-style>minimized</run-style>
+                            </shortcut>
+                        </shortcuts>
+                    </componentpart>
+                </component>
+            </components>
+        </bundle>
+        <bundle version="22r0b">
+            <bundlename>nol-premium-development</bundlename>
+            <print-name>NOL Premium Development</print-name>
+            <components>
+                <component>
+                    <componentname>nolstudio-core-deployment</componentname>
+                    <print-name>NOL Studio Core</print-name>
+                    <componentpart>
+                        <componentpartname>nolstudio-deployment-data</componentpartname>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                        <environment-variables>
+                            <environment-variable>
+                                <name>nolstudio_home</name>
+                                <value>&lt;TARGETDIR&gt;\\\\nolstudio</value>
+                            </environment-variable>
+                            <environment-variable>
+                                <name>nolstudio_classpath</name>
+                                <env-var-name>CLASSPATH</env-var-name>
+                                <value>%NOLSTUDIO_HOME%\\\\NolStudioData.jar;%NOLSTUDIO_HOME%\\\\NolStudioMath.jar</value>
+                                <append-or-merge>merge</append-or-merge>
+                            </environment-variable>
+                        </environment-variables>
+                    </componentpart>
+                    <componentpart version="22r0">
+                        <componentpartname>nolstudio-math-library</componentpartname>
+                        <print-name>Math Library</print-name>
+                        <source>nols</source>
+                        <source-subdirectory>nolstudio</source-subdirectory>
+                        <source-filename>
+                            <src-file-name>NolStudioMath.jar</src-file-name>
+                        </source-filename>
+                        <destination-directory>nolstudio</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                    <componentpart version="22r0">
+                        <componentpartname>nolstudio-core-misc-demolicense</componentpartname>
+                        <print-name>Core Misc</print-name>
+                        <source>nols</source>
+                        <source-subdirectory>nolstudio</source-subdirectory>
+                        <source-filename>
+                            <src-file-name>demolicense.txt</src-file-name>
+                            <src-file-name>known-bugs.txt</src-file-name>
+                        </source-filename>
+                        <destination-directory>nolstudio</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                </component>
+                <component>
+                    <componentname>nolstudio-examples</componentname>
+                    <print-name>NolStudio Examples</print-name>
+                    <componentpart version="22r0">
+                        <componentpartname>nolstudio-examples</componentpartname>
+                        <source>nols</source>
+                        <source-subdirectory>nolstudio/examples</source-subdirectory>
+                        <destination-directory>nolstudio/examples</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                </component>
+                <component>
+                    <componentname>nolstudio-documentation</componentname>
+                    <print-name>NolStudio Documentation</print-name>
+                    <componentpart version="22r0">
+                        <componentpartname>nolstudio-documentation</componentpartname>
+                        <source>nols</source>
+                        <source-subdirectory>nolstudio/doc</source-subdirectory>
+                        <destination-directory>nolstudio/doc</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                </component>
+                <component>
+                    <componentname>nolstudio-jre</componentname>
+                    <print-name>JRE</print-name>
+                    <componentpart>
+                        <componentpartname>nolstudio-jre</componentpartname>
+                        <destination-directory>nolstudio/jre</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                        <environment-variables>
+                            <environment-variable>
+                                <name>nolstudio-jre</name>
+                                <env-var-name>PATH</env-var-name>
+                                <value>%NOLSTUDIO_HOME%\\\\jre\\\\bin;%NOLSTUDIO_HOME%\\\\jre\\\\bin\\\\classic</value>
+                                <append-or-merge>merge</append-or-merge>
+                            </environment-variable>
+                        </environment-variables>
+                    </componentpart>
+                </component>
+                <component>
+                    <componentname>nolstudio-gui-development</componentname>
+                    <print-name>NOL Studio GUI</print-name>
+                    <componentpart>
+                        <componentpartname>nolstudio-gui-development</componentpartname>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                        <environment-variables>
+                            <environment-variable>
+                                <name>nolstudio-gui</name>
+                                <env-var-name>CLASSPATH</env-var-name>
+                                <value>%NOLSTUDIO_HOME%\\\\NolStudioGUI.jar</value>
+                                <append-or-merge>merge</append-or-merge>
+                            </environment-variable>
+                        </environment-variables>
+                    </componentpart>
+                    <componentpart version="22r0">
+                        <componentpartname>nolstudio-gui-misc</componentpartname>
+                        <source>nols</source>
+                        <source-subdirectory>nolstudio</source-subdirectory>
+                        <source-filename>
+                            <src-file-name>NolMainFrame.properties</src-file-name>
+                            <src-file-name>NolStringResources.properties</src-file-name>
+                            <src-file-name>nolstudio.bat</src-file-name>
+                        </source-filename>
+                        <destination-directory>nolstudio</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                        <shortcuts>
+                            <shortcut>
+                                <shortcut-name>nolstudio-batch-file</shortcut-name>
+                                <folder-name>Gensym NOLS</folder-name>
+                                <application-display-name>Neur-Online Studio</application-display-name>
+                                <application-directory>nolstudio</application-directory>
+                                <target-name>nolstudio.bat</target-name>
+                                <run-style>minimized</run-style>
+                            </shortcut>
+                        </shortcuts>
+                    </componentpart>
+                </component>
+                <component>
+                    <componentname>nolstudio-g2-deployment</componentname>
+                    <print-name>NolStudio G2 Deployment</print-name>
+                    <componentpart version="22r0">
+                        <componentpartname>nolstudio-deploy-library</componentpartname>
+                        <source>nols</source>
+                        <source-subdirectory>nolstudio</source-subdirectory>
+                        <source-filename>
+                            <src-file-name>NolStudioDeploy.jar</src-file-name>
+                        </source-filename>
+                        <destination-directory>nolstudio</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                        <environment-variables>
+                            <environment-variable>
+                                <name>nolstudio-deploy-classpath</name>
+                                <env-var-name>CLASSPATH</env-var-name>
+                                <value>%NOLSTUDIO_HOME%\\\\NolStudioDeploy.jar</value>
+                                <append-or-merge>merge</append-or-merge>
+                            </environment-variable>
+                        </environment-variables>
+                    </componentpart>
+                    <componentpart version="22r0">
+                        <componentpartname>nolstudio-kbs</componentpartname>
+                        <source>nols</source>
+                        <source-subdirectory>nolstudio/kbs</source-subdirectory>
+                        <source-filename>
+                            <src-file-name>java-module.kb</src-file-name>
+                            <src-file-name>nolexten.kb</src-file-name>
+                            <src-file-name>nolspack.kb</src-file-name>
+                            <src-file-name>nolstudio.kb</src-file-name>
+                        </source-filename>
+                        <destination-directory>nolstudio/kbs</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                    <componentpart version="51r7">
+                        <componentpartname>nolstudio-G2-kbs</componentpartname>
+                        <source>kbs</source>
+                        <source-subdirectory>utils</source-subdirectory>
+                        <source-filename>
+                            <src-file-name>gfr.kb</src-file-name>
+                            <src-file-name>sys-mod.kb</src-file-name>
+                            <src-file-name>uilroot.kb</src-file-name>
+                        </source-filename>
+                        <destination-directory>nolstudio/kbs</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                    <componentpart version="11r0a">
+                        <componentpartname>nolstudio-javalink-kbs</componentpartname>
+                        <source>jvl</source>
+                        <source-subdirectory>components/kbs</source-subdirectory>
+                        <source-filename>
+                            <src-file-name>javalink.kb</src-file-name>
+                        </source-filename>
+                        <destination-directory>nolstudio/kbs</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                    <componentpart version="11r0a">
+                        <componentpartname>nolstudio-tw2-kbs</componentpartname>
+                        <source>tw2</source>
+                        <source-subdirectory>components/kbs</source-subdirectory>
+                        <source-filename>
+                            <src-file-name>jlintf.kb</src-file-name>
+                        </source-filename>
+                        <destination-directory>nolstudio/kbs</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                    <componentpart version="22r0">
+                        <componentpartname>nolstudio-deploy-misc</componentpartname>
+                        <source>nols</source>
+                        <source-subdirectory>nolstudio</source-subdirectory>
+                        <source-filename>
+                            <src-file-name>nolonline.bat</src-file-name>
+                        </source-filename>
+                        <destination-directory>nolstudio</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                </component>
+                <component>
+                    <componentname>nolstudio-window-deployment</componentname>
+                    <print-name>NolStudio Window Deployment</print-name>
+                    <componentpart version="22r0">
+                        <componentpartname>nolstudio-window-misc</componentpartname>
+                        <source>nols</source>
+                        <source-subdirectory>nolstudio</source-subdirectory>
+                        <source-filename>
+                            <src-file-name>RegisterControls.bat</src-file-name>
+                            <src-file-name>UnRegisterControls.bat</src-file-name>
+                        </source-filename>
+                        <destination-directory>nolstudio</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                    <componentpart version="22r0">
+                        <componentpartname>nolstudio-ActiveX-control</componentpartname>
+                        <source>nols</source>
+                        <source-subdirectory>nolstudio/bin</source-subdirectory>
+                        <source-filename>
+                            <src-file-name>NolOnline.dll</src-file-name>
+                        </source-filename>
+                        <destination-directory>nolstudio/bin</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                        <shortcuts>
+                            <shortcut>
+                                <shortcut-name>nolstudio-install-control</shortcut-name>
+                                <folder-name>Gensym NOLS</folder-name>
+                                <application-display-name>Install Control</application-display-name>
+                                <application-directory>nolstudio</application-directory>
+                                <target-name>RegisterControls.bat</target-name>
+                                <run-style>minimized</run-style>
+                            </shortcut>
+                            <shortcut>
+                                <shortcut-name>nolstudio-uninstall-control</shortcut-name>
+                                <folder-name>Gensym NOLS</folder-name>
+                                <application-display-name>UnInstall Control</application-display-name>
+                                <application-directory>nolstudio</application-directory>
+                                <target-name>UnRegisterControls.bat</target-name>
+                                <run-style>minimized</run-style>
+                            </shortcut>
+                        </shortcuts>
+                    </componentpart>
+                </component>
+                <component>
+                    <componentname>nol-classic</componentname>
+                    <print-name>NOL Classic</print-name>
+                    <componentpart version="51r7">
+                        <componentpartname>nols-G2-kbs</componentpartname>
+                        <source>kbs</source>
+                        <source-subdirectory>utils</source-subdirectory>
+                        <source-filename>
+                            <src-file-name>g2uifile.kb</src-file-name>
+                            <src-file-name>gold.kb</src-file-name>
+                            <src-file-name>sys-mod.kb</src-file-name>
+                            <src-file-name>uildefs.kb</src-file-name>
+                            <src-file-name>uilsa.kb</src-file-name>
+                            <src-file-name>gfr.kb</src-file-name>
+                            <src-file-name>goldui.kb</src-file-name>
+                            <src-file-name>uil.kb</src-file-name>
+                            <src-file-name>uillib.kb</src-file-name>
+                            <src-file-name>uilslide.kb</src-file-name>
+                            <src-file-name>gms.kb</src-file-name>
+                            <src-file-name>gxl.kb</src-file-name>
+                            <src-file-name>uilcombo.kb</src-file-name>
+                            <src-file-name>uilroot.kb</src-file-name>
+                            <src-file-name>uiltdlg.kb</src-file-name>
+                        </source-filename>
+                        <destination-directory>nol</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                    <componentpart version="40r1">
+                        <componentpartname>nols-gda-kbs</componentpartname>
+                        <source>gda</source>
+                        <source-filename>
+                            <src-file-name>gcc.kb</src-file-name>
+                            <src-file-name>gdabasic.kb</src-file-name>
+                            <src-file-name>gdabsdlg.kb</src-file-name>
+                            <src-file-name>gdl.kb</src-file-name>
+                            <src-file-name>gens.kb</src-file-name>
+                            <src-file-name>glf.kb</src-file-name>
+                            <src-file-name>gqm.kb</src-file-name>
+                            <src-file-name>gqmv.kb</src-file-name>
+                            <src-file-name>gqs.kb</src-file-name>
+                            <src-file-name>gqsui.kb</src-file-name>
+                            <src-file-name>gqsviews.kb</src-file-name>
+                        </source-filename>
+                        <destination-directory>nol</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                    <componentpart version="22r0">
+                        <componentpartname>nol-classic</componentpartname>
+                        <source>nols</source>
+                        <source-subdirectory>nol</source-subdirectory>
+                        <source-filename>
+                            <src-file-name>nol.kb</src-file-name>
+                            <src-file-name>nolapps.kb</src-file-name>
+                            <src-file-name>noldemo.kb</src-file-name>
+                            <src-file-name>nolexten.kb</src-file-name>
+                            <src-file-name>nolstart.com</src-file-name>
+                            <src-file-name>nolui.kb</src-file-name>
+                            <src-file-name>ntnol.exe</src-file-name>
+                        </source-filename>
+                        <destination-directory>nol</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                </component>
+                <component>
+                    <componentname>nol-classic-documentation</componentname>
+                    <print-name>NOL Classic Documentation</print-name>
+                    <componentpart version="22r0">
+                        <componentpartname>nol-classic-documentation</componentpartname>
+                        <source>nols</source>
+                        <source-subdirectory>nol/noldoc</source-subdirectory>
+                        <destination-directory>nol/noldoc</destination-directory>
+                        <source-ship-type>external</source-ship-type>
+                        <indep>t</indep>
+                    </componentpart>
+                </component>
+                <component>
+                    <componentname>core-g2-components</componentname>
+                </component>
+                <component>
+                    <componentname>additional-g2-development-components</componentname>
+                </component>
+                <component>
+                    <componentname>neuron-line-premium-development-family-ok-components</componentname>
+                </component>
+            </components>
+        </bundle>
+    </bundles>
+    <previous-versions>
+        <version>
+            <versionid>2.2r0</versionid>
+            <versionguid>243D4BAD-9EE7-11D4-8111-00A02431D004</versionguid>
+        </version>
+    </previous-versions>
+    <previous-versions>
+        <version>
+            <versionid>2.2r0a</versionid>
+            <versionguid>243D4BB4-9EE7-11D4-8111-00A02431D004</versionguid>
+        </version>
+    </previous-versions>
+</g2-family>

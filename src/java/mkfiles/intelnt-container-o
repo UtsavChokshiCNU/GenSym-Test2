@@ -1,0 +1,377 @@
+CPU	=		i386
+TARGETOS	=	BOTH
+APPVER		=	4.0
+cc		=	cl
+rc		=	rc
+link		=	link
+implib		=	lib
+hc		=	hcrtf -xn
+ccommon		=	-c -W3 -DCRTAPI1
+cflags		=	$(ccommon) -D_X86_
+cdebug		=	-Z7 -Od
+noansi		= 
+cvars		=	-DWIN32 $(noansi) -D_WIN32
+cvarsmt		=	$(cvars) -D_MT
+cvarsdll	=	$(cvarsmt) -D_DLL
+cvarsmtdll	=	$(cvarsmt) -D_DLL
+psxvars		=	-D_POSIX_
+rcflags		=	/r
+rcvars		=	-DWIN32 -D_WIN32 -DWINVER
+lcommon		=	/NODEFAULTLIB /INCREMENTAL:NO /PDB:NONE /RELEASE /NOLOGO
+DLLENTRY	=	@12
+lflags		=	$(lcommon) -align:0x1000
+ldebug		=	-debug:full -debugtype:cv
+conlflags	=	$(lflags) -subsystem:console,$(APPVER) -entry:mainCRTStartup
+guilflags	=	$(lflags) -subsystem:windows,$(APPVER) -entry:WinMainCRTStartup
+dlllflags	=	$(lflags) -entry:_DllMainCRTStartup$(DLLENTRY) -dll
+savlflags	=	$(lflags) -subsystem:windows,$(APPVER) -entry:WinMainCRTStartup
+psxlflags	=	$(lflags) -subsystem:posix -entry:__PosixProcessStartup
+conflags	=	$(conlflags)
+guiflags	=	$(guilflags)
+psxflags	=	$(psxlflags)
+libc		=	libc.lib oldnames.lib
+libcmt		=	libcmt.lib oldnames.lib
+libcdll		=	msvcrt.lib oldnames.lib
+psxlibs		=	libcpsx.lib psxdll.lib psxrtl.lib oldnames.lib
+optlibs		= 
+baselibs	=	kernel32.lib $(optlibs) advapi32.lib
+winlibs		=	$(baselibs) user32.lib gdi32.lib comdlg32.lib winspool.lib
+conlibs		=	$(libc) $(baselibs)
+conlibsmt	=	$(libcmt) $(baselibs)
+conlibsdll	=	$(libcdll) $(baselibs)
+guilibs		=	$(libc) $(winlibs)
+guilibsmt	=	$(libcmt) $(winlibs)
+guilibsdll	=	$(libcdll) $(winlibs)
+olelibs		=	ole32.lib uuid.lib oleaut32.lib $(guilibs)
+olelibsmt	=	ole32.lib uuid.lib oleaut32.lib $(guilibsmt)
+olelibsdll	=	ole32.lib uuid.lib oleaut32.lib $(guilibsdll)
+ole2libs	=	$(olelibs)
+ole2libsmt	=	$(olelibsmt)
+ole2libsdll	=	$(olelibsdll)
+
+
+
+
+# SRCBOX and JAVA_HOME must be set!
+
+PLATFORM=win32
+WIN32APIHOME=c:\msdev\include
+
+CC=$(cc) /c
+LINK=link
+DEL=del
+COPY=copy
+JAVAC=javac -deprecation
+JAVAH=javah
+
+optflags= /Ot
+
+JAVAILIB=$(JAVA_HOME)\lib\jvm.lib 
+#JAVAILIB=$(JAVA_HOME)\lib\javai.lib 
+BUCKETLIBS=user32.lib gdi32.lib shell32.lib ole32.lib comdlg32.lib
+CCONTAINLIBS=user32.lib gdi32.lib shell32.lib ole32.lib oledlg.lib oleaut32.lib advapi32.lib $(JAVAILIB)
+JCONTAINLIBS=$(olelibs) oledlg.lib shell32.lib advapi32.lib $(JAVAILIB)
+PERFORMANCELIBS=$(olelibs) oledlg.lib shell32.lib advapi32.lib $(JAVAILIB)
+
+JAVADIR=$(SRCBOX)\java
+JARSDIR=$(JAVADIR)\jars
+TMPDIR=$(SRCBOX)\junk
+H_DIR=$(JAVADIR)\include
+C_DIR=$(JAVADIR)\c
+OBJ_DIR=$(JAVADIR)\o
+EXE_DIR=$(JAVADIR)\lib
+COMDIR=com\gensym\com
+TESTSDIR=com\gensym\com\tests
+PACKDIR=$(JAVADIR)\$(COMDIR)
+TPACKDIR=$(JAVADIR)\$(TESTSDIR)
+UTILDIR=$(JAVADIR)\com\gensym\ntw\util
+BEANSDIR=$(TPACKDIR)
+# BEANSDIR=c:\jdk1.1\bdk\jars
+PACKAGE=com.gensym.com.
+PACKH=com_gensym_com_
+TPACKAGE=com.gensym.com.tests.
+TESTSH=com_gensym_tests_
+
+
+QUIET=- 
+OUTPUT=-out:
+EXE=.exe
+OBJ=.obj
+LIB_PREFIX=
+LIB_SUFFIX=.lib
+DLL=.dll
+
+JINCLUDE=-I$(H_DIR) -I$(OBJ_DIR) -I$(WIN32APIHOME) -I$(JAVA_HOME)\include -I$(JAVA_HOME)\include\$(PLATFORM)
+DEFINES=-D"DEBUG" -D"DBG" -D"_DEBUG"
+CC_FLAGS=$(cdebug) $(DEFINES) $(JINCLUDE) $(cflags) $(cvars) /Fo$*
+#CC_FLAGS=$(optflags) $(DEFINES) $(JINCLUDE) $(cflags) $(cvars) /Fo$*
+LINK_FLAGS=$(ldebug) -machine:$(CPU) /DLL
+#LINK_FLAGS=-machine:$(CPU) /DLL
+JAVAH_OPTIONS=-jni -d $(OBJ_DIR)
+
+
+TARGETS=javaApp performanceApp
+BEANS=axtools.jar
+DLL_OBJECTS = \
+  $(OBJ_DIR)\autojava$(OBJ) \
+  $(OBJ_DIR)\dispatch$(OBJ) \
+  $(OBJ_DIR)\events$(OBJ) \
+  $(OBJ_DIR)\interfaces$(OBJ) \
+  $(OBJ_DIR)\jemit$(OBJ) \
+  $(OBJ_DIR)\SafeArray$(OBJ) \
+  $(OBJ_DIR)\typeinfo$(OBJ) \
+  $(OBJ_DIR)\vartypes$(OBJ) \
+  $(OBJ_DIR)\xcontain$(OBJ) \
+
+default : $(TARGETS)
+
+all : $(TARGETS) $(BEANS) $(HELPERS)
+
+java: javaApp testbean.jar
+
+##############################
+# Top Level Targets
+##############################
+
+cApp: $(OBJ_DIR)\bucket$(EXE)
+
+javaApp: $(EXE_DIR)\$(LIB_PREFIX)JavaContainer$(DLL) $(PACKDIR)\ActiveXGenericComponent.class $(PACKDIR)\BeanXporter.class $(PACKDIR)\Hwnd.class
+
+performanceApp: $(TPACKDIR)\TestPerformance.class $(EXE_DIR)\$(LIB_PREFIX)JavaPerformance$(DLL) 
+
+TAGS : $(C_DIR)\xcontain.c $(C_DIR)\events.c  $(C_DIR)\jemit.c $(C_DIR)\interfaces.c $(C_DIR)\autojava.c $(C_DIR)\vartypes.c $(C_DIR)\SafeArray.c $(C_DIR)\typeinfo.c
+	cd $(C_DIR)
+	etags xcontain.c events.c jemit.c interfaces.c autojava.c vartypes.c SafeArray.c typeinfo.c
+
+
+##############################
+# Executables
+##############################
+
+$(OBJ_DIR)\bucket$(EXE) : $(OBJ_DIR)\bucket$(OBJ) $(OBJ_DIR)\APP.RES \
+  $(EXE_DIR)\$(LIB_PREFIX)ccontain$(LIB_SUFFIX)
+	$(QUIET) $(DEL) $(OBJ_DIR)\bucket$(EXE) 2>nul
+	$(LINK) $(OUTPUT)$(OBJ_DIR)\bucket$(EXE) $** $(BUCKETLIBS)
+
+
+##############################
+# Libraries
+##############################
+
+$(EXE_DIR)\$(LIB_PREFIX)ccontain$(LIB_SUFFIX): ccontainTarget 
+$(EXE_DIR)\$(LIB_PREFIX)ccontain$(DLL): ccontainTarget
+
+ccontainTarget: $(DLL_OBJECTS) $(OBJ_DIR)\c_only$(OBJ) $(OBJ_DIR)\debug_bkt$(OBJ) $(OBJ_DIR)\dispatch$(OBJ)
+	$(LINK) $(LINK_FLAGS) -out:$(EXE_DIR)\$(LIB_PREFIX)ccontain$(DLL) $** $(CCONTAINLIBS)
+
+
+$(EXE_DIR)\$(LIB_PREFIX)JavaContainer$(LIB_SUFFIX): JavaContainerTarget
+$(EXE_DIR)\$(LIB_PREFIX)JavaContainer$(DLL): JavaContainerTarget
+
+JavaContainerTarget: $(DLL_OBJECTS)
+	$(LINK) $(LINK_FLAGS) -out:$(EXE_DIR)\$(LIB_PREFIX)JavaContainer$(DLL) $** $(JCONTAINLIBS)
+	copy $(EXE_DIR)\$(LIB_PREFIX)JavaContainer$(DLL) $(EXE_DIR)\$(LIB_PREFIX)JavaContainer_g$(DLL) 
+
+$(EXE_DIR)\$(LIB_PREFIX)JavaPerformance$(LIB_SUFFIX): JavaPerformanceTarget
+$(EXE_DIR)\$(LIB_PREFIX)JavaPerformance$(DLL): JavaPerformanceTarget
+
+JavaPerformanceTarget: $(OBJ_DIR)\performance$(OBJ) $(DLL_OBJECTS)
+	$(LINK) $(LINK_FLAGS) -out:$(EXE_DIR)\$(LIB_PREFIX)JavaPerformance$(DLL) $** $(PERFORMANCELIBS)
+	copy $(EXE_DIR)\$(LIB_PREFIX)JavaPerformance$(DLL) $(EXE_DIR)\$(LIB_PREFIX)JavaPerformance_g$(DLL) 
+
+
+##############################
+# Object Files
+##############################
+
+$(OBJ_DIR)\bucket$(OBJ): $(C_DIR)\bucket.c $(H_DIR)\shared.h $(H_DIR)\bucket.h $(H_DIR)\dprintf.h $(OBJ_DIR)\$(PACKH)ActiveXProxy.h $(OBJ_DIR)\$(PACKH)NativeMethodBroker.h
+	$(QUIET) $(DEL) $(OBJ_DIR)\bucket$(OBJ) 2>nul
+	$(CC) $(CC_FLAGS) $(C_DIR)\bucket.c
+
+$(OBJ_DIR)\c_only$(OBJ): $(C_DIR)\c_only.c $(H_DIR)\shared.h $(H_DIR)\dprintf.h
+	$(QUIET) $(DEL) $(OBJ_DIR)\c_only$(OBJ) 2>nul
+	$(CC) $(CC_FLAGS) $(C_DIR)\c_only.c
+
+$(OBJ_DIR)\xcontain$(OBJ): $(C_DIR)\xcontain.c $(H_DIR)\shared.h $(H_DIR)\dprintf.h $(H_DIR)\xcontain.h
+	$(QUIET) $(DEL) $(OBJ_DIR)\xcontain$(OBJ) 2>nul
+	$(CC) $(CC_FLAGS) $(C_DIR)\xcontain.c
+
+$(OBJ_DIR)\events$(OBJ): $(C_DIR)\events.c $(H_DIR)\shared.h $(H_DIR)\dprintf.h
+	$(QUIET) $(DEL) $(OBJ_DIR)\events$(OBJ) 2>nul
+	$(CC) $(CC_FLAGS) $(C_DIR)\events.c
+
+$(OBJ_DIR)\performance$(OBJ): $(C_DIR)\performance.c $(H_DIR)\shared.h $(H_DIR)\dprintf.h $(H_DIR)\performance.h 
+	$(QUIET) $(DEL) $(OBJ_DIR)\performance$(OBJ) 2>nul
+	$(CC) $(CC_FLAGS) $(C_DIR)\performance.c
+
+$(OBJ_DIR)\typeinfo$(OBJ): $(C_DIR)\typeinfo.c $(H_DIR)\shared.h $(H_DIR)\dprintf.h
+	$(QUIET) $(DEL) $(OBJ_DIR)\typeinfo$(OBJ) 2>nul
+	$(CC) $(CC_FLAGS) $(C_DIR)\typeinfo.c
+
+$(OBJ_DIR)\jemit$(OBJ): $(C_DIR)\jemit.c $(H_DIR)\shared.h $(H_DIR)\dprintf.h 
+	$(QUIET) $(DEL) $(OBJ_DIR)\jemit$(OBJ) 2>nul
+	$(CC) $(CC_FLAGS) $(C_DIR)\jemit.c
+
+$(OBJ_DIR)\interfaces$(OBJ): $(C_DIR)\interfaces.c $(H_DIR)\shared.h $(H_DIR)\dprintf.h
+	$(QUIET) $(DEL) $(OBJ_DIR)\interfaces$(OBJ) 2>nul
+	$(CC) $(CC_FLAGS) $(C_DIR)\interfaces.c
+
+$(OBJ_DIR)\dispatch$(OBJ): $(C_DIR)\dispatch.c $(H_DIR)\shared.h $(H_DIR)\dprintf.h
+	$(QUIET) $(DEL) $(OBJ_DIR)\dispatch$(OBJ) 2>nul
+	$(CC) $(CC_FLAGS) $(C_DIR)\dispatch.c
+
+$(OBJ_DIR)\clipboard$(OBJ): $(C_DIR)\clipboard.c $(H_DIR)\shared.h $(H_DIR)\dprintf.h
+	$(QUIET) $(DEL) $(OBJ_DIR)\clipboard$(OBJ) 2>nul
+	$(CC) $(CC_FLAGS) $(C_DIR)\clipboard.c
+
+$(OBJ_DIR)\debug_bkt$(OBJ): $(C_DIR)\debug_bkt.c $(H_DIR)\shared.h $(H_DIR)\dprintf.h
+	$(QUIET) $(DEL) $(OBJ_DIR)\debug_bkt$(OBJ) 2>nul
+	$(CC) $(CC_FLAGS) $(C_DIR)\debug_bkt.c
+
+$(OBJ_DIR)\autojava$(OBJ): $(C_DIR)\autojava.c $(H_DIR)\shared.h $(H_DIR)\dprintf.h
+	$(QUIET) $(DEL) $(OBJ_DIR)\autojava$(OBJ) 2>nul
+	$(CC) $(CC_FLAGS) $(C_DIR)\autojava.c
+
+$(OBJ_DIR)\vartypes$(OBJ): $(C_DIR)\vartypes.c $(H_DIR)\shared.h $(H_DIR)\dprintf.h
+	$(QUIET) $(DEL) $(OBJ_DIR)\vartypes$(OBJ) 2>nul
+	$(CC) $(CC_FLAGS) $(C_DIR)\vartypes.c
+
+$(OBJ_DIR)\SafeArray$(OBJ): $(C_DIR)\SafeArray.c $(H_DIR)\shared.h $(H_DIR)\dprintf.h
+	$(QUIET) $(DEL) $(OBJ_DIR)\SafeArray$(OBJ) 2>nul
+	$(CC) $(CC_FLAGS) $(C_DIR)\SafeArray.c
+
+$(OBJ_DIR)\APP.RES: $(C_DIR)\app.rc $(H_DIR)\bucket.h $(H_DIR)\dialogs.h $(C_DIR)\dialogs.dlg
+	$(rc) $(JINCLUDE) -D"DEBUG" /Fo$(OBJ_DIR)\APP.RES -r $(C_DIR)\app.rc
+
+
+##############################
+# Java Class Files
+##############################
+
+$(PACKDIR)\ActiveXGenericComponent.class :	$(PACKDIR)\ActiveXProxy.class $(PACKDIR)\ActiveXGenericComponent.java  $(PACKDIR)\Guid.class $(PACKDIR)\Variant.class $(PACKDIR)\ActiveXDefaultComponentImpl.class $(PACKDIR)\ActiveXModes.class
+	$(QUIET) $(DEL) $(PACKDIR)\ActiveXGenericComponent.class 2>nul
+	$(JAVAC) $(PACKDIR)\ActiveXGenericComponent.java
+
+$(PACKDIR)\ActiveXProxy.class :	$(PACKDIR)\NativeMethodBroker.class $(PACKDIR)\ActiveXProxy.java
+	$(QUIET) $(DEL) $(PACKDIR)\ActiveXProxy.class 2>nul
+	$(JAVAC) $(PACKDIR)\ActiveXProxy.java
+
+$(PACKDIR)\NativeMethodBroker.class :	$(PACKDIR)\NativeMethodBroker.java $(PACKDIR)\Variant.class
+	$(JAVAC) $(PACKDIR)\NativeMethodBroker.java
+
+$(PACKDIR)\Guid.class :	$(PACKDIR)\Guid.java
+	$(JAVAC) $(PACKDIR)\Guid.java
+
+$(PACKDIR)\InsertableActiveXControl.class :	$(PACKDIR)\ActiveXDefaultComponentImpl.java
+	$(JAVAC) $(PACKDIR)\InsertableActiveXControl.java
+
+$(PACKDIR)\ActiveXModes.class :	$(PACKDIR)\ActiveXModes.java
+	$(JAVAC) $(PACKDIR)\ActiveXModes.java
+
+$(PACKDIR)\Variant.class :	$(PACKDIR)\Variant.java
+	$(JAVAC) $(PACKDIR)\Variant.java
+
+$(PACKDIR)\ActiveXConverter.class :	$(PACKDIR)\ActiveXConverter.java
+	$(JAVAC) $(PACKDIR)\ActiveXConverter.java
+
+$(PACKDIR)\BeanXorter.class :	$(PACKDIR)\BeanXporter.java
+	$(JAVAC) $(PACKDIR)\BeanXporter.java
+
+$(PACKDIR)\ActiveXTraceTool.class : $(PACKDIR)\ActiveXTraceTool.java
+	$(JAVAC) $(PACKDIR)\ActiveXTraceTool.java
+
+$(PACKDIR)\JavaClass.class : $(PACKDIR)\JavaClass.java
+	$(JAVAC) $(PACKDIR)\JavaClass.java
+
+$(PACKDIR)\ActiveXDispatchException.class : $(PACKDIR)\ActiveXDispatchException.java
+	$(JAVAC) $(PACKDIR)\ActiveXDispatchException.java
+
+$(PACKDIR)\Excepinfo.class : $(PACKDIR)\Excepinfo.java
+	$(JAVAC) $(PACKDIR)\Excepinfo.java
+
+$(PACKDIR)\Hwnd.class :	$(PACKDIR)\Hwnd.java
+	$(QUIET) $(DEL) $(PACKDIR)\Hwnd.class 2>nul
+	$(JAVAC) $(PACKDIR)\Hwnd.java
+
+$(TPACKDIR)\TestPerformance.class : $(TPACKDIR)\TestPerformance.java	
+	$(QUIET) $(DEL) $(TPACKDIR)\TestPerformance.class 2>nul
+	$(JAVAC) $(TPACKDIR)\TestPerformance.java
+
+
+
+##############################
+# Javah-generated H Files
+##############################
+
+javahFiles: $(OBJ_DIR)\$(PACKH)NativeMethodBroker.h $(OBJ_DIR)\$(PACKH)ActiveXProxy.h $(OBJ_DIR)\$(PACKH)ActiveXGenericComponent.h $(OBJ_DIR)\$(PACKH)BeanXporter.h $(OBJ_DIR)\$(PACKH)JavaClass.h $(OBJ_DIR)\$(TESTSH)TestPerformance.h  
+
+$(OBJ_DIR)\$(PACKH)NativeMethodBroker.h : $(PACKDIR)\NativeMethodBroker.class
+	$(QUIET) $(DEL) $(OBJ_DIR)\$(PACKH)NativeMethodBroker.h 2>nul
+	$(JAVAH) $(JAVAH_OPTIONS) $(PACKAGE)NativeMethodBroker
+
+$(OBJ_DIR)\$(PACKH)ActiveXProxy.h : $(PACKDIR)\ActiveXProxy.class
+	$(QUIET) $(DEL) $(OBJ_DIR)\$(PACKH)ActiveXProxy.h 2>nul
+	$(JAVAH) $(JAVAH_OPTIONS) $(PACKAGE)ActiveXProxy
+
+$(OBJ_DIR)\$(PACKH)ActiveXGenericComponent.h : $(PACKDIR)\ActiveXGenericComponent.class
+	$(QUIET) $(DEL) $(OBJ_DIR)\$(PACKH)ActiveXGenericComponent.h 2>nul
+	$(JAVAH) $(JAVAH_OPTIONS) $(PACKAGE)ActiveXGenericComponent
+
+$(OBJ_DIR)\$(PACKH)BeanXporter.h : $(PACKDIR)\BeanXporter.class
+	$(QUIET) $(DEL) $(OBJ_DIR)\$(PACKH)BeanXporter.h 2>nul
+	$(JAVAH) $(JAVAH_OPTIONS) $(PACKAGE)BeanXporter
+
+$(OBJ_DIR)\$(PACKH)JavaClass.h : $(PACKDIR)\JavaClass.class
+	$(QUIET) $(DEL) $(OBJ_DIR)\$(PACKH)JavaClass.h 2>nul
+	$(JAVAH) $(JAVAH_OPTIONS) $(PACKAGE)JavaClass
+
+$(OBJ_DIR)\$(TESTSH)TestPerformance.h : $(TPACKDIR)\TestPerformance.class
+	$(QUIET) $(DEL) $(OBJ_DIR)\$(TESTSH)TestPerformance.h 2>nul
+	$(JAVAH) $(JAVAH_OPTIONS) $(TPACKAGE)TestPerformance
+
+
+##############################
+# TestBean
+##############################
+
+
+#$(TPACKDIR)\MyButton.class : $(TPACKDIR)\MyButton.java
+#	$(JAVAC) $(TPACKDIR)\MyButton.java
+
+
+axtools.jar : $(PACKDIR)\ActiveXGenericComponent.class \
+	$(PACKDIR)\ActiveXTraceTool.class \
+	javahFiles
+	cd $(JAVADIR)
+	$(QUIET) $(DEL) axtools.jar 2>nul
+	jar cfm axtools.jar <<manifest.tmp $(COMDIR)\ActiveXGenericComponent.class $(COMDIR)\ActiveXTraceTool.class 
+Name: com/gensym/com/ActiveXGenericComponent.class
+Java-Bean: True
+
+Name: com/gensym/com/ActiveXTraceTool.class
+Java-Bean: True
+<<
+	$(COPY) axtools.jar $(JARSDIR)\axtools.jar
+	$(QUIET) $(DEL) axtools.jar 2>nul
+	$(QUIET) $(DEL) manifest.tmp 2>nul
+
+
+##############################
+# Clean
+##############################
+
+clean : 
+	cd $(OBJ_DIR)
+	$(DEL) $(TESTSH)*.c $(TESTSH)*.h $(PACKH)*.h *.RES *$(OBJ) *.jar
+	$(DEL) bucket$(EXE)
+	cd $(PACKDIR)
+	$(DEL) *.class
+	cd $(TPACKDIR)
+	$(DEL) *.class
+	cd $(BEANSDIR)
+	$(DEL) axtools.jar
+	$(DEL) sheet.jar
+	cd $(EXE_DIR)
+	$(DEL) J*$(DLL) J*.exp J*.ilk J*.lib J*.pdb J*.mak J*.mdp J*.ncb J*.pch 
+	$(DEL) cc*$(DLL) cc*.exp cc*.ilk cc*.lib cc*.pdb cc*.mak cc*.mdp cc*.ncb cc*.pch 
+	$(DEL) bucket.lib bucket.exp

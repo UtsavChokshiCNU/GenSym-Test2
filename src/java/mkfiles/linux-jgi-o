@@ -1,0 +1,117 @@
+# Sample makefile for JGI programs.
+#   GSI Version 5.0
+# Machine type: Linux
+
+#
+# JAVA_HOME should be set!
+# SPIN_ID should be set!
+# SRCBOX should be set!
+# DSTBOX should be set!
+ 
+ODIR = o
+PACKAGE_PREFIX = com.gensym.jgi.
+PP = com_gensym_jgi_
+BT_JAVA = ${SRCBOX}/java
+GSISRC = $(SRCBOX)/gsi/c
+GSIBOX = $(DSTBOX)/gsi/$(ODIR)
+EXTBOX = $(DSTBOX)/ext/$(ODIR)
+RTLBOX = $(DSTBOX)/rtl/$(ODIR)
+
+
+JAVA_DIR      = ${BT_JAVA}/com/gensym/jgi
+C_DIR         = ${BT_JAVA}/c
+OBJ_DIR       = ${DSTBOX}/javalink/${ODIR}
+EXE_DIR       = ${DSTBOX}/javalink/${ODIR}
+H_DIR         = ${BT_JAVA}/include
+GSIDIR = $(DSTBOX)/gsi
+RTLDIR = $(DSTBOX)/rtl
+EXTDIR = $(DSTBOX)/ext
+# Uncomment to see preprocessed output
+#CDEBUG_FLAGS  = -g -save-temps
+CDEBUG_FLAGS  = -g
+C_FLAGS  = -shared $(CDEBUG_FLAGS)
+INCLUDE_FLAGS = -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux -I${BT_JAVA}/include -I$(GSISRC)
+COMMON=-D_REENTRANT -DNEW_CLASS_MAPPING
+CCFLAGS       = $(COMMON) $(C_FLAGS) $(cvars) $(INCLUDE_FLAGS)
+
+link = ld
+CC = gcc
+JAVAH = $(JAVA_HOME)/bin/javah
+JAVAC = $(JAVA_HOME)/bin/javac
+JAVAC_OPTIONS = -verbose
+JAVAC_OPTIONS = 
+JAVAH_OPTIONS = -jni -d $(H_DIR)
+JAVAH_STUBS_OPTIONS = -d $(C_DIR) -stubs
+
+LIB_DIR = -L. -L${BT_JAVA}/lib
+DEFAULT_LIBS = -lgsi -ltcp -lrtl
+PLATFORM_LIBS = -lpthread -lm -lnsl
+# removed these, used in solaris:  -lsocket -lintl
+ 
+DEFAULT_LIBS = $(GSIDIR)/$(ODIR)/libgsi.a $(EXTDIR)/$(ODIR)/libtcp.a $(RTLDIR)/$(ODIR)/librtl.a
+LIBS           = $(LIB_DIR) $(DEFAULT_LIBS) $(PLATFORM_LIBS)
+LINKFLAGS      = -G 
+LINKDEBUGFLAGS = -z defs
+
+H_FILES = $(GSISRC)/gsi_main.h $(H_DIR)/jni_gi.h $(H_DIR)/jgi_gsi_options.h\
+	  $(H_DIR)/$(PP)JGInterface.h $(H_DIR)/$(PP)GsiLoopThread.h\
+	  $(GSISRC)/gsi_misc.h\
+	  $(H_DIR)/jgi_locks_generate.h $(H_DIR)/jgi_info.h 
+		  
+EXECUTABLES = $(EXE_DIR)/libJgiInterface.so
+JAVACLASSES = $(JAVA_DIR)/G2Gateway.class	 $(JAVA_DIR)/G2Connection.java
+
+JAVA_FILES =  $(OBJ_DIR)/jni_gi.o $(GSIBOX)/gsi_misc.o\
+			  $(OBJ_DIR)/jni_gi_gsiconv.o $(OBJ_DIR)/jni_gi_javaconv.o\
+			  $(OBJ_DIR)/jgi_locks.o $(OBJ_DIR)/jni_gi_utils.o $(OBJ_DIR)/jni_gi_init.o
+
+ALL : $(JAVACLASSES) $(EXECUTABLES)
+ 
+$(EXE_DIR)/libJgiInterface.so : $(JAVA_FILES) $(DEFAULT_LIBS)
+	$(link) -o $(EXE_DIR)/libJgiInterface.so $(LINKFLAGS) $(JAVA_FILES) $(LIBS)
+
+$(OBJ_DIR)/jgi_locks.o : $(C_DIR)/jgi_locks.c $(H_FILES)
+	$(CC) -c $(CCFLAGS) $(C_DIR)/jgi_locks.c -o $(OBJ_DIR)/jgi_locks.o
+
+
+$(OBJ_DIR)/jni_gi.o : $(C_DIR)/jni_gi.c $(H_FILES)
+	$(CC) -c $(CCFLAGS) $(C_DIR)/jni_gi.c -o $(OBJ_DIR)/jni_gi.o
+
+$(OBJ_DIR)/jni_gi_utils.o : $(C_DIR)/jni_gi_utils.c $(H_FILES)
+	$(CC) -c $(CCFLAGS) $(C_DIR)/jni_gi_utils.c -o $(OBJ_DIR)/jni_gi_utils.o
+
+$(OBJ_DIR)/jni_gi_init.o : $(C_DIR)/jni_gi_init.c $(H_FILES)
+	$(CC) -c $(CCFLAGS) $(C_DIR)/jni_gi_init.c -o $(OBJ_DIR)/jni_gi_init.o
+
+$(OBJ_DIR)/jni_gi_gsiconv.o : $(C_DIR)/jni_gi_gsiconv.c $(H_FILES)
+	$(CC) -c $(CCFLAGS) $(C_DIR)/jni_gi_gsiconv.c -o $(OBJ_DIR)/jni_gi_gsiconv.o
+
+$(OBJ_DIR)/jni_gi_javaconv.o : $(C_DIR)/jni_gi_javaconv.c $(H_FILES)
+	$(CC) -c $(CCFLAGS) $(C_DIR)/jni_gi_javaconv.c -o $(OBJ_DIR)/jni_gi_javaconv.o
+
+ 
+#
+# Dependencies on generated files
+#
+
+
+
+$(H_DIR)/$(PP)GsiLoopThread.h : $(JAVA_DIR)/GsiLoopThread.class
+	$(JAVAH) $(JAVAH_OPTIONS) $(PACKAGE_PREFIX)GsiLoopThread
+	@ touch $(H_DIR)/$(PP)GsiLoopThread.h
+
+$(H_DIR)/$(PP)JGInterface.h : $(JAVA_DIR)/JGInterface.class
+	$(JAVAH) $(JAVAH_OPTIONS) $(PACKAGE_PREFIX)JGInterface
+	@ touch $(H_DIR)/$(PP)JGInterface.h
+
+$(JAVA_DIR)/G2Gateway.class: $(JAVA_DIR)/G2Gateway.java
+	$(JAVAC) $(JAVAC_OPTIONS) $(JAVA_DIR)/G2Gateway.java
+
+$(JAVA_DIR)/JGInterface.class: $(JAVA_DIR)/JGInterface.java 
+	$(JAVAC) $(JAVAC_OPTIONS) $(JAVA_DIR)/JGInterface.java
+
+$(JAVA_DIR)/GsiLoopThread.class: $(JAVA_DIR)/GsiLoopThread.java
+	$(JAVAC) $(JAVAC_OPTIONS) $(JAVA_DIR)/GsiLoopThread.java
+
+clean :
+	rm -f $(EXE_DIR)/libJgiInterface.so $(OBJ_DIR)/*.o $(C_DIR)/com_gensym_jgi_*.c $(H_DIR)/com_gensym_jgi*.h $(JAVA_DIR)/*.class

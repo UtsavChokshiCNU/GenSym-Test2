@@ -1,0 +1,152 @@
+<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.04 [en] (WinNT; I) [Netscape]">
+   <TITLE>Telewindows2 ActiveX Controls</TITLE>
+<!-- Created May 18th, 1998 to demonstrate use of Telewindows2 ActiveX
+     controls using VBScript in a browser environment (only works
+     in Microsoft InternetExplorer 3.02 or greater -->
+<SCRIPT LANGUAGE="VBScript">
+<!--
+' When the page is done, close the connection
+Sub window_onUnload()
+call TwConnector1.closeConnection()
+end sub
+
+' When loading the page, hook the beans together, and
+' get the list of workspaces
+Sub window_onLoad()
+' The WorkspacePanel will be notified whenever a new
+' workspace is retrieved
+call ItemRetriever1.addItemRetrievalListener(MultipleWorkspacepanel1)
+' If "show" or "hide" is called, the WorkspacePanel
+' will be notified
+call TwConnector1.addWorkspaceShowingListener(MultipleWorkspacepanel1)
+
+' Connect to G2 and set the user mode
+call TwConnector1.createConnection()
+call TwConnector1.setUserMode(ScriptUtilities1.internSymbol("END-USER"))
+
+' Get a list of workspaces (this is a "Sequence" of "Symbols")
+WsList = TWConnector1.getNamedWorkspaces()
+ Dim i
+  For i = 0 To WsList.size() - 1
+   ' addItem1 corresponds to method signature: addItem(String item)
+    WorkspaceList.addItem1(WsList.elementAt(i).getPrintValue())
+  Next
+end sub
+
+
+' What happens when the user double-clicks on
+' one of the workspaces in the list
+Sub WorkspaceList_actionPerformed(ActionEvent1)
+  ' Set the selected name as the name of the Item
+  ' to be retrieved next
+  ItemRetriever1.setItemName(WorkspaceList.SelectedItem)
+  ' force the retrieve to happen now
+  call ItemRetriever1.retrieveItemForVB()
+
+end sub
+-->
+    </SCRIPT>
+</HEAD>
+<BODY>
+
+<FONT SIZE=+2>Telewindows2 Workspace Demo</FONT>
+using ActiveX Controls and VBScript
+<P>
+
+<!-- This is a nice control for showing workspaces, because
+     it comes with its own scroll-bars, and it can be a
+     WorkspaceShowingListener
+-->
+<OBJECT ID="MultipleWorkspacePanel1" WIDTH=511 HEIGHT=347
+     CLASSID="CLSID:C5BFC7E0-99AB-11D1-96B7-00609758624E">
+<PARAM NAME="Enabled" VALUE="-1">
+<PARAM NAME="UnitIncrement" VALUE="0">
+<PARAM NAME="ForeColor" VALUE="0">
+<PARAM NAME="Visible" VALUE="-1">
+<PARAM NAME="BackColor" VALUE="12632256">
+<PARAM NAME="ComponentCount" VALUE="3">
+<PARAM NAME="Font" VALUE="MS Sans Serif">
+<PARAM NAME="Name" VALUE="panel1">
+<PARAM NAME="AlignmentY" VALUE="0.5">
+<PARAM NAME="AlignmentX" VALUE="0.5">
+<PARAM NAME="ShowNewWorkspace" VALUE="-1">
+<PARAM NAME="Selection" VALUE="">
+<PARAM NAME="BlockIncrement" VALUE="0">
+<PARAM NAME="KeepInHistory" VALUE="-1"></OBJECT>
+
+<P>
+<FONT SIZE=+1>List
+of Workspaces </FONT>(Double click on desired name)
+<P>
+<OBJECT ID="WorkspaceList" WIDTH=192 HEIGHT=137
+ CLASSID="CLSID:7E7491E0-99AC-11D1-96B7-00609758624E">
+<PARAM NAME="Rows" VALUE="4">
+<PARAM NAME="Enabled" VALUE="-1">
+<PARAM NAME="MultipleMode" VALUE="0">
+<PARAM NAME="VisibleIndex" VALUE="-1">
+<PARAM NAME="ForeColor" VALUE="0">
+<PARAM NAME="Visible" VALUE="-1">
+<PARAM NAME="SelectedIndex" VALUE="-1">
+<PARAM NAME="BackColor" VALUE="12632256">
+<PARAM NAME="ItemCount" VALUE="0">
+<PARAM NAME="Font" VALUE="MS Sans Serif">
+<PARAM NAME="CurrentSelection" VALUE="">
+<PARAM NAME="Name" VALUE="list0">
+<PARAM NAME="SelectedItem" VALUE=" ">
+<PARAM NAME="AttributeName" VALUE=""></OBJECT>
+
+<!-- This control gives access to G2, and can be used
+     for getting live workspaces and for changing the user mode.
+-->
+<OBJECT ID="TwConnector1" WIDTH=35 HEIGHT=35
+     CLASSID="CLSID:E5466320-DEC8-11D1-B49B-006008C66714">
+<PARAM NAME="Shared" VALUE="0">
+<PARAM NAME="GsiInterfaceName" VALUE="TW-CONNECTOR-BEAN-INTERFACE">
+<PARAM NAME="Enabled" VALUE="-1">
+<PARAM NAME="IconManager" VALUE="">
+<PARAM NAME="ForceNew" VALUE="-1">
+<PARAM NAME="ForeColor" VALUE="0">
+<PARAM NAME="KbName" VALUE=" ">
+<PARAM NAME="Visible" VALUE="-1">
+<PARAM NAME="BrokerURL" VALUE=" ">
+<PARAM NAME="BackColor" VALUE="12632256">
+<PARAM NAME="Permanent" VALUE="-1">
+<PARAM NAME="Font" VALUE="MS Sans Serif">
+<PARAM NAME="G2State" VALUE="">
+<PARAM NAME="InterfaceClass" VALUE="UI-CLIENT-INTERFACE">
+<PARAM NAME="RemoteProcessInitString" VALUE="">
+<PARAM NAME="Host" VALUE="localhost">
+<PARAM NAME="Name" VALUE=" ">
+<PARAM NAME="UserMode" VALUE="">
+<PARAM NAME="Connection" VALUE="">
+<PARAM NAME="Kb" VALUE="">
+<PARAM NAME="NamedWorkspaces" VALUE="">
+<PARAM NAME="DialogManager" VALUE="">
+<PARAM NAME="Port" VALUE="1111">
+<PARAM NAME="GatewayClass" VALUE="com.gensym.ntw.TwGateway"></OBJECT>
+
+<!-- Two Invisible controls -->
+
+<!-- This control is used to make the "Symbol" objects
+     required by some Javalink methods. -->
+<OBJECT ID="ScriptUtilities1" WIDTH=0 HEIGHT=0
+     CLASSID="CLSID:D1CD7870-CE7C-11D1-B49D-006008C5F95B">
+</OBJECT>
+<!-- An event-driven control for getting Items from G2 -->
+<OBJECT ID="ItemRetriever1" WIDTH=1 HEIGHT=0
+     CLASSID="CLSID:BA022F90-99AC-11D1-96B7-00609758624E">
+<PARAM NAME="GsiInterfaceClassName" VALUE="UI-CLIENT-INTERFACE">
+<PARAM NAME="ConnectionInfo" VALUE="">
+<PARAM NAME="BrokerURL" VALUE=" ">
+<!-- We will only want to get Workspaces in this demo -->
+<PARAM NAME="ItemClassName" VALUE="KB-WORKSPACE">
+<PARAM NAME="HostName" VALUE="localhost">
+<PARAM NAME="ConnectionClassName" VALUE="com.gensym.ntw.TwGateway">
+<PARAM NAME="Port" VALUE="1111">
+<PARAM NAME="ItemName" VALUE=" "></OBJECT>
+
+</BODY>
+</HTML>
