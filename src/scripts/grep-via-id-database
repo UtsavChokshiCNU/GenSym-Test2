@@ -1,0 +1,30 @@
+#!/bin/sh
+
+if [ "$1" = "-help" ]; then
+  echo "Usage: $0 regex-pattern"
+  echo "Search your directory's ID database."
+  exit 1
+fi
+
+# Yeck. The pattern [^a-z] does not match newline!
+
+Pattern="$1"
+SourceDirectory=`pwd`
+
+
+if [ -f ./ID ]; then
+  echo -n
+else
+  echo Cannot find the identifier database, ID.
+  exit
+fi
+
+Files=`/home/ab/bin/lid $LidOptions -n "$Pattern"`
+
+# The /dev/null forces grep to always include filenames in its output.
+# We need to use the gnu egrep in /usr/local/bin/
+# -n to include line numbers. Emacs wants them especially.
+
+if [ ! -z "$Files" ]; then
+  exec ${GREPPATH:-/usr/local/bin/}egrep -ni "$Pattern" $Files /dev/null
+fi
