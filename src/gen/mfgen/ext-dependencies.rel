@@ -1,0 +1,320 @@
+;;; -*- Mode: LISP; Syntax: Common-Lisp; Base: 10; Package: USER -*-
+(in-package "USER")
+
+;;;; Makefile generator relational database: ext-dependencies.rel
+
+;;; Copyright (c) 1986-2017 Gensym Corporation.
+;;; All Rights Reserved.
+
+;;; author: Mark E. Staknis
+
+;;; This file contains the relation that stores the dependencies
+;;; for creation of files in the ext directory.
+
+;;; Notes:
+
+;;; Modifications:
+
+
+(setq ext-dependency-relation
+ '(( target-group  type-group
+                        platform-group
+                                    dependency    dependency-type
+                                                       local )
+;;   ------------  ---- ----------- ------------  ---- -----
+    ;; main dummy
+   ((all           dum  _all        g2libs        dum  y     )
+    (all           dum  _all        overlay       exe  y     )
+    (all           dum  _all        g2passwd      exe  y     )
+    (all           dum  _all        hostlookup    exe  y     )
+    (all           dum  _all        backtrac      obj  y     )
+    (all           dum  _all        nsleep        obj  y     )
+    (all           dum  sparcsol    lucidsrv      obj  y     )
+
+    ;; other dummies
+    (g2libs        dum  _all        libcprim      lib  y     )
+    (g2libs        dum  _all        libforgn      lib  y     )
+    (g2libs        dum  _all        libtcp        lib  y     )
+    (g2libs        dum  _all        libgsec       lib  y     )
+    (g2libs        dum  _all        libnogsec     lib  y     )
+
+    (g2passwd      exe  _all        g2passwd      obj  y     )
+    (g2passwd      exe  _all        g2pwaux       obj  y     )
+    (g2passwd      exe  _all        md5_all       obj  y     )
+    (g2passwd      exe  intelnt     g2pwd         res  y     )
+    (overlay       exe  _all        overlay       obj  y     )
+    (hostlookup    exe  _all        hostlookup    obj  y     )
+
+    (g2pwd         res  intelnt     g2pwd         rc   y     )
+
+    (clipboard     obj  _all        cprim         h    y     )
+    (clipboard     obj  _all        graphics      h    y     )
+
+    (cprim         obj  _all        cprim         h    y     )
+    (cprim         obj  _all        trace         h    y     )
+
+    (cprocess      obj  _all        cprim         h    y     )
+    (cprocess      obj  intelnt     msincls       h    y     )
+
+    (cstreams      obj  _all        cprim         h    y     )
+
+    (ctime         obj  _all        cprim         h    y     )
+
+    (icmp          obj  _all        cprim         h    y     )
+    (icmp          obj  _all        netevent      h    y     )
+    (icmp          obj  _all        networks      h    y     )
+    (icmp          obj  intelnt     icmp          h    y     )
+    (icmp          obj  intelnt     msincls       h    y     )
+
+
+    (dialogs       obj  intelnt     cprim         h    y     )
+    (dialogs       obj  intelnt     ddrsc         h    y     )
+    (dialogs       obj  intelnt     dyndlgs       h    y     )
+    (dialogs       obj  intelnt     graphics      h    y     )
+    (dialogs       obj  intelnt     msincls       h    y     )
+
+    (dtoa          obj  _all        dtoa          h    y     )
+
+    (event         obj  _all        cprim         h    y     )
+    (event         obj  _all        eventfns      h    y     )
+    (event         obj  _all        netevent      h    y     )
+    (event         obj  _all        networks      h    y     )
+    (event         obj  intelnt     winerr        h    y     )
+
+    (events        obj  _all        cprim         h    y     )
+    (events        obj  _all        graphics      h    y     )
+    (events        obj  _all        networks      h    y     )
+    (events        obj  intelnt     msincls       h    y     )
+
+    (filedlg       obj  intelnt     filedlg       h    y     )
+
+    (g2ptrs        obj  _all        cprim         h    y     )
+
+    (g2signal      obj  _all        cprim         h    y     )
+
+    (g_fmt         obj  _all        dtoa          h    y     )
+
+    (graphics      obj  _all        cprim         h    y     )
+    (graphics      obj  _all        graphics      h    y     )
+    (graphics      obj  intelnt     msincls       h    y     )
+
+    (images        obj  _all        cprim         h    y     )
+    (images        obj  _all        graphics      h    y     )
+
+    (keypress      obj  _all        cprim         h    y     )
+    (keypress      obj  _all        graphics      h    y     )
+
+    (md5_all       obj  _all        md5_all       h    y     )
+
+    (mdi           obj  intelnt     cprim         h    y     )
+    (mdi           obj  intelnt     graphics      h    y     )
+    (mdi           obj  intelnt     msincls       h    y     )
+    (mdi           obj  intelnt     netevent      h    y     )
+    (mdi           obj  intelnt     networks      h    y     )
+
+    (menus         obj  intelnt     cprim         h    y     )
+    (menus         obj  intelnt     graphics      h    y     )
+    (menus         obj  intelnt     msincls       h    y     )
+    (menus         obj  intelnt     netevent      h    y     )
+    (menus         obj  intelnt     networks      h    y     )
+
+    (msinits       obj  intelnt     cprim         h    y     )
+    (msinits       obj  intelnt     graphics      h    y     )
+    (msinits       obj  intelnt     msincls       h    y     )
+
+    (msmain        obj  intelnt     cprim         h    y     )
+    (msmain        obj  intelnt     eventfns      h    y     )
+    (msmain        obj  intelnt     graphics      h    y     )
+    (msmain        obj  intelnt     msincls       h    y     )
+    (msmain        obj  intelnt     netevent      h    y     )
+    (msmain        obj  intelnt     networks      h    y     )
+
+    (networks      obj  _all        cprim         h    y     )
+    (networks      obj  _all        eventfns      h    y     )
+    (networks      obj  _all        netevent      h    y     )
+    (networks      obj  _all        networks      h    y     )
+    (networks      obj  _all        trace         h    y     )
+    (networks      obj  intelnt     msincls       h    y     )
+
+    (ntevent       obj  intelnt     cprim         h    y     )
+    (ntevent       obj  intelnt     graphics      h    y     )
+    (ntevent       obj  intelnt     msincls       h    y     )
+    (ntevent       obj  intelnt     netevent      h    y     )
+    (ntevent       obj  intelnt     networks      h    y     )
+    (ntevent       obj  intelnt     trace         h    y     )
+
+    (process       obj  _all        cprim         h    y     )
+    (process       obj  _all        netevent      h    y     )
+    (process       obj  _all        networks      h    y     )
+
+    (sckevent      obj  _all        cprim         h    y     )
+    (sckevent      obj  _all        netevent      h    y     )
+    (sckevent      obj  _all        networks      h    y     )
+    (sckevent      obj  _all        trace         h    y     )
+
+    (tcp           obj  _all        cprim         h    y     )
+    (tcp           obj  _all        netevent      h    y     )
+    (tcp           obj  _all        networks      h    y     )
+
+    (trace         obj  _all        cprim         h    y     )
+    (trace         obj  _all        networks      h    y     )
+    (trace         obj  _all        trace         h    y     )
+    (trace         obj  intelnt     msincls       h    y     )
+
+    (twpro         obj  intelnt     cprim         h    y     )
+    (twpro         obj  intelnt     msincls       h    y     )
+    (twpro         obj  intelnt     networks      h    y     )
+
+    (w32_dyndlg    obj  intelnt     cprim         h    y     )
+    (w32_dyndlg    obj  intelnt     ddrsc         h    y     )
+    (w32_dyndlg    obj  intelnt     dyndlgs       h    y     )
+    (w32_dyndlg    obj  intelnt     lispicp       h    y     )
+    (w32_dyndlg    obj  intelnt     msincls       h    y     )
+
+    (windows       obj  _all        cprim         h    y     )
+    (windows       obj  _all        graphics      h    y     )
+   ;(windows       obj  intelnt     msincls       h    y     )
+
+    (xwindows      obj  _all        cprim         h    y     )
+    (xwindows      obj  _all        graphics      h    y     )
+
+    (g2passwd      obj  _all        cprim         h    y     )
+    (g2passwd      obj  _all        md5_all       h    y     )
+
+    (g2pwaux       obj  _all        cprim         h    y     )
+    (g2pwaux       obj  _all        md5_all       h    y     )
+
+    (extensn       obj  _all        cprim         h    y     )
+    (extensn       obj  _all        gensym-features h  y     )
+    (extensn       obj  _all        icp           h    y     )
+    (extensn       obj  _all        icp_pvt       h    y     )
+    (extensn       obj  _all        networks      h    y     )
+
+    (fgnevent      obj  _all        cprim         h    y     )
+    (fgnevent      obj  _all        eventfns      h    y     )
+    (fgnevent      obj  _all        foreign       h    y     )
+    (fgnevent      obj  _all        gensym-features h  y     )
+    (fgnevent      obj  _all        icp_pvt       h    y     )
+    (fgnevent      obj  _all        netevent      h    y     )
+    (fgnevent      obj  _all        networks      h    y     )
+
+    (foreign       obj  _all        ffe_pvt       h    y     )
+    (foreign       obj  _all        foreign       h    y     )
+    (foreign       obj  _all        gensym-features h  y     )
+    (foreign       obj  _all        icp_pvt       h    y     )
+
+    (icp           obj  _all        gensym-features h  y     )
+    (icp           obj  _all        icp           h    y     )
+    (icp           obj  _all        icp_pvt       h    y     )
+
+    (pools         obj  _all        gensym-features h  y     )
+    (pools         obj  _all        icp           h    y     )
+    (pools         obj  _all        icp_pvt       h    y     )
+    (pools         obj  _all        pools         h    y     )
+
+    (libcprim      lib  _all        backtrac      obj  n     )
+    (libcprim      lib  _all        nsleep        obj  n     )
+    (libcprim      lib  _all        cprim         obj  y     )
+    (libcprim      lib  _all        cprocess      obj  y     )
+    (libcprim      lib  _all        cstreams      obj  y     )
+    (libcprim      lib  _all        ctime         obj  y     )
+    (libcprim      lib  _all        dtoa          obj  y     )
+    (libcprim      lib  _all        events        obj  y     )
+    (libcprim      lib  _all        event         obj  y     )
+    (libcprim      lib  _all        g2ptrs        obj  y     )
+    (libcprim      lib  _all        g2signal      obj  y     )
+    (libcprim      lib  _all        g_fmt         obj  y     )
+    (libcprim      lib  _all        graphics      obj  y     )
+    (libcprim      lib  _all        clipboard     obj  y     )
+    (libcprim      lib  _all        images        obj  y     )
+    (libcprim      lib  _all        md5_all       obj  y     )
+    (libcprim      lib  _all        networks      obj  y     )
+
+    (libcprim      lib  alphaosf    sslnoop       obj  y     ) ; Dummy for some unices
+    (libcprim      lib  hp9000s700  ssl           obj  y     )
+    (libcprim      lib  hpia64      sslnoop       obj  y     )
+    (libcprim      lib  linux       ssl           obj  y     )
+    (libcprim      lib  rs6000      ssl           obj  y     )
+    (libcprim      lib  sparcsol    ssl           obj  y     )
+
+    (libcprim      lib  intelnt     sspi          obj  y     ) ; SSPI/Schannel
+    (libcprim      lib  _all        trace         obj  y     )
+    (libcprim      lib  _all        process       obj  y     )
+    (libcprim      lib  _all        tcp           obj  y     )
+    (libcprim      lib  _all        icmp          obj  y     )
+    (libcprim      lib  _all        windows       obj  y     )
+    (libcprim      lib  intelnt     contain       obj  y     )
+    (libcprim      lib  intelnt     dialogs       obj  y     )
+    (libcprim      lib  intelnt     mdi           obj  y     )
+    (libcprim      lib  intelnt     msinits       obj  y     )
+    (libcprim      lib  intelnt     msmain        obj  y     )
+    (libcprim      lib  intelnt     twpro         obj  y     )
+    (libcprim      lib  intelnt     resizer       obj  y     )
+    (libcprim      lib  intelnt     menus         obj  y     )
+;    (libcprim      lib  intelnt     tabular_view  obj  y     )
+    (libcprim      lib  intelnt     w32_dyndlg    obj  y     )
+    (libcprim      lib  intelnt     filedlg       obj  y     )
+    ;; new event handling mechanism:
+    (libcprim      lib  intelnt     ntevent       obj  y     )
+    (libcprim      lib  intelnt     sckevent      obj  y     )
+    (libcprim      lib  unix        sckevent      obj  y     )
+    (libcprim      lib  unix        keypress      obj  y     )
+    (libcprim      lib  unix        xwindows      obj  y     )
+
+    (libforgn      lib  _all        backtrac      obj  n     )
+    (libforgn      lib  _all        cprim         obj  y     )
+    (libforgn      lib  _all        cprocess      obj  y     )
+    (libforgn      lib  _all        ctime         obj  y     )
+    (libforgn      lib  _all        extensn       obj  y     )
+    (libforgn      lib  _all        foreign       obj  y     )
+    (libforgn      lib  _all        g2ptrs        obj  y     )
+    (libforgn      lib  _all        icp           obj  y     )
+    (libforgn      lib  _all        networks      obj  y     )
+    (libforgn      lib  _all        trace         obj  y     )
+    (libforgn      lib  _all        pools         obj  y     )
+    (libforgn      lib  _all        fgnevent      obj  y     )
+    (libforgn      lib  intelnt     tcp           obj  y     )
+    (libforgn      lib  unix        tcp           obj  y     )
+    (libforgn      lib  _all        sslnoop       obj  y     )
+    (libforgn      lib  _all        netstubs      obj  y     )
+
+    ;; new event handling mechanism:
+    (libforgn      lib  _all        event         obj  y     )
+    (libforgn      lib  intelnt     ntevent       obj  y     )
+    (libforgn      lib  intelnt     sckevent      obj  y     )
+    (libforgn      lib  unix        sckevent      obj  y     )
+
+    (libtcp        lib  _all        backtrac      obj  n     )
+    (libtcp        lib  _all        cprim         obj  y     )
+    (libtcp        lib  _all        cprocess      obj  y     )
+    (libtcp        lib  _all        cstreams      obj  y     )
+    (libtcp        lib  _all        ctime         obj  y     )
+    (libtcp        lib  _all        event         obj  y     )
+    (libtcp        lib  _all        g2ptrs        obj  y     )
+    (libtcp        lib  _all        g2signal      obj  y     )
+    (libtcp        lib  _all        networks      obj  y     )
+    (libtcp        lib  _all        trace         obj  y     )
+    (libtcp        lib  _all        tcp           obj  y     )
+    (libtcp        lib  _all        netstubs      obj  y     )
+
+    ;; XXX new event handling mechanism:
+    (libtcp        lib  intelnt     ntevent       obj  y     )
+    (libtcp        lib  intelnt     sckevent      obj  y     )
+    (libtcp        lib  unix        sckevent      obj  y     )
+
+    ;; jv, 1/27/05: could this be added to libtcp?
+    ;; (libtcp        lib  _all        g2signal       obj  y     )
+
+    ;; yduJ, 1/07: split out ssl from libtcp on platforms which support it
+
+    (libgsec        lib  hp9000s700 ssl           obj  y     ) ; OpenSSL
+    (libgsec        lib  linux      ssl           obj  y     )
+    (libgsec        lib  rs6000     ssl           obj  y     )
+    (libgsec        lib  sparcsol   ssl           obj  y     )
+    (libgsec        lib  alphaosf   sslnoop       obj  y     ) ; not on AlphaOSF
+    (libgsec        lib  hpia64     sslnoop       obj  y     ) ; not on Itanium
+
+    (libgsec        lib  intelnt    sspi          obj  y     ) ; SSPI/Schannel
+
+    (libnogsec      lib  _all       sslnoop       obj  y     )
+ )))
