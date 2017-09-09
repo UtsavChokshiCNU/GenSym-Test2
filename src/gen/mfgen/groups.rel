@@ -1,0 +1,275 @@
+;;; -*- Mode: LISP; Syntax: Common-Lisp; Base: 10; Package: USER -*-
+(in-package "USER")
+
+;;;; Makefile generator relational database: groups.rel
+
+;;;; Copyright (c) 1986-2017 Gensym Corporation.
+;;;  All Rights Reserved.
+
+;;;; Author: Mark E. Staknis
+
+;;;; Description:
+;;;      This file contains relations that define prioritized groups.
+;;;    Prioritized groups are a means of maintaining hierarchical classes of
+;;;    members.  The members may be platforms, products, makefile targets,
+;;;    or file types.
+
+;;;; File Organization:
+;;;     The relations in this file are grouped as follows.
+;;;
+;;;   Relations to Declare Groups and Priorities
+;;;       Groups relation specify group names and members, while group priority
+;;;       relations specify the priority of a given group.  The included
+;;;       relations are as follows.
+;;;     platform-groups-relation and platform-group-priorities-relation
+;;;     product-groups-relation and product-group-priorities-relation
+;;;     target-groups-relation and target-group-priorities-relation:
+;;;       A target is the name that appears to the left of a : in the
+;;;       first line of a makefile entry.
+;;;     type-groups-relation and type-group-priorities-relation
+;;;       These indicate types of targets (.obj, .exe, etc.).
+
+;;;; Notes:
+;;;      Each group is defined by two relations, the <kind>-groups-relation and
+;;;    the <kind>-group-priority-relation.  Two relations are maintained for
+;;;    normalization to prevent update anomalies.
+;;;      VERY IMPORTANT: When adding a new group, one must be careful to add it
+;;;    to both relations (i.e., it must have both members and a priority).
+;;;      For use with a given <kind>, (a platform for example), the relevant
+;;;    groups for the platform are first selected from
+;;;    platform-groups-relation, the resulting relation is joined with the
+;;;    priorities relation, and the group and priority are projected.  This
+;;;    yields a relation that contains the groups and priorities for the given
+;;;    platform.  The group-priority "view" can then be joined with relations
+;;;    with a platform-group field to select rows of relevant groups. Two
+;;;    additional rows are added to the group- priority "view", as described
+;;;    below.
+;;;      There are two implicit groups, one defined by _all and the other by
+;;;    the member's name.  _all has the lowest priority (z) and all members of
+;;;    a given kind belong to it.  <member> has the highest priority (a) and
+;;;    has only itself as a member. _all is the most general group, and
+;;;    <member> is the most specific.  By defining these two groups implicitly
+;;;    and adding them as rows to each group-priority "view", much explicit
+;;;    data can be avoided.
+;;;      Groups may be used in two ways.  After joining the group-priority
+;;;    "view" with a relation that contains the relevant group field, one can
+;;;    select all rows to which the member belongs, or one can select the
+;;;    highest-priority group to which the member belongs.  The latter is
+;;;    achieved by searching on the priority field.  Both uses can be valuable.
+
+
+
+;;; Relation: platform-groups-relation
+;;; notes:
+;;;      rh 8/1/96: ext/c/bactrac.c requires gcc to be functional (it becomes a
+;;;    no-op otherwise) if we have gcc on a unix platform, we need it for this
+;;;    file, whatever we use for the other files.  In addition, we
+;;;    should link to unstripped, then strip.  This applies to the groups
+;;;    unix-with[out]-installed-gcc.
+
+(setq platform-groups-relation
+ '(( group-member   group    )
+;;   ------------   -----
+   ((alphaosf       unix         )
+    (hp9000s700     unix         )
+    (hpia64         unix         )
+    (linux          unix         )
+    (rs6000         unix         )
+    (sparcsol       unix         )
+    (alphaosf       unix-without-installed-gcc)
+    (hp9000s700     unix-without-installed-gcc)
+    (rs6000         unix-without-installed-gcc)
+    (linux          unix-with-installed-gcc)
+    (sparcsol       unix-with-installed-gcc)
+    (intelnt        win32        )
+
+    (alphaosf       has-ranlib   )
+    (rs6000         has-ranlib   )
+    (alphaosf       noccwarnings )
+    (hp9000s700     noccwarnings )
+    (rs6000         noccwarnings )
+ )))
+
+
+
+
+(setq platform-group-priorities-relation
+ '(( group          priority )
+;;   -----          --------
+  ((unix            t        )
+   (win32           r        )
+   (netscape        i        )
+   (has-ranlib      h        )
+   (noccwarnings    h        )
+   (unix-without-installed-gcc h  )
+   (unix-with-installed-gcc    h  )
+ )))
+
+
+
+
+(setq product-groups-relation
+ '(( group-member  group         )
+;;   ------------  -----------
+   ((g2            g2tw          )
+    (tw            g2tw          )
+    (g2            g2twgw        )
+    (tw            g2twgw        )
+    (gw            g2twgw        )
+    (ext           extgsi        )
+    (gsi           extgsi        )
+    (g2            useext        )
+    (gsi           useext        )
+    (gw            useext        )
+    (tw            useext        )
+    (g2            trans         )
+    (gsi           trans         )
+    (gw            trans         )
+    (tw            trans         )
+    (ext           not-rtl       )
+    (fnt           not-rtl       )
+    (jpeg          not-rtl       )
+    (xml           not-rtl       )
+    (g2            not-rtl       )
+    (gsi           not-rtl       )
+    (gw            not-rtl       )
+    (tw            not-rtl       )
+    (ext           usespfc       )
+    (g2            usespfc       )
+    (gsi           usespfc       )
+    (gw            usespfc       )
+    (tw            usespfc       )
+    (xml           usespfc       )
+    (fonts         ship          )
+    (g2            ship          )
+    (gsi           ship          )
+    (gw            ship          )
+    (kbs           ship          )
+    (tw            ship          )
+
+    ;; the group `not-gw' is intended to be temporary.  In the long term, there
+    ;; really should be nothing that is common to all the other products, but
+    ;; yet different in gw.  But as of this date (2003/09/30), there's a
+    ;; difference on intelnt which actually might be pretty big.  All of our
+    ;; other products use the multi-threaded C library and other MT files,
+    ;; but WebLink does not.  WebLink should be made to use the MT files soon.
+    ;; The other difference is that all the other products define TARGETOS
+    ;; as WIN95, which means use WinSock 1 instead of WinSock 2.  To resolve
+    ;; this difference in the future, we should make the rest of the products
+    ;; like gw, instead of the other way around.  No new features should use
+    ;; the not-gw group.  -jv, 9/30/03
+    (ext           not-gw        )
+    (fnt           not-gw        )
+    (jpeg          not-gw        )
+    (xml           not-gw        )
+    (g2            not-gw        )
+    (gsi           not-gw        )
+    (rtl           not-gw        )
+    (tw            not-gw        )
+    
+    (fonts         shiponly      )
+    (kbs           shiponly      )
+ )))
+
+
+
+
+(setq product-group-priorities-relation
+ '(( group         priority)
+;;   -----         --------
+   ((extgsi        g       )
+    (g2tw          g       )
+    (g2twgw        h       )
+    (not-gw        m       )
+    (not-rtl       m       )
+    (ship          m       )
+    (shiponly      j       )
+    (trans         s       )
+    (useext        j       )
+    (usespfc       j       )
+ )))
+
+
+
+
+(setq type-groups-relation
+ '(( group-member   group    )
+;;   ------------   -----
+   ((exe            rwe          )
+    (obj            rwe          )
+ )))
+
+
+
+
+(setq type-group-priorities-relation
+ '(( group          priority     )
+;;   -----          --------
+   ((rwe            t   )
+ )))
+
+
+
+
+(setq target-groups-relation
+ '(( group-member  type    group         )
+;;   ------------  ------  -----------
+   ((arrays         obj    add-prof      )
+    (get            obj    add-prof      )
+    (getf           obj    add-prof      )
+    (numbers        obj    add-prof      )
+    (symbols        obj    add-prof      )
+    (symbolnm       obj    add-prof      )
+    (packages       obj    add-prof      )
+    (cdbltdbl       obj    add-prof      )
+    (objccdbl       obj    add-prof      )
+    (heap           obj    add-prof      )
+    (srrcnns        obj    add-prof      )
+    ;; the no-opt1 group does not affect efficiency significantly
+    (chrts1         obj    no-opt1       )
+    (cmds0          obj    no-opt1       )
+    (cmds1          obj    no-opt1       )
+    (cmds2          obj    no-opt1       )
+    (cntrls         obj    no-opt1       )
+    (dfntns         obj    no-opt1       )
+    (edit1          obj    no-opt1       )
+    (fclts          obj    no-opt1       )
+    (fltrs          obj    no-opt1       )
+    (glbscs         obj    no-opt1       )
+    (gram6          obj    no-opt1       )
+    (graphs         obj    no-opt1       )
+    (grphdf         obj    no-opt1       )
+    (instll         obj    no-opt1       )
+    (kbmrge         obj    no-opt1       )
+    (menus          obj    no-opt1       )
+    (parts          obj    no-opt1       )
+    (pccmp          obj    no-opt1       )
+    (pc-opt         obj    no-opt1       )
+    (pcnst          obj    no-opt1       )
+    (prntng         obj    no-opt1       )
+    (qrs            obj    no-opt1       )
+    (roles          obj    no-opt1       )
+    (rpcmn2         obj    no-opt1       )
+    (tables         obj    no-opt1       )
+    (vrbls          obj    no-opt1       )
+    ;; the no-opt2 group has a major effect on efficiency
+    (evt            obj    no-opt2       )
+    (gram7          obj    no-opt2       )
+    (stkcts         obj    no-opt2       )
+    (stknst         obj    no-opt2       )
+    (stkvl1         obj    no-opt2       )
+    (stkvl2         obj    no-opt2       )
+ )))
+
+
+
+
+(setq target-group-priorities-relation
+ '(( group         type     priority)
+;;   -----         -----    --------
+   ((no-opt        obj      m       )
+    (no-opt1       obj      k       )
+    (no-opt2       obj      h       )
+    (no-debug      obj      m       )
+    (add-prof      obj      g       )
+)))
