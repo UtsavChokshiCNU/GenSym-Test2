@@ -1,0 +1,1682 @@
+/*----------------------------------------------------------------------------*\
+ *
+ *
+ *
+ *
+ *  File Name:    SETUP.RUL
+ *
+ *  Description:  Gensym Installation script for installing gensym products
+ *                from the CD-ROM. This script can be used for installation on 
+ *                Intelnts and Alphants, the products available for these
+ *                platforms as well as any other platform independent products 
+ *                that are present on the CD-ROM. 
+ *
+ *
+ *   Author:      Aparna Pahooja      Date:  10-28-96
+ *
+ *   Comments: 
+ *
+ *	 Edits:		  sjw	12/15/98	 Added CDG product
+ *
+\*----------------------------------------------------------------------------*/
+
+// define constants
+
+#define DUMMY					"Install Options"
+#define COMPANY_NAME            "Gensym"        // For Registry
+#define DELIMITER               ":"
+#define VERSION_TXT				"prodver.txt"	// For Registry
+
+declare
+#include "sddialog.h"    //needed for SdAskOptionsList()
+
+// Global variable declarations.
+		
+STRING  szComponents, svDir, svtoken, svtest, svString, productInfoString, productSizeString;
+LIST    listPlatforms, listCdProducts, listUserProducts, gensymProductDataList, listFileSizes;
+LIST    listProductPlatforms, listUserPlatforms, gensymPlatformDataList;
+NUMBER  nResult, nResult_token, Len, nResult_product, empty, nCheck1, nCheck2;
+NUMBER  SELECT_FLAG, AskOptionsResult, tempValue, AskDestResult, nResultCopy, neededSpace;
+STRING  neededSpaceStr;
+BOOL    bWinNT, INDEP_FLAG, bExplorer;
+STRING  selectedProductInfo, productString, IndepProductPath;
+STRING  platformInfoString, prodPlatform;
+STRING  installPlatform1, installPlatform2, displayMessage;
+STRING  selectedPlatformInfo, platformString;
+STRING	welcomeMsg, svMainDirectory[_MAX_STRING], availSpaceMsg, DestPathMsg, szTemp, DirExistsMsg, DoneMsg;
+STRING  FoundFileString, productTitle, productMsg;
+STRING  PRODUCT_NAME, PLATFORM_NAME, APPBASE_PATH;
+STRING  szAppPath, svUninstLogFile, szProgram, ConfirmMsg, svReturnPath, svFullPath;
+STRING  svResult, szVersion, svLogFile, svFolder, szUninstName, svInfoString;
+NUMBER	nvFileHandle, nvFileSearch;
+POINTER finalProductPointer, platformInfoStringPointer, finalPlatformPointer, returnPointer;
+
+// Function declarations.
+
+prototype BuildCdProductList();
+prototype BuildUserProductList();
+prototype BuildPlatformList();
+prototype AddProductsToComponentList();
+prototype CheckForDuplication(STRING);
+prototype BuildGensymProductDataList();
+prototype BuildGensymPlatformDataList();
+prototype GetProductInfoFromDataList(STRING);
+prototype GetFileSizeFromDataList(STRING);
+prototype GetSelectedProductFromDataList(STRING);
+prototype PlatformListForSelectedProduct(STRING);
+prototype GetPlatformInfoFromDataList(STRING);
+prototype GetSelectedPlatformFromDataList(STRING);
+prototype CheckDestinationEmpty(STRING);
+prototype ChangeFileName(STRING);
+prototype CheckRequirements();
+prototype Test1();	 //only for testing
+prototype Test2();
+
+/* Customized Function Declarations */
+prototype g2CustomFunction();
+prototype twCustomFunction();
+prototype gsi32CustomFunction();
+prototype gsi40CustomFunction();
+prototype guideCustomFunction();
+prototype rethinkCustomFunction();
+prototype sentinelCustomFunction();
+prototype nolCustomFunction();
+prototype gdaCustomFunction();
+prototype kbsCustomFunction();
+prototype fontsCustomFunction();
+prototype axlCustomFunction();
+prototype g2corbaCustomFunction();
+
+program
+
+BuildAllLists:
+/*     Build all the lists that would be needed in this script- like the
+ *     list of platforms, the products for these platforms as present on the 
+ *     CD-ROM, and the corresponding list of products as seen by the user.
+ *     Also build the Gensym Data Lists of platforms and products which
+ *     would be used for matching specific platforms/products later.
+ */
+
+		szComponents = DUMMY;	
+		BuildGensymProductDataList();
+		BuildGensymPlatformDataList();
+		BuildPlatformList();
+		BuildCdProductList();
+		BuildUserProductList();
+WelcomeDlg:
+/*      Welcome Dialog
+ */
+        Enable( INDVFILESTATUS );
+        SetTitle( "Gensym " + " Setup\nhttp://www.gensym.com", 24, WHITE );
+        SetTitle(" Setup", 0, BACKGROUNDCAPTION ); // Caption bar text.
+        Enable( BACKGROUND );
+		Disable(BACKBUTTON);
+
+		welcomeMsg = "This installation tool will guide you through the process of" +
+		" installing G2, Telewindows, and various auxillary files that accompany this Gensym software.\n";
+		SdWelcome("Welcome", welcomeMsg);
+
+		Enable(BACKBUTTON);
+		CheckRequirements();
+StartHere:
+/*      Show list of available products on the CD-ROM
+ */
+		productTitle = "Select Product";
+		productMsg = "Please select any one of the products listed below.";
+					 
+		nResult_product = SdAskOptionsList(productTitle, productMsg, szComponents, EXCLUSIVE);
+		if (nResult_product = NEXT) then
+			goto CheckProductSelectedDlg;
+		elseif (nResult_product = BACK) then
+			goto WelcomeDlg;
+		endif;
+		
+CheckProductSelectedDlg:
+/*      Check if the user selected any product from the list. 
+ */
+		SELECT_FLAG = 0;
+		nResult = ListGetFirstString(listUserProducts, svtest);
+		while(nResult = 0 && SELECT_FLAG = 0)
+		      if (ComponentIsItemSelected(szComponents, svtest) = TRUE) then
+					SELECT_FLAG = 1;
+					selectedProductInfo = svtest;
+			  else
+			        nResult =  ListGetNextString(listUserProducts, svtest);
+			  endif;
+		endwhile;
+		if (SELECT_FLAG = 0) then
+		    goto ProductErrDlg;
+		else
+		    goto SetProductName;
+		endif;
+
+ProductErrDlg:
+/*      If no product was selected by the user then a warning message is displayed
+ *      and control is transferred back to the StartHere block else SetProductName
+ *      block is executed.
+ */
+        MessageBox("Please Select a Product", SEVERE);
+		goto StartHere;
+SetProductName:
+/*      The product selected by the user from the list is matched to its corresponding
+ *      product name as it appears on the CD-ROM.
+ */
+		finalProductPointer = GetSelectedProductFromDataList(selectedProductInfo);
+		StructGetP(finalProductPointer, "", "productString", empty, productString);
+	//	SprintfBox (INFORMATION, "Value", "svString is %s", productString);
+		PRODUCT_NAME = productString;
+
+ConfirmInstallation:
+/*      Fonts and Kbs are installed with G2 and TW installations. If the user
+ *      to install them as separate products, we flash a warning message and
+ *      confirm its installation. 
+ */
+		if (!StrCompare(PRODUCT_NAME, "kbs")) then
+			SetDialogTitle(DLG_ASK_YESNO, "Confirm Installation");
+		    ConfirmMsg = "You have chosen to install G2 Demos, Samples, and Utilities." +
+			" These files are normally installed during installation of G2.\n\n" +
+			"Do you want to install these files separately ?\n";
+
+			if (AskYesNo(ConfirmMsg, NO) = NO) then
+				goto StartHere;
+			endif;
+		elseif (!StrCompare(PRODUCT_NAME, "fonts")) then
+			SetDialogTitle(DLG_ASK_YESNO, "Confirm Installation");
+		    ConfirmMsg = "You have chosen to install G2/Telewindows non-Latin fonts. The" + 
+			" fonts are normally installed during installation of G2 or Telewindows.\n\n" + 
+			"Do you want to install fonts separately ?\n";
+
+			if (AskYesNo(ConfirmMsg, NO) = NO) then
+				goto StartHere;
+			endif;
+		endif;
+
+CheckIfIndepProduct:
+/*      Check if the selected product is a platform dependent or independent product.
+ *      If a platform dependent product was selected then build the list of platforms
+ *      for which the selected product is available. If platform independent product
+ *      was selected then GetTargetDirectory block is executed directly.
+ */
+		INDEP_FLAG = FALSE;
+		IndepProductPath = SRCDISK^"\\Indep\\"^PRODUCT_NAME;
+		if (ExistsDir(IndepProductPath) = NOTEXISTS) then
+			listUserPlatforms = ListCreate(STRINGLIST);
+			listProductPlatforms = ListCreate(STRINGLIST);
+		//	SprintfBox (INFORMATION, "Value", "Dependent product %s", PRODUCT_NAME); 
+			PlatformListForSelectedProduct(PRODUCT_NAME);
+			nResult = ListGetFirstString(listProductPlatforms, prodPlatform);
+			while (nResult = 0)
+				platformInfoStringPointer = GetPlatformInfoFromDataList(prodPlatform);
+				StructGetP(platformInfoStringPointer, "", "platformInfoString", empty, platformInfoString);
+			//	SprintfBox (INFORMATION, "Value", "platformInfoString is %s", platformInfoString);
+				ListAddString(listUserPlatforms, platformInfoString, AFTER);
+
+				nResult = ListGetNextString(listProductPlatforms, prodPlatform);
+			endwhile;
+
+		goto AskPlatform;
+		else
+		//	SprintfBox(INFORMATION, "Selections", "Setup will install \"%s\"", selectedProductInfo);
+			INDEP_FLAG = TRUE;
+			PLATFORM_NAME = "Indep";
+			goto GetTargetDirectory;
+	//		MessageBox ("Indep product", INFORMATION);
+		endif;
+		exit;
+
+ AskPlatform:
+ /*     This block is executed only for the platform dependent products. Here the
+  *     list of platforms for the selected product is displayed. The list can
+  *     have either one or two elements as only two kinds of OS are being
+  *     considered for gensym products : Windows NT on DEC based Alpha AXP and
+  *     Windows NT on IntelNT PCs.
+  */ 
+		nCheck1 = FALSE;
+		nCheck2 = FALSE;
+
+		displayMessage = "The selected product " + selectedProductInfo + " is available" +
+						 " on the following platforms. Please select one.\n";
+		SetDialogTitle(DLG_ASK_OPTIONS, "Select Platform");
+
+		if (ListCount(listUserPlatforms) = 2) then
+			ListGetFirstString(listUserPlatforms, installPlatform1);
+			ListGetNextString(listUserPlatforms, installPlatform2);
+
+			AskOptionsResult = AskOptions(EXCLUSIVE, displayMessage, installPlatform1, nCheck1, installPlatform2, nCheck2);
+		else
+			ListGetFirstString(listUserPlatforms, installPlatform1);
+
+			AskOptionsResult = AskOptions(EXCLUSIVE, displayMessage, installPlatform1, nCheck1);
+		endif;
+
+		if (AskOptionsResult = BACK) then
+			ListDestroy(listProductPlatforms);
+			ListDestroy(listUserPlatforms);
+			goto StartHere;
+		endif;
+
+		if (AskOptionsResult = NEXT) then
+			goto CheckPlatformSelectedDlg;
+		endif;
+
+CheckPlatformSelectedDlg:
+/*      Check if the user selected any platform. If no platform was selected then
+ *      control is transferred to PlatformErrDlg else FindPlatformInfo block is
+ *      executed.
+ */
+		SELECT_FLAG = 0;
+
+		if(nCheck1 = TRUE || nCheck2 = TRUE) then
+			SELECT_FLAG = 1;
+		endif;
+
+		if (SELECT_FLAG = 0) then
+			goto PlatformErrDlg;
+		else
+			goto FindPlatformInfo;
+		endif;
+
+PlatformErrDlg:
+/*      If no platform was selected by the user for the platform dependent product
+ *      selected earlier then a warning message is displayed and control goes
+ *      back to the AskPlatform block.
+ */
+		SprintfBox (WARNING, "Error", "No Platform was selected for the product  \"%s\". Please select a platform from the list", selectedProductInfo);
+		goto AskPlatform;
+
+FindPlatformInfo:
+/*      Find the platform that was selected from the displayed list. Then find the
+ *      corresponding platform name as it appears on the CD-ROM, using the 
+ *      gensymPlatformDataList.
+ */
+		if (nCheck1 = TRUE) then
+			selectedPlatformInfo = installPlatform1;
+		elseif (nCheck2 = TRUE) then
+			selectedPlatformInfo = installPlatform2;
+		endif;
+
+		ListDestroy(listProductPlatforms);
+		ListDestroy(listUserPlatforms);
+
+		finalPlatformPointer = GetSelectedPlatformFromDataList(selectedPlatformInfo);
+		StructGetP(finalPlatformPointer, "", "platformString", empty, platformString);
+	//	SprintfBox (INFORMATION, "Value", "svString is %s", platformString);
+		PLATFORM_NAME = platformString;
+
+	//	SprintfBox(INFORMATION, "Selections", "Setup will install \"%s\" for \n\"%s\"", selectedProductInfo,
+	//				selectedPlatformInfo);
+		goto GetTargetDirectory;
+
+GetTargetDirectory:
+/*      Get the destination directory. The default directory for installation of the
+ *      product will be \gensym\product for users running this script on Windows NT
+ *      and \Program Files\gensym\product for users running Windows 95 0.S. Any other
+ *      destination can be selected by the user.
+ */
+	    APPBASE_PATH = "gensym\\"^PRODUCT_NAME;
+
+		svMainDirectory = TARGETDISK^APPBASE_PATH;
+
+	    DestPathMsg = "Setup will install " + selectedProductInfo + "\n" +
+				      "in the Destination Directory. To change the destination" +
+					  " directory click on the browse button\n";
+	    AskDestResult = AskDestPath("Choose Destination Directory", DestPathMsg, svMainDirectory, 0);
+	    if (AskDestResult = BACK) then
+			if (INDEP_FLAG = TRUE) then
+				goto StartHere;
+			else
+				goto CheckIfIndepProduct;
+			endif;
+		elseif (AskDestResult = NEXT) then 
+			goto CheckDestDirEmpty;
+		endif;
+
+CheckDestDirEmpty:
+/*      Check if the selected target directory for installing the product is empty
+ *      or not. If its not empty then an error message is displayed and control
+ *      goes back to the GetTargetDirectory block, to select another directory
+ *      or exit setup in order to move the already existing contents of the desired
+ *      target directory to another location.
+ */
+        if (CheckDestinationEmpty (svMainDirectory) = FALSE) then
+			DirExistsMsg = "The specified destination directory:\n" + svMainDirectory +
+						   "\n is not empty. Installation cannot proceed unless its destination" +
+						   " directory is empty.\n";
+			MessageBox(DirExistsMsg, WARNING);
+			goto GetTargetDirectory;
+
+		else
+			returnPointer = GetFileSizeFromDataList(PRODUCT_NAME);
+			StructGetP(returnPointer, "", "productSizeString", empty, productSizeString);
+		//	SprintfBox (INFORMATION, "Value", "svString is %s", productSizeString);
+			StrToNum(tempValue, productSizeString);
+
+
+			if (GetDiskSpace(svMainDirectory) < tempValue) then
+			    neededSpace = (tempValue - GetDiskSpace(svMainDirectory))/1024;
+				NumToStr(neededSpaceStr, neededSpace);
+				availSpaceMsg = "The destination drive you have selected for installation, has" +
+				" insufficient space. An additional  " + neededSpaceStr +"KB is needed.\n\n" +
+				"You can return to the previous screen and select a different" +
+				" destination drive, or cancel the installation, create the needed" +
+				" space, and try the installation again.\n";
+				MessageBeep(0);
+				MessageBox(availSpaceMsg, WARNING);
+				goto GetTargetDirectory;
+			endif;
+
+		endif;
+
+//FileTransferSetup:
+
+        // Prepare InstallSHIELD to record deinstallation information.
+       // DeinstallStart( svMainDirectory, svUninstLogFile, "g2k5.0", 0 );
+      //  RegDBSetItem( REGDB_UNINSTALL_NAME, PRODUCT_NAME );
+
+        // Set registry App Paths key information for the main application.
+       // szAppPath = svMainDirectory;
+       // RegDBSetItem( REGDB_APPPATH, szAppPath );
+       // szProgram = svMainDirectory ^ "g2.exe";
+       // RegDBSetItem( REGDB_APPPATH_DEFAULT, szProgram );
+
+GetVersionNumber:
+/*		To add the registry keys, we need to know what version of the product we 
+ *		are installing.  To keep this script as generic as possible, the version
+ *		number is supplied with the product in a text file (called prodver.txt) 
+ *		that we need to parse for the version number.  If the file exists, we
+ *		grab the first line of the file and that is used as the version number.
+ *		If the file does not exist, we set the version number to "Unknown Version".
+ */
+		// Set up directory to search for the existance of the text file
+		SRCDIR = SRCDISK^"\\"^PLATFORM_NAME^"\\"^PRODUCT_NAME;
+
+		// Check to see if prodver.txt exists
+		// If prodver.txt does not exist, set version to "Unknown Version"
+		if (FindFile(SRCDIR, VERSION_TXT, svResult) < 0) then
+			szVersion = "Unknown Version";
+		// If prodver.txt exists, open file and get first line
+		else
+			OpenFileMode (FILE_MODE_NORMAL);
+				if (OpenFile(nvFileHandle, SRCDIR, VERSION_TXT) < 0) then
+					MessageBox("OpenFile failed.", SEVERE);
+			    endif;
+			// Put the first line of the text file in the szVersion variable.
+			GetLine(nvFileHandle, szVersion);
+			CloseFile(nvFileHandle);
+
+		endif;
+
+DoFileTransfer:
+/*      Here actual file transfer is performed using the XCopy() function. The 
+ *      system variables SRCDIR and TARGETDIR are intialized to the source and
+ *      the target directories respectively as these are used by the XCopy function.
+ *      Be very cautious when dealing with these system variables. We do not use
+ *      the file set concept as we don not want to compress the product files
+ *      that would be shipped to the customers.
+ *      Once all the files for the selected product have been copied to the 
+ *      destination directory, we search all the subdirectories under the target
+ *      directory for the file "sys_mod.kb". This is the way it is named on the
+ *      CD-ROM and needs to be renamed to "sys-mod.kb". If the file "sys_mod.kb" is
+ *      found its renamed. For this the ChangeFileName() function is called.
+ */
+		
+		Enable(FEEDBACK_FULL);
+		Enable(STATUSDLG);
+		SetStatusWindow(5, "Copying Files");
+		StatusUpdate(ON, 95);
+		
+		szUninstName = PRODUCT_NAME + " " + szVersion;
+		SRCDIR = SRCDISK^"\\"^PLATFORM_NAME^"\\"^PRODUCT_NAME;
+        TARGETDIR = svMainDirectory;
+
+		if (PRODUCT_NAME != "sentinel") then
+			InstallationInfo (COMPANY_NAME, PRODUCT_NAME, szVersion, PRODUCT_NAME); 
+			DeinstallStart (svMainDirectory, svLogFile, szUninstName, 0);
+		
+			// Call RegDBSetItem to create uninstallation key and set uninstall name
+			// in Add/Remove Programs dialog in Explorer.
+			RegDBSetItem (REGDB_UNINSTALL_NAME, szUninstName);
+
+			// If not running Explorer (if running Program Manager), install a
+			// program folder and then place an uninstall icon in the folder.
+			if (bExplorer = FALSE) then
+				if (AppCommand(PROGMAN, CMD_RESTORE) < 0) then
+					MessageBox ("Failed to connect to Program Manager", INFORMATION);
+				endif;
+				svFolder = PRODUCT_NAME;
+				if (CreateProgramFolder(svFolder) < 0) then
+					MessageBox ("Failed to create folder", INFORMATION);
+				endif;
+
+				szProgram = UNINST;
+				szProgram = szProgram + " -f" + svLogFile;
+				if (AddFolderIcon(svFolder, "Uninstall", szProgram, WINDIR, "", 0, "", REPLACE) < 0) then
+					MessageBox ("Failed to create icon", INFORMATION);
+				endif;
+			endif; 
+		endif;
+        
+		nResultCopy = XCopyFile("*.*", "*.*", INCLUDE_SUBDIR);
+
+		if (nResultCopy < 0) then
+			switch (nResult)
+			case COPY_ERR_CREATEDIR: // Create directory error
+				MessageBox( "Unable to create a directory under "+ TARGETDIR + "."+
+                           "Please check write access to this directory.", SEVERE );
+				abort;
+
+			default: // Group all other errors under default label.
+				NumToStr( szTemp, nResultCopy );
+				MessageBox( "General file transfer error."+
+                          "Please check your target location and try again."+
+                          "\n\n Error Number:"+szTemp, SEVERE );
+				abort;
+			endswitch;
+		endif;
+
+		ChangeFileName(svMainDirectory);
+
+		goto CustomFunctionCalls;
+
+CustomFunctionCalls:
+/*		This is where the developers of different products can make calls to their
+ *		own functions for doing product specific stuff. The general rule for naming
+ *      product specific functions is productName + "CustomFunction". These functions
+ *      return void.
+ */
+		if (!StrCompare(PRODUCT_NAME, "g2")) then
+			g2CustomFunction();
+		elseif (!StrCompare(PRODUCT_NAME, "tw")) then
+			twCustomFunction();
+		elseif (!StrCompare(PRODUCT_NAME, "gsi32")) then
+		    gsi32CustomFunction();
+		elseif (!StrCompare(PRODUCT_NAME, "gsi40")) then
+			gsi40CustomFunction();
+		elseif (!StrCompare(PRODUCT_NAME, "guide")) then
+			guideCustomFunction();
+		elseif (!StrCompare(PRODUCT_NAME, "sentinel")) then
+			sentinelCustomFunction();
+		elseif (!StrCompare(PRODUCT_NAME, "nol")) then
+			nolCustomFunction();
+		elseif (!StrCompare(PRODUCT_NAME, "gda")) then
+			gdaCustomFunction();
+		elseif (!StrCompare(PRODUCT_NAME, "rethink")) then
+			rethinkCustomFunction();
+		elseif (!StrCompare(PRODUCT_NAME, "kbs")) then
+		    kbsCustomFunction();
+		elseif (!StrCompare(PRODUCT_NAME, "fonts")) then
+		    fontsCustomFunction();
+		elseif (!StrCompare(PRODUCT_NAME, "axl")) then
+			axlCustomFunction();
+		elseif (!StrCompare(PRODUCT_NAME, "g2corba")) then
+			g2corbaCustomFunction();
+		endif;
+
+		nvFileSearch = FindAllFiles(svMainDirectory, VERSION_TXT, svResult, RESET);
+		while (nvFileSearch = 0)
+			if (ParsePath(svReturnPath, svResult, PATH) = 0) then
+				TARGETDIR = svReturnPath;
+			endif;
+			if (DeleteFile (VERSION_TXT) < 0) then
+				MessageBox ("Cannot delete prodver.txt", INFORMATION);
+			endif;
+		nvFileSearch = FindAllFiles(svMainDirectory, VERSION_TXT, svResult, CONTINUE);
+		endwhile;
+
+
+SetupComplete:
+/*      The installation of the selected product is now done. The
+ *      user is then given the option to install another product.
+ */
+
+   //   CreateRegDBEntries( );
+
+        SRCDIR = SRCDISK^"\\"^PLATFORM_NAME^"\\"^PRODUCT_NAME;
+		TARGETDIR = svMainDirectory;
+  
+		Delay(2);
+		SetStatusWindow(100, "Installation Complete.");
+		Disable( FEEDBACK_FULL );
+		Disable( STATUSDLG);
+
+		Delay(2);
+
+		SetDialogTitle(DLG_ASK_YESNO, "Installation Complete");
+
+		if (!StrCompare(PRODUCT_NAME, "sentinel")) then
+		    DoneMsg = "The Sentinel Driver files have been copied, but the driver"+
+			" software has not yet been installed. After completing the" +
+			" installation of Gensym products, please install the drivers by" +
+			" running:  " + svMainDirectory^"\\WIN_NT\\install.bat" +
+			"\n\nDo you want to install another product ?";
+        else
+		    DoneMsg = "Setup has finished installing " + selectedProductInfo + 
+				  ".\n\nDo you want to install another product ?";
+		endif;
+		
+		if (AskYesNo(DoneMsg, YES) = YES) then
+			goto StartHere;
+		endif;
+        
+	exit;
+
+#include "sddialog.rul"
+
+/***************************************************************************\
+ *
+ * Function: BuildPlatformList
+ *
+ * Purpose:  This function builds the listPlatforms i.e. the list of platforms
+ *           that are relevent to this script. It looks for directories
+ *           alphant, intelnt and indep on the CD-ROM. All the ones of these
+ *           three, if present on the CD-ROM are added to the list.
+ *
+ * Inputs:   None
+ *
+ * Returns:  None
+ ***************************************************************************/
+
+function BuildPlatformList()
+LIST listDirs, listTokens;
+STRING platform;
+NUMBER nResult_directory;
+
+begin
+    listPlatforms = ListCreate(STRINGLIST);
+	listDirs = ListCreate(STRINGLIST);
+
+	FindAllDirs(SRCDISK^"\\", EXCLUDE_SUBDIR, listDirs);
+	nResult_directory = ListGetFirstString(listDirs, svDir);
+
+	while (nResult_directory = 0)
+		 StrRemoveLastSlash(svDir);
+		 listTokens = ListCreate(STRINGLIST);
+		 StrGetTokens(listTokens, svDir, "\\");
+
+		 nResult_token = ListGetFirstString(listTokens, platform);
+		 while(nResult_token != END_OF_LIST)
+		      nResult_token = ListGetNextString(listTokens, platform);
+		 endwhile;
+		 ListDestroy(listTokens);
+
+		 if ((StrCompare("Intelnt", platform) = 0) || (StrCompare("Alphant", platform) = 0) || 
+			 (StrCompare("Indep", platform) = 0)) then
+		    ListAddString(listPlatforms, platform, BEFORE);
+	//		MessageBox (platform, INFORMATION);
+		 endif;
+
+		 nResult_directory = ListGetNextString(listDirs, svDir);
+	endwhile;
+
+	return;
+end;
+
+/***************************************************************************\
+ *
+ * Function: BuildCdProductList
+ *
+ * Purpose:  This function builds the listCdProducts i.e. the list of products
+ *           that are available for each of the platform that appears in the
+ *           listPlatforms. It traverses through directories that
+ *           represent each of the platforms in the listPlatforms list and
+ *           finds the product directories. These are then added to the 
+ *           listCdProducts list.
+ *
+ * Inputs:   None
+ *
+ * Returns:  None
+ ***************************************************************************/
+
+function BuildCdProductList()
+LIST  listDirs, listTokens;
+STRING platform, svDir, svtoken;
+NUMBER nResult_platform, nResult_directory;
+BOOL presentFlag; 
+begin
+	listCdProducts = ListCreate(STRINGLIST);
+
+	nResult_platform = ListGetFirstString(listPlatforms, platform);
+	while (nResult_platform = 0)
+	    listDirs = ListCreate(STRINGLIST);
+		FindAllDirs(SRCDISK^"\\"^platform, EXCLUDE_SUBDIR, listDirs);
+
+		nResult_directory = ListGetFirstString(listDirs, svDir);
+		while (nResult_directory = 0)
+		   StrRemoveLastSlash(svDir);
+		   listTokens = ListCreate(STRINGLIST);
+		   StrGetTokens(listTokens, svDir, "\\");
+
+		   nResult_token = ListGetFirstString(listTokens, svtoken);
+		   while(nResult_token != END_OF_LIST)
+		        nResult_token = ListGetNextString(listTokens, svtoken);
+		   endwhile;
+		   ListDestroy(listTokens);
+
+		   presentFlag = CheckForDuplication(svtoken);
+		   if (presentFlag = FALSE) then
+				ListAddString(listCdProducts, svtoken, AFTER);
+			//	MessageBox (svtoken, INFORMATION);
+		   endif;
+		   nResult_directory = ListGetNextString(listDirs, svDir);
+	    endwhile;
+		ListDestroy(listDirs);
+		nResult_platform = ListGetNextString(listPlatforms, platform);
+	 endwhile;
+	 return;
+end;
+
+/***************************************************************************\
+ *
+ * Function: CheckForDuplication
+ *
+ * Purpose:  This function is called by BuildCdProductList(). It checks if a
+ *           specific product is already present in the listCdProducts list.
+ *
+ * Inputs:   Product that has to be checked for duplication.
+ *
+ * Returns:  TRUE or FALSE.
+ ***************************************************************************/
+
+function CheckForDuplication(currentProduct)
+BOOL flag;
+STRING product;
+NUMBER nResult;
+begin
+	flag = FALSE;
+
+	nResult  = ListGetFirstString(listCdProducts, product);
+	while (nResult = 0 && flag != TRUE)
+		if (StrCompare(product, currentProduct) = 0) then
+			flag = TRUE;
+		endif;
+		nResult  = ListGetNextString(listCdProducts, product);
+	endwhile;
+	return flag;
+end;
+
+/***************************************************************************\
+ *
+ * Function: BuildUserProductList
+ *
+ * Purpose:  This function is used to build the listUserProducts list. This list
+ *           contains the list of available products on the CD-ROM as would be
+ *           displayed to the user. This also builds the component list used
+ *           by the SdAskOptionsList dialog box.
+ *
+ * Inputs:   None.
+ *
+ * Returns:  None.
+ ***************************************************************************/
+
+function BuildUserProductList()
+POINTER returnPointer;
+NUMBER nResultProduct, ntemp, tempValue;
+STRING CdProduct; 
+begin
+    listUserProducts = ListCreate(STRINGLIST);
+	listFileSizes = ListCreate(STRINGLIST);
+    nResultProduct = ListGetFirstString(listCdProducts, CdProduct);
+	while (nResultProduct = 0)
+		returnPointer = GetProductInfoFromDataList(CdProduct);
+		StructGetP(returnPointer, "", "productInfoString", ntemp, productInfoString);
+	//	SprintfBox (INFORMATION, "Value", "svString is %s", productInfoString);
+		ListAddString (listUserProducts, productInfoString, AFTER);
+
+		returnPointer = GetFileSizeFromDataList(CdProduct);
+		StructGetP(returnPointer, "", "productSizeString", ntemp, productSizeString);
+	//	SprintfBox (INFORMATION, "Value", "svString is %s", productSizeString);
+		ListAddString(listFileSizes, productSizeString, AFTER);
+		StrToNum(tempValue, productSizeString);
+
+		ComponentAddItem(szComponents, productInfoString, tempValue, TRUE);
+
+		nResultProduct = ListGetNextString(listCdProducts, CdProduct);
+	endwhile;
+	return;
+end;
+
+/***************************************************************************\
+ *
+ * Function: BuildGensymProductDataList
+ *
+ * Purpose:  This function builds the gensymProductDataList. All the information
+ *           related to the products such as product name (as it appears in the 
+ *           directory on the CD-ROM), the name as seen by the user (more explicit),
+ *           and the size in bytes, is put into this list. This list must be
+ *           updated if new products are added. This acts as the data list. The
+ *           information string contains these 3 fields delimited by DELIMITER.
+ *
+ * Inputs:   None.
+ *
+ * Returns:  None.
+ *
+ * Notes:    Please note that the format for storing the information related
+ *           to the product is : "product name as it appears on the CD-ROM 
+ *           <DELIMITER>name of product as seen by the user <DELIMITER>
+ *           size in bytes ".
+ *
+ * Bugs:     There is a bug in GetProductInfoFromDataList() such that
+ *           it looks for the first match of a product name within the
+ *           strings in gensymProductDataList.  Thus, because
+ *           "g2doc: G2 Core Technology Online Documentation: 17408000"
+ *           contains 'nol' as a substring, then the g2doc product info
+ *           will be returned when looking for nol.  The workaround is to
+ *           organize the list so that a product name substring always
+ *           appears before any other appearance of that substring.  E.g.,
+ *           to solve the nol problem, nol must be added before rather
+ *           than after g2doc.
+ ***************************************************************************/
+
+function BuildGensymProductDataList()
+begin
+	gensymProductDataList = ListCreate(STRINGLIST);
+	ListAddString(gensymProductDataList, "g2: G2: 61440000", AFTER);
+	ListAddString(gensymProductDataList, "tw: Telewindows: 12288000", AFTER);
+	ListAddString(gensymProductDataList, "gda: GDA: 15360000", AFTER);
+	ListAddString(gensymProductDataList, "nol: NeurOn-Line: 18432000", AFTER);
+	ListAddString(gensymProductDataList, "gsi: GSI: 25600000", AFTER);
+	ListAddString(gensymProductDataList, "opex: OpEx Core Services and OPAC: 25600000", AFTER);
+	ListAddString(gensymProductDataList, "gw: G2 WebLink: 2048000", AFTER);
+	ListAddString(gensymProductDataList, "gm: G2 WebMiner: 2048000", AFTER);
+	ListAddString(gensymProductDataList, "gsi32: GSI 3.2: 921600", AFTER);
+	ListAddString(gensymProductDataList, "gsi40: GSI 4.0: 11264000", AFTER);
+	ListAddString(gensymProductDataList, "gsi41: GSI 4.1: 11264000", AFTER);
+	ListAddString(gensymProductDataList, "gspc: GSPC: 7168000", AFTER);
+	ListAddString(gensymProductDataList, "guide: GUIDE: 10240000", AFTER);
+	ListAddString(gensymProductDataList, "g2doc: G2 Core Technology Online Documentation: 17408000", AFTER);
+	ListAddString(gensymProductDataList, "g2ps: G2 Core Technology Postscript Files: 148480000", AFTER);
+	ListAddString(gensymProductDataList, "g2stkdoc: G2 Starter Kit Online Documentation: 6144000", AFTER);
+	ListAddString(gensymProductDataList, "g2stkps: G2 Starter Kit Postscript Files: 56320000", AFTER);
+	ListAddString(gensymProductDataList, "g2tut: G2 Tutorials: 512000", AFTER);
+	ListAddString(gensymProductDataList, "g2utldoc: G2 Utilities Online Documentation: 12288000", AFTER);
+	ListAddString(gensymProductDataList, "g2utlps: G2 Utilities Postscript Files: 92160000", AFTER);
+	ListAddString(gensymProductDataList, "sentinel: Sentinel Driver files: 1024000", AFTER);
+	ListAddString(gensymProductDataList, "rethink: ReThink: 22528000", AFTER);
+	ListAddString(gensymProductDataList, "kbs: G2 Demos, Samples, and Utilities: 30720000", AFTER);
+	ListAddString(gensymProductDataList, "fonts: G2/Telewindows non-Latin Fonts: 30720000", AFTER);
+	ListAddString(gensymProductDataList, "winio: Windows 3.1 I/O extensions: 204800", AFTER);
+	ListAddString(gensymProductDataList, "axl: G2 ActiveXLink: 4608000", AFTER);
+	ListAddString(gensymProductDataList, "opexdoc: OpEx and G2-SNMP Documentation: 5120000", AFTER);
+	ListAddString(gensymProductDataList, "oxs: Operations Expert SNMP: 3072000", AFTER);
+	ListAddString(gensymProductDataList, "g2player: G2Player: 5120000", AFTER);
+	ListAddString(gensymProductDataList, "g2snmpgn: G2-SNMP generic bridge: 1228800", AFTER);
+	ListAddString(gensymProductDataList, "g2snmpov: G2-SNMP bridge for HP Network Node Manager: 1228800", AFTER);
+	ListAddString(gensymProductDataList, "g2snmpnv: G2-SNMP bridge for NetView: 614400", AFTER);
+	ListAddString(gensymProductDataList, "g2corba: G2 CORBALink: 4608000", AFTER);
+	ListAddString(gensymProductDataList, "simcure: SimCure:  15360000", AFTER);
+	ListAddString(gensymProductDataList, "ovmap: OpenView Map Importer:  2048000", AFTER);
+	ListAddString(gensymProductDataList, "ipra: IP Reachability Analyzer:  11264000", AFTER);
+	ListAddString(gensymProductDataList, "ora: ORA: 2048000", AFTER);
+	ListAddString(gensymProductDataList, "pingmgr: Ping Manager: 5120000", AFTER);
+
+end;
+
+/***************************************************************************\
+ *
+ * Function: BuildGensymPlatformDataList
+ *
+ * Purpose:  This function builds the gensymPlatformDataList. All the information
+ *           related to the platforms such as platform name (as it appears in the 
+ *           directory on the CD-ROM) and the name as seen by the user (more 
+ *           explicit) is put into this list. This acts as the data list. The
+ *           information string contains 2 fields delimited by DELIMITER.
+ *
+ * Inputs:   None.
+ *
+ * Returns:  None.
+ ***************************************************************************/
+
+function BuildGensymPlatformDataList()
+begin
+	gensymPlatformDataList = ListCreate(STRINGLIST);
+	ListAddString(gensymPlatformDataList, "Intelnt: MS Windows NT on Intel-based PCs", AFTER);
+	ListAddString(gensymPlatformDataList, "Alphant: MS Windows NT on DEC Alpha AXP", AFTER);
+end;
+
+/***************************************************************************\
+ *
+ * Function: GetProductInfoFromDataList
+ *
+ * Purpose:  This function searches the gensymProductDataList for the specified
+ *           product and returns the pointer to the string that contains the 
+ *           name of the product as seen by the user.
+ *
+ * Inputs:   Product name as it appears on the CD-ROM.
+ *
+ * Returns:  Pointer to the string that contains the name as seen by the user.
+ *
+ * Bugs:     This function naively looks for the first appearance of the
+ *           cdProduct substring in gensymProductDataList rather than
+ *           explicitly requiring it to be in the product name field.  See
+ *           the bug note for BuildGensymProductDataList().
+ ***************************************************************************/
+
+function GetProductInfoFromDataList(cdProduct)
+POINTER InfoStringPointer;
+LIST listTokens;
+NUMBER nResultSearch, nResult_token, nResultIteration, flag;
+STRING  dataString;
+begin
+	flag = FALSE;
+	nResultIteration = ListGetFirstString(gensymProductDataList, dataString);
+	while ((nResultIteration = 0) && (flag != TRUE))
+		nResultSearch = StrFind(dataString, cdProduct);
+		if(nResultSearch < 0) then
+			nResultIteration = ListGetNextString(gensymProductDataList, dataString);
+		else
+			flag = TRUE;
+		endif;
+	endwhile;
+
+	if (flag = TRUE) then
+		listTokens = ListCreate(STRINGLIST);
+		StrGetTokens(listTokens, dataString, DELIMITER);
+
+		nResult_token = ListGetFirstString(listTokens, productInfoString);
+		if(nResult_token = 0) then
+			nResult_token = ListGetNextString(listTokens, productInfoString);
+		else
+		//	MessageBox("Malformed Data List", SEVERE);
+			exit;
+		endif;
+		ListDestroy(listTokens);
+	endif;
+	if (flag = TRUE) then
+		InfoStringPointer = AddressString (productInfoString);
+		return InfoStringPointer;
+	endif;
+end; 
+
+/***************************************************************************\
+ *
+ * Function: GetFileSizeFromDataList
+ *
+ * Purpose:  This function searches the gensymProductDataList for the specified
+ *           product and returns the pointer to the string that contains the 
+ *           size in bytes required to install the product.
+ *
+ * Inputs:   Product name as it appears on the CD-ROM.
+ *
+ * Returns:  Pointer to the string that contains the size in bytes required to
+ *           install the product.
+ ***************************************************************************/
+
+function GetFileSizeFromDataList(cdProduct);
+POINTER SizeStringPointer;
+LIST listTokens;
+NUMBER nResultSearch, nResult_token, nResultIteration, flag;
+STRING  dataString;
+begin
+	flag = FALSE;
+	nResultIteration = ListGetFirstString(gensymProductDataList, dataString);
+	while ((nResultIteration = 0) && (flag != TRUE))
+		nResultSearch = StrFind(dataString, cdProduct);
+		if(nResultSearch < 0) then
+			nResultIteration = ListGetNextString(gensymProductDataList, dataString);
+		else
+			flag = TRUE;
+		endif;
+	endwhile;
+
+	if (flag = TRUE) then
+		listTokens = ListCreate(STRINGLIST);
+		StrGetTokens(listTokens, dataString, DELIMITER);
+
+		nResult_token = ListGetFirstString(listTokens, productSizeString);
+		while(nResult_token != END_OF_LIST) 
+			nResult_token = ListGetNextString(listTokens, productSizeString);
+		endwhile;
+		ListDestroy(listTokens);
+	endif;
+	if (flag = TRUE) then
+		SizeStringPointer = AddressString (productSizeString);
+		return SizeStringPointer;
+	endif;
+end; 
+
+/***************************************************************************\
+ *
+ * Function: GetSelectedProductFromDataList
+ *
+ * Purpose:  This function searches the gensymProductDataList for the specified
+ *           product selected by the user from the list displayed and returns
+ *           the pointer to the string that contains the name of the product 
+ *           as it appears on the CD-ROM.
+ *
+ * Inputs:   Product name selected by the user as it appears in the list.
+ *
+ * Returns:  Pointer to the string that contains the name of the product as
+ *           it appears on the CD-ROM.
+ ***************************************************************************/
+
+function GetSelectedProductFromDataList(userSelection)
+POINTER SelectedProductPointer;
+LIST listTokens;
+NUMBER nResultSearch, nResult_token, nResultIteration, flag;
+STRING  dataString;
+begin
+	flag = FALSE;
+	nResultIteration = ListGetFirstString(gensymProductDataList, dataString);
+	while ((nResultIteration = 0) && (flag != TRUE))
+		nResultSearch = StrFind(dataString, userSelection);
+		if(nResultSearch < 0) then
+			nResultIteration = ListGetNextString(gensymProductDataList, dataString);
+		else
+			flag = TRUE;
+		endif;
+	endwhile;
+
+	if (flag = TRUE) then
+		listTokens = ListCreate(STRINGLIST);
+		StrGetTokens(listTokens, dataString, DELIMITER);
+
+		nResult_token = ListGetFirstString(listTokens, productString);
+		if(nResult_token < 0) then
+			
+			MessageBox("Malformed Data List", SEVERE);
+		exit;
+		endif;
+		ListDestroy(listTokens);
+	endif;
+	if (flag = TRUE) then
+		SelectedProductPointer = AddressString (productString);
+		return SelectedProductPointer;
+	endif;
+end;
+
+/***************************************************************************\
+ *
+ * Function: PlatformListForSelectedProduct
+ *
+ * Purpose:  This function searches the directories for each platform that 
+ *           appears in the listPlatforms list to find the selected product
+ *           directory. If such a product directory exists then that platform
+ *           is added to the list of platforms for which the selected product is
+ *           available. 
+ *
+ * Inputs:   Product name as it appears on the CD-ROM.
+ *
+ * Returns:  None.
+ ***************************************************************************/
+
+function PlatformListForSelectedProduct(selectedProduct)
+STRING CdPlatform, prodPath;
+NUMBER nResult;
+begin
+
+	nResult = ListGetFirstString(listPlatforms, CdPlatform);
+	while(nResult = 0)
+		prodPath = SRCDISK^"\\"^CdPlatform^"\\"^selectedProduct;
+		if (ExistsDir(prodPath) = EXISTS) then
+			ListAddString(listProductPlatforms, CdPlatform, AFTER);
+		//	MessageBox(CdPlatform, INFORMATION);
+		endif;
+
+		nResult = ListGetNextString(listPlatforms, CdPlatform);
+	endwhile;
+	return;
+end;
+
+/***************************************************************************\
+ *
+ * Function: GetPlatformInfoFromDataList
+ *
+ * Purpose:  This function searches the gensymPlatformDataList for the specified
+ *           platform and returns the pointer to the string that contains the 
+ *           name of the platfom and the OS info as would be displayed to the
+ *           user.
+ *
+ * Inputs:   Platform name as it appears on the CD-ROM.
+ *
+ * Returns:  Pointer to the string that contains the name of the platform and
+ *           O.S info as would be displayed to the user.
+ ***************************************************************************/
+
+function GetPlatformInfoFromDataList(cdPlatform)
+POINTER InfoStringPointer;
+LIST listTokens;
+NUMBER nResultSearch, nResult_token, nResultIteration, flag;
+STRING  dataString;
+begin
+	flag = FALSE;
+	nResultIteration = ListGetFirstString(gensymPlatformDataList, dataString);
+	while ((nResultIteration = 0) && (flag != TRUE))
+		nResultSearch = StrFind(dataString, cdPlatform);
+		if(nResultSearch < 0) then
+			nResultIteration = ListGetNextString(gensymPlatformDataList, dataString);
+		else
+			flag = TRUE;
+		endif;
+	endwhile;
+
+	if (flag = TRUE) then
+		listTokens = ListCreate(STRINGLIST);
+		StrGetTokens(listTokens, dataString, DELIMITER);
+
+		nResult_token = ListGetFirstString(listTokens, platformInfoString);
+		if(nResult_token = 0) then
+			nResult_token = ListGetNextString(listTokens, platformInfoString);
+		else
+		//	MessageBox("Malformed Data List", SEVERE);
+			exit;
+		endif;
+		ListDestroy(listTokens);
+	endif;
+	if (flag = TRUE) then
+		InfoStringPointer = AddressString (platformInfoString);
+		return InfoStringPointer;
+	endif;
+end; 
+
+/***************************************************************************\
+ *
+ * Function: GetSelectedPlatformFromDataList
+ *
+ * Purpose:  This function searches the gensymPlatformDataList for the specified
+ *           platform as selected by the user from the displayed list and 
+ *           returns the pointer to the string that contains the name of the
+ *           platform as it appears on the CD-ROM.
+ *
+ * Inputs:   Platform name as selected by the user.
+ *
+ * Returns:  Pointer to the string that contains the platform name as it appears
+ *           on the CD-ROM.
+ ***************************************************************************/
+
+function GetSelectedPlatformFromDataList(userSelectedPlatform)
+POINTER SelectedPlatformPointer;
+LIST listTokens;
+NUMBER nResultSearch, nResult_token, nResultIteration, flag;
+STRING  dataString;
+begin
+	flag = FALSE;
+	nResultIteration = ListGetFirstString(gensymPlatformDataList, dataString);
+	while ((nResultIteration = 0) && (flag != TRUE))
+		nResultSearch = StrFind(dataString, userSelectedPlatform);
+		if(nResultSearch < 0) then
+			nResultIteration = ListGetNextString(gensymPlatformDataList, dataString);
+		else
+			flag = TRUE;
+		endif;
+	endwhile;
+
+	if (flag = TRUE) then
+		listTokens = ListCreate(STRINGLIST);
+		StrGetTokens(listTokens, dataString, DELIMITER);
+
+		nResult_token = ListGetFirstString(listTokens, platformString);
+		if(nResult_token < 0) then
+			
+			MessageBox("Malformed Data List", SEVERE);
+		exit;
+		endif;
+		ListDestroy(listTokens);
+	endif;
+	if (flag = TRUE) then
+		SelectedPlatformPointer = AddressString (platformString);
+		return SelectedPlatformPointer;
+	endif;
+end;
+
+/***************************************************************************\
+ *
+ * Function: CheckDestinationEmpty
+ *
+ * Purpose:  This function looks into the specified directory to find any 
+ *           directories or files. Existence of either of them implies that
+ *           the specified directory is not empty.
+ *
+ * Inputs:   Target directory which has to be checked for any files or directories.
+ *
+ * Returns:  TRUE if the directory is empty else FALSE.
+ ***************************************************************************/
+
+function CheckDestinationEmpty(destDirectory)
+BOOL DIR_FOUND_FLAG, FILES_FOUND_FLAG;
+LIST listDestDirs;
+NUMBER DirListResult;
+begin
+    DIR_FOUND_FLAG = TRUE;
+	FILES_FOUND_FLAG = TRUE;
+
+	listDestDirs = ListCreate(STRINGLIST);
+	DirListResult = FindAllDirs(destDirectory, INCLUDE_SUBDIR, listDestDirs);
+	if (DirListResult = 0) then
+		if(ListCount(listDestDirs) = 0) then
+			DIR_FOUND_FLAG = FALSE;
+		endif;
+
+		if (FindAllFiles(destDirectory, "*.*", FoundFileString, RESET) < 0) then
+			FILES_FOUND_FLAG = FALSE;
+		endif;
+	else
+		MessageBox("Could Not Reach the Destination Directory", WARNING);
+	exit;
+	endif;
+
+	ListDestroy(listDestDirs);
+
+	if (( DIR_FOUND_FLAG = TRUE) || ( FILES_FOUND_FLAG = TRUE)) then
+	    return FALSE;
+	else
+	    return TRUE;
+	endif;
+
+end;
+
+/***************************************************************************\
+ *
+ * Function: ChangeFileName
+ *
+ * Purpose:  This function looks into the specified directory recursively
+ *           to find the sys_mod.kb. If it exists then it renames the kb to 
+ *           sys-mod.kb. This is needed because the files with names containing
+ *           "-" are replaced by "_" and when these are copied to the customer
+ *           site, they must be renamed back to as they originally were i.e. with
+ *           a "-".
+ *
+ * Inputs:   Directory that needs to be checked for the existence of sys_mod.kb.
+ *
+ * Returns:  None
+ ***************************************************************************/
+
+function ChangeFileName(UserDirectory)
+STRING SysModDirectory, SysModFullPath;
+NUMBER ResultFileSearch;
+begin
+	ResultFileSearch = FindAllFiles(UserDirectory, "sys_mod.kb", SysModFullPath, RESET);
+	while (ResultFileSearch = 0)
+		if (ParsePath(SysModDirectory, SysModFullPath, PATH) = 0) then
+			SRCDIR = SysModDirectory;
+			TARGETDIR = SysModDirectory;
+			RenameFile("sys_mod.kb", "sys-mod.kb");
+		endif;
+		ResultFileSearch = FindAllFiles(UserDirectory, "sys_mod.kb", SysModFullPath, CONTINUE);
+	 endwhile;
+end;
+
+/***************************************************************************\
+ *
+ * Function: CheckRequirements
+ *
+ * Purpose:  This function will check all the minimum requirements for the 
+ *           application being installed. If any fail, then the user is 
+ *           informed and the installation is terminated.
+ *
+ * Inputs:   None.
+ *
+ * Returns:  None.
+ ***************************************************************************/
+
+function CheckRequirements()
+NUMBER nvDx, nvDy;
+NUMBER nvResult;
+STRING szResult;
+begin
+
+	bWinNT = TRUE;
+	bExplorer = FALSE;
+	
+	GetSystemInfo(OS, nvResult, szResult);
+	if(nvResult = IS_WINDOWS95) then
+		bExplorer = TRUE;
+		bWinNT = FALSE;
+	elseif (nvResult =  IS_WINDOWSNT) then
+		// Check to see if the shell being used is EXPLORER shell.
+		if (GetSystemInfo( OSMAJOR, nvResult, svResult ) = 0) then
+			if (nvResult >= 4) then
+				bExplorer = TRUE;
+            endif;
+        endif;
+	endif;
+
+	GetExtents(nvDx, nvDy);
+	if(nvDy < 480) then
+		MessageBox("This program requires VGA or better resolution.", WARNING);
+		exit;
+	endif;
+end;
+
+/***************************************************************************\
+ *
+ * Function: g2CustomFunction()
+ *
+ * Purpose:  This function prompts the user for installation of Gensym KBs. 
+ *           Only if the user answers 'yes', the KBs are installed else 
+ *           not. It then calls the twCustomFunction() function to confirm
+ *           the installation of Gensym fonts.
+ *           In order to make this installation script compatible with
+ *           4.1 installations, where kbs are located in a subdirectory under
+ *           g2, an extra check is put in. If the kbs are present under the g2
+ *           source directory on the CD-ROM, then the user is not prompted for
+ *           installation of kbs.
+ *
+ * Inputs:   None.
+ *
+ * Returns:  None.
+ ***************************************************************************/
+
+function g2CustomFunction()
+NUMBER nResultCopy;
+STRING TargetSubProdDir;
+STRING SubProduct;
+STRING ConfirmMsg, DirExistsMsg;
+STRING SelectDirTitle, SelectDirMsg;
+begin
+
+	// If there is a g2.map file in the target directory then delete it
+	TARGETDIR = svMainDirectory;
+	DeleteFile("G2.MAP");
+
+	SubProduct = "kbs";
+
+	if (ExistsDir(SRCDISK^"\\"^PLATFORM_NAME^"\\"^PRODUCT_NAME^"\\"^SubProduct) = NOTEXISTS) then
+	    TargetSubProdDir = svMainDirectory^"\\"^SubProduct;
+
+	    SetDialogTitle(DLG_ASK_YESNO, "G2 Demos, Samples, and Utilities Installation");
+	    ConfirmMsg = "G2 Demos, Samples, and Utilities will now be installed." +
+	    " Gensym recommends that you install these files.\n\n" +
+	    "Do you want to install these files ?\n";
+
+	    if (AskYesNo(ConfirmMsg, YES) = YES) then
+	    //	CreateDir(TargetSubProdDir);
+
+			if (ExistsDir(SRCDISK^"\\indep\\"^SubProduct) = NOTEXISTS) then
+			    MessageBox("G2 Demos, Samples, and Utilities are not available on" +
+				           " the CD-ROM. Please contact Gensym Corporation. Aborting"+
+						   " installation.", SEVERE);
+				exit;
+			endif;
+
+	        SelectDirTitle = "Select Directory";
+	        SelectDirMsg = "Enter or select the destination directory.";
+	        SelectDir (SelectDirTitle, SelectDirMsg, TargetSubProdDir, TRUE);
+	   
+	        while (CheckDestinationEmpty(TargetSubProdDir) = FALSE)
+	            DirExistsMsg = "The specified destination directory:\n" + TargetSubProdDir +
+						   "\n is not empty. Installation cannot proceed unless its destination" +
+						   " directory is empty.\n";
+			    MessageBox(DirExistsMsg, WARNING);
+			    SelectDir (SelectDirTitle, SelectDirMsg, TargetSubProdDir, TRUE);
+	        endwhile;
+	      
+	        SRCDIR = SRCDISK^"\\indep\\"^SubProduct;
+	        TARGETDIR = TargetSubProdDir;
+
+		    nResultCopy = XCopyFile("*.*", "*.*", INCLUDE_SUBDIR);
+
+		    if (nResultCopy < 0) then
+			    switch (nResultCopy)
+			    case COPY_ERR_CREATEDIR: // Create directory error
+				    MessageBox( "Unable to create a directory under "+ TARGETDIR + "."+
+                        "Please check write access to this directory.", SEVERE );
+				    abort;
+
+			    default: // Group all other errors under default label.
+				    NumToStr( szTemp, nResultCopy );
+				    MessageBox( "General file transfer error."+
+                        "Please check your target location and try again."+
+                         "\n\n Error Number:"+szTemp, SEVERE );
+				    abort;
+			    endswitch;
+		    endif;
+	 	    ChangeFileName(TargetSubProdDir);
+	    endif;
+	endif;
+
+	twCustomFunction();
+end;
+
+/***************************************************************************\
+ *
+ * Function: twCustomFunction()
+ *
+ * Purpose:  This function prompts the user for installation of Gensym Fonts. 
+ *           Only if the user answers 'yes', the Fonts are installed else 
+ *           not. It then calls the twCustomFunction() function to confirm
+ *           the installation of Gensym fonts.
+ *           In order to make this installation script compatible with the
+ *           4.1 software installation, where fonts are shipped as a part of
+ *           g2 and tw products, an extra check is put in. If the fonts subdirectory
+ *           exists under g2 or tw, then the user is not prompted for fonts.
+ *
+ * Inputs:   None.
+ *
+ * Returns:  None.
+ ***************************************************************************/
+
+function twCustomFunction()
+NUMBER nResultCopy;
+STRING TargetSubProdDir;
+STRING SubProduct;
+STRING ConfirmMsg, SelectDirMsg, DirExistsMsg, SelectDirTitle;
+begin
+	
+	// If there is a tw.map file in the target directory then delete it
+	TARGETDIR = svMainDirectory;
+	DeleteFile("TW.MAP");
+	
+	SubProduct = "fonts";
+
+	if (ExistsDir(SRCDISK^"\\"^PLATFORM_NAME^"\\"^PRODUCT_NAME^"\\"^SubProduct) = NOTEXISTS) then
+	    TargetSubProdDir = svMainDirectory^"\\"^SubProduct;
+	    SetDialogTitle(DLG_ASK_YESNO, "Non-Latin Fonts Installation");
+	    ConfirmMsg = "G2/Telewindows non-Latin fonts will now be installed.\n" +
+	    "Gensym recommends that you install the fonts. \n\n" +
+	    "Do you want to install the fonts ?\n";
+
+	    if (AskYesNo(ConfirmMsg, YES) = YES) then
+	    //	CreateDir(TargetSubProdDir);
+
+			if (ExistsDir(SRCDISK^"\\indep\\"^SubProduct) = NOTEXISTS) then
+			    MessageBox("G2/Telewindows  non-Latin fonts are not available on\n" +
+				           "the CD-ROM. Please contact Gensym Corporation. Aborting"+
+						   " installation.", SEVERE);
+				exit;
+			endif;
+
+		    SelectDirTitle = "Select Directory";
+	        SelectDirMsg = "Enter or select the destination directory.";
+	        SelectDir (SelectDirTitle, SelectDirMsg, TargetSubProdDir, TRUE);
+	   
+	        while (CheckDestinationEmpty(TargetSubProdDir) = FALSE)
+	            DirExistsMsg = "The specified destination directory:\n" + TargetSubProdDir +
+						   "\n is not empty. Installation cannot proceed unless its destination\n" +
+						   "directory is empty.\n";
+			    MessageBox(DirExistsMsg, WARNING);
+			    SelectDir (SelectDirTitle, SelectDirMsg, TargetSubProdDir, TRUE);
+	        endwhile;
+
+		    SRCDIR = SRCDISK^"\\indep\\"^SubProduct;
+		    TARGETDIR = TargetSubProdDir;
+		    nResultCopy = XCopyFile("*.*", "*.*", INCLUDE_SUBDIR);
+
+		    if (nResultCopy < 0) then
+			    switch (nResultCopy)
+			    case COPY_ERR_CREATEDIR: // Create directory error
+				    MessageBox( "Unable to create a directory under "+ TARGETDIR + "."+
+                        "Please check write access to this directory.", SEVERE );
+				    abort;
+
+			    default: // Group all other errors under default label.
+				    NumToStr( szTemp, nResultCopy );
+			    	MessageBox( "General file transfer error."+
+                        "Please check your target location and try again."+
+                         "\n\n Error Number:"+szTemp, SEVERE );
+				    abort;
+			    endswitch;
+		    endif;
+	    endif;
+	endif;
+
+	return;
+end;
+
+/***************************************************************************\
+ *
+ * Function: axlCustomFunction()
+ *
+ * Purpose:  This function registers the G2ActiveX control, G2COM.DLL.
+ *           The other remaning directories are installed into the user
+ *		 specified location.
+ *
+ * Inputs:   None.
+ *
+ * Returns:  None.
+ ***************************************************************************/
+
+function axlCustomFunction()
+STRING systems_dir, svArgs, svResult, svTerminate, svLaunch;
+begin
+	systems_dir = WINSYSDIR;
+	TARGETDIR = systems_dir;
+	SRCDIR = SRCDISK^"\\"^PLATFORM_NAME^"\\"^PRODUCT_NAME;
+	svTerminate = "The installation is incomplete. Please rectify the problem and try again.";
+
+	// Insure that the necessary files are present.
+	if (FindFile(svMainDirectory, "G2COM.DLL", svResult) < 0) then
+		MessageBox("Required file G2COM.DLL not found. " + svTerminate, WARNING);
+		exit;
+	endif;
+	if (FindFile(svMainDirectory, "GSI.DLL", svResult) < 0) then
+		MessageBox("File GSI.DLL not found.  " + svTerminate, WARNING);
+		exit;
+	endif;
+
+	// Register G2COM.DLL with system registry
+	// ChangeDirectory(svMainDirectory);
+	svLaunch = svMainDirectory^"\\regsvr32.exe";
+	svArgs = svMainDirectory^"\\G2Com.dll";
+	if (LaunchAppAndWait(svLaunch, svArgs, WAIT) < 0 ) then
+		MessageBox("Unable to register G2COM.DLL with system registry. " + svTerminate, WARNING);
+		exit;
+	endif;
+	return;
+end;
+
+/***************************************************************************\
+ *
+ * Function: gsi32CustomFunction()
+ *
+ * Purpose:  
+ *
+ * Inputs:   None.
+ *
+ * Returns:  None.
+ ***************************************************************************/
+
+function gsi32CustomFunction()
+begin
+	return;
+end;
+
+
+/***************************************************************************\
+ *
+ * Function: g2corbaCustomFunction()
+ *
+ * Purpose:  
+ *
+ * Inputs:   None.
+ *
+ * Returns:  None.
+ ***************************************************************************/
+
+function g2corbaCustomFunction()
+begin
+	return;
+end;
+
+
+/***************************************************************************\
+ *
+ * Function: gsi40CustomFunction()
+ *
+ * Purpose:  
+ *
+ * Inputs:   None.
+ *
+ * Returns:  None.
+ ***************************************************************************/
+
+function gsi40CustomFunction()
+begin
+	return;
+end;
+
+/***************************************************************************\
+ *
+ * Function: guideCustomFunction()
+ *
+ * Purpose:  
+ *
+ * Inputs:   None.
+ *
+ * Returns:  None.
+ ***************************************************************************/
+function guideCustomFunction()
+begin
+	return;
+end;
+
+
+/***************************************************************************\
+ *
+ * Function: rethinkCustomFunction()
+ *
+ * Purpose:  
+ *
+ * Inputs:   None.
+ *
+ * Returns:  None.
+ ***************************************************************************/
+
+function rethinkCustomFunction()
+begin
+	return;
+end;
+
+
+/***************************************************************************\
+ *
+ * Function: sentinelCustomFunction()
+ *
+ * Purpose:  
+ *
+ * Inputs:   None.
+ *
+ * Returns:  None.
+ ***************************************************************************/
+
+function sentinelCustomFunction()
+begin
+	return;
+end;
+
+
+/***************************************************************************\
+ *
+ * Function: gdaCustomFunction()
+ *
+ * Purpose:  
+ *
+ * Inputs:   None.
+ *
+ * Returns:  None.
+ ***************************************************************************/
+
+function gdaCustomFunction()
+begin
+	return;
+end;
+
+
+/***************************************************************************\
+ *
+ * Function: nolCustomFunction()
+ *
+ * Purpose:  
+ *
+ * Inputs:   None.
+ *
+ * Returns:  None.
+ ***************************************************************************/
+
+function nolCustomFunction()
+begin
+	return;
+end;
+
+
+/***************************************************************************\
+ *
+ * Function: kbsCustomFunction()
+ *
+ * Purpose:  
+ *
+ * Inputs:   None.
+ *
+ * Returns:  None.
+ ***************************************************************************/
+
+function kbsCustomFunction()
+begin
+    return;
+end;
+
+
+/***************************************************************************\
+ *
+ * Function: fontsCustomFunction()
+ *
+ * Purpose:  
+ *
+ * Inputs:   None.
+ *
+ * Returns:  None.
+ ***************************************************************************/
+
+function fontsCustomFunction()
+begin
+    return;
+end;
+
+/***************************************************************************\
+ *
+ * Function: Test1()
+ *
+ * Purpose:  Test functions
+ ***************************************************************************/
+function Test1()
+POINTER returnPointer;
+STRING svString, SysModFullPath, SysModDirectory;
+NUMBER ntemp, FindSysModResult;
+begin
+
+	if (FindAllFiles("c:\\intelnt\\g2", "sys_mod.kb", SysModFullPath, RESET) = 0) then
+		MessageBox(SysModFullPath, INFORMATION);
+		if (ParsePath(SysModDirectory, SysModFullPath, PATH) = 0) then
+			MessageBox(SysModDirectory, INFORMATION);
+			SRCDIR = SysModDirectory;
+			TARGETDIR = SysModDirectory;
+			RenameFile("sys_mod.kb", "sys-mod.kb");
+		endif;
+	endif;
+		
+/*	listDestDirs = ListCreate(STRINGLIST);
+	ntemp = FindAllDirs("c:\\Indep\\gda", INCLUDE_SUBDIR, listDestDirs);
+	if (ntemp = 0) then
+		MessageBox("Successful", INFORMATION);
+	else
+		MessageBox("Failure", INFORMATION);
+	endif;
+
+	ntemp = FindAllFiles("c:\\Indep\\gda", "*.*", svString, RESET);
+	if(ntemp = 0) then
+		MessageBox("Successful", INFORMATION);
+	else
+		MessageBox("Failure", INFORMATION);
+	endif;
+
+	MessageBox("svString = " + svString, INFORMATION);
+
+	returnPointer = GetProductInfoFromDataList("tw");
+	StructGetP(returnPointer, "", "productInfoString", ntemp, productInfoString);
+	SprintfBox (INFORMATION, "Value", "svString is %s", productInfoString);
+*/
+end;
+
+function Test2()
+POINTER returnPointer;
+STRING svString;
+NUMBER ntemp;
+begin
+	
+	returnPointer = GetFileSizeFromDataList("tw");
+	StructGetP(returnPointer, "", "productSizeString", ntemp, productSizeString);
+	//SprintfBox (INFORMATION, "Value", "svString is %s", productSizeString);
+end;
+
+
+
+
