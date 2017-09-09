@@ -1,0 +1,97 @@
+;;; -*- Mode: LISP; Syntax: Common-Lisp; Base: 10; Package: USER -*-
+(in-package "USER")
+
+;;;; Makefile generator relational database: g2-dependencies.rel
+
+;;; Copyright (c) 1986-2017 Gensym Corporation.
+;;; All Rights Reserved.
+
+;;; author: Mark E. Staknis
+
+;;; This file contains the relation that maintains the dependencies
+;;; for the creation and installation of the translated gw, and its
+;;; testing and example files.  Most local dependencies
+;;; are in the gsi subdirectories.  During makefile generation, the
+;;; dependencies in this relation are augmented by dependencies
+;;; created from file roots listed in gsi/c/gw-files.txt, which is
+;;; generated during gsi translation.  For each root in gw-files.txt,
+;;; entries of form
+;;;    (gw            exe  _all        <root>        obj  y     )
+;;;    (<root>        obj  _all        rthfiles      var  y     )
+;;;    (<root>        obj  _all        <root>        h    y     )
+;;; are generated, with the exception of usersyms, userinit, and symtab,
+;;; which don't have the final h line. This expresses the fact that each
+;;; translated c file depends on a corresponding h file and h files in the
+;;; runtime directory.
+
+
+(setq gw-dependency-relation
+ '(( target-group  type-group
+                        platform-group
+                                    dependency    dependency-type
+                                                       local )
+;;   ------------  ---- ----------- ------------  ---- -----
+   ((all           dum  _all        libgw         lib  y     )
+    (all           dum  _all        gw            exe  y     )
+    ; nonlocal libs are unsorted in the link line and appear in the order here
+    (gw            exe  _all        libtcp        lib  n     )
+    (gw            exe  _all        libgsec       lib  n     )
+    (gw            exe  _all        librtl        lib  n     )
+    (gw            exe  intelnt     gw            res  y     )
+    (gw            res  intelnt     gw            rc   y     )
+    (_all          obj  _all        rthfiles      var  y     )
+    ; additional (non-translated) objects
+    (libgw         lib  _all        gw_tcp        obj  y     )
+    (libgw         lib  _all        lgsi_support  obj  y     )
+    (lgsi_support  obj  _all        gsi_main      h    n     )
+    (gw            exe  _all        gsiannex      obj  n     )
+    (gw            exe  _all        gsi_brg       obj  y     )
+    (gw            exe  _all        nsleep        obj  n     )
+    (gw            exe  _all        gw_main       obj  y     )
+    (gw_main       obj  _all        gsi_main      h    n     )
+    (gw_main       obj  _all        gw_main       h    y     )
+    (gw_tcp        obj  _all        gw_main       h    y     )
+    (gw            exe  _all        gw_tcp        obj  y     )
+;    (gw            exe  _all        gwver         obj  y     )
+;    (gw_tcp        obj  _all        cprim         h    y     )
+    (rthfiles      var  _all        c-ifuns       h    n     )
+    (rthfiles      var  _all        c-sdefs       h    n     )
+    (rthfiles      var  _all        config        h    n     )
+    (rthfiles      var  _all        core          h    n     )
+    (rthfiles      var  _all        ffi           h    n     )
+    (rthfiles      var  _all        gensym        h    n     )
+    (rthfiles      var  _all        initvars      h    n     )
+    (rthfiles      var  _all        inline        h    n     )
+    (rthfiles      var  _all        instance      h    n     )
+    (rthfiles      var  _all        kernel        h    n     )
+    (rthfiles      var  _all        lisplib       h    n     )
+    (rthfiles      var  _all        longname      h    n     )
+    (rthfiles      var  _all        object        h    n     )
+    (rthfiles      var  _all        smcompat      h    n     )
+    (rthfiles      var  _all        svarargs      h    n     )
+    (rthfiles      var  _all        specific      h    n     )
+    (rthfiles      var  _all        uconfig       h    n     )
+    (rthfiles      var  _all        values        h    n     )
+    (install       dum  intelnt     run-gw        bat  y     )
+    (install       dum  _all        gw            exe  y     )
+;    (install       dum  _all        bugs          htm  y     )
+;    (install       dum  _all        home          htm  y     )
+    (install       dum  _all        bridge        gif  y     )
+
+	 ;; The kb files
+;    (install       dum  _all        guicolor      kb   y     )
+;    (install       dum  _all        guidata       kb   y     )
+;    (install       dum  _all        guimove       kb   y     )
+;    (install       dum  _all        guiprint      kb   y     )
+;    (install       dum  _all        guitools      kb   y     )
+;    (install       dum  _all        gwexam        kb   y     )
+    (install       dum  _all        gwex1         kb   y     )
+    (install       dum  _all        gwex2         kb   y     )
+    (install       dum  _all        gwex3         kb   y     )
+    (install       dum  _all        gwlow         kb   y     )
+;    (install       dum  _all        sys-mod       kb   y     )
+;    (install       dum  _all        uil           kb   y     )
+;    (install       dum  _all        uildefs       kb   y     )
+;    (install       dum  _all        uilroot       kb   y     )
+;    (install       dum  _all        web           kb   y     )
+ )))
