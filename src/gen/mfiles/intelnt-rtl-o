@@ -1,0 +1,4420 @@
+PRODUCT = rtl
+ODIR = o
+PLATFORM = intelnt
+CDIR = $(SRCBOX)\$(PRODUCT)\c
+MFDIR = $(DSTBOX)\$(PRODUCT)\$(ODIR)
+SCRIPTSDIR = $(SCRIPTSBOX)\scripts\nt
+CC_FLAGS = $(cflags) $(cvarsmt) -DCHESTNUT -DNDEBUG -D_CTYPE_DISABLE_MACROS -UDEBUG  -I$(SRCBOX)\common\c\include
+
+# The include file ntwin32.mak defines macros to provide independence
+# macro      Intel NT             Alpha NT      Definition
+# =====      ========             ========      ===========
+# $(cc)      cl                   claxp         compiler
+# $(ccommon) -c -W3               same          standard compiler flags
+# $(cdebug)  -Od -Zi              -Od -Zi -Zh   standard debug flags*
+# $(cflags)  $(ccommon) -D_X86_=1 -c -DALPHA=1  to identify platform
+# $(cvarsdll) -DWIN32 $(noansi)    same          to identify o.s.
+# $(link)    link32               same          linker
+# $(ldebug)  -debug:full          same          linker debug flags*
+#            -debugtype:cv              
+# $(guilflags) -subsystem:windows same          GUI link flags
+#             -entry:WinMainCRTStartup  
+#
+# (*) A NODEBUG option or macro turns off debugging and specifies
+#    full optimization.
+
+!include <ntwin32.mak>
+
+RTHFILES = $(CDIR)\bigext.h $(CDIR)\bignmint.h $(CDIR)\bignum.h \
+  $(CDIR)\c-ifuns.h $(CDIR)\c-sdefs.h $(CDIR)\chars.h $(CDIR)\clos.h \
+  $(CDIR)\closinit.h $(CDIR)\concatnt.h $(CDIR)\config.h $(CDIR)\core.h \
+  $(CDIR)\defset.h $(CDIR)\del-eq.h $(CDIR)\dummy.h $(CDIR)\equal.h \
+  $(CDIR)\errors.h $(CDIR)\evalrun.h $(CDIR)\externs.h $(CDIR)\ffi.h \
+  $(CDIR)\filesys.h $(CDIR)\format.h $(CDIR)\funcall.h $(CDIR)\gc.h \
+  $(CDIR)\gcobjmap.h $(CDIR)\hash.h $(CDIR)\ifuns.h $(CDIR)\initclos.h \
+  $(CDIR)\initvars.h $(CDIR)\inline.h $(CDIR)\instance.h $(CDIR)\kernel.h \
+  $(CDIR)\keywords.h $(CDIR)\lisplib.h $(CDIR)\lists.h $(CDIR)\longname.h \
+  $(CDIR)\ltime.h $(CDIR)\methargs.h $(CDIR)\methcomb.h $(CDIR)\no-pkg.h \
+  $(CDIR)\numbers.h $(CDIR)\object.h $(CDIR)\runint.h $(CDIR)\runtime.h \
+  $(CDIR)\sdefs.h $(CDIR)\seq_type.h $(CDIR)\seqmodi.h $(CDIR)\slotv.h \
+  $(CDIR)\smcompat.h $(CDIR)\some.h $(CDIR)\specific.h $(CDIR)\stat_arr.h \
+  $(CDIR)\strminit.h $(CDIR)\subtypep.h $(CDIR)\svarargs.h $(CDIR)\svargs.h \
+  $(CDIR)\trivialp.h $(CDIR)\uconfig.h $(CDIR)\values.h $(CDIR)\varkey.h \
+  $(CDIR)\wrapper.h
+
+all : _mfenter librtl.lib _mfexit
+
+_mfenter : 
+    @- $(SCRIPTSDIR)\errsweep.bat -init
+
+_mfexit : 
+    @- $(SCRIPTSDIR)\errsweep.bat -finish
+
+librtl.lib : acons.obj adjoin.obj adjsblp.obj adjstrry.obj admnsns.obj \
+  advncpcg.obj allcmmg.obj alphchrp.obj alpnmrcp.obj amjndx.obj anbndsp.obj \
+  append.obj append2.obj apply.obj apply1.obj apply2.obj apply3.obj aref.obj \
+  aref0.obj aref1.obj aref2.obj aref3.obj aref4.obj aref5.obj aref6.obj \
+  aref7.obj armmrlmt.obj armmrysd.obj arrayp.obj arrays.obj arrdmnsn.obj \
+  arrttlsz.obj arryrnk.obj artrgtsz.obj asllpnp.obj asscifnt.obj assoc.obj \
+  assoc_eq.obj assoc_if.obj assoceql.obj assocqul.obj assq.obj atom.obj \
+  avncmbl.obj backquot.obj bgintim.obj biginit.obj biginit2.obj bignum.obj \
+  bignump.obj bindsyms.obj bit_arrs.obj bitp.obj bitvctrp.obj bothcsep.obj \
+  boundp.obj bqinit.obj butlast.obj caaaar.obj caaadr.obj caaar.obj \
+  caadar.obj caaddr.obj caadr.obj caar.obj cadaar.obj cadadr.obj cadar.obj \
+  caddar.obj cadddr.obj caddr.obj cadr.obj car.obj ccl.obj cdaaar.obj \
+  cdaadr.obj cdaar.obj cdadar.obj cdaddr.obj cdadr.obj cdar.obj cdbltdbl.obj \
+  cddaar.obj cddadr.obj cddar.obj cdddar.obj cddddr.obj cdddr.obj cddr.obj \
+  cdr.obj char_bit.obj char_eq.obj char_eqn.obj char_eqr.obj char_ge.obj \
+  char_gen.obj char_ger.obj char_gt.obj char_gtn.obj char_gtr.obj \
+  char_int.obj char_le.obj char_len.obj char_ler.obj char_lt.obj char_ltn.obj \
+  char_ltr.obj char_ne.obj char_nen.obj char_ner.obj charbits.obj \
+  charcode.obj charfont.obj charname.obj chars.obj chrcter.obj chrcterp.obj \
+  chrdwncs.obj chrequl.obj chrequln.obj chrequlr.obj chrgrtrp.obj \
+  chrlessp.obj chrlsspn.obj chrlsspr.obj chrmmbr.obj chrntqln.obj \
+  chrntqlr.obj chrntqul.obj chrupcse.obj cllc.obj clrinput.obj clrutput.obj \
+  cmplmnnl.obj cmplncnp.obj cnnlnncn.obj cnsnlfls.obj cnsnlndl.obj cnsnlr.obj \
+  cobjectp.obj codechar.obj coerce.obj commonp.obj complexp.obj conctnt.obj \
+  consp.obj copy_seq.obj copylist.obj copytree.obj count.obj \
+  count_if.obj cp_alist.obj cpfptr.obj cpysymbl.obj crgrtrpn.obj crgrtrpr.obj \
+  crngrrp.obj crngrrpn.obj crngrrpr.obj crnlsspn.obj crnlsspr.obj \
+  crntlssp.obj csnpsrm.obj cspsrm.obj cswrsrm.obj ctrlvars.obj cuntifnt.obj \
+  dbltntgr.obj dcdnvslm.obj dcnmsng.obj defftp.obj deleteeq.obj deleteif.obj \
+  delq.obj describe.obj dgtchrp.obj digitchr.obj dirctory.obj dldplcs.obj \
+  dltfil.obj dltifnot.obj dltql.obj dltqul.obj doaref1.obj dormovif.obj \
+  dostfrf.obj drmfrrr.obj eighth.obj encnvslm.obj endp.obj engnmsng.obj \
+  eq.obj eql.obj equal.obj equalp.obj err_aux.obj errors.obj evalinit.obj \
+  evalrun.obj evals.obj faref.obj fifth.obj filesys.obj fill.obj fillngth.obj \
+  filuthor.obj find.obj find_if.obj findifnt.obj first.obj fixnump.obj \
+  flatsize.obj fllpntr.obj flnmsrng.obj floatp.obj flpstn.obj flwrtdt.obj \
+  fnllmbl.obj fnshtm.obj fnshtpt.obj format.obj forptrp.obj forptrtp.obj \
+  fortype.obj fortypep.obj forval.obj fourth.obj fpaddr.obj fptrs.obj \
+  fptype.obj frcutput.obj frfptr.obj frshlin.obj fsizeof.obj fstrval.obj \
+  ftmod.obj ftname.obj ftrem.obj ftsize.obj ftypep.obj funcall.obj \
+  funcall3.obj funcln.obj functinp.obj gc.obj gensym.obj gentemp.obj get.obj \
+  getf.obj gnrnlrlm.obj gnrnlrnm.obj gnvrslm.obj grpccrp.obj gtdcddtm.obj \
+  gtprprts.obj hash.obj heap.obj segment.obj hsnmsrng.obj ichrnme.obj identity.obj \
+  ifuns.obj igglg.obj ilzxlbl.obj immedite.obj ingrlng.obj initgc.obj \
+  inlzllbl.obj inlzmbl.obj inlzpckg.obj innlmkp.obj inspect.obj int_char.obj \
+  integerp.obj intrsctn.obj invldmd.obj invlncnn.obj io.obj ismblnm.obj \
+  isngsng.obj isngsngn.obj isyms.obj keywordp.obj lambinit.obj last.obj \
+  ldelete.obj ldiff.obj lfloat.obj lgclpnmp.obj list.obj listp.obj \
+  listrvrs.obj liststar.obj listvlus.obj llisten.obj lmlmnn.obj lmlmnnvn.obj \
+  load.obj load_run.obj lopen.obj lowrcsp.obj lreader.obj lremove.obj \
+  lsleep.obj lstlngth.obj lstnrvrs.obj lunion.obj m_nthcdr.obj macros.obj \
+  makechar.obj makelist.obj map.obj map_into.obj mapcar.obj \
+  markgc.obj mcfptr.obj mchintyp.obj mchnvrsn.obj mcnnstnc.obj mdcmbnn.obj \
+  member.obj membereq.obj memberif.obj memberse.obj memq.obj merge.obj \
+  mismatch.obj mkarrlt.obj mkcomplx.obj mkfptr.obj mkfptri.obj mkpthnm.obj \
+  mkscnsnc.obj mksqunc.obj mksymbol.obj mkunbund.obj mkvctor.obj mkvlucll.obj \
+  mlplvlln.obj mmbrifnt.obj mmbrodd.obj mmbrql.obj mmbrqul.obj mrgptnms.obj \
+  mspcmccc.obj mvsn.obj namechar.obj nbutlast.obj nconc.obj nconc2.obj \
+  ncons.obj ncons1.obj ninth.obj nmstring.obj nntrsctn.obj not.obj \
+  nreconc.obj nreverse.obj nsbsfn.obj nsbstfnt.obj nsbsttt.obj nsbstttf.obj \
+  nsdffrnc.obj nsngcplz.obj nsngdncs.obj nsrngpcs.obj nsublis.obj nsubst.obj \
+  nsubstif.obj nsxclsvr.obj nth.obj nthcdr.obj null.obj numberp.obj \
+  numbers.obj numinit.obj nunion.obj objccdbl.obj oldsyms.obj packagep.obj \
+  packages.obj pairlis.obj pathname.obj pctpintr.obj peekchar.obj pkginit.obj \
+  pnmdrcr.obj position.obj pprint.obj prin1.obj princ.obj print.obj \
+  prmpfrvl.obj prn1srng.obj prncsrng.obj prntinit.obj probfil.obj \
+  proclaim.obj progv_do.obj prsintgr.obj psitinif.obj psnmsng.obj pstnfnt.obj \
+  pthnmdvc.obj pthnmep.obj pthnmhst.obj pthnmnm.obj pthnmtyp.obj ptnmvrsn.obj \
+  rassoc.obj rassocif.obj ratiop.obj rdcrnng.obj rdrmsrng.obj readbyte.obj \
+  readchar.obj readinit.obj readline.obj realp.obj reduce.obj remprop.obj \
+  replace.obj rest.obj reverse.obj revppend.obj rmvdplcs.obj rnmfil.obj \
+  room.obj rplaca.obj rplacd.obj rsscifnt.obj rtionlp.obj rwmjrrf.obj \
+  s_fill_n.obj s_find_n.obj s_load_n.obj sadjoinn.obj sassocn.obj sbgnmdg.obj \
+  sbnrsls.obj sbsfn.obj sbstttf.obj scgnrlrr.obj schar.obj schrrlop.obj \
+  schrrlpn.obj scngvbgn.obj scnswtgc.obj scntfntn.obj scountn.obj \
+  scpvbgnm.obj scuntifn.obj sdefs.obj sdeleten.obj sdjstrrn.obj sdltfntn.obj \
+  sdltif.obj sdltifn.obj sdmsngn.obj search.obj second.obj seqsimp.obj \
+  set.obj set_char.obj set_cxr.obj set_get.obj set_getf.obj set_nth.obj \
+  set_rest.obj setaref0.obj setaref1.obj setaref2.obj setaref3.obj \
+  setaref4.obj setaref5.obj setaref6.obj setaref7.obj setf_bit.obj \
+  setfaref.obj setfifth.obj setfirst.obj setfsbit.obj setninth.obj \
+  setpckge.obj setschar.obj setsixth.obj setsvref.obj settenth.obj \
+  setthird.obj seventh.obj sfaref.obj sffllpnr.obj sfindifn.obj sfllfntn.obj \
+  sfllpnr.obj sfndfntn.obj sforval.obj sfpaddr.obj sfptype.obj sfstrval.obj \
+  sfwrvrsn.obj sgvvbnng.obj shrtstnm.obj si_throw.obj sinpckgn.obj sixth.obj \
+  skwrdrgp.obj slclosen.obj slodrunn.obj slopenn.obj slplcsn.obj slunionn.obj \
+  slwriten.obj smblfncn.obj smblplst.obj smblvllp.obj smembern.obj \
+  smergen.obj smjndxx.obj smkerryn.obj smklistn.obj smkpckgn.obj smkptnmn.obj \
+  smkrstrg.obj smkscrr.obj smksqncn.obj smksrngn.obj smkstbln.obj \
+  smmbrfnn.obj smmbrifn.obj smplbvcp.obj smplrryp.obj smplsngp.obj \
+  smplvcrp.obj smsmtchn.obj smvfncll.obj smvplcsn.obj snbnnjmp.obj \
+  snddbjcp.obj sndrdcrp.obj sngcplzn.obj snglpn.obj sngnlpn.obj sngppnd2.obj \
+  sngppndn.obj snngclzn.obj snngncn.obj snngpcn.obj snnlncll.obj snnrscnn.obj \
+  snrscnn.obj snsbsfn.obj snsbsfnn.obj snsbsn.obj snsbstfn.obj snsdrncn.obj \
+  snslngnn.obj snsqncfn.obj snsublsn.obj snsubstn.obj sntmisc.obj \
+  snunionn.obj snxclvn.obj some.obj sort.obj spgvbnng.obj spnmngn.obj \
+  sprsngrn.obj spsitinn.obj spsnfnn.obj spstnfn.obj squncp.obj srassocn.obj \
+  srcrbjcp.obj sreducen.obj sremoven.obj sreplcen.obj srethrow.obj \
+  srmovifn.obj srmvfntn.obj srngcplz.obj srngdncs.obj srngppnd.obj \
+  srrcnns.obj srsscfnn.obj srsscifn.obj srstrvls.obj srwmjrrf.obj ssbsfn.obj \
+  ssbsfnn.obj ssbstttn.obj ssdrncn.obj ssearchn.obj ssffncn.obj ssmblncn.obj \
+  ssmblpls.obj ssnggpn.obj ssngncsn.obj ssngngpn.obj ssngnqln.obj \
+  ssngpcsn.obj ssrnggn.obj ssrngln.obj ssrngqln.obj ssrnpqr.obj ssscfntn.obj \
+  sssmblld.obj sssocifn.obj sstrmgtc.obj sstrnggn.obj sstrngln.obj \
+  sstrngnn.obj sstrngqn.obj ssublisn.obj ssubstfn.obj ssubstn.obj \
+  ssubstpn.obj ssvmrvls.obj ssvvlus.obj ssxclsvn.obj statclst.obj statics.obj \
+  statlsts.obj stderror.obj stdffrnc.obj stdpkgs.obj stfaref.obj \
+  stffnctn.obj stfourth.obj stighth.obj streamp.obj streams.obj string.obj \
+  stringp.obj strings.obj strinint.obj strminit.obj strngcrp.obj strngpcs.obj \
+  strquln.obj struct.obj structi.obj stscond.obj stsubsq.obj stsubsq1.obj \
+  stsubsq2.obj stsvnth.obj sttcbtrr.obj sttccrrr.obj sttcflot.obj \
+  sttcpckg.obj sttcrr.obj sttcrto.obj sttcsmbl.obj stxclsvr.obj sublis.obj \
+  subseq.obj subsetp.obj subst.obj subst_if.obj substfnt.obj substtut.obj \
+  subtypep.obj svref.obj swrsrngn.obj swrtlnn.obj swrtstng.obj symblvlu.obj \
+  symbolnm.obj symbolp.obj symbols.obj tailp.obj tenth.obj terpri.obj \
+  tfaref.obj third.obj tlllcbl.obj treeequl.obj ttlmmrsd.obj type_of.obj \
+  typep.obj unquetag.obj unredchr.obj upprcsp.obj upstpckg.obj usersyms.obj \
+  usmdpnm.obj values.obj vcrpsxnd.obj vctorpop.obj vctrpush.obj vector.obj \
+  vectorp.obj vluslist.obj writbyt.obj writechr.obj writlin.obj wrtstrng.obj \
+  wtspccrp.obj xor.obj y_or_n_p.obj yesnoaux.obj yesornop.obj yornpn.obj \
+  ysornopn.obj int64.obj
+    - del librtl.lib
+    @- $(SCRIPTSDIR)\errsweep.bat librtl.lib
+    $(implib) @<<
+  /out:librtl.lib   acons.obj adjoin.obj adjsblp.obj adjstrry.obj admnsns.obj advncpcg.obj allcmmg.obj alphchrp.obj alpnmrcp.obj amjndx.obj anbndsp.obj append.obj append2.obj apply.obj apply1.obj apply2.obj apply3.obj aref.obj aref0.obj aref1.obj aref2.obj aref3.obj aref4.obj aref5.obj aref6.obj aref7.obj armmrlmt.obj armmrysd.obj arrayp.obj arrays.obj arrdmnsn.obj arrttlsz.obj arryrnk.obj artrgtsz.obj asllpnp.obj asscifnt.obj assoc.obj assoc_eq.obj assoc_if.obj assoceql.obj assocqul.obj assq.obj atom.obj avncmbl.obj backquot.obj bgintim.obj biginit.obj biginit2.obj bignum.obj bignump.obj bindsyms.obj bit_arrs.obj bitp.obj bitvctrp.obj bothcsep.obj boundp.obj bqinit.obj butlast.obj caaaar.obj caaadr.obj caaar.obj caadar.obj caaddr.obj caadr.obj caar.obj cadaar.obj cadadr.obj cadar.obj caddar.obj cadddr.obj caddr.obj cadr.obj car.obj ccl.obj cdaaar.obj cdaadr.obj cdaar.obj cdadar.obj cdaddr.obj cdadr.obj cdar.obj cdbltdbl.obj cddaar.obj cddadr.obj cddar.obj cdddar.obj cddddr.obj cdddr.obj cddr.obj cdr.obj char_bit.obj char_eq.obj char_eqn.obj char_eqr.obj char_ge.obj char_gen.obj char_ger.obj char_gt.obj char_gtn.obj char_gtr.obj char_int.obj char_le.obj char_len.obj char_ler.obj char_lt.obj char_ltn.obj char_ltr.obj char_ne.obj char_nen.obj char_ner.obj charbits.obj charcode.obj charfont.obj charname.obj chars.obj chrcter.obj chrcterp.obj chrdwncs.obj chrequl.obj chrequln.obj chrequlr.obj chrgrtrp.obj chrlessp.obj chrlsspn.obj chrlsspr.obj chrmmbr.obj chrntqln.obj chrntqlr.obj chrntqul.obj chrupcse.obj cllc.obj clrinput.obj clrutput.obj cmplmnnl.obj cmplncnp.obj cnnlnncn.obj cnsnlfls.obj cnsnlndl.obj cnsnlr.obj cobjectp.obj codechar.obj coerce.obj commonp.obj complexp.obj conctnt.obj consp.obj copy_seq.obj copylist.obj copytree.obj count.obj count_if.obj cp_alist.obj cpfptr.obj cpysymbl.obj crgrtrpn.obj crgrtrpr.obj crngrrp.obj crngrrpn.obj crngrrpr.obj crnlsspn.obj crnlsspr.obj crntlssp.obj csnpsrm.obj cspsrm.obj cswrsrm.obj ctrlvars.obj cuntifnt.obj dbltntgr.obj dcdnvslm.obj dcnmsng.obj defftp.obj deleteeq.obj deleteif.obj delq.obj describe.obj dgtchrp.obj digitchr.obj dirctory.obj dldplcs.obj dltfil.obj dltifnot.obj dltql.obj dltqul.obj doaref1.obj dormovif.obj dostfrf.obj drmfrrr.obj eighth.obj encnvslm.obj endp.obj engnmsng.obj eq.obj eql.obj equal.obj equalp.obj err_aux.obj errors.obj evalinit.obj evalrun.obj evals.obj faref.obj fifth.obj filesys.obj fill.obj fillngth.obj filuthor.obj find.obj find_if.obj findifnt.obj first.obj fixnump.obj flatsize.obj fllpntr.obj flnmsrng.obj floatp.obj flpstn.obj flwrtdt.obj fnllmbl.obj fnshtm.obj fnshtpt.obj format.obj forptrp.obj forptrtp.obj fortype.obj fortypep.obj forval.obj fourth.obj fpaddr.obj fptrs.obj fptype.obj frcutput.obj frfptr.obj frshlin.obj fsizeof.obj fstrval.obj ftmod.obj ftname.obj ftrem.obj ftsize.obj ftypep.obj funcall.obj funcall3.obj funcln.obj functinp.obj gc.obj gensym.obj gentemp.obj get.obj getf.obj gnrnlrlm.obj gnrnlrnm.obj gnvrslm.obj grpccrp.obj gtdcddtm.obj gtprprts.obj hash.obj heap.obj segment.obj hsnmsrng.obj ichrnme.obj identity.obj ifuns.obj igglg.obj ilzxlbl.obj immedite.obj ingrlng.obj initgc.obj inlzllbl.obj inlzmbl.obj inlzpckg.obj innlmkp.obj inspect.obj int_char.obj integerp.obj intrsctn.obj invldmd.obj invlncnn.obj io.obj ismblnm.obj isngsng.obj isngsngn.obj isyms.obj keywordp.obj lambinit.obj last.obj ldelete.obj ldiff.obj lfloat.obj lgclpnmp.obj list.obj listp.obj listrvrs.obj liststar.obj listvlus.obj llisten.obj lmlmnn.obj lmlmnnvn.obj load.obj load_run.obj lopen.obj lowrcsp.obj lreader.obj lremove.obj lsleep.obj lstlngth.obj lstnrvrs.obj lunion.obj m_nthcdr.obj macros.obj makechar.obj makelist.obj map.obj map_into.obj mapcar.obj markgc.obj mcfptr.obj mchintyp.obj mchnvrsn.obj mcnnstnc.obj mdcmbnn.obj member.obj membereq.obj memberif.obj memberse.obj memq.obj merge.obj mismatch.obj mkarrlt.obj mkcomplx.obj mkfptr.obj mkfptri.obj mkpthnm.obj mkscnsnc.obj mksqunc.obj mksymbol.obj mkunbund.obj mkvctor.obj mkvlucll.obj mlplvlln.obj mmbrifnt.obj mmbrodd.obj mmbrql.obj mmbrqul.obj mrgptnms.obj mspcmccc.obj mvsn.obj namechar.obj nbutlast.obj nconc.obj nconc2.obj ncons.obj ncons1.obj ninth.obj nmstring.obj nntrsctn.obj not.obj nreconc.obj nreverse.obj nsbsfn.obj nsbstfnt.obj nsbsttt.obj nsbstttf.obj nsdffrnc.obj nsngcplz.obj nsngdncs.obj nsrngpcs.obj nsublis.obj nsubst.obj nsubstif.obj nsxclsvr.obj nth.obj nthcdr.obj null.obj numberp.obj numbers.obj numinit.obj nunion.obj objccdbl.obj oldsyms.obj packagep.obj packages.obj pairlis.obj pathname.obj pctpintr.obj peekchar.obj pkginit.obj pnmdrcr.obj position.obj pprint.obj prin1.obj princ.obj print.obj prmpfrvl.obj prn1srng.obj prncsrng.obj prntinit.obj probfil.obj proclaim.obj progv_do.obj prsintgr.obj psitinif.obj psnmsng.obj pstnfnt.obj pthnmdvc.obj pthnmep.obj pthnmhst.obj pthnmnm.obj pthnmtyp.obj ptnmvrsn.obj rassoc.obj rassocif.obj ratiop.obj rdcrnng.obj rdrmsrng.obj readbyte.obj readchar.obj readinit.obj readline.obj realp.obj reduce.obj remprop.obj replace.obj rest.obj reverse.obj revppend.obj rmvdplcs.obj rnmfil.obj room.obj rplaca.obj rplacd.obj rsscifnt.obj rtionlp.obj rwmjrrf.obj s_fill_n.obj s_find_n.obj s_load_n.obj sadjoinn.obj sassocn.obj sbgnmdg.obj sbnrsls.obj sbsfn.obj sbstttf.obj scgnrlrr.obj schar.obj schrrlop.obj schrrlpn.obj scngvbgn.obj scnswtgc.obj scntfntn.obj scountn.obj scpvbgnm.obj scuntifn.obj sdefs.obj sdeleten.obj sdjstrrn.obj sdltfntn.obj sdltif.obj sdltifn.obj sdmsngn.obj search.obj second.obj seqsimp.obj set.obj set_char.obj set_cxr.obj set_get.obj set_getf.obj set_nth.obj set_rest.obj setaref0.obj setaref1.obj setaref2.obj setaref3.obj setaref4.obj setaref5.obj setaref6.obj setaref7.obj setf_bit.obj setfaref.obj setfifth.obj setfirst.obj setfsbit.obj setninth.obj setpckge.obj setschar.obj setsixth.obj setsvref.obj settenth.obj setthird.obj seventh.obj sfaref.obj sffllpnr.obj sfindifn.obj sfllfntn.obj sfllpnr.obj sfndfntn.obj sforval.obj sfpaddr.obj sfptype.obj sfstrval.obj sfwrvrsn.obj sgvvbnng.obj shrtstnm.obj si_throw.obj sinpckgn.obj sixth.obj skwrdrgp.obj slclosen.obj slodrunn.obj slopenn.obj slplcsn.obj slunionn.obj slwriten.obj smblfncn.obj smblplst.obj smblvllp.obj smembern.obj smergen.obj smjndxx.obj smkerryn.obj smklistn.obj smkpckgn.obj smkptnmn.obj smkrstrg.obj smkscrr.obj smksqncn.obj smksrngn.obj smkstbln.obj smmbrfnn.obj smmbrifn.obj smplbvcp.obj smplrryp.obj smplsngp.obj smplvcrp.obj smsmtchn.obj smvfncll.obj smvplcsn.obj snbnnjmp.obj snddbjcp.obj sndrdcrp.obj sngcplzn.obj snglpn.obj sngnlpn.obj sngppnd2.obj sngppndn.obj snngclzn.obj snngncn.obj snngpcn.obj snnlncll.obj snnrscnn.obj snrscnn.obj snsbsfn.obj snsbsfnn.obj snsbsn.obj snsbstfn.obj snsdrncn.obj snslngnn.obj snsqncfn.obj snsublsn.obj snsubstn.obj sntmisc.obj snunionn.obj snxclvn.obj some.obj sort.obj spgvbnng.obj spnmngn.obj sprsngrn.obj spsitinn.obj spsnfnn.obj spstnfn.obj squncp.obj srassocn.obj srcrbjcp.obj sreducen.obj sremoven.obj sreplcen.obj srethrow.obj srmovifn.obj srmvfntn.obj srngcplz.obj srngdncs.obj srngppnd.obj srrcnns.obj srsscfnn.obj srsscifn.obj srstrvls.obj srwmjrrf.obj ssbsfn.obj ssbsfnn.obj ssbstttn.obj ssdrncn.obj ssearchn.obj ssffncn.obj ssmblncn.obj ssmblpls.obj ssnggpn.obj ssngncsn.obj ssngngpn.obj ssngnqln.obj ssngpcsn.obj ssrnggn.obj ssrngln.obj ssrngqln.obj ssrnpqr.obj ssscfntn.obj sssmblld.obj sssocifn.obj sstrmgtc.obj sstrnggn.obj sstrngln.obj sstrngnn.obj sstrngqn.obj ssublisn.obj ssubstfn.obj ssubstn.obj ssubstpn.obj ssvmrvls.obj ssvvlus.obj ssxclsvn.obj statclst.obj statics.obj statlsts.obj stderror.obj stdffrnc.obj stdpkgs.obj stfaref.obj stffnctn.obj stfourth.obj stighth.obj streamp.obj streams.obj string.obj stringp.obj strings.obj strinint.obj strminit.obj strngcrp.obj strngpcs.obj strquln.obj struct.obj structi.obj stscond.obj stsubsq.obj stsubsq1.obj stsubsq2.obj stsvnth.obj sttcbtrr.obj sttccrrr.obj sttcflot.obj sttcpckg.obj sttcrr.obj sttcrto.obj sttcsmbl.obj stxclsvr.obj sublis.obj subseq.obj subsetp.obj subst.obj subst_if.obj substfnt.obj substtut.obj subtypep.obj svref.obj swrsrngn.obj swrtlnn.obj swrtstng.obj symblvlu.obj symbolnm.obj symbolp.obj symbols.obj tailp.obj tenth.obj terpri.obj tfaref.obj third.obj tlllcbl.obj treeequl.obj ttlmmrsd.obj type_of.obj typep.obj unquetag.obj unredchr.obj upprcsp.obj upstpckg.obj usersyms.obj usmdpnm.obj values.obj vcrpsxnd.obj vctorpop.obj vctrpush.obj vector.obj vectorp.obj vluslist.obj writbyt.obj writechr.obj writlin.obj wrtstrng.obj wtspccrp.obj xor.obj y_or_n_p.obj yesnoaux.obj yesornop.obj yornpn.obj ysornopn.obj int64.obj
+<<
+    @- del current.bat
+
+acons.obj : $(CDIR)\acons.c $(RTHFILES)
+    - del acons.obj
+    @- $(SCRIPTSDIR)\errsweep.bat acons.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\acons.c
+    @- del current.bat
+
+adjoin.obj : $(CDIR)\adjoin.c $(RTHFILES)
+    - del adjoin.obj
+    @- $(SCRIPTSDIR)\errsweep.bat adjoin.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\adjoin.c
+    @- del current.bat
+
+adjsblp.obj : $(CDIR)\adjsblp.c $(RTHFILES)
+    - del adjsblp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat adjsblp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\adjsblp.c
+    @- del current.bat
+
+adjstrry.obj : $(CDIR)\adjstrry.c $(RTHFILES)
+    - del adjstrry.obj
+    @- $(SCRIPTSDIR)\errsweep.bat adjstrry.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\adjstrry.c
+    @- del current.bat
+
+admnsns.obj : $(CDIR)\admnsns.c $(RTHFILES)
+    - del admnsns.obj
+    @- $(SCRIPTSDIR)\errsweep.bat admnsns.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\admnsns.c
+    @- del current.bat
+
+advncpcg.obj : $(CDIR)\advncpcg.c $(RTHFILES)
+    - del advncpcg.obj
+    @- $(SCRIPTSDIR)\errsweep.bat advncpcg.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\advncpcg.c
+    @- del current.bat
+
+allcmmg.obj : $(CDIR)\allcmmg.c $(RTHFILES)
+    - del allcmmg.obj
+    @- $(SCRIPTSDIR)\errsweep.bat allcmmg.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\allcmmg.c
+    @- del current.bat
+
+alphchrp.obj : $(CDIR)\alphchrp.c $(RTHFILES)
+    - del alphchrp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat alphchrp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\alphchrp.c
+    @- del current.bat
+
+alpnmrcp.obj : $(CDIR)\alpnmrcp.c $(RTHFILES)
+    - del alpnmrcp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat alpnmrcp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\alpnmrcp.c
+    @- del current.bat
+
+amjndx.obj : $(CDIR)\amjndx.c $(RTHFILES)
+    - del amjndx.obj
+    @- $(SCRIPTSDIR)\errsweep.bat amjndx.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\amjndx.c
+    @- del current.bat
+
+anbndsp.obj : $(CDIR)\anbndsp.c $(RTHFILES)
+    - del anbndsp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat anbndsp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\anbndsp.c
+    @- del current.bat
+
+append.obj : $(CDIR)\append.c $(RTHFILES)
+    - del append.obj
+    @- $(SCRIPTSDIR)\errsweep.bat append.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\append.c
+    @- del current.bat
+
+append2.obj : $(CDIR)\append2.c $(RTHFILES)
+    - del append2.obj
+    @- $(SCRIPTSDIR)\errsweep.bat append2.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\append2.c
+    @- del current.bat
+
+apply.obj : $(CDIR)\apply.c $(RTHFILES)
+    - del apply.obj
+    @- $(SCRIPTSDIR)\errsweep.bat apply.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\apply.c
+    @- del current.bat
+
+apply1.obj : $(CDIR)\apply1.c $(RTHFILES)
+    - del apply1.obj
+    @- $(SCRIPTSDIR)\errsweep.bat apply1.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\apply1.c
+    @- del current.bat
+
+apply2.obj : $(CDIR)\apply2.c $(RTHFILES)
+    - del apply2.obj
+    @- $(SCRIPTSDIR)\errsweep.bat apply2.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\apply2.c
+    @- del current.bat
+
+apply3.obj : $(CDIR)\apply3.c $(RTHFILES)
+    - del apply3.obj
+    @- $(SCRIPTSDIR)\errsweep.bat apply3.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\apply3.c
+    @- del current.bat
+
+aref.obj : $(CDIR)\aref.c $(RTHFILES)
+    - del aref.obj
+    @- $(SCRIPTSDIR)\errsweep.bat aref.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\aref.c
+    @- del current.bat
+
+aref0.obj : $(CDIR)\aref0.c $(RTHFILES)
+    - del aref0.obj
+    @- $(SCRIPTSDIR)\errsweep.bat aref0.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\aref0.c
+    @- del current.bat
+
+aref1.obj : $(CDIR)\aref1.c $(RTHFILES)
+    - del aref1.obj
+    @- $(SCRIPTSDIR)\errsweep.bat aref1.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\aref1.c
+    @- del current.bat
+
+aref2.obj : $(CDIR)\aref2.c $(RTHFILES)
+    - del aref2.obj
+    @- $(SCRIPTSDIR)\errsweep.bat aref2.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\aref2.c
+    @- del current.bat
+
+aref3.obj : $(CDIR)\aref3.c $(RTHFILES)
+    - del aref3.obj
+    @- $(SCRIPTSDIR)\errsweep.bat aref3.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\aref3.c
+    @- del current.bat
+
+aref4.obj : $(CDIR)\aref4.c $(RTHFILES)
+    - del aref4.obj
+    @- $(SCRIPTSDIR)\errsweep.bat aref4.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\aref4.c
+    @- del current.bat
+
+aref5.obj : $(CDIR)\aref5.c $(RTHFILES)
+    - del aref5.obj
+    @- $(SCRIPTSDIR)\errsweep.bat aref5.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\aref5.c
+    @- del current.bat
+
+aref6.obj : $(CDIR)\aref6.c $(RTHFILES)
+    - del aref6.obj
+    @- $(SCRIPTSDIR)\errsweep.bat aref6.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\aref6.c
+    @- del current.bat
+
+aref7.obj : $(CDIR)\aref7.c $(RTHFILES)
+    - del aref7.obj
+    @- $(SCRIPTSDIR)\errsweep.bat aref7.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\aref7.c
+    @- del current.bat
+
+armmrlmt.obj : $(CDIR)\armmrlmt.c $(RTHFILES)
+    - del armmrlmt.obj
+    @- $(SCRIPTSDIR)\errsweep.bat armmrlmt.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\armmrlmt.c
+    @- del current.bat
+
+armmrysd.obj : $(CDIR)\armmrysd.c $(RTHFILES)
+    - del armmrysd.obj
+    @- $(SCRIPTSDIR)\errsweep.bat armmrysd.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\armmrysd.c
+    @- del current.bat
+
+arrayp.obj : $(CDIR)\arrayp.c $(RTHFILES)
+    - del arrayp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat arrayp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\arrayp.c
+    @- del current.bat
+
+arrays.obj : $(CDIR)\arrays.c $(RTHFILES)
+    - del arrays.obj
+    @- $(SCRIPTSDIR)\errsweep.bat arrays.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\arrays.c
+    @- del current.bat
+
+arrdmnsn.obj : $(CDIR)\arrdmnsn.c $(RTHFILES)
+    - del arrdmnsn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat arrdmnsn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\arrdmnsn.c
+    @- del current.bat
+
+arrttlsz.obj : $(CDIR)\arrttlsz.c $(RTHFILES)
+    - del arrttlsz.obj
+    @- $(SCRIPTSDIR)\errsweep.bat arrttlsz.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\arrttlsz.c
+    @- del current.bat
+
+arryrnk.obj : $(CDIR)\arryrnk.c $(RTHFILES)
+    - del arryrnk.obj
+    @- $(SCRIPTSDIR)\errsweep.bat arryrnk.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\arryrnk.c
+    @- del current.bat
+
+artrgtsz.obj : $(CDIR)\artrgtsz.c $(RTHFILES)
+    - del artrgtsz.obj
+    @- $(SCRIPTSDIR)\errsweep.bat artrgtsz.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\artrgtsz.c
+    @- del current.bat
+
+asllpnp.obj : $(CDIR)\asllpnp.c $(RTHFILES)
+    - del asllpnp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat asllpnp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\asllpnp.c
+    @- del current.bat
+
+asscifnt.obj : $(CDIR)\asscifnt.c $(RTHFILES)
+    - del asscifnt.obj
+    @- $(SCRIPTSDIR)\errsweep.bat asscifnt.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\asscifnt.c
+    @- del current.bat
+
+assoc.obj : $(CDIR)\assoc.c $(RTHFILES)
+    - del assoc.obj
+    @- $(SCRIPTSDIR)\errsweep.bat assoc.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\assoc.c
+    @- del current.bat
+
+assoc_eq.obj : $(CDIR)\assoc_eq.c $(RTHFILES)
+    - del assoc_eq.obj
+    @- $(SCRIPTSDIR)\errsweep.bat assoc_eq.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\assoc_eq.c
+    @- del current.bat
+
+assoc_if.obj : $(CDIR)\assoc_if.c $(RTHFILES)
+    - del assoc_if.obj
+    @- $(SCRIPTSDIR)\errsweep.bat assoc_if.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\assoc_if.c
+    @- del current.bat
+
+assoceql.obj : $(CDIR)\assoceql.c $(RTHFILES)
+    - del assoceql.obj
+    @- $(SCRIPTSDIR)\errsweep.bat assoceql.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\assoceql.c
+    @- del current.bat
+
+assocqul.obj : $(CDIR)\assocqul.c $(RTHFILES)
+    - del assocqul.obj
+    @- $(SCRIPTSDIR)\errsweep.bat assocqul.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\assocqul.c
+    @- del current.bat
+
+assq.obj : $(CDIR)\assq.c $(RTHFILES)
+    - del assq.obj
+    @- $(SCRIPTSDIR)\errsweep.bat assq.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\assq.c
+    @- del current.bat
+
+atom.obj : $(CDIR)\atom.c $(RTHFILES)
+    - del atom.obj
+    @- $(SCRIPTSDIR)\errsweep.bat atom.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\atom.c
+    @- del current.bat
+
+avncmbl.obj : $(CDIR)\avncmbl.c $(RTHFILES)
+    - del avncmbl.obj
+    @- $(SCRIPTSDIR)\errsweep.bat avncmbl.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\avncmbl.c
+    @- del current.bat
+
+backquot.obj : $(CDIR)\backquot.c $(RTHFILES)
+    - del backquot.obj
+    @- $(SCRIPTSDIR)\errsweep.bat backquot.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\backquot.c
+    @- del current.bat
+
+bgintim.obj : $(CDIR)\bgintim.c $(RTHFILES)
+    - del bgintim.obj
+    @- $(SCRIPTSDIR)\errsweep.bat bgintim.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\bgintim.c
+    @- del current.bat
+
+biginit.obj : $(CDIR)\biginit.c $(RTHFILES)
+    - del biginit.obj
+    @- $(SCRIPTSDIR)\errsweep.bat biginit.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\biginit.c
+    @- del current.bat
+
+biginit2.obj : $(CDIR)\biginit2.c $(RTHFILES)
+    - del biginit2.obj
+    @- $(SCRIPTSDIR)\errsweep.bat biginit2.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\biginit2.c
+    @- del current.bat
+
+bignum.obj : $(CDIR)\bignum.c $(RTHFILES)
+    - del bignum.obj
+    @- $(SCRIPTSDIR)\errsweep.bat bignum.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\bignum.c
+    @- del current.bat
+
+bignump.obj : $(CDIR)\bignump.c $(RTHFILES)
+    - del bignump.obj
+    @- $(SCRIPTSDIR)\errsweep.bat bignump.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\bignump.c
+    @- del current.bat
+
+bindsyms.obj : $(CDIR)\bindsyms.c $(RTHFILES)
+    - del bindsyms.obj
+    @- $(SCRIPTSDIR)\errsweep.bat bindsyms.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\bindsyms.c
+    @- del current.bat
+
+bit_arrs.obj : $(CDIR)\bit_arrs.c $(RTHFILES)
+    - del bit_arrs.obj
+    @- $(SCRIPTSDIR)\errsweep.bat bit_arrs.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\bit_arrs.c
+    @- del current.bat
+
+bitp.obj : $(CDIR)\bitp.c $(RTHFILES)
+    - del bitp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat bitp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\bitp.c
+    @- del current.bat
+
+bitvctrp.obj : $(CDIR)\bitvctrp.c $(RTHFILES)
+    - del bitvctrp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat bitvctrp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\bitvctrp.c
+    @- del current.bat
+
+bothcsep.obj : $(CDIR)\bothcsep.c $(RTHFILES)
+    - del bothcsep.obj
+    @- $(SCRIPTSDIR)\errsweep.bat bothcsep.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\bothcsep.c
+    @- del current.bat
+
+boundp.obj : $(CDIR)\boundp.c $(RTHFILES)
+    - del boundp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat boundp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\boundp.c
+    @- del current.bat
+
+bqinit.obj : $(CDIR)\bqinit.c $(RTHFILES)
+    - del bqinit.obj
+    @- $(SCRIPTSDIR)\errsweep.bat bqinit.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\bqinit.c
+    @- del current.bat
+
+butlast.obj : $(CDIR)\butlast.c $(RTHFILES)
+    - del butlast.obj
+    @- $(SCRIPTSDIR)\errsweep.bat butlast.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\butlast.c
+    @- del current.bat
+
+caaaar.obj : $(CDIR)\caaaar.c $(RTHFILES)
+    - del caaaar.obj
+    @- $(SCRIPTSDIR)\errsweep.bat caaaar.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\caaaar.c
+    @- del current.bat
+
+caaadr.obj : $(CDIR)\caaadr.c $(RTHFILES)
+    - del caaadr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat caaadr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\caaadr.c
+    @- del current.bat
+
+caaar.obj : $(CDIR)\caaar.c $(RTHFILES)
+    - del caaar.obj
+    @- $(SCRIPTSDIR)\errsweep.bat caaar.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\caaar.c
+    @- del current.bat
+
+caadar.obj : $(CDIR)\caadar.c $(RTHFILES)
+    - del caadar.obj
+    @- $(SCRIPTSDIR)\errsweep.bat caadar.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\caadar.c
+    @- del current.bat
+
+caaddr.obj : $(CDIR)\caaddr.c $(RTHFILES)
+    - del caaddr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat caaddr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\caaddr.c
+    @- del current.bat
+
+caadr.obj : $(CDIR)\caadr.c $(RTHFILES)
+    - del caadr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat caadr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\caadr.c
+    @- del current.bat
+
+caar.obj : $(CDIR)\caar.c $(RTHFILES)
+    - del caar.obj
+    @- $(SCRIPTSDIR)\errsweep.bat caar.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\caar.c
+    @- del current.bat
+
+cadaar.obj : $(CDIR)\cadaar.c $(RTHFILES)
+    - del cadaar.obj
+    @- $(SCRIPTSDIR)\errsweep.bat cadaar.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\cadaar.c
+    @- del current.bat
+
+cadadr.obj : $(CDIR)\cadadr.c $(RTHFILES)
+    - del cadadr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat cadadr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\cadadr.c
+    @- del current.bat
+
+cadar.obj : $(CDIR)\cadar.c $(RTHFILES)
+    - del cadar.obj
+    @- $(SCRIPTSDIR)\errsweep.bat cadar.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\cadar.c
+    @- del current.bat
+
+caddar.obj : $(CDIR)\caddar.c $(RTHFILES)
+    - del caddar.obj
+    @- $(SCRIPTSDIR)\errsweep.bat caddar.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\caddar.c
+    @- del current.bat
+
+cadddr.obj : $(CDIR)\cadddr.c $(RTHFILES)
+    - del cadddr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat cadddr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\cadddr.c
+    @- del current.bat
+
+caddr.obj : $(CDIR)\caddr.c $(RTHFILES)
+    - del caddr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat caddr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\caddr.c
+    @- del current.bat
+
+cadr.obj : $(CDIR)\cadr.c $(RTHFILES)
+    - del cadr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat cadr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\cadr.c
+    @- del current.bat
+
+car.obj : $(CDIR)\car.c $(RTHFILES)
+    - del car.obj
+    @- $(SCRIPTSDIR)\errsweep.bat car.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\car.c
+    @- del current.bat
+
+ccl.obj : $(CDIR)\ccl.c $(RTHFILES)
+    - del ccl.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ccl.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ccl.c
+    @- del current.bat
+
+cdaaar.obj : $(CDIR)\cdaaar.c $(RTHFILES)
+    - del cdaaar.obj
+    @- $(SCRIPTSDIR)\errsweep.bat cdaaar.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\cdaaar.c
+    @- del current.bat
+
+cdaadr.obj : $(CDIR)\cdaadr.c $(RTHFILES)
+    - del cdaadr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat cdaadr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\cdaadr.c
+    @- del current.bat
+
+cdaar.obj : $(CDIR)\cdaar.c $(RTHFILES)
+    - del cdaar.obj
+    @- $(SCRIPTSDIR)\errsweep.bat cdaar.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\cdaar.c
+    @- del current.bat
+
+cdadar.obj : $(CDIR)\cdadar.c $(RTHFILES)
+    - del cdadar.obj
+    @- $(SCRIPTSDIR)\errsweep.bat cdadar.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\cdadar.c
+    @- del current.bat
+
+cdaddr.obj : $(CDIR)\cdaddr.c $(RTHFILES)
+    - del cdaddr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat cdaddr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\cdaddr.c
+    @- del current.bat
+
+cdadr.obj : $(CDIR)\cdadr.c $(RTHFILES)
+    - del cdadr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat cdadr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\cdadr.c
+    @- del current.bat
+
+cdar.obj : $(CDIR)\cdar.c $(RTHFILES)
+    - del cdar.obj
+    @- $(SCRIPTSDIR)\errsweep.bat cdar.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\cdar.c
+    @- del current.bat
+
+cdbltdbl.obj : $(CDIR)\cdbltdbl.c $(RTHFILES)
+    - del cdbltdbl.obj
+    @- $(SCRIPTSDIR)\errsweep.bat cdbltdbl.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\cdbltdbl.c
+    @- del current.bat
+
+cddaar.obj : $(CDIR)\cddaar.c $(RTHFILES)
+    - del cddaar.obj
+    @- $(SCRIPTSDIR)\errsweep.bat cddaar.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\cddaar.c
+    @- del current.bat
+
+cddadr.obj : $(CDIR)\cddadr.c $(RTHFILES)
+    - del cddadr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat cddadr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\cddadr.c
+    @- del current.bat
+
+cddar.obj : $(CDIR)\cddar.c $(RTHFILES)
+    - del cddar.obj
+    @- $(SCRIPTSDIR)\errsweep.bat cddar.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\cddar.c
+    @- del current.bat
+
+cdddar.obj : $(CDIR)\cdddar.c $(RTHFILES)
+    - del cdddar.obj
+    @- $(SCRIPTSDIR)\errsweep.bat cdddar.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\cdddar.c
+    @- del current.bat
+
+cddddr.obj : $(CDIR)\cddddr.c $(RTHFILES)
+    - del cddddr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat cddddr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\cddddr.c
+    @- del current.bat
+
+cdddr.obj : $(CDIR)\cdddr.c $(RTHFILES)
+    - del cdddr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat cdddr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\cdddr.c
+    @- del current.bat
+
+cddr.obj : $(CDIR)\cddr.c $(RTHFILES)
+    - del cddr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat cddr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\cddr.c
+    @- del current.bat
+
+cdr.obj : $(CDIR)\cdr.c $(RTHFILES)
+    - del cdr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat cdr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\cdr.c
+    @- del current.bat
+
+char_bit.obj : $(CDIR)\char_bit.c $(RTHFILES)
+    - del char_bit.obj
+    @- $(SCRIPTSDIR)\errsweep.bat char_bit.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\char_bit.c
+    @- del current.bat
+
+char_eq.obj : $(CDIR)\char_eq.c $(RTHFILES)
+    - del char_eq.obj
+    @- $(SCRIPTSDIR)\errsweep.bat char_eq.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\char_eq.c
+    @- del current.bat
+
+char_eqn.obj : $(CDIR)\char_eqn.c $(RTHFILES)
+    - del char_eqn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat char_eqn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\char_eqn.c
+    @- del current.bat
+
+char_eqr.obj : $(CDIR)\char_eqr.c $(RTHFILES)
+    - del char_eqr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat char_eqr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\char_eqr.c
+    @- del current.bat
+
+char_ge.obj : $(CDIR)\char_ge.c $(RTHFILES)
+    - del char_ge.obj
+    @- $(SCRIPTSDIR)\errsweep.bat char_ge.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\char_ge.c
+    @- del current.bat
+
+char_gen.obj : $(CDIR)\char_gen.c $(RTHFILES)
+    - del char_gen.obj
+    @- $(SCRIPTSDIR)\errsweep.bat char_gen.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\char_gen.c
+    @- del current.bat
+
+char_ger.obj : $(CDIR)\char_ger.c $(RTHFILES)
+    - del char_ger.obj
+    @- $(SCRIPTSDIR)\errsweep.bat char_ger.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\char_ger.c
+    @- del current.bat
+
+char_gt.obj : $(CDIR)\char_gt.c $(RTHFILES)
+    - del char_gt.obj
+    @- $(SCRIPTSDIR)\errsweep.bat char_gt.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\char_gt.c
+    @- del current.bat
+
+char_gtn.obj : $(CDIR)\char_gtn.c $(RTHFILES)
+    - del char_gtn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat char_gtn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\char_gtn.c
+    @- del current.bat
+
+char_gtr.obj : $(CDIR)\char_gtr.c $(RTHFILES)
+    - del char_gtr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat char_gtr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\char_gtr.c
+    @- del current.bat
+
+char_int.obj : $(CDIR)\char_int.c $(RTHFILES)
+    - del char_int.obj
+    @- $(SCRIPTSDIR)\errsweep.bat char_int.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\char_int.c
+    @- del current.bat
+
+char_le.obj : $(CDIR)\char_le.c $(RTHFILES)
+    - del char_le.obj
+    @- $(SCRIPTSDIR)\errsweep.bat char_le.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\char_le.c
+    @- del current.bat
+
+char_len.obj : $(CDIR)\char_len.c $(RTHFILES)
+    - del char_len.obj
+    @- $(SCRIPTSDIR)\errsweep.bat char_len.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\char_len.c
+    @- del current.bat
+
+char_ler.obj : $(CDIR)\char_ler.c $(RTHFILES)
+    - del char_ler.obj
+    @- $(SCRIPTSDIR)\errsweep.bat char_ler.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\char_ler.c
+    @- del current.bat
+
+char_lt.obj : $(CDIR)\char_lt.c $(RTHFILES)
+    - del char_lt.obj
+    @- $(SCRIPTSDIR)\errsweep.bat char_lt.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\char_lt.c
+    @- del current.bat
+
+char_ltn.obj : $(CDIR)\char_ltn.c $(RTHFILES)
+    - del char_ltn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat char_ltn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\char_ltn.c
+    @- del current.bat
+
+char_ltr.obj : $(CDIR)\char_ltr.c $(RTHFILES)
+    - del char_ltr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat char_ltr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\char_ltr.c
+    @- del current.bat
+
+char_ne.obj : $(CDIR)\char_ne.c $(RTHFILES)
+    - del char_ne.obj
+    @- $(SCRIPTSDIR)\errsweep.bat char_ne.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\char_ne.c
+    @- del current.bat
+
+char_nen.obj : $(CDIR)\char_nen.c $(RTHFILES)
+    - del char_nen.obj
+    @- $(SCRIPTSDIR)\errsweep.bat char_nen.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\char_nen.c
+    @- del current.bat
+
+char_ner.obj : $(CDIR)\char_ner.c $(RTHFILES)
+    - del char_ner.obj
+    @- $(SCRIPTSDIR)\errsweep.bat char_ner.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\char_ner.c
+    @- del current.bat
+
+charbits.obj : $(CDIR)\charbits.c $(RTHFILES)
+    - del charbits.obj
+    @- $(SCRIPTSDIR)\errsweep.bat charbits.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\charbits.c
+    @- del current.bat
+
+charcode.obj : $(CDIR)\charcode.c $(RTHFILES)
+    - del charcode.obj
+    @- $(SCRIPTSDIR)\errsweep.bat charcode.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\charcode.c
+    @- del current.bat
+
+charfont.obj : $(CDIR)\charfont.c $(RTHFILES)
+    - del charfont.obj
+    @- $(SCRIPTSDIR)\errsweep.bat charfont.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\charfont.c
+    @- del current.bat
+
+charname.obj : $(CDIR)\charname.c $(RTHFILES)
+    - del charname.obj
+    @- $(SCRIPTSDIR)\errsweep.bat charname.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\charname.c
+    @- del current.bat
+
+chars.obj : $(CDIR)\chars.c $(RTHFILES)
+    - del chars.obj
+    @- $(SCRIPTSDIR)\errsweep.bat chars.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\chars.c
+    @- del current.bat
+
+chrcter.obj : $(CDIR)\chrcter.c $(RTHFILES)
+    - del chrcter.obj
+    @- $(SCRIPTSDIR)\errsweep.bat chrcter.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\chrcter.c
+    @- del current.bat
+
+chrcterp.obj : $(CDIR)\chrcterp.c $(RTHFILES)
+    - del chrcterp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat chrcterp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\chrcterp.c
+    @- del current.bat
+
+chrdwncs.obj : $(CDIR)\chrdwncs.c $(RTHFILES)
+    - del chrdwncs.obj
+    @- $(SCRIPTSDIR)\errsweep.bat chrdwncs.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\chrdwncs.c
+    @- del current.bat
+
+chrequl.obj : $(CDIR)\chrequl.c $(RTHFILES)
+    - del chrequl.obj
+    @- $(SCRIPTSDIR)\errsweep.bat chrequl.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\chrequl.c
+    @- del current.bat
+
+chrequln.obj : $(CDIR)\chrequln.c $(RTHFILES)
+    - del chrequln.obj
+    @- $(SCRIPTSDIR)\errsweep.bat chrequln.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\chrequln.c
+    @- del current.bat
+
+chrequlr.obj : $(CDIR)\chrequlr.c $(RTHFILES)
+    - del chrequlr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat chrequlr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\chrequlr.c
+    @- del current.bat
+
+chrgrtrp.obj : $(CDIR)\chrgrtrp.c $(RTHFILES)
+    - del chrgrtrp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat chrgrtrp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\chrgrtrp.c
+    @- del current.bat
+
+chrlessp.obj : $(CDIR)\chrlessp.c $(RTHFILES)
+    - del chrlessp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat chrlessp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\chrlessp.c
+    @- del current.bat
+
+chrlsspn.obj : $(CDIR)\chrlsspn.c $(RTHFILES)
+    - del chrlsspn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat chrlsspn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\chrlsspn.c
+    @- del current.bat
+
+chrlsspr.obj : $(CDIR)\chrlsspr.c $(RTHFILES)
+    - del chrlsspr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat chrlsspr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\chrlsspr.c
+    @- del current.bat
+
+chrmmbr.obj : $(CDIR)\chrmmbr.c $(RTHFILES)
+    - del chrmmbr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat chrmmbr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\chrmmbr.c
+    @- del current.bat
+
+chrntqln.obj : $(CDIR)\chrntqln.c $(RTHFILES)
+    - del chrntqln.obj
+    @- $(SCRIPTSDIR)\errsweep.bat chrntqln.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\chrntqln.c
+    @- del current.bat
+
+chrntqlr.obj : $(CDIR)\chrntqlr.c $(RTHFILES)
+    - del chrntqlr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat chrntqlr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\chrntqlr.c
+    @- del current.bat
+
+chrntqul.obj : $(CDIR)\chrntqul.c $(RTHFILES)
+    - del chrntqul.obj
+    @- $(SCRIPTSDIR)\errsweep.bat chrntqul.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\chrntqul.c
+    @- del current.bat
+
+chrupcse.obj : $(CDIR)\chrupcse.c $(RTHFILES)
+    - del chrupcse.obj
+    @- $(SCRIPTSDIR)\errsweep.bat chrupcse.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\chrupcse.c
+    @- del current.bat
+
+cllc.obj : $(CDIR)\cllc.c $(RTHFILES)
+    - del cllc.obj
+    @- $(SCRIPTSDIR)\errsweep.bat cllc.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\cllc.c
+    @- del current.bat
+
+clrinput.obj : $(CDIR)\clrinput.c $(RTHFILES)
+    - del clrinput.obj
+    @- $(SCRIPTSDIR)\errsweep.bat clrinput.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\clrinput.c
+    @- del current.bat
+
+clrutput.obj : $(CDIR)\clrutput.c $(RTHFILES)
+    - del clrutput.obj
+    @- $(SCRIPTSDIR)\errsweep.bat clrutput.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\clrutput.c
+    @- del current.bat
+
+cmplmnnl.obj : $(CDIR)\cmplmnnl.c $(RTHFILES)
+    - del cmplmnnl.obj
+    @- $(SCRIPTSDIR)\errsweep.bat cmplmnnl.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\cmplmnnl.c
+    @- del current.bat
+
+cmplncnp.obj : $(CDIR)\cmplncnp.c $(RTHFILES)
+    - del cmplncnp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat cmplncnp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\cmplncnp.c
+    @- del current.bat
+
+cnnlnncn.obj : $(CDIR)\cnnlnncn.c $(RTHFILES)
+    - del cnnlnncn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat cnnlnncn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\cnnlnncn.c
+    @- del current.bat
+
+cnsnlfls.obj : $(CDIR)\cnsnlfls.c $(RTHFILES)
+    - del cnsnlfls.obj
+    @- $(SCRIPTSDIR)\errsweep.bat cnsnlfls.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\cnsnlfls.c
+    @- del current.bat
+
+cnsnlndl.obj : $(CDIR)\cnsnlndl.c $(RTHFILES)
+    - del cnsnlndl.obj
+    @- $(SCRIPTSDIR)\errsweep.bat cnsnlndl.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\cnsnlndl.c
+    @- del current.bat
+
+cnsnlr.obj : $(CDIR)\cnsnlr.c $(RTHFILES)
+    - del cnsnlr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat cnsnlr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\cnsnlr.c
+    @- del current.bat
+
+cobjectp.obj : $(CDIR)\cobjectp.c $(RTHFILES)
+    - del cobjectp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat cobjectp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\cobjectp.c
+    @- del current.bat
+
+codechar.obj : $(CDIR)\codechar.c $(RTHFILES)
+    - del codechar.obj
+    @- $(SCRIPTSDIR)\errsweep.bat codechar.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\codechar.c
+    @- del current.bat
+
+coerce.obj : $(CDIR)\coerce.c $(RTHFILES)
+    - del coerce.obj
+    @- $(SCRIPTSDIR)\errsweep.bat coerce.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\coerce.c
+    @- del current.bat
+
+commonp.obj : $(CDIR)\commonp.c $(RTHFILES)
+    - del commonp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat commonp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\commonp.c
+    @- del current.bat
+
+complexp.obj : $(CDIR)\complexp.c $(RTHFILES)
+    - del complexp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat complexp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\complexp.c
+    @- del current.bat
+
+conctnt.obj : $(CDIR)\conctnt.c $(RTHFILES)
+    - del conctnt.obj
+    @- $(SCRIPTSDIR)\errsweep.bat conctnt.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\conctnt.c
+    @- del current.bat
+
+consp.obj : $(CDIR)\consp.c $(RTHFILES)
+    - del consp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat consp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\consp.c
+    @- del current.bat
+
+copy_seq.obj : $(CDIR)\copy_seq.c $(RTHFILES)
+    - del copy_seq.obj
+    @- $(SCRIPTSDIR)\errsweep.bat copy_seq.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\copy_seq.c
+    @- del current.bat
+
+copylist.obj : $(CDIR)\copylist.c $(RTHFILES)
+    - del copylist.obj
+    @- $(SCRIPTSDIR)\errsweep.bat copylist.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\copylist.c
+    @- del current.bat
+
+copytree.obj : $(CDIR)\copytree.c $(RTHFILES)
+    - del copytree.obj
+    @- $(SCRIPTSDIR)\errsweep.bat copytree.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\copytree.c
+    @- del current.bat
+
+count.obj : $(CDIR)\count.c $(RTHFILES)
+    - del count.obj
+    @- $(SCRIPTSDIR)\errsweep.bat count.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\count.c
+    @- del current.bat
+
+count_if.obj : $(CDIR)\count_if.c $(RTHFILES)
+    - del count_if.obj
+    @- $(SCRIPTSDIR)\errsweep.bat count_if.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\count_if.c
+    @- del current.bat
+
+cp_alist.obj : $(CDIR)\cp_alist.c $(RTHFILES)
+    - del cp_alist.obj
+    @- $(SCRIPTSDIR)\errsweep.bat cp_alist.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\cp_alist.c
+    @- del current.bat
+
+cpfptr.obj : $(CDIR)\cpfptr.c $(RTHFILES)
+    - del cpfptr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat cpfptr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\cpfptr.c
+    @- del current.bat
+
+cpysymbl.obj : $(CDIR)\cpysymbl.c $(RTHFILES)
+    - del cpysymbl.obj
+    @- $(SCRIPTSDIR)\errsweep.bat cpysymbl.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\cpysymbl.c
+    @- del current.bat
+
+crgrtrpn.obj : $(CDIR)\crgrtrpn.c $(RTHFILES)
+    - del crgrtrpn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat crgrtrpn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\crgrtrpn.c
+    @- del current.bat
+
+crgrtrpr.obj : $(CDIR)\crgrtrpr.c $(RTHFILES)
+    - del crgrtrpr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat crgrtrpr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\crgrtrpr.c
+    @- del current.bat
+
+crngrrp.obj : $(CDIR)\crngrrp.c $(RTHFILES)
+    - del crngrrp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat crngrrp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\crngrrp.c
+    @- del current.bat
+
+crngrrpn.obj : $(CDIR)\crngrrpn.c $(RTHFILES)
+    - del crngrrpn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat crngrrpn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\crngrrpn.c
+    @- del current.bat
+
+crngrrpr.obj : $(CDIR)\crngrrpr.c $(RTHFILES)
+    - del crngrrpr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat crngrrpr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\crngrrpr.c
+    @- del current.bat
+
+crnlsspn.obj : $(CDIR)\crnlsspn.c $(RTHFILES)
+    - del crnlsspn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat crnlsspn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\crnlsspn.c
+    @- del current.bat
+
+crnlsspr.obj : $(CDIR)\crnlsspr.c $(RTHFILES)
+    - del crnlsspr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat crnlsspr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\crnlsspr.c
+    @- del current.bat
+
+crntlssp.obj : $(CDIR)\crntlssp.c $(RTHFILES)
+    - del crntlssp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat crntlssp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\crntlssp.c
+    @- del current.bat
+
+csnpsrm.obj : $(CDIR)\csnpsrm.c $(RTHFILES)
+    - del csnpsrm.obj
+    @- $(SCRIPTSDIR)\errsweep.bat csnpsrm.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\csnpsrm.c
+    @- del current.bat
+
+cspsrm.obj : $(CDIR)\cspsrm.c $(RTHFILES)
+    - del cspsrm.obj
+    @- $(SCRIPTSDIR)\errsweep.bat cspsrm.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\cspsrm.c
+    @- del current.bat
+
+cswrsrm.obj : $(CDIR)\cswrsrm.c $(RTHFILES)
+    - del cswrsrm.obj
+    @- $(SCRIPTSDIR)\errsweep.bat cswrsrm.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\cswrsrm.c
+    @- del current.bat
+
+ctrlvars.obj : $(CDIR)\ctrlvars.c $(RTHFILES)
+    - del ctrlvars.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ctrlvars.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ctrlvars.c
+    @- del current.bat
+
+cuntifnt.obj : $(CDIR)\cuntifnt.c $(RTHFILES)
+    - del cuntifnt.obj
+    @- $(SCRIPTSDIR)\errsweep.bat cuntifnt.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\cuntifnt.c
+    @- del current.bat
+
+dbltntgr.obj : $(CDIR)\dbltntgr.c $(RTHFILES)
+    - del dbltntgr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat dbltntgr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\dbltntgr.c
+    @- del current.bat
+
+dcdnvslm.obj : $(CDIR)\dcdnvslm.c $(RTHFILES) $(CDIR)\utime.h
+    - del dcdnvslm.obj
+    @- $(SCRIPTSDIR)\errsweep.bat dcdnvslm.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\dcdnvslm.c
+    @- del current.bat
+
+dcnmsng.obj : $(CDIR)\dcnmsng.c $(RTHFILES)
+    - del dcnmsng.obj
+    @- $(SCRIPTSDIR)\errsweep.bat dcnmsng.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\dcnmsng.c
+    @- del current.bat
+
+defftp.obj : $(CDIR)\defftp.c $(RTHFILES)
+    - del defftp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat defftp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\defftp.c
+    @- del current.bat
+
+deleteeq.obj : $(CDIR)\deleteeq.c $(RTHFILES)
+    - del deleteeq.obj
+    @- $(SCRIPTSDIR)\errsweep.bat deleteeq.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\deleteeq.c
+    @- del current.bat
+
+deleteif.obj : $(CDIR)\deleteif.c $(RTHFILES)
+    - del deleteif.obj
+    @- $(SCRIPTSDIR)\errsweep.bat deleteif.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\deleteif.c
+    @- del current.bat
+
+delq.obj : $(CDIR)\delq.c $(RTHFILES)
+    - del delq.obj
+    @- $(SCRIPTSDIR)\errsweep.bat delq.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\delq.c
+    @- del current.bat
+
+describe.obj : $(CDIR)\describe.c $(RTHFILES)
+    - del describe.obj
+    @- $(SCRIPTSDIR)\errsweep.bat describe.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\describe.c
+    @- del current.bat
+
+dgtchrp.obj : $(CDIR)\dgtchrp.c $(RTHFILES)
+    - del dgtchrp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat dgtchrp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\dgtchrp.c
+    @- del current.bat
+
+digitchr.obj : $(CDIR)\digitchr.c $(RTHFILES)
+    - del digitchr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat digitchr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\digitchr.c
+    @- del current.bat
+
+dirctory.obj : $(CDIR)\dirctory.c $(RTHFILES)
+    - del dirctory.obj
+    @- $(SCRIPTSDIR)\errsweep.bat dirctory.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\dirctory.c
+    @- del current.bat
+
+dldplcs.obj : $(CDIR)\dldplcs.c $(RTHFILES)
+    - del dldplcs.obj
+    @- $(SCRIPTSDIR)\errsweep.bat dldplcs.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\dldplcs.c
+    @- del current.bat
+
+dltfil.obj : $(CDIR)\dltfil.c $(RTHFILES)
+    - del dltfil.obj
+    @- $(SCRIPTSDIR)\errsweep.bat dltfil.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\dltfil.c
+    @- del current.bat
+
+dltifnot.obj : $(CDIR)\dltifnot.c $(RTHFILES)
+    - del dltifnot.obj
+    @- $(SCRIPTSDIR)\errsweep.bat dltifnot.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\dltifnot.c
+    @- del current.bat
+
+dltql.obj : $(CDIR)\dltql.c $(RTHFILES)
+    - del dltql.obj
+    @- $(SCRIPTSDIR)\errsweep.bat dltql.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\dltql.c
+    @- del current.bat
+
+dltqul.obj : $(CDIR)\dltqul.c $(RTHFILES)
+    - del dltqul.obj
+    @- $(SCRIPTSDIR)\errsweep.bat dltqul.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\dltqul.c
+    @- del current.bat
+
+doaref1.obj : $(CDIR)\doaref1.c $(RTHFILES)
+    - del doaref1.obj
+    @- $(SCRIPTSDIR)\errsweep.bat doaref1.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\doaref1.c
+    @- del current.bat
+
+dormovif.obj : $(CDIR)\dormovif.c $(RTHFILES)
+    - del dormovif.obj
+    @- $(SCRIPTSDIR)\errsweep.bat dormovif.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\dormovif.c
+    @- del current.bat
+
+dostfrf.obj : $(CDIR)\dostfrf.c $(RTHFILES)
+    - del dostfrf.obj
+    @- $(SCRIPTSDIR)\errsweep.bat dostfrf.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\dostfrf.c
+    @- del current.bat
+
+drmfrrr.obj : $(CDIR)\drmfrrr.c $(RTHFILES)
+    - del drmfrrr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat drmfrrr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\drmfrrr.c
+    @- del current.bat
+
+eighth.obj : $(CDIR)\eighth.c $(RTHFILES)
+    - del eighth.obj
+    @- $(SCRIPTSDIR)\errsweep.bat eighth.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\eighth.c
+    @- del current.bat
+
+encnvslm.obj : $(CDIR)\encnvslm.c $(RTHFILES) $(CDIR)\utime.h
+    - del encnvslm.obj
+    @- $(SCRIPTSDIR)\errsweep.bat encnvslm.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\encnvslm.c
+    @- del current.bat
+
+endp.obj : $(CDIR)\endp.c $(RTHFILES)
+    - del endp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat endp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\endp.c
+    @- del current.bat
+
+engnmsng.obj : $(CDIR)\engnmsng.c $(RTHFILES)
+    - del engnmsng.obj
+    @- $(SCRIPTSDIR)\errsweep.bat engnmsng.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\engnmsng.c
+    @- del current.bat
+
+eq.obj : $(CDIR)\eq.c $(RTHFILES)
+    - del eq.obj
+    @- $(SCRIPTSDIR)\errsweep.bat eq.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\eq.c
+    @- del current.bat
+
+eql.obj : $(CDIR)\eql.c $(RTHFILES)
+    - del eql.obj
+    @- $(SCRIPTSDIR)\errsweep.bat eql.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\eql.c
+    @- del current.bat
+
+equal.obj : $(CDIR)\equal.c $(RTHFILES)
+    - del equal.obj
+    @- $(SCRIPTSDIR)\errsweep.bat equal.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\equal.c
+    @- del current.bat
+
+equalp.obj : $(CDIR)\equalp.c $(RTHFILES)
+    - del equalp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat equalp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\equalp.c
+    @- del current.bat
+
+err_aux.obj : $(CDIR)\err_aux.c $(RTHFILES)
+    - del err_aux.obj
+    @- $(SCRIPTSDIR)\errsweep.bat err_aux.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\err_aux.c
+    @- del current.bat
+
+errors.obj : $(CDIR)\errors.c $(RTHFILES)
+    - del errors.obj
+    @- $(SCRIPTSDIR)\errsweep.bat errors.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\errors.c
+    @- del current.bat
+
+evalinit.obj : $(CDIR)\evalinit.c $(RTHFILES)
+    - del evalinit.obj
+    @- $(SCRIPTSDIR)\errsweep.bat evalinit.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\evalinit.c
+    @- del current.bat
+
+evalrun.obj : $(CDIR)\evalrun.c $(RTHFILES)
+    - del evalrun.obj
+    @- $(SCRIPTSDIR)\errsweep.bat evalrun.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\evalrun.c
+    @- del current.bat
+
+evals.obj : $(CDIR)\evals.c $(RTHFILES)
+    - del evals.obj
+    @- $(SCRIPTSDIR)\errsweep.bat evals.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\evals.c
+    @- del current.bat
+
+faref.obj : $(CDIR)\faref.c $(RTHFILES)
+    - del faref.obj
+    @- $(SCRIPTSDIR)\errsweep.bat faref.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\faref.c
+    @- del current.bat
+
+fifth.obj : $(CDIR)\fifth.c $(RTHFILES)
+    - del fifth.obj
+    @- $(SCRIPTSDIR)\errsweep.bat fifth.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\fifth.c
+    @- del current.bat
+
+filesys.obj : $(CDIR)\filesys.c $(RTHFILES)
+    - del filesys.obj
+    @- $(SCRIPTSDIR)\errsweep.bat filesys.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\filesys.c
+    @- del current.bat
+
+fill.obj : $(CDIR)\fill.c $(RTHFILES)
+    - del fill.obj
+    @- $(SCRIPTSDIR)\errsweep.bat fill.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\fill.c
+    @- del current.bat
+
+fillngth.obj : $(CDIR)\fillngth.c $(RTHFILES)
+    - del fillngth.obj
+    @- $(SCRIPTSDIR)\errsweep.bat fillngth.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\fillngth.c
+    @- del current.bat
+
+filuthor.obj : $(CDIR)\filuthor.c $(RTHFILES)
+    - del filuthor.obj
+    @- $(SCRIPTSDIR)\errsweep.bat filuthor.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\filuthor.c
+    @- del current.bat
+
+find.obj : $(CDIR)\find.c $(RTHFILES)
+    - del find.obj
+    @- $(SCRIPTSDIR)\errsweep.bat find.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\find.c
+    @- del current.bat
+
+find_if.obj : $(CDIR)\find_if.c $(RTHFILES)
+    - del find_if.obj
+    @- $(SCRIPTSDIR)\errsweep.bat find_if.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\find_if.c
+    @- del current.bat
+
+findifnt.obj : $(CDIR)\findifnt.c $(RTHFILES)
+    - del findifnt.obj
+    @- $(SCRIPTSDIR)\errsweep.bat findifnt.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\findifnt.c
+    @- del current.bat
+
+first.obj : $(CDIR)\first.c $(RTHFILES)
+    - del first.obj
+    @- $(SCRIPTSDIR)\errsweep.bat first.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\first.c
+    @- del current.bat
+
+fixnump.obj : $(CDIR)\fixnump.c $(RTHFILES)
+    - del fixnump.obj
+    @- $(SCRIPTSDIR)\errsweep.bat fixnump.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\fixnump.c
+    @- del current.bat
+
+flatsize.obj : $(CDIR)\flatsize.c $(RTHFILES)
+    - del flatsize.obj
+    @- $(SCRIPTSDIR)\errsweep.bat flatsize.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\flatsize.c
+    @- del current.bat
+
+fllpntr.obj : $(CDIR)\fllpntr.c $(RTHFILES)
+    - del fllpntr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat fllpntr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\fllpntr.c
+    @- del current.bat
+
+flnmsrng.obj : $(CDIR)\flnmsrng.c $(RTHFILES)
+    - del flnmsrng.obj
+    @- $(SCRIPTSDIR)\errsweep.bat flnmsrng.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\flnmsrng.c
+    @- del current.bat
+
+floatp.obj : $(CDIR)\floatp.c $(RTHFILES)
+    - del floatp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat floatp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\floatp.c
+    @- del current.bat
+
+flpstn.obj : $(CDIR)\flpstn.c $(RTHFILES)
+    - del flpstn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat flpstn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\flpstn.c
+    @- del current.bat
+
+flwrtdt.obj : $(CDIR)\flwrtdt.c $(RTHFILES)
+    - del flwrtdt.obj
+    @- $(SCRIPTSDIR)\errsweep.bat flwrtdt.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\flwrtdt.c
+    @- del current.bat
+
+fnllmbl.obj : $(CDIR)\fnllmbl.c $(RTHFILES)
+    - del fnllmbl.obj
+    @- $(SCRIPTSDIR)\errsweep.bat fnllmbl.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\fnllmbl.c
+    @- del current.bat
+
+fnshtm.obj : $(CDIR)\fnshtm.c $(RTHFILES)
+    - del fnshtm.obj
+    @- $(SCRIPTSDIR)\errsweep.bat fnshtm.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\fnshtm.c
+    @- del current.bat
+
+fnshtpt.obj : $(CDIR)\fnshtpt.c $(RTHFILES)
+    - del fnshtpt.obj
+    @- $(SCRIPTSDIR)\errsweep.bat fnshtpt.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\fnshtpt.c
+    @- del current.bat
+
+format.obj : $(CDIR)\format.c $(RTHFILES)
+    - del format.obj
+    @- $(SCRIPTSDIR)\errsweep.bat format.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\format.c
+    @- del current.bat
+
+forptrp.obj : $(CDIR)\forptrp.c $(RTHFILES)
+    - del forptrp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat forptrp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\forptrp.c
+    @- del current.bat
+
+forptrtp.obj : $(CDIR)\forptrtp.c $(RTHFILES)
+    - del forptrtp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat forptrtp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\forptrtp.c
+    @- del current.bat
+
+fortype.obj : $(CDIR)\fortype.c $(RTHFILES)
+    - del fortype.obj
+    @- $(SCRIPTSDIR)\errsweep.bat fortype.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\fortype.c
+    @- del current.bat
+
+fortypep.obj : $(CDIR)\fortypep.c $(RTHFILES)
+    - del fortypep.obj
+    @- $(SCRIPTSDIR)\errsweep.bat fortypep.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\fortypep.c
+    @- del current.bat
+
+forval.obj : $(CDIR)\forval.c $(RTHFILES)
+    - del forval.obj
+    @- $(SCRIPTSDIR)\errsweep.bat forval.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\forval.c
+    @- del current.bat
+
+fourth.obj : $(CDIR)\fourth.c $(RTHFILES)
+    - del fourth.obj
+    @- $(SCRIPTSDIR)\errsweep.bat fourth.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\fourth.c
+    @- del current.bat
+
+fpaddr.obj : $(CDIR)\fpaddr.c $(RTHFILES)
+    - del fpaddr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat fpaddr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\fpaddr.c
+    @- del current.bat
+
+fptrs.obj : $(CDIR)\fptrs.c $(RTHFILES)
+    - del fptrs.obj
+    @- $(SCRIPTSDIR)\errsweep.bat fptrs.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\fptrs.c
+    @- del current.bat
+
+fptype.obj : $(CDIR)\fptype.c $(RTHFILES)
+    - del fptype.obj
+    @- $(SCRIPTSDIR)\errsweep.bat fptype.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\fptype.c
+    @- del current.bat
+
+frcutput.obj : $(CDIR)\frcutput.c $(RTHFILES)
+    - del frcutput.obj
+    @- $(SCRIPTSDIR)\errsweep.bat frcutput.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\frcutput.c
+    @- del current.bat
+
+frfptr.obj : $(CDIR)\frfptr.c $(RTHFILES)
+    - del frfptr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat frfptr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\frfptr.c
+    @- del current.bat
+
+frshlin.obj : $(CDIR)\frshlin.c $(RTHFILES)
+    - del frshlin.obj
+    @- $(SCRIPTSDIR)\errsweep.bat frshlin.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\frshlin.c
+    @- del current.bat
+
+fsizeof.obj : $(CDIR)\fsizeof.c $(RTHFILES)
+    - del fsizeof.obj
+    @- $(SCRIPTSDIR)\errsweep.bat fsizeof.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\fsizeof.c
+    @- del current.bat
+
+fstrval.obj : $(CDIR)\fstrval.c $(RTHFILES)
+    - del fstrval.obj
+    @- $(SCRIPTSDIR)\errsweep.bat fstrval.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\fstrval.c
+    @- del current.bat
+
+ftmod.obj : $(CDIR)\ftmod.c $(RTHFILES)
+    - del ftmod.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ftmod.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ftmod.c
+    @- del current.bat
+
+ftname.obj : $(CDIR)\ftname.c $(RTHFILES)
+    - del ftname.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ftname.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ftname.c
+    @- del current.bat
+
+ftrem.obj : $(CDIR)\ftrem.c $(RTHFILES)
+    - del ftrem.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ftrem.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ftrem.c
+    @- del current.bat
+
+ftsize.obj : $(CDIR)\ftsize.c $(RTHFILES)
+    - del ftsize.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ftsize.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ftsize.c
+    @- del current.bat
+
+ftypep.obj : $(CDIR)\ftypep.c $(RTHFILES)
+    - del ftypep.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ftypep.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ftypep.c
+    @- del current.bat
+
+funcall.obj : $(CDIR)\funcall.c $(RTHFILES)
+    - del funcall.obj
+    @- $(SCRIPTSDIR)\errsweep.bat funcall.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\funcall.c
+    @- del current.bat
+
+funcall3.obj : $(CDIR)\funcall3.c $(RTHFILES)
+    - del funcall3.obj
+    @- $(SCRIPTSDIR)\errsweep.bat funcall3.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\funcall3.c
+    @- del current.bat
+
+funcln.obj : $(CDIR)\funcln.c $(RTHFILES)
+    - del funcln.obj
+    @- $(SCRIPTSDIR)\errsweep.bat funcln.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\funcln.c
+    @- del current.bat
+
+functinp.obj : $(CDIR)\functinp.c $(RTHFILES)
+    - del functinp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat functinp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\functinp.c
+    @- del current.bat
+
+gc.obj : $(CDIR)\gc.c $(RTHFILES)
+    - del gc.obj
+    @- $(SCRIPTSDIR)\errsweep.bat gc.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\gc.c
+    @- del current.bat
+
+gensym.obj : $(CDIR)\gensym.c $(RTHFILES)
+    - del gensym.obj
+    @- $(SCRIPTSDIR)\errsweep.bat gensym.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\gensym.c
+    @- del current.bat
+
+gentemp.obj : $(CDIR)\gentemp.c $(RTHFILES)
+    - del gentemp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat gentemp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\gentemp.c
+    @- del current.bat
+
+get.obj : $(CDIR)\get.c $(RTHFILES)
+    - del get.obj
+    @- $(SCRIPTSDIR)\errsweep.bat get.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\get.c
+    @- del current.bat
+
+getf.obj : $(CDIR)\getf.c $(RTHFILES)
+    - del getf.obj
+    @- $(SCRIPTSDIR)\errsweep.bat getf.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\getf.c
+    @- del current.bat
+
+gnrnlrlm.obj : $(CDIR)\gnrnlrlm.c $(RTHFILES)
+    - del gnrnlrlm.obj
+    @- $(SCRIPTSDIR)\errsweep.bat gnrnlrlm.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\gnrnlrlm.c
+    @- del current.bat
+
+gnrnlrnm.obj : $(CDIR)\gnrnlrnm.c $(RTHFILES)
+    - del gnrnlrnm.obj
+    @- $(SCRIPTSDIR)\errsweep.bat gnrnlrnm.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\gnrnlrnm.c
+    @- del current.bat
+
+gnvrslm.obj : $(CDIR)\gnvrslm.c $(RTHFILES)
+    - del gnvrslm.obj
+    @- $(SCRIPTSDIR)\errsweep.bat gnvrslm.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\gnvrslm.c
+    @- del current.bat
+
+grpccrp.obj : $(CDIR)\grpccrp.c $(RTHFILES)
+    - del grpccrp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat grpccrp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\grpccrp.c
+    @- del current.bat
+
+gtdcddtm.obj : $(CDIR)\gtdcddtm.c $(RTHFILES)
+    - del gtdcddtm.obj
+    @- $(SCRIPTSDIR)\errsweep.bat gtdcddtm.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\gtdcddtm.c
+    @- del current.bat
+
+gtprprts.obj : $(CDIR)\gtprprts.c $(RTHFILES)
+    - del gtprprts.obj
+    @- $(SCRIPTSDIR)\errsweep.bat gtprprts.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\gtprprts.c
+    @- del current.bat
+
+hash.obj : $(CDIR)\hash.c $(RTHFILES)
+    - del hash.obj
+    @- $(SCRIPTSDIR)\errsweep.bat hash.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\hash.c
+    @- del current.bat
+
+heap.obj : $(CDIR)\heap.c $(RTHFILES)
+    - del heap.obj
+    @- $(SCRIPTSDIR)\errsweep.bat heap.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\heap.c
+    @- del current.bat
+
+segment.obj : $(CDIR)\segment.c $(RTHFILES)
+    - del segment.obj
+    @- $(SCRIPTSDIR)\errsweep.bat segment.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\segment.c
+    @- del current.bat
+
+hsnmsrng.obj : $(CDIR)\hsnmsrng.c $(RTHFILES)
+    - del hsnmsrng.obj
+    @- $(SCRIPTSDIR)\errsweep.bat hsnmsrng.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\hsnmsrng.c
+    @- del current.bat
+
+ichrnme.obj : $(CDIR)\ichrnme.c $(RTHFILES)
+    - del ichrnme.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ichrnme.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ichrnme.c
+    @- del current.bat
+
+identity.obj : $(CDIR)\identity.c $(RTHFILES)
+    - del identity.obj
+    @- $(SCRIPTSDIR)\errsweep.bat identity.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\identity.c
+    @- del current.bat
+
+ifuns.obj : $(CDIR)\ifuns.c $(RTHFILES)
+    - del ifuns.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ifuns.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ifuns.c
+    @- del current.bat
+
+igglg.obj : $(CDIR)\igglg.c $(RTHFILES)
+    - del igglg.obj
+    @- $(SCRIPTSDIR)\errsweep.bat igglg.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\igglg.c
+    @- del current.bat
+
+ilzxlbl.obj : $(CDIR)\ilzxlbl.c $(RTHFILES)
+    - del ilzxlbl.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ilzxlbl.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ilzxlbl.c
+    @- del current.bat
+
+immedite.obj : $(CDIR)\immedite.c $(RTHFILES)
+    - del immedite.obj
+    @- $(SCRIPTSDIR)\errsweep.bat immedite.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\immedite.c
+    @- del current.bat
+
+ingrlng.obj : $(CDIR)\ingrlng.c $(RTHFILES)
+    - del ingrlng.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ingrlng.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ingrlng.c
+    @- del current.bat
+
+initgc.obj : $(CDIR)\initgc.c $(RTHFILES)
+    - del initgc.obj
+    @- $(SCRIPTSDIR)\errsweep.bat initgc.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\initgc.c
+    @- del current.bat
+
+inlzllbl.obj : $(CDIR)\inlzllbl.c $(RTHFILES)
+    - del inlzllbl.obj
+    @- $(SCRIPTSDIR)\errsweep.bat inlzllbl.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\inlzllbl.c
+    @- del current.bat
+
+inlzmbl.obj : $(CDIR)\inlzmbl.c $(RTHFILES)
+    - del inlzmbl.obj
+    @- $(SCRIPTSDIR)\errsweep.bat inlzmbl.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\inlzmbl.c
+    @- del current.bat
+
+inlzpckg.obj : $(CDIR)\inlzpckg.c $(RTHFILES)
+    - del inlzpckg.obj
+    @- $(SCRIPTSDIR)\errsweep.bat inlzpckg.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\inlzpckg.c
+    @- del current.bat
+
+innlmkp.obj : $(CDIR)\innlmkp.c $(RTHFILES)
+    - del innlmkp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat innlmkp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\innlmkp.c
+    @- del current.bat
+
+inspect.obj : $(CDIR)\inspect.c $(RTHFILES)
+    - del inspect.obj
+    @- $(SCRIPTSDIR)\errsweep.bat inspect.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\inspect.c
+    @- del current.bat
+
+int_char.obj : $(CDIR)\int_char.c $(RTHFILES)
+    - del int_char.obj
+    @- $(SCRIPTSDIR)\errsweep.bat int_char.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\int_char.c
+    @- del current.bat
+
+integerp.obj : $(CDIR)\integerp.c $(RTHFILES)
+    - del integerp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat integerp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\integerp.c
+    @- del current.bat
+
+intrsctn.obj : $(CDIR)\intrsctn.c $(RTHFILES)
+    - del intrsctn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat intrsctn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\intrsctn.c
+    @- del current.bat
+
+invldmd.obj : $(CDIR)\invldmd.c $(RTHFILES)
+    - del invldmd.obj
+    @- $(SCRIPTSDIR)\errsweep.bat invldmd.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\invldmd.c
+    @- del current.bat
+
+invlncnn.obj : $(CDIR)\invlncnn.c $(RTHFILES)
+    - del invlncnn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat invlncnn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\invlncnn.c
+    @- del current.bat
+
+io.obj : $(CDIR)\io.c $(RTHFILES)
+    - del io.obj
+    @- $(SCRIPTSDIR)\errsweep.bat io.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\io.c
+    @- del current.bat
+
+ismblnm.obj : $(CDIR)\ismblnm.c $(RTHFILES)
+    - del ismblnm.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ismblnm.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ismblnm.c
+    @- del current.bat
+
+isngsng.obj : $(CDIR)\isngsng.c $(RTHFILES)
+    - del isngsng.obj
+    @- $(SCRIPTSDIR)\errsweep.bat isngsng.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\isngsng.c
+    @- del current.bat
+
+isngsngn.obj : $(CDIR)\isngsngn.c $(RTHFILES)
+    - del isngsngn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat isngsngn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\isngsngn.c
+    @- del current.bat
+
+isyms.obj : $(CDIR)\isyms.c $(RTHFILES)
+    - del isyms.obj
+    @- $(SCRIPTSDIR)\errsweep.bat isyms.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\isyms.c
+    @- del current.bat
+
+keywordp.obj : $(CDIR)\keywordp.c $(RTHFILES)
+    - del keywordp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat keywordp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\keywordp.c
+    @- del current.bat
+
+lambinit.obj : $(CDIR)\lambinit.c $(RTHFILES)
+    - del lambinit.obj
+    @- $(SCRIPTSDIR)\errsweep.bat lambinit.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\lambinit.c
+    @- del current.bat
+
+last.obj : $(CDIR)\last.c $(RTHFILES)
+    - del last.obj
+    @- $(SCRIPTSDIR)\errsweep.bat last.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\last.c
+    @- del current.bat
+
+ldelete.obj : $(CDIR)\ldelete.c $(RTHFILES)
+    - del ldelete.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ldelete.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ldelete.c
+    @- del current.bat
+
+ldiff.obj : $(CDIR)\ldiff.c $(RTHFILES)
+    - del ldiff.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ldiff.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ldiff.c
+    @- del current.bat
+
+lfloat.obj : $(CDIR)\lfloat.c $(RTHFILES)
+    - del lfloat.obj
+    @- $(SCRIPTSDIR)\errsweep.bat lfloat.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\lfloat.c
+    @- del current.bat
+
+lgclpnmp.obj : $(CDIR)\lgclpnmp.c $(RTHFILES)
+    - del lgclpnmp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat lgclpnmp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\lgclpnmp.c
+    @- del current.bat
+
+list.obj : $(CDIR)\list.c $(RTHFILES)
+    - del list.obj
+    @- $(SCRIPTSDIR)\errsweep.bat list.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\list.c
+    @- del current.bat
+
+listp.obj : $(CDIR)\listp.c $(RTHFILES)
+    - del listp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat listp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\listp.c
+    @- del current.bat
+
+listrvrs.obj : $(CDIR)\listrvrs.c $(RTHFILES)
+    - del listrvrs.obj
+    @- $(SCRIPTSDIR)\errsweep.bat listrvrs.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\listrvrs.c
+    @- del current.bat
+
+liststar.obj : $(CDIR)\liststar.c $(RTHFILES)
+    - del liststar.obj
+    @- $(SCRIPTSDIR)\errsweep.bat liststar.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\liststar.c
+    @- del current.bat
+
+listvlus.obj : $(CDIR)\listvlus.c $(RTHFILES)
+    - del listvlus.obj
+    @- $(SCRIPTSDIR)\errsweep.bat listvlus.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\listvlus.c
+    @- del current.bat
+
+llisten.obj : $(CDIR)\llisten.c $(RTHFILES)
+    - del llisten.obj
+    @- $(SCRIPTSDIR)\errsweep.bat llisten.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\llisten.c
+    @- del current.bat
+
+lmlmnn.obj : $(CDIR)\lmlmnn.c $(RTHFILES)
+    - del lmlmnn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat lmlmnn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\lmlmnn.c
+    @- del current.bat
+
+lmlmnnvn.obj : $(CDIR)\lmlmnnvn.c $(RTHFILES)
+    - del lmlmnnvn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat lmlmnnvn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\lmlmnnvn.c
+    @- del current.bat
+
+load.obj : $(CDIR)\load.c $(RTHFILES)
+    - del load.obj
+    @- $(SCRIPTSDIR)\errsweep.bat load.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\load.c
+    @- del current.bat
+
+load_run.obj : $(CDIR)\load_run.c $(RTHFILES)
+    - del load_run.obj
+    @- $(SCRIPTSDIR)\errsweep.bat load_run.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\load_run.c
+    @- del current.bat
+
+lopen.obj : $(CDIR)\lopen.c $(RTHFILES)
+    - del lopen.obj
+    @- $(SCRIPTSDIR)\errsweep.bat lopen.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\lopen.c
+    @- del current.bat
+
+lowrcsp.obj : $(CDIR)\lowrcsp.c $(RTHFILES)
+    - del lowrcsp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat lowrcsp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\lowrcsp.c
+    @- del current.bat
+
+lreader.obj : $(CDIR)\lreader.c $(RTHFILES)
+    - del lreader.obj
+    @- $(SCRIPTSDIR)\errsweep.bat lreader.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\lreader.c
+    @- del current.bat
+
+lremove.obj : $(CDIR)\lremove.c $(RTHFILES)
+    - del lremove.obj
+    @- $(SCRIPTSDIR)\errsweep.bat lremove.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\lremove.c
+    @- del current.bat
+
+lsleep.obj : $(CDIR)\lsleep.c $(RTHFILES)
+    - del lsleep.obj
+    @- $(SCRIPTSDIR)\errsweep.bat lsleep.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\lsleep.c
+    @- del current.bat
+
+lstlngth.obj : $(CDIR)\lstlngth.c $(RTHFILES)
+    - del lstlngth.obj
+    @- $(SCRIPTSDIR)\errsweep.bat lstlngth.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\lstlngth.c
+    @- del current.bat
+
+lstnrvrs.obj : $(CDIR)\lstnrvrs.c $(RTHFILES)
+    - del lstnrvrs.obj
+    @- $(SCRIPTSDIR)\errsweep.bat lstnrvrs.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\lstnrvrs.c
+    @- del current.bat
+
+lunion.obj : $(CDIR)\lunion.c $(RTHFILES)
+    - del lunion.obj
+    @- $(SCRIPTSDIR)\errsweep.bat lunion.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\lunion.c
+    @- del current.bat
+
+m_nthcdr.obj : $(CDIR)\m_nthcdr.c $(RTHFILES)
+    - del m_nthcdr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat m_nthcdr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\m_nthcdr.c
+    @- del current.bat
+
+macros.obj : $(CDIR)\macros.c $(RTHFILES)
+    - del macros.obj
+    @- $(SCRIPTSDIR)\errsweep.bat macros.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\macros.c
+    @- del current.bat
+
+makechar.obj : $(CDIR)\makechar.c $(RTHFILES)
+    - del makechar.obj
+    @- $(SCRIPTSDIR)\errsweep.bat makechar.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\makechar.c
+    @- del current.bat
+
+makelist.obj : $(CDIR)\makelist.c $(RTHFILES)
+    - del makelist.obj
+    @- $(SCRIPTSDIR)\errsweep.bat makelist.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\makelist.c
+    @- del current.bat
+
+map.obj : $(CDIR)\map.c $(RTHFILES)
+    - del map.obj
+    @- $(SCRIPTSDIR)\errsweep.bat map.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\map.c
+    @- del current.bat
+
+map_into.obj : $(CDIR)\map_into.c $(RTHFILES)
+    - del map_into.obj
+    @- $(SCRIPTSDIR)\errsweep.bat map_into.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\map_into.c
+    @- del current.bat
+
+mapcar.obj : $(CDIR)\mapcar.c $(RTHFILES)
+    - del mapcar.obj
+    @- $(SCRIPTSDIR)\errsweep.bat mapcar.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\mapcar.c
+    @- del current.bat
+
+markgc.obj : $(CDIR)\markgc.c $(RTHFILES)
+    - del markgc.obj
+    @- $(SCRIPTSDIR)\errsweep.bat markgc.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\markgc.c
+    @- del current.bat
+
+mcfptr.obj : $(CDIR)\mcfptr.c $(RTHFILES)
+    - del mcfptr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat mcfptr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\mcfptr.c
+    @- del current.bat
+
+mchintyp.obj : $(CDIR)\mchintyp.c $(RTHFILES)
+    - del mchintyp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat mchintyp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\mchintyp.c
+    @- del current.bat
+
+mchnvrsn.obj : $(CDIR)\mchnvrsn.c $(RTHFILES)
+    - del mchnvrsn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat mchnvrsn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\mchnvrsn.c
+    @- del current.bat
+
+mcnnstnc.obj : $(CDIR)\mcnnstnc.c $(RTHFILES)
+    - del mcnnstnc.obj
+    @- $(SCRIPTSDIR)\errsweep.bat mcnnstnc.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\mcnnstnc.c
+    @- del current.bat
+
+mdcmbnn.obj : $(CDIR)\mdcmbnn.c $(RTHFILES)
+    - del mdcmbnn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat mdcmbnn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\mdcmbnn.c
+    @- del current.bat
+
+member.obj : $(CDIR)\member.c $(RTHFILES)
+    - del member.obj
+    @- $(SCRIPTSDIR)\errsweep.bat member.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\member.c
+    @- del current.bat
+
+membereq.obj : $(CDIR)\membereq.c $(RTHFILES)
+    - del membereq.obj
+    @- $(SCRIPTSDIR)\errsweep.bat membereq.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\membereq.c
+    @- del current.bat
+
+memberif.obj : $(CDIR)\memberif.c $(RTHFILES)
+    - del memberif.obj
+    @- $(SCRIPTSDIR)\errsweep.bat memberif.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\memberif.c
+    @- del current.bat
+
+memberse.obj : $(CDIR)\memberse.c $(RTHFILES)
+    - del memberse.obj
+    @- $(SCRIPTSDIR)\errsweep.bat memberse.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\memberse.c
+    @- del current.bat
+
+memq.obj : $(CDIR)\memq.c $(RTHFILES)
+    - del memq.obj
+    @- $(SCRIPTSDIR)\errsweep.bat memq.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\memq.c
+    @- del current.bat
+
+merge.obj : $(CDIR)\merge.c $(RTHFILES)
+    - del merge.obj
+    @- $(SCRIPTSDIR)\errsweep.bat merge.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\merge.c
+    @- del current.bat
+
+mismatch.obj : $(CDIR)\mismatch.c $(RTHFILES)
+    - del mismatch.obj
+    @- $(SCRIPTSDIR)\errsweep.bat mismatch.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\mismatch.c
+    @- del current.bat
+
+mkarrlt.obj : $(CDIR)\mkarrlt.c $(RTHFILES)
+    - del mkarrlt.obj
+    @- $(SCRIPTSDIR)\errsweep.bat mkarrlt.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\mkarrlt.c
+    @- del current.bat
+
+mkcomplx.obj : $(CDIR)\mkcomplx.c $(RTHFILES)
+    - del mkcomplx.obj
+    @- $(SCRIPTSDIR)\errsweep.bat mkcomplx.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\mkcomplx.c
+    @- del current.bat
+
+mkfptr.obj : $(CDIR)\mkfptr.c $(RTHFILES)
+    - del mkfptr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat mkfptr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\mkfptr.c
+    @- del current.bat
+
+mkfptri.obj : $(CDIR)\mkfptri.c $(RTHFILES)
+    - del mkfptri.obj
+    @- $(SCRIPTSDIR)\errsweep.bat mkfptri.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\mkfptri.c
+    @- del current.bat
+
+mkpthnm.obj : $(CDIR)\mkpthnm.c $(RTHFILES)
+    - del mkpthnm.obj
+    @- $(SCRIPTSDIR)\errsweep.bat mkpthnm.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\mkpthnm.c
+    @- del current.bat
+
+mkscnsnc.obj : $(CDIR)\mkscnsnc.c $(RTHFILES)
+    - del mkscnsnc.obj
+    @- $(SCRIPTSDIR)\errsweep.bat mkscnsnc.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\mkscnsnc.c
+    @- del current.bat
+
+mksqunc.obj : $(CDIR)\mksqunc.c $(RTHFILES)
+    - del mksqunc.obj
+    @- $(SCRIPTSDIR)\errsweep.bat mksqunc.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\mksqunc.c
+    @- del current.bat
+
+mksymbol.obj : $(CDIR)\mksymbol.c $(RTHFILES)
+    - del mksymbol.obj
+    @- $(SCRIPTSDIR)\errsweep.bat mksymbol.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\mksymbol.c
+    @- del current.bat
+
+mkunbund.obj : $(CDIR)\mkunbund.c $(RTHFILES)
+    - del mkunbund.obj
+    @- $(SCRIPTSDIR)\errsweep.bat mkunbund.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\mkunbund.c
+    @- del current.bat
+
+mkvctor.obj : $(CDIR)\mkvctor.c $(RTHFILES)
+    - del mkvctor.obj
+    @- $(SCRIPTSDIR)\errsweep.bat mkvctor.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\mkvctor.c
+    @- del current.bat
+
+mkvlucll.obj : $(CDIR)\mkvlucll.c $(RTHFILES)
+    - del mkvlucll.obj
+    @- $(SCRIPTSDIR)\errsweep.bat mkvlucll.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\mkvlucll.c
+    @- del current.bat
+
+mlplvlln.obj : $(CDIR)\mlplvlln.c $(RTHFILES)
+    - del mlplvlln.obj
+    @- $(SCRIPTSDIR)\errsweep.bat mlplvlln.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\mlplvlln.c
+    @- del current.bat
+
+mmbrifnt.obj : $(CDIR)\mmbrifnt.c $(RTHFILES)
+    - del mmbrifnt.obj
+    @- $(SCRIPTSDIR)\errsweep.bat mmbrifnt.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\mmbrifnt.c
+    @- del current.bat
+
+mmbrodd.obj : $(CDIR)\mmbrodd.c $(RTHFILES)
+    - del mmbrodd.obj
+    @- $(SCRIPTSDIR)\errsweep.bat mmbrodd.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\mmbrodd.c
+    @- del current.bat
+
+mmbrql.obj : $(CDIR)\mmbrql.c $(RTHFILES)
+    - del mmbrql.obj
+    @- $(SCRIPTSDIR)\errsweep.bat mmbrql.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\mmbrql.c
+    @- del current.bat
+
+mmbrqul.obj : $(CDIR)\mmbrqul.c $(RTHFILES)
+    - del mmbrqul.obj
+    @- $(SCRIPTSDIR)\errsweep.bat mmbrqul.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\mmbrqul.c
+    @- del current.bat
+
+mrgptnms.obj : $(CDIR)\mrgptnms.c $(RTHFILES)
+    - del mrgptnms.obj
+    @- $(SCRIPTSDIR)\errsweep.bat mrgptnms.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\mrgptnms.c
+    @- del current.bat
+
+mspcmccc.obj : $(CDIR)\mspcmccc.c $(RTHFILES)
+    - del mspcmccc.obj
+    @- $(SCRIPTSDIR)\errsweep.bat mspcmccc.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\mspcmccc.c
+    @- del current.bat
+
+mvsn.obj : $(CDIR)\mvsn.c $(RTHFILES)
+    - del mvsn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat mvsn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\mvsn.c
+    @- del current.bat
+
+namechar.obj : $(CDIR)\namechar.c $(RTHFILES)
+    - del namechar.obj
+    @- $(SCRIPTSDIR)\errsweep.bat namechar.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\namechar.c
+    @- del current.bat
+
+nbutlast.obj : $(CDIR)\nbutlast.c $(RTHFILES)
+    - del nbutlast.obj
+    @- $(SCRIPTSDIR)\errsweep.bat nbutlast.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\nbutlast.c
+    @- del current.bat
+
+nconc.obj : $(CDIR)\nconc.c $(RTHFILES)
+    - del nconc.obj
+    @- $(SCRIPTSDIR)\errsweep.bat nconc.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\nconc.c
+    @- del current.bat
+
+nconc2.obj : $(CDIR)\nconc2.c $(RTHFILES)
+    - del nconc2.obj
+    @- $(SCRIPTSDIR)\errsweep.bat nconc2.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\nconc2.c
+    @- del current.bat
+
+ncons.obj : $(CDIR)\ncons.c $(RTHFILES)
+    - del ncons.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ncons.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ncons.c
+    @- del current.bat
+
+ncons1.obj : $(CDIR)\ncons1.c $(RTHFILES)
+    - del ncons1.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ncons1.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ncons1.c
+    @- del current.bat
+
+ninth.obj : $(CDIR)\ninth.c $(RTHFILES)
+    - del ninth.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ninth.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ninth.c
+    @- del current.bat
+
+nmstring.obj : $(CDIR)\nmstring.c $(RTHFILES)
+    - del nmstring.obj
+    @- $(SCRIPTSDIR)\errsweep.bat nmstring.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\nmstring.c
+    @- del current.bat
+
+nntrsctn.obj : $(CDIR)\nntrsctn.c $(RTHFILES)
+    - del nntrsctn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat nntrsctn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\nntrsctn.c
+    @- del current.bat
+
+not.obj : $(CDIR)\not.c $(RTHFILES)
+    - del not.obj
+    @- $(SCRIPTSDIR)\errsweep.bat not.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\not.c
+    @- del current.bat
+
+nreconc.obj : $(CDIR)\nreconc.c $(RTHFILES)
+    - del nreconc.obj
+    @- $(SCRIPTSDIR)\errsweep.bat nreconc.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\nreconc.c
+    @- del current.bat
+
+nreverse.obj : $(CDIR)\nreverse.c $(RTHFILES)
+    - del nreverse.obj
+    @- $(SCRIPTSDIR)\errsweep.bat nreverse.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\nreverse.c
+    @- del current.bat
+
+nsbsfn.obj : $(CDIR)\nsbsfn.c $(RTHFILES)
+    - del nsbsfn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat nsbsfn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\nsbsfn.c
+    @- del current.bat
+
+nsbstfnt.obj : $(CDIR)\nsbstfnt.c $(RTHFILES)
+    - del nsbstfnt.obj
+    @- $(SCRIPTSDIR)\errsweep.bat nsbstfnt.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\nsbstfnt.c
+    @- del current.bat
+
+nsbsttt.obj : $(CDIR)\nsbsttt.c $(RTHFILES)
+    - del nsbsttt.obj
+    @- $(SCRIPTSDIR)\errsweep.bat nsbsttt.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\nsbsttt.c
+    @- del current.bat
+
+nsbstttf.obj : $(CDIR)\nsbstttf.c $(RTHFILES)
+    - del nsbstttf.obj
+    @- $(SCRIPTSDIR)\errsweep.bat nsbstttf.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\nsbstttf.c
+    @- del current.bat
+
+nsdffrnc.obj : $(CDIR)\nsdffrnc.c $(RTHFILES)
+    - del nsdffrnc.obj
+    @- $(SCRIPTSDIR)\errsweep.bat nsdffrnc.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\nsdffrnc.c
+    @- del current.bat
+
+nsngcplz.obj : $(CDIR)\nsngcplz.c $(RTHFILES)
+    - del nsngcplz.obj
+    @- $(SCRIPTSDIR)\errsweep.bat nsngcplz.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\nsngcplz.c
+    @- del current.bat
+
+nsngdncs.obj : $(CDIR)\nsngdncs.c $(RTHFILES)
+    - del nsngdncs.obj
+    @- $(SCRIPTSDIR)\errsweep.bat nsngdncs.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\nsngdncs.c
+    @- del current.bat
+
+nsrngpcs.obj : $(CDIR)\nsrngpcs.c $(RTHFILES)
+    - del nsrngpcs.obj
+    @- $(SCRIPTSDIR)\errsweep.bat nsrngpcs.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\nsrngpcs.c
+    @- del current.bat
+
+nsublis.obj : $(CDIR)\nsublis.c $(RTHFILES)
+    - del nsublis.obj
+    @- $(SCRIPTSDIR)\errsweep.bat nsublis.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\nsublis.c
+    @- del current.bat
+
+nsubst.obj : $(CDIR)\nsubst.c $(RTHFILES)
+    - del nsubst.obj
+    @- $(SCRIPTSDIR)\errsweep.bat nsubst.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\nsubst.c
+    @- del current.bat
+
+nsubstif.obj : $(CDIR)\nsubstif.c $(RTHFILES)
+    - del nsubstif.obj
+    @- $(SCRIPTSDIR)\errsweep.bat nsubstif.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\nsubstif.c
+    @- del current.bat
+
+nsxclsvr.obj : $(CDIR)\nsxclsvr.c $(RTHFILES)
+    - del nsxclsvr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat nsxclsvr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\nsxclsvr.c
+    @- del current.bat
+
+nth.obj : $(CDIR)\nth.c $(RTHFILES)
+    - del nth.obj
+    @- $(SCRIPTSDIR)\errsweep.bat nth.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\nth.c
+    @- del current.bat
+
+nthcdr.obj : $(CDIR)\nthcdr.c $(RTHFILES)
+    - del nthcdr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat nthcdr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\nthcdr.c
+    @- del current.bat
+
+null.obj : $(CDIR)\null.c $(RTHFILES)
+    - del null.obj
+    @- $(SCRIPTSDIR)\errsweep.bat null.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\null.c
+    @- del current.bat
+
+numberp.obj : $(CDIR)\numberp.c $(RTHFILES)
+    - del numberp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat numberp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\numberp.c
+    @- del current.bat
+
+numbers.obj : $(CDIR)\numbers.c $(RTHFILES)
+    - del numbers.obj
+    @- $(SCRIPTSDIR)\errsweep.bat numbers.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\numbers.c
+    @- del current.bat
+
+numinit.obj : $(CDIR)\numinit.c $(RTHFILES)
+    - del numinit.obj
+    @- $(SCRIPTSDIR)\errsweep.bat numinit.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\numinit.c
+    @- del current.bat
+
+nunion.obj : $(CDIR)\nunion.c $(RTHFILES)
+    - del nunion.obj
+    @- $(SCRIPTSDIR)\errsweep.bat nunion.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\nunion.c
+    @- del current.bat
+
+objccdbl.obj : $(CDIR)\objccdbl.c $(RTHFILES)
+    - del objccdbl.obj
+    @- $(SCRIPTSDIR)\errsweep.bat objccdbl.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\objccdbl.c
+    @- del current.bat
+
+oldsyms.obj : $(CDIR)\oldsyms.c $(RTHFILES)
+    - del oldsyms.obj
+    @- $(SCRIPTSDIR)\errsweep.bat oldsyms.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\oldsyms.c
+    @- del current.bat
+
+packagep.obj : $(CDIR)\packagep.c $(RTHFILES)
+    - del packagep.obj
+    @- $(SCRIPTSDIR)\errsweep.bat packagep.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\packagep.c
+    @- del current.bat
+
+packages.obj : $(CDIR)\packages.c $(RTHFILES)
+    - del packages.obj
+    @- $(SCRIPTSDIR)\errsweep.bat packages.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\packages.c
+    @- del current.bat
+
+pairlis.obj : $(CDIR)\pairlis.c $(RTHFILES)
+    - del pairlis.obj
+    @- $(SCRIPTSDIR)\errsweep.bat pairlis.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\pairlis.c
+    @- del current.bat
+
+pathname.obj : $(CDIR)\pathname.c $(RTHFILES)
+    - del pathname.obj
+    @- $(SCRIPTSDIR)\errsweep.bat pathname.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\pathname.c
+    @- del current.bat
+
+pctpintr.obj : $(CDIR)\pctpintr.c $(RTHFILES)
+    - del pctpintr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat pctpintr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\pctpintr.c
+    @- del current.bat
+
+peekchar.obj : $(CDIR)\peekchar.c $(RTHFILES)
+    - del peekchar.obj
+    @- $(SCRIPTSDIR)\errsweep.bat peekchar.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\peekchar.c
+    @- del current.bat
+
+pkginit.obj : $(CDIR)\pkginit.c $(RTHFILES)
+    - del pkginit.obj
+    @- $(SCRIPTSDIR)\errsweep.bat pkginit.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\pkginit.c
+    @- del current.bat
+
+pnmdrcr.obj : $(CDIR)\pnmdrcr.c $(RTHFILES)
+    - del pnmdrcr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat pnmdrcr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\pnmdrcr.c
+    @- del current.bat
+
+position.obj : $(CDIR)\position.c $(RTHFILES)
+    - del position.obj
+    @- $(SCRIPTSDIR)\errsweep.bat position.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\position.c
+    @- del current.bat
+
+pprint.obj : $(CDIR)\pprint.c $(RTHFILES)
+    - del pprint.obj
+    @- $(SCRIPTSDIR)\errsweep.bat pprint.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\pprint.c
+    @- del current.bat
+
+prin1.obj : $(CDIR)\prin1.c $(RTHFILES)
+    - del prin1.obj
+    @- $(SCRIPTSDIR)\errsweep.bat prin1.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\prin1.c
+    @- del current.bat
+
+princ.obj : $(CDIR)\princ.c $(RTHFILES)
+    - del princ.obj
+    @- $(SCRIPTSDIR)\errsweep.bat princ.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\princ.c
+    @- del current.bat
+
+print.obj : $(CDIR)\print.c $(RTHFILES)
+    - del print.obj
+    @- $(SCRIPTSDIR)\errsweep.bat print.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\print.c
+    @- del current.bat
+
+prmpfrvl.obj : $(CDIR)\prmpfrvl.c $(RTHFILES)
+    - del prmpfrvl.obj
+    @- $(SCRIPTSDIR)\errsweep.bat prmpfrvl.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\prmpfrvl.c
+    @- del current.bat
+
+prn1srng.obj : $(CDIR)\prn1srng.c $(RTHFILES)
+    - del prn1srng.obj
+    @- $(SCRIPTSDIR)\errsweep.bat prn1srng.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\prn1srng.c
+    @- del current.bat
+
+prncsrng.obj : $(CDIR)\prncsrng.c $(RTHFILES)
+    - del prncsrng.obj
+    @- $(SCRIPTSDIR)\errsweep.bat prncsrng.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\prncsrng.c
+    @- del current.bat
+
+prntinit.obj : $(CDIR)\prntinit.c $(RTHFILES)
+    - del prntinit.obj
+    @- $(SCRIPTSDIR)\errsweep.bat prntinit.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\prntinit.c
+    @- del current.bat
+
+probfil.obj : $(CDIR)\probfil.c $(RTHFILES)
+    - del probfil.obj
+    @- $(SCRIPTSDIR)\errsweep.bat probfil.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\probfil.c
+    @- del current.bat
+
+proclaim.obj : $(CDIR)\proclaim.c $(RTHFILES)
+    - del proclaim.obj
+    @- $(SCRIPTSDIR)\errsweep.bat proclaim.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\proclaim.c
+    @- del current.bat
+
+progv_do.obj : $(CDIR)\progv_do.c $(RTHFILES)
+    - del progv_do.obj
+    @- $(SCRIPTSDIR)\errsweep.bat progv_do.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\progv_do.c
+    @- del current.bat
+
+prsintgr.obj : $(CDIR)\prsintgr.c $(RTHFILES)
+    - del prsintgr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat prsintgr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\prsintgr.c
+    @- del current.bat
+
+psitinif.obj : $(CDIR)\psitinif.c $(RTHFILES)
+    - del psitinif.obj
+    @- $(SCRIPTSDIR)\errsweep.bat psitinif.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\psitinif.c
+    @- del current.bat
+
+psnmsng.obj : $(CDIR)\psnmsng.c $(RTHFILES)
+    - del psnmsng.obj
+    @- $(SCRIPTSDIR)\errsweep.bat psnmsng.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\psnmsng.c
+    @- del current.bat
+
+pstnfnt.obj : $(CDIR)\pstnfnt.c $(RTHFILES)
+    - del pstnfnt.obj
+    @- $(SCRIPTSDIR)\errsweep.bat pstnfnt.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\pstnfnt.c
+    @- del current.bat
+
+pthnmdvc.obj : $(CDIR)\pthnmdvc.c $(RTHFILES)
+    - del pthnmdvc.obj
+    @- $(SCRIPTSDIR)\errsweep.bat pthnmdvc.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\pthnmdvc.c
+    @- del current.bat
+
+pthnmep.obj : $(CDIR)\pthnmep.c $(RTHFILES)
+    - del pthnmep.obj
+    @- $(SCRIPTSDIR)\errsweep.bat pthnmep.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\pthnmep.c
+    @- del current.bat
+
+pthnmhst.obj : $(CDIR)\pthnmhst.c $(RTHFILES)
+    - del pthnmhst.obj
+    @- $(SCRIPTSDIR)\errsweep.bat pthnmhst.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\pthnmhst.c
+    @- del current.bat
+
+pthnmnm.obj : $(CDIR)\pthnmnm.c $(RTHFILES)
+    - del pthnmnm.obj
+    @- $(SCRIPTSDIR)\errsweep.bat pthnmnm.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\pthnmnm.c
+    @- del current.bat
+
+pthnmtyp.obj : $(CDIR)\pthnmtyp.c $(RTHFILES)
+    - del pthnmtyp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat pthnmtyp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\pthnmtyp.c
+    @- del current.bat
+
+ptnmvrsn.obj : $(CDIR)\ptnmvrsn.c $(RTHFILES)
+    - del ptnmvrsn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ptnmvrsn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ptnmvrsn.c
+    @- del current.bat
+
+rassoc.obj : $(CDIR)\rassoc.c $(RTHFILES)
+    - del rassoc.obj
+    @- $(SCRIPTSDIR)\errsweep.bat rassoc.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\rassoc.c
+    @- del current.bat
+
+rassocif.obj : $(CDIR)\rassocif.c $(RTHFILES)
+    - del rassocif.obj
+    @- $(SCRIPTSDIR)\errsweep.bat rassocif.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\rassocif.c
+    @- del current.bat
+
+ratiop.obj : $(CDIR)\ratiop.c $(RTHFILES)
+    - del ratiop.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ratiop.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ratiop.c
+    @- del current.bat
+
+rdcrnng.obj : $(CDIR)\rdcrnng.c $(RTHFILES)
+    - del rdcrnng.obj
+    @- $(SCRIPTSDIR)\errsweep.bat rdcrnng.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\rdcrnng.c
+    @- del current.bat
+
+rdrmsrng.obj : $(CDIR)\rdrmsrng.c $(RTHFILES)
+    - del rdrmsrng.obj
+    @- $(SCRIPTSDIR)\errsweep.bat rdrmsrng.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\rdrmsrng.c
+    @- del current.bat
+
+readbyte.obj : $(CDIR)\readbyte.c $(RTHFILES)
+    - del readbyte.obj
+    @- $(SCRIPTSDIR)\errsweep.bat readbyte.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\readbyte.c
+    @- del current.bat
+
+readchar.obj : $(CDIR)\readchar.c $(RTHFILES)
+    - del readchar.obj
+    @- $(SCRIPTSDIR)\errsweep.bat readchar.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\readchar.c
+    @- del current.bat
+
+readinit.obj : $(CDIR)\readinit.c $(RTHFILES)
+    - del readinit.obj
+    @- $(SCRIPTSDIR)\errsweep.bat readinit.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\readinit.c
+    @- del current.bat
+
+readline.obj : $(CDIR)\readline.c $(RTHFILES)
+    - del readline.obj
+    @- $(SCRIPTSDIR)\errsweep.bat readline.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\readline.c
+    @- del current.bat
+
+realp.obj : $(CDIR)\realp.c $(RTHFILES)
+    - del realp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat realp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\realp.c
+    @- del current.bat
+
+reduce.obj : $(CDIR)\reduce.c $(RTHFILES)
+    - del reduce.obj
+    @- $(SCRIPTSDIR)\errsweep.bat reduce.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\reduce.c
+    @- del current.bat
+
+remprop.obj : $(CDIR)\remprop.c $(RTHFILES)
+    - del remprop.obj
+    @- $(SCRIPTSDIR)\errsweep.bat remprop.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\remprop.c
+    @- del current.bat
+
+replace.obj : $(CDIR)\replace.c $(RTHFILES)
+    - del replace.obj
+    @- $(SCRIPTSDIR)\errsweep.bat replace.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\replace.c
+    @- del current.bat
+
+rest.obj : $(CDIR)\rest.c $(RTHFILES)
+    - del rest.obj
+    @- $(SCRIPTSDIR)\errsweep.bat rest.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\rest.c
+    @- del current.bat
+
+reverse.obj : $(CDIR)\reverse.c $(RTHFILES)
+    - del reverse.obj
+    @- $(SCRIPTSDIR)\errsweep.bat reverse.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\reverse.c
+    @- del current.bat
+
+revppend.obj : $(CDIR)\revppend.c $(RTHFILES)
+    - del revppend.obj
+    @- $(SCRIPTSDIR)\errsweep.bat revppend.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\revppend.c
+    @- del current.bat
+
+rmvdplcs.obj : $(CDIR)\rmvdplcs.c $(RTHFILES)
+    - del rmvdplcs.obj
+    @- $(SCRIPTSDIR)\errsweep.bat rmvdplcs.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\rmvdplcs.c
+    @- del current.bat
+
+rnmfil.obj : $(CDIR)\rnmfil.c $(RTHFILES)
+    - del rnmfil.obj
+    @- $(SCRIPTSDIR)\errsweep.bat rnmfil.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\rnmfil.c
+    @- del current.bat
+
+room.obj : $(CDIR)\room.c $(RTHFILES)
+    - del room.obj
+    @- $(SCRIPTSDIR)\errsweep.bat room.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\room.c
+    @- del current.bat
+
+rplaca.obj : $(CDIR)\rplaca.c $(RTHFILES)
+    - del rplaca.obj
+    @- $(SCRIPTSDIR)\errsweep.bat rplaca.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\rplaca.c
+    @- del current.bat
+
+rplacd.obj : $(CDIR)\rplacd.c $(RTHFILES)
+    - del rplacd.obj
+    @- $(SCRIPTSDIR)\errsweep.bat rplacd.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\rplacd.c
+    @- del current.bat
+
+rsscifnt.obj : $(CDIR)\rsscifnt.c $(RTHFILES)
+    - del rsscifnt.obj
+    @- $(SCRIPTSDIR)\errsweep.bat rsscifnt.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\rsscifnt.c
+    @- del current.bat
+
+rtionlp.obj : $(CDIR)\rtionlp.c $(RTHFILES)
+    - del rtionlp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat rtionlp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\rtionlp.c
+    @- del current.bat
+
+rwmjrrf.obj : $(CDIR)\rwmjrrf.c $(RTHFILES)
+    - del rwmjrrf.obj
+    @- $(SCRIPTSDIR)\errsweep.bat rwmjrrf.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\rwmjrrf.c
+    @- del current.bat
+
+s_fill_n.obj : $(CDIR)\s_fill_n.c $(RTHFILES)
+    - del s_fill_n.obj
+    @- $(SCRIPTSDIR)\errsweep.bat s_fill_n.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\s_fill_n.c
+    @- del current.bat
+
+s_find_n.obj : $(CDIR)\s_find_n.c $(RTHFILES)
+    - del s_find_n.obj
+    @- $(SCRIPTSDIR)\errsweep.bat s_find_n.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\s_find_n.c
+    @- del current.bat
+
+s_load_n.obj : $(CDIR)\s_load_n.c $(RTHFILES)
+    - del s_load_n.obj
+    @- $(SCRIPTSDIR)\errsweep.bat s_load_n.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\s_load_n.c
+    @- del current.bat
+
+sadjoinn.obj : $(CDIR)\sadjoinn.c $(RTHFILES)
+    - del sadjoinn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sadjoinn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sadjoinn.c
+    @- del current.bat
+
+sassocn.obj : $(CDIR)\sassocn.c $(RTHFILES)
+    - del sassocn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sassocn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sassocn.c
+    @- del current.bat
+
+sbgnmdg.obj : $(CDIR)\sbgnmdg.c $(RTHFILES)
+    - del sbgnmdg.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sbgnmdg.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sbgnmdg.c
+    @- del current.bat
+
+sbnrsls.obj : $(CDIR)\sbnrsls.c $(RTHFILES)
+    - del sbnrsls.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sbnrsls.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sbnrsls.c
+    @- del current.bat
+
+sbsfn.obj : $(CDIR)\sbsfn.c $(RTHFILES)
+    - del sbsfn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sbsfn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sbsfn.c
+    @- del current.bat
+
+sbstttf.obj : $(CDIR)\sbstttf.c $(RTHFILES)
+    - del sbstttf.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sbstttf.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sbstttf.c
+    @- del current.bat
+
+scgnrlrr.obj : $(CDIR)\scgnrlrr.c $(RTHFILES)
+    - del scgnrlrr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat scgnrlrr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\scgnrlrr.c
+    @- del current.bat
+
+schar.obj : $(CDIR)\schar.c $(RTHFILES)
+    - del schar.obj
+    @- $(SCRIPTSDIR)\errsweep.bat schar.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\schar.c
+    @- del current.bat
+
+schrrlop.obj : $(CDIR)\schrrlop.c $(RTHFILES)
+    - del schrrlop.obj
+    @- $(SCRIPTSDIR)\errsweep.bat schrrlop.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\schrrlop.c
+    @- del current.bat
+
+schrrlpn.obj : $(CDIR)\schrrlpn.c $(RTHFILES)
+    - del schrrlpn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat schrrlpn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\schrrlpn.c
+    @- del current.bat
+
+scngvbgn.obj : $(CDIR)\scngvbgn.c $(RTHFILES)
+    - del scngvbgn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat scngvbgn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\scngvbgn.c
+    @- del current.bat
+
+scnswtgc.obj : $(CDIR)\scnswtgc.c $(RTHFILES)
+    - del scnswtgc.obj
+    @- $(SCRIPTSDIR)\errsweep.bat scnswtgc.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\scnswtgc.c
+    @- del current.bat
+
+scntfntn.obj : $(CDIR)\scntfntn.c $(RTHFILES)
+    - del scntfntn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat scntfntn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\scntfntn.c
+    @- del current.bat
+
+scountn.obj : $(CDIR)\scountn.c $(RTHFILES)
+    - del scountn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat scountn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\scountn.c
+    @- del current.bat
+
+scpvbgnm.obj : $(CDIR)\scpvbgnm.c $(RTHFILES)
+    - del scpvbgnm.obj
+    @- $(SCRIPTSDIR)\errsweep.bat scpvbgnm.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\scpvbgnm.c
+    @- del current.bat
+
+scuntifn.obj : $(CDIR)\scuntifn.c $(RTHFILES)
+    - del scuntifn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat scuntifn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\scuntifn.c
+    @- del current.bat
+
+sdefs.obj : $(CDIR)\sdefs.c $(RTHFILES)
+    - del sdefs.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sdefs.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sdefs.c
+    @- del current.bat
+
+sdeleten.obj : $(CDIR)\sdeleten.c $(RTHFILES)
+    - del sdeleten.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sdeleten.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sdeleten.c
+    @- del current.bat
+
+sdjstrrn.obj : $(CDIR)\sdjstrrn.c $(RTHFILES)
+    - del sdjstrrn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sdjstrrn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sdjstrrn.c
+    @- del current.bat
+
+sdltfntn.obj : $(CDIR)\sdltfntn.c $(RTHFILES)
+    - del sdltfntn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sdltfntn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sdltfntn.c
+    @- del current.bat
+
+sdltif.obj : $(CDIR)\sdltif.c $(RTHFILES)
+    - del sdltif.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sdltif.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sdltif.c
+    @- del current.bat
+
+sdltifn.obj : $(CDIR)\sdltifn.c $(RTHFILES)
+    - del sdltifn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sdltifn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sdltifn.c
+    @- del current.bat
+
+sdmsngn.obj : $(CDIR)\sdmsngn.c $(RTHFILES)
+    - del sdmsngn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sdmsngn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sdmsngn.c
+    @- del current.bat
+
+search.obj : $(CDIR)\search.c $(RTHFILES)
+    - del search.obj
+    @- $(SCRIPTSDIR)\errsweep.bat search.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\search.c
+    @- del current.bat
+
+second.obj : $(CDIR)\second.c $(RTHFILES)
+    - del second.obj
+    @- $(SCRIPTSDIR)\errsweep.bat second.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\second.c
+    @- del current.bat
+
+seqsimp.obj : $(CDIR)\seqsimp.c $(RTHFILES)
+    - del seqsimp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat seqsimp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\seqsimp.c
+    @- del current.bat
+
+set.obj : $(CDIR)\set.c $(RTHFILES)
+    - del set.obj
+    @- $(SCRIPTSDIR)\errsweep.bat set.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\set.c
+    @- del current.bat
+
+set_char.obj : $(CDIR)\set_char.c $(RTHFILES)
+    - del set_char.obj
+    @- $(SCRIPTSDIR)\errsweep.bat set_char.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\set_char.c
+    @- del current.bat
+
+set_cxr.obj : $(CDIR)\set_cxr.c $(RTHFILES)
+    - del set_cxr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat set_cxr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\set_cxr.c
+    @- del current.bat
+
+set_get.obj : $(CDIR)\set_get.c $(RTHFILES)
+    - del set_get.obj
+    @- $(SCRIPTSDIR)\errsweep.bat set_get.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\set_get.c
+    @- del current.bat
+
+set_getf.obj : $(CDIR)\set_getf.c $(RTHFILES)
+    - del set_getf.obj
+    @- $(SCRIPTSDIR)\errsweep.bat set_getf.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\set_getf.c
+    @- del current.bat
+
+set_nth.obj : $(CDIR)\set_nth.c $(RTHFILES)
+    - del set_nth.obj
+    @- $(SCRIPTSDIR)\errsweep.bat set_nth.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\set_nth.c
+    @- del current.bat
+
+set_rest.obj : $(CDIR)\set_rest.c $(RTHFILES)
+    - del set_rest.obj
+    @- $(SCRIPTSDIR)\errsweep.bat set_rest.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\set_rest.c
+    @- del current.bat
+
+setaref0.obj : $(CDIR)\setaref0.c $(RTHFILES)
+    - del setaref0.obj
+    @- $(SCRIPTSDIR)\errsweep.bat setaref0.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\setaref0.c
+    @- del current.bat
+
+setaref1.obj : $(CDIR)\setaref1.c $(RTHFILES)
+    - del setaref1.obj
+    @- $(SCRIPTSDIR)\errsweep.bat setaref1.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\setaref1.c
+    @- del current.bat
+
+setaref2.obj : $(CDIR)\setaref2.c $(RTHFILES)
+    - del setaref2.obj
+    @- $(SCRIPTSDIR)\errsweep.bat setaref2.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\setaref2.c
+    @- del current.bat
+
+setaref3.obj : $(CDIR)\setaref3.c $(RTHFILES)
+    - del setaref3.obj
+    @- $(SCRIPTSDIR)\errsweep.bat setaref3.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\setaref3.c
+    @- del current.bat
+
+setaref4.obj : $(CDIR)\setaref4.c $(RTHFILES)
+    - del setaref4.obj
+    @- $(SCRIPTSDIR)\errsweep.bat setaref4.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\setaref4.c
+    @- del current.bat
+
+setaref5.obj : $(CDIR)\setaref5.c $(RTHFILES)
+    - del setaref5.obj
+    @- $(SCRIPTSDIR)\errsweep.bat setaref5.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\setaref5.c
+    @- del current.bat
+
+setaref6.obj : $(CDIR)\setaref6.c $(RTHFILES)
+    - del setaref6.obj
+    @- $(SCRIPTSDIR)\errsweep.bat setaref6.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\setaref6.c
+    @- del current.bat
+
+setaref7.obj : $(CDIR)\setaref7.c $(RTHFILES)
+    - del setaref7.obj
+    @- $(SCRIPTSDIR)\errsweep.bat setaref7.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\setaref7.c
+    @- del current.bat
+
+setf_bit.obj : $(CDIR)\setf_bit.c $(RTHFILES)
+    - del setf_bit.obj
+    @- $(SCRIPTSDIR)\errsweep.bat setf_bit.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\setf_bit.c
+    @- del current.bat
+
+setfaref.obj : $(CDIR)\setfaref.c $(RTHFILES)
+    - del setfaref.obj
+    @- $(SCRIPTSDIR)\errsweep.bat setfaref.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\setfaref.c
+    @- del current.bat
+
+setfifth.obj : $(CDIR)\setfifth.c $(RTHFILES)
+    - del setfifth.obj
+    @- $(SCRIPTSDIR)\errsweep.bat setfifth.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\setfifth.c
+    @- del current.bat
+
+setfirst.obj : $(CDIR)\setfirst.c $(RTHFILES)
+    - del setfirst.obj
+    @- $(SCRIPTSDIR)\errsweep.bat setfirst.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\setfirst.c
+    @- del current.bat
+
+setfsbit.obj : $(CDIR)\setfsbit.c $(RTHFILES)
+    - del setfsbit.obj
+    @- $(SCRIPTSDIR)\errsweep.bat setfsbit.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\setfsbit.c
+    @- del current.bat
+
+setninth.obj : $(CDIR)\setninth.c $(RTHFILES)
+    - del setninth.obj
+    @- $(SCRIPTSDIR)\errsweep.bat setninth.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\setninth.c
+    @- del current.bat
+
+setpckge.obj : $(CDIR)\setpckge.c $(RTHFILES)
+    - del setpckge.obj
+    @- $(SCRIPTSDIR)\errsweep.bat setpckge.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\setpckge.c
+    @- del current.bat
+
+setschar.obj : $(CDIR)\setschar.c $(RTHFILES)
+    - del setschar.obj
+    @- $(SCRIPTSDIR)\errsweep.bat setschar.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\setschar.c
+    @- del current.bat
+
+setsixth.obj : $(CDIR)\setsixth.c $(RTHFILES)
+    - del setsixth.obj
+    @- $(SCRIPTSDIR)\errsweep.bat setsixth.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\setsixth.c
+    @- del current.bat
+
+setsvref.obj : $(CDIR)\setsvref.c $(RTHFILES)
+    - del setsvref.obj
+    @- $(SCRIPTSDIR)\errsweep.bat setsvref.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\setsvref.c
+    @- del current.bat
+
+settenth.obj : $(CDIR)\settenth.c $(RTHFILES)
+    - del settenth.obj
+    @- $(SCRIPTSDIR)\errsweep.bat settenth.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\settenth.c
+    @- del current.bat
+
+setthird.obj : $(CDIR)\setthird.c $(RTHFILES)
+    - del setthird.obj
+    @- $(SCRIPTSDIR)\errsweep.bat setthird.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\setthird.c
+    @- del current.bat
+
+seventh.obj : $(CDIR)\seventh.c $(RTHFILES)
+    - del seventh.obj
+    @- $(SCRIPTSDIR)\errsweep.bat seventh.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\seventh.c
+    @- del current.bat
+
+sfaref.obj : $(CDIR)\sfaref.c $(RTHFILES)
+    - del sfaref.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sfaref.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sfaref.c
+    @- del current.bat
+
+sffllpnr.obj : $(CDIR)\sffllpnr.c $(RTHFILES)
+    - del sffllpnr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sffllpnr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sffllpnr.c
+    @- del current.bat
+
+sfindifn.obj : $(CDIR)\sfindifn.c $(RTHFILES)
+    - del sfindifn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sfindifn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sfindifn.c
+    @- del current.bat
+
+sfllfntn.obj : $(CDIR)\sfllfntn.c $(RTHFILES)
+    - del sfllfntn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sfllfntn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sfllfntn.c
+    @- del current.bat
+
+sfllpnr.obj : $(CDIR)\sfllpnr.c $(RTHFILES)
+    - del sfllpnr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sfllpnr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sfllpnr.c
+    @- del current.bat
+
+sfndfntn.obj : $(CDIR)\sfndfntn.c $(RTHFILES)
+    - del sfndfntn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sfndfntn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sfndfntn.c
+    @- del current.bat
+
+sforval.obj : $(CDIR)\sforval.c $(RTHFILES)
+    - del sforval.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sforval.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sforval.c
+    @- del current.bat
+
+sfpaddr.obj : $(CDIR)\sfpaddr.c $(RTHFILES)
+    - del sfpaddr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sfpaddr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sfpaddr.c
+    @- del current.bat
+
+sfptype.obj : $(CDIR)\sfptype.c $(RTHFILES)
+    - del sfptype.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sfptype.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sfptype.c
+    @- del current.bat
+
+sfstrval.obj : $(CDIR)\sfstrval.c $(RTHFILES)
+    - del sfstrval.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sfstrval.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sfstrval.c
+    @- del current.bat
+
+sfwrvrsn.obj : $(CDIR)\sfwrvrsn.c $(RTHFILES)
+    - del sfwrvrsn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sfwrvrsn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sfwrvrsn.c
+    @- del current.bat
+
+sgvvbnng.obj : $(CDIR)\sgvvbnng.c $(RTHFILES)
+    - del sgvvbnng.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sgvvbnng.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sgvvbnng.c
+    @- del current.bat
+
+shrtstnm.obj : $(CDIR)\shrtstnm.c $(RTHFILES)
+    - del shrtstnm.obj
+    @- $(SCRIPTSDIR)\errsweep.bat shrtstnm.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\shrtstnm.c
+    @- del current.bat
+
+si_throw.obj : $(CDIR)\si_throw.c $(RTHFILES)
+    - del si_throw.obj
+    @- $(SCRIPTSDIR)\errsweep.bat si_throw.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\si_throw.c
+    @- del current.bat
+
+sinpckgn.obj : $(CDIR)\sinpckgn.c $(RTHFILES)
+    - del sinpckgn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sinpckgn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sinpckgn.c
+    @- del current.bat
+
+sixth.obj : $(CDIR)\sixth.c $(RTHFILES)
+    - del sixth.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sixth.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sixth.c
+    @- del current.bat
+
+skwrdrgp.obj : $(CDIR)\skwrdrgp.c $(RTHFILES)
+    - del skwrdrgp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat skwrdrgp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\skwrdrgp.c
+    @- del current.bat
+
+slclosen.obj : $(CDIR)\slclosen.c $(RTHFILES)
+    - del slclosen.obj
+    @- $(SCRIPTSDIR)\errsweep.bat slclosen.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\slclosen.c
+    @- del current.bat
+
+slodrunn.obj : $(CDIR)\slodrunn.c $(RTHFILES)
+    - del slodrunn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat slodrunn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\slodrunn.c
+    @- del current.bat
+
+slopenn.obj : $(CDIR)\slopenn.c $(RTHFILES)
+    - del slopenn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat slopenn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\slopenn.c
+    @- del current.bat
+
+slplcsn.obj : $(CDIR)\slplcsn.c $(RTHFILES)
+    - del slplcsn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat slplcsn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\slplcsn.c
+    @- del current.bat
+
+slunionn.obj : $(CDIR)\slunionn.c $(RTHFILES)
+    - del slunionn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat slunionn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\slunionn.c
+    @- del current.bat
+
+slwriten.obj : $(CDIR)\slwriten.c $(RTHFILES)
+    - del slwriten.obj
+    @- $(SCRIPTSDIR)\errsweep.bat slwriten.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\slwriten.c
+    @- del current.bat
+
+smblfncn.obj : $(CDIR)\smblfncn.c $(RTHFILES)
+    - del smblfncn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat smblfncn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\smblfncn.c
+    @- del current.bat
+
+smblplst.obj : $(CDIR)\smblplst.c $(RTHFILES)
+    - del smblplst.obj
+    @- $(SCRIPTSDIR)\errsweep.bat smblplst.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\smblplst.c
+    @- del current.bat
+
+smblvllp.obj : $(CDIR)\smblvllp.c $(RTHFILES)
+    - del smblvllp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat smblvllp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\smblvllp.c
+    @- del current.bat
+
+smembern.obj : $(CDIR)\smembern.c $(RTHFILES)
+    - del smembern.obj
+    @- $(SCRIPTSDIR)\errsweep.bat smembern.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\smembern.c
+    @- del current.bat
+
+smergen.obj : $(CDIR)\smergen.c $(RTHFILES)
+    - del smergen.obj
+    @- $(SCRIPTSDIR)\errsweep.bat smergen.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\smergen.c
+    @- del current.bat
+
+smjndxx.obj : $(CDIR)\smjndxx.c $(RTHFILES)
+    - del smjndxx.obj
+    @- $(SCRIPTSDIR)\errsweep.bat smjndxx.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\smjndxx.c
+    @- del current.bat
+
+smkerryn.obj : $(CDIR)\smkerryn.c $(RTHFILES)
+    - del smkerryn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat smkerryn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\smkerryn.c
+    @- del current.bat
+
+smklistn.obj : $(CDIR)\smklistn.c $(RTHFILES)
+    - del smklistn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat smklistn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\smklistn.c
+    @- del current.bat
+
+smkpckgn.obj : $(CDIR)\smkpckgn.c $(RTHFILES)
+    - del smkpckgn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat smkpckgn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\smkpckgn.c
+    @- del current.bat
+
+smkptnmn.obj : $(CDIR)\smkptnmn.c $(RTHFILES)
+    - del smkptnmn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat smkptnmn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\smkptnmn.c
+    @- del current.bat
+
+smkrstrg.obj : $(CDIR)\smkrstrg.c $(RTHFILES)
+    - del smkrstrg.obj
+    @- $(SCRIPTSDIR)\errsweep.bat smkrstrg.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\smkrstrg.c
+    @- del current.bat
+
+smkscrr.obj : $(CDIR)\smkscrr.c $(RTHFILES)
+    - del smkscrr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat smkscrr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\smkscrr.c
+    @- del current.bat
+
+smksqncn.obj : $(CDIR)\smksqncn.c $(RTHFILES)
+    - del smksqncn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat smksqncn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\smksqncn.c
+    @- del current.bat
+
+smksrngn.obj : $(CDIR)\smksrngn.c $(RTHFILES)
+    - del smksrngn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat smksrngn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\smksrngn.c
+    @- del current.bat
+
+smkstbln.obj : $(CDIR)\smkstbln.c $(RTHFILES)
+    - del smkstbln.obj
+    @- $(SCRIPTSDIR)\errsweep.bat smkstbln.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\smkstbln.c
+    @- del current.bat
+
+smmbrfnn.obj : $(CDIR)\smmbrfnn.c $(RTHFILES)
+    - del smmbrfnn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat smmbrfnn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\smmbrfnn.c
+    @- del current.bat
+
+smmbrifn.obj : $(CDIR)\smmbrifn.c $(RTHFILES)
+    - del smmbrifn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat smmbrifn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\smmbrifn.c
+    @- del current.bat
+
+smplbvcp.obj : $(CDIR)\smplbvcp.c $(RTHFILES)
+    - del smplbvcp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat smplbvcp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\smplbvcp.c
+    @- del current.bat
+
+smplrryp.obj : $(CDIR)\smplrryp.c $(RTHFILES)
+    - del smplrryp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat smplrryp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\smplrryp.c
+    @- del current.bat
+
+smplsngp.obj : $(CDIR)\smplsngp.c $(RTHFILES)
+    - del smplsngp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat smplsngp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\smplsngp.c
+    @- del current.bat
+
+smplvcrp.obj : $(CDIR)\smplvcrp.c $(RTHFILES)
+    - del smplvcrp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat smplvcrp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\smplvcrp.c
+    @- del current.bat
+
+smsmtchn.obj : $(CDIR)\smsmtchn.c $(RTHFILES)
+    - del smsmtchn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat smsmtchn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\smsmtchn.c
+    @- del current.bat
+
+smvfncll.obj : $(CDIR)\smvfncll.c $(RTHFILES)
+    - del smvfncll.obj
+    @- $(SCRIPTSDIR)\errsweep.bat smvfncll.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\smvfncll.c
+    @- del current.bat
+
+smvplcsn.obj : $(CDIR)\smvplcsn.c $(RTHFILES)
+    - del smvplcsn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat smvplcsn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\smvplcsn.c
+    @- del current.bat
+
+snbnnjmp.obj : $(CDIR)\snbnnjmp.c $(RTHFILES)
+    - del snbnnjmp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat snbnnjmp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\snbnnjmp.c
+    @- del current.bat
+
+snddbjcp.obj : $(CDIR)\snddbjcp.c $(RTHFILES)
+    - del snddbjcp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat snddbjcp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\snddbjcp.c
+    @- del current.bat
+
+sndrdcrp.obj : $(CDIR)\sndrdcrp.c $(RTHFILES)
+    - del sndrdcrp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sndrdcrp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sndrdcrp.c
+    @- del current.bat
+
+sngcplzn.obj : $(CDIR)\sngcplzn.c $(RTHFILES)
+    - del sngcplzn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sngcplzn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sngcplzn.c
+    @- del current.bat
+
+snglpn.obj : $(CDIR)\snglpn.c $(RTHFILES)
+    - del snglpn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat snglpn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\snglpn.c
+    @- del current.bat
+
+sngnlpn.obj : $(CDIR)\sngnlpn.c $(RTHFILES)
+    - del sngnlpn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sngnlpn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sngnlpn.c
+    @- del current.bat
+
+sngppnd2.obj : $(CDIR)\sngppnd2.c $(RTHFILES)
+    - del sngppnd2.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sngppnd2.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sngppnd2.c
+    @- del current.bat
+
+sngppndn.obj : $(CDIR)\sngppndn.c $(RTHFILES)
+    - del sngppndn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sngppndn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sngppndn.c
+    @- del current.bat
+
+snngclzn.obj : $(CDIR)\snngclzn.c $(RTHFILES)
+    - del snngclzn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat snngclzn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\snngclzn.c
+    @- del current.bat
+
+snngncn.obj : $(CDIR)\snngncn.c $(RTHFILES)
+    - del snngncn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat snngncn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\snngncn.c
+    @- del current.bat
+
+snngpcn.obj : $(CDIR)\snngpcn.c $(RTHFILES)
+    - del snngpcn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat snngpcn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\snngpcn.c
+    @- del current.bat
+
+snnlncll.obj : $(CDIR)\snnlncll.c $(RTHFILES)
+    - del snnlncll.obj
+    @- $(SCRIPTSDIR)\errsweep.bat snnlncll.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\snnlncll.c
+    @- del current.bat
+
+snnrscnn.obj : $(CDIR)\snnrscnn.c $(RTHFILES)
+    - del snnrscnn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat snnrscnn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\snnrscnn.c
+    @- del current.bat
+
+snrscnn.obj : $(CDIR)\snrscnn.c $(RTHFILES)
+    - del snrscnn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat snrscnn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\snrscnn.c
+    @- del current.bat
+
+snsbsfn.obj : $(CDIR)\snsbsfn.c $(RTHFILES)
+    - del snsbsfn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat snsbsfn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\snsbsfn.c
+    @- del current.bat
+
+snsbsfnn.obj : $(CDIR)\snsbsfnn.c $(RTHFILES)
+    - del snsbsfnn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat snsbsfnn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\snsbsfnn.c
+    @- del current.bat
+
+snsbsn.obj : $(CDIR)\snsbsn.c $(RTHFILES)
+    - del snsbsn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat snsbsn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\snsbsn.c
+    @- del current.bat
+
+snsbstfn.obj : $(CDIR)\snsbstfn.c $(RTHFILES)
+    - del snsbstfn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat snsbstfn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\snsbstfn.c
+    @- del current.bat
+
+snsdrncn.obj : $(CDIR)\snsdrncn.c $(RTHFILES)
+    - del snsdrncn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat snsdrncn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\snsdrncn.c
+    @- del current.bat
+
+snslngnn.obj : $(CDIR)\snslngnn.c $(RTHFILES)
+    - del snslngnn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat snslngnn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\snslngnn.c
+    @- del current.bat
+
+snsqncfn.obj : $(CDIR)\snsqncfn.c $(RTHFILES)
+    - del snsqncfn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat snsqncfn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\snsqncfn.c
+    @- del current.bat
+
+snsublsn.obj : $(CDIR)\snsublsn.c $(RTHFILES)
+    - del snsublsn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat snsublsn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\snsublsn.c
+    @- del current.bat
+
+snsubstn.obj : $(CDIR)\snsubstn.c $(RTHFILES)
+    - del snsubstn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat snsubstn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\snsubstn.c
+    @- del current.bat
+
+sntmisc.obj : $(CDIR)\sntmisc.c $(RTHFILES)
+    - del sntmisc.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sntmisc.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sntmisc.c
+    @- del current.bat
+
+snunionn.obj : $(CDIR)\snunionn.c $(RTHFILES)
+    - del snunionn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat snunionn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\snunionn.c
+    @- del current.bat
+
+snxclvn.obj : $(CDIR)\snxclvn.c $(RTHFILES)
+    - del snxclvn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat snxclvn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\snxclvn.c
+    @- del current.bat
+
+some.obj : $(CDIR)\some.c $(RTHFILES)
+    - del some.obj
+    @- $(SCRIPTSDIR)\errsweep.bat some.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\some.c
+    @- del current.bat
+
+sort.obj : $(CDIR)\sort.c $(RTHFILES)
+    - del sort.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sort.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sort.c
+    @- del current.bat
+
+spgvbnng.obj : $(CDIR)\spgvbnng.c $(RTHFILES)
+    - del spgvbnng.obj
+    @- $(SCRIPTSDIR)\errsweep.bat spgvbnng.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\spgvbnng.c
+    @- del current.bat
+
+spnmngn.obj : $(CDIR)\spnmngn.c $(RTHFILES)
+    - del spnmngn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat spnmngn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\spnmngn.c
+    @- del current.bat
+
+sprsngrn.obj : $(CDIR)\sprsngrn.c $(RTHFILES)
+    - del sprsngrn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sprsngrn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sprsngrn.c
+    @- del current.bat
+
+spsitinn.obj : $(CDIR)\spsitinn.c $(RTHFILES)
+    - del spsitinn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat spsitinn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\spsitinn.c
+    @- del current.bat
+
+spsnfnn.obj : $(CDIR)\spsnfnn.c $(RTHFILES)
+    - del spsnfnn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat spsnfnn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\spsnfnn.c
+    @- del current.bat
+
+spstnfn.obj : $(CDIR)\spstnfn.c $(RTHFILES)
+    - del spstnfn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat spstnfn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\spstnfn.c
+    @- del current.bat
+
+squncp.obj : $(CDIR)\squncp.c $(RTHFILES)
+    - del squncp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat squncp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\squncp.c
+    @- del current.bat
+
+srassocn.obj : $(CDIR)\srassocn.c $(RTHFILES)
+    - del srassocn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat srassocn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\srassocn.c
+    @- del current.bat
+
+srcrbjcp.obj : $(CDIR)\srcrbjcp.c $(RTHFILES)
+    - del srcrbjcp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat srcrbjcp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\srcrbjcp.c
+    @- del current.bat
+
+sreducen.obj : $(CDIR)\sreducen.c $(RTHFILES)
+    - del sreducen.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sreducen.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sreducen.c
+    @- del current.bat
+
+sremoven.obj : $(CDIR)\sremoven.c $(RTHFILES)
+    - del sremoven.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sremoven.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sremoven.c
+    @- del current.bat
+
+sreplcen.obj : $(CDIR)\sreplcen.c $(RTHFILES)
+    - del sreplcen.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sreplcen.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sreplcen.c
+    @- del current.bat
+
+srethrow.obj : $(CDIR)\srethrow.c $(RTHFILES)
+    - del srethrow.obj
+    @- $(SCRIPTSDIR)\errsweep.bat srethrow.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\srethrow.c
+    @- del current.bat
+
+srmovifn.obj : $(CDIR)\srmovifn.c $(RTHFILES)
+    - del srmovifn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat srmovifn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\srmovifn.c
+    @- del current.bat
+
+srmvfntn.obj : $(CDIR)\srmvfntn.c $(RTHFILES)
+    - del srmvfntn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat srmvfntn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\srmvfntn.c
+    @- del current.bat
+
+srngcplz.obj : $(CDIR)\srngcplz.c $(RTHFILES)
+    - del srngcplz.obj
+    @- $(SCRIPTSDIR)\errsweep.bat srngcplz.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\srngcplz.c
+    @- del current.bat
+
+srngdncs.obj : $(CDIR)\srngdncs.c $(RTHFILES)
+    - del srngdncs.obj
+    @- $(SCRIPTSDIR)\errsweep.bat srngdncs.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\srngdncs.c
+    @- del current.bat
+
+srngppnd.obj : $(CDIR)\srngppnd.c $(RTHFILES)
+    - del srngppnd.obj
+    @- $(SCRIPTSDIR)\errsweep.bat srngppnd.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\srngppnd.c
+    @- del current.bat
+
+srrcnns.obj : $(CDIR)\srrcnns.c $(RTHFILES)
+    - del srrcnns.obj
+    @- $(SCRIPTSDIR)\errsweep.bat srrcnns.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\srrcnns.c
+    @- del current.bat
+
+srsscfnn.obj : $(CDIR)\srsscfnn.c $(RTHFILES)
+    - del srsscfnn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat srsscfnn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\srsscfnn.c
+    @- del current.bat
+
+srsscifn.obj : $(CDIR)\srsscifn.c $(RTHFILES)
+    - del srsscifn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat srsscifn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\srsscifn.c
+    @- del current.bat
+
+srstrvls.obj : $(CDIR)\srstrvls.c $(RTHFILES)
+    - del srstrvls.obj
+    @- $(SCRIPTSDIR)\errsweep.bat srstrvls.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\srstrvls.c
+    @- del current.bat
+
+srwmjrrf.obj : $(CDIR)\srwmjrrf.c $(RTHFILES)
+    - del srwmjrrf.obj
+    @- $(SCRIPTSDIR)\errsweep.bat srwmjrrf.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\srwmjrrf.c
+    @- del current.bat
+
+ssbsfn.obj : $(CDIR)\ssbsfn.c $(RTHFILES)
+    - del ssbsfn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ssbsfn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ssbsfn.c
+    @- del current.bat
+
+ssbsfnn.obj : $(CDIR)\ssbsfnn.c $(RTHFILES)
+    - del ssbsfnn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ssbsfnn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ssbsfnn.c
+    @- del current.bat
+
+ssbstttn.obj : $(CDIR)\ssbstttn.c $(RTHFILES)
+    - del ssbstttn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ssbstttn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ssbstttn.c
+    @- del current.bat
+
+ssdrncn.obj : $(CDIR)\ssdrncn.c $(RTHFILES)
+    - del ssdrncn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ssdrncn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ssdrncn.c
+    @- del current.bat
+
+ssearchn.obj : $(CDIR)\ssearchn.c $(RTHFILES)
+    - del ssearchn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ssearchn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ssearchn.c
+    @- del current.bat
+
+ssffncn.obj : $(CDIR)\ssffncn.c $(RTHFILES)
+    - del ssffncn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ssffncn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ssffncn.c
+    @- del current.bat
+
+ssmblncn.obj : $(CDIR)\ssmblncn.c $(RTHFILES)
+    - del ssmblncn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ssmblncn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ssmblncn.c
+    @- del current.bat
+
+ssmblpls.obj : $(CDIR)\ssmblpls.c $(RTHFILES)
+    - del ssmblpls.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ssmblpls.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ssmblpls.c
+    @- del current.bat
+
+ssnggpn.obj : $(CDIR)\ssnggpn.c $(RTHFILES)
+    - del ssnggpn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ssnggpn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ssnggpn.c
+    @- del current.bat
+
+ssngncsn.obj : $(CDIR)\ssngncsn.c $(RTHFILES)
+    - del ssngncsn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ssngncsn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ssngncsn.c
+    @- del current.bat
+
+ssngngpn.obj : $(CDIR)\ssngngpn.c $(RTHFILES)
+    - del ssngngpn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ssngngpn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ssngngpn.c
+    @- del current.bat
+
+ssngnqln.obj : $(CDIR)\ssngnqln.c $(RTHFILES)
+    - del ssngnqln.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ssngnqln.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ssngnqln.c
+    @- del current.bat
+
+ssngpcsn.obj : $(CDIR)\ssngpcsn.c $(RTHFILES)
+    - del ssngpcsn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ssngpcsn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ssngpcsn.c
+    @- del current.bat
+
+ssrnggn.obj : $(CDIR)\ssrnggn.c $(RTHFILES)
+    - del ssrnggn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ssrnggn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ssrnggn.c
+    @- del current.bat
+
+ssrngln.obj : $(CDIR)\ssrngln.c $(RTHFILES)
+    - del ssrngln.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ssrngln.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ssrngln.c
+    @- del current.bat
+
+ssrngqln.obj : $(CDIR)\ssrngqln.c $(RTHFILES)
+    - del ssrngqln.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ssrngqln.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ssrngqln.c
+    @- del current.bat
+
+ssrnpqr.obj : $(CDIR)\ssrnpqr.c $(RTHFILES)
+    - del ssrnpqr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ssrnpqr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ssrnpqr.c
+    @- del current.bat
+
+ssscfntn.obj : $(CDIR)\ssscfntn.c $(RTHFILES)
+    - del ssscfntn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ssscfntn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ssscfntn.c
+    @- del current.bat
+
+sssmblld.obj : $(CDIR)\sssmblld.c $(RTHFILES)
+    - del sssmblld.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sssmblld.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sssmblld.c
+    @- del current.bat
+
+sssocifn.obj : $(CDIR)\sssocifn.c $(RTHFILES)
+    - del sssocifn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sssocifn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sssocifn.c
+    @- del current.bat
+
+sstrmgtc.obj : $(CDIR)\sstrmgtc.c $(RTHFILES)
+    - del sstrmgtc.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sstrmgtc.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sstrmgtc.c
+    @- del current.bat
+
+sstrnggn.obj : $(CDIR)\sstrnggn.c $(RTHFILES)
+    - del sstrnggn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sstrnggn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sstrnggn.c
+    @- del current.bat
+
+sstrngln.obj : $(CDIR)\sstrngln.c $(RTHFILES)
+    - del sstrngln.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sstrngln.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sstrngln.c
+    @- del current.bat
+
+sstrngnn.obj : $(CDIR)\sstrngnn.c $(RTHFILES)
+    - del sstrngnn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sstrngnn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sstrngnn.c
+    @- del current.bat
+
+sstrngqn.obj : $(CDIR)\sstrngqn.c $(RTHFILES)
+    - del sstrngqn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sstrngqn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sstrngqn.c
+    @- del current.bat
+
+ssublisn.obj : $(CDIR)\ssublisn.c $(RTHFILES)
+    - del ssublisn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ssublisn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ssublisn.c
+    @- del current.bat
+
+ssubstfn.obj : $(CDIR)\ssubstfn.c $(RTHFILES)
+    - del ssubstfn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ssubstfn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ssubstfn.c
+    @- del current.bat
+
+ssubstn.obj : $(CDIR)\ssubstn.c $(RTHFILES)
+    - del ssubstn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ssubstn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ssubstn.c
+    @- del current.bat
+
+ssubstpn.obj : $(CDIR)\ssubstpn.c $(RTHFILES)
+    - del ssubstpn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ssubstpn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ssubstpn.c
+    @- del current.bat
+
+ssvmrvls.obj : $(CDIR)\ssvmrvls.c $(RTHFILES)
+    - del ssvmrvls.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ssvmrvls.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ssvmrvls.c
+    @- del current.bat
+
+ssvvlus.obj : $(CDIR)\ssvvlus.c $(RTHFILES)
+    - del ssvvlus.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ssvvlus.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ssvvlus.c
+    @- del current.bat
+
+ssxclsvn.obj : $(CDIR)\ssxclsvn.c $(RTHFILES)
+    - del ssxclsvn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ssxclsvn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ssxclsvn.c
+    @- del current.bat
+
+statclst.obj : $(CDIR)\statclst.c $(RTHFILES)
+    - del statclst.obj
+    @- $(SCRIPTSDIR)\errsweep.bat statclst.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\statclst.c
+    @- del current.bat
+
+statics.obj : $(CDIR)\statics.c $(RTHFILES)
+    - del statics.obj
+    @- $(SCRIPTSDIR)\errsweep.bat statics.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\statics.c
+    @- del current.bat
+
+statlsts.obj : $(CDIR)\statlsts.c $(RTHFILES)
+    - del statlsts.obj
+    @- $(SCRIPTSDIR)\errsweep.bat statlsts.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\statlsts.c
+    @- del current.bat
+
+stderror.obj : $(CDIR)\stderror.c $(RTHFILES)
+    - del stderror.obj
+    @- $(SCRIPTSDIR)\errsweep.bat stderror.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\stderror.c
+    @- del current.bat
+
+stdffrnc.obj : $(CDIR)\stdffrnc.c $(RTHFILES)
+    - del stdffrnc.obj
+    @- $(SCRIPTSDIR)\errsweep.bat stdffrnc.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\stdffrnc.c
+    @- del current.bat
+
+stdpkgs.obj : $(CDIR)\stdpkgs.c $(RTHFILES)
+    - del stdpkgs.obj
+    @- $(SCRIPTSDIR)\errsweep.bat stdpkgs.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\stdpkgs.c
+    @- del current.bat
+
+stfaref.obj : $(CDIR)\stfaref.c $(RTHFILES)
+    - del stfaref.obj
+    @- $(SCRIPTSDIR)\errsweep.bat stfaref.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\stfaref.c
+    @- del current.bat
+
+stffnctn.obj : $(CDIR)\stffnctn.c $(RTHFILES)
+    - del stffnctn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat stffnctn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\stffnctn.c
+    @- del current.bat
+
+stfourth.obj : $(CDIR)\stfourth.c $(RTHFILES)
+    - del stfourth.obj
+    @- $(SCRIPTSDIR)\errsweep.bat stfourth.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\stfourth.c
+    @- del current.bat
+
+stighth.obj : $(CDIR)\stighth.c $(RTHFILES)
+    - del stighth.obj
+    @- $(SCRIPTSDIR)\errsweep.bat stighth.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\stighth.c
+    @- del current.bat
+
+streamp.obj : $(CDIR)\streamp.c $(RTHFILES)
+    - del streamp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat streamp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\streamp.c
+    @- del current.bat
+
+streams.obj : $(CDIR)\streams.c $(RTHFILES)
+    - del streams.obj
+    @- $(SCRIPTSDIR)\errsweep.bat streams.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\streams.c
+    @- del current.bat
+
+string.obj : $(CDIR)\string.c $(RTHFILES)
+    - del string.obj
+    @- $(SCRIPTSDIR)\errsweep.bat string.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\string.c
+    @- del current.bat
+
+stringp.obj : $(CDIR)\stringp.c $(RTHFILES)
+    - del stringp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat stringp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\stringp.c
+    @- del current.bat
+
+strings.obj : $(CDIR)\strings.c $(RTHFILES)
+    - del strings.obj
+    @- $(SCRIPTSDIR)\errsweep.bat strings.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\strings.c
+    @- del current.bat
+
+strinint.obj : $(CDIR)\strinint.c $(RTHFILES)
+    - del strinint.obj
+    @- $(SCRIPTSDIR)\errsweep.bat strinint.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\strinint.c
+    @- del current.bat
+
+strminit.obj : $(CDIR)\strminit.c $(RTHFILES)
+    - del strminit.obj
+    @- $(SCRIPTSDIR)\errsweep.bat strminit.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\strminit.c
+    @- del current.bat
+
+strngcrp.obj : $(CDIR)\strngcrp.c $(RTHFILES)
+    - del strngcrp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat strngcrp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\strngcrp.c
+    @- del current.bat
+
+strngpcs.obj : $(CDIR)\strngpcs.c $(RTHFILES)
+    - del strngpcs.obj
+    @- $(SCRIPTSDIR)\errsweep.bat strngpcs.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\strngpcs.c
+    @- del current.bat
+
+strquln.obj : $(CDIR)\strquln.c $(RTHFILES)
+    - del strquln.obj
+    @- $(SCRIPTSDIR)\errsweep.bat strquln.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\strquln.c
+    @- del current.bat
+
+struct.obj : $(CDIR)\struct.c $(RTHFILES)
+    - del struct.obj
+    @- $(SCRIPTSDIR)\errsweep.bat struct.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\struct.c
+    @- del current.bat
+
+structi.obj : $(CDIR)\structi.c $(RTHFILES)
+    - del structi.obj
+    @- $(SCRIPTSDIR)\errsweep.bat structi.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\structi.c
+    @- del current.bat
+
+stscond.obj : $(CDIR)\stscond.c $(RTHFILES)
+    - del stscond.obj
+    @- $(SCRIPTSDIR)\errsweep.bat stscond.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\stscond.c
+    @- del current.bat
+
+stsubsq.obj : $(CDIR)\stsubsq.c $(RTHFILES)
+    - del stsubsq.obj
+    @- $(SCRIPTSDIR)\errsweep.bat stsubsq.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\stsubsq.c
+    @- del current.bat
+
+stsubsq1.obj : $(CDIR)\stsubsq1.c $(RTHFILES)
+    - del stsubsq1.obj
+    @- $(SCRIPTSDIR)\errsweep.bat stsubsq1.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\stsubsq1.c
+    @- del current.bat
+
+stsubsq2.obj : $(CDIR)\stsubsq2.c $(RTHFILES)
+    - del stsubsq2.obj
+    @- $(SCRIPTSDIR)\errsweep.bat stsubsq2.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\stsubsq2.c
+    @- del current.bat
+
+stsvnth.obj : $(CDIR)\stsvnth.c $(RTHFILES)
+    - del stsvnth.obj
+    @- $(SCRIPTSDIR)\errsweep.bat stsvnth.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\stsvnth.c
+    @- del current.bat
+
+sttcbtrr.obj : $(CDIR)\sttcbtrr.c $(RTHFILES)
+    - del sttcbtrr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sttcbtrr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sttcbtrr.c
+    @- del current.bat
+
+sttccrrr.obj : $(CDIR)\sttccrrr.c $(RTHFILES)
+    - del sttccrrr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sttccrrr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sttccrrr.c
+    @- del current.bat
+
+sttcflot.obj : $(CDIR)\sttcflot.c $(RTHFILES)
+    - del sttcflot.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sttcflot.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sttcflot.c
+    @- del current.bat
+
+sttcpckg.obj : $(CDIR)\sttcpckg.c $(RTHFILES)
+    - del sttcpckg.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sttcpckg.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sttcpckg.c
+    @- del current.bat
+
+sttcrr.obj : $(CDIR)\sttcrr.c $(RTHFILES)
+    - del sttcrr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sttcrr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sttcrr.c
+    @- del current.bat
+
+sttcrto.obj : $(CDIR)\sttcrto.c $(RTHFILES)
+    - del sttcrto.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sttcrto.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sttcrto.c
+    @- del current.bat
+
+sttcsmbl.obj : $(CDIR)\sttcsmbl.c $(RTHFILES)
+    - del sttcsmbl.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sttcsmbl.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sttcsmbl.c
+    @- del current.bat
+
+stxclsvr.obj : $(CDIR)\stxclsvr.c $(RTHFILES)
+    - del stxclsvr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat stxclsvr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\stxclsvr.c
+    @- del current.bat
+
+sublis.obj : $(CDIR)\sublis.c $(RTHFILES)
+    - del sublis.obj
+    @- $(SCRIPTSDIR)\errsweep.bat sublis.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\sublis.c
+    @- del current.bat
+
+subseq.obj : $(CDIR)\subseq.c $(RTHFILES)
+    - del subseq.obj
+    @- $(SCRIPTSDIR)\errsweep.bat subseq.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\subseq.c
+    @- del current.bat
+
+subsetp.obj : $(CDIR)\subsetp.c $(RTHFILES)
+    - del subsetp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat subsetp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\subsetp.c
+    @- del current.bat
+
+subst.obj : $(CDIR)\subst.c $(RTHFILES)
+    - del subst.obj
+    @- $(SCRIPTSDIR)\errsweep.bat subst.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\subst.c
+    @- del current.bat
+
+subst_if.obj : $(CDIR)\subst_if.c $(RTHFILES)
+    - del subst_if.obj
+    @- $(SCRIPTSDIR)\errsweep.bat subst_if.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\subst_if.c
+    @- del current.bat
+
+substfnt.obj : $(CDIR)\substfnt.c $(RTHFILES)
+    - del substfnt.obj
+    @- $(SCRIPTSDIR)\errsweep.bat substfnt.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\substfnt.c
+    @- del current.bat
+
+substtut.obj : $(CDIR)\substtut.c $(RTHFILES)
+    - del substtut.obj
+    @- $(SCRIPTSDIR)\errsweep.bat substtut.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\substtut.c
+    @- del current.bat
+
+subtypep.obj : $(CDIR)\subtypep.c $(RTHFILES)
+    - del subtypep.obj
+    @- $(SCRIPTSDIR)\errsweep.bat subtypep.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\subtypep.c
+    @- del current.bat
+
+svref.obj : $(CDIR)\svref.c $(RTHFILES)
+    - del svref.obj
+    @- $(SCRIPTSDIR)\errsweep.bat svref.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\svref.c
+    @- del current.bat
+
+swrsrngn.obj : $(CDIR)\swrsrngn.c $(RTHFILES)
+    - del swrsrngn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat swrsrngn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\swrsrngn.c
+    @- del current.bat
+
+swrtlnn.obj : $(CDIR)\swrtlnn.c $(RTHFILES)
+    - del swrtlnn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat swrtlnn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\swrtlnn.c
+    @- del current.bat
+
+swrtstng.obj : $(CDIR)\swrtstng.c $(RTHFILES)
+    - del swrtstng.obj
+    @- $(SCRIPTSDIR)\errsweep.bat swrtstng.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\swrtstng.c
+    @- del current.bat
+
+symblvlu.obj : $(CDIR)\symblvlu.c $(RTHFILES)
+    - del symblvlu.obj
+    @- $(SCRIPTSDIR)\errsweep.bat symblvlu.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\symblvlu.c
+    @- del current.bat
+
+symbolnm.obj : $(CDIR)\symbolnm.c $(RTHFILES)
+    - del symbolnm.obj
+    @- $(SCRIPTSDIR)\errsweep.bat symbolnm.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\symbolnm.c
+    @- del current.bat
+
+symbolp.obj : $(CDIR)\symbolp.c $(RTHFILES)
+    - del symbolp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat symbolp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\symbolp.c
+    @- del current.bat
+
+symbols.obj : $(CDIR)\symbols.c $(RTHFILES)
+    - del symbols.obj
+    @- $(SCRIPTSDIR)\errsweep.bat symbols.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\symbols.c
+    @- del current.bat
+
+tailp.obj : $(CDIR)\tailp.c $(RTHFILES)
+    - del tailp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat tailp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\tailp.c
+    @- del current.bat
+
+tenth.obj : $(CDIR)\tenth.c $(RTHFILES)
+    - del tenth.obj
+    @- $(SCRIPTSDIR)\errsweep.bat tenth.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\tenth.c
+    @- del current.bat
+
+terpri.obj : $(CDIR)\terpri.c $(RTHFILES)
+    - del terpri.obj
+    @- $(SCRIPTSDIR)\errsweep.bat terpri.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\terpri.c
+    @- del current.bat
+
+tfaref.obj : $(CDIR)\tfaref.c $(RTHFILES)
+    - del tfaref.obj
+    @- $(SCRIPTSDIR)\errsweep.bat tfaref.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\tfaref.c
+    @- del current.bat
+
+third.obj : $(CDIR)\third.c $(RTHFILES)
+    - del third.obj
+    @- $(SCRIPTSDIR)\errsweep.bat third.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\third.c
+    @- del current.bat
+
+tlllcbl.obj : $(CDIR)\tlllcbl.c $(RTHFILES)
+    - del tlllcbl.obj
+    @- $(SCRIPTSDIR)\errsweep.bat tlllcbl.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\tlllcbl.c
+    @- del current.bat
+
+treeequl.obj : $(CDIR)\treeequl.c $(RTHFILES)
+    - del treeequl.obj
+    @- $(SCRIPTSDIR)\errsweep.bat treeequl.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\treeequl.c
+    @- del current.bat
+
+ttlmmrsd.obj : $(CDIR)\ttlmmrsd.c $(RTHFILES)
+    - del ttlmmrsd.obj
+    @- $(SCRIPTSDIR)\errsweep.bat ttlmmrsd.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ttlmmrsd.c
+    @- del current.bat
+
+type_of.obj : $(CDIR)\type_of.c $(RTHFILES)
+    - del type_of.obj
+    @- $(SCRIPTSDIR)\errsweep.bat type_of.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\type_of.c
+    @- del current.bat
+
+typep.obj : $(CDIR)\typep.c $(RTHFILES)
+    - del typep.obj
+    @- $(SCRIPTSDIR)\errsweep.bat typep.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\typep.c
+    @- del current.bat
+
+unquetag.obj : $(CDIR)\unquetag.c $(RTHFILES)
+    - del unquetag.obj
+    @- $(SCRIPTSDIR)\errsweep.bat unquetag.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\unquetag.c
+    @- del current.bat
+
+unredchr.obj : $(CDIR)\unredchr.c $(RTHFILES)
+    - del unredchr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat unredchr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\unredchr.c
+    @- del current.bat
+
+upprcsp.obj : $(CDIR)\upprcsp.c $(RTHFILES)
+    - del upprcsp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat upprcsp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\upprcsp.c
+    @- del current.bat
+
+upstpckg.obj : $(CDIR)\upstpckg.c $(RTHFILES)
+    - del upstpckg.obj
+    @- $(SCRIPTSDIR)\errsweep.bat upstpckg.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\upstpckg.c
+    @- del current.bat
+
+usersyms.obj : $(CDIR)\usersyms.c $(RTHFILES)
+    - del usersyms.obj
+    @- $(SCRIPTSDIR)\errsweep.bat usersyms.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\usersyms.c
+    @- del current.bat
+
+usmdpnm.obj : $(CDIR)\usmdpnm.c $(RTHFILES)
+    - del usmdpnm.obj
+    @- $(SCRIPTSDIR)\errsweep.bat usmdpnm.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\usmdpnm.c
+    @- del current.bat
+
+values.obj : $(CDIR)\values.c $(RTHFILES)
+    - del values.obj
+    @- $(SCRIPTSDIR)\errsweep.bat values.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\values.c
+    @- del current.bat
+
+vcrpsxnd.obj : $(CDIR)\vcrpsxnd.c $(RTHFILES)
+    - del vcrpsxnd.obj
+    @- $(SCRIPTSDIR)\errsweep.bat vcrpsxnd.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\vcrpsxnd.c
+    @- del current.bat
+
+vctorpop.obj : $(CDIR)\vctorpop.c $(RTHFILES)
+    - del vctorpop.obj
+    @- $(SCRIPTSDIR)\errsweep.bat vctorpop.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\vctorpop.c
+    @- del current.bat
+
+vctrpush.obj : $(CDIR)\vctrpush.c $(RTHFILES)
+    - del vctrpush.obj
+    @- $(SCRIPTSDIR)\errsweep.bat vctrpush.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\vctrpush.c
+    @- del current.bat
+
+vector.obj : $(CDIR)\vector.c $(RTHFILES)
+    - del vector.obj
+    @- $(SCRIPTSDIR)\errsweep.bat vector.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\vector.c
+    @- del current.bat
+
+vectorp.obj : $(CDIR)\vectorp.c $(RTHFILES)
+    - del vectorp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat vectorp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\vectorp.c
+    @- del current.bat
+
+vluslist.obj : $(CDIR)\vluslist.c $(RTHFILES)
+    - del vluslist.obj
+    @- $(SCRIPTSDIR)\errsweep.bat vluslist.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\vluslist.c
+    @- del current.bat
+
+writbyt.obj : $(CDIR)\writbyt.c $(RTHFILES)
+    - del writbyt.obj
+    @- $(SCRIPTSDIR)\errsweep.bat writbyt.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\writbyt.c
+    @- del current.bat
+
+writechr.obj : $(CDIR)\writechr.c $(RTHFILES)
+    - del writechr.obj
+    @- $(SCRIPTSDIR)\errsweep.bat writechr.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\writechr.c
+    @- del current.bat
+
+writlin.obj : $(CDIR)\writlin.c $(RTHFILES)
+    - del writlin.obj
+    @- $(SCRIPTSDIR)\errsweep.bat writlin.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\writlin.c
+    @- del current.bat
+
+wrtstrng.obj : $(CDIR)\wrtstrng.c $(RTHFILES)
+    - del wrtstrng.obj
+    @- $(SCRIPTSDIR)\errsweep.bat wrtstrng.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\wrtstrng.c
+    @- del current.bat
+
+wtspccrp.obj : $(CDIR)\wtspccrp.c $(RTHFILES)
+    - del wtspccrp.obj
+    @- $(SCRIPTSDIR)\errsweep.bat wtspccrp.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\wtspccrp.c
+    @- del current.bat
+
+xor.obj : $(CDIR)\xor.c $(RTHFILES)
+    - del xor.obj
+    @- $(SCRIPTSDIR)\errsweep.bat xor.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\xor.c
+    @- del current.bat
+
+y_or_n_p.obj : $(CDIR)\y_or_n_p.c $(RTHFILES)
+    - del y_or_n_p.obj
+    @- $(SCRIPTSDIR)\errsweep.bat y_or_n_p.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\y_or_n_p.c
+    @- del current.bat
+
+yesnoaux.obj : $(CDIR)\yesnoaux.c $(RTHFILES)
+    - del yesnoaux.obj
+    @- $(SCRIPTSDIR)\errsweep.bat yesnoaux.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\yesnoaux.c
+    @- del current.bat
+
+yesornop.obj : $(CDIR)\yesornop.c $(RTHFILES)
+    - del yesornop.obj
+    @- $(SCRIPTSDIR)\errsweep.bat yesornop.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\yesornop.c
+    @- del current.bat
+
+yornpn.obj : $(CDIR)\yornpn.c $(RTHFILES)
+    - del yornpn.obj
+    @- $(SCRIPTSDIR)\errsweep.bat yornpn.obj
+    $(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\yornpn.c
+    @- del current.bat
+
+ysornopn.obj : $(CDIR)\ysornopn.c $(RTHFILES)
+	- del ysornopn.obj
+	@- $(SCRIPTSDIR)\errsweep.bat ysornopn.obj
+	$(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\ysornopn.c
+	@- del current.bat
+
+int64.obj : $(CDIR)\int64.c $(RTHFILES)
+	- del int64.obj
+	@- $(SCRIPTSDIR)\errsweep.bat int64.obj
+	$(cc) $(cdebug) $(CC_FLAGS)  $(CDIR)\int64.c
+	@- del current.bat
+
+clean : 
+	- del *.obj
+	- del *.lib
+	- del *.exe
