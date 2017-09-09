@@ -1,0 +1,50 @@
+#!/bin/csh -f
+
+#### Introduction
+
+### This script is fired from the ab's crontab entry on the machine
+### called sdev3.  That machine is utilized for the eternal translate
+### and the licensing server.  This script's job is to worry about
+### keeping those running.
+
+### If it notices that the licensing server has died it will launch
+### a fresh one.
+
+onintr cleanup
+
+
+#### Check environment, etc.
+
+if ( sdev3 != `hostname` ) then
+  echo "LOG: `date`  this is only useful if run on sdev3"
+  exit 1
+endif
+
+
+
+
+#### Watchdog for Licensing Server
+
+echo "LOG `date` Check on licensing server"
+/bt/ab/lic/licensing-client -u guest -p anonymous noop > /tmp/$$
+if( { grep -s 'Have a nice day.' /tmp/$$ } ) then
+  echo "LOG `date` He is running."
+else
+  echo "LOG `date` He is not running, attempt to restart him."
+  /bt/siteok/lic/utils/launch-licensing-server sUGAr
+endif
+
+
+
+
+
+
+#### Watchdog for eternal recompile
+
+### TBD
+
+
+
+
+cleanup:
+rm -rf /tmp/$$
