@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<project name="sbn" default="build_32_std">
+  <taskdef resource="net/sf/antcontrib/antcontrib.properties" />
+  <target name="build_32_std" depends="clean">
+    <if>
+      <os family="unix" />
+      <then>
+	<exec executable="make" failonerror="true">
+	  <arg line="release" />
+	</exec>
+      </then>
+      <else>
+	<echo message="SBN is not supported on Windows" />
+      </else>
+    </if>
+  </target>
+  <target name="build_64_ent_wout_32" depends="clean">
+     <if>
+      <os family="unix" />
+      <then>
+	<exec executable="make" failonerror="true">
+	  <arg line="release" />
+	</exec>
+      </then>
+      <else>
+	<echo message="SBN is not supported on Windows" />
+      </else>
+    </if>
+  </target>
+  <target name="build_64_ent" depends="build_64_ent_wout_32" />
+  <target name="clean">
+    <if>
+      <os family="unix" />
+      <then>
+	<exec executable="make" failonerror="true">
+	  <arg line="clean" />
+	</exec>
+      </then>
+      <else>
+	<echo message="SBN is not supported on Windows" />
+      </else>
+    </if>
+  </target>
+  <target name="unit-tests">
+    <if>
+      <os family="unix" />
+      <then>
+	<mkdir dir="${basedir}/../../results" />
+	<exec executable="${basedir}/sbn_tests" failonerror="true">
+ 	  <arg line="-r junit -o ${basedir}/../../results/sbn_unit_tests.xml" />
+	</exec>
+      </then>
+      <else>
+	<echo message="SBN is not supported on Windows" />
+      </else>
+    </if>
+  </target>
+</project>
