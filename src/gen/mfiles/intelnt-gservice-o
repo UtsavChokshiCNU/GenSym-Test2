@@ -1,0 +1,18 @@
+PRODUCT = gservice
+ODIR = o
+PLATFORM = intelnt
+CDIR = $(SRCBOX)\$(PRODUCT)\c
+TAPEDST = $(DSTBOX)\$(PRODUCT)\tape
+
+
+all: gservice.exe
+
+gservice.exe: $(CDIR)\gservice.c $(CDIR)\gservice.h gservice.res
+	cl /Od /Zi $(CDIR)\gservice.c gservice.res advapi32.lib version.lib
+
+gservice.res: $(CDIR)\gservice.rc
+	- del gservice.res
+	rc.exe /fo"gservice.res" $(CDIR)\gservice.rc
+
+clean:
+	del *.exe
