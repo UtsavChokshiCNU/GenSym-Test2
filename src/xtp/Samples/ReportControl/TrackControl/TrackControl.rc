@@ -1,0 +1,348 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "Resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE MOVEABLE PURE 
+BEGIN
+    "Resource.h\0"
+END
+
+2 TEXTINCLUDE MOVEABLE PURE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE MOVEABLE PURE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#endif //_WIN32\r\n"
+    "#include ""res\\TrackControl.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""         // Standard components\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Cursor
+//
+
+XTP_IDC_REPORT_MOVE     CURSOR  DISCARDABLE     "res/MoveCursor.cur"
+XTP_IDC_REPORT_RESIZE   CURSOR  DISCARDABLE     "res/ResizeCursor.cur"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_REPORTDIALOG_DIALOG DIALOGEX 0, 0, 563, 255
+STYLE WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "Codejock Track Control Sample"
+MENU IDR_REPORTDIALOG_MENU
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,490,235,60,14
+    PUSHBUTTON      "Cancel",IDCANCEL,428,235,60,14
+    CONTROL         "",IDC_REPORTCTRL,"XTPReport",WS_TABSTOP,2,2,559,215
+    CONTROL         "Slider1",IDC_SLIDER,"msctls_trackbar32",TBS_TOP | 
+                    TBS_NOTICKS | WS_TABSTOP,159,217,45,15
+    SCROLLBAR       IDC_SCROLLBAR,205,216,344,11
+END
+
+IDD_DIALOG_PROPERTIES DIALOG DISCARDABLE  0, 0, 186, 63
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "TrackControl TimeLine Properties"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,129,7,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,129,24,50,14
+    LTEXT           "Minimum TimeLine Value",IDC_STATIC,7,7,91,8
+    EDITTEXT        IDC_EDIT_MIN,7,16,107,14,ES_AUTOHSCROLL
+    LTEXT           "Maximum Timeline Value",IDC_STATIC,7,32,91,8
+    EDITTEXT        IDC_EDIT_MAX,7,42,107,14,ES_AUTOHSCROLL
+END
+
+IDD_DIALOG_MARKER DIALOG DISCARDABLE  0, 0, 186, 63
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Marker Properties"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,129,7,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,129,24,50,14
+    LTEXT           "Position",IDC_STATIC,7,7,91,8
+    EDITTEXT        IDC_EDIT_POSITION,7,16,107,14,ES_AUTOHSCROLL
+    LTEXT           "Caption",IDC_STATIC,7,32,91,8
+    EDITTEXT        IDC_EDIT_CAPTION,7,42,107,14,ES_AUTOHSCROLL
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_REPORTDIALOG_MENU MENU DISCARDABLE 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&Open\tCtrl+O",               ID_FILE_OPEN
+        MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "&Edit"
+    BEGIN
+        MENUITEM "&Undo\tCtrl+Z",               ID_EDIT_UNDO
+        MENUITEM "&Redo\tCtrl+Y",               ID_EDIT_REDO
+        MENUITEM SEPARATOR
+        MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
+        MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
+        MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
+    END
+    POPUP "Track Control"
+    BEGIN
+        MENUITEM "Show Group Box",              ID_VIEW_GROUPBOX
+        MENUITEM "Allow Resize Row ",           ID_TRACKCONTROL_ALLOWROWRESIZE
+
+        MENUITEM "TimeLine Properties",         ID_MODE_TIMEOFFSET
+        MENUITEM "Scale On Resize",             ID_TRACKCONTROL_SCALEONRESIZE
+
+        MENUITEM SEPARATOR
+        MENUITEM "Flexible Drag",               ID_TRACKCONTROL_FLEXIBLEDRAG
+        MENUITEM "Classic Style",               ID_VIEW_CLASSICSTYLE
+        MENUITEM "Show Work Area",              ID_TRACKCONTROL_SHOWWORKAREA
+        MENUITEM SEPARATOR
+        MENUITEM "Snap To Markers",             ID_TRACKCONTROL_SNAPTOMARKERS
+
+        MENUITEM "Snap To Blocks",              ID_TRACKCONTROL_SNAPTOBLOCKS
+        MENUITEM SEPARATOR
+        MENUITEM "Allow Remove Blocks",         ID_TRACKCONTROL_ALLOWBLOCKREMOVE
+
+        MENUITEM "Allow Block Move",            ID_TRACKCONTROL_ALLOWBLOCKMOVE
+
+        MENUITEM "Allow Block Scale",           ID_TRACKCONTROL_ALLOWBLOCKSCALE
+
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "About",                       ID_APP_ABOUT
+    END
+END
+
+IDR_MENU_POPUP MENU DISCARDABLE 
+BEGIN
+    POPUP "Header On Empty"
+    BEGIN
+        MENUITEM "Add Marker",                  ID_HEADER_ADDMARKER
+    END
+    POPUP "Header On Marker"
+    BEGIN
+        MENUITEM "Delete this Marker",          ID_HEADER_REMOVEMARKER
+        MENUITEM "Delete All Markers",          ID_HEADER_DELETEALLMARKERS
+    END
+    POPUP "Block"
+    BEGIN
+        MENUITEM "Lock Block",                  ID_BLOCK_LOCKBLOCK
+        MENUITEM "Delete Block",                ID_BLOCK_REMOVEBLOCK
+        MENUITEM SEPARATOR
+        MENUITEM "Lock Track",                  ID_ITEM_LOCKTRACK
+    END
+    POPUP "Item"
+    BEGIN
+        MENUITEM "Add Block",                   ID_ITEM_ADDBLOCK
+        MENUITEM "Lock Track",                  ID_ITEM_LOCKTRACK
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_REPORTDIALOG_MENU ACCELERATORS MOVEABLE PURE 
+BEGIN
+    "N",            ID_FILE_NEW,            VIRTKEY, CONTROL
+    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL
+    "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL
+    "P",            ID_FILE_PRINT,          VIRTKEY, CONTROL
+    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL
+    "Y",            ID_EDIT_REDO,           VIRTKEY, CONTROL
+    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL
+    "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL
+    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL
+    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT
+    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT
+    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL
+    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT
+    VK_F6,          ID_NEXT_PANE,           VIRTKEY 
+    VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT
+END
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 15,1,3,0908
+ PRODUCTVERSION 15,1,3,0908
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "CompanyName", "Codejock Software\0"
+            VALUE "FileDescription", "TrackControl MFC Application\0"
+            VALUE "FileVersion", "15, 1, 3, 0908\0"
+            VALUE "InternalName", "TrackControl\0"
+            VALUE "LegalCopyright", "(c)1998-2009 Codejock Software, All Rights Reserved.\0"
+            VALUE "OriginalFilename", "TrackControl.exe\0"
+            VALUE "ProductName", "TrackControl Application\0"
+            VALUE "ProductVersion", "15, 1, 3, 0908\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO MOVEABLE PURE 
+BEGIN
+    IDD_REPORTDIALOG_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 2
+        RIGHTMARGIN, 561
+        TOPMARGIN, 2
+        BOTTOMMARGIN, 249
+    END
+
+    IDD_DIALOG_PROPERTIES, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 56
+    END
+
+    IDD_DIALOG_MARKER, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 56
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON    DISCARDABLE     "res\\CJSample.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_ABOUTBOX            "&About Track Control..."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    AFX_IDS_APP_TITLE       "Codejock Track Control Sample"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#endif //_WIN32
+#include "res\TrackControl.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"         // Standard components
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
