@@ -1,0 +1,32 @@
+
+<ivysettings>
+
+  <settings defaultResolver="libgw"/>
+
+  <resolvers>
+	  <sftp  name="libgw" user="${sftp.repository.user}"
+			 userPassword="${sftp.repository.password}" host="${sftp.repository.host}" 
+			 port="${sftp.repository.port}">
+          <artifact pattern="[organisation]/[module]/[type]/[artifact]-[revision].[ext]" />
+	  </sftp>
+  </resolvers>
+
+  <resolvers>
+	  <sftp  name="libgwvc" user="${sftp.repository.user}"
+			 userPassword="${sftp.repository.password}" host="${sftp.repository.host}"
+			 port="${sftp.repository.port}">
+          <artifact pattern="[organisation]/[module]/${sftp.vc.type}/[artifact]-[revision].[ext]" />
+	  </sftp>
+  </resolvers>
+
+  <resolvers>
+	  <sftp  name="libgwic" user="${sftp.repository.user}"
+			 userPassword="${sftp.repository.password}" host="${sftp.repository.host}"
+			 port="${sftp.repository.port}">
+          <artifact pattern="[organisation]/[module]/${sftp.ic.type}/[artifact]-[revision].[ext]" />
+	  </sftp>
+  </resolvers>    
+
+
+
+</ivysettings>
