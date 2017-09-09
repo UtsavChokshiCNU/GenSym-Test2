@@ -1,0 +1,85 @@
+CFLAGS =
+CC = cc -Ae # with -Ae on hpux
+
+HFILES = codes.h components.h cprim.h family-descriptor.h family-file-reader.h \
+  gsm.h key.h md5_all.h tag-value-parser.h
+
+all: createbundle decode-key geninst createkey serialize-family-file unbundle
+
+#----------------------------------------------------------
+# Executable targets
+
+createbundle: createbundle.o family-file-reader.o gsm-private.o gsm-public.o \
+ random.o tag-value-parser.o
+	$(CC) -o createbundle createbundle.o family-file-reader.o \
+ gsm-private.o  gsm-public.o random.o tag-value-parser.o
+
+unbundle: unbundle.o family-file-reader.o gsm-private.o gsm-public.o random.o \
+ tag-value-parser.o
+	$(CC) -o unbundle unbundle.o family-file-reader.o gsm-private.o \
+ gsm-public.o random.o tag-value-parser.o
+
+geninst: geninst.o family-file-reader.o g2pwaux.o gsm-public.o key-public.o \
+ md5_all.o random.o spawn.o tag-value-parser.o
+	$(CC) -o geninst family-file-reader.o g2pwaux.o geninst.o gsm-public.o \
+ key-public.o md5_all.o random.o spawn.o tag-value-parser.o
+
+createkey: createkey.o key-public.o key-private.o random.o
+	$(CC) -o createkey createkey.o key-public.o key-private.o random.o
+
+decode-key: decode-key.o key-public.o key-private.o random.o
+	$(CC) -o decode-key decode-key.o key-public.o key-private.o random.o
+
+serialize-family-file: serialize-family-file.o family-file-reader.o \
+ tag-value-parser.o
+	$(CC) -o serialize-family-file serialize-family-file.o \
+ family-file-reader.o tag-value-parser.o
+
+
+#----------------------------------------------------------
+# Object targets
+
+createbundle.o: createbundle.c $(HFILES)
+	$(CC) -c $(CFLAGS) createbundle.c
+
+decode-key.o: decode-key.c $(HFILES)
+	$(CC) -c $(CFLAGS) decode-key.c
+
+family-file-reader.o: family-file-reader.c $(HFILES)
+	$(CC) -c $(CFLAGS) family-file-reader.c
+
+g2pwaux.o: g2pwaux.c $(HFILES)
+	$(CC) -c $(CFLAGS) g2pwaux.c
+
+gsm-private.o: gsm-private.c $(HFILES)
+	$(CC) -c $(CFLAGS) gsm-private.c
+
+gsm-public.o: gsm-public.c $(HFILES)
+	$(CC) -c $(CFLAGS) gsm-public.c
+
+geninst.o: geninst.c $(HFILES)
+	$(CC) -c $(CFLAGS) geninst.c
+
+key-private.o: key-private.c $(HFILES)
+	$(CC) -c $(CFLAGS) key-private.c
+
+key-public.o: key-public.c $(HFILES)
+	$(CC) -c $(CFLAGS) key-public.c
+
+md5_all.o: md5_all.c $(HFILES)
+	$(CC) -c $(CFLAGS) md5_all.c
+
+random.o: random.c $(HFILES)
+	$(CC) -c $(CFLAGS) random.c
+
+spawn.o: spawn.c $(HFILES)
+	$(CC) -c $(CFLAGS) spawn.c
+
+tag-value-parser.o: tag-value-parser.c $(HFILES)
+	$(CC) -c $(CFLAGS) tag-value-parser.c
+
+#----------------------------------------------------------
+
+clean:
+	- rm *.o
+	- rm createbundle decode-key geninst createkey serialize-family-file unbundle
