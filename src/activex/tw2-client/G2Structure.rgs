@@ -1,0 +1,24 @@
+HKCR
+{
+	ForceRemove AXClient.G2Structure.1 = s 'G2Structure 1.0'
+	{
+		CLSID = s '{2B010C07-09E5-11D2-869E-00008618F471}'
+	}
+	ForceRemove AXClient.G2Structure = s 'G2Structure'
+	{
+		CLSID = s '{2B010C07-09E5-11D2-869E-00008618F471}'
+		CurVer = s 'AXClient.G2Structure.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {2B010C07-09E5-11D2-869E-00008618F471} = s 'G2Structure 1.0'
+		{
+			ProgID = s 'AXClient.G2Structure.1'
+			VersionIndependentProgID = s 'AXClient.G2Structure'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'both'
+			}
+		}
+	}
+}
