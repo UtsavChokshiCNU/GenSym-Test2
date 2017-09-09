@@ -1,0 +1,14 @@
+#!/bin/csh
+set platforms = ( hp9000s700 rs6000 sparcsol intelnt linux alphaosf hpia64)
+
+if ($#argv != 2) then
+  echo "Error: Wrong number of arguments, $#argv supplied, 2 required (iship ver, eship ver)."
+  exit 1
+endif
+
+set ishipid = $1
+set eshipid = $2
+
+foreach i ($platforms)
+  /gensym/tools/promote-product -noconfirm -e gw ${i} $ishipid $eshipid
+end
