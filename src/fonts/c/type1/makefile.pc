@@ -1,0 +1,113 @@
+
+#
+# DOS make file to make nsample which reads Type 1 fonts:
+#
+cflags = -DPROC_TRUETYPE=0 -DPROC_PCL=0 -D_4DEMO_ -DMSDOS /AL /G2 /Ox /c -I..\speedo -I../4demo -I.
+
+4d = ../4demo
+sd = ../speedo
+
+
+all:	nsample.exe
+
+$(sd)/speedo.h : $(sd)/useropt.h 
+$(sd)/spdo_prv.h: $(sd)/speedo.h
+
+tr_names.obj: tr_names.c \
+		$(sd)/spdo_prv.h \
+		$(sd)/speedo.h \
+		$(sd)/useropt.h \
+		$(4d)/fino.h \
+		type1.h
+	cl $(cflags) tr_names.c
+
+tr_ldfnt.obj: tr_ldfnt.c \
+		$(sd)/spdo_prv.h \
+		$(sd)/speedo.h \
+		$(sd)/useropt.h \
+		$(4d)/fino.h \
+		stdef.h \
+        type1.h \
+		fnt_a.h \
+		errcodes.h \
+		tr_fdata.h 
+	cl $(cflags) tr_ldfnt.c
+
+tr_mkchr.obj: tr_mkchr.c  \
+		$(sd)/spdo_prv.h \
+		$(sd)/speedo.h \
+		$(sd)/useropt.h \
+		$(4d)/fino.h \
+		type1.h
+	cl $(cflags) tr_mkchr.c
+
+tr_trans.obj: tr_trans.c \
+		$(sd)/speedo.h \
+		$(sd)/speedo.h \
+		$(sd)/useropt.h \
+		$(4d)/fino.h \
+		stdef.h \
+		type1.h \
+		fnt_a.h
+	cl $(cflags) tr_trans.c
+
+out_util.obj: $(sd)/out_util.c \
+		$(sd)/spdo_prv.h \
+		$(sd)/speedo.h \
+		$(sd)/useropt.h \
+		$(4d)/fino.h
+    cl $(cflags) ..\speedo\out_util.c
+
+out_blk.obj:  $(sd)/out_blk.c \
+		$(sd)/spdo_prv.h \
+		$(sd)/speedo.h \
+		$(sd)/useropt.h \
+		$(4d)/fino.h
+	cl $(cflags) ..\speedo\out_blk.c
+
+out_outl.obj: $(sd)/out_outl.c \
+		$(sd)/spdo_prv.h \
+		$(sd)/speedo.h \
+		$(sd)/useropt.h \
+		$(4d)/fino.h
+	cl $(cflags) ..\speedo\out_outl.c
+
+out_scrn.obj:  $(sd)/out_scrn.c \
+		$(sd)/spdo_prv.h \
+		$(4d)/fino.h
+	cl $(cflags) ..\speedo\out_scrn.c
+
+out_bl2d.obj:  $(sd)/out_bl2d.c \
+		$(sd)/spdo_prv.h \
+		$(sd)/speedo.h \
+		$(sd)/useropt.h \
+		$(4d)/fino.h
+	cl $(cflags) ..\speedo\out_bl2d.c
+
+out_wht.obj:  $(sd)/out_wht.c \
+		$(sd)/spdo_prv.h \
+		$(sd)/speedo.h \
+		$(sd)/useropt.h \
+		$(4d)/fino.h
+	cl $(cflags) ..\speedo\out_wht.c
+
+nsample.obj: nsample.c \
+		$(sd)/spdo_prv.h \
+		$(sd)/speedo.h \
+		$(sd)/useropt.h \
+		stdef.h \
+		type1.h \
+		fnt_a.h \
+		tr_fdata.h \
+        errcodes.h 
+	cl $(cflags) nsample.c
+
+nsample.exe : tr_names.obj tr_ldfnt.obj tr_mkchr.obj \
+              tr_trans.obj out_blk.obj out_util.obj \
+              out_outl.obj out_scrn.obj out_bl2d.obj out_wht.obj\
+              nsample.obj
+	link /STACK:3072 @nsample.lnk
+
+#misc targets:
+clean:
+	del *.obj
