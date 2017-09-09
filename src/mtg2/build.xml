@@ -1,0 +1,58 @@
+<project name="mtg2" default="build_64_ent">
+	<property name="module.name" value="mtg2"/>
+	<property name="${module.name}.basedir" value=".."/> 
+	<property file="${g2.basedir}/ant/build.properties"/>
+ 
+	<!-- Build section -->
+	<target name="clean-build">
+		<delete dir="${g2.basedir}/../dst/${module.name}"/>    
+	</target>
+
+	<target name="clean-results">
+		<delete dir="${result.dir}/${module.name}"/>    
+	</target>
+
+	<target name="build_32_std">
+		<ant dir="${g2.basedir}/ant" target="vstudio" inheritAll="false">
+			<property name="type" value="Release|Win32"/>
+			<property name="module" value="mtg2"/>
+		</ant>
+		<ant dir="${g2.basedir}/ant" target="vstudio" inheritAll="false">
+			<property name="type" value="Release|Win32"/>
+			<property name="module" value="mtg2"/>
+			<property name="solution" value="utilities"/>
+		</ant>
+	</target>
+
+	<target name="build_64_ent">
+		<ant dir="${g2.basedir}/ant" target="vstudio" inheritAll="false">
+			<property name="type" value="Release - Enterprise|x64"/>
+			<property name="module" value="mtg2"/>
+		</ant>
+    <!-- Skip utilities for now --> 
+	</target>
+
+	<target name="translate">
+		<ant dir="${g2.basedir}/ant" target="sbcl" inheritAll="false">
+			<property name="translator" value="trans-sbcl"/>
+			<property name="type" value="3rpmx"/>
+			<property name="module" value="mtg2"/>
+		</ant>
+	</target>
+	<!-- End of Build section -->
+  
+	<!-- Tests section - skip for now -->
+	
+	<!-- End of Tests section -->
+  
+	<!-- Checks section - skipping them -->
+
+  <!-- Check static metrics - skip for now -->
+
+  <!-- Findbugs - skip for now -->
+
+  <!-- Check-cpd - skip for now -->
+
+  <!-- End of Checks section -->
+  
+</project>
