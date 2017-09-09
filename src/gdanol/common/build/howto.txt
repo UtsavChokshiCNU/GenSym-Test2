@@ -1,0 +1,48 @@
+Instructions on building GDA and NOL.
+
+This directory contains the file buildgdanol.  This is a script
+which can be run on a Sun Solaris.  It is written in Unix
+script, but does not run on all unix platforms.
+
+The script assumes that you have previously created a sandbox,
+and that this sandbox is coded in a script local variable.
+In that sandbox you should checkout the module gdanol.  As 
+part of the build script, the sandbox is brought up to date.
+
+The script launches a G2 to run through a build checklist.
+This checklist is contained (and automated) in the file
+top.kb (found in the common directory).  The checklist assumes
+that the included KBs are completely ready for the build.  If 
+you are making the first pass at a build, you probably want
+to load top.kb separately.  Specific things to check:
+  - Are the to dos completed.
+  - Are the items with notes cleaned up.
+  - Are the build numbers, version numbers and build dates 
+    (in the module top) up to date.
+
+After the automated build sequence has run, the G2 will reset
+and several final steps must be completed by hand.  
+  1. The KBs are archived to a source location
+  2. Package preparation mode is entered
+  3. The KBs are text stripped
+  4. The KBs are made proprietary
+  5. The KBs are saved to a distribution location
+After these manual steps are completed, shut down the G2.
+At this point the build script will resume and begin 
+operating on the newly created distribution directories.
+
+The script also checks back into CVS the "non-destructive"
+modifications to the source.  The files are also locked,
+pending tagging of the sources by the person who made the 
+build.  Generally it is appropriate to tag the sources only
+after the decision has been made to ship the product as
+built.
+
+The distribution files are saved to to directories.  One is
+in /home/apps/kits/<vernum>/distribution and one in 
+/home/gda/kits/<vernum>/distribution (or neuron for 
+NOL).  The /home/apps are contains files for both GDA and
+NOL, but not certain files such as the demos.  The /home/gda
+area contains the product files, exactly as they will ship.
+It is from the /home/gda area that you actually promote 
+the files to the iship area.  
